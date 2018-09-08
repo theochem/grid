@@ -1,0 +1,34 @@
+package:
+  version: "{{ PROJECT_VERSION }}"
+  name: 'old_grids'
+
+source:
+  path: ../../
+
+build:
+  script_env:
+   - PROJECT_VERSION
+  number: 0
+  script: python setup.py install
+
+requirements:
+  build:
+    - python
+    - numpy
+    - cython >=0.24.1
+    - setuptools
+    - nose
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+  run:
+    - python
+    - numpy
+    - nose
+
+about:
+  description: Legacy grid module from HORTON 2
+  home: https://github.com/theochem/old_grids
+  license: GPLv3
+
+extra:
+  recipe-maintainers: Toon Verstraelen <toon.verstraelen@gmail.com>
