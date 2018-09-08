@@ -15,6 +15,10 @@ requirements:
   build:
     - python
     - numpy
+    - scipy
+    - matplotlib
+    - gbasis
+    - iodata
     - cython >=0.24.1
     - setuptools
     - nose
@@ -24,6 +28,10 @@ requirements:
     - python
     - numpy
     - nose
+    - scipy
+    - matplotlib
+    - gbasis
+    - iodata
 
 about:
   description: Legacy grid module from HORTON 2
