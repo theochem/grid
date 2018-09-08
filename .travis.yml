@@ -1,0 +1,81 @@
+sudo: false
+language: python
+
+python:
+ - "2.7"
+
+addons:
+  apt:
+    sources:
+     - ubuntu-toolchain-r-test
+    packages:
+     - gcc-6
+     - g++-6
+     - gfortran-6
+     - libhdf5-serial-dev
+     # libtool is needed by libint
+     - libtool
+     # libpcre3-dev is needed to build a recent cppcheck
+     - libpcre3-dev
+
+env:
+  global:
+     - QAWORKDIR=$HOME/qaworkdir
+     - CACHED=$QAWORKDIR/cached
+     - PIP_WHEEL_DIR=$CACHED/wheels
+     - PIP_FIND_LINKS=file://$CACHED/wheels
+     - PIP_NO_CACHE_DIR=no
+     - CXX="g++-6"
+     - CC="gcc-6"
+     - FC="gfortran-6"
+
+cache:
+  directories:
+    - $HOME/qaworkdir/cached
+
+install:
+# Install all required python packages for HORTON and for testing with pip.
+ - tools/qa/install_deps_pip.sh
+
+# Get the master branch and complete feature branch for a comparative analysis.
+ - tools/qa/get_master.sh
+
+# Handle detached-HEAD situations that seem to be common on Travis-CI.
+ - tools/qa/fix_detached_head.sh
+
+# Build all required dependencies from source, i.e. the ones not provided by the build
+# infrastructure. These dependencies are built from source for two reasons:
+# 1) Travis limits the packages that can be installed in the container-based
+#    build bots.
+# 2) For these dependencies, we want to have a good control over which version is used,
+#    such that we can better guarantee HORTON to work with specific versions of
+#    dependencies.
+
+# The behavior of the install script depends on the current branch:
+# 1) If the current branch is the master branch, only the dependencies of the HEAD of the
+#    master branch are built.
+# 2) If the current branch is a feature branch (or a pull request), the dependencies for
+#    this branch are built. Then, the common ancestor of the master and feature branch is
+#    checked out. Also the dependencies of the ancestor commit are built. (If ancestor and
+#    feature share common dependencies, these are only built once.) In the end, the
+#    feature branch is checked out again.
+ - tools/qa/install_deps_extra_twobranches.sh
+
+# Install Doxygen
+ - wget http://ftp.stack.nl/pub/users/dimitri/doxygen-1.8.6.linux.bin.tar.gz -P $HOME
+ - tar -zxvf $HOME/doxygen-1.8.6.linux.bin.tar.gz -C $HOME
+ - export PATH=$PATH:$HOME/doxygen-1.8.6/bin
+
+script:
+# Run all checks. The behavior of the test script also depends on the current branch:
+# 1) If the current branch is the master branch, only the non-comparative tests are
+#    executed: building HORTON, building documentations, fast unit tests, slow unit tests
+#    and some code analysis tools.
+# 2) If the current branch is a feauture branch (or a pull request), it first runs all
+#    checks on the feature branch: building HORTON, building documentation, fast unit
+#    tests + coverage, slow unit tests, all code analysis tools. Then it checks out the
+#    common ancestor of the master and feature branch. In that commit, it runs the
+#    following tests: building HORTON, fast unit tests + coverage, all code analysis tools
+#    whose output needs to compared to the results from the feature branch (the trapdoor
+#    tests). Finally, it compares the outputs of both branches to check for regressions.
+ - tools/qa/test_all_twobranches.sh
