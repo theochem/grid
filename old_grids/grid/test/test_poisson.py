@@ -22,6 +22,7 @@ from gbasis import GOBasis
 from scipy.special import erf
 import numpy as np
 from nose.plugins.attrib import attr
+import pkg_resources
 
 from iodata import IOData
 
@@ -30,7 +31,8 @@ from old_grids import *  # pylint: disable=wildcard-import,unused-wildcard-impor
 
 @attr('slow')
 def test_solve_poisson_becke_n2():
-    mol = IOData.from_file(context.get_fn('test/n2_hfs_sto3g.fchk'))
+    mol = IOData.from_file(pkg_resources.resource_filename('old_grids.test.data',
+                                                           'n2_hfs_sto3g.fchk'))
     lmaxmax = 4
 
     # compute hartree potential on a molecular grid

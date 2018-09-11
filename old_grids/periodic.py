@@ -35,8 +35,8 @@
        >>> periodic['5'].symbol
        'B'
 """
+import pkg_resources
 
-from old_grids.context import context
 from old_grids.units import angstrom, amu
 
 __all__ = ['periodic', 'Element', 'Periodic']
@@ -254,7 +254,8 @@ def load_periodic():
         'amu': (lambda s: float(s) * amu),
     }
 
-    with open(context.get_fn('elements.csv'), 'r') as f:
+    fn = pkg_resources.resource_filename("old_grids.data", "elements.csv")
+    with open(fn, 'r') as f:
         r = csv.reader(f)
         # go to the actual data
         for row in r:

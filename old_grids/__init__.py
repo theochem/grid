@@ -20,15 +20,11 @@
 # --
 """The main OLDGRIDS Package"""
 
-
 __version__ = '2.1.0'
 
-
+from old_grids.cache import *
 # Extensions are imported first to call fpufix as early as possible
 from old_grids.cext import *
-
-from old_grids.context import *
-from old_grids.cache import *
 from old_grids.grid import *
 from old_grids.moments import *
 from old_grids.units import *
