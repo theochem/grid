@@ -27,6 +27,9 @@ def get_readme():
         return f.read()
 
 
+
+
+
 setup(
     name='old_grids',
     version=get_version(),
@@ -37,7 +40,10 @@ setup(
     url='https://github.com/theochem/old_grids',
     cmdclass={'build_ext': Cython.Build.build_ext},
     package_dir={'old_grids': 'old_grids'},
-    packages=['old_grids', 'old_grids.test'],
+    packages=['old_grids', 'old_grids.test', 'old_grids.grid'],
+    package_data={'old_grids.data': ['data/*'],
+                  'old_grids.test.data': ['test/data/*'],
+                  'old_grids.grid.data': ['grid/data/*']},
 
     ext_modules=[
         Extension("old_grids.grid.cext",

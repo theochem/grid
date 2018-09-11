@@ -21,11 +21,11 @@
 """Atomic grids"""
 
 import logging
-
-import numpy as np
 import os
 
-from old_grids import context
+import numpy as np
+import pkg_resources
+
 from old_grids.grid.base import IntGrid
 from old_grids.grid.cext import lebedev_laikov_sphere, lebedev_laikov_npoints, \
     RTransform, LinearRTransform, ExpRTransform, PowerRTransform, CubicSpline
@@ -426,16 +426,18 @@ class AtomicGridSpec(object):
 
     def _init_members_from_string(self, definition):
         if os.path.isfile(definition):
+            self._load(definition, isrealfile=True)
+            return
+        if pkg_resources.resource_exists("old_grids.grid.data", definition):
             self._load(definition)
             return
-        filename = context.get_fn('grids/%s.txt' % definition)
-        if os.path.isfile(filename):
-            self._load(filename)
+        resource_name = f'{definition}.txt'
+        if pkg_resources.resource_exists("old_grids.grid.data", resource_name):
+            self._load(resource_name)
             return
         name = self._simple_names.get(definition)
         if name is not None:
-            filename = context.get_fn('grids/%s.txt' % name)
-            self._load(filename)
+            self._load(f"{name}.txt")
             return
         if definition.count(':') == 4:
             words = self.name.split(':')
@@ -452,9 +454,12 @@ class AtomicGridSpec(object):
             raise ValueError('Could not interpret atomic grid specification string: "%s"'
                              % definition)
 
-    def _load(self, filename):
-        fn = context.get_fn(filename)
+    def _load(self, filename, isrealfile=False):
         members = []
+        if isrealfile:
+            fn = filename
+        else:
+            fn = pkg_resources.resource_filename("old_grids.grid.data", filename)
         with open(fn) as f:
             state = 0
             for line in f:

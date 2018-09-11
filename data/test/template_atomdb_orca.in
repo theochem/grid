@@ -1,9 +1,0 @@
-!HF TightSCF
-
-%basis
-  Basis cc_pVQZ
-end
-
-*xyz ${charge} ${mult}
-${element} 0.0 0.0 0.0
-*

@@ -23,6 +23,7 @@
 import numpy as np
 import os
 import shutil
+import pkg_resources
 
 from nose.tools import assert_raises
 
@@ -112,7 +113,8 @@ def test_agspec_wrong_string():
 def test_agspec_local_file():
     with tmpdir('old_grids.scripts.test.test_espfit.test_scripts_symmetry') as dn:
         fn_dest = os.path.join(dn, 'mygrid.txt')
-        shutil.copy(context.get_fn('grids/tv-13.7-4.txt'), fn_dest)
+        shutil.copy(pkg_resources.resource_filename('old_grids.grid.data', 'tv-13.7-4.txt'),
+                    fn_dest)
         agspec = AtomicGridSpec(fn_dest)
         rgrid, nlls = agspec.get(1, 1)
         assert rgrid.rtransform.to_string() == 'PowerRTransform 3.69705074304963e-06 19.279558946793685 24'
