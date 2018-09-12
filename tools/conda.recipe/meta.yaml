@@ -23,7 +23,7 @@ requirements:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
   run:
-    - python >=3
+    - {{ pin_compatible('python') }}
     - numpy
     - scipy
     - matplotlib
