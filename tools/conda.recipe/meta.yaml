@@ -13,22 +13,28 @@ build:
 
 requirements:
   build:
-    - python
+    - python >=3
     - numpy
     - gbasis
     - iodata
     - cython >=0.24.1
     - setuptools
+    - matplotlib
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
   run:
-    - python
+    - python >=3
     - numpy
-    - nose
     - scipy
     - matplotlib
     - gbasis
     - iodata
+    - nose
+  test:
+    requires:
+      - nose
+    commands:
+      - conda inspect linkages old_grids
 
 about:
   description: Legacy grid module from HORTON 2
