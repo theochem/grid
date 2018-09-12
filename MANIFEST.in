@@ -1,5 +1,5 @@
-recursive-include horton *.pyx *.pxd *.h *.cpp
-recursive-exclude horton cext.cpp
+recursive-include old_grids *.pyx *.pxd *.h *.cpp
+recursive-exclude old_grids cext.cpp
 
 include data/setup_cfgs/*.cfg
 include data/setup_cfgs/README
