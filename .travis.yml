@@ -170,6 +170,7 @@ before_deploy:
 #- echo ${IS_PRERELEASE}
 - export ANACONDA_LABEL=$(python -c 'import os; tt=os.environ["TRAVIS_TAG"]; print("dev" if ("a" in tt) else ("test" if "b" in tt else "main"))')
 - echo ${ANACONDA_LABEL}
+- echo ${ANACONDA_TOKEN}
 
 # In deployment, the env var TRAVIS_TAG contains the name of the current version, if any.
 deploy:
