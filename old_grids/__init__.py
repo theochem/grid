@@ -18,9 +18,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 #
 # --
-"""The main OLDGRIDS Package"""
-
-__version__ = '2.1.0'
+"""The legacy HORTON grids package"""
 
 from old_grids.cache import *
 # Extensions are imported first to call fpufix as early as possible

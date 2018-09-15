@@ -40,11 +40,12 @@ setup(
     url='https://github.com/theochem/old_grids',
     cmdclass={'build_ext': Cython.Build.build_ext},
     package_dir={'old_grids': 'old_grids'},
-    packages=['old_grids', 'old_grids.test', 'old_grids.grid'],
-    package_data={'old_grids.data': ['data/*'],
-                  'old_grids.test.data': ['test/data/*'],
-                  'old_grids.grid.data': ['grid/data/*']},
-
+    packages=['old_grids', 'old_grids.test', 'old_grids.grid',
+              'old_grids.data', 'old_grids.test.data', 'old_grids.grid.data'],
+    package_data={'old_grids.data': ['*'],
+                  'old_grids.test.data': ['*'],
+                  'old_grids.grid.data': ['*']},
+    include_package_data=True,
     ext_modules=[
         Extension("old_grids.grid.cext",
         sources=glob('old_grids/grid/*.cpp') + [
