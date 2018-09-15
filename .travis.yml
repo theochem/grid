@@ -195,7 +195,7 @@ deploy:
 
 - provider: script
   skip_cleanup: true
-  script: anaconda -t $ANACONDA_TOKEN upload --force -l ${ANACONDA_LABEL} ${HOME}/miniconda/conda-bld/*/${PROJECT_NAME}-*.tar.bz2
+  script: anaconda -t ${ANACONDA_TOKEN} upload --force -l ${ANACONDA_LABEL} ${HOME}/miniconda/conda-bld/*/${PROJECT_NAME}-*.tar.bz2
   on:
     repo: ${GITHUB_REPO_NAME}
     tags: true
