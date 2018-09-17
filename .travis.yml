@@ -113,7 +113,6 @@ install:
 # dependencies on meta.yaml and setup.py, unless setup.py already imports them.
 # Install conda tools for packaging and uploading
 - conda install -q python=${MYCONDAPY} anaconda-client numpy setuptools cython
-- export CONDA_PY=${MYCONDAPY//./}
 - if ! [[ $TRAVIS_TAG ]]; then
     conda install -q ${CONDA_DEPENDENCIES};
     pip install --upgrade pylint codecov coverage pycodestyle pydocstyle;
