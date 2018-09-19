@@ -25,6 +25,7 @@ requirements:
     - iodata
     - matplotlib
   run:
+    - python
     - scipy
 test:
   requires:
