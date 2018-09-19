@@ -203,14 +203,14 @@ deploy:
     repo: ${GITHUB_REPO_NAME}
     tags: true
 
-- provider: pypi
-  skip_cleanup: true
-  user: ${PYPI_LOGIN}
-  password: ${PYPI_PASSWD}
-  on:
-    repo: ${GITHUB_REPO_NAME}
-    tags: true
-    condition: "$TRAVIS_TAG != *[ab]* && $MYCONDAPY == 3.6 && $TRAVIS_OS_NAME == linux"
+#- provider: pypi
+#  skip_cleanup: true
+#  user: ${PYPI_LOGIN}
+#  password: ${PYPI_PASSWD}
+#  on:
+#    repo: ${GITHUB_REPO_NAME}
+#    tags: true
+#    condition: "$TRAVIS_TAG != *[ab]* && $MYCONDAPY == 3.6 && $TRAVIS_OS_NAME == linux"
 
 - provider: pages
   skip_cleanup: true
