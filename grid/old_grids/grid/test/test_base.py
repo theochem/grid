@@ -24,10 +24,10 @@ import numpy as np
 from gbasis import GOBasis
 import pkg_resources
 
-from old_grids import *  # pylint: disable=wildcard-import,unused-wildcard-import
+from grid import *  # pylint: disable=wildcard-import,unused-wildcard-import
 
-from old_grids.grid.test.common import get_cosine_spline
-from old_grids.test.common import get_random_cell, numpy_seed
+from grid.grid.test.common import get_cosine_spline
+from grid.test.common import get_random_cell, numpy_seed
 
 from iodata import IOData
 
@@ -334,7 +334,7 @@ def test_eval_spline_grid_add_random():
 
 def test_density_decomposition_n2():
     # compute reference density and becke_weights for the first atom
-    mol = IOData.from_file(pkg_resources.resource_filename('old_grids.test.data','n2_hfs_sto3g.fchk'))
+    mol = IOData.from_file(pkg_resources.resource_filename('grid.test.data','n2_hfs_sto3g.fchk'))
     molgrid = BeckeMolGrid(mol.coordinates, mol.numbers, mol.pseudo_numbers, 'veryfine',
                            random_rotate=False, mode='only')
     atgrid = molgrid.subgrids[0]

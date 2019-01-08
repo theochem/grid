@@ -23,12 +23,12 @@ import logging
 
 import numpy as np
 
-from old_grids.periodic import periodic
-from old_grids.utils import typecheck_geo, doc_inherit
+from grid.periodic import periodic
+from grid.utils import typecheck_geo, doc_inherit
 
-from old_grids.grid.atgrid import AtomicGrid, AtomicGridSpec
-from old_grids.grid.base import IntGrid
-from old_grids.grid.cext import becke_helper_atom
+from grid.grid.atgrid import AtomicGrid, AtomicGridSpec
+from grid.grid.base import IntGrid
+from grid.grid.cext import becke_helper_atom
 
 __all__ = [
     'BeckeMolGrid'

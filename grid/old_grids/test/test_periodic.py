@@ -20,8 +20,8 @@
 # --
 
 
-from old_grids.periodic import periodic
-from old_grids.units import angstrom, amu
+from grid.periodic import periodic
+from grid.units import angstrom, amu
 
 
 def test_periodic():

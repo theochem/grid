@@ -24,9 +24,9 @@ import numpy as np
 from nose.tools import assert_raises
 from nose.plugins.attrib import attr
 
-from old_grids import *  # pylint: disable=wildcard-import,unused-wildcard-import
+from grid import *  # pylint: disable=wildcard-import,unused-wildcard-import
 
-from old_grids.test.common import get_random_cell
+from grid.test.common import get_random_cell
 
 
 def check_frac_cart(cell):

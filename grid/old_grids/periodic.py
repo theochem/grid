@@ -37,7 +37,7 @@
 """
 import pkg_resources
 
-from old_grids.units import angstrom, amu
+from grid.units import angstrom, amu
 
 __all__ = ['periodic', 'Element', 'Periodic']
 
@@ -254,7 +254,7 @@ def load_periodic():
         'amu': (lambda s: float(s) * amu),
     }
 
-    fn = pkg_resources.resource_filename("old_grids.data", "elements.csv")
+    fn = pkg_resources.resource_filename("grid.data", "elements.csv")
     with open(fn, 'r') as f:
         r = csv.reader(f)
         # go to the actual data

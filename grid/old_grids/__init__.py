@@ -20,10 +20,10 @@
 # --
 """The legacy HORTON grids package"""
 
-from old_grids.cache import *
+from grid.cache import *
 # Extensions are imported first to call fpufix as early as possible
-from old_grids.cext import *
-from old_grids.grid import *
-from old_grids.moments import *
-from old_grids.units import *
-from old_grids.utils import *
+from grid.cext import *
+from grid.grid import *
+from grid.moments import *
+from grid.units import *
+from grid.utils import *

@@ -26,12 +26,12 @@ import pkg_resources
 
 from iodata import IOData
 
-from old_grids import *  # pylint: disable=wildcard-import,unused-wildcard-import
+from grid import *  # pylint: disable=wildcard-import,unused-wildcard-import
 
 
 @attr('slow')
 def test_solve_poisson_becke_n2():
-    mol = IOData.from_file(pkg_resources.resource_filename('old_grids.test.data',
+    mol = IOData.from_file(pkg_resources.resource_filename('grid.test.data',
                                                            'n2_hfs_sto3g.fchk'))
     lmaxmax = 4
 

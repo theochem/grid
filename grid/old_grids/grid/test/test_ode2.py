@@ -24,7 +24,7 @@ import numpy as np
 import random
 from scipy.special import erf
 
-from old_grids import *  # pylint: disable=wildcard-import,unused-wildcard-import
+from grid import *  # pylint: disable=wildcard-import,unused-wildcard-import
 
 
 def _merge(y, d):

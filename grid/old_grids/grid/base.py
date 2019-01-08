@@ -22,10 +22,10 @@
 
 import numpy as np
 
-from old_grids.grid.utils import parse_args_integrate
-from old_grids.grid.cext import dot_multi, eval_spline_grid, \
+from grid.grid.utils import parse_args_integrate
+from grid.grid.cext import dot_multi, eval_spline_grid, \
     dot_multi_moments, eval_decomposition_grid
-from old_grids.cext import Cell
+from grid.cext import Cell
 
 __all__ = ['IntGrid']
 

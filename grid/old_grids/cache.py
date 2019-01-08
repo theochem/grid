@@ -22,7 +22,7 @@
 
    In principle, the ``JustOnceClass`` and the ``Cache`` can be used
    independently, but in some cases it makes a lot of sense to combine them.
-   See for example the density partitioning code in ``old_grids.part``.
+   See for example the density partitioning code in ``grid.part``.
 """
 
 import numpy as np

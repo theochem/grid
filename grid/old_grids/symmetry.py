@@ -26,9 +26,9 @@
 
 import numpy as np
 
-from old_grids.cext import Cell
-from old_grids.exceptions import SymmetryError
-from old_grids.periodic import periodic
+from grid.cext import Cell
+from grid.exceptions import SymmetryError
+from grid.periodic import periodic
 
 __all__ = ['Symmetry']
 

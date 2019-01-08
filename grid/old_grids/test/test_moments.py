@@ -23,9 +23,9 @@
 import numpy as np
 from nose.tools import assert_raises
 
-from old_grids import *  # pylint: disable=wildcard-import,unused-wildcard-import
+from grid import *  # pylint: disable=wildcard-import,unused-wildcard-import
 
-from old_grids.test.common import get_pentagon_moments, get_point_moments
+from grid.test.common import get_pentagon_moments, get_point_moments
 
 
 def test_get_ncart():

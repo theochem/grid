@@ -27,13 +27,13 @@ import pkg_resources
 
 from nose.tools import assert_raises
 
-from old_grids import *  # pylint: disable=wildcard-import,unused-wildcard-import
-from old_grids.test.common import tmpdir
-from old_grids.units import angstrom
+from grid import *  # pylint: disable=wildcard-import,unused-wildcard-import
+from grid.test.common import tmpdir
+from grid.units import angstrom
 
 
 def test_normalize_nlls():
-    from old_grids.grid.atgrid import _normalize_nlls
+    from grid.grid.atgrid import _normalize_nlls
     assert (_normalize_nlls(6, 10) == np.array([6] * 10)).all()
     assert (_normalize_nlls([6], 10) == np.array([6] * 10)).all()
     assert (_normalize_nlls([6, 6, 6], 3) == np.array([6] * 3)).all()
@@ -111,9 +111,9 @@ def test_agspec_wrong_string():
 
 
 def test_agspec_local_file():
-    with tmpdir('old_grids.scripts.test.test_espfit.test_scripts_symmetry') as dn:
+    with tmpdir('grid.scripts.test.test_espfit.test_scripts_symmetry') as dn:
         fn_dest = os.path.join(dn, 'mygrid.txt')
-        shutil.copy(pkg_resources.resource_filename('old_grids.grid.data', 'tv-13.7-4.txt'),
+        shutil.copy(pkg_resources.resource_filename('grid.grid.data', 'tv-13.7-4.txt'),
                     fn_dest)
         agspec = AtomicGridSpec(fn_dest)
         rgrid, nlls = agspec.get(1, 1)

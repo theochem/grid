@@ -22,7 +22,7 @@
 
 import numpy as np
 
-from old_grids.grid.cext import dot_multi
+from grid.grid.cext import dot_multi
 
 __all__ = ['RadialGrid']
 

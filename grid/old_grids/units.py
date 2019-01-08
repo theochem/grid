@@ -69,7 +69,7 @@
 
 """
 
-from old_grids.constants import avogadro
+from grid.constants import avogadro
 
 # *** Generic ***
 au = 1.0
