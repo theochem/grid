@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 """Package build and install script."""
+
+
 from glob import glob
 
 import Cython.Build
@@ -25,9 +27,6 @@ def get_readme():
     """Load README.rst for display on PyPI."""
     with open('README.rst') as f:
         return f.read()
-
-
-
 
 
 setup(
@@ -67,6 +66,5 @@ setup(
     ],
     zip_safe=False,
     setup_requires=['numpy>=1.0', 'cython>=0.24.1'],
-    install_requires=['numpy>=1.0', 'nose>=0.11', 'cython>=0.24.1', 'scipy', 'matplotlib', 'iodata',
-                      'gbasis'],
+    install_requires=['numpy>=1.0', 'nose>=0.11', 'cython>=0.24.1', 'scipy', 'matplotlib'],
 )

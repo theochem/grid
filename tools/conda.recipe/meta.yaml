@@ -21,8 +21,6 @@ requirements:
     - cython >=0.24.1
     - setuptools
     - nose
-    - gbasis
-    - iodata
     - matplotlib
   run:
     - python

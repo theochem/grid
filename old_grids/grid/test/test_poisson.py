@@ -18,36 +18,35 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 #
 # --
-from gbasis import GOBasis
+
+
 from scipy.special import erf
 import numpy as np
 from nose.plugins.attrib import attr
 import pkg_resources
 
-from iodata import IOData
 
 from old_grids import *  # pylint: disable=wildcard-import,unused-wildcard-import
 
 
 @attr('slow')
 def test_solve_poisson_becke_n2():
-    mol = IOData.from_file(pkg_resources.resource_filename('old_grids.test.data',
-                                                           'n2_hfs_sto3g.fchk'))
+
+    mol = np.load(pkg_resources.resource_filename("old_grids.test.data", "n2_hfs_sto3g.npz"))
+
     lmaxmax = 4
 
     # compute hartree potential on a molecular grid
-    molgrid = BeckeMolGrid(mol.coordinates, mol.numbers, mol.pseudo_numbers, random_rotate=False,
-                           mode='keep')
-    dm_full = mol.get_dm_full()
-    obasis = GOBasis(**mol.obasis)
-    reference = obasis.compute_grid_hartree_dm(dm_full, molgrid.points)
+    molgrid = BeckeMolGrid(mol["coordinates"], mol["numbers"], mol["pseudo_numbers"], 'veryfine',
+                           random_rotate=False, mode='keep')
+
+    reference = mol["grid_potential"]
 
     # construct the same potential numerically with Becke's method
-    obasis = GOBasis(**mol.obasis)
-    rho = obasis.compute_grid_density_dm(dm_full, molgrid.points)
+    rho = mol["grid_density"]
     begin = 0
     hds = []
-    for i in range(mol.natom):
+    for i in range(mol["natom"]):
         atgrid = molgrid.subgrids[i]
         end = begin + atgrid.size
         becke_weights = molgrid.becke_weights[begin:end]
@@ -62,8 +61,8 @@ def test_solve_poisson_becke_n2():
     last_error = None
     for lmax in range(0, lmaxmax + 1):
         result = molgrid.zeros()
-        for i in range(mol.natom):
-            molgrid.eval_decomposition(hds[i][:(lmax + 1) ** 2], mol.coordinates[i], result)
+        for i in range(mol["natom"]):
+            molgrid.eval_decomposition(hds[i][:(lmax + 1) ** 2], mol["coordinates"][i], result)
         potential_error = result - reference
         error = molgrid.integrate(potential_error, potential_error) ** 0.5
         if last_error is not None:
