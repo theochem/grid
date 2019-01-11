@@ -24,13 +24,19 @@
    information on top of a System instance.
 """
 
+
 import numpy as np
 
 from old_grids.cext import Cell
-from old_grids.exceptions import SymmetryError
 from old_grids.periodic import periodic
 
+
 __all__ = ['Symmetry']
+
+
+class SymmetryError(Exception):
+    """Exception raised when some symmetry algorithm fails"""
+    pass
 
 
 class Symmetry(object):
