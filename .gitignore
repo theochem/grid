@@ -22,7 +22,7 @@ doc/tech_dev_git.rst
 
 # Ignore (in-place) build results
 cext.cpp
-cext.so
+*.so
 *.pyc
 build
 MANIFEST
