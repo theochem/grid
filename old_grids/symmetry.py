@@ -19,6 +19,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 #
 # --
+# pragma pylint: disable=unnecessary-pass
 """Geometric symmetries
 
    The symmetry tools in OLDGRIDS are just meant to provide optional additional
@@ -36,7 +37,8 @@ __all__ = ['Symmetry']
 
 
 class SymmetryError(Exception):
-    """Exception raised when some symmetry algorithm fails"""
+    """Exception raised when some symmetry algorithm fails."""
+
     pass
 
 
