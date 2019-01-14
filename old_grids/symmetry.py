@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
-# OLDGRIDS: Helpful Open-source Research TOol for N-fermion systems.
-# Copyright (C) 2011-2017 The OLDGRIDS Development Team
+# GRID is a numerical integration library for quantum chemistry.
 #
-# This file is part of OLDGRIDS.
+# Copyright (C) 2011-2017 The GRID Development Team
 #
-# OLDGRIDS is free software; you can redistribute it and/or
+# This file is part of GRID.
+#
+# GRID is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 3
 # of the License, or (at your option) any later version.
 #
-# OLDGRIDS is distributed in the hope that it will be useful,
+# GRID is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
@@ -18,19 +19,27 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 #
 # --
+# pragma pylint: disable=unnecessary-pass
 """Geometric symmetries
 
    The symmetry tools in OLDGRIDS are just meant to provide optional additional
    information on top of a System instance.
 """
 
+
 import numpy as np
 
 from old_grids.cext import Cell
-from old_grids.exceptions import SymmetryError
 from old_grids.periodic import periodic
 
+
 __all__ = ['Symmetry']
+
+
+class SymmetryError(Exception):
+    """Exception raised when some symmetry algorithm fails."""
+
+    pass
 
 
 class Symmetry(object):
