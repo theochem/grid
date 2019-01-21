@@ -28,7 +28,7 @@
 #include <cmath>
 #include <stdexcept>
 
-#include "old_grids/grid/becke.h"
+#include "grid/grid/becke.h"
 
 
 /* dist

@@ -22,9 +22,9 @@
 
 import numpy as np
 
-from old_grids import *  # pylint: disable=wildcard-import,unused-wildcard-import
+from grid import *  # pylint: disable=wildcard-import,unused-wildcard-import
 
-from old_grids.test.common import numpy_seed
+from grid.test.common import numpy_seed
 
 
 def test_tridiagsym_solve():

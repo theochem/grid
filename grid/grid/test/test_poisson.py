@@ -26,13 +26,13 @@ from nose.plugins.attrib import attr
 import pkg_resources
 
 
-from old_grids import *  # pylint: disable=wildcard-import,unused-wildcard-import
+from grid import *  # pylint: disable=wildcard-import,unused-wildcard-import
 
 
 @attr('slow')
 def test_solve_poisson_becke_n2():
 
-    mol = np.load(pkg_resources.resource_filename("old_grids.test.data", "n2_hfs_sto3g.npz"))
+    mol = np.load(pkg_resources.resource_filename("grid.test.data", "n2_hfs_sto3g.npz"))
 
     lmaxmax = 4
 

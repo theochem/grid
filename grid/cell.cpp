@@ -28,7 +28,7 @@
 
 #include <cmath>
 #include <stdexcept>
-#include "old_grids/cell.h"
+#include "grid/cell.h"
 
 
 Cell::Cell(double* _rvecs, int _nvec) {

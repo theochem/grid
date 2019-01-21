@@ -24,7 +24,7 @@
    This module fixes all the conventions with respect to multipole moments. Some
    of the code below may (in some way) reoccur in the low-level routines. In any
    case, such low-level code should be consistent with the conventions in this
-   module. See for example, old_grids.gobasis.cext.cart_to_pur_low.
+   module. See for example, grid.gobasis.cext.cart_to_pur_low.
 """
 
 import numpy as np

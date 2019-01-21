@@ -41,7 +41,7 @@ cimport rtransform
 cimport uniform
 cimport utils
 
-cimport old_grids.cext
+cimport grid.cext
 
 
 __all__ = [
@@ -480,7 +480,7 @@ def eval_spline_grid(CubicSpline spline not None,
                      np.ndarray[double, ndim=1] center not None,
                      np.ndarray[double, ndim=1] output not None,
                      np.ndarray[double, ndim=2] points not None,
-                     old_grids.cext.Cell cell not None):
+                     grid.cext.Cell cell not None):
     """Evaluate a spherically symmetric function on a general grid
 
        **Arguments:**
@@ -516,7 +516,7 @@ def eval_decomposition_grid(splines not None,
                      np.ndarray[double, ndim=1] center not None,
                      np.ndarray[double, ndim=1] output not None,
                      np.ndarray[double, ndim=2] points not None,
-                     old_grids.cext.Cell cell not None):
+                     grid.cext.Cell cell not None):
     """Evaluate a sphericall decomposition on a general grid
 
        **Arguments:**
@@ -1167,12 +1167,12 @@ cdef class UniformGrid(object):
             return np.product(self.shape)
 
     def get_cell(self):
-        cdef old_grids.cext.Cell result = old_grids.cext.Cell.__new__(old_grids.cext.Cell, initvoid=True)
+        cdef grid.cext.Cell result = grid.cext.Cell.__new__(grid.cext.Cell, initvoid=True)
         result._this = self._this.get_cell()
         return result
 
     def get_grid_cell(self):
-        cdef old_grids.cext.Cell result = old_grids.cext.Cell.__new__(old_grids.cext.Cell, initvoid=True)
+        cdef grid.cext.Cell result = grid.cext.Cell.__new__(grid.cext.Cell, initvoid=True)
         result._this = self._this.get_grid_cell()
         return result
 

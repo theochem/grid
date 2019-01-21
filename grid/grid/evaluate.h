@@ -25,9 +25,9 @@
 #define OLDGRIDS_GRID_EVALUATE_H
 
 
-#include "old_grids/cell.h"
-#include "old_grids/grid/cubic_spline.h"
-#include "old_grids/grid/uniform.h"
+#include "grid/cell.h"
+#include "grid/grid/cubic_spline.h"
+#include "grid/grid/uniform.h"
 
 
 void eval_spline_grid(CubicSpline* spline, double* center, double* output,

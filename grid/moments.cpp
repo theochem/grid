@@ -22,7 +22,7 @@
 
 #include <stdexcept>
 #include <cmath>
-#include "old_grids/moments.h"
+#include "grid/moments.h"
 
 
 long fill_cartesian_polynomials(double* output, long lmax) {

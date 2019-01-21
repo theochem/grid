@@ -21,14 +21,14 @@
 # --
 
 
-cimport old_grids.cell
+cimport grid.cell
 cimport cubic_spline
 
-cdef extern from "old_grids/grid/evaluate.h":
+cdef extern from "grid/grid/evaluate.h":
     void eval_spline_grid(cubic_spline.CubicSpline* spline, double* center,
-        double* output, double* points, old_grids.cell.Cell* cell,
+        double* output, double* points, grid.cell.Cell* cell,
         long npoint)
 
     void eval_decomposition_grid(cubic_spline.CubicSpline** splines,
-        double* center, double* output, double* points, old_grids.cell.Cell* cell,
+        double* center, double* output, double* points, grid.cell.Cell* cell,
         long nspline, long npoint)

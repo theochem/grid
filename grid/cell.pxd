@@ -21,7 +21,7 @@
 # --
 
 
-cdef extern from "old_grids/cell.h":
+cdef extern from "grid/cell.h":
     cdef cppclass Cell:
         Cell(double* _rvecs, int _nvec) except +
         void mic(double* delta)

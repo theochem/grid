@@ -83,7 +83,7 @@
 #include <cmath>
 #include <stdexcept>
 
-#include "old_grids/grid/lebedev_laikov.h"
+#include "grid/grid/lebedev_laikov.h"
 
 
 #define NMAX 65

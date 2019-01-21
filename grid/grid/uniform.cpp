@@ -28,7 +28,7 @@
 #include <stdexcept>
 #include <cmath>
 #include <cstdlib>
-#include "old_grids/grid/uniform.h"
+#include "grid/grid/uniform.h"
 
 
 UniformGrid::UniformGrid(double* _origin, double* _grid_rvecs, long* _shape, long* _pbc)

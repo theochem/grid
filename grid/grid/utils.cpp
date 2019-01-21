@@ -28,8 +28,8 @@
 
 #include <cmath>
 #include <stdexcept>
-#include "old_grids/moments.h"
-#include "old_grids/grid/utils.h"
+#include "grid/moments.h"
+#include "grid/grid/utils.h"
 
 
 /*
