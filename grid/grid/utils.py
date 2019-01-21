@@ -19,7 +19,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 #
 # --
-"""Auxiliaries for numerical integrals"""
+"""Auxiliaries for numerical integrals."""
 
 
 __all__ = ['parse_args_integrate']

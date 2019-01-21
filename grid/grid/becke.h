@@ -21,8 +21,8 @@
 
 // UPDATELIBDOCTITLE: Becke partitioning weight function
 
-#ifndef OLDGRIDS_GRID_BECKE_H
-#define OLDGRIDS_GRID_BECKE_H
+#ifndef GRID_GRID_BECKE_H
+#define GRID_GRID_BECKE_H
 
 void becke_helper_atom(int npoint, double* points, double* weights, int natom,
                        double* radii, double* centers, int select, int order);

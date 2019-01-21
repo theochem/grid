@@ -21,8 +21,8 @@
 
 // UPDATELIBDOCTITLE: Unit cell code to specify periodic boundary conditions
 
-#ifndef OLDGRIDS_CELL_H
-#define OLDGRIDS_CELL_H
+#ifndef GRID_CELL_H
+#define GRID_CELL_H
 
 /** @brief
         3D/2D/1D periodic boundary conditions and derived quantities.

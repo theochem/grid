@@ -19,7 +19,8 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 #
 # --
-"""Base classes for 3D integration grids"""
+"""Base classes for 3D integration grids."""
+
 
 import numpy as np
 
@@ -28,11 +29,12 @@ from grid.grid.cext import dot_multi, eval_spline_grid, \
     dot_multi_moments, eval_decomposition_grid
 from grid.cext import Cell
 
+
 __all__ = ['IntGrid']
 
 
 class IntGrid(object):
-    """Base class for real-space integration grids in OLDGRIDS"""
+    """Base class for real-space integration grids."""
 
     def __init__(self, points, weights, subgrids=None):
         """

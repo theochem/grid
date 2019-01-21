@@ -19,7 +19,9 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 #
 # --
-"""Atomic grids"""
+# pragma pylint: disable=invalid-name
+"""Atomic Grid Module."""
+
 
 import logging
 import os
@@ -32,6 +34,7 @@ from grid.grid.cext import lebedev_laikov_sphere, lebedev_laikov_npoints, \
     RTransform, LinearRTransform, ExpRTransform, PowerRTransform, CubicSpline
 from grid.grid.radial import RadialGrid
 from grid.units import angstrom
+
 
 __all__ = [
     'AtomicGrid', 'get_rotation_matrix',

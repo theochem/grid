@@ -19,7 +19,9 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 #
 # --
-"""Molecular integration grids"""
+"""Molecular integration grids."""
+
+
 import logging
 
 import numpy as np
@@ -31,13 +33,13 @@ from grid.grid.atgrid import AtomicGrid, AtomicGridSpec
 from grid.grid.base import IntGrid
 from grid.grid.cext import becke_helper_atom
 
-__all__ = [
-    'BeckeMolGrid'
-]
+
+__all__ = ['BeckeMolGrid']
 
 
 class BeckeMolGrid(IntGrid):
-    """Molecular integration grid using Becke weights"""
+    """Molecular integration grid using Becke weights."""
+
     biblio = []
 
     def __init__(self, centers, numbers, pseudo_numbers=None, agspec='medium', k=3,

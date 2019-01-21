@@ -19,13 +19,15 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 #
 # --
-"""Becke-style numerical Poisson solver"""
+"""Becke-style numerical Poisson solver."""
+
 
 import numpy as np
 
 from grid.grid.cext import CubicSpline, PotentialExtrapolation
 from grid.grid.ode2 import solve_ode2
 from grid.grid.radial import RadialGrid
+
 
 __all__ = ['solve_poisson_becke']
 biblio = [('becke1988_poisson', 'the numerical integration of the Poisson equation')]

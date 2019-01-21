@@ -19,15 +19,18 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 #
 # --
-"""Auxiliary routines related to multipole moments
+"""Auxiliary routines related to multipole moments.
 
-   This module fixes all the conventions with respect to multipole moments. Some
-   of the code below may (in some way) reoccur in the low-level routines. In any
-   case, such low-level code should be consistent with the conventions in this
-   module. See for example, grid.gobasis.cext.cart_to_pur_low.
+This module fixes all the conventions with respect to multipole moments. Some
+of the code below may (in some way) reoccur in the low-level routines. In any
+case, such low-level code should be consistent with the conventions in this
+module. See for example, grid.gobasis.cext.cart_to_pur_low.
+
 """
 
+
 import numpy as np
+
 
 __all__ = ['get_cartesian_powers', 'get_ncart', 'get_ncart_cumul',
            'rotate_cartesian_multipole', 'rotate_cartesian_moments_all',

@@ -20,10 +20,11 @@
 #
 # --
 # pragma pylint: disable=unnecessary-pass
-"""Geometric symmetries
+"""Geometric symmetries.
 
-   The symmetry tools in OLDGRIDS are just meant to provide optional additional
-   information on top of a System instance.
+The symmetry tools in GRID are just meant to provide optional additional
+information on top of a System instance.
+
 """
 
 

@@ -21,8 +21,8 @@
 
 // UPDATELIBDOCTITLE: Second-order finite-element ODE solver using Hermite polynomials
 
-#ifndef OLDGRIDS_GRID_ODE2_H
-#define OLDGRIDS_GRID_ODE2_H
+#ifndef GRID_GRID_ODE2_H
+#define GRID_GRID_ODE2_H
 
 double hermite_overlap2(long xmax, long i0, bool deriv0, long i1, bool deriv1);
 double hermite_overlap3(long xmax, long i0, bool deriv0, long i1, bool deriv1, long i2, bool deriv2);

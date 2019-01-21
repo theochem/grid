@@ -21,8 +21,8 @@
 
 /*
 
-   The cubic splines in OLDGRIDS are a bit special, hence this dedicated
-   implementation. Unlike, the general cubic splines, OLDGRIDS only uses splines
+   The cubic splines in GRID are a bit special, hence this dedicated
+   implementation. Unlike, the general cubic splines, GRID only uses splines
    with a 'standard' equidistant spacing of the grid points, with spacing 1. In
    order to handle data on other grids, one must provide a transformation object
    that defines the relation between that other grid and the standard grid.
@@ -30,7 +30,7 @@
    Why, oh why, not just do conventional cubic splines? Answer: more accuracy
    for the same cost. Consider, for example, an exponential decaying function.
    After transformation to a log grid, this function becomes linear and the
-   spline becomes exact. This can not be acchieved without the transformation
+   spline becomes exact. This can not be achieved without the transformation
    trick. Furthermore, cubic splines on equidistant grids can be implemented
    more efficiently than the general ones.
 

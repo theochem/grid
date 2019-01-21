@@ -19,7 +19,8 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 #
 # --
-"""C++ extensions"""
+"""C++ extensions."""
+
 
 import numpy as np
 cimport numpy as np

@@ -19,17 +19,19 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 #
 # --
-"""1D Radial integration grid"""
+"""1D Radial integration grid."""
+
 
 import numpy as np
 
 from grid.grid.cext import dot_multi
 
+
 __all__ = ['RadialGrid']
 
 
 class RadialGrid(object):
-    """An integration grid for the radial component of a spherical coordinate system"""
+    """An integration grid for the radial component of a spherical coordinate system."""
 
     def __init__(self, rtransform):
         self._rtransform = rtransform

@@ -19,26 +19,19 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 #
 # --
-"""Periodic table of elements
+# pragma pylint: disable=invalid-name
+"""Periodic table of elements.
 
-   This module contains an object ``periodic`` that can be used as a Pythonic
-   periodic table. It can be used as follows::
+This module contains an object ``periodic`` that can be used as a Pythonic
+periodic table.
 
-       >>> from horton import periodic
-       >>> periodic['si'].number
-       14
-       >>> periodic['He'].number
-       2
-       >>> periodic['h'].symbol
-       'H'
-       >>> periodic[3].symbol
-       'Li'
-       >>> periodic['5'].symbol
-       'B'
 """
+
+
 import pkg_resources
 
 from grid.units import angstrom, amu
+
 
 __all__ = ['periodic', 'Element', 'Periodic']
 
