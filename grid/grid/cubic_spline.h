@@ -21,8 +21,8 @@
 
 // UPDATELIBDOCTITLE: One-dimensional cubic splines (on uniform grids)
 
-#ifndef OLDGRIDS_GRID_CUBIC_SPLINE_H_
-#define OLDGRIDS_GRID_CUBIC_SPLINE_H_
+#ifndef GRID_GRID_CUBIC_SPLINE_H_
+#define GRID_GRID_CUBIC_SPLINE_H_
 
 #include <cstdint>
 
@@ -238,4 +238,4 @@ class PotentialExtrapolation : public Extrapolation {
 };
 
 
-#endif  // OLDGRIDS_GRID_CUBIC_SPLINE_H_
+#endif  // GRID_GRID_CUBIC_SPLINE_H_

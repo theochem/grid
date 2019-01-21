@@ -21,8 +21,8 @@
 
 // UPDATELIBDOCTITLE: Auxiliary functions
 
-#ifndef OLDGRIDS_GRID_UTILS_H
-#define OLDGRIDS_GRID_UTILS_H
+#ifndef GRID_GRID_UTILS_H
+#define GRID_GRID_UTILS_H
 
 #include "grid/grid/uniform.h"
 

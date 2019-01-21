@@ -21,8 +21,8 @@
 
 // UPDATELIBDOCTITLE: Uniform 3D grids
 
-#ifndef OLDGRIDS_GRID_UNIFORM_H
-#define OLDGRIDS_GRID_UNIFORM_H
+#ifndef GRID_GRID_UNIFORM_H
+#define GRID_GRID_UNIFORM_H
 
 #include "grid/cell.h"
 #include "grid/grid/cubic_spline.h"

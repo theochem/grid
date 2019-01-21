@@ -21,8 +21,8 @@
 
 // UPDATELIBDOCTITLE: Transformation from uniform 1D to non-uniform 1D grids
 
-#ifndef OLDGRIDS_GRID_RTRANSFORM_H_
-#define OLDGRIDS_GRID_RTRANSFORM_H_
+#ifndef GRID_GRID_RTRANSFORM_H_
+#define GRID_GRID_RTRANSFORM_H_
 
 
 /** @brief

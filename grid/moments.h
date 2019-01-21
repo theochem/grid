@@ -21,8 +21,8 @@
 
 // UPDATELIBDOCTITLE: Efficient evaluation of various of polynomials
 
-#ifndef OLDGRIDS_MOMENTS_H
-#define OLDGRIDS_MOMENTS_H
+#ifndef GRID_MOMENTS_H
+#define GRID_MOMENTS_H
 
 /** @brief Compute Cartesian mononomials efficiently.
 

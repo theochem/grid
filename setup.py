@@ -20,6 +20,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 #
 # --
+# pragma pylint: disable=invalid-name
 """Package build and install script."""
 
 
@@ -38,54 +39,54 @@ def get_version():
 
     """
     try:
-        with open('grid/version.py', 'r') as f:
-            return f.read().split('=')[-1].replace('\'', '').strip()
+        with open("grid/version.py", "r") as f:
+            return f.read().split("=")[-1].replace("\"", "").strip()
     except FileNotFoundError:
         return "0.0.0"
 
 
 def get_readme():
     """Load README.rst for display on PyPI."""
-    with open('README.rst') as f:
+    with open("README.rst") as f:
         return f.read()
 
 
 setup(
-    name='grid',
+    name="grid",
     version=get_version(),
-    description='Legacy HORTON grid module',
+    description="Legacy HORTON grid module",
     long_description=get_readme(),
-    author='Toon Verstraelen',
-    author_email='Toon.Verstraelen@UGent.be',
-    url='https://github.com/theochem/grid',
-    cmdclass={'build_ext': Cython.Build.build_ext},
-    package_dir={'grid': 'grid'},
-    packages=['grid', 'grid.test', 'grid.grid',
-              'grid.data', 'grid.test.data', 'grid.grid.data'],
-    package_data={'grid.data': ['*'],
-                  'grid.test.data': ['*'],
-                  'grid.grid.data': ['*']},
+    author="Toon Verstraelen",
+    author_email="Toon.Verstraelen@UGent.be",
+    url="https://github.com/theochem/grid",
+    cmdclass={"build_ext": Cython.Build.build_ext},
+    package_dir={"grid": "grid"},
+    packages=["grid", "grid.test", "grid.grid",
+              "grid.data", "grid.test.data", "grid.grid.data"],
+    package_data={"grid.data": ["*"],
+                  "grid.test.data": ["*"],
+                  "grid.grid.data": ["*"]},
     include_package_data=True,
     ext_modules=[
         Extension("grid.grid.cext",
-        sources=glob('grid/grid/*.cpp') + [
-                 "grid/grid/cext.pyx",
-                 'grid/cell.cpp',
-                 'grid/moments.cpp'],
-        depends=glob('grid/grid/*.pxd') + glob('grid/grid/*.h') + [
-            'grid/cell.pxd', 'grid/cell.h',
-            'grid/moments.pxd', 'grid/moments.h'],
-        include_dirs=[np.get_include(), '.'],
-        extra_compile_args=['-std=c++11'],
-        language="c++", ),
+                  sources=glob("grid/grid/*.cpp") + [
+                      "grid/grid/cext.pyx",
+                      "grid/cell.cpp",
+                      "grid/moments.cpp"],
+                  depends=glob("grid/grid/*.pxd") + glob("grid/grid/*.h") + [
+                      "grid/cell.pxd", "grid/cell.h",
+                      "grid/moments.pxd", "grid/moments.h"],
+                  include_dirs=[np.get_include(), "."],
+                  extra_compile_args=["-std=c++11"],
+                  language="c++", ),
         Extension("grid.cext",
-            sources=glob('grid/*.cpp') + ["grid/cext.pyx"],
-            depends=glob('grid/*.pxd') + glob('grid/*.h'),
-            include_dirs=[np.get_include(), '.'],
-            extra_compile_args=['-std=c++11'],
-            language="c++"),
+                  sources=glob("grid/*.cpp") + ["grid/cext.pyx"],
+                  depends=glob("grid/*.pxd") + glob("grid/*.h"),
+                  include_dirs=[np.get_include(), "."],
+                  extra_compile_args=["-std=c++11"],
+                  language="c++"),
     ],
     zip_safe=False,
-    setup_requires=['numpy>=1.0', 'cython>=0.24.1'],
-    install_requires=['numpy>=1.0', 'nose>=0.11', 'cython>=0.24.1', 'scipy', 'matplotlib'],
+    setup_requires=["numpy>=1.0", "cython>=0.24.1"],
+    install_requires=["numpy>=1.0", "nose>=0.11", "cython>=0.24.1", "scipy", "matplotlib"],
 )

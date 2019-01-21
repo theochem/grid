@@ -21,8 +21,8 @@
 
 // UPDATELIBDOCTITLE: Grids for quadrature on a sphere
 
-#ifndef OLDGRIDS_GRID_LEBEDEV_LAIKOV_H
-#define OLDGRIDS_GRID_LEBEDEV_LAIKOV_H
+#ifndef GRID_GRID_LEBEDEV_LAIKOV_H
+#define GRID_GRID_LEBEDEV_LAIKOV_H
 
 void lebedev_laikov_sphere(int npoint, double* points, double* weights);
 

@@ -21,8 +21,8 @@
 
 // UPDATELIBDOCTITLE: Evaluation of splines on grids
 
-#ifndef OLDGRIDS_GRID_EVALUATE_H
-#define OLDGRIDS_GRID_EVALUATE_H
+#ifndef GRID_GRID_EVALUATE_H
+#define GRID_GRID_EVALUATE_H
 
 
 #include "grid/cell.h"

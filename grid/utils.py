@@ -19,9 +19,11 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 #
 # --
-"""Utility functions"""
+"""Utility functions."""
+
 
 import numpy as np
+
 
 __all__ = ['typecheck_geo', 'check_type', 'check_options', 'doc_inherit']
 

@@ -1,7 +1,8 @@
-// OLDGRIDS is a Density Functional Theory program.
+// GRID is a numerical integration library for quantum chemistry.
+//
 // Copyright (C) 2011-2012 Toon Verstraelen <Toon.Verstraelen@UGent.be>
 //
-// This file is part of OLDGRIDS.
+// This file is part of GRID.
 //
 // This file is based on a copy taken from the Orientations program of prof.
 // Levitt. See M. Edén and M. H. Levitt, J. Magn. Reson. 132, 220-239 (1998)
@@ -13,15 +14,15 @@
 // redistribute modified versions of this file under an open source license.
 //
 // All copyrights belong to the respective authors. The first version of this
-// file in the OLDGRIDS git repository is the version taken from the Orientation
+// file in the GRIDS git repository is the version taken from the Orientation
 // program with these comments and a license header added.
 //
-// OLDGRIDS is free software; you can redistribute it and/or
+// GRIDS is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
 // as published by the Free Software Foundation; either version 3
 // of the License, or (at your option) any later version.
 //
-// OLDGRIDS is distributed in the hope that it will be useful,
+// GRIDS is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
