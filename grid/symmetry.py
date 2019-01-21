@@ -29,8 +29,8 @@
 
 import numpy as np
 
-from old_grids.cext import Cell
-from old_grids.periodic import periodic
+from grid.cext import Cell
+from grid.periodic import periodic
 
 
 __all__ = ['Symmetry']

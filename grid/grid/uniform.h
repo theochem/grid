@@ -24,8 +24,8 @@
 #ifndef OLDGRIDS_GRID_UNIFORM_H
 #define OLDGRIDS_GRID_UNIFORM_H
 
-#include "old_grids/cell.h"
-#include "old_grids/grid/cubic_spline.h"
+#include "grid/cell.h"
+#include "grid/grid/cubic_spline.h"
 
 
 class UniformGrid {

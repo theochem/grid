@@ -21,7 +21,7 @@
 # --
 
 
-cdef extern from "old_grids/grid/rtransform.h":
+cdef extern from "grid/grid/rtransform.h":
     cdef cppclass RTransform:
         RTransform(int npoint) except +
         double radius(double t)

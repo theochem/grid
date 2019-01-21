@@ -46,7 +46,7 @@
 #include <cmath>
 #include <cstring>
 #include <stdexcept>
-#include "old_grids/grid/cubic_spline.h"
+#include "grid/grid/cubic_spline.h"
 
 
 /*

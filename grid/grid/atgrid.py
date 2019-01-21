@@ -27,11 +27,11 @@ import os
 import numpy as np
 import pkg_resources
 
-from old_grids.grid.base import IntGrid
-from old_grids.grid.cext import lebedev_laikov_sphere, lebedev_laikov_npoints, \
+from grid.grid.base import IntGrid
+from grid.grid.cext import lebedev_laikov_sphere, lebedev_laikov_npoints, \
     RTransform, LinearRTransform, ExpRTransform, PowerRTransform, CubicSpline
-from old_grids.grid.radial import RadialGrid
-from old_grids.units import angstrom
+from grid.grid.radial import RadialGrid
+from grid.units import angstrom
 
 __all__ = [
     'AtomicGrid', 'get_rotation_matrix',
@@ -429,11 +429,11 @@ class AtomicGridSpec(object):
         if os.path.isfile(definition):
             self._load(definition, isrealfile=True)
             return
-        if pkg_resources.resource_exists("old_grids.grid.data", definition):
+        if pkg_resources.resource_exists("grid.grid.data", definition):
             self._load(definition)
             return
         resource_name = f'{definition}.txt'
-        if pkg_resources.resource_exists("old_grids.grid.data", resource_name):
+        if pkg_resources.resource_exists("grid.grid.data", resource_name):
             self._load(resource_name)
             return
         name = self._simple_names.get(definition)
@@ -460,7 +460,7 @@ class AtomicGridSpec(object):
         if isrealfile:
             fn = filename
         else:
-            fn = pkg_resources.resource_filename("old_grids.grid.data", filename)
+            fn = pkg_resources.resource_filename("grid.grid.data", filename)
         with open(fn) as f:
             state = 0
             for line in f:

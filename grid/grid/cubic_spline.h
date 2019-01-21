@@ -26,7 +26,7 @@
 
 #include <cstdint>
 
-#include "old_grids/grid/rtransform.h"
+#include "grid/grid/rtransform.h"
 
 
 void tridiagsym_solve(double* diag_mid, double* diag_up, double* right, double* solution, int n);

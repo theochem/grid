@@ -27,8 +27,8 @@
 
 #include <cmath>
 #include <stdexcept>
-#include "old_grids/moments.h"
-#include "old_grids/grid/evaluate.h"
+#include "grid/moments.h"
+#include "grid/grid/evaluate.h"
 
 
 void eval_spline_grid(CubicSpline* spline, double* center, double* output,

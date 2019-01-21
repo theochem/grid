@@ -25,7 +25,7 @@ from libc.stdint cimport int64_t
 
 cimport rtransform
 
-cdef extern from "old_grids/grid/cubic_spline.h":
+cdef extern from "grid/grid/cubic_spline.h":
     void tridiagsym_solve(double* diag_mid, double* diag_up, double* right, double* solution, int n)
     void solve_cubic_spline_system(double* y, double *d, int npoint)
     void compute_cubic_spline_int_weights(double* weights, int npoint)

@@ -21,8 +21,8 @@
 # --
 
 
-cimport old_grids.cell
+cimport grid.cell
 
 
 cdef class Cell:
-    cdef old_grids.cell.Cell* _this
+    cdef grid.cell.Cell* _this

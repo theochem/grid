@@ -21,7 +21,7 @@
 # --
 
 
-cdef extern from "old_grids/moments.h":
+cdef extern from "grid/moments.h":
     long fill_cartesian_polynomials(double* output, long lmax)
     long fill_pure_polynomials(double* output, long lmax)
     long fill_pure_polynomials_array(double* output, long lmax, long nrep, long stride)

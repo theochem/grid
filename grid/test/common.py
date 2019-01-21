@@ -29,8 +29,8 @@ import tempfile
 
 import numpy as np
 
-from old_grids.cext import Cell
-from old_grids.moments import get_cartesian_powers
+from grid.cext import Cell
+from grid.moments import get_cartesian_powers
 
 __all__ = [
     'in_horton_source_root', 'check_script', 'check_script_in_tmp', 'check_delta',
@@ -48,7 +48,7 @@ def in_horton_source_root():
     # that use this check).
     if not os.path.isfile('setup.py'):
         return False
-    if not os.path.isdir('old_grids'):
+    if not os.path.isdir('grid'):
         return False
     if not os.path.isdir('data'):
         return False
@@ -68,7 +68,7 @@ def check_script(command, workdir):
 
        This can be used to test whether a script runs properly, with exit code
        0. When the example generates an output file, then use
-       :py:function:`old_grids.test.common.check_script_in_tmp` instead.
+       :py:function:`grid.test.common.check_script_in_tmp` instead.
 
        **Arguments:**
 

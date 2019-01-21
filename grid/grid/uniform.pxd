@@ -21,9 +21,9 @@
 # --
 
 
-cimport old_grids.cell
+cimport grid.cell
 
-cdef extern from "old_grids/grid/uniform.h":
+cdef extern from "grid/grid/uniform.h":
     cdef cppclass UniformGrid:
         double origin[3]
         double grid_rvecs[9]
@@ -32,8 +32,8 @@ cdef extern from "old_grids/grid/uniform.h":
 
         UniformGrid(double* _origin, double* _grid_rvecs, long* _shape, long* _pbc)
 
-        old_grids.cell.Cell* get_cell()
-        old_grids.cell.Cell* get_grid_cell()
+        grid.cell.Cell* get_cell()
+        grid.cell.Cell* get_grid_cell()
 
         void set_ranges_rcut(double* center, double rcut, long* ranges_begin, long* ranges_end)
         double dist_grid_point(double* center, long* i)

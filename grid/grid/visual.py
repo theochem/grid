@@ -24,7 +24,7 @@
 
 import numpy as np
 
-from old_grids.grid.base import IntGrid
+from grid.grid.base import IntGrid
 
 
 __all__ = ['LineGrid', 'RectangleGrid']

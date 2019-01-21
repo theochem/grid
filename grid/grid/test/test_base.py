@@ -23,9 +23,9 @@
 import numpy as np
 import pkg_resources
 
-from old_grids import *  # pylint: disable=wildcard-import,unused-wildcard-import
-from old_grids.grid.test.common import get_cosine_spline
-from old_grids.test.common import get_random_cell, numpy_seed
+from grid import *  # pylint: disable=wildcard-import,unused-wildcard-import
+from grid.grid.test.common import get_cosine_spline
+from grid.test.common import get_random_cell, numpy_seed
 
 
 def test_grid_integrate():
@@ -330,7 +330,7 @@ def test_eval_spline_grid_add_random():
 
 def test_density_decomposition_n2():
     # compute reference density and becke_weights for the first atom
-    mol = np.load(pkg_resources.resource_filename("old_grids.test.data", "n2_hfs_sto3g.npz"))
+    mol = np.load(pkg_resources.resource_filename("grid.test.data", "n2_hfs_sto3g.npz"))
 
     molgrid = BeckeMolGrid(mol["coordinates"], mol["numbers"], mol["pseudo_numbers"], 'veryfine',
                            random_rotate=False, mode='only')

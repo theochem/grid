@@ -21,7 +21,7 @@
 # --
 
 
-cdef extern from "old_grids/grid/becke.h":
+cdef extern from "grid/grid/becke.h":
     void becke_helper_atom(int npoint, double* points, double* weights,
                            int natom, double* radii, double* centers, int
                            select, int order)

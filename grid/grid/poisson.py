@@ -23,9 +23,9 @@
 
 import numpy as np
 
-from old_grids.grid.cext import CubicSpline, PotentialExtrapolation
-from old_grids.grid.ode2 import solve_ode2
-from old_grids.grid.radial import RadialGrid
+from grid.grid.cext import CubicSpline, PotentialExtrapolation
+from grid.grid.ode2 import solve_ode2
+from grid.grid.radial import RadialGrid
 
 __all__ = ['solve_poisson_becke']
 biblio = [('becke1988_poisson', 'the numerical integration of the Poisson equation')]

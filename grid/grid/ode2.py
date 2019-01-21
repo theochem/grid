@@ -24,7 +24,7 @@
 from scipy.sparse.linalg import spsolve
 from scipy.sparse import csc_matrix
 
-from old_grids.grid.cext import CubicSpline, build_ode2
+from grid.grid.cext import CubicSpline, build_ode2
 
 __all__ = ['solve_ode2']
 

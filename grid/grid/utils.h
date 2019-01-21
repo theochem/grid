@@ -24,7 +24,7 @@
 #ifndef OLDGRIDS_GRID_UTILS_H
 #define OLDGRIDS_GRID_UTILS_H
 
-#include "old_grids/grid/uniform.h"
+#include "grid/grid/uniform.h"
 
 void dot_multi(long npoint, long nvector, double** data, long* segments,
     double* output);

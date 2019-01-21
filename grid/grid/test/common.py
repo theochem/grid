@@ -22,7 +22,7 @@
 
 import numpy as np
 
-from old_grids.grid.cext import LinearRTransform, CubicSpline
+from grid.grid.cext import LinearRTransform, CubicSpline
 
 
 __all__ = ['get_cosine_spline', 'get_exp_spline']

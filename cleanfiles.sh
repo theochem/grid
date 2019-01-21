@@ -1,12 +1,12 @@
 #!/bin/bash
-for i in $(find old_grids tools scripts | egrep "\.pyc$|\.py~$|\.pyc~$|\.bak$|\.so$") ; do rm -v ${i}; done
+for i in $(find grid tools scripts | egrep "\.pyc$|\.py~$|\.pyc~$|\.bak$|\.so$") ; do rm -v ${i}; done
 (cd doc; make clean)
 rm -v MANIFEST
 rm -vr dist
 rm -vr build
 rm -vr doctrees
-rm -v old_grids/cext.cpp
-rm -v old_grids/*/cext.cpp
+rm -v grid/cext.cpp
+rm -v grid/*/cext.cpp
 rm -v data/examples/hamiltonian/ring.xyz
 rm -v data/examples/hamiltonian/*.h5
 rm -v data/examples/hamiltonian/*FCIDUMP*

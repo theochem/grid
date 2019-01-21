@@ -28,8 +28,8 @@
 
 #include <cmath>
 #include <stdexcept>
-#include "old_grids/grid/cubic_spline.h"
-#include "old_grids/grid/rtransform.h"
+#include "grid/grid/cubic_spline.h"
+#include "grid/grid/rtransform.h"
 
 
 /*

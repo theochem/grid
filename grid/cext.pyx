@@ -29,8 +29,6 @@ cimport cell
 cimport moments
 
 
-from old_grids.utils import typecheck_geo
-
 __all__ = [
     # cell.cpp
     'Cell', 'smart_wrap',

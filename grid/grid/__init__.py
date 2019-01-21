@@ -22,11 +22,11 @@
 """Numerical integration grids"""
 
 
-from old_grids.grid.base import *
-from old_grids.grid.atgrid import *
-from old_grids.grid.cext import *
-from old_grids.grid.molgrid import *
-from old_grids.grid.ode2 import *
-from old_grids.grid.poisson import *
-from old_grids.grid.radial import *
-from old_grids.grid.visual import *
+from grid.grid.base import *
+from grid.grid.atgrid import *
+from grid.grid.cext import *
+from grid.grid.molgrid import *
+from grid.grid.ode2 import *
+from grid.grid.poisson import *
+from grid.grid.radial import *
+from grid.grid.visual import *
