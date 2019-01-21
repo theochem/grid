@@ -1,6 +1,6 @@
 package:
   version: "{{ PROJECT_VERSION }}"
-  name: 'old_grids'
+  name: 'grid'
 
 source:
   path: ../../
@@ -29,12 +29,12 @@ test:
   requires:
     - nose
   commands:
-    - conda inspect linkages old_grids
-    - nosetests -v --detailed-errors old_grids
+    - conda inspect linkages grid
+    - nosetests -v --detailed-errors grid
 
 about:
   description: Legacy grid module from HORTON 2
-  home: https://github.com/theochem/old_grids
+  home: https://github.com/theochem/grid
   license: GPLv3
 
 extra:

@@ -1,5 +1,5 @@
-recursive-include old_grids *.pyx *.pxd *.h *.cpp
-recursive-exclude old_grids cext.cpp
+recursive-include grid *.pyx *.pxd *.h *.cpp
+recursive-exclude grid cext.cpp
 
 include README.rst
 include COPYING
