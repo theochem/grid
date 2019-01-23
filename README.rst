@@ -1,5 +1,5 @@
-Old_Grids
-======
+GRID
+====
 |Travis|
 |Conda|
 |Pypi|
@@ -9,20 +9,20 @@ Old_Grids
 
 About
 -----
-Old_Grids is the legacy HORTON 2 grid module.
+GRID is the legacy HORTON 2 numerical integration module.
 
 License
 -------
 
-Old_Grids is distributed under GPL License version 3 (GPLv3).
+GRID is distributed under GPL License version 3 (GPLv3).
 
 
 Installation
 ------------
 
-To install Old_Grids, use conda:
+To install GRID, use conda:
 
-```bash
+```
 conda install -c theochem grid
 ```
 
@@ -32,7 +32,7 @@ Testing
 
 To run tests:
 
-```bash
+```
 nosetests -v grid
 ```
 
