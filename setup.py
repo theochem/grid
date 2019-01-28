@@ -40,7 +40,7 @@ def get_version():
     """
     try:
         with open("grid/version.py", "r") as f:
-            return f.read().split("=")[-1].replace("\"", "").strip()
+            return f.read().split("=")[-1].replace("'", "").strip()
     except FileNotFoundError:
         return "0.0.0"
 
