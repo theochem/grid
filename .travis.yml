@@ -93,7 +93,7 @@ install:
 # Configure conda and get a few essentials
 - conda config --set always_yes yes
 - conda config --add channels theochem
-- conda install -q conda conda-build conda-verify
+- conda install conda conda-build conda-verify
 
 # Set the version info from the git tag
 - git fetch origin --tags &&
@@ -112,9 +112,9 @@ install:
 # Install extra package needed to make things work. Most things can be listed as
 # dependencies on meta.yaml and setup.py, unless setup.py already imports them.
 # Install conda tools for packaging and uploading
-- conda install -q python=${MYCONDAPY} anaconda-client numpy setuptools cython
+- conda install python=${MYCONDAPY} anaconda-client numpy setuptools cython
 - if ! [[ $TRAVIS_TAG ]]; then
-    conda install -q ${CONDA_DEPENDENCIES};
+    conda install ${CONDA_DEPENDENCIES};
     pip install --upgrade pylint codecov coverage pycodestyle pydocstyle;
   fi
 # Show conda info for debugging
