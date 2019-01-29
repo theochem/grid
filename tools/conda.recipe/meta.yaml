@@ -17,14 +17,18 @@ requirements:
     - {{ compiler('cxx') }}
   host:
     - python ={{ MYCONDAPY }}
-    - numpy
+    - numpy >=1.0
     - cython >=0.24.1
     - setuptools
     - nose
     - matplotlib
+    - scipy
   run:
     - python
+    - numpy >=1.0
     - scipy
+    - matplotlib
+    - nose
 test:
   requires:
     - nose
