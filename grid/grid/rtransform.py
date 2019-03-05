@@ -20,7 +20,6 @@
 # --
 
 # Transformation from uniform 1D to non-uniform 1D grids.
-from abc import abstractmethod
 from numbers import Number
 import numpy as np
 
@@ -70,7 +69,6 @@ class RTransform:
         else:
             raise NotImplementedError
 
-    @abstractmethod
     def inv(self, r: float):
         if isinstance(r, Number):
             return self._inv(r)
