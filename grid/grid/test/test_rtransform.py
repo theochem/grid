@@ -21,16 +21,18 @@
 
 
 import numpy as np
-from nose.tools import assert_raises
-
-from grid import *  # pylint: disable=wildcard-import,unused-wildcard-import
+from numpy.testing import assert_raises
+from grid.grid.rtransform import (RTransform, IdentityRTransform,
+                                  LinearRTransform, ExpRTransform,
+                                  PowerRTransform, HyperbolicRTransform)
+# pylint: disable=wildcard-import,unused-wildcard-import
 
 
 def check_consistency(rtf):
     ts = np.random.uniform(0, rtf.npoint - 1, 200)
     # consistency between radius and radius_array
     rs = np.zeros(ts.shape)
-    rtf.radius(ts, rs)
+    rs = rtf.radius(ts)
     for i in range(ts.shape[0]):
         assert rs[i] == rtf.radius(ts[i])
     # consistency between radius and radius_array
@@ -39,7 +41,7 @@ def check_consistency(rtf):
         assert rs[i] == rtf.radius(ts[i])
     # consistency between deriv and deriv_array
     ds = np.zeros(ts.shape)
-    rtf.deriv(ts, ds)
+    ds = rtf.deriv(ts)
     for i in range(ts.shape[0]):
         assert ds[i] == rtf.deriv(ts[i])
     # consistency between deriv and deriv_array
@@ -48,7 +50,7 @@ def check_consistency(rtf):
         assert ds[i] == rtf.deriv(ts[i])
     # consistency between deriv2 and deriv2_array
     d2s = np.zeros(ts.shape)
-    rtf.deriv2(ts, d2s)
+    d2s = rtf.deriv2(ts)
     for i in range(ts.shape[0]):
         assert d2s[i] == rtf.deriv2(ts[i])
     # consistency between deriv2 and deriv2_array
@@ -57,7 +59,7 @@ def check_consistency(rtf):
         assert d2s[i] == rtf.deriv2(ts[i])
     # consistency between deriv3 and deriv3_array
     d3s = np.zeros(ts.shape)
-    rtf.deriv3(ts, d3s)
+    d3s = rtf.deriv3(ts)
     for i in range(ts.shape[0]):
         assert d3s[i] == rtf.deriv3(ts[i])
     # consistency between deriv3 and deriv3_array
@@ -66,7 +68,7 @@ def check_consistency(rtf):
         assert d3s[i] == rtf.deriv3(ts[i])
     # consistency between inv and inv_array
     ts[:] = 0.0
-    rtf.inv(rs, ts)
+    ts = rtf.inv(rs)
     for i in range(ts.shape[0]):
         assert ts[i] == rtf.inv(rs[i])
     # consistency between inv and inv_array
