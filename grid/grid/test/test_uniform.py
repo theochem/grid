@@ -22,6 +22,7 @@
 
 import numpy as np
 
+from numpy.testing import assert_almost_equal, assert_array_almost_equal
 from grid import *  # pylint: disable=wildcard-import,unused-wildcard-import
 
 
@@ -45,7 +46,7 @@ def test_uig_integrate_gauss():
 
     # compute the integral and compare with analytical result
     num_result = uig.integrate(data)
-    assert abs(num_result - 1.0) < 1e-3
+    assert_almost_equal(num_result, 1.0, decimal=3)
 
 
 def test_ugrid_writable():
@@ -119,28 +120,28 @@ def test_get_ranges_rcut2():
 
 def test_dist_grid_point():
     uig = get_simple_test_uig()
-    assert uig.dist_grid_point(uig.origin, np.array([0, 0, 0])) == 0.0
-    assert uig.dist_grid_point(uig.origin, np.array([0, 0, 1])) == (0.1 ** 2 + 1.0) ** 0.5
-    assert uig.dist_grid_point(uig.origin, np.array([0, 1, 0])) == (
-                0.1 ** 2 + 1.1 ** 2 + 0.2 ** 2) ** 0.5
-
+    assert_almost_equal(uig.dist_grid_point(uig.origin, np.array([0, 0, 0])),
+                        0.0, decimal=10)
+    assert_almost_equal(uig.dist_grid_point(uig.origin, np.array([0, 0, 1])),
+                        (0.1 ** 2 + 1.0) ** 0.5, decimal=10)
+    assert_almost_equal(uig.dist_grid_point(uig.origin, np.array([0, 1, 0])),
+                        (0.1 ** 2 + 1.1 ** 2 + 0.2 ** 2) ** 0.5, decimal=10)
     center = np.array([0.9, 2.5, 1.6])
     indexes = np.array([6, 3, -2])
     point = uig.origin + uig.get_grid_cell().to_cart(indexes.astype(float))
-    assert abs(
-        uig.dist_grid_point(center, np.array([6, 3, -2])) - np.linalg.norm(center - point)) < 1e-10
+    assert_array_almost_equal(uig.dist_grid_point(center, indexes),
+                              np.linalg.norm(center - point), decimal=10)
 
 
 def test_delta_grid_point():
     uig = get_simple_test_uig()
-    assert (uig.delta_grid_point(uig.origin, np.array([0, 0, 0])) == np.array(
-        [0.0, 0.0, 0.0])).all()
-    assert (uig.delta_grid_point(uig.origin, np.array([0, 0, 1])) == np.array(
-        [0.0, -0.1, 1.0])).all()
-    assert (uig.delta_grid_point(uig.origin, np.array([0, 1, 0])) == np.array(
-        [0.1, 1.1, 0.2])).all()
-
+    assert_array_almost_equal(uig.delta_grid_point(uig.origin, np.array([0, 0, 0])),
+                              np.array([0.0, 0.0, 0.0]), decimal=10)
+    assert_array_almost_equal(uig.delta_grid_point(uig.origin, np.array([0, 0, 1])),
+                              np.array([0.0, -0.1, 1.0]), decimal=10)
+    assert_array_almost_equal(uig.delta_grid_point(uig.origin, np.array([0, 1, 0])),
+                              np.array([0.1, 1.1, 0.2]), decimal=10)
     center = np.array([0.9, 2.5, 1.6])
     indexes = np.array([6, 3, -2])
     point = uig.origin + uig.get_grid_cell().to_cart(indexes.astype(float))
-    assert abs(uig.delta_grid_point(center, np.array([6, 3, -2])) - (point - center)).max() < 1e-10
+    assert_array_almost_equal(uig.delta_grid_point(center, indexes), point - center, decimal=10)
