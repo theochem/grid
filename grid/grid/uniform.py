@@ -44,12 +44,9 @@ class UniformGrid(object):
             Shape of the grid, i.e. number of points along each basis.
 
         """
-        assert origin.flags['C_CONTIGUOUS']
         assert origin.shape[0] == 3
-        assert rvecs.flags['C_CONTIGUOUS']
         assert rvecs.shape[0] == 3
         assert rvecs.shape[1] == 3
-        assert shape.flags['C_CONTIGUOUS']
         assert shape.shape[0] == 3
 
         self._origin = origin
@@ -113,7 +110,6 @@ class UniformGrid(object):
     #     rcut : float
     #         Radius of cutoff sphere.
     #     """
-    #     assert center.flags['C_CONTIGUOUS']
     #     assert center.size == 3
     #     assert rcut >= 0
     #     # compute spacing between grid points along each axis
