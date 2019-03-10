@@ -21,9 +21,15 @@
 
 
 import numpy as np
-from nose.tools import assert_raises
+from numpy.testing import assert_raises
 
-from grid import *  # pylint: disable=wildcard-import,unused-wildcard-import
+# from grid import *
+from grid.moments import (get_cartesian_powers, get_ncart_cumul, get_ncart,
+                          rotate_cartesian_moments_all, get_npure, get_npure_cumul,
+                          rotate_cartesian_multipole, fill_cartesian_polynomials,
+                          fill_pure_polynomials, fill_radial_polynomials)
+from grid.grid.atgrid import (get_rotation_matrix, get_random_rotation)
+# pylint: disable=wildcard-import,unused-wildcard-import
 
 from grid.test.common import get_pentagon_moments, get_point_moments
 
@@ -228,6 +234,7 @@ def test_fill_pure_polynomials_array():
         assert abs(row[3:] - tmp[3:]).max() < 1e-15
 
 
+""" Will be recovered after lebedev got translated
 def test_ortho_and_norm_pure():
     for radius in 0.5, 1.0, 1.8797:
         nll = 170
@@ -258,6 +265,7 @@ def test_ortho_and_norm_pure():
             for counter1 in range(counter0):
                 tmp = np.dot(weights, work[:, counter0] * work[:, counter1])
                 assert abs(tmp) < 1e-10
+"""
 
 
 def test_fill_radial_polynomials():
