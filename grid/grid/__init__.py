@@ -28,5 +28,6 @@ from grid.grid.cext import *
 from grid.grid.molgrid import *
 from grid.grid.ode2 import *
 from grid.grid.poisson import *
+from grid.grid.uniform import *
 from grid.grid.radial import *
 from grid.grid.visual import *
