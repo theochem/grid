@@ -22,7 +22,7 @@
 
 import numpy as np
 
-from grid import *  # pylint: disable=wildcard-import,unused-wildcard-import
+from grid.grid.becke import becke_helper_atom
 
 
 def test_becke_sum2_one():
