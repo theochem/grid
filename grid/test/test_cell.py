@@ -19,7 +19,7 @@
 #
 # --
 
-
+"""
 import numpy as np
 from nose.tools import assert_raises
 from nose.plugins.attrib import attr
@@ -380,3 +380,4 @@ def test_from_parameters3():
 def test_no_initvoid():
     with assert_raises(TypeError):
         Cell(initvoid=True)
+"""
