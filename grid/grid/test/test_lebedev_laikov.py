@@ -22,7 +22,7 @@
 
 import numpy as np
 
-from grid import *  # pylint: disable=wildcard-import,unused-wildcard-import
+from grid.grid.lebedev import lebedev_laikov_sphere, lebedev_laikov_lmaxs, lebedev_laikov_npoints
 
 
 def test_consistency():
@@ -35,10 +35,8 @@ def test_lebedev_laikov_sphere():
     for i in range(1, 132):
         npoint = lebedev_laikov_lmaxs[i]
         if npoint > previous_npoint:
-            points = np.zeros((npoint, 3), float)
-            weights = np.zeros(npoint, float)
-            lebedev_laikov_sphere(points, weights)
-            assert abs(weights.sum() - 1.0) < 1e-13
+            points, weights = lebedev_laikov_sphere(npoint)
+            assert abs(weights.sum() - 1.0) < 1e-10
             assert abs(points[:, 0].sum()) < 1e-10
             assert abs(points[:, 1].sum()) < 1e-10
             assert abs(points[:, 2].sum()) < 1e-10
