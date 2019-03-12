@@ -29,12 +29,12 @@ import tempfile
 
 import numpy as np
 
-from grid.cext import Cell
+# from grid.cext import Cell
 from grid.moments import get_cartesian_powers
 
 __all__ = [
     'in_horton_source_root', 'check_script', 'check_script_in_tmp', 'check_delta',
-    'get_random_cell', 'get_pentagon_moments', 'compare_occ_model', 'compare_orbs',
+    'get_pentagon_moments', 'compare_occ_model', 'compare_orbs',
     'tmpdir', 'numpy_seed', 'truncated_file',
 ]
 
@@ -217,16 +217,16 @@ def check_delta(fun, fun_deriv, x, dxs):
                                 ))
 
 
-def get_random_cell(a, nvec):
-    if nvec == 0:
-        return Cell(None)
-    while True:
-        if a <= 0:
-            raise ValueError('The first argument must be strictly positive.')
-        rvecs = np.random.uniform(0, a, (nvec, 3))
-        cell = Cell(rvecs)
-        if cell.volume > a ** nvec * 0.1:
-            return cell
+# def get_random_cell(a, nvec):
+#     if nvec == 0:
+#         return Cell(None)
+#     while True:
+#         if a <= 0:
+#             raise ValueError('The first argument must be strictly positive.')
+#         rvecs = np.random.uniform(0, a, (nvec, 3))
+#         cell = Cell(rvecs)
+#         if cell.volume > a ** nvec * 0.1:
+#             return cell
 
 
 def get_pentagon_moments(rmat=None, lmax=4):

@@ -22,7 +22,7 @@
 
 import numpy as np
 
-from grid import *  # pylint: disable=wildcard-import,unused-wildcard-import
+from grid.utils import typecheck_geo
 
 
 def test_typecheck_geo():

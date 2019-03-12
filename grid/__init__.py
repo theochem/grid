@@ -22,7 +22,6 @@
 """The legacy HORTON grids package"""
 
 
-from grid.cext import *
 from grid.grid import *
 from grid.moments import *
 from grid.units import *
