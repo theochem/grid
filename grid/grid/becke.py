@@ -19,7 +19,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 #
 # --
-""" Compute de Becke weighting function for every point in the grid """
+"""Compute de Becke weighting function for every point in the grid."""
 
 import numpy as np
 
@@ -27,7 +27,7 @@ __all__ = ['becke_helper_atom']
 
 
 def distance(point0, point1):
-    """ Compute the distance between 2 points in the space xyz
+    """Compute the distance between 2 points in the space xyz
 
         Arguments
         ---------
@@ -44,7 +44,7 @@ def distance(point0, point1):
 
 
 def becke_helper_atom(points, weights, radii, centers, select, order):
-    """ Computes the Becke weights for a given atom in a grid
+    """Computes the Becke weights for a given atom in a grid.
 
         Arguments
         ---------
@@ -92,7 +92,7 @@ def becke_helper_atom(points, weights, radii, centers, select, order):
     assert 0 <= select < natom, "select must be in the range [0, natom)"
     assert order > 0, "order must be greater than zero"
 
-# Precompute the alpha parameters for each atom pair
+    # Precompute the alpha parameters for each atom pair
     alphas = np.zeros(int(natom * (natom + 1) / 2))
     offset = 0
     for iatom in range(natom):
@@ -108,7 +108,7 @@ def becke_helper_atom(points, weights, radii, centers, select, order):
             alphas[offset] = alpha
             offset += 1
 
-# Precompute interatomic distances
+    # Precompute interatomic distances
     atomic_dists = np.zeros(int(natom * (natom + 1) / 2))
     offset = 0
 
@@ -117,7 +117,7 @@ def becke_helper_atom(points, weights, radii, centers, select, order):
             atomic_dists[offset] = distance(centers[iatom], centers[jatom])
             offset += 1
 
-# Calculate the Becke Weights
+    # Calculate the Becke Weights
     for ipoint in range(npoint - 1, -1, -1):
         itmp = npoint - ipoint - 1
         num = 0

@@ -23,12 +23,7 @@
 # pragma pylint: disable=invalid-name
 """Package build and install script."""
 
-
-from glob import glob
-
-import Cython.Build
-import numpy as np
-from setuptools import setup, Extension
+from setuptools import setup
 
 
 def get_version():
@@ -59,34 +54,16 @@ setup(
     author="Toon Verstraelen",
     author_email="Toon.Verstraelen@UGent.be",
     url="https://github.com/theochem/grid",
-    cmdclass={"build_ext": Cython.Build.build_ext},
     package_dir={"grid": "grid"},
     packages=["grid", "grid.test", "grid.grid",
-              "grid.data", "grid.test.data", "grid.grid.data"],
+              "grid.data", "grid.test.data", "grid.grid.data",
+              "grid.grid.data.lebgrid"],
     package_data={"grid.data": ["*"],
                   "grid.test.data": ["*"],
-                  "grid.grid.data": ["*"]},
+                  "grid.grid.data": ["*"],
+                  "grid.grid.data.lebgrid": ["*"]},
     include_package_data=True,
-    ext_modules=[
-        Extension("grid.grid.cext",
-                  sources=glob("grid/grid/*.cpp") + [
-                      "grid/grid/cext.pyx",
-                      "grid/cell.cpp",
-                      "grid/moments.cpp"],
-                  depends=glob("grid/grid/*.pxd") + glob("grid/grid/*.h") + [
-                      "grid/cell.pxd", "grid/cell.h",
-                      "grid/moments.pxd", "grid/moments.h"],
-                  include_dirs=[np.get_include(), "."],
-                  extra_compile_args=["-std=c++11"],
-                  language="c++", ),
-        Extension("grid.cext",
-                  sources=glob("grid/*.cpp") + ["grid/cext.pyx"],
-                  depends=glob("grid/*.pxd") + glob("grid/*.h"),
-                  include_dirs=[np.get_include(), "."],
-                  extra_compile_args=["-std=c++11"],
-                  language="c++"),
-    ],
     zip_safe=False,
-    setup_requires=["numpy>=1.0", "cython>=0.24.1"],
-    install_requires=["numpy>=1.0", "nose>=0.11", "cython>=0.24.1", "scipy", "matplotlib"],
+    setup_requires=["numpy>=1.0"],
+    install_requires=["numpy>=1.0", "pytest>=2.6", "scipy", "matplotlib"],
 )
