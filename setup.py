@@ -23,7 +23,7 @@
 # pragma pylint: disable=invalid-name
 """Package build and install script."""
 
-from setuptools import setup
+from setuptools import find_packages, setup
 
 
 def get_version():
@@ -42,7 +42,7 @@ def get_version():
 
 def get_readme():
     """Load README.rst for display on PyPI."""
-    with open("README.rst") as f:
+    with open("README.md") as f:
         return f.read()
 
 
@@ -54,16 +54,14 @@ setup(
     author="Toon Verstraelen",
     author_email="Toon.Verstraelen@UGent.be",
     url="https://github.com/theochem/grid",
-    package_dir={"grid": "grid"},
-    packages=["grid", "grid.test", "grid.grid",
-              "grid.data", "grid.test.data", "grid.grid.data",
-              "grid.grid.data.lebgrid"],
-    package_data={"grid.data": ["*"],
-                  "grid.test.data": ["*"],
-                  "grid.grid.data": ["*"],
-                  "grid.grid.data.lebgrid": ["*"]},
-    include_package_data=True,
+    package_dir={"": "src"},
+    packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*",
+                                    "tests"]),
+    # package_data={"grid.data": ["*"],
+    #               "grid.test.data": ["*"],
+    #               "grid.grid.data": ["*"],
+    #               "grid.grid.data.lebgrid": ["*"]},
+    # include_package_data=True,
     zip_safe=False,
-    setup_requires=["numpy>=1.0"],
-    install_requires=["numpy>=1.0", "pytest>=2.6", "scipy", "matplotlib"],
+    install_requires=["numpy>=1.16", "pytest>=2.6", "scipy>=1.2"],
 )

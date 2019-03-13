@@ -1,5 +1,1 @@
-recursive-include grid *.pyx *.pxd *.h *.cpp
-recursive-exclude grid cext.cpp
-
 include README.rst
-include COPYING

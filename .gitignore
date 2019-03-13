@@ -38,6 +38,7 @@ depends/*.*
 
 # Ignore vi(m) swap files
 *.swp
+*.swo
 
 # Ignore user configuration for libraries
 setup.cfg

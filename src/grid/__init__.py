@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # GRID is a numerical integration library for quantum chemistry.
 #
-# Copyright (C) 2011-2017 The GRID Development Team
+# Copyright (C) 2011-2019 The GRID Development Team
 #
 # This file is part of GRID.
 #
@@ -19,10 +19,4 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 #
 # --
-"""The legacy HORTON grids package"""
-
-
-from grid.grid import *
-from grid.moments import *
-from grid.units import *
-from grid.utils import *
+"""Initiate new grid package."""
