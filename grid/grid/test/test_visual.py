@@ -22,7 +22,7 @@
 
 import numpy as np
 
-from grid import *  # pylint: disable=wildcard-import,unused-wildcard-import
+from grid.grid.visual import LineGrid, RectangleGrid
 
 
 def test_line_grid():

@@ -23,7 +23,7 @@
 from nose.tools import assert_raises
 import numpy as np
 
-from grid import *  # pylint: disable=wildcard-import,unused-wildcard-import
+from grid.grid.utils import dot_multi
 
 
 def test_dot_multi():

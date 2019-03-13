@@ -31,7 +31,7 @@ from grid.utils import typecheck_geo, doc_inherit
 
 from grid.grid.atgrid import AtomicGrid, AtomicGridSpec
 from grid.grid.base import IntGrid
-from grid.grid.cext import becke_helper_atom
+from grid.grid.becke import becke_helper_atom
 
 
 __all__ = ['BeckeMolGrid']

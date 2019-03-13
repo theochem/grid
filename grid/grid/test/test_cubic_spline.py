@@ -19,7 +19,7 @@
 #
 # --
 
-
+"""
 import numpy as np
 
 from grid import *  # pylint: disable=wildcard-import,unused-wildcard-import
@@ -387,3 +387,4 @@ def test_power_extrapolation_string():
     ep = Extrapolation.from_string(PowerExtrapolation(5.1247953315476).to_string())
     assert isinstance(ep, PowerExtrapolation)
     assert ep.power == 5.1247953315476
+"""

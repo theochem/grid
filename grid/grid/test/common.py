@@ -20,6 +20,7 @@
 # --
 
 
+'''
 import numpy as np
 
 from grid.grid.cext import LinearRTransform, CubicSpline
@@ -43,3 +44,4 @@ def get_exp_spline():
     y = np.exp(-0.2*x)
     d = -0.2*np.exp(-0.2*x)
     return CubicSpline(y, d, rtf)
+'''

@@ -30,8 +30,8 @@ import numpy as np
 import pkg_resources
 
 from grid.grid.base import IntGrid
-from grid.grid.cext import lebedev_laikov_sphere, lebedev_laikov_npoints, \
-    RTransform, LinearRTransform, ExpRTransform, PowerRTransform, CubicSpline
+from grid.grid.lebedev import lebedev_laikov_sphere, lebedev_laikov_npoints
+from grid.grid.rtransform import RTransform, LinearRTransform, ExpRTransform, PowerRTransform
 from grid.grid.radial import RadialGrid
 from grid.units import angstrom
 
@@ -103,7 +103,10 @@ class AtomicGrid(IntGrid):
             my_points = points[offset:offset + nll]
             my_weights = weights[offset:offset + nll]
 
-            lebedev_laikov_sphere(my_points, my_weights)
+            # lebedev_laikov_sphere(my_points, my_weights)
+            sub_points, sub_weights = lebedev_laikov_sphere(len(my_points))
+            points[offset:offset + nll] = sub_points
+            weights[offset:offset + nll] = sub_weights
             my_points *= radii[i]
             if self.random_rotate:
                 rotmat = get_random_rotation()
@@ -211,70 +214,6 @@ class AtomicGrid(IntGrid):
             fd /= scales
             fd /= self.rgrid.rtransform.get_radii()
             return fy, fd
-
-    def get_spherical_decomposition(self, *args, **kwargs):
-        r"""Returns the decomposition of the product of the given functions in spherical harmonics
-
-           **Arguments:**
-
-           data1, data2, ...
-                All arguments must be arrays with the same size as the number
-                of grid points. The arrays contain the functions, evaluated
-                at the grid points.
-
-           **Optional arguments:**
-
-           lmax=0
-                The maximum angular momentum to consider when computing
-                multipole moments.
-
-           **Remark**
-
-           A series of radial functions is returned as CubicSpline objects.
-           These radial functions are defined as:
-
-           .. math::
-                f_{\ell m}(r) = \int f(\mathbf{r}) Y_{\ell m}(\mathbf{r}) d \Omega
-
-           where the integral is carried out over angular degrees of freedom and
-           :math:`Y_{\ell m}` are real spherical harmonics. The radial functions
-           can be used to reconstruct the original integrand as follows:
-
-           .. math::
-                f(\mathbf{r}) = \sum_{\ell m} f_{\ell m}(|\mathbf{r}|) Y_{\ell m}(\mathbf{r})
-
-           One can also derive the pure multipole moments by integrating these
-           radial functions as follows:
-
-           .. math::
-                Q_{\ell m} = \sqrt{\frac{4\pi}{2\ell+1}} \int_0^\infty f_{\ell m}(r) r^l r^2 dr
-
-           (These multipole moments are equivalent to the ones obtained with
-           option ``mtype==2`` of the ``integrate`` method).
-        """
-        lmax = kwargs.pop('lmax', 0)
-        if lmax < 0:
-            raise ValueError('lmax can not be negative.')
-        if len(kwargs) > 0:
-            raise TypeError('Unexpected keyword argument: %s' % kwargs.popitem()[0])
-
-        angular_ints = self.integrate(*args, center=self.center, mtype=4, lmax=lmax,
-                                      segments=self.nlls)
-        angular_ints /= self.integrate(segments=self.nlls).reshape(-1, 1)
-
-        results = []
-        counter = 0
-        lmaxs = self.lmaxs
-        for l in range(0, lmax + 1):
-            mask = lmaxs < 2 * l
-            for m in range(-l, l + 1):
-                f = angular_ints[:, counter].copy()
-                f *= np.sqrt(4 * np.pi * (2 * l + 1))  # proper norm for spherical harmonics
-                f[mask] = 0  # mask out unreliable results
-                results.append(CubicSpline(f, rtransform=self.rgrid.rtransform))
-                counter += 1
-
-        return results
 
 
 def get_rotation_matrix(axis, angle):

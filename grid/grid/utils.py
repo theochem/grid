@@ -20,7 +20,7 @@
 #
 # --
 """Auxiliaries for numerical integrals."""
-
+import numpy as np
 
 __all__ = ['parse_args_integrate']
 
@@ -88,3 +88,27 @@ def parse_args_integrate(*args, **kwargs):
         if len(kwargs) > 0:
             raise TypeError('Unexpected keyword argument: %s' % kwargs.popitem()[0])
         return args, (center, lmax, mtype), segments
+
+
+def dot_multi(*arrays, segments=None):
+    # size check
+    length = None
+    for array in arrays:
+        if length:
+            assert length == len(array)
+        else:
+            length = len(array)
+    # dot calculation
+    prd_arrays = arrays[0].copy()
+    for i in range(1, len(arrays)):
+        prd_arrays *= arrays[i]
+    if segments is not None:
+        seg_size = len(segments)
+        seg_indices = np.cumsum(segments)
+        result = np.zeros(seg_size)
+        seg_indices = np.insert(seg_indices, 0, 0)
+        for i in range(seg_size):
+            result[i] = np.sum(prd_arrays[seg_indices[i]: seg_indices[i + 1]])
+    else:
+        result = np.sum(prd_arrays)
+    return result
