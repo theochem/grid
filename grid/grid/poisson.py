@@ -21,11 +21,11 @@
 # --
 """Becke-style numerical Poisson solver."""
 
-
+'''
 import numpy as np
 
-from grid.grid.cext import CubicSpline, PotentialExtrapolation
-from grid.grid.ode2 import solve_ode2
+# from grid.grid.cext import CubicSpline, PotentialExtrapolation
+# from grid.grid.ode2 import solve_ode2
 from grid.grid.radial import RadialGrid
 
 
@@ -84,3 +84,4 @@ def solve_poisson_becke(density_decomposition):
             counter += 1
 
     return result
+'''

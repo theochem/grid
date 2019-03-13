@@ -26,9 +26,12 @@ import os
 import shutil
 import pkg_resources
 
-from nose.tools import assert_raises
+from numpy.testing import assert_raises
 
-from grid import *  # pylint: disable=wildcard-import,unused-wildcard-import
+# from grid import *  # pylint: disable=wildcard-import,unused-wildcard-import
+from grid.grid.rtransform import ExpRTransform, PowerRTransform
+from grid.grid.atgrid import get_random_rotation, AtomicGridSpec, AtomicGrid
+from grid.grid.radial import RadialGrid
 from grid.test.common import tmpdir
 from grid.units import angstrom
 
@@ -273,6 +276,7 @@ def test_spherical_average_grads2():
     assert abs(sad - sad_check).max() < 1e-10
 
 
+"""
 def test_spherical_decomposition_hydrogen_1s():
     ag, fn = get_hydrogen_1s()
     sa_fns = ag.get_spherical_decomposition(fn, lmax=4)
@@ -310,6 +314,7 @@ def test_spherical_decomposition_hydrogen_1pz_conventions():
     qzz = ag.rgrid.integrate(sa_fns[4].y, r, r) / np.sqrt(5 * 4 * np.pi)
     print()
     assert abs(multipoles[4] - qzz) < 1e-10
+"""
 
 
 def test_atgrid_attrs():

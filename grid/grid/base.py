@@ -25,9 +25,9 @@
 import numpy as np
 
 from grid.grid.utils import parse_args_integrate
-from grid.grid.cext import dot_multi, eval_spline_grid, \
-    dot_multi_moments, eval_decomposition_grid
-from grid.cext import Cell
+# from grid.grid.cext import dot_multi_moments
+from grid.grid.utils import dot_multi
+# from grid.cext import Cell
 
 
 __all__ = ['IntGrid']
@@ -137,55 +137,11 @@ class IntGrid(object):
 
         if multipole_args is None:
             # regular integration
+            print(segments)
             return dot_multi(*args, segments=segments)
+        """
         else:
             # computation of multipole expansion of the integrand
             center, lmax, mtype = multipole_args
             return dot_multi_moments(args, self.points, center, lmax, mtype, segments)
-
-    def eval_spline(self, cubic_spline, center, output, cell=None):
-        """Evaluate a spherically symmetric function
-
-           **Arguments:**
-
-           cubic_spline
-                A cubic spline with the radial dependence
-
-           center
-                The center of the spherically symmetric function
-
-           output
-                The output array
-
-           **Optional arguments:**
-
-           cell
-                A unit cell when periodic boundary conditions are used.
         """
-        if cell is None:
-            cell = Cell(None)
-        eval_spline_grid(cubic_spline, center, output, self.points, cell)
-
-    def eval_decomposition(self, cubic_splines, center, output, cell=None):
-        """Evaluate a spherical decomposition
-
-           **Arguments:**
-
-           cubic_splines
-                A list cubic splines, where each item is a radial function
-                that is associated with a corresponding real spherical harmonic.
-
-           center
-                The center of the spherically symmetric function
-
-           output
-                The output array
-
-           **Optional arguments:**
-
-           cell
-                A unit cell when periodic boundary conditions are used.
-        """
-        if cell is None:
-            cell = Cell(None)
-        eval_decomposition_grid(cubic_splines, center, output, self.points, cell)

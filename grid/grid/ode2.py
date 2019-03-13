@@ -21,7 +21,7 @@
 # --
 """Finite-element second-order ODE solver."""
 
-
+'''
 from scipy.sparse.linalg import spsolve
 from scipy.sparse import csc_matrix
 
@@ -88,3 +88,4 @@ def solve_ode2(b, a, f, bcs, extrapolation=None):
     ud_orig = ud_new / j1
 
     return CubicSpline(uy_orig, ud_orig, rtf, extrapolation)
+'''

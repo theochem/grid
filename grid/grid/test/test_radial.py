@@ -22,7 +22,8 @@
 
 import numpy as np
 
-from grid import *  # pylint: disable=wildcard-import,unused-wildcard-import
+from grid.grid.rtransform import ExpRTransform, PowerRTransform
+from grid.grid.radial import RadialGrid
 
 
 def test_basics1():

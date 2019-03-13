@@ -19,7 +19,7 @@
 #
 # --
 
-
+"""
 from scipy.special import erf
 import numpy as np
 from nose.plugins.attrib import attr
@@ -121,3 +121,4 @@ def test_solve_poisson_becke_gaussian_dipole():
     np.testing.assert_allclose(v.extrapolation.amp_left,
                                -2.0 / 3.0 / np.sqrt(2 * np.pi) / sigma ** 3)
     np.testing.assert_allclose(v.extrapolation.amp_right, -1.0)
+"""

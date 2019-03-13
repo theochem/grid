@@ -22,7 +22,10 @@
 
 import numpy as np
 
-from grid import *  # pylint: disable=wildcard-import,unused-wildcard-import
+from grid.grid.rtransform import ExpRTransform
+from grid.grid.radial import RadialGrid
+from grid.grid.molgrid import BeckeMolGrid
+from grid.grid.atgrid import AtomicGrid
 
 
 def test_integrate_hydrogen_single_1s():
