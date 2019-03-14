@@ -18,6 +18,3 @@ matrix:
       env: TOXENV=black
 
 script: tox
-
-after_success:
-    - codecov
