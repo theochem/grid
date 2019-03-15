@@ -23,6 +23,7 @@
 # pragma pylint: disable=invalid-name
 """Package build and install script."""
 
+
 from setuptools import find_packages, setup
 
 
@@ -49,10 +50,10 @@ def get_readme():
 setup(
     name="grid",
     version=get_version(),
-    description="Legacy HORTON grid module",
+    description="Python Library for Numerical Molecular Integration.",
     long_description=get_readme(),
-    author="Toon Verstraelen",
-    author_email="Toon.Verstraelen@UGent.be",
+    author="HORTON-ChemTools Dev Team",
+    author_email="horton.chemtools@gmail.com",
     url="https://github.com/theochem/grid",
     package_dir={"": "src"},
     packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*",
