@@ -19,67 +19,51 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 #
 # --
-"""Compute de Becke weighting function for every point in the grid."""
+"""Becke Weights Module."""
+
 
 import numpy as np
+
 
 __all__ = ['becke_helper_atom']
 
 
 def distance(point0, point1):
-    """Compute the distance between 2 points in the space xyz
+    """Compute the Euclidean distance between two points.
 
-        Arguments
-        ---------
-
-        point0:
-            The coordinates XYZ of the first point. Numpy array
-            with shape (3,)
-
-        point1:
-            The coordinates XYZ of the second point. Numpy array
-            with shape (3,)
+    Arguments
+    ---------
+    point0 : np.ndarray, shape=(3,)
+        Cartesian coordinates  of the first point.
+    point1 : np.ndarray, shape=(3,)
+        Cartesian coordinates of the second point.
     """
     return np.sqrt(np.sum((point0 - point1)**2))
 
 
 def becke_helper_atom(points, weights, radii, centers, select, order):
-    """Computes the Becke weights for a given atom in a grid.
+    """Compute Becke weights on the grid points for a given atom.
 
-        Arguments
-        ---------
+    Arguments
+    ---------
+    points : np.ndarray, shape=(npoints, 3)
+        Cartesian coordinates of the grid points.
+    weights : np.ndarray, shape=(npoints,)
+        The output array where the Becke partitioning weights are
+        written. Becke weights are **multiplied** with the original
+        contents of the array!
+    radii : np.ndarray, shape=(natom,)
+        Covalent radii used to shrink/enlarge basins in the Becke scheme.
+    centers : np.ndarray, shape=(natom, 3)
+        Cartesian coordinates of the nuclei.
+    select : np.ndarray
+        Index of atoms for which the Becke weights are computed.
+    order : np.ndarray
+        Order of switching function in the Becke scheme.
 
-        points:
-            The Cartesian coordinates of the grid points.
-            Numpy array with shape (npoint,3)
-
-        weights:
-            The output array where the Becke partitioning weights are
-            written. Becke weights are **multiplied** with the original
-            contents of the array!
-            Numpy array with shape (npoint,)
-
-        radii:
-            The covalent radii used to shrink/enlarge basins in the
-            Becke scheme.
-            Numpy array with shape (natom,)
-
-        centers:
-            The Cartesian coordinates of the nuclei.
-            Numpy array with shape (natom,3)
-
-        select:
-            The select atom for wich the Becke weights should be
-            computed.
-            Integer value.
-
-        order:
-            The order of the switching function in the Becke scheme.
-            Integer value.
-
-        See Becke's paper for the details:
-        A. D. Becke, The Journal of Chemical Physics 88, 2547 (1988)
-        URL http://dx.doi.org/10.1063/1.454033
+    Notes
+    -----
+    See A. D. Becke, The Journal of Chemical Physics 88, 2547 (1988).
     """
 
     npoint = points.shape[0]
