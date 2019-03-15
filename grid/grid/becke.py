@@ -104,7 +104,6 @@ def becke_helper_atom(points, weights, radii, centers, select, order):
     # Calculate the Becke Weights
     for ipoint in range(npoint - 1, -1, -1):
         itmp = npoint - ipoint - 1
-        num = 0
         den = 0
         for iatom in range(natom):
             p = 1
