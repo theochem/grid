@@ -24,7 +24,7 @@
 """Package build and install script."""
 
 
-from setuptools import find_packages, setup
+from setuptools import find_namespace_packages, setup
 
 
 def get_version():
@@ -56,8 +56,8 @@ setup(
     author_email="horton.chemtools@gmail.com",
     url="https://github.com/theochem/grid",
     package_dir={"": "src"},
-    packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*",
-                                    "tests"]),
+    packages=find_namespace_packages(where='src'),
+    include_package_data=True,
     # package_data={"grid.data": ["*"],
     #               "grid.test.data": ["*"],
     #               "grid.grid.data": ["*"],
