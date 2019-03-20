@@ -57,7 +57,6 @@ setup(
     url="https://github.com/theochem/grid",
     package_dir={"": "src"},
     packages=find_namespace_packages(where='src'),
-    include_package_data=True,
     # package_data={"grid.data": ["*"],
     #               "grid.test.data": ["*"],
     #               "grid.grid.data": ["*"],
