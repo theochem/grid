@@ -55,8 +55,8 @@ class TestGrid(TestCase):
         assert np.allclose(ref_smt_index.points, np.array([-0.9, -0.7, -0.5]))
         assert np.allclose(ref_smt_index.weights, np.array([0.1, 0.1, 0.1]))
 
-    def test_raise(self):
-        """Test errors raises."""
+    def test_errors_raise(self):
+        """Test errors raise."""
         # grid init
         weights = np.ones(4)
         points = np.arange(5)
