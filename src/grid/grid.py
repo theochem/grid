@@ -28,39 +28,21 @@ class Grid:
             )
         self._points = points
         self._weights = weights
-        self._size = self._points.shape[0]
+        self._size = self._weights.size
 
     @property
     def points(self):
-        """Return the coordinates of grid.
-
-        Returns
-        -------
-        np.ndarray(N,)
-            Coordinates of the grid points
-        """
+        """np.ndarray(N,): the coordinates of each grid point."""
         return self._points
 
     @property
     def weights(self):
-        """Return the weights of each grid.
-
-        Returns
-        -------
-        np.ndarray(N,)
-            Description
-        """
+        """np.ndarray(N,): the weights of each grid point."""
         return self._weights
 
     @property
     def size(self):
-        """Return the total number of points on the grid.
-
-        Returns
-        -------
-        int
-            Total number of grid points
-        """
+        """int: the total number of points on the grid."""
         return self._size
 
     def __getitem__(self, index):

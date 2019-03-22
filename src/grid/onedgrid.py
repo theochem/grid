@@ -1,4 +1,3 @@
-"""1D Radial integration grid."""
 # -*- coding: utf-8 -*-
 # GRID is a numerical integration library for quantum chemistry.
 #
@@ -20,6 +19,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 #
 # --
+"""1D Radial integration grid."""
 from grid.grid import Grid
 
 import numpy as np
@@ -45,7 +45,7 @@ def GaussLaguerre(npoints, alpha=0):
     Returns
     -------
     Grid
-        An grid instance with points and weights
+        A grid instance with points and weights
     """
     if alpha <= -1:
         raise ValueError(f"Alpha need to be bigger than -1, given {alpha}")
@@ -64,7 +64,7 @@ def GaussLegendre(npoints):
     Returns
     -------
     Grid
-        An grid instance with points and weights
+        A grid instance with points and weights
     """
     points, weights = np.polynomial.legendre.leggauss(npoints)
     return Grid(points, weights)
@@ -81,7 +81,7 @@ def GaussChebyshev(npoints):
     Returns
     -------
     Grid
-        An grid instance with points and weights
+        A grid instance with points and weights
     """
     points, weights = np.polynomial.chebyshev.chebgauss(npoints)
     return Grid(points, weights)
