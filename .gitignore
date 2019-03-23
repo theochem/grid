@@ -52,3 +52,6 @@ qaworkdir
 
 # Ignore Pycharm
 .idea
+
+# Ignore tox
+.tox

@@ -21,46 +21,97 @@
 """Transformation from uniform 1D to non-uniform 1D grids."""
 
 from abc import ABC, abstractmethod
+
 import numpy as np
 
 
 class BaseTransform(ABC):
+    """Abstract class for transformation."""
+
     @abstractmethod
     def transform(self, array):
-        ...
+        """Abstract method for transformation."""
 
     @abstractmethod
     def inverse(self, r_array):
-        ...
+        """Abstract method for inverse transformation."""
 
     @abstractmethod
     def deriv(self, array):
-        ...
+        """Abstract method for 1st derivative of transformation."""
 
     @abstractmethod
     def deriv2(self, array):
-        ...
+        """Abstract method for 2nd derivative of transformation."""
 
-    def _type_assert(self, array):
+    @abstractmethod
+    def deriv3(self, array):
+        """Abstract method for 3nd derivative of transformation."""
+
+    def _array_type_check(self, array):
+        """Check input type of given array."""
         if not isinstance(array, np.ndarray):
             raise TypeError(f"Input array needs to be np.array, got: {type(array)}")
 
+    def _convert_inf(self, array, replace_inf=1e16):
+        """Convert np.inf(float) to 1e16(float) incase numerical failure."""
+        array[array == np.inf] = replace_inf
+
+    # def _check_inf(self, array):
+    #     if np.any(array == np.inf):
+    #         return True
+    #     return False
+
 
 class BeckeTF(BaseTransform):
+    """Becke Transformation class."""
+
     def __init__(self, r0, R):
+        """Construct Becke transform, [-1, 1] -> [r_0, inf).
+
+        Parameters
+        ----------
+        r0 : float
+            The minimum coordinates for transformed radial array.
+        R : float
+            The scale factor for transformed radial array.
+        """
         self._r0 = r0
         self._R = R
 
     @property
     def r0(self):
+        """float: the minimum value for the transformed radial array."""
         return self._r0
 
     @property
     def R(self):
+        """float: the scale factor for the transformed radial array."""
         return self._R
 
     @staticmethod
     def find_parameter(array, r0, radius):
+        """Compute for optimal R for certain atom, given array and r0.
+
+        Parameters
+        ----------
+        array : np.ndarray(N,)
+            one dimention array locates within [-1, 1]
+        r0 : float
+            Minimum value for transformed array.
+        radius : float
+            Atomic radius of interest
+
+        Returns
+        -------
+        float
+            The optimal value of scale factor R
+
+        Raises
+        ------
+        ValueError
+            r0 needs to be smaller than atomic radius to compute R
+        """
         if r0 > radius:
             raise ValueError(
                 f"r0 need to be smaller than radius, r0: {r0}, radius: {radius}."
@@ -72,38 +123,206 @@ class BeckeTF(BaseTransform):
             mid_value = (array[size // 2 - 1] + array[size // 2]) / 2
         return (radius - r0) * (1 - mid_value) / (1 + mid_value)
 
-    def transform(self, array):
-        return self._R * (1 + array) / (1 - array) + self._r0
+    def transform(self, array, trim_inf=True):
+        """Transform given array[-1, 1] to radial array[r0, inf).
+
+        Parameters
+        ----------
+        array : np.ndarray(N,)
+            One dimension numpy array located between [-1, 1]
+        trim_inf : bool, optional, default to True
+            Flag to trim infinite value in transformed array. If true, will
+            trim np.inf -> 1e16. If false, leave np.inf as it is. This may
+            cause unexpected errors in the following operations.
+
+        Returns
+        -------
+        np.ndarray(N,)
+            Transformed radial array located between [r0, inf)
+        """
+        self._array_type_check(array)
+        rf_array = self._R * (1 + array) / (1 - array) + self._r0
+        if trim_inf:
+            self._convert_inf(rf_array)
+        return rf_array
 
     def inverse(self, r_array):
+        """Transform radial array[r0, inf) back to original array[-1, 1].
+
+        Parameters
+        ----------
+        r_array : np.ndarray(N,)
+            Sorted one dimension radial array located between [r0, inf)
+
+        Returns
+        -------
+        np.ndarray(N,)
+            The original one dimension array located between [-1, 1]
+        """
+        self._array_type_check(r_array)
         return (r_array - self._r0 - self._R) / (r_array - self._r0 + self._R)
 
     def deriv(self, array):
+        """Compute the 1st derivatvie of Becke transformation.
+
+        Parameters
+        ----------
+        array : np.array(N,)
+            One dimension numpy array located between [-1, 1]
+
+        Returns
+        -------
+        np.ndarray(N,)
+            1st derivative of Becke transformation at each points
+        """
+        self._array_type_check(array)
         return 2 * self._R / (1 - array) ** 2
 
     def deriv2(self, array):
+        """Compute the 2nd derivatvie of Becke transformation.
+
+        Parameters
+        ----------
+        array : np.array(N,)
+            One dimension numpy array located between [-1, 1]
+
+        Returns
+        -------
+        np.ndarray(N,)
+            2nd derivative of Becke transformation at each points
+        """
+        self._array_type_check(array)
         return 4 * self._R / (1 - array) ** 3
+
+    def deriv3(self, array):
+        """Compute the 3rd derivatvie of Becke transformation.
+
+        Parameters
+        ----------
+        array : np.array(N,)
+            One dimension numpy array located between [-1, 1]
+
+        Returns
+        -------
+        np.ndarray(N,)
+            3rd derivative of Becke transformation at each points
+        """
+        self._array_type_check(array)
+        return 12 * self._R / (1 - array) ** 4
 
 
 class InverseTF(BaseTransform):
+    """Inverse transformation class, [r0, rmax] or [r0, inf) -> [-1, 1]."""
+
     def __init__(self, transform):
+        """Construct InverseTF instance.
+
+        Parameters
+        ----------
+        transform : BaseTransform
+            Basic one dimension transformation instance
+
+        Raises
+        ------
+        TypeError
+            The input need to be a BaseTransform instance
+        """
+        if not isinstance(transform, BaseTransform):
+            raise TypeError(
+                f"Input need to be a transform instance, got {type(transform)}."
+            )
         self._tfm = transform
 
     def transform(self, r_array):
+        """Transform radial array back to original one dimension array.
+
+        Parameters
+        ----------
+        r_array : np.ndarray(N,)
+            Radial grid locates between [r0, rmax] or [r0, inf) depends on the
+            domain of its original transformation
+
+        Returns
+        -------
+        np.ndarray(N,)
+            Original one dimension array locates between [-1, 1]
+        """
         return self._tfm.inverse(r_array)
 
     def inverse(self, array):
+        """Transform one dimension array[-1, 1] to radial array [r0, rmax(inf)].
+
+        Parameters
+        ----------
+        array : np.ndarray
+            One dimension numpy array located between [-1, 1]
+
+        Returns
+        -------
+        np.ndarray
+            Radial numpy array located between [r0, rmax(inf)]
+        """
         return self._tfm.transform(array)
 
     def deriv(self, r_array):
-        return 1 / self._tfm.deriv(self._tfm.inverse(r_array))
+        """Compute the 1st derivatvie of inverse transformation.
+
+        Parameters
+        ----------
+        r_array : np.array(N,)
+            One dimension numpy array located between [ro, rmax(inf)]
+
+        Returns
+        -------
+        np.ndarray(N,)
+            1st derivative of inverse transformation at each points
+        """
+        # x: inverse x array, d1: first derivative
+        x = self._tfm.inverse(r_array)
+        d1 = self._tfm.deriv
+        return 1 / d1(x)
 
     def deriv2(self, r_array):
-        return (
-            -1
-            * self._tfm.deriv2(self._tfm.inverse(r_array))
-            / (self._tfm.deriv(self._tfm.inverse(r_array)) ** 3)
-        )
+        """Compute the 2nd derivatvie of inverse transformation.
+
+        Parameters
+        ----------
+        r_array : np.array(N,)
+            One dimension numpy array located between [ro, rmax(inf)]
+
+        Returns
+        -------
+        np.ndarray(N,)
+            2nd derivative of inverse transformation at each points
+        """
+        # x: inverse x array, d1: first derivative
+        # d2: second derivative d^2x / dy^2
+        x = self._tfm.inverse(r_array)
+        d1 = self._tfm.deriv
+        d2 = self._tfm.deriv2
+        return -d2(x) / d1(x) ** 3
+
+    def deriv3(self, r_array):
+        """Compute the 3rd derivatvie of inverse transformation.
+
+        Parameters
+        ----------
+        r_array : np.array(N,)
+            One dimension numpy array located between [ro, rmax(inf)]
+
+        Returns
+        -------
+        np.ndarray(N,)
+            3rd derivative of inverse transformation at each points
+        """
+        # x: inverse x array, d1: first derivative
+        # d2: second derivative d^2x / dy^2
+        # d3: third derivative d^3x / dy^3
+        x = self._tfm.inverse(r_array)
+        d1 = self._tfm.deriv
+        d2 = self._tfm.deriv2
+        d3 = self._tfm.deriv3
+        return (3 * d2(x) ** 2 - d1(x) * d3(x)) / d1(x) ** 5
 
 
 # class RTransform:
