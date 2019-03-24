@@ -102,6 +102,10 @@ class Grid:
         )
 
 
+class AngularGrid(Grid):
+    ...
+
+
 class OneDGrid(Grid):
     """PlaceHolder for 1dGrid object."""
 
