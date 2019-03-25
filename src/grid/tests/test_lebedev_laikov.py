@@ -18,29 +18,65 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 #
 # --
+"""Test lebedev grid."""
+from unittest import TestCase
 
+from grid.grid import AngularGrid
+from grid.lebedev import _select_grid_type, generate_lebedev_grid, n_degree, n_points
 
 import numpy as np
 
-from grid.grid.lebedev import lebedev_laikov_sphere, lebedev_laikov_lmaxs, lebedev_laikov_npoints
 
+class TestLebedev(TestCase):
+    """Lebedev test class."""
 
-def test_consistency():
-    for npoint, lmax in list(lebedev_laikov_npoints.items()):
-        assert lebedev_laikov_lmaxs[lmax] == npoint
+    def test_consistency(self):
+        """Consistency tests from old grid."""
+        for i in range(len(n_points)):
+            assert _select_grid_type(degree=n_degree[i])[1] == n_points[i]
 
+    def test_lebedev_laikov_sphere(self):
+        """Levedev grid tests from old grid."""
+        previous_npoint = 0
+        for i in range(1, 132):
+            npoint = _select_grid_type(degree=i)[1]
+            if npoint > previous_npoint:
+                grid = generate_lebedev_grid(size=npoint)
+                assert isinstance(grid, AngularGrid)
+                assert abs(grid.weights.sum() - 1.0) < 1e-10
+                assert abs(grid.points[:, 0].sum()) < 1e-10
+                assert abs(grid.points[:, 1].sum()) < 1e-10
+                assert abs(grid.points[:, 2].sum()) < 1e-10
+                assert abs(np.dot(grid.points[:, 0], grid.weights)) < 1e-15
+                assert abs(np.dot(grid.points[:, 1], grid.weights)) < 1e-15
+                assert abs(np.dot(grid.points[:, 2], grid.weights)) < 1e-15
+            previous_npoint = npoint
 
-def test_lebedev_laikov_sphere():
-    previous_npoint = -np.inf
-    for i in range(1, 132):
-        npoint = lebedev_laikov_lmaxs[i]
-        if npoint > previous_npoint:
-            points, weights = lebedev_laikov_sphere(npoint)
-            assert abs(weights.sum() - 1.0) < 1e-10
-            assert abs(points[:, 0].sum()) < 1e-10
-            assert abs(points[:, 1].sum()) < 1e-10
-            assert abs(points[:, 2].sum()) < 1e-10
-            assert abs(np.dot(points[:, 0], weights)) < 1e-15
-            assert abs(np.dot(points[:, 1], weights)) < 1e-15
-            assert abs(np.dot(points[:, 2], weights)) < 1e-15
-        previous_npoint = npoint
+    def test_errors_and_warnings(self):
+        """Tests for errors and warning."""
+        # low level function tests
+        with self.assertRaises(ValueError):
+            _select_grid_type()
+        with self.assertRaises(ValueError):
+            _select_grid_type(degree=-1)
+        with self.assertRaises(ValueError):
+            _select_grid_type(degree=132)
+        with self.assertRaises(ValueError):
+            _select_grid_type(size=-1)
+        with self.assertRaises(ValueError):
+            _select_grid_type(size=6000)
+        with self.assertWarns(RuntimeWarning):
+            _select_grid_type(degree=5, size=10)
+        # high level function tests
+        with self.assertRaises(ValueError):
+            generate_lebedev_grid()
+        with self.assertRaises(ValueError):
+            generate_lebedev_grid(size=6000)
+        with self.assertRaises(ValueError):
+            generate_lebedev_grid(size=-1)
+        with self.assertRaises(ValueError):
+            generate_lebedev_grid(degree=132)
+        with self.assertRaises(ValueError):
+            generate_lebedev_grid(degree=-2)
+        with self.assertWarns(RuntimeWarning):
+            generate_lebedev_grid(degree=5, size=10)

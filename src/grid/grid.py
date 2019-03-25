@@ -103,7 +103,7 @@ class Grid:
 
 
 class AngularGrid(Grid):
-    ...
+    """Angular lebedev grid."""
 
 
 class OneDGrid(Grid):
