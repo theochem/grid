@@ -106,6 +106,10 @@ class AngularGrid(Grid):
     """Angular lebedev grid."""
 
 
+class AtomicGrid(Grid):
+    """Atomic grid."""
+
+
 class OneDGrid(Grid):
     """PlaceHolder for 1dGrid object."""
 
