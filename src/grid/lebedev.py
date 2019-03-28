@@ -109,7 +109,7 @@ def _select_grid_type(*, degree=None, size=None):
             "Both degree and size are provided, will use degree only", RuntimeWarning
         )
     if degree:
-        if not isinstance(degree, int) or degree < 0 or degree > 131:
+        if degree < 0 or degree > 131:
             raise ValueError(
                 f"'degree' needs to be an positive integer < 131, got {degree}"
             )
@@ -117,7 +117,7 @@ def _select_grid_type(*, degree=None, size=None):
             if degree <= pre_degree:
                 return n_degree[index], n_points[index]
     elif size:
-        if not isinstance(size, int) or size < 0 or size > 5810:
+        if size < 0 or size > 5810:
             raise ValueError(f"'size' needs to be an integer < 5810, got {degree}")
         for index, pre_point in enumerate(n_points):
             if size <= pre_point:
