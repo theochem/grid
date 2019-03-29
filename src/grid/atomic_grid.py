@@ -55,7 +55,19 @@ class AtomicGridFactory:
 
     @staticmethod
     def _find_l_for_rad_list(radial_arrays, atomic_rad, scales, degs):
-        """Find proper magic L value for given scales."""
+        """Find proper magic L value for given scales.
+
+        Parameters
+        ----------
+        radial_arrays : np.ndarray(N,), radial grid points
+        atomic_rad : float, atomic radius of desired atom
+        scales : np.ndarray(K,), an array of scales
+        degs : np.ndarray(K+1,), an array of degs for different scales
+
+        Returns
+        -------
+        np.ndarray(N,), an array of magic numbers for each radial points
+        """
         # scale_list   R_row * a
         radii = scales * atomic_rad
         # use broadcast to compare each point with scale
@@ -66,7 +78,16 @@ class AtomicGridFactory:
 
     @staticmethod
     def _preload_unit_sphere_grid(degs):
-        """Preload spherical information incase repeated IO."""
+        """Preload spherical information incase repeated IO.
+
+        Parameters
+        ----------
+        degs : np.ndarray(N,), an array of preferred magic number degrees.
+
+        Returns
+        -------
+        dict{degree: AngularGrid}
+        """
         # if non-magic number will bring redundancy. But it only link by ref,
         # so the efficiency would be fine.
         unique_degs = np.unique(degs)
@@ -74,7 +95,17 @@ class AtomicGridFactory:
 
     @staticmethod
     def _generate_sphere_grid(one_pt_grid, angle_grid):
-        """Generate spherical grid's points(coords) and weights."""
+        """Generate spherical grid's points(coords) and weights.
+
+        Parameters
+        ----------
+        one_pt_grid : Grid
+        angle_grid : AngularGrid
+
+        Returns
+        -------
+        tuple(np.ndarra(N,), np.ndarray(N,)), spherical points and its weights.
+        """
         return (
             angle_grid.points * one_pt_grid.points,
             angle_grid.weights * one_pt_grid.weights,
@@ -82,7 +113,17 @@ class AtomicGridFactory:
 
     @staticmethod
     def _generate_atomic_grid(rad_grid, degs):
-        """Generate atomic grid for each radial point with given magic L."""
+        """Generate atomic grid for each radial point with given magic L.
+
+        Parameters
+        ----------
+        rad_grid : Grid, radial grid of given atomic grid.
+        degs : np.ndarray(N,), an array of magic number for each radial point.
+
+        Returns
+        -------
+        tuple(AtomicGrid, np.ndarray(N,)), atomic grid and indices for each shell.
+        """
         if not isinstance(rad_grid, Grid):
             raise TypeError(
                 f"rad_grid need to be a grid instance. Got {type(rad_grid)}"
