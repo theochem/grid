@@ -39,8 +39,12 @@ class AtomicGridFactory:
             raise ValueError("degs should have only one more element than scales.")
         self._radial_grid = radial_grid
         # initiate atomic grid property as None
-        degs = self._find_l_for_rad_list(radial_grid.points, atomic_rad, scales, degs)
-        self._atomic_grid, self._indices = self._generate_atomic_grid(radial_grid, degs)
+        rad_degs = self._find_l_for_rad_list(
+            radial_grid.points, atomic_rad, scales, degs
+        )
+        self._atomic_grid, self._indices = self._generate_atomic_grid(
+            radial_grid, rad_degs
+        )
 
     @property
     def atomic_grid(self):
@@ -124,10 +128,6 @@ class AtomicGridFactory:
         -------
         tuple(AtomicGrid, np.ndarray(N,)), atomic grid and indices for each shell.
         """
-        if not isinstance(rad_grid, Grid):
-            raise TypeError(
-                f"rad_grid need to be a grid instance. Got {type(rad_grid)}"
-            )
         if len(degs) != rad_grid.size:
             raise ValueError("The shape of radial grid does not match given degs.")
         all_points, all_weights = [], []
