@@ -25,6 +25,7 @@ from unittest import TestCase
 from grid.rtransform import BeckeTF, InverseTF
 
 import numpy as np
+from numpy.testing import assert_allclose
 
 
 class TestTransform(TestCase):
@@ -43,17 +44,17 @@ class TestTransform(TestCase):
         a_d1 = tf.deriv(array1)
         # finit diff
         df_d1 = (tf.transform(array1) - tf.transform(array2)) / 1e-6
-        assert np.allclose(a_d1, df_d1, rtol=1e-5)
+        assert_allclose(a_d1, df_d1, rtol=1e-5)
 
         # 2nd derivative analytic and finite diff
         a_d2 = tf.deriv2(array1)
         df_d2 = (tf.deriv(array1) - tf.deriv(array2)) / 1e-6
-        assert np.allclose(a_d2, df_d2, rtol=1e-4)
+        assert_allclose(a_d2, df_d2, rtol=1e-4)
 
         # 3rd derivative analytic and finite diff
         a_d3 = tf.deriv3(array1)
         df_d3 = (tf.deriv2(array1) - tf.deriv2(array2)) / 1e-6
-        assert np.allclose(a_d3, df_d3, rtol=1e-4)
+        assert_allclose(a_d3, df_d3, rtol=1e-4)
 
     def test_becke_tf(self):
         """Test Becke initializaiton."""
@@ -73,14 +74,14 @@ class TestTransform(TestCase):
         R = BeckeTF.find_parameter(self.array_2, 0.2, 1.3)
         btf_2 = BeckeTF(0.2, R)
         tf_elemt = btf_2.transform(np.array([(self.array_2[4] + self.array_2[5]) / 2]))
-        assert np.allclose(tf_elemt, 1.3)
+        assert_allclose(tf_elemt, 1.3)
 
     def test_becke_transform(self):
         """Test becke transformation."""
         btf = BeckeTF(0.1, 1.1)
         tf_array = btf.transform(self.array)
         new_array = btf.inverse(tf_array)
-        assert np.allclose(new_array, self.array)
+        assert_allclose(new_array, self.array)
 
     def test_becke_infinite(self):
         """Test becke transformation when inf generated."""
@@ -89,7 +90,7 @@ class TestTransform(TestCase):
         btf = BeckeTF(0.1, R)
         tf_array = btf.transform(inf_array, trim_inf=True)
         inv_array = btf.inverse(tf_array)
-        assert np.allclose(inv_array, inf_array)
+        assert_allclose(inv_array, inf_array)
 
     def test_becke_deriv(self):
         """Test becke transform derivatives with finite diff."""
@@ -102,7 +103,7 @@ class TestTransform(TestCase):
         btf = BeckeTF(0.1, 1.1)
         inv = InverseTF(btf)
         new_array = inv.transform(btf.transform(self.array))
-        assert np.allclose(new_array, self.array)
+        assert_allclose(new_array, self.array)
 
     def test_becke_inverse_deriv(self):
         """Test inverse transformation derivatives with finite diff."""
@@ -116,7 +117,7 @@ class TestTransform(TestCase):
         btf = BeckeTF(0.1, 1.1)
         inv = InverseTF(btf)
         inv_inv = inv.inverse(inv.transform(self.array))
-        assert np.allclose(inv_inv, self.array)
+        assert_allclose(inv_inv, self.array, atol=1e-7)
 
     def test_errors_assert(self):
         """Test errors raise."""

@@ -6,6 +6,7 @@ from grid.grid import AtomicGrid, Grid
 from grid.lebedev import generate_lebedev_grid
 
 import numpy as np
+from numpy.testing import assert_allclose, assert_equal
 
 
 class TestAtomicGrid(TestCase):
@@ -35,7 +36,7 @@ class TestAtomicGrid(TestCase):
         atomic_grid_degree = AtomicGridFactory._find_l_for_rad_list(
             radial_grid.points, atomic_rad, scales, degs
         )
-        assert np.allclose(atomic_grid_degree, [3, 3, 5, 5, 7, 7, 7, 7, 3, 3])
+        assert_equal(atomic_grid_degree, [3, 3, 5, 5, 7, 7, 7, 7, 3, 3])
 
     def test_preload_unit_sphere_grid(self):
         """Test for private method to preload spherical grids."""
@@ -45,8 +46,8 @@ class TestAtomicGrid(TestCase):
         degs = [3, 4, 5, 6, 7]
         unit_sphere2 = AtomicGridFactory._preload_unit_sphere_grid(degs)
         assert len(unit_sphere2) == 5
-        assert np.allclose(unit_sphere2[4].points, unit_sphere2[5].points)
-        assert np.allclose(unit_sphere2[6].points, unit_sphere2[7].points)
+        assert_allclose(unit_sphere2[4].points, unit_sphere2[5].points)
+        assert_allclose(unit_sphere2[6].points, unit_sphere2[7].points)
         assert not np.allclose(
             unit_sphere2[4].points.shape, unit_sphere2[6].points.shape
         )
@@ -60,17 +61,17 @@ class TestAtomicGrid(TestCase):
         degs = np.array([3, 5, 7])
         target_grid, ind = AtomicGridFactory._generate_atomic_grid(rad_grid, degs)
         assert target_grid.size == 46
-        assert np.allclose(ind, [0, 6, 20, 46])
+        assert_equal(ind, [0, 6, 20, 46])
         # set tests for slicing grid from atomic grid
         for i in range(3):
             # set each layer of points
             ref_grid = generate_lebedev_grid(degree=degs[i])
             # check for each point
-            assert np.allclose(
+            assert_allclose(
                 target_grid.points[ind[i] : ind[i + 1]], ref_grid.points * rad_pts[i]
             )
             # check for each weight
-            assert np.allclose(
+            assert_allclose(
                 target_grid.weights[ind[i] : ind[i + 1]], ref_grid.weights * rad_wts[i]
             )
 
