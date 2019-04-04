@@ -2,7 +2,7 @@
 
 import warnings
 
-from grid.grid import AngularGrid
+from grid.basegrid import AngularGrid
 
 from importlib_resources import path
 

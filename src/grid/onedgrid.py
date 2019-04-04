@@ -20,7 +20,7 @@
 #
 # --
 """1D Radial integration grid."""
-from grid.grid import Grid
+from grid.basegrid import Grid
 
 import numpy as np
 

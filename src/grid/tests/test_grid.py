@@ -1,7 +1,7 @@
 """Grid tests file."""
 from unittest import TestCase
 
-from grid.grid import Grid
+from grid.basegrid import Grid
 
 import numpy as np
 from numpy.testing import assert_allclose

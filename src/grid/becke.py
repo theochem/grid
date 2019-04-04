@@ -21,15 +21,35 @@
 # --
 """Becke Weights Module."""
 
+import warnings
+
 import numpy as np
 
 
 class BeckeWeights:
-    def __init__(atom_grids, radii, atom_coors, index):
-        ...
+    """Beckec weights functions holder class."""
 
     @staticmethod
     def _calculate_alpha(radii, cutoff=0.45):
+        r"""Calculate parameter alpha to tune the size of the basins.
+
+        .. math::
+            u_{AB} &= \frac{R_A - R_B}{R_A + R_B} \\
+            a_{AB} &= \frac{u_{AB}}{u_{AB}^2 - 1}
+
+        Parameters
+        ----------
+        radii : np.array(N,)
+            Covalent radii of each atoms in the molecule
+        cutoff : float, default 0.45
+            Cutoff need to be smaller than 0.5 to ganrantee monotonous
+            transformation.
+
+        Returns
+        -------
+        np.ndarray(N, N)
+            alpha value for each pair of atoms
+        """
         u_ab = (radii[:, None] - radii) / (radii[:, None] + radii)
         alpha = u_ab / (u_ab ** 2 - 1)
         alpha[alpha > cutoff] = cutoff
@@ -37,46 +57,100 @@ class BeckeWeights:
         return alpha
 
     @staticmethod
-    def atomic_dists(coors):
+    def _atomic_dists(coors):
+        """Calculate atomic distance between each atoms.
+
+        Parameters
+        ----------
+        coors : np.ndarray(N, 3)
+            Cartesian coordinates of each atom
+
+        Returns
+        -------
+        np.ndarray(N, N)
+            Atomic distance between each pair atoms
+        """
         return np.linalg.norm(coors[:, None] - coors, axis=-1)
 
     @staticmethod
-    def switch_func(x, order=3):
+    def _switch_func(x, order=3):
+        r"""Switching function that gradient at nuclei become zero.
+
+        .. math::
+            f_1(x) = \frac{x}{2}(3 - x^2)
+            f_k(x) = f_1(f_{k-1}(x))
+
+        Parameters
+        ----------
+        x : float or np.ndarray
+            Input variable
+        order : int, default to 3
+            Order of iteration for switching function
+
+        Returns
+        -------
+        float or np.ndarray
+            result of switching function
+        """
         for i in range(order):
             x = 1.5 * x - 0.5 * x ** 3
         return x
 
     @staticmethod
-    def generate_becke_weights(points, atom_coors, radii, select_index):
+    def generate_becke_weights(points, radii, atom_coors, select_index, order=3):
+        """Calculate becke weights of points for select atom.
+
+        Parameters
+        ----------
+        points : np.ndarray(M, 3)
+            Coordinates for each grid point
+        radii : np.ndarray(N,)
+            Covalent radiis for each atom in molecule
+        atom_coors : np.ndarray(N, 3)
+            Coordinates for each atom in molecule
+        select_index : int, np.int
+            Index of atom for calculate becke weights
+        order : int, default to 3
+            Order of iteration for switching function
+
+        Returns
+        -------
+        np.ndarray(M,)
+            Becke weights for each grid point
+        """
+        # select_index could be an array for more complicated case
         # |r_A - r| for each points, nucleus pair
         n_p = np.linalg.norm(atom_coors[:, None] - points, axis=-1)
         # |r_A - r| - |r_B - r| for each points with pair(A, B) nucleus
         p_p_n = n_p[:, None] - n_p
-        atomic_dist = BeckeWeights.atomic_dists(atom_coors)
-        mu_n_p_p = p_p_n.transpose([2, 0, 1]) / atomic_dist
+        atomic_dist = BeckeWeights._atomic_dists(atom_coors)
+        # ignore 0 / 0 runtime warning
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            mu_n_p_p = p_p_n.transpose([2, 0, 1]) / atomic_dist
         alpha = BeckeWeights._calculate_alpha(radii)
         v_pp = mu_n_p_p + alpha * (1 - mu_n_p_p ** 2)
-        s_ab = 0.5 * (1 - BeckeWeights.switch_func(v_pp))
+        s_ab = 0.5 * (1 - BeckeWeights._switch_func(v_pp, order=order))
         # convert nan to 1
         s_ab[np.isnan(s_ab)] = 1
-        # product up A_B, A_C, A_D ... along second axis
-        s_ab_prod = np.prod(s_ab, axis=-1)
+        # product up A_B, A_C, A_D ... along rows
+        s_ab = np.prod(s_ab, axis=-1)
         # calculate weight for each point for select_index
-        weights = s_ab_prod[:, select_index] / np.sum(s_ab_prod, axis=1)
+        weights = s_ab[:, select_index] / np.sum(s_ab, axis=-1)
         return weights
 
 
-def distance(point0, point1):
-    """Compute the Euclidean distance between two points.
+# def distance(point0, point1):
+#     """Compute the Euclidean distance between two points.
 
-    Arguments
-    ---------
-    point0 : np.ndarray, shape=(3,)
-        Cartesian coordinates  of the first point.
-    point1 : np.ndarray, shape=(3,)
-        Cartesian coordinates of the second point.
-    """
-    return np.sqrt(np.sum((point0 - point1)**2))
+#     Arguments
+#     ---------
+#     point0 : np.ndarray, shape=(3,)
+#         Cartesian coordinates  of the first point.
+#     point1 : np.ndarray, shape=(3,)
+#         Cartesian coordinates of the second point.
+#     """
+#     return np.sqrt(np.sum((point0 - point1) ** 2))
 
 
 # def becke_helper_atom(points, weights, radii, centers, select, order=3):
@@ -120,7 +194,7 @@ def distance(point0, point1):
 #     for iatom in range(natom):
 #         for jatom in range(iatom + 1):
 #             alpha = (radii[iatom] - radii[jatom]) / (radii[iatom] + radii[jatom])
-#             alpha = alpha / (alpha**2 - 1)  # Eq. (A5)
+#             alpha = alpha / (alpha ** 2 - 1)  # Eq. (A5)
 #             # Eq. (A3), except that we use some safe margin
 #             # (0.45 instead of 0.5) to stay way from a ridiculous imbalance.
 #             if alpha > 0.45:
@@ -157,13 +231,14 @@ def distance(point0, point1):
 #                     term = 0
 
 #                 # Diatomic switching function
-#                 s = distance(points[itmp], centers[iatom]) - \
-#                     distance(points[itmp], centers[jatom])
+#                 s = distance(points[itmp], centers[iatom]) - distance(
+#                     points[itmp], centers[jatom]
+#                 )
 #                 s = s / atomic_dists[offset]  # Eq. (11)
-#                 s = s + alphas[offset] * (1 - 2 * term) * (1 - s**2)  # Eq. (A2)
+#                 s = s + alphas[offset] * (1 - 2 * term) * (1 - s ** 2)  # Eq. (A2)
 
 #                 for k in range(1, order + 1, 1):  # Eq. (19) and (20)
-#                     s = 0.5 * s * (3 - s**2)
+#                     s = 0.5 * s * (3 - s ** 2)
 
 #                 s = 0.5 * (1 - s)  # Eq. (18)
 
@@ -175,4 +250,4 @@ def distance(point0, point1):
 #             den += p  # Eq. (22)
 
 #         # Weight function at this grid point
-#         weights[itmp] *= (nom / den)  # Eq. (22)
+#         weights[itmp] *= nom / den  # Eq. (22)

@@ -18,14 +18,16 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 #
 # --
+"""Becke tests files."""
 
+from grid.becke import BeckeWeights
 
 import numpy as np
-
-from grid.grid.becke import becke_helper_atom
+from numpy.testing import assert_allclose
 
 
 def test_becke_sum2_one():
+    """Test becke weights add up to one."""
     npoint = 100
     points = np.random.uniform(-5, 5, (npoint, 3))
 
@@ -34,13 +36,16 @@ def test_becke_sum2_one():
 
     radii = np.array([0.5, 0.8])
     centers = np.array([[1.2, 2.3, 0.1], [-0.4, 0.0, -2.2]])
-    becke_helper_atom(points, weights0, radii, centers, 0, 3)
-    becke_helper_atom(points, weights1, radii, centers, 1, 3)
+    # becke_helper_atom(points, weights0, radii, centers, 0, 3)
+    # becke_helper_atom(points, weights1, radii, centers, 1, 3)
+    weights0 = BeckeWeights.generate_becke_weights(points, radii, centers, 0, 3)
+    weights1 = BeckeWeights.generate_becke_weights(points, radii, centers, 1, 3)
 
-    assert abs(weights0 + weights1 - 1).max() < 1e-10
+    assert_allclose(weights0 + weights1, np.ones(100))
 
 
 def test_becke_sum3_one():
+    """Test becke weights add up to one with three centers."""
     npoint = 100
     points = np.random.uniform(-5, 5, (npoint, 3))
 
@@ -50,31 +55,23 @@ def test_becke_sum3_one():
 
     radii = np.array([0.5, 0.8, 5.0])
     centers = np.array([[1.2, 2.3, 0.1], [-0.4, 0.0, -2.2], [2.2, -1.5, 0.0]])
-    becke_helper_atom(points, weights0, radii, centers, 0, 3)
-    becke_helper_atom(points, weights1, radii, centers, 1, 3)
-    becke_helper_atom(points, weights2, radii, centers, 2, 3)
+    weights0 = BeckeWeights.generate_becke_weights(points, radii, centers, 0, 3)
+    weights1 = BeckeWeights.generate_becke_weights(points, radii, centers, 1, 3)
+    weights2 = BeckeWeights.generate_becke_weights(points, radii, centers, 2, 3)
 
-    assert abs(weights0 + weights1 + weights2 - 1).max() < 1e-10
+    assert_allclose(weights0 + weights1 + weights2, np.ones(100))
 
 
 def test_becke_special_points():
+    """Test becke weights for special cases."""
     radii = np.array([0.5, 0.8, 5.0])
     centers = np.array([[1.2, 2.3, 0.1], [-0.4, 0.0, -2.2], [2.2, -1.5, 0.0]])
 
-    weights = np.ones(3, float)
-    becke_helper_atom(centers, weights, radii, centers, 0, 3)
-    assert abs(weights[0] - 1.0) < 1e-10
-    assert abs(weights[1]) < 1e-10
-    assert abs(weights[2]) < 1e-10
+    weights = BeckeWeights.generate_becke_weights(centers, radii, centers, 0, 3)
+    assert_allclose(weights, [1, 0, 0], atol=1e-10)
 
-    weights = np.ones(3, float)
-    becke_helper_atom(centers, weights, radii, centers, 1, 3)
-    assert abs(weights[0]) < 1e-10
-    assert abs(weights[1] - 1.0) < 1e-10
-    assert abs(weights[2]) < 1e-10
+    weights = BeckeWeights.generate_becke_weights(centers, radii, centers, 1, 3)
+    assert_allclose(weights, [0, 1, 0], atol=1e-10)
 
-    weights = np.ones(3, float)
-    becke_helper_atom(centers, weights, radii, centers, 2, 3)
-    assert abs(weights[0]) < 1e-10
-    assert abs(weights[1]) < 1e-10
-    assert abs(weights[2] - 1.0) < 1e-10
+    weights = BeckeWeights.generate_becke_weights(centers, radii, centers, 2, 3)
+    assert_allclose(weights, [0, 0, 1], atol=1e-10)
