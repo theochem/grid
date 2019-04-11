@@ -24,7 +24,7 @@ from grid.grid import Grid
 
 import numpy as np
 
-from scipy.special import roots_genlaguerre
+from scipy.special import roots_chebyu, roots_genlaguerre
 
 
 def generate_onedgrid(npoints, *args):
@@ -84,4 +84,159 @@ def GaussChebyshev(npoints):
         A grid instance with points and weights
     """
     points, weights = np.polynomial.chebyshev.chebgauss(npoints)
+    return Grid(points, weights)
+
+
+def GaussChebyshevType2(npoints):
+    """Generate Gauss-Chebyshev (type 2) grid.
+
+    Parameters
+    ----------
+    npoints : int
+        Number of points in the grid
+
+    Returns
+    -------
+    Grid
+        An grid instance with points and weights
+    """
+    points, weights = roots_chebyu(npoints)
+    return Grid(points, weights)
+
+
+def GaussChebyshevLobatto(npoints):
+    """Generate Gauss-Chebyshev-Lobatto grid.
+
+    Parameters
+    ----------
+    npoints : int
+        Number of points in the grid
+
+    Returns
+    -------
+    Grid
+        An grid instance with points and weights
+    """
+    idx = np.arange(npoints)
+    weights = np.ones(npoints)
+
+    idx = (idx * np.pi) / (npoints - 1)
+
+    points = np.cos(idx)
+    points = np.sort(points)
+
+    weights *= np.pi / (npoints - 1)
+    weights[0] /= 2
+    weights[npoints - 1] = weights[0]
+
+    return Grid(points, weights)
+
+
+def RectangleRuleSineEndPoints(npoints):
+    """Generate Rectangle rule for sine series with end points.
+
+    The range of this rule is [0:1]
+
+    Parameters
+    ----------
+    npoints : int
+        Number of points in the grid
+
+    Returns
+    -------
+    Grid
+        An grid instance with points and weights
+    """
+    idx = np.arange(npoints) + 1
+    points = idx / (npoints + 1)
+
+    weights = np.zeros(npoints)
+
+    index_m = np.arange(npoints) + 1
+
+    for i in range(0, npoints):
+        elements = np.zeros(npoints)
+        elements = np.sin(index_m * np.pi * points[i])
+        elements = elements * (1 - np.cos(index_m * np.pi)) / (index_m * np.pi)
+
+        weights[i] = (2 / (npoints + 1)) * np.sum(elements)
+
+    return Grid(points, weights)
+
+
+def RectangleRuleSine(npoints):
+    """Generate Rectangle rule for sine series without end points.
+
+    The range of this rule is [0:1]
+
+    Parameters
+    ----------
+    npoints : int
+        Number of points in the grid
+
+    Returns
+    -------
+    Grid
+        An grid instance with points and weights
+    """
+    idx = np.arange(npoints) + 1
+    points = (2 * idx - 1) / (2 * npoints)
+
+    weights = np.zeros(npoints)
+
+    index_m = np.arange(npoints - 1) + 1
+
+    for i in range(0, npoints):
+        elements = np.zeros(npoints - 1)
+        elements = np.sin(index_m * np.pi * points[i])
+        elements *= np.sin(index_m * np.pi / 2) ** 2
+        elements /= index_m
+
+        weights[i] = (4 / (npoints * np.pi)) * np.sum(elements)
+
+        weights[i] += (
+            (2 / (npoints * np.pi ** 2))
+            * np.sin(npoints * np.pi * points[i])
+            * np.sin(npoints * np.pi / 2) ** 2
+        )
+
+    return Grid(points, weights)
+
+
+def TanhSinh(npoints, delta):
+    """Generate Tanh-Sinh rule.
+
+    The ranges is [-1:1] you need proporcionate
+    a delta value for this rule.
+
+    Parameters
+    ----------
+    npoints : int
+        Number of points in the grid, this value must be odd.
+
+    delta : float
+        A parameter of size.
+
+    Returns
+    -------
+    Grid
+        An grid instance with points and weights.
+    """
+    if npoints % 2 == 0:
+        raise ValueError("npoints must be odd, given {npoints}")
+
+    jmin = (int)(1 - npoints) / 2
+
+    points = np.zeros(npoints)
+    weights = np.zeros(npoints)
+
+    for i in range(0, npoints):
+        j = jmin + i
+        arg = np.pi * np.sinh(j * delta) / 2
+
+        points[i] = np.tanh(arg)
+
+        weights[i] = np.pi * delta * np.cosh(j * delta) * 0.5
+        weights[i] /= np.cosh(arg) ** 2
+
     return Grid(points, weights)
