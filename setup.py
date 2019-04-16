@@ -56,9 +56,13 @@ setup(
     author_email="horton.chemtools@gmail.com",
     url="https://github.com/theochem/grid",
     package_dir={"": "src"},
-    packages=find_namespace_packages(where='src'),
-    package_data={"grid.data.lebedev": ["*.npz"]},
+    packages=find_namespace_packages(where="src"),
+    package_data={"grid.data": ["*.*"], "grid.data.lebedev": ["*.npz"]},
     zip_safe=False,
-    install_requires=["numpy>=1.16", "pytest>=2.6", "scipy>=1.2",
-                      "importlib_resources"],
+    install_requires=[
+        "numpy>=1.16",
+        "pytest>=2.6",
+        "scipy>=1.2",
+        "importlib_resources",
+    ],
 )
