@@ -8,17 +8,21 @@ import numpy as np
 class AtomicGridFactory:
     """Atomic grid construction class."""
 
-    def __init__(self, radial_grid, atomic_rad, scales, degs):
+    def __init__(
+        self, radial_grid, atomic_rad, *, scales, degs, center=np.array([0.0, 0.0, 0.0])
+    ):
         """Construct atomic grid for given arguments.
 
         Parameters
         ----------
+        center : np.ndarray(3,)
+            Central cartesian coordinates of atomic grid
         radial_grid : Grid
             Radial grid for each unit spherical shell
         atomic_rad : float
             Atomic radium for targit atom
         scales : np.ndarray(N,)
-            Scales for select different spherical grids.
+            Scales for selecting different spherical grids.
         degs : np.ndarray(N+1, dtype=int)
             Different magic number for each section of atomic radium region
 
@@ -37,13 +41,20 @@ class AtomicGridFactory:
             raise ValueError("rad_list can't be empty.")
         if len(degs) - len(scales) != 1:
             raise ValueError("degs should have only one more element than scales.")
+        if not isinstance(center, np.ndarray):
+            raise TypeError(
+                f"Center should be a numpy array with 3 entries, got {type(center)}."
+            )
+        if len(center) != 3:
+            raise ValueError(f"Center should only have 3 entries, got {len(center)}.")
+        self._center = center
         self._radial_grid = radial_grid
         # initiate atomic grid property as None
         rad_degs = self._find_l_for_rad_list(
             radial_grid.points, atomic_rad, scales, degs
         )
         self._atomic_grid, self._indices = self._generate_atomic_grid(
-            radial_grid, rad_degs
+            radial_grid, rad_degs, center
         )
 
     @property
@@ -116,7 +127,7 @@ class AtomicGridFactory:
         )
 
     @staticmethod
-    def _generate_atomic_grid(rad_grid, degs):
+    def _generate_atomic_grid(rad_grid, degs, center):
         """Generate atomic grid for each radial point with given magic L.
 
         Parameters
@@ -141,5 +152,7 @@ class AtomicGridFactory:
             all_points.append(points)
             all_weights.append(weights)
         indices = index_array
-        atomic_grid = AtomicGrid(np.vstack(all_points), np.hstack(all_weights))
+        atomic_grid = AtomicGrid(
+            np.vstack(all_points) + center, np.hstack(all_weights), center
+        )
         return atomic_grid, indices

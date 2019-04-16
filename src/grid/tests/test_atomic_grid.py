@@ -21,7 +21,7 @@ class TestAtomicGrid(TestCase):
         scales = np.array([0.5, 1, 1.5])
         degs = np.array([6, 14, 14, 6])
         # generate a proper instance without failing.
-        ag_ob = AtomicGridFactory(radial_grid, atomic_rad, scales, degs)
+        ag_ob = AtomicGridFactory(radial_grid, atomic_rad, scales=scales, degs=degs)
         assert isinstance(ag_ob.atomic_grid, AtomicGrid)
         assert len(ag_ob.indices) == 11
 
@@ -59,7 +59,10 @@ class TestAtomicGrid(TestCase):
         rad_wts = np.array([0.3, 0.4, 0.3])
         rad_grid = Grid(rad_pts, rad_wts)
         degs = np.array([3, 5, 7])
-        target_grid, ind = AtomicGridFactory._generate_atomic_grid(rad_grid, degs)
+        center = np.array([0, 0, 0])
+        target_grid, ind = AtomicGridFactory._generate_atomic_grid(
+            rad_grid, degs, center
+        )
         assert target_grid.size == 46
         assert_equal(ind, [0, 6, 20, 46])
         # set tests for slicing grid from atomic grid
@@ -75,19 +78,62 @@ class TestAtomicGrid(TestCase):
                 target_grid.weights[ind[i] : ind[i + 1]], ref_grid.weights * rad_wts[i]
             )
 
+    def test_atomic_grid(center):
+        """Test atomic grid center transilation."""
+        rad_pts = np.array([0.1, 0.5, 1])
+        rad_wts = np.array([0.3, 0.4, 0.3])
+        rad_grid = Grid(rad_pts, rad_wts)
+        degs = np.array([3, 5, 7])
+        # origin center
+        center = np.array([0, 0, 0])
+        # randome center
+        ref_center = np.random.rand(3)
+        target_grid, ind = AtomicGridFactory._generate_atomic_grid(
+            rad_grid, degs, center
+        )
+        ref_grid, ref_ind = AtomicGridFactory._generate_atomic_grid(
+            rad_grid, degs, ref_center
+        )
+        # diff grid points diff by center and same weights
+        assert_allclose(target_grid.points + ref_center, ref_grid.points)
+        assert_allclose(target_grid.weights, ref_grid.weights)
+        assert_allclose(target_grid.center + ref_center, ref_grid.center)
+
     def test_error_raises(self):
         """Tests for error raises."""
         with self.assertRaises(TypeError):
-            AtomicGridFactory(np.arange(3), 1.0, np.arange(2), np.arange(3))
+            AtomicGridFactory(np.arange(3), 1.0, scales=np.arange(2), degs=np.arange(3))
         with self.assertRaises(ValueError):
             AtomicGridFactory(
-                Grid(np.arange(3), np.arange(3)), 1.0, np.arange(2), np.arange(0)
+                Grid(np.arange(3), np.arange(3)),
+                1.0,
+                scales=np.arange(2),
+                degs=np.arange(0),
             )
         with self.assertRaises(ValueError):
             AtomicGridFactory(
-                Grid(np.arange(3), np.arange(3)), 1.0, np.arange(2), np.arange(4)
+                Grid(np.arange(3), np.arange(3)),
+                1.0,
+                scales=np.arange(2),
+                degs=np.arange(4),
             )
         with self.assertRaises(ValueError):
             AtomicGridFactory._generate_atomic_grid(
-                Grid(np.arange(3), np.arange(3)), np.arange(2)
+                Grid(np.arange(3), np.arange(3)), np.arange(2), np.array([0, 0, 0])
+            )
+        with self.assertRaises(TypeError):
+            AtomicGridFactory(
+                Grid(np.arange(3), np.arange(3)),
+                1.0,
+                scales=np.array([0.3, 0.5, 0.7]),
+                degs=np.array([3, 5, 7, 5]),
+                center=(0, 0, 0),
+            )
+        with self.assertRaises(ValueError):
+            AtomicGridFactory(
+                Grid(np.arange(3), np.arange(3)),
+                1.0,
+                scales=np.array([0.3, 0.5, 0.7]),
+                degs=np.array([3, 5, 7, 5]),
+                center=np.array([0, 0, 0, 0]),
             )

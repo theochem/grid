@@ -109,6 +109,26 @@ class AngularGrid(Grid):
 class AtomicGrid(Grid):
     """Atomic grid."""
 
+    def __init__(self, points, weights, center):
+        """Initialize an atomic grid.
+
+        Parameters
+        ----------
+        points : np.ndarray(N, 3)
+            Points on 3d space
+        weights : np.ndarray(N)
+            Weights for each points on the grid
+        center : np.ndarray(3,)
+            The center of the atomic grid
+        """
+        super().__init__(points, weights)
+        self._center = center
+
+    @property
+    def center(self):
+        """np.ndarray(3,): return the coordinates of the atomic grid center."""
+        return self._center
+
 
 class OneDGrid(Grid):
     """PlaceHolder for 1dGrid object."""
