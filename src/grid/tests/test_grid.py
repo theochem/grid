@@ -4,6 +4,7 @@ from unittest import TestCase
 from grid.grid import Grid
 
 import numpy as np
+from numpy.testing import assert_allclose
 
 
 class TestGrid(TestCase):
@@ -21,39 +22,39 @@ class TestGrid(TestCase):
         assert isinstance(self.grid, Grid)
         ref_pts = np.arange(-1, 1.1, 0.1)
         ref_wts = np.ones(21) * 0.1
-        assert np.allclose(self.grid.points, ref_pts)
-        assert np.allclose(self.grid.weights, ref_wts)
+        assert_allclose(self.grid.points, ref_pts, atol=1e-7)
+        assert_allclose(self.grid.weights, ref_wts)
         assert self.grid.size == 21
 
     def test_integrate(self):
         """Test Grid integral."""
         # integral test1
         result2 = self.grid.integrate(np.ones(21))
-        assert np.allclose(result2, 2.1)
+        assert_allclose(result2, 2.1)
         # integral test2
         value1 = np.linspace(-1, 1, 21)
         value2 = value1 ** 2
         result3 = self.grid.integrate(value1, value2)
-        assert np.allclose(result3, 0)
+        assert_allclose(result3, 0, atol=1e-7)
 
     def test_getitem(self):
         """Test Grid index and slicing."""
         # test index
         grid_index = self.grid[10]
         ref_grid = Grid(np.array([0]), np.array([0.1]))
-        assert np.allclose(grid_index.points, ref_grid.points)
-        assert np.allclose(grid_index.weights, ref_grid.weights)
+        assert_allclose(grid_index.points, ref_grid.points)
+        assert_allclose(grid_index.weights, ref_grid.weights)
         assert isinstance(grid_index, Grid)
         # test slice
         ref_grid_slice = Grid(np.linspace(-1, 0, 11), np.ones(11) * 0.1)
         grid_slice = self.grid[:11]
-        assert np.allclose(grid_slice.points, ref_grid_slice.points)
-        assert np.allclose(grid_slice.weights, ref_grid_slice.weights)
+        assert_allclose(grid_slice.points, ref_grid_slice.points)
+        assert_allclose(grid_slice.weights, ref_grid_slice.weights)
         assert isinstance(grid_slice, Grid)
         a = np.array([1, 3, 5])
         ref_smt_index = self.grid[a]
-        assert np.allclose(ref_smt_index.points, np.array([-0.9, -0.7, -0.5]))
-        assert np.allclose(ref_smt_index.weights, np.array([0.1, 0.1, 0.1]))
+        assert_allclose(ref_smt_index.points, np.array([-0.9, -0.7, -0.5]))
+        assert_allclose(ref_smt_index.weights, np.array([0.1, 0.1, 0.1]))
 
     def test_errors_raise(self):
         """Test errors raise."""

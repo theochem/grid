@@ -103,7 +103,17 @@ def generate_lebedev_grid(*, degree=None, size=None):
 
 
 def _select_grid_type(*, degree=None, size=None):
-    """Select proper lebedev grid scheme for given degree or size."""
+    """Select proper lebedev grid scheme for given degree or size.
+
+    Parameters
+    ----------
+    degree : int, the magic number for spherical grid
+    size : int, the number of points for spherical grid
+
+    Returns
+    -------
+    tuple(int, int), proper matic number and its correspounding number of points.
+    """
     if degree and size:
         warnings.warn(
             "Both degree and size are provided, will use degree only", RuntimeWarning
@@ -129,12 +139,31 @@ def _select_grid_type(*, degree=None, size=None):
 
 
 def _load_grid_filename(degree: int, size: int):
-    """Construct lebedev file name for given degree and size."""
+    """Construct lebedev file name for given degree and size.
+
+    Parameters
+    ----------
+    degree : int
+    size : int
+
+    Returns
+    -------
+    str, file name for given type of lebedev grid
+    """
     return f"lebedev_{degree}_{size}.npz"
 
 
 def _load_grid_arrays(filename):
-    """Load .npz presaved file to generate lebedev points."""
+    """Load .npz presaved file to generate lebedev points.
+
+    Parameters
+    ----------
+    filename : str or Path
+
+    Returns
+    -------
+    tuple(np.ndarray(N,), np.ndarray(N,)), the coordinates and weights of grid.
+    """
     with path("grid.data.lebedev", filename) as npz_file:
         data = np.load(npz_file)
     return data["points"], data["weights"]

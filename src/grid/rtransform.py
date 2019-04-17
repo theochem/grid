@@ -49,12 +49,22 @@ class BaseTransform(ABC):
         """Abstract method for 3nd derivative of transformation."""
 
     def _array_type_check(self, array):
-        """Check input type of given array."""
+        """Check input type of given array.
+
+        Parameters
+        ----------
+        array : np.ndarray(N,)
+        """
         if not isinstance(array, np.ndarray):
             raise TypeError(f"Input array needs to be np.array, got: {type(array)}")
 
     def _convert_inf(self, array, replace_inf=1e16):
-        """Convert np.inf(float) to 1e16(float) incase numerical failure."""
+        """Convert np.inf(float) to 1e16(float) incase numerical failure.
+
+        Parameters
+        ----------
+        array : np.ndarray(N,)
+        """
         array[array == np.inf] = replace_inf
 
     # def _check_inf(self, array):

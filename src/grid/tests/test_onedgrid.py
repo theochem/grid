@@ -9,6 +9,7 @@ from grid.onedgrid import (
 )
 
 import numpy as np
+from numpy.testing import assert_allclose
 
 from scipy.special import roots_genlaguerre, roots_legendre
 
@@ -29,22 +30,22 @@ class TestOneDGrid(TestCase):
         points, weights = np.polynomial.laguerre.laggauss(10)
         roots_genlaguerre(10, 0)
         grid = GaussLaguerre(10)
-        assert np.allclose(grid.points, points)
-        assert np.allclose(grid.weights, weights)
+        assert_allclose(grid.points, points)
+        assert_allclose(grid.weights, weights)
 
     def test_gausslengendre(self):
         """Test Guass Lengendre polynomial grid."""
         points, weights = roots_legendre(10)
         grid = GaussLegendre(10)
-        assert np.allclose(grid.points, points)
-        assert np.allclose(grid.weights, weights)
+        assert_allclose(grid.points, points)
+        assert_allclose(grid.weights, weights)
 
     def test_gausschebyshev(self):
         """Test Guass Chebyshev polynomial grid."""
         points, weights = np.polynomial.chebyshev.chebgauss(10)
         grid = GaussChebyshev(10)
-        assert np.allclose(grid.points, points)
-        assert np.allclose(grid.weights, weights)
+        assert_allclose(grid.points, points)
+        assert_allclose(grid.weights, weights)
 
     def test_errors_raise(self):
         """Test errors raise."""

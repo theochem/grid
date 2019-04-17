@@ -25,6 +25,7 @@ from grid.grid import AngularGrid
 from grid.lebedev import _select_grid_type, generate_lebedev_grid, n_degree, n_points
 
 import numpy as np
+from numpy.testing import assert_allclose, assert_equal
 
 
 class TestLebedev(TestCase):
@@ -33,7 +34,7 @@ class TestLebedev(TestCase):
     def test_consistency(self):
         """Consistency tests from old grid."""
         for i in range(len(n_points)):
-            assert _select_grid_type(degree=n_degree[i])[1] == n_points[i]
+            assert_equal(_select_grid_type(degree=n_degree[i])[1], n_points[i])
 
     def test_lebedev_laikov_sphere(self):
         """Levedev grid tests from old grid."""
@@ -43,13 +44,13 @@ class TestLebedev(TestCase):
             if npoint > previous_npoint:
                 grid = generate_lebedev_grid(size=npoint)
                 assert isinstance(grid, AngularGrid)
-                assert abs(grid.weights.sum() - 1.0) < 1e-10
-                assert abs(grid.points[:, 0].sum()) < 1e-10
-                assert abs(grid.points[:, 1].sum()) < 1e-10
-                assert abs(grid.points[:, 2].sum()) < 1e-10
-                assert abs(np.dot(grid.points[:, 0], grid.weights)) < 1e-15
-                assert abs(np.dot(grid.points[:, 1], grid.weights)) < 1e-15
-                assert abs(np.dot(grid.points[:, 2], grid.weights)) < 1e-15
+                assert_allclose(grid.weights.sum(), 1.0)
+                assert_allclose(grid.points[:, 0].sum(), 0, atol=1e-10)
+                assert_allclose(grid.points[:, 1].sum(), 0, atol=1e-10)
+                assert_allclose(grid.points[:, 2].sum(), 0, atol=1e-10)
+                assert_allclose(np.dot(grid.points[:, 0], grid.weights), 0, atol=1e-15)
+                assert_allclose(np.dot(grid.points[:, 1], grid.weights), 0, atol=1e-15)
+                assert_allclose(np.dot(grid.points[:, 2], grid.weights), 0, atol=1e-15)
             previous_npoint = npoint
 
     def test_errors_and_warnings(self):
