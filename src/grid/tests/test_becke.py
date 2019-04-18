@@ -80,22 +80,33 @@ class TestBecke(TestCase):
         weights = BeckeWeights.generate_becke_weights(
             centers, radii, centers, select=[0], order=3
         )
-        assert_allclose(weights, [1, 0, 0], atol=1e-10)
+        assert_allclose(weights, [1, 0, 0])
 
         weights = BeckeWeights.generate_becke_weights(
             centers, radii, centers, select=[1], order=3
         )
-        assert_allclose(weights, [0, 1, 0], atol=1e-10)
+        assert_allclose(weights, [0, 1, 0])
 
         weights = BeckeWeights.generate_becke_weights(
             centers, radii, centers, select=[2], order=3
         )
-        assert_allclose(weights, [0, 0, 1], atol=1e-10)
+        assert_allclose(weights, [0, 0, 1])
 
+        # each point in seperate sectors.
         weights = BeckeWeights.generate_becke_weights(
             centers, radii, centers, pt_ind=[0, 1, 2, 3]
         )
         assert_allclose(weights, [1, 1, 1])
+
+        weights = BeckeWeights.generate_becke_weights(
+            centers, radii, centers, select=[0, 1], pt_ind=[0, 1, 3]
+        )
+        assert_allclose(weights, [1, 1, 0])
+
+        weights = BeckeWeights.generate_becke_weights(
+            centers, radii, centers, select=[2, 0], pt_ind=[0, 2, 3]
+        )
+        assert_allclose(weights, [0, 0, 0])
 
     def test_raise_errors(self):
         """Test errors raise."""

@@ -98,7 +98,7 @@ class BeckeWeights:
 
     @staticmethod
     def generate_becke_weights(
-        points, radii, atom_coors, *_, select=[], pt_ind=[], order=3
+        points, radii, atom_coors, *, select=[], pt_ind=[], order=3
     ):
         """Calculate becke weights of points for select atom.
 
@@ -110,14 +110,16 @@ class BeckeWeights:
             Covalent radiis for each atom in molecule
         atom_coors : np.ndarray(N, 3)
             Coordinates for each atom in molecule
-        select : int, np.int
-            Index of atom for calculate becke weights
+        select : list,
+            Index of atom index to calculate becke weights
+        pt_ind : list, optional
+            Index of points for splitting sectors
         order : int, default to 3
             Order of iteration for switching function
 
-        Returns
-        -------
-        np.ndarray(M,)
+        Return
+        ------
+        np.ndarray(M, )
             Becke weights for each grid point
         """
         # select could be an array for more complicated case
@@ -145,7 +147,7 @@ class BeckeWeights:
         s_ab[np.isnan(s_ab)] = 1
         # product up A_B, A_C, A_D ... along rows
         s_ab = np.prod(s_ab, axis=-1)
-        # calculate weight for each point for select
+        # calculate weight for each point in select
         if sectors == 1:
             weights += s_ab[:, select[0]] / np.sum(s_ab, axis=-1)
         else:
