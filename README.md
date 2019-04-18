@@ -13,14 +13,18 @@ GRID is a pythonic numerical integral package. It derived from legacy HORTON 2 n
 GRID is distributed under [GPL License version 3](https://github.com/theochem/grid/blob/master/LICENSE) (GPL v3).
 
 ## Dependence
-* Installation requirements: `numpy`, `scipy`
+* Installation requirements: `numpy`, `scipy`, `importlib_resources`
 * Testing requirement: `pytest`
 * QA requirement: `tox`
 
 ## Installation
-* To install GRID to system:
+To install GRID to system:
 ```bash
 pip install .
+```
+To run tests:
+```bash
+pytest --pyargs grid
 ```
 
 ## Local build and Testing
@@ -29,7 +33,7 @@ To install editable GRID locally:
 pip install -e .
 ```
 To run tests:
-```
+```bash
 pytest tests
 ```
 

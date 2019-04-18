@@ -15,16 +15,16 @@ class AtomicGridFactory:
 
         Parameters
         ----------
-        center : np.ndarray(3,)
-            Central cartesian coordinates of atomic grid
         radial_grid : Grid
             Radial grid for each unit spherical shell
         atomic_rad : float
             Atomic radium for targit atom
-        scales : np.ndarray(N,)
+        scales : np.ndarray(N,), keyword-only argument
             Scales for selecting different spherical grids.
-        degs : np.ndarray(N+1, dtype=int)
+        degs : np.ndarray(N+1, dtype=int), keyword-only argument
             Different magic number for each section of atomic radium region
+        center : np.ndarray(3,), default to [0., 0., 0.], keyword-only argument
+            Central cartesian coordinates of atomic grid
 
         Raises
         ------
