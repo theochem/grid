@@ -2,7 +2,7 @@
 from unittest import TestCase
 
 from grid.atomic_grid import AtomicGridFactory
-from grid.grid import AtomicGrid, Grid
+from grid.basegrid import AtomicGrid, Grid
 from grid.lebedev import generate_lebedev_grid
 
 import numpy as np

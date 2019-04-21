@@ -1,5 +1,5 @@
 """Module for generating Atomic Grid."""
-from grid.grid import AtomicGrid, Grid
+from grid.basegrid import AtomicGrid, Grid
 from grid.lebedev import generate_lebedev_grid
 
 import numpy as np

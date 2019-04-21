@@ -21,7 +21,7 @@
 """Test lebedev grid."""
 from unittest import TestCase
 
-from grid.grid import AngularGrid
+from grid.basegrid import AngularGrid
 from grid.lebedev import _select_grid_type, generate_lebedev_grid, n_degree, n_points
 
 import numpy as np
