@@ -24,7 +24,9 @@ class TestAtomicGrid(TestCase):
         ag_ob = AtomicGridFactory(radial_grid, atomic_rad, scales=scales, degs=degs)
         assert isinstance(ag_ob.atomic_grid, AtomicGrid)
         assert len(ag_ob.indices) == 11
-        ag_ob = AtomicGridFactory(radial_grid, atomic_rad, scales=np.array([]), degs=np.array([6]))
+        ag_ob = AtomicGridFactory(
+            radial_grid, atomic_rad, scales=np.array([]), degs=np.array([6])
+        )
         assert isinstance(ag_ob.atomic_grid, AtomicGrid)
         assert len(ag_ob.indices) == 11
 

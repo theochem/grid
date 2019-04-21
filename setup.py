@@ -57,7 +57,11 @@ setup(
     url="https://github.com/theochem/grid",
     package_dir={"": "src"},
     packages=find_namespace_packages(where="src"),
-    package_data={"grid.data": ["*.*"], "grid.data.lebedev": ["*.npz"]},
+    package_data={
+        "grid.data": ["*.*"],
+        "grid.data.lebedev": ["*.npz"],
+        "grid.data.tests": ["*.*"],
+    },
     zip_safe=False,
     install_requires=[
         "numpy>=1.16",

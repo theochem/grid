@@ -1,13 +1,12 @@
 """Molecular grid class."""
+from grid.basegrid import AtomicGrid, Grid
 from grid.becke import BeckeWeights
-from grid.basegrid import Grid, AtomicGrid
 
 import numpy as np
 
 
 class MolGrid(Grid):
-    """Molecular Grid for integration.
-    """
+    """Molecular Grid for integration."""
 
     def __init__(self, atomic_grids, radii, aim_weights="becke"):
         """Initialize molgrid class.
@@ -38,16 +37,23 @@ class MolGrid(Grid):
 
         if isinstance(aim_weights, str):
             if aim_weights == "becke":
-                print(self._indices)
                 self._aim_weights = BeckeWeights.generate_becke_weights(
                     self._points, radii, self._coors, pt_ind=self._indices
                 )
             else:
-                raise NotImplementedError(f"Given aim_weights is not supported, got {aim_weights}")
+                raise NotImplementedError(
+                    f"Given aim_weights is not supported, got {aim_weights}"
+                )
         elif isinstance(aim_weights, np.ndarray):
+            if aim_weights.size != self.size:
+                raise ValueError(
+                    "aim_weights is not the same size as grid.\n"
+                    f"aim_weights.size: {aim_weights.size}, grid.size: {self.size}."
+                )
             self._aim_weights = aim_weights
+
         else:
-            self._aim_weights = np.ones(len(self._weights))
+            raise TypeError(f"Not supported aim_weights type, got {type(aim_weights)}.")
 
     @property
     def aim_weights(self):

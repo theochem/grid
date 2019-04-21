@@ -128,3 +128,7 @@ class TestBecke(TestCase):
             BeckeWeights.generate_becke_weights(
                 points, radii, centers, select=[0, 1], pt_ind=[0, 10, 50, 99]
             )
+        with self.assertRaises(ValueError):
+            BeckeWeights.generate_becke_weights(
+                points, radii, centers[0], select=[0, 1], pt_ind=[0, 10, 50, 99]
+            )

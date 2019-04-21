@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-"""Summary
-"""
 # OLDGRIDS: Helpful Open-source Research TOol for N-fermion systems.
 # Copyright (C) 2011-2017 The OLDGRIDS Development Team
 #
@@ -18,19 +16,17 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>
-#
-# --
 """MolGrid test file."""
 from unittest import TestCase
 
-import numpy as np
-from numpy.testing import assert_almost_equal
-
 from grid.atomic_grid import AtomicGridFactory
+from grid.basegrid import AtomicGrid, OneDGrid
 from grid.molgrid import MolGrid
-from grid.basegrid import OneDGrid, AtomicGrid
 
 from importlib_resources import path
+
+import numpy as np
+from numpy.testing import assert_almost_equal
 
 
 class TestMolGrid(TestCase):
@@ -212,6 +208,60 @@ class TestMolGrid(TestCase):
         # assert mg.subgrids is None
         # assert mg.k == 3
         # assert mg.random_rotate
+
+    def test_different_aim_weights_h2(self):
+        """Test different aim_weights for molgrid."""
+        coordinates = np.array([[0.0, 0.0, -0.5], [0.0, 0.0, 0.5]], float)
+        atg1 = AtomicGridFactory(
+            self.rgrid,
+            0.5,
+            scales=np.array([]),
+            degs=np.array([17]),
+            center=coordinates[0],
+        )
+        atg2 = AtomicGridFactory(
+            self.rgrid,
+            0.5,
+            scales=np.array([]),
+            degs=np.array([17]),
+            center=coordinates[1],
+        )
+        aim_weights = np.ones(22000)
+        mg = MolGrid(
+            [atg1.atomic_grid, atg2.atomic_grid],
+            np.array([0.5, 0.5]),
+            aim_weights=aim_weights,
+        )
+        dist0 = np.sqrt(((coordinates[0] - mg.points) ** 2).sum(axis=1))
+        dist1 = np.sqrt(((coordinates[1] - mg.points) ** 2).sum(axis=1))
+        fn = np.exp(-2 * dist0) / np.pi + np.exp(-2 * dist1) / np.pi
+        occupation = mg.integrate(fn)
+        assert_almost_equal(occupation, 4.0, decimal=4)
+
+    def test_raise_errors(self):
+        """Test molgrid errors raise."""
+        atg = AtomicGridFactory(
+            self.rgrid,
+            0.5,
+            scales=np.array([]),
+            degs=np.array([17]),
+            center=np.array([0.0, 0.0, 0.0]),
+        )
+        # initilize errors
+        with self.assertRaises(NotImplementedError):
+            MolGrid([atg.atomic_grid], np.array([1.0]), aim_weights="test")
+        with self.assertRaises(ValueError):
+            MolGrid([atg.atomic_grid], np.array([1.0]), aim_weights=np.array(3))
+        with self.assertRaises(TypeError):
+            MolGrid([atg.atomic_grid], np.array([1.0]), aim_weights=[3, 5])
+        # integrate errors
+        molg = MolGrid([atg.atomic_grid], np.array([1.0]))
+        with self.assertRaises(ValueError):
+            molg.integrate()
+        with self.assertRaises(TypeError):
+            molg.integrate(1)
+        with self.assertRaises(ValueError):
+            molg.integrate(np.array([3, 5]))
 
 
 """
