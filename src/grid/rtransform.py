@@ -19,7 +19,6 @@
 #
 # --
 """Transformation from uniform 1D to non-uniform 1D grids."""
-
 from abc import ABC, abstractmethod
 
 import numpy as np
@@ -98,6 +97,16 @@ class BeckeTF(BaseTransform):
     def R(self):
         """float: the scale factor for the transformed radial array."""
         return self._R
+
+    # @classmethod
+    # def transform_grid(cls, oned_grid, r0, radius):
+    #     if not isinstance(oned_grid, Grid):
+    #         raise ValueError(f"Given grid is not OneDGrid, got {type(oned_grid)}")
+    #     R = BeckeTF.find_parameter(oned_grid.points, r0, radius)
+    #     tfm = cls(r0=r0, R=R)
+    #     new_points = tfm.transform(oned_grid.points)
+    #     new_weights = InverseTF(tfm).deriv(new_points) * oned_grid.weights
+    #     return OneDGrid(new_points, new_weights), tfm
 
     @staticmethod
     def find_parameter(array, r0, radius):
@@ -186,7 +195,7 @@ class BeckeTF(BaseTransform):
             1st derivative of Becke transformation at each points
         """
         self._array_type_check(array)
-        return 2 * self._R / (1 - array) ** 2
+        return 2 * self._R / ((1 - array) ** 2)
 
     def deriv2(self, array):
         """Compute the 2nd derivatvie of Becke transformation.

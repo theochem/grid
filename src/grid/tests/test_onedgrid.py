@@ -11,7 +11,7 @@ from grid.onedgrid import (
 import numpy as np
 from numpy.testing import assert_allclose
 
-from scipy.special import roots_genlaguerre, roots_legendre
+from scipy.special import roots_legendre
 
 
 class TestOneDGrid(TestCase):
@@ -28,7 +28,6 @@ class TestOneDGrid(TestCase):
     def test_gausslaguerre(self):
         """Test Guass Laguerre polynomial grid."""
         points, weights = np.polynomial.laguerre.laggauss(10)
-        roots_genlaguerre(10, 0)
         grid = GaussLaguerre(10)
         assert_allclose(grid.points, points)
         assert_allclose(grid.weights, weights)
