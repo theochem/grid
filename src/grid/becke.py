@@ -124,10 +124,14 @@ class BeckeWeights:
         """
         # select could be an array for more complicated case
         # |r_A - r| for each points, nucleus pair
-        if 0 < len(pt_ind) <= 2:
+        if len(pt_ind) == 1:
             raise ValueError("pt_ind need include the ends of each section")
         sectors = max(len(pt_ind) - 1, 1)  # total sectors
         weights = np.zeros(len(points))
+        if atom_coors.ndim != 2:
+            raise ValueError(
+                f"Atom coors need to be in shape (N, 3), got {atom_coors.shape}"
+            )
         if select == []:
             select = np.arange(len(atom_coors))
         if sectors != len(select):
