@@ -20,6 +20,9 @@
 # --
 """Transformation from uniform 1D to non-uniform 1D grids."""
 from abc import ABC, abstractmethod
+import warnings
+
+from grid.basegrid import OneDGrid, RadialGrid
 
 import numpy as np
 
@@ -98,15 +101,15 @@ class BeckeTF(BaseTransform):
         """float: the scale factor for the transformed radial array."""
         return self._R
 
-    # @classmethod
-    # def transform_grid(cls, oned_grid, r0, radius):
-    #     if not isinstance(oned_grid, Grid):
-    #         raise ValueError(f"Given grid is not OneDGrid, got {type(oned_grid)}")
-    #     R = BeckeTF.find_parameter(oned_grid.points, r0, radius)
-    #     tfm = cls(r0=r0, R=R)
-    #     new_points = tfm.transform(oned_grid.points)
-    #     new_weights = InverseTF(tfm).deriv(new_points) * oned_grid.weights
-    #     return OneDGrid(new_points, new_weights), tfm
+    @classmethod
+    def transform_grid(cls, oned_grid, r0, radius):
+        if not isinstance(oned_grid, OneDGrid):
+            raise ValueError(f"Given grid is not OneDGrid, got {type(oned_grid)}")
+        R = BeckeTF.find_parameter(oned_grid.points, r0, radius)
+        tfm = cls(r0=r0, R=R)
+        new_points = tfm.transform(oned_grid.points)
+        new_weights = tfm.deriv(oned_grid.points) * oned_grid.weights
+        return RadialGrid(new_points, new_weights), tfm
 
     @staticmethod
     def find_parameter(array, r0, radius):
@@ -510,67 +513,65 @@ class InverseTF(BaseTransform):
 #         raise NotImplementedError
 
 
-# class IdentityRTransform(RTransform):
-#     def __init__(self, npoint: int):
-#         super().__init__(npoint)
+class IdentityRTransform(BaseTransform):
+    def transform(self, t: np.ndarray):
+        return t
 
-#     def _radius(self, t: float):
-#         return t
+    def deriv(self, t: np.ndarray):
+        t = np.array(t)
+        return np.ones(t.size)
 
-#     def _deriv(self, t: float):
-#         return 1.0
+    def deriv2(self, t: np.ndarray):
+        t = np.array(t)
+        return np.zeros(t.size)
 
-#     def _deriv2(self, t: float):
-#         return 0.0
+    def deriv3(self, t: np.ndarray):
+        t = np.array(t)
+        return np.zeros(t.size)
 
-#     def _deriv3(self, t: float):
-#         return 0.0
-
-#     def _inv(self, r: float):
-#         return r
-
-#     def to_string(self):
-#         return " ".join(["IdentityRTransform", repr(self.npoint)])
-
-#     def chop(self, npoint):
-#         return IdentityRTransform(npoint)
+    def inverse(self, r: np.ndarray):
+        r = np.array(r)
+        return np.ones(r.size)
 
 
-# class LinearRTransform(RTransform):
-#     def __init__(self, rmin: float, rmax: float, npoint: int):
-#         super().__init__(npoint)
-#         if rmin >= rmax:
-#             raise ValueError("rmin must be smaller rmax")
-#         self._rmin = rmin
-#         self._rmax = rmax
-#         self._alpha: float = (rmax - rmin) / (npoint - 1)
+class LinearRTransform(BaseTransform):
+    def __init__(self, rmin: float, rmax: float):
+        if rmin >= rmax:
+            raise ValueError(
+                f"rmin need to be larger than rmax.\n  rmin: {rmin}, rmax: {rmax}"
+            )
+        self._rmin = rmin
+        self._rmax = rmax
 
-#     @property
-#     def rmin(self):
-#         return self._rmin
+    @property
+    def rmin(self):
+        return self._rmin
 
-#     @property
-#     def rmax(self):
-#         return self._rmax
+    @property
+    def rmax(self):
+        return self._rmax
 
-#     @property
-#     def alpha(self):
-#         return self._alpha
+    def transform(self, t: np.ndarray):
+        t = np.array(t)
+        alpha = (self._rmax - self._rmin) / (t.size - 1)
+        return alpha * t + self._rmin
 
-#     def _radius(self, t: float):
-#         return self._alpha * t + self._rmin
+    def deriv(self, t: float):
+        t = np.array(t)
+        alpha = (self._rmax - self._rmin) / (t.size - 1)
+        return np.ones(t.size) * alpha
 
-#     def _deriv(self, t: float):
-#         return self._alpha
+    def deriv2(self, t: float):
+        return np.zeros(t.size)
 
-#     def _deriv2(self, t: float):
-#         return 0.0
+    def deriv3(self, t: float):
+        return np.zeros(t.size)
 
-#     def _deriv3(self, t: float):
-#         return 0.0
+    def inverse(self, r: float):
+        r = np.array(r)
+        alpha = (self._rmax - self._rmin) / (r.size - 1)
+        return (r - self._rmin) / alpha
 
-#     def _inv(self, r: float):
-#         return (r - self._rmin) / self._alpha
 
 #     def to_string(self):
 #         return " ".join(
@@ -590,43 +591,52 @@ class InverseTF(BaseTransform):
 #         return LinearRTransform(rmin, self.rmax, self.npoint / 2)
 
 
-# class ExpRTransform(RTransform):
-#     def __init__(self, rmin: float, rmax: float, npoint: int):
-#         super().__init__(npoint)
-#         if rmin >= rmax:
-#             raise ValueError("rmin must be smaller rmax.")
-#         if (rmin <= 0) or (rmax <= 0.0):
-#             raise ValueError("rmin and rmax must be positive.")
-#         self._rmin = rmin
-#         self._rmax = rmax
-#         self._alpha = np.log(rmax / rmin) / (npoint - 1)
+class ExpRTransform(BaseTransform):
+    def __init__(self, rmin: float, rmax: float):
+        if rmin < 0 or rmax < 0:
+            raise ValueError(
+                f"rmin or rmax need to be positive\n  rmin: {rmin}, rmax: {rmax}"
+            )
+        if rmin >= rmax:
+            raise ValueError(
+                f"rmin need to be smaller than rmax\n  rmin: {rmin}, rmax: {rmax}"
+            )
+        self._rmin = rmin
+        self._rmax = rmax
 
-#     @property
-#     def rmin(self):
-#         return self._rmin
+    @property
+    def rmin(self):
+        return self._rmin
 
-#     @property
-#     def rmax(self):
-#         return self._rmax
+    @property
+    def rmax(self):
+        return self._rmax
 
-#     @property
-#     def alpha(self):
-#         return self._alpha
+    def transform(self, t: float):
+        t = np.array(t)
+        alpha = np.log(self._rmax / self._rmin) / (t.size - 1)
+        return self._rmin * np.exp(t * alpha)
 
-#     def _radius(self, t: float):
-#         return self._rmin * np.exp(t * self._alpha)
+    def deriv(self, t: float):
+        t = np.array(t)
+        alpha = np.log(self._rmax / self._rmin) / (t.size - 1)
+        return self.transform(t) * alpha
 
-#     def _deriv(self, t: float):
-#         return self.radius(t) * self._alpha
+    def deriv2(self, t: float):
+        t = np.array(t)
+        alpha = np.log(self._rmax / self._rmin) / (t.size - 1)
+        return self.deriv(t) * alpha
 
-#     def _deriv2(self, t: float):
-#         return self.deriv(t) * self._alpha
+    def deriv3(self, t: float):
+        t = np.array(t)
+        alpha = np.log(self._rmax / self._rmin) / (t.size - 1)
+        return self.deriv2(t) * alpha
 
-#     def _deriv3(self, t: float):
-#         return self.deriv2(t) * self._alpha
+    def inverse(self, r: float):
+        r = np.array(r)
+        alpha = np.log(self._rmax / self._rmin) / (r.size - 1)
+        return np.log(r / self._rmin) / alpha
 
-#     def _inv(self, r: float):
-#         return np.log(r / self._rmin) / self._alpha
 
 #     def to_string(self):
 #         return " ".join(
@@ -646,56 +656,53 @@ class InverseTF(BaseTransform):
 #         return ExpRTransform(rmin, self.rmax, self.npoint / 2)
 
 
-# class PowerRTransform(RTransform):
-#     def __init__(self, rmin: float, rmax: float, npoint: float):
-#         super().__init__(npoint)
-#         if rmin >= rmax:
-#             raise ValueError("rmin must be smaller rmax.")
-#         if (rmin <= 0.0) or (rmax <= 0.0):
-#             raise ValueError("rmin and rmax must be positive.")
-#         self._power = (np.log(rmax) - np.log(rmin)) / np.log(npoint)
-#         if self._power < 2.0:
-#             raise ValueError("Power must be at least two for a decent intgration")
-#         self._rmin = rmin
-#         self._rmax = rmax
+class PowerRTransform(BaseTransform):
+    def __init__(self, rmin: float, rmax: float):
+        #         super().__init__(npoint)
+        if rmin >= rmax:
+            raise ValueError("rmin must be smaller rmax.")
+        if rmin <= 0 or rmax <= 0:
+            raise ValueError("rmin and rmax must be positive.")
+        self._rmin = rmin
+        self._rmax = rmax
 
-#     @property
-#     def rmin(self):
-#         return self._rmin
+    @property
+    def rmin(self):
+        return self._rmin
 
-#     @property
-#     def rmax(self):
-#         return self._rmax
+    @property
+    def rmax(self):
+        return self._rmax
 
-#     @property
-#     def power(self):
-#         return self._power
+    def transform(self, t: float):
+        t = np.array(t)
+        power = (np.log(self._rmax) - np.log(self._rmin)) / np.log(t.size)
+        if power < 2:
+            warnings.warn(f"power need to be larger than 2\n  power: {power}", RuntimeWarning)
+        return self._rmin * np.power(t + 1, power)
 
-#     def _radius(self, t: float):
-#         return self._rmin * np.power(t + 1, self._power)
+    def deriv(self, t: float):
+        t = np.array(t)
+        power = (np.log(self._rmax) - np.log(self._rmin)) / np.log(t.size)
+        return power * self._rmin * np.power(t + 1, power - 1)
 
-#     def _deriv(self, t: float):
-#         return self._power * self._rmin * np.power(t + 1, self._power - 1)
+    def deriv2(self, t: float):
+        t = np.array(t)
+        power = (np.log(self._rmax) - np.log(self._rmin)) / np.log(t.size)
+        return power * (power - 1) * self._rmin * np.power(t + 1, power - 2)
 
-#     def _deriv2(self, t: float):
-#         return (
-#             self._power
-#             * (self._power - 1)
-#             * self._rmin
-#             * np.power(t + 1, self._power - 2)
-#         )
+    def deriv3(self, t: float):
+        t = np.array(t)
+        power = (np.log(self._rmax) - np.log(self._rmin)) / np.log(t.size)
+        return (
+            power * (power - 1) * (power - 2) * self._rmin * np.power(t + 1, power - 3)
+        )
 
-#     def _deriv3(self, t: float):
-#         return (
-#             self._power
-#             * (self._power - 1)
-#             * (self._power - 2)
-#             * self._rmin
-#             * np.power(t + 1, self._power - 3)
-#         )
+    def inverse(self, r: float):
+        r = np.array(r)
+        power = (np.log(self._rmax) - np.log(self._rmin)) / np.log(r.size)
+        return np.power(r / self._rmin, 1.0 / power) - 1
 
-#     def _inv(self, r: float):
-#         return np.power(r / self._rmin, 1.0 / self._power) - 1
 
 #     def to_string(self):
 #         return " ".join(
@@ -715,44 +722,56 @@ class InverseTF(BaseTransform):
 #         return PowerRTransform(rmin, self.rmax, self.npoint / 2)
 
 
-# class HyperbolicRTransform(RTransform):
-#     def __init__(self, a, b, npoint):
-#         if a <= 0:
-#             raise ValueError("a must be strctly positive.")
-#         if b <= 0:
-#             raise ValueError("b must be strctly positive.")
-#         if b * (npoint - 1) >= 1.0:
-#             raise ValueError("b*(npoint-1) must be smaller than one.")
+class HyperbolicRTransform(BaseTransform):
+    def __init__(self, a, b):
+        if a <= 0:
+            raise ValueError(f"a must be strctly positive.\n  a: {a}")
+        if b <= 0:
+            raise ValueError(f"b must be strctly positive.\n  b: {b}")
+        self._a = a
+        self._b = b
 
-#         super().__init__(npoint)
-#         self._a = a
-#         self._b = b
+    @property
+    def a(self):
+        return self._a
 
-#     @property
-#     def a(self):
-#         return self._a
+    @property
+    def b(self):
+        return self._b
 
-#     @property
-#     def b(self):
-#         return self._b
+    def transform(self, t: float):
+        t = np.array(t)
+        if self._b * (t.size - 1) >= 1.0:
+            raise ValueError("b*(npoint-1) must be smaller than one.")
+        return self._a * t / (1 - self._b * t)
 
-#     def _radius(self, t: float):
-#         return self._a * t / (1 - self._b * t)
+    def deriv(self, t: float):
+        t = np.array(t)
+        if self._b * (t.size - 1) >= 1.0:
+            raise ValueError("b*(npoint-1) must be smaller than one.")
+        x = 1.0 / (1 - self._b * t)
+        return self._a * x * x
 
-#     def _deriv(self, t: float):
-#         x = 1.0 / (1 - self._b * t)
-#         return self._a * x * x
+    def deriv2(self, t: float):
+        t = np.array(t)
+        if self._b * (t.size - 1) >= 1.0:
+            raise ValueError("b*(npoint-1) must be smaller than one.")
+        x = 1.0 / (1 - self._b * t)
+        return 2.0 * self._a * self._b * x ** 3
 
-#     def _deriv2(self, t: float):
-#         x = 1.0 / (1 - self._b * t)
-#         return 2.0 * self._a * self._b * x ** 3
+    def deriv3(self, t: float):
+        t = np.array(t)
+        if self._b * (t.size - 1) >= 1.0:
+            raise ValueError("b*(npoint-1) must be smaller than one.")
+        x = 1.0 / (1 - self._b * t)
+        return 6.0 * self._a * self._b * self._b * x ** 4
 
-#     def _deriv3(self, t: float):
-#         x = 1.0 / (1 - self._b * t)
-#         return 6.0 * self._a * self._b * self._b * x ** 4
+    def inverse(self, r: float):
+        r = np.array(r)
+        if self._b * (r.size - 1) >= 1.0:
+            raise ValueError("b*(npoint-1) must be smaller than one.")
+        return r / (self._a + self._b * r)
 
-#     def _inv(self, r: float):
-#         return r / (self._a + self._b * r)
 
 #     def to_string(self):
 #         return " ".join(

@@ -20,7 +20,7 @@
 #
 # --
 """1D Radial integration grid."""
-from grid.basegrid import Grid
+from grid.basegrid import OneDGrid
 
 import numpy as np
 
@@ -44,13 +44,13 @@ def GaussLaguerre(npoints, alpha=0):
 
     Returns
     -------
-    Grid
+    OneDGrid
         A grid instance with points and weights
     """
     if alpha <= -1:
         raise ValueError(f"Alpha need to be bigger than -1, given {alpha}")
     points, weights = roots_genlaguerre(npoints, alpha)
-    return Grid(points, weights)
+    return OneDGrid(points, weights)
 
 
 def GaussLegendre(npoints):
@@ -63,11 +63,11 @@ def GaussLegendre(npoints):
 
     Returns
     -------
-    Grid
+    OneDGrid
         A grid instance with points and weights
     """
     points, weights = np.polynomial.legendre.leggauss(npoints)
-    return Grid(points, weights)
+    return OneDGrid(points, weights)
 
 
 def GaussChebyshev(npoints):
@@ -80,8 +80,14 @@ def GaussChebyshev(npoints):
 
     Returns
     -------
-    Grid
+    OneDGrid
         A grid instance with points and weights
     """
     points, weights = np.polynomial.chebyshev.chebgauss(npoints)
-    return Grid(points, weights)
+    return OneDGrid(points, weights)
+
+
+def HortonLiner(npoints):
+    points = np.arange(npoints)
+    weights = np.ones(npoints)
+    return OneDGrid(points, weights)
