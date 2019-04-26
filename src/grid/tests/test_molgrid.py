@@ -22,9 +22,10 @@ from unittest import TestCase
 from grid.atomic_grid import AtomicGridFactory
 from grid.basegrid import AtomicGrid, OneDGrid
 from grid.molgrid import MolGrid
+from grid.onedgrid import HortonLinear
+from grid.rtransform import ExpRTransform
 
-from importlib_resources import path
-
+# from importlib_resources import path
 import numpy as np
 from numpy.testing import assert_almost_equal
 
@@ -34,9 +35,11 @@ class TestMolGrid(TestCase):
 
     def setUp(self):
         """Set up radial grid for integral tests."""
-        with path("grid.data.tests", "rgrid.npz") as npzfile:
-            data = np.load(npzfile)
-        self.rgrid = OneDGrid(data["pts"], data["wts"])
+        pts = HortonLinear(100)
+        tf = ExpRTransform(1e-3, 1e1)
+        rad_pts = tf.transform(pts.points)
+        rad_wts = tf.deriv(pts.points) * pts.weights
+        self.rgrid = OneDGrid(rad_pts, rad_wts)
 
     def test_integrate_hydrogen_single_1s(self):
         """Test molecular integral in H atom."""

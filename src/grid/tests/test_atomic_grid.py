@@ -80,7 +80,8 @@ class TestAtomicGrid(TestCase):
             )
             # check for each weight
             assert_allclose(
-                target_grid.weights[ind[i] : ind[i + 1]], ref_grid.weights * rad_wts[i]
+                target_grid.weights[ind[i] : ind[i + 1]],
+                ref_grid.weights * rad_wts[i] * rad_pts[i] ** 2,
             )
 
     def test_atomic_grid(center):

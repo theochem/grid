@@ -87,7 +87,19 @@ def GaussChebyshev(npoints):
     return OneDGrid(points, weights)
 
 
-def HortonLiner(npoints):
+def HortonLinear(npoints):
+    """Generate even space grid.
+
+    Parameters
+    ----------
+    npoints : int
+        Number of points in the grid
+
+    Returns
+    -------
+    OnedGrid
+        A grid instance with points and weights
+    """
     points = np.arange(npoints)
     weights = np.ones(npoints)
     return OneDGrid(points, weights)

@@ -18,192 +18,257 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 #
 # --
+"""RTransform test file."""
 
+from unittest import TestCase
 
-import numpy as np
-from numpy.testing import assert_raises
 from grid.rtransform import (
+    ExpRTransform,
+    HyperbolicRTransform,
     IdentityRTransform,
     LinearRTransform,
-    ExpRTransform,
     PowerRTransform,
-    HyperbolicRTransform,
 )
 
-
-def check_consistency(rtf):
-    ts = np.random.uniform(0, 99, 200)
-    # consistency between radius and radius_array
-    rs = np.zeros(ts.shape)
-    rs = rtf.transform(ts)
-    for i in range(ts.shape[0]):
-        rf_gd = np.ones(200) * ts[i]
-        assert rs[i] == rtf.transform(rf_gd)[0]
-    # consistency between deriv and deriv_array
-    ds = np.zeros(ts.shape)
-    ds = rtf.deriv(ts)
-    for i in range(ts.shape[0]):
-        rf_gd = np.ones(200) * ts[i]
-        assert ds[i] == rtf.deriv(rf_gd)[0]
-    # consistency between deriv2 and deriv2_array
-    d2s = np.zeros(ts.shape)
-    d2s = rtf.deriv2(ts)
-    for i in range(ts.shape[0]):
-        rf_gd = np.ones(200) * ts[i]
-        assert d2s[i] == rtf.deriv2(rf_gd)[0]
-    # consistency between deriv3 and deriv3_array
-    d3s = np.zeros(ts.shape)
-    d3s = rtf.deriv3(ts)
-    for i in range(ts.shape[0]):
-        rf_gd = np.ones(200) * ts[i]
-        assert d3s[i] == rtf.deriv3(rf_gd)[0]
-    # consistency between inv and inv_array
-    ts[:] = 0.0
-    ts = rtf.inverse(rs)
-    for i in range(ts.shape[0]):
-        rf_gd = np.ones(200) * rs[i]
-        assert ts[i] == rtf.inverse(rf_gd)[0]
-    # consistency between inv and radius
-    for i in range(ts.shape[0]):
-        rf_gd = np.ones(200) * ts[i]
-        assert abs(ts[i] - rtf.inverse(rtf.transform(rf_gd))[0]) < 1e-10
-
-    # ts = np.arange(rtf.npoint, dtype=float)
-    # # consistency of get_radii
-    # assert (rtf.get_radii() == rtf.radius(ts)).all()
-    # # consistency of get_deriv
-    # assert (rtf.get_deriv() == rtf.deriv(ts)).all()
-    # # consistency of get_deriv2
-    # assert (rtf.get_deriv2() == rtf.deriv2(ts)).all()
-    # # consistency of get_deriv3
-    # assert (rtf.get_deriv3() == rtf.deriv3(ts)).all()
-
-    # # radii must increase strictly
-    # radii = rtf.get_radii()
-    # assert (radii[1:] > radii[:-1]).all()
+import numpy as np
 
 
-def check_deriv(rtf):
-    ts = np.random.uniform(0, 99, 200)
-    eps = 1e-5
-    ts0 = ts - eps / 2
-    ts1 = ts + eps / 2
-    fns = [(rtf.transform, rtf.deriv), (rtf.deriv, rtf.deriv2), (rtf.deriv2, rtf.deriv3)]
-    for fnr, fnd in fns:
-        ds = fnd(ts)
-        dns = (fnr(ts1) - fnr(ts0)) / eps
-        assert abs(ds - dns).max() < 1e-5
+class TestRTransform(TestCase):
+    """Horton transform test class."""
 
-# def check_chop(rtf1):
-#     assert rtf1.npoint == 100
-#     rtf2 = rtf1.chop(50)
-#     assert rtf1.__class__ == rtf2.__class__
-#     assert rtf2.npoint == 50
-#     assert abs(rtf1.get_radii()[:50] - rtf2.get_radii()).max() < 1e-8
+    @staticmethod
+    def check_consistency(rtf):
+        """Check general consistency."""
+        ts = np.random.uniform(0, 99, 200)
+        # consistency between radius and radius_array
+        rs = np.zeros(ts.shape)
+        rs = rtf.transform(ts)
+        for i in range(ts.shape[0]):
+            rf_gd = np.ones(200) * ts[i]
+            assert rs[i] == rtf.transform(rf_gd)[0]
+        # consistency between deriv and deriv_array
+        ds = np.zeros(ts.shape)
+        ds = rtf.deriv(ts)
+        for i in range(ts.shape[0]):
+            rf_gd = np.ones(200) * ts[i]
+            assert ds[i] == rtf.deriv(rf_gd)[0]
+        # consistency between deriv2 and deriv2_array
+        d2s = np.zeros(ts.shape)
+        d2s = rtf.deriv2(ts)
+        for i in range(ts.shape[0]):
+            rf_gd = np.ones(200) * ts[i]
+            assert d2s[i] == rtf.deriv2(rf_gd)[0]
+        # consistency between deriv3 and deriv3_array
+        d3s = np.zeros(ts.shape)
+        d3s = rtf.deriv3(ts)
+        for i in range(ts.shape[0]):
+            rf_gd = np.ones(200) * ts[i]
+            assert d3s[i] == rtf.deriv3(rf_gd)[0]
+        # consistency between inv and inv_array
+        ts[:] = 0.0
+        ts = rtf.inverse(rs)
+        for i in range(ts.shape[0]):
+            rf_gd = np.ones(200) * rs[i]
+            assert ts[i] == rtf.inverse(rf_gd)[0]
+        # consistency between inv and radius
+        for i in range(ts.shape[0]):
+            rf_gd = np.ones(200) * ts[i]
+            assert abs(ts[i] - rtf.inverse(rtf.transform(rf_gd))[0]) < 1e-10
 
+        # ts = np.arange(rtf.npoint, dtype=float)
+        # # consistency of get_radii
+        # assert (rtf.get_radii() == rtf.radius(ts)).all()
+        # # consistency of get_deriv
+        # assert (rtf.get_deriv() == rtf.deriv(ts)).all()
+        # # consistency of get_deriv2
+        # assert (rtf.get_deriv2() == rtf.deriv2(ts)).all()
+        # # consistency of get_deriv3
+        # assert (rtf.get_deriv3() == rtf.deriv3(ts)).all()
 
-# def check_half(rtf1):
-#     radii1 = rtf1.get_radii()
-#     rtf2 = rtf1.half()
-#     radii2 = rtf2.get_radii()
-#     assert abs(radii1[1::2] - radii2).max() < 1e-9
+        # # radii must increase strictly
+        # radii = rtf.get_radii()
+        # assert (radii[1:] > radii[:-1]).all()
 
+    @staticmethod
+    def check_deriv(rtf):
+        """Check derivative with fd."""
+        ts = np.random.uniform(0, 99, 200)
+        eps = 1e-5
+        ts0 = ts - eps / 2
+        ts1 = ts + eps / 2
+        fns = [
+            (rtf.transform, rtf.deriv),
+            (rtf.deriv, rtf.deriv2),
+            (rtf.deriv2, rtf.deriv3),
+        ]
+        for fnr, fnd in fns:
+            ds = fnd(ts)
+            dns = (fnr(ts1) - fnr(ts0)) / eps
+            assert abs(ds - dns).max() < 1e-5
 
-def test_identity_basics():
-    # gd = HortonLiner(100)
-    rtf = IdentityRTransform()
-    assert rtf.transform(0.0) == 0.0
-    assert rtf.transform(99.0) == 99.0
-    check_consistency(rtf)
-    check_deriv(rtf)
-    # check_chop(rtf)
+    # def check_chop(rtf1):
+    #     assert rtf1.npoint == 100
+    #     rtf2 = rtf1.chop(50)
+    #     assert rtf1.__class__ == rtf2.__class__
+    #     assert rtf2.npoint == 50
+    #     assert abs(rtf1.get_radii()[:50] - rtf2.get_radii()).max() < 1e-8
 
+    # def check_half(rtf1):
+    #     radii1 = rtf1.get_radii()
+    #     rtf2 = rtf1.half()
+    #     radii2 = rtf2.get_radii()
+    #     assert abs(radii1[1::2] - radii2).max() < 1e-9
 
-def test_linear_basics():
-    gd = np.ones(100) * 0
-    rtf = LinearRTransform(-0.7, 0.8)
-    assert abs(rtf.transform(gd)[0] - -0.7) < 1e-15
-    gd = np.ones(100) * 99
-    assert abs(rtf.transform(gd)[0] - 0.8) < 1e-10
-    check_consistency(rtf)
-    check_deriv(rtf)
-    # check_chop(rtf)
-    # check_half(rtf)
+    def test_identity_basics(self):
+        """Test identity tf."""
+        # gd = HortonLiner(100)
+        rtf = IdentityRTransform()
+        assert rtf.transform(0.0) == 0.0
+        assert rtf.transform(99.0) == 99.0
+        self.check_consistency(rtf)
+        self.check_deriv(rtf)
+        # check_chop(rtf)
 
-
-def test_exp_basics():
-    rtf = ExpRTransform(0.1, 1e1)
-    gd = np.ones(100) * 0
-    assert abs(rtf.transform(gd)[0] - 0.1) < 1e-15
-    gd = np.ones(100) * 99
-    assert abs(rtf.transform(gd)[0] - 1e1) < 1e-10
-    check_consistency(rtf)
-    check_deriv(rtf)
-    # check_chop(rtf)
-    # check_half(rtf)
-
-
-def get_power_cases():
-    return [(1e-3, 1e2), (1e-3, 1e3), (1e-3, 1e4), (1e-3, 1e5)]
-
-
-def test_power_basics():
-    cases = get_power_cases()
-    for rmin, rmax in cases:
+    def test_linear_basics(self):
+        """Test linear tf."""
+        gd = np.ones(100) * 0
+        rtf = LinearRTransform(-0.7, 0.8)
+        assert abs(rtf.transform(gd)[0] - -0.7) < 1e-15
         gd = np.ones(100) * 99
-        rtf = PowerRTransform(rmin, rmax)
-        assert abs(rtf.transform(gd)[0] - rmax) < 1e-9
-        check_consistency(rtf)
-        check_deriv(rtf)
+        assert abs(rtf.transform(gd)[0] - 0.8) < 1e-10
+        self.check_consistency(rtf)
+        self.check_deriv(rtf)
         # check_chop(rtf)
         # check_half(rtf)
 
+    def test_exp_basics(self):
+        """Test exponential tf."""
+        rtf = ExpRTransform(0.1, 1e1)
+        gd = np.ones(100) * 0
+        assert abs(rtf.transform(gd)[0] - 0.1) < 1e-15
+        gd = np.ones(100) * 99
+        assert abs(rtf.transform(gd)[0] - 1e1) < 1e-10
+        self.check_consistency(rtf)
+        self.check_deriv(rtf)
+        # check_chop(rtf)
+        # check_half(rtf)
 
-def test_hyperbolic_basics():
-    rtf = HyperbolicRTransform(0.4 / 450, 1.0 / 450)
-    check_consistency(rtf)
-    check_deriv(rtf)
+    @staticmethod
+    def get_power_cases():
+        """Set Helper function for power tf."""
+        return [(1e-3, 1e2), (1e-3, 1e3), (1e-3, 1e4), (1e-3, 1e5)]
 
+    def test_power_basics(self):
+        """Test power tf."""
+        cases = self.get_power_cases()
+        for rmin, rmax in cases:
+            gd = np.ones(100) * 99
+            rtf = PowerRTransform(rmin, rmax)
+            assert abs(rtf.transform(gd)[0] - rmax) < 1e-9
+            self.check_consistency(rtf)
+            self.check_deriv(rtf)
+            # check_chop(rtf)
+            # check_half(rtf)
 
-# def test_identity_properties():
-#     rtf = IdentityRTransform(100)
-#     assert rtf.npoint == 100
+    def test_hyperbolic_basics(self):
+        """Test hyperbolic tf."""
+        rtf = HyperbolicRTransform(0.4 / 450, 1.0 / 450)
+        self.check_consistency(rtf)
+        self.check_deriv(rtf)
 
+    # def test_identity_properties():
+    #     rtf = IdentityRTransform(100)
+    #     assert rtf.npoint == 100
 
-def test_linear_properties():
-    rtf = LinearRTransform(-0.7, 0.8)
-    assert rtf.rmin == -0.7
-    assert rtf.rmax == 0.8
-    # assert rtf.npoint == 100
-    # assert rtf.alpha > 0
-
-
-def test_exp_properties():
-    rtf = ExpRTransform(0.1, 1e1)
-    assert rtf.rmin == 0.1
-    assert rtf.rmax == 1e1
-    # assert rtf.npoint == 100
-    # assert rtf.alpha > 0
-
-
-def test_power_properties():
-    cases = get_power_cases()
-    for rmin, rmax in cases:
-        rtf = PowerRTransform(rmin, rmax)
-        assert rtf.rmin == rmin
-        assert rtf.rmax == rmax
+    def test_linear_properties(self):
+        """Test linear tf properties."""
+        rtf = LinearRTransform(-0.7, 0.8)
+        assert rtf.rmin == -0.7
+        assert rtf.rmax == 0.8
         # assert rtf.npoint == 100
-        # assert rtf.power >= 2
+        # assert rtf.alpha > 0
 
+    def test_exp_properties(self):
+        """Test exponential tf properties."""
+        rtf = ExpRTransform(0.1, 1e1)
+        assert rtf.rmin == 0.1
+        assert rtf.rmax == 1e1
+        # assert rtf.npoint == 100
+        # assert rtf.alpha > 0
 
-def test_hyperbolic_properties():
-    rtf = HyperbolicRTransform(0.4 / 450, 1.0 / 450)
-    assert rtf.a == 0.4 / 450
-    assert rtf.b == 1.0 / 450
-    # assert rtf.npoint == 450
+    def test_power_properties(self):
+        """Test power tf properties."""
+        cases = self.get_power_cases()
+        for rmin, rmax in cases:
+            rtf = PowerRTransform(rmin, rmax)
+            assert rtf.rmin == rmin
+            assert rtf.rmax == rmax
+            # assert rtf.npoint == 100
+            # assert rtf.power >= 2
+
+    def test_hyperbolic_properties(self):
+        """Test hyperbolic tf properties."""
+        rtf = HyperbolicRTransform(0.4 / 450, 1.0 / 450)
+        assert rtf.a == 0.4 / 450
+        assert rtf.b == 1.0 / 450
+        # assert rtf.npoint == 450
+
+    def test_linear_bounds(self):
+        """Test linear tf raise errors."""
+        with self.assertRaises(ValueError):
+            LinearRTransform(1.1, 0.9)
+
+    def test_exp_bounds(self):
+        """Test exponential tf raise errors."""
+        with self.assertRaises(ValueError):
+            ExpRTransform(-0.1, 1.0)
+        with self.assertRaises(ValueError):
+            ExpRTransform(0.1, -1.0)
+        with self.assertRaises(ValueError):
+            ExpRTransform(1.1, 0.9)
+
+    def test_power_bounds(self):
+        """Test power tf raise errors."""
+        with self.assertRaises(ValueError):
+            PowerRTransform(-1.0, 2.0)
+        with self.assertRaises(ValueError):
+            PowerRTransform(0.1, -2.0)
+        with self.assertWarns(RuntimeWarning):
+            a = np.ones(50)
+            tf = PowerRTransform(1.0, 1.1)
+            tf.transform(a)
+        with self.assertRaises(ValueError):
+            PowerRTransform(1.1, 1.0)
+
+    def test_hyperbolic_bounds(self):
+        """Test hyperbolic tf raise errors."""
+        with self.assertRaises(ValueError):
+            HyperbolicRTransform(0, 1.0 / 450)
+        with self.assertRaises(ValueError):
+            HyperbolicRTransform(-0.1, 1.0 / 450)
+        a = np.ones(450)
+        tf = HyperbolicRTransform(0.4, 1.0)
+        with self.assertRaises(ValueError):
+            tf.transform(a)
+        with self.assertRaises(ValueError):
+            tf.deriv(a)
+        with self.assertRaises(ValueError):
+            tf.deriv2(a)
+        with self.assertRaises(ValueError):
+            tf.deriv3(a)
+        with self.assertRaises(ValueError):
+            tf.inverse(a)
+        with self.assertRaises(ValueError):
+            a = np.ones(3)
+            tf = HyperbolicRTransform(0.4, 0.5)
+            tf.transform(a)
+        with self.assertRaises(ValueError):
+            HyperbolicRTransform(0.2, 0.0)
+        with self.assertRaises(ValueError):
+            HyperbolicRTransform(0.2, -1.0)
+
 
 """
-
 def test_exception_string():
     with assert_raises(TypeError):
         RTransform.from_string("Fubar A 5")
@@ -311,49 +376,4 @@ def test_identity_bounds():
     for npoint in -1, 0, 1:
         with assert_raises(ValueError):
             IdentityRTransform(npoint)
-
 """
-
-
-def test_linear_bounds():
-    with assert_raises(ValueError):
-        LinearRTransform(1.1, 0.9)
-
-
-def test_exp_bounds():
-    with assert_raises(ValueError):
-        ExpRTransform(-0.1, 1.0)
-    with assert_raises(ValueError):
-        ExpRTransform(0.1, -1.0)
-    with assert_raises(ValueError):
-        ExpRTransform(1.1, 0.9)
-
-
-def test_power_bounds():
-    with assert_raises(ValueError):
-        PowerRTransform(-1.0, 2.0)
-    with assert_raises(ValueError):
-        PowerRTransform(0.1, -2.0)
-    # with assert_raises(ValueError):
-        # PowerRTransform(1.0, 1.1)
-    with assert_raises(ValueError):
-        PowerRTransform(1.1, 1.0)
-
-
-def test_hyperbolic_bounds():
-    with assert_raises(ValueError):
-        HyperbolicRTransform(0, 1.0 / 450)
-    with assert_raises(ValueError):
-        HyperbolicRTransform(-0.1, 1.0 / 450)
-    with assert_raises(ValueError):
-        a = np.ones(450)
-        tf = HyperbolicRTransform(0.4, 1.0)
-        tf.transform(a)
-    with assert_raises(ValueError):
-        a = np.ones(3)
-        tf = HyperbolicRTransform(0.4, 0.5)
-        tf.transform(a)
-    with assert_raises(ValueError):
-        HyperbolicRTransform(0.2, 0.0)
-    with assert_raises(ValueError):
-        HyperbolicRTransform(0.2, -1.0)
