@@ -131,3 +131,7 @@ class TestTransform(TestCase):
         # inverse init error
         with self.assertRaises(TypeError):
             InverseTF(0.5)
+        # type error for transform_grid
+        with self.assertRaises(TypeError):
+            btf = BeckeTF(0.1, 1.1)
+            btf.transform_grid(np.arange(3))

@@ -22,7 +22,7 @@
 import warnings
 from abc import ABC, abstractmethod
 
-# from grid.basegrid import OneDGrid, RadialGrid
+from grid.basegrid import OneDGrid, RadialGrid
 
 import numpy as np
 
@@ -49,6 +49,30 @@ class BaseTransform(ABC):
     @abstractmethod
     def deriv3(self, array):
         """Abstract method for 3nd derivative of transformation."""
+
+    def transform_grid(self, oned_grid):
+        """Transform given OneDGrid into a proper scaled radial grid.
+
+        Parameters
+        ----------
+        oned_grid : OneDGrid
+            one dimensional grid generated for integration purpose
+
+        Returns
+        -------
+        RadialGrid
+            one dimensional grid spanning from (0, inf(certain number))
+
+        Raises
+        ------
+        TypeError
+            Input is not a proper onedgrid instance.
+        """
+        if not isinstance(oned_grid, OneDGrid):
+            raise TypeError(f"Input grid is not OneDGrid, got {type(oned_grid)}")
+        new_points = self.transform(oned_grid.points)
+        new_weights = self.deriv(oned_grid.points) * oned_grid.weights
+        return RadialGrid(new_points, new_weights)
 
     def _array_type_check(self, array):
         """Check input type of given array.
