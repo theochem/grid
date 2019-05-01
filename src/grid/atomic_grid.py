@@ -8,6 +8,12 @@ import numpy as np
 class AtomicGridFactory:
     """Atomic grid construction class."""
 
+    # construct AtomicGrid
+    # coor_to_poar: np.stack(
+    #     [np.arctan2(X[:, 1], X[:, 0]), np.arccos(X[:, 2], np.linalg.norm(X, axis=1))],
+    #     axis=1,
+    # )
+
     def __init__(
         self, radial_grid, atomic_rad, *, scales, degs, center=np.array([0.0, 0.0, 0.0])
     ):
