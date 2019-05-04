@@ -99,7 +99,8 @@ def generate_lebedev_grid(*, degree=None, size=None):
     """
     degree, size = _select_grid_type(degree=degree, size=size)
     points, weights = _load_grid_arrays(_load_grid_filename(degree, size))
-    return AngularGrid(points, weights)
+    # set weights to 4\pi
+    return AngularGrid(points, weights * 4 * np.pi)
 
 
 def _select_grid_type(*, degree=None, size=None):

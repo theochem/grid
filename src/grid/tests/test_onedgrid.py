@@ -5,6 +5,7 @@ from grid.onedgrid import (
     GaussChebyshev,
     GaussLaguerre,
     GaussLegendre,
+    HortonLinear,
     generate_onedgrid,
 )
 
@@ -45,6 +46,12 @@ class TestOneDGrid(TestCase):
         grid = GaussChebyshev(10)
         assert_allclose(grid.points, points)
         assert_allclose(grid.weights, weights)
+
+    def test_horton_linear(self):
+        """Test horton linear grids."""
+        grid = HortonLinear(10)
+        assert_allclose(grid.points, np.arange(10))
+        assert_allclose(grid.weights, np.ones(10))
 
     def test_errors_raise(self):
         """Test errors raise."""

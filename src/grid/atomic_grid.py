@@ -109,7 +109,7 @@ class AtomicGridFactory:
         return {i: generate_lebedev_grid(degree=i) for i in unique_degs}
 
     @staticmethod
-    def _generate_sphere_grid(one_pt_grid, angle_grid):
+    def _generate_sphere_grid(one_pt_grid, angle_grid, rad_order=2):
         """Generate spherical grid's points(coords) and weights.
 
         Parameters
@@ -123,7 +123,7 @@ class AtomicGridFactory:
         """
         return (
             angle_grid.points * one_pt_grid.points,
-            angle_grid.weights * one_pt_grid.weights,
+            angle_grid.weights * one_pt_grid.weights * one_pt_grid.points ** rad_order,
         )
 
     @staticmethod

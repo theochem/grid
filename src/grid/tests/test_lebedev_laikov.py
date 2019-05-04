@@ -44,13 +44,13 @@ class TestLebedev(TestCase):
             if npoint > previous_npoint:
                 grid = generate_lebedev_grid(size=npoint)
                 assert isinstance(grid, AngularGrid)
-                assert_allclose(grid.weights.sum(), 1.0)
+                assert_allclose(grid.weights.sum(), 1.0 * 4 * np.pi)
                 assert_allclose(grid.points[:, 0].sum(), 0, atol=1e-10)
                 assert_allclose(grid.points[:, 1].sum(), 0, atol=1e-10)
                 assert_allclose(grid.points[:, 2].sum(), 0, atol=1e-10)
-                assert_allclose(np.dot(grid.points[:, 0], grid.weights), 0, atol=1e-15)
-                assert_allclose(np.dot(grid.points[:, 1], grid.weights), 0, atol=1e-15)
-                assert_allclose(np.dot(grid.points[:, 2], grid.weights), 0, atol=1e-15)
+                assert_allclose(np.dot(grid.points[:, 0], grid.weights), 0, atol=1e-10)
+                assert_allclose(np.dot(grid.points[:, 1], grid.weights), 0, atol=1e-10)
+                assert_allclose(np.dot(grid.points[:, 2], grid.weights), 0, atol=1e-10)
             previous_npoint = npoint
 
     def test_errors_and_warnings(self):
