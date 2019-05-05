@@ -1,0 +1,34 @@
+# Python package
+# Create and test a Python package on multiple Python versions.
+# Add steps that analyze code, save the dist with the build record, publish to a PyPI-compatible index, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/python
+
+resources:
+  repositories:
+  - repository: tox
+    type: github
+    endpoint: theochem
+    name: tox-dev/azure-pipelines-template
+    ref: refs/tags/0.1
+jobs:
+- template: run-tox-env.yml@tox
+  parameters:
+    jobs:
+      windows:
+        toxenvs:
+        - py37
+        - py36
+      linux:
+        toxenvs:
+        - py37
+        - py36
+      macOs:
+        toxenvs:
+        - py37
+        - py36
+      check:
+        py: '3.6'
+        toxenvs:
+        - build
+        - flake8
+        - black
