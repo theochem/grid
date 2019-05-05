@@ -106,7 +106,7 @@ class AngularGrid(Grid):
     """Angular lebedev grid."""
 
 
-class AtomicGrid(Grid):
+class SimpleAtomicGrid(Grid):
     """Atomic grid."""
 
     def __init__(self, points, weights, center):

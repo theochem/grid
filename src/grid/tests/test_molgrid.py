@@ -19,8 +19,8 @@
 """MolGrid test file."""
 from unittest import TestCase
 
-from grid.atomic_grid import AtomicGridFactory
-from grid.basegrid import AtomicGrid, OneDGrid
+from grid.atomic_grid import AtomicGrid
+from grid.basegrid import OneDGrid, SimpleAtomicGrid
 from grid.molgrid import MolGrid
 from grid.onedgrid import HortonLinear
 from grid.rtransform import ExpRTransform
@@ -48,15 +48,14 @@ class TestMolGrid(TestCase):
         # rgrid = BeckeTF.transform_grid(oned, 0.001, 0.5)[0]
         # rtf = ExpRTransform(1e-3, 1e1, 100)
         # rgrid = RadialGrid(rtf)
-        atf = AtomicGridFactory(
+        atg1 = AtomicGrid(
             self.rgrid,
             0.5,
             scales=np.array([]),
             degs=np.array([17]),
             center=coordinates,
         )
-        atgrid = atf.atomic_grid
-        mg = MolGrid([atgrid], np.array([0.5]))
+        mg = MolGrid([atg1], np.array([0.5]))
         # mg = BeckeMolGrid(coordinates, numbers, None, (rgrid, 110), random_rotate=False)
         dist0 = np.sqrt(((coordinates - mg.points) ** 2).sum(axis=1))
         fn = np.exp(-2 * dist0) / np.pi
@@ -66,21 +65,21 @@ class TestMolGrid(TestCase):
     def test_integrate_hydrogen_pair_1s(self):
         """Test molecular integral in H2."""
         coordinates = np.array([[0.0, 0.0, -0.5], [0.0, 0.0, 0.5]], float)
-        atg1 = AtomicGridFactory(
+        atg1 = AtomicGrid(
             self.rgrid,
             0.5,
             scales=np.array([]),
             degs=np.array([17]),
             center=coordinates[0],
         )
-        atg2 = AtomicGridFactory(
+        atg2 = AtomicGrid(
             self.rgrid,
             0.5,
             scales=np.array([]),
             degs=np.array([17]),
             center=coordinates[1],
         )
-        mg = MolGrid([atg1.atomic_grid, atg2.atomic_grid], np.array([0.5, 0.5]))
+        mg = MolGrid([atg1, atg2], np.array([0.5, 0.5]))
         dist0 = np.sqrt(((coordinates[0] - mg.points) ** 2).sum(axis=1))
         dist1 = np.sqrt(((coordinates[1] - mg.points) ** 2).sum(axis=1))
         fn = np.exp(-2 * dist0) / np.pi + np.exp(-2 * dist1) / np.pi
@@ -92,21 +91,21 @@ class TestMolGrid(TestCase):
         coordinates = np.array(
             [[0.0, 0.0, -0.5], [0.0, 0.0, 0.5], [0.0, 0.5, 0.0]], float
         )
-        atg1 = AtomicGridFactory(
+        atg1 = AtomicGrid(
             self.rgrid,
             0.5,
             scales=np.array([]),
             degs=np.array([17]),
             center=coordinates[0],
         )
-        atg2 = AtomicGridFactory(
+        atg2 = AtomicGrid(
             self.rgrid,
             0.5,
             scales=np.array([]),
             degs=np.array([17]),
             center=coordinates[1],
         )
-        atg3 = AtomicGridFactory(
+        atg3 = AtomicGrid(
             self.rgrid,
             0.5,
             scales=np.array([]),
@@ -115,7 +114,7 @@ class TestMolGrid(TestCase):
         )
 
         mg = MolGrid(
-            [atg1.atomic_grid, atg2.atomic_grid, atg3.atomic_grid],
+            [atg1, atg2, atg3],
             np.array([0.5, 0.5, 0.5]),
         )
         dist0 = np.sqrt(((coordinates[0] - mg.points) ** 2).sum(axis=1))
@@ -145,21 +144,21 @@ class TestMolGrid(TestCase):
         """Test sub atomic grid attributes."""
         # numbers = np.array([6, 8], int)
         coordinates = np.array([[0.0, 0.2, -0.5], [0.1, 0.0, 0.5]], float)
-        atg1 = AtomicGridFactory(
+        atg1 = AtomicGrid(
             self.rgrid,
             1.228,
             scales=np.array([]),
             degs=np.array([17]),
             center=coordinates[0],
         )
-        atg2 = AtomicGridFactory(
+        atg2 = AtomicGrid(
             self.rgrid,
             0.945,
             scales=np.array([]),
             degs=np.array([17]),
             center=coordinates[1],
         )
-        mg = MolGrid([atg1.atomic_grid, atg2.atomic_grid], np.array([1.228, 0.945]))
+        mg = MolGrid([atg1, atg2], np.array([1.228, 0.945]), store=True)
         # mg = BeckeMolGrid(coordinates, numbers, None, (rgrid, 110), mode='keep')
 
         assert mg.size == 2 * 110 * 100
@@ -176,33 +175,31 @@ class TestMolGrid(TestCase):
             assert atgrid.size == 100 * 110
             assert atgrid.points.shape == (100 * 110, 3)
             assert atgrid.weights.shape == (100 * 110,)
-            # assert atgrid.subgrids is None
-            # assert atgrid.number == numbers[i]
             assert (atgrid.center == coordinates[i]).all()
-            # assert atgrid.rgrid.rtransform == rtf
-            # assert (atgrid.nlls == [110] * 100).all()
-            # assert atgrid.nsphere == 100
-            # assert atgrid.random_rotate
+        mg = MolGrid([atg1, atg2], np.array([1.228, 0.945]))
+        for i in range(2):
+            atgrid = mg[i]
+            assert isinstance(atgrid, SimpleAtomicGrid)
 
     def test_molgrid_attrs(self):
         """Test MolGrid attributes."""
         # numbers = np.array([6, 8], int)
         coordinates = np.array([[0.0, 0.2, -0.5], [0.1, 0.0, 0.5]], float)
-        atg1 = AtomicGridFactory(
+        atg1 = AtomicGrid(
             self.rgrid,
             1.228,
             scales=np.array([]),
             degs=np.array([17]),
             center=coordinates[0],
         )
-        atg2 = AtomicGridFactory(
+        atg2 = AtomicGrid(
             self.rgrid,
             0.945,
             scales=np.array([]),
             degs=np.array([17]),
             center=coordinates[1],
         )
-        mg = MolGrid([atg1.atomic_grid, atg2.atomic_grid], np.array([1.228, 0.945]))
+        mg = MolGrid([atg1, atg2], np.array([1.228, 0.945]))
 
         assert mg.size == 2 * 110 * 100
         assert mg.points.shape == (mg.size, 3)
@@ -215,14 +212,14 @@ class TestMolGrid(TestCase):
     def test_different_aim_weights_h2(self):
         """Test different aim_weights for molgrid."""
         coordinates = np.array([[0.0, 0.0, -0.5], [0.0, 0.0, 0.5]], float)
-        atg1 = AtomicGridFactory(
+        atg1 = AtomicGrid(
             self.rgrid,
             0.5,
             scales=np.array([]),
             degs=np.array([17]),
             center=coordinates[0],
         )
-        atg2 = AtomicGridFactory(
+        atg2 = AtomicGrid(
             self.rgrid,
             0.5,
             scales=np.array([]),
@@ -231,7 +228,7 @@ class TestMolGrid(TestCase):
         )
         aim_weights = np.ones(22000)
         mg = MolGrid(
-            [atg1.atomic_grid, atg2.atomic_grid],
+            [atg1, atg2],
             np.array([0.5, 0.5]),
             aim_weights=aim_weights,
         )
@@ -243,7 +240,7 @@ class TestMolGrid(TestCase):
 
     def test_raise_errors(self):
         """Test molgrid errors raise."""
-        atg = AtomicGridFactory(
+        atg = AtomicGrid(
             self.rgrid,
             0.5,
             scales=np.array([]),
@@ -252,13 +249,13 @@ class TestMolGrid(TestCase):
         )
         # initilize errors
         with self.assertRaises(NotImplementedError):
-            MolGrid([atg.atomic_grid], np.array([1.0]), aim_weights="test")
+            MolGrid([atg], np.array([1.0]), aim_weights="test")
         with self.assertRaises(ValueError):
-            MolGrid([atg.atomic_grid], np.array([1.0]), aim_weights=np.array(3))
+            MolGrid([atg], np.array([1.0]), aim_weights=np.array(3))
         with self.assertRaises(TypeError):
-            MolGrid([atg.atomic_grid], np.array([1.0]), aim_weights=[3, 5])
+            MolGrid([atg], np.array([1.0]), aim_weights=[3, 5])
         # integrate errors
-        molg = MolGrid([atg.atomic_grid], np.array([1.0]))
+        molg = MolGrid([atg], np.array([1.0]))
         with self.assertRaises(ValueError):
             molg.integrate()
         with self.assertRaises(TypeError):

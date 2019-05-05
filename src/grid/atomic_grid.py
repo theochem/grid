@@ -1,11 +1,11 @@
 """Module for generating Atomic Grid."""
-from grid.basegrid import AtomicGrid, Grid
+from grid.basegrid import Grid
 from grid.lebedev import generate_lebedev_grid
 
 import numpy as np
 
 
-class AtomicGridFactory:
+class AtomicGrid(Grid):
     """Atomic grid construction class."""
 
     # construct AtomicGrid
@@ -22,7 +22,8 @@ class AtomicGridFactory:
         Parameters
         ----------
         radial_grid : Grid
-            Radial grid for each unit spherical shell
+            Radial grid for x in xrange(1,10):
+                pass each unit spherical shell
         atomic_rad : float
             Atomic radium for targit atom
         scales : np.ndarray(N,), keyword-only argument
@@ -59,20 +60,31 @@ class AtomicGridFactory:
         rad_degs = self._find_l_for_rad_list(
             radial_grid.points, atomic_rad, scales, degs
         )
-        self._atomic_grid, self._indices = self._generate_atomic_grid(
+        self._points, self._weights, self._indices = self._generate_atomic_grid(
             radial_grid, rad_degs, center
         )
+        self._size = len(self._weights)
+        self._max_l = np.max(degs)
 
-    @property
-    def atomic_grid(self):
-        """AtomicGrid: the generate atomic grid for input atoms."""
-        return self._atomic_grid
+    # obselete property
+    # @property
+    # def atomic_grid(self):
+    #     """AtomicGrid: the generate atomic grid for input atoms."""
+    #     return self._atomic_grid
 
     @property
     def indices(self):
         """np.ndarray(M+1,): Indices saved for each spherical shell."""
         # M is the number of points on radial grid.
         return self._indices
+
+    @property
+    def center(self):
+        return self._center
+
+    @property
+    def max_L(self):
+        return self._max_l
 
     @staticmethod
     def _find_l_for_rad_list(radial_arrays, atomic_rad, scales, degs):
@@ -148,17 +160,19 @@ class AtomicGridFactory:
         if len(degs) != rad_grid.size:
             raise ValueError("The shape of radial grid does not match given degs.")
         all_points, all_weights = [], []
-        sphere_grids = AtomicGridFactory._preload_unit_sphere_grid(degs)
+        sphere_grids = AtomicGrid._preload_unit_sphere_grid(degs)
         index_array = np.zeros(len(degs) + 1, dtype=int)  # set index to int
         for i, j in enumerate(degs):
-            points, weights = AtomicGridFactory._generate_sphere_grid(
+            points, weights = AtomicGrid._generate_sphere_grid(
                 rad_grid[i], sphere_grids[j]
             )
             index_array[i + 1] = index_array[i] + len(points)
             all_points.append(points)
             all_weights.append(weights)
         indices = index_array
-        atomic_grid = AtomicGrid(
-            np.vstack(all_points) + center, np.hstack(all_weights), center
-        )
-        return atomic_grid, indices
+        points = np.vstack(all_points) + center
+        weights = np.hstack(all_weights)
+        # atomic_grid = AtomicGrid(
+        #     np.vstack(all_points) + center, np.hstack(all_weights), center
+        # )
+        return points, weights, indices
