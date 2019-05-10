@@ -95,3 +95,12 @@ class TestInterpolate(TestCase):
         interp = interpelate(result, 6, semi_sph_c[:, 0], semi_sph_c[:, 1])
         # same result from points and interpolation
         assert_allclose(interp, values[atgrid.indices[5] : atgrid.indices[6]])
+
+        # random multiple interpolation test
+        for _ in range(100):
+            indices = np.random.randint(1, 11, np.random.randint(1, 10))
+            interp = interpelate(result, indices, semi_sph_c[:, 0], semi_sph_c[:, 1])
+            for i, j in enumerate(indices):
+                assert_allclose(
+                    interp[i], values[atgrid.indices[j - 1] : atgrid.indices[j]]
+                )

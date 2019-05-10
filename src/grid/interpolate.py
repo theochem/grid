@@ -26,17 +26,6 @@ def _generate_sph_paras(max_l):
     return l_list, m_list
 
 
-# def _prepare_sph_harms(l_list, m_list):
-#     return partial(sph_harm, m=m_list[:, None, None], n=l_list[None, :, None])
-
-
-# def _calculate_sph_harms(theta, phi, max_l):
-#     # theta: Azimuthal [0, 2pi]
-#     # phi: Polar [0, pi]
-#     sph_func = _prepare_sph_harms(*_generate_sph_paras(max_l))
-#     return sph_func(theta, phi)
-
-
 def _convert_ylm_to_zlm(sp_harm_arrs):
     ms, ls, arrs = sp_harm_arrs.shape  # got list of Ls, and Ms
     # ls = l_max + 1
@@ -55,13 +44,6 @@ def _convert_ylm_to_zlm(sp_harm_arrs):
     return s_h_r
 
 
-# def atomic_sph_harm_values(atomic_grid, max_l):
-#     # compute theta and phi
-#     atomic_grid.convert_cart_to_sph()
-#     theta, phi = atomic_grid.sph_grid
-#     return calculate_sph_harms(theta, phi, max_l)
-
-
 def condense_values_with_sph_harms(sph_harm, value_arrays, weights, indices, radial):
     prod_value = sph_harm * value_arrays * weights
     total = len(indices) - 1
@@ -73,8 +55,15 @@ def condense_values_with_sph_harms(sph_harm, value_arrays, weights, indices, rad
     return CubicSpline(x=radial, y=ml_sph_value)
 
 
-def interpelate(spline, r_point, theta, phi):
-    r_value = spline(r_point)
-    l_max = r_value.shape[1] - 1
+def interpelate(spline, r_points, theta, phi):
+    r_value = spline(r_points)
+    l_max = r_value.shape[-1] - 1
     r_sph_harm = generate_real_sph_harms(l_max, theta, phi)
-    return np.sum(r_sph_harm * r_value[:, :, None], axis=(0, 1)) / (r_point ** 2)
+    # single value interpolation
+    if isinstance(r_points, (int, np.integer)):
+        return np.sum(r_sph_harm * r_value[..., None], axis=(0, 1)) / (r_points ** 2)
+    # intepolate for multiple values
+    else:
+        # convert to np.array if list
+        r_points = np.array(r_points)
+        return np.sum(r_sph_harm * r_value[..., None], axis=(-3, -2)) / (r_points ** 2)[:, None]
