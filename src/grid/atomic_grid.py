@@ -40,6 +40,8 @@ class AtomicGrid(Grid):
         ValueError
             Length of degs should be one more than scales
         """
+        scales = np.array(scales)
+        degs = np.array(degs)
         if not isinstance(radial_grid, Grid):
             raise TypeError(
                 f"Radial_grid is not an instance of Grid, got {type(radial_grid)}."
@@ -65,12 +67,17 @@ class AtomicGrid(Grid):
         )
         self._size = len(self._weights)
         self._max_l = np.max(degs)
+        self._sph_grid = None
 
     # obselete property
     # @property
     # def atomic_grid(self):
     #     """AtomicGrid: the generate atomic grid for input atoms."""
     #     return self._atomic_grid
+
+    @property
+    def points(self):
+        return self._points + self._center
 
     @property
     def indices(self):
@@ -85,6 +92,24 @@ class AtomicGrid(Grid):
     @property
     def max_L(self):
         return self._max_l
+
+    @property
+    def sph_grid(self):
+        if self._sph_grid is not None:
+            return self._sph_grid
+        else:
+            NotImplementedError
+
+    def convert_cart_to_sph(self):
+        # if self._sph_grid is not None:
+        #     return
+        # radial
+        r = np.linalg.norm(self._points, axis=1)
+        # polar angle: arccos(z / r)
+        phi = np.arccos(self._points[:, 2] / r)
+        # azimuthal angle  arctan2(y / x)
+        theta = np.arctan2(self._points[:, 1], self._points[:, 0])
+        return np.hstack([theta[:, None], phi[:, None]])
 
     @staticmethod
     def _find_l_for_rad_list(radial_arrays, atomic_rad, scales, degs):
@@ -170,7 +195,7 @@ class AtomicGrid(Grid):
             all_points.append(points)
             all_weights.append(weights)
         indices = index_array
-        points = np.vstack(all_points) + center
+        points = np.vstack(all_points)
         weights = np.hstack(all_weights)
         # atomic_grid = AtomicGrid(
         #     np.vstack(all_points) + center, np.hstack(all_weights), center

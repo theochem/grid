@@ -101,7 +101,7 @@ class TestAtomicGrid(TestCase):
             rad_grid, degs, ref_center
         )
         # diff grid points diff by center and same weights
-        assert_allclose(pts + ref_center, ref_pts)
+        assert_allclose(pts, ref_pts)
         assert_allclose(wts, ref_wts)
         # assert_allclose(target_grid.center + ref_center, ref_grid.center)
 
