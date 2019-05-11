@@ -24,6 +24,7 @@ class TestAtomicGrid(TestCase):
         ag_ob = AtomicGrid(radial_grid, atomic_rad, scales=scales, degs=degs)
         assert isinstance(ag_ob, AtomicGrid)
         assert len(ag_ob.indices) == 11
+        assert ag_ob.l_max == 15
         ag_ob = AtomicGrid(
             radial_grid, atomic_rad, scales=np.array([]), degs=np.array([6])
         )
@@ -65,9 +66,7 @@ class TestAtomicGrid(TestCase):
         rad_grid = Grid(rad_pts, rad_wts)
         degs = np.array([3, 5, 7])
         center = np.array([0, 0, 0])
-        pts, wts, ind = AtomicGrid._generate_atomic_grid(
-            rad_grid, degs, center
-        )
+        pts, wts, ind = AtomicGrid._generate_atomic_grid(rad_grid, degs, center)
         assert len(pts) == 46
         assert_equal(ind, [0, 6, 20, 46])
         # set tests for slicing grid from atomic grid
@@ -75,9 +74,7 @@ class TestAtomicGrid(TestCase):
             # set each layer of points
             ref_grid = generate_lebedev_grid(degree=degs[i])
             # check for each point
-            assert_allclose(
-                pts[ind[i] : ind[i + 1]], ref_grid.points * rad_pts[i]
-            )
+            assert_allclose(pts[ind[i] : ind[i + 1]], ref_grid.points * rad_pts[i])
             # check for each weight
             assert_allclose(
                 wts[ind[i] : ind[i + 1]],
@@ -94,9 +91,7 @@ class TestAtomicGrid(TestCase):
         center = np.array([0, 0, 0])
         # randome center
         ref_center = np.random.rand(3)
-        pts, wts, ind = AtomicGrid._generate_atomic_grid(
-            rad_grid, degs, center
-        )
+        pts, wts, ind = AtomicGrid._generate_atomic_grid(rad_grid, degs, center)
         ref_pts, ref_wts, ref_ind = AtomicGrid._generate_atomic_grid(
             rad_grid, degs, ref_center
         )

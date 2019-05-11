@@ -1,32 +1,77 @@
-# from functools import partial
+"""Interpolation module for evaluating function value at any point."""
+
 import warnings
 
 import numpy as np
 
-from scipy.special import sph_harm
 from scipy.interpolate import CubicSpline
+from scipy.special import sph_harm
 
 
-def generate_real_sph_harms(max_l, theta, phi):
-    sph_h = generate_sph_harms(max_l, theta, phi)
+def generate_real_sph_harms(l_max, theta, phi):
+    """Generate real spherical harmonics.
+
+    Parameters
+    ----------
+    l_max : int
+        largest angular degree
+    theta : np.ndarray(N,)
+        Azimuthal angles
+    phi : np.ndarray(N,)
+        Polar angles
+
+    Returns
+    -------
+    np.ndarray(l_max * 2 + 1, l_max + 1, N)
+        value of angular grid in each m, n sperical harmonics
+    """
+    sph_h = generate_sph_harms(l_max, theta, phi)
     return np.nan_to_num(_convert_ylm_to_zlm(sph_h))
 
 
-def generate_sph_harms(max_l, theta, phi):
+def generate_sph_harms(l_max, theta, phi):
+    """Generate complex spherical harmonics.
+
+    Parameters
+    ----------
+    l_max : int
+        largest angular degree
+    theta : np.ndarray(N,)
+        Azimuthal angles
+    phi : np.ndarray(N,)
+        Polar angles
+
+    Returns
+    -------
+    np.ndarray(l_max * 2 + 1, l_max + 1, N)
+        value of angular grid in each m, n sperical harmonics
+    """
     # theta azimuthal, phi polar
-    l, m = _generate_sph_paras(max_l)
+    l, m = _generate_sph_paras(l_max)
     return sph_harm(m[:, None, None], l[None, :, None], theta, phi)
 
 
-def _generate_sph_paras(max_l):
-    l_list = np.arange(max_l + 1)
-    m_list_p = np.arange(max_l + 1)
-    m_list_n = np.arange(-max_l, 0)
+def _generate_sph_paras(l_max):
+    """Generate proper l and m list for l.
+
+    Parameters
+    ----------
+    l_max : int
+
+    Returns
+    -------
+    list
+        l = [0, 1, 2.., l_max], m = [0, 1, ... l_max, -l_max, ..., -1]
+    """
+    l_list = np.arange(l_max + 1)
+    m_list_p = np.arange(l_max + 1)
+    m_list_n = np.arange(-l_max, 0)
     m_list = np.append(m_list_p, m_list_n)
     return l_list, m_list
 
 
 def _convert_ylm_to_zlm(sp_harm_arrs):
+    """Converge complex spherical into real sperical harmonics."""
     ms, ls, arrs = sp_harm_arrs.shape  # got list of Ls, and Ms
     # ls = l_max + 1
     # ms = 2 * l_max + 1
@@ -44,7 +89,27 @@ def _convert_ylm_to_zlm(sp_harm_arrs):
     return s_h_r
 
 
-def condense_values_with_sph_harms(sph_harm, value_arrays, weights, indices, radial):
+def spline_with_sph_harms(sph_harm, value_arrays, weights, indices, radial):
+    """Compute spline with real spherical harmonics.
+
+    Parameters
+    ----------
+    sph_harm : np.ndarray(M, L, N, N)
+        spherical harmonics values of m, l, theta, phi
+    value_arrays : np.ndarray(N,)
+        fuction values on each point
+    weights : np.ndarray(N,)
+        weights of each point on the grid
+    indices : list[int]
+        indices of each chank for each radial angular partsption
+    radial : np.ndarray(K,)
+        radial coordinates of atomic grid
+
+    Returns
+    -------
+    scipy.CubicSpline
+        CubicSpline object for interpolating values
+    """
     prod_value = sph_harm * value_arrays * weights
     total = len(indices) - 1
     axis_value = []
@@ -56,6 +121,24 @@ def condense_values_with_sph_harms(sph_harm, value_arrays, weights, indices, rad
 
 
 def interpelate(spline, r_points, theta, phi):
+    """Interpolate angular points on given r value.
+
+    Parameters
+    ----------
+    spline : scipy.CubicSpline
+        CubicSpline object for interpolating function value
+    r_points : float or list[float]
+        Radial value to interpolate function values
+    theta : np.ndarray(N,)
+        Azimuthal angle of angular grid
+    phi : np.ndarray(N,)
+        Polar angle of angular grid
+
+    Returns
+    -------
+    np.ndarry(N,) or np.ndarray(n, N)
+        Interpolated function value at spherical grid
+    """
     r_value = spline(r_points)
     l_max = r_value.shape[-1] - 1
     r_sph_harm = generate_real_sph_harms(l_max, theta, phi)
@@ -66,4 +149,7 @@ def interpelate(spline, r_points, theta, phi):
     else:
         # convert to np.array if list
         r_points = np.array(r_points)
-        return np.sum(r_sph_harm * r_value[..., None], axis=(-3, -2)) / (r_points ** 2)[:, None]
+        return (
+            np.sum(r_sph_harm * r_value[..., None], axis=(-3, -2))
+            / (r_points ** 2)[:, None]
+        )

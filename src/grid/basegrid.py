@@ -107,7 +107,7 @@ class AngularGrid(Grid):
 
 
 class SimpleAtomicGrid(Grid):
-    """Atomic grid."""
+    """Simplified Atomic grid."""
 
     def __init__(self, points, weights, center):
         """Initialize an atomic grid.

@@ -27,7 +27,7 @@ from grid.rtransform import ExpRTransform
 
 # from importlib_resources import path
 import numpy as np
-from numpy.testing import assert_almost_equal
+from numpy.testing import assert_allclose, assert_almost_equal
 
 
 class TestMolGrid(TestCase):
@@ -113,10 +113,7 @@ class TestMolGrid(TestCase):
             center=coordinates[2],
         )
 
-        mg = MolGrid(
-            [atg1, atg2, atg3],
-            np.array([0.5, 0.5, 0.5]),
-        )
+        mg = MolGrid([atg1, atg2, atg3], np.array([0.5, 0.5, 0.5]))
         dist0 = np.sqrt(((coordinates[0] - mg.points) ** 2).sum(axis=1))
         dist1 = np.sqrt(((coordinates[1] - mg.points) ** 2).sum(axis=1))
         dist2 = np.sqrt(((coordinates[2] - mg.points) ** 2).sum(axis=1))
@@ -180,6 +177,7 @@ class TestMolGrid(TestCase):
         for i in range(2):
             atgrid = mg[i]
             assert isinstance(atgrid, SimpleAtomicGrid)
+            assert_allclose(atgrid.center, mg._coors[i])
 
     def test_molgrid_attrs(self):
         """Test MolGrid attributes."""
@@ -227,11 +225,7 @@ class TestMolGrid(TestCase):
             center=coordinates[1],
         )
         aim_weights = np.ones(22000)
-        mg = MolGrid(
-            [atg1, atg2],
-            np.array([0.5, 0.5]),
-            aim_weights=aim_weights,
-        )
+        mg = MolGrid([atg1, atg2], np.array([0.5, 0.5]), aim_weights=aim_weights)
         dist0 = np.sqrt(((coordinates[0] - mg.points) ** 2).sum(axis=1))
         dist1 = np.sqrt(((coordinates[1] - mg.points) ** 2).sum(axis=1))
         fn = np.exp(-2 * dist0) / np.pi + np.exp(-2 * dist1) / np.pi

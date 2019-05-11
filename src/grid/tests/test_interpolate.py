@@ -1,26 +1,30 @@
 """Interpolation tests file."""
 from unittest import TestCase
 
-from numpy.testing import assert_allclose, assert_array_equal, assert_almost_equal
-import numpy as np
-
 from grid.atomic_grid import AtomicGrid
-from grid.lebedev import generate_lebedev_grid
 from grid.interpolate import (
-    condense_values_with_sph_harms,
-    interpelate,
     _generate_sph_paras,
-    generate_sph_harms,
     generate_real_sph_harms,
+    generate_sph_harms,
+    interpelate,
+    spline_with_sph_harms,
 )
+from grid.lebedev import generate_lebedev_grid
 from grid.onedgrid import HortonLinear
+
+import numpy as np
+from numpy.testing import assert_allclose, assert_almost_equal, assert_array_equal
 
 
 class TestInterpolate(TestCase):
+    """Interpolation test class."""
+
     def setUp(self):
+        """Generate atomic grid for constant test call."""
         self.ang_grid = generate_lebedev_grid(degree=7)
 
     def test_generate_sph_parameters(self):
+        """Test spherical harmonics parameter generator function."""
         for max_l in range(20):
             l, m = _generate_sph_paras(max_l)
             assert_array_equal(l, np.arange(max_l + 1))
@@ -30,6 +34,7 @@ class TestInterpolate(TestCase):
             assert_array_equal(m[max_l + 1 :], np.arange(-max_l, 0))
 
     def test_generate_sph_harms(self):
+        """Tets generated spherical harmonics values."""
         pts = self.ang_grid.points
         wts = self.ang_grid.weights
         r = np.linalg.norm(pts, axis=1)
@@ -54,6 +59,7 @@ class TestInterpolate(TestCase):
                 assert_almost_equal(re, 1)
 
     def test_generate_real_sph_harms(self):
+        """Test generated real spherical harmonics values."""
         pts = self.ang_grid.points
         wts = self.ang_grid.weights
         r = np.linalg.norm(pts, axis=1)
@@ -79,16 +85,19 @@ class TestInterpolate(TestCase):
             assert np.sum(np.isnan(re)) == 0
 
     def helper_func_power(self, points):
+        """Compute function value for test interpolation."""
         return 2 * points[:, 0] ** 2 + 3 * points[:, 1] ** 2 + 4 * points[:, 2] ** 2
 
-    def test_condense_sph_and_interp(self):
+    def test_cubicpline_and_interp(self):
+        """Test cubicspline interpolation values."""
         rad = HortonLinear(10)
         rad._points += 1
         atgrid = AtomicGrid(rad, 1, scales=[], degs=[7])
         sph_coor = atgrid.convert_cart_to_sph()
         values = self.helper_func_power(atgrid.points)
-        r_sph = generate_real_sph_harms(3, sph_coor[:, 0], sph_coor[:, 1])
-        result = condense_values_with_sph_harms(
+        l_max = atgrid.l_max // 2
+        r_sph = generate_real_sph_harms(l_max, sph_coor[:, 0], sph_coor[:, 1])
+        result = spline_with_sph_harms(
             r_sph, values, atgrid.weights, atgrid.indices, rad.points
         )
         semi_sph_c = sph_coor[atgrid.indices[5] : atgrid.indices[6]]

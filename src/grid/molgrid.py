@@ -1,5 +1,5 @@
 """Molecular grid class."""
-from grid.atomic_grid import AtomicGrid
+# from grid.atomic_grid import AtomicGrid
 from grid.basegrid import Grid, SimpleAtomicGrid
 from grid.becke import BeckeWeights
 

@@ -22,10 +22,16 @@
 from unittest import TestCase
 
 from grid.basegrid import AngularGrid
-from grid.lebedev import _select_grid_type, generate_lebedev_grid, n_degree, n_points
+from grid.lebedev import (
+    _select_grid_type,
+    generate_lebedev_grid,
+    match_degree,
+    n_degree,
+    n_points,
+)
 
 import numpy as np
-from numpy.testing import assert_allclose, assert_equal
+from numpy.testing import assert_allclose, assert_array_equal, assert_equal
 
 
 class TestLebedev(TestCase):
@@ -52,6 +58,18 @@ class TestLebedev(TestCase):
                 assert_allclose(np.dot(grid.points[:, 1], grid.weights), 0, atol=1e-10)
                 assert_allclose(np.dot(grid.points[:, 2], grid.weights), 0, atol=1e-10)
             previous_npoint = npoint
+
+    def test_match_degree(self):
+        """Test match proper degree for random given values."""
+        # test array 1
+        num_list1 = [3, 4, 5, 6, 7, 8, 9, 10]
+        result1 = match_degree(num_list1)
+        assert_array_equal(result1, [3, 5, 5, 7, 7, 9, 9, 11])
+
+        # test array 2
+        num_list2 = [33, 34, 35, 36, 37, 38, 39, 40]
+        result2 = match_degree(num_list2)
+        assert_array_equal(result2, [35, 35, 35, 41, 41, 41, 41, 41])
 
     def test_errors_and_warnings(self):
         """Tests for errors and warning."""

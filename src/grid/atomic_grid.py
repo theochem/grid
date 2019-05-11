@@ -1,6 +1,6 @@
 """Module for generating Atomic Grid."""
 from grid.basegrid import Grid
-from grid.lebedev import generate_lebedev_grid
+from grid.lebedev import generate_lebedev_grid, match_degree
 
 import numpy as np
 
@@ -42,6 +42,7 @@ class AtomicGrid(Grid):
         """
         scales = np.array(scales)
         degs = np.array(degs)
+        # check stage
         if not isinstance(radial_grid, Grid):
             raise TypeError(
                 f"Radial_grid is not an instance of Grid, got {type(radial_grid)}."
@@ -56,27 +57,23 @@ class AtomicGrid(Grid):
             )
         if len(center) != 3:
             raise ValueError(f"Center should only have 3 entries, got {len(center)}.")
+        # assign stage
         self._center = center
         self._radial_grid = radial_grid
         # initiate atomic grid property as None
         rad_degs = self._find_l_for_rad_list(
-            radial_grid.points, atomic_rad, scales, degs
+            self._radial_grid.points, atomic_rad, scales, degs
         )
+        # set real degree to each rad point
+        self._rad_degs = match_degree(rad_degs)
         self._points, self._weights, self._indices = self._generate_atomic_grid(
-            radial_grid, rad_degs, center
+            self._radial_grid, self._rad_degs, center
         )
         self._size = len(self._weights)
-        self._max_l = np.max(degs)
-        self._sph_grid = None
-
-    # obselete property
-    # @property
-    # def atomic_grid(self):
-    #     """AtomicGrid: the generate atomic grid for input atoms."""
-    #     return self._atomic_grid
 
     @property
     def points(self):
+        """np.npdarray(N, 3): cartesian coordinates of points in grid."""
         return self._points + self._center
 
     @property
@@ -87,29 +84,28 @@ class AtomicGrid(Grid):
 
     @property
     def center(self):
+        """np.ndarray(3,): Center of atomic grid."""
         return self._center
 
     @property
-    def max_L(self):
-        return self._max_l
-
-    @property
-    def sph_grid(self):
-        if self._sph_grid is not None:
-            return self._sph_grid
-        else:
-            NotImplementedError
+    def l_max(self):
+        """int: Largest angular degree L value in angular grids."""
+        return np.max(self._rad_degs)
 
     def convert_cart_to_sph(self):
-        # if self._sph_grid is not None:
-        #     return
-        # radial
+        """Compute spherical coordinates of the grid.
+
+        Returns
+        -------
+        np.ndarray(N, 3):
+            [azimuthal angle(0, 2pi), polar angle(0, pi), radii]
+        """
         r = np.linalg.norm(self._points, axis=1)
         # polar angle: arccos(z / r)
         phi = np.arccos(self._points[:, 2] / r)
-        # azimuthal angle  arctan2(y / x)
+        # azimuthal angle arctan2(y / x)
         theta = np.arctan2(self._points[:, 1], self._points[:, 0])
-        return np.hstack([theta[:, None], phi[:, None]])
+        return np.vstack([theta, phi, r]).T
 
     @staticmethod
     def _find_l_for_rad_list(radial_arrays, atomic_rad, scales, degs):
