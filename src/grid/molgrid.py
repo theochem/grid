@@ -1,5 +1,6 @@
 """Molecular grid class."""
-from grid.basegrid import AtomicGrid, Grid
+# from grid.atomic_grid import AtomicGrid
+from grid.basegrid import Grid, SimpleAtomicGrid
 from grid.becke import BeckeWeights
 
 import numpy as np
@@ -8,7 +9,7 @@ import numpy as np
 class MolGrid(Grid):
     """Molecular Grid for integration."""
 
-    def __init__(self, atomic_grids, radii, aim_weights="becke"):
+    def __init__(self, atomic_grids, radii, aim_weights="becke", store=False):
         """Initialize molgrid class.
 
         Parameters
@@ -28,6 +29,7 @@ class MolGrid(Grid):
         self._size = np.sum([atomgrid.size for atomgrid in atomic_grids])
         self._points = np.zeros((self._size, 3))
         self._weights = np.zeros(self._size)
+        self._atomic_grids = atomic_grids if store else None
 
         for i, atom_grid in enumerate(atomic_grids):
             self._coors[i] = atom_grid.center
@@ -107,10 +109,12 @@ class MolGrid(Grid):
         AtomicGrid
             AtomicGrid of desired atom with aim weights integrated
         """
-        s_ind = self._indices[index]
-        f_ind = self._indices[index + 1]
-        return AtomicGrid(
-            self.points[s_ind:f_ind],
-            self.weights[s_ind:f_ind] * self.aim_weights[s_ind:f_ind],
-            self._coors[index],
-        )
+        if self._atomic_grids is None:
+            s_ind = self._indices[index]
+            f_ind = self._indices[index + 1]
+            return SimpleAtomicGrid(
+                self.points[s_ind:f_ind],
+                self.weights[s_ind:f_ind] * self.aim_weights[s_ind:f_ind],
+                self._coors[index],
+            )
+        return self._atomic_grids[index]

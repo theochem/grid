@@ -1,8 +1,8 @@
 """Test class for atomic grid."""
 from unittest import TestCase
 
-from grid.atomic_grid import AtomicGridFactory
-from grid.basegrid import AtomicGrid, Grid
+from grid.atomic_grid import AtomicGrid
+from grid.basegrid import Grid
 from grid.lebedev import generate_lebedev_grid
 
 import numpy as np
@@ -21,13 +21,14 @@ class TestAtomicGrid(TestCase):
         scales = np.array([0.5, 1, 1.5])
         degs = np.array([6, 14, 14, 6])
         # generate a proper instance without failing.
-        ag_ob = AtomicGridFactory(radial_grid, atomic_rad, scales=scales, degs=degs)
-        assert isinstance(ag_ob.atomic_grid, AtomicGrid)
+        ag_ob = AtomicGrid(radial_grid, atomic_rad, scales=scales, degs=degs)
+        assert isinstance(ag_ob, AtomicGrid)
         assert len(ag_ob.indices) == 11
-        ag_ob = AtomicGridFactory(
+        assert ag_ob.l_max == 15
+        ag_ob = AtomicGrid(
             radial_grid, atomic_rad, scales=np.array([]), degs=np.array([6])
         )
-        assert isinstance(ag_ob.atomic_grid, AtomicGrid)
+        assert isinstance(ag_ob, AtomicGrid)
         assert len(ag_ob.indices) == 11
 
     def test_find_l_for_rad_list(self):
@@ -38,7 +39,7 @@ class TestAtomicGrid(TestCase):
         atomic_rad = 1
         scales = np.array([0.2, 0.4, 0.8])
         degs = np.array([3, 5, 7, 3])
-        atomic_grid_degree = AtomicGridFactory._find_l_for_rad_list(
+        atomic_grid_degree = AtomicGrid._find_l_for_rad_list(
             radial_grid.points, atomic_rad, scales, degs
         )
         assert_equal(atomic_grid_degree, [3, 3, 5, 5, 7, 7, 7, 7, 3, 3])
@@ -46,10 +47,10 @@ class TestAtomicGrid(TestCase):
     def test_preload_unit_sphere_grid(self):
         """Test for private method to preload spherical grids."""
         degs = [3, 3, 5, 5, 7, 7]
-        unit_sphere = AtomicGridFactory._preload_unit_sphere_grid(degs)
+        unit_sphere = AtomicGrid._preload_unit_sphere_grid(degs)
         assert len(unit_sphere) == 3
         degs = [3, 4, 5, 6, 7]
-        unit_sphere2 = AtomicGridFactory._preload_unit_sphere_grid(degs)
+        unit_sphere2 = AtomicGrid._preload_unit_sphere_grid(degs)
         assert len(unit_sphere2) == 5
         assert_allclose(unit_sphere2[4].points, unit_sphere2[5].points)
         assert_allclose(unit_sphere2[6].points, unit_sphere2[7].points)
@@ -65,22 +66,18 @@ class TestAtomicGrid(TestCase):
         rad_grid = Grid(rad_pts, rad_wts)
         degs = np.array([3, 5, 7])
         center = np.array([0, 0, 0])
-        target_grid, ind = AtomicGridFactory._generate_atomic_grid(
-            rad_grid, degs, center
-        )
-        assert target_grid.size == 46
+        pts, wts, ind = AtomicGrid._generate_atomic_grid(rad_grid, degs, center)
+        assert len(pts) == 46
         assert_equal(ind, [0, 6, 20, 46])
         # set tests for slicing grid from atomic grid
         for i in range(3):
             # set each layer of points
             ref_grid = generate_lebedev_grid(degree=degs[i])
             # check for each point
-            assert_allclose(
-                target_grid.points[ind[i] : ind[i + 1]], ref_grid.points * rad_pts[i]
-            )
+            assert_allclose(pts[ind[i] : ind[i + 1]], ref_grid.points * rad_pts[i])
             # check for each weight
             assert_allclose(
-                target_grid.weights[ind[i] : ind[i + 1]],
+                wts[ind[i] : ind[i + 1]],
                 ref_grid.weights * rad_wts[i] * rad_pts[i] ** 2,
             )
 
@@ -94,41 +91,39 @@ class TestAtomicGrid(TestCase):
         center = np.array([0, 0, 0])
         # randome center
         ref_center = np.random.rand(3)
-        target_grid, ind = AtomicGridFactory._generate_atomic_grid(
-            rad_grid, degs, center
-        )
-        ref_grid, ref_ind = AtomicGridFactory._generate_atomic_grid(
+        pts, wts, ind = AtomicGrid._generate_atomic_grid(rad_grid, degs, center)
+        ref_pts, ref_wts, ref_ind = AtomicGrid._generate_atomic_grid(
             rad_grid, degs, ref_center
         )
         # diff grid points diff by center and same weights
-        assert_allclose(target_grid.points + ref_center, ref_grid.points)
-        assert_allclose(target_grid.weights, ref_grid.weights)
-        assert_allclose(target_grid.center + ref_center, ref_grid.center)
+        assert_allclose(pts, ref_pts)
+        assert_allclose(wts, ref_wts)
+        # assert_allclose(target_grid.center + ref_center, ref_grid.center)
 
     def test_error_raises(self):
         """Tests for error raises."""
         with self.assertRaises(TypeError):
-            AtomicGridFactory(np.arange(3), 1.0, scales=np.arange(2), degs=np.arange(3))
+            AtomicGrid(np.arange(3), 1.0, scales=np.arange(2), degs=np.arange(3))
         with self.assertRaises(ValueError):
-            AtomicGridFactory(
+            AtomicGrid(
                 Grid(np.arange(3), np.arange(3)),
                 1.0,
                 scales=np.arange(2),
                 degs=np.arange(0),
             )
         with self.assertRaises(ValueError):
-            AtomicGridFactory(
+            AtomicGrid(
                 Grid(np.arange(3), np.arange(3)),
                 1.0,
                 scales=np.arange(2),
                 degs=np.arange(4),
             )
         with self.assertRaises(ValueError):
-            AtomicGridFactory._generate_atomic_grid(
+            AtomicGrid._generate_atomic_grid(
                 Grid(np.arange(3), np.arange(3)), np.arange(2), np.array([0, 0, 0])
             )
         with self.assertRaises(TypeError):
-            AtomicGridFactory(
+            AtomicGrid(
                 Grid(np.arange(3), np.arange(3)),
                 1.0,
                 scales=np.array([0.3, 0.5, 0.7]),
@@ -136,7 +131,7 @@ class TestAtomicGrid(TestCase):
                 center=(0, 0, 0),
             )
         with self.assertRaises(ValueError):
-            AtomicGridFactory(
+            AtomicGrid(
                 Grid(np.arange(3), np.arange(3)),
                 1.0,
                 scales=np.array([0.3, 0.5, 0.7]),

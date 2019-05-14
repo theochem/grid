@@ -60,7 +60,6 @@ setup(
     package_data={
         "grid.data": ["*.*"],
         "grid.data.lebedev": ["*.npz"],
-        "grid.data.tests": ["*.*"],
     },
     zip_safe=False,
     install_requires=[
