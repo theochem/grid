@@ -71,7 +71,7 @@ def GaussLegendre(npoints):
 
 
 def GaussChebyshev(npoints):
-    """Generate Gauss-Legendre grid.
+    """Generate Gauss-Chebyshev grid.
 
     Parameters
     ----------
@@ -83,8 +83,10 @@ def GaussChebyshev(npoints):
     OneDGrid
         A grid instance with points and weights
     """
+    # points are generated in decreasing order
+    # weights are pi/n, all weights are the same
     points, weights = np.polynomial.chebyshev.chebgauss(npoints)
-    return OneDGrid(points, weights)
+    return OneDGrid(points[::-1], weights)
 
 
 def HortonLinear(npoints):

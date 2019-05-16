@@ -44,7 +44,7 @@ class TestOneDGrid(TestCase):
         """Test Guass Chebyshev polynomial grid."""
         points, weights = np.polynomial.chebyshev.chebgauss(10)
         grid = GaussChebyshev(10)
-        assert_allclose(grid.points, points)
+        assert_allclose(grid.points, np.sort(points))
         assert_allclose(grid.weights, weights)
 
     def test_horton_linear(self):
