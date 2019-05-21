@@ -1,6 +1,6 @@
 """Module for generating Atomic Grid."""
-from grid.basegrid import Grid
-from grid.lebedev import generate_lebedev_grid, match_degree
+from grid.basegrid import Grid, RadialGrid
+from grid.lebedev import generate_lebedev_grid, match_degree, size_to_degree
 
 import numpy as np
 
@@ -8,32 +8,21 @@ import numpy as np
 class AtomicGrid(Grid):
     """Atomic grid construction class."""
 
-    # construct AtomicGrid
-    # coor_to_poar: np.stack(
-    #     [np.arctan2(X[:, 1], X[:, 0]), np.arccos(X[:, 2], np.linalg.norm(X, axis=1))],
-    #     axis=1,
-    # )
-
     def __init__(
-        self, radial_grid, atomic_rad, *, scales, degs, center=np.array([0.0, 0.0, 0.0])
+        self, radial_grid, *, degs=None, nums=None, center=np.array([0.0, 0.0, 0.0])
     ):
         """Construct atomic grid for given arguments.
 
         Parameters
         ----------
-        radial_grid : Grid
-            Radial grid.
-        atomic_rad : float
-            Atomic radius for target atom.
-        scales : np.ndarray(N,), keyword-only argument
-            Scales to define different regions on the radial axis. The first
-            region is ``[0, atomic_rad*scale[0]]``, then ``[atomic_rad*scale[0],
-            atomic_rad*scale[1]]``, and so on.
-        degs : np.ndarray(N + 1, dtype=int), keyword-only argument
-            The number of Lebedev-Laikov grid points for each section of atomic
-            radius region.
-        center : np.ndarray(3, ), default to [0., 0., 0.], keyword-only argument
-            Cartesian coordinates of to origin of the spherical grids.
+        radial_grid : RadialGrid
+            Radial grid
+        degs : np.ndarray(N, dtype=int) or list, keyword-only argument
+            Different degree value for each radial point
+        nums : np.ndarray(N, dtype=int) or list, keyword-only argument
+            Different number of angular points for eah radial point
+        center : np.ndarray(3,), default to [0., 0., 0.], keyword-only argument
+            Central cartesian coordinates of atomic grid
 
         Raises
         ------
@@ -42,36 +31,54 @@ class AtomicGrid(Grid):
         ValueError
             Length of ``degs`` should be one more than ``scales``.
         """
-        scales = np.array(scales)
-        degs = np.array(degs)
         # check stage
-        if not isinstance(radial_grid, Grid):
-            raise TypeError(
-                f"Radial_grid is not an instance of Grid, got {type(radial_grid)}."
-            )
-        if len(degs) == 0:
-            raise ValueError("rad_list can't be empty.")
-        if len(degs) - len(scales) != 1:
-            raise ValueError("degs should have only one more element than scales.")
-        if not isinstance(center, np.ndarray):
-            raise TypeError(
-                f"Center should be a numpy array with 3 entries, got {type(center)}."
-            )
-        if len(center) != 3:
-            raise ValueError(f"Center should only have 3 entries, got {len(center)}.")
+        self._input_type_check(radial_grid, center)
         # assign stage
-        self._center = center
+        self._center = np.array(center)
         self._radial_grid = radial_grid
-        # initiate atomic grid property as None
-        rad_degs = self._find_l_for_rad_list(
-            self._radial_grid.points, atomic_rad, scales, degs
-        )
-        # set real degree to each rad point
-        self._rad_degs = match_degree(rad_degs)
+        if degs is None:
+            if not isinstance(nums, (np.ndarray, list)):
+                raise TypeError(f"nums is not type: np.array or list, got {type(nums)}")
+            degs = size_to_degree(nums)
+        if not isinstance(degs, (np.ndarray, list)):
+            raise TypeError(f"degs is not type: np.array or list, got {type(degs)}")
+        if len(degs) == 1:
+            degs = np.ones(radial_grid.size) * degs
+        self._rad_degs = degs
         self._points, self._weights, self._indices = self._generate_atomic_grid(
-            self._radial_grid, self._rad_degs, center
+            self._radial_grid, self._rad_degs
         )
-        self._size = len(self._weights)
+        self._size = self._weights.size
+
+    @classmethod
+    def special_init(cls, radial_grid, radius, degs, scales, center=np.zeros(3)):
+        """Initialize an instance for given scles of radius and degrees.
+
+        Parameters
+        ----------
+        radial_grid : RadialGrid
+            Radial grid.
+        radius : float
+            Atomic radius for target atom.
+        scales : np.ndarray(N,), keyword-only argument
+            Scales to define different regions on the radial axis. The first
+            region is ``[0, radius*scale[0]]``, then ``[radius*scale[0],
+            radius*scale[1]]``, and so on.
+        degs : np.ndarray(N + 1, dtype=int), keyword-only argument
+            The number of Lebedev-Laikov grid points for each section of atomic
+            radius region.
+        center : np.ndarray(3, ), default to [0., 0., 0.], keyword-only argument
+            Cartesian coordinates of to origin of the spherical grids.
+
+
+        Returns
+        -------
+        AtomicGrid
+            Generated AtomicGrid instance for this special init method.
+        """
+        cls._input_type_check(radial_grid, center)
+        degs = cls._generate_degree_from_radius(radial_grid, radius, scales, degs)
+        return cls(radial_grid, degs=degs, center=center)
 
     @property
     def points(self):
@@ -100,7 +107,7 @@ class AtomicGrid(Grid):
         Returns
         -------
         np.ndarray(N, 3):
-            [azimuthal angle(0, 2pi), polar angle(0, pi), radii]
+            [azimuthal angle(0, 2pi), polar angle(0, pi), radius]
         """
         r = np.linalg.norm(self._points, axis=1)
         # polar angle: arccos(z / r)
@@ -110,13 +117,49 @@ class AtomicGrid(Grid):
         return np.vstack([theta, phi, r]).T
 
     @staticmethod
-    def _find_l_for_rad_list(radial_arrays, atomic_rad, scales, degs):
+    def _input_type_check(radial_grid, center):
+        """Check input type.
+
+        Raises
+        ------
+        TypeError
+            ``radial_grid`` needs to be an instance of ``RadialGrid`` class.
+        ValueError
+            ``center`` needs to be an instance of ``np.ndarray`` class.
+        """
+        if not isinstance(radial_grid, RadialGrid):
+            raise TypeError(
+                f"Radial_grid is not an instance of RadialGrid, got {type(radial_grid)}."
+            )
+        if not isinstance(center, np.ndarray):
+            raise TypeError(
+                f"Center should be a numpy array with 3 entries, got {type(center)}."
+            )
+        if len(center) != 3:
+            raise ValueError(f"Center should only have 3 entries, got {len(center)}.")
+
+    @staticmethod
+    def _generate_degree_from_radius(radial_grid, radius, scales, degs):
+        """Generate proper degress for radius."""
+        scales = np.array(scales)
+        degs = np.array(degs)
+        if len(degs) == 0:
+            raise ValueError("rad_list can't be empty.")
+        if len(degs) - len(scales) != 1:
+            raise ValueError("degs should have only one more element than scales.")
+        rad_degs = AtomicGrid._find_l_for_rad_list(
+            radial_grid.points, radius, scales, degs
+        )
+        return match_degree(rad_degs)
+
+    @staticmethod
+    def _find_l_for_rad_list(radial_arrays, radius, scales, degs):
         """Find proper magic L value for given scales.
 
         Parameters
         ----------
         radial_arrays : np.ndarray(N,), radial grid points
-        atomic_rad : float, atomic radius of desired atom
+        radius : float, atomic radius of desired atom
         scales : np.ndarray(K,), an array of scales
         degs : np.ndarray(K+1,), an array of degs for different scales
 
@@ -125,11 +168,11 @@ class AtomicGrid(Grid):
         np.ndarray(N,), an array of magic numbers for each radial points
         """
         # scale_list   R_row * a
-        radii = scales * atomic_rad
+        radius = scales * radius
         # use broadcast to compare each point with scale
         # then sum over all the True value, which should equal to the
         # position of L
-        position = np.sum(radial_arrays[:, None] > radii[None, :], axis=1)
+        position = np.sum(radial_arrays[:, None] > radius[None, :], axis=1)
         return degs[position]
 
     @staticmethod
@@ -168,7 +211,7 @@ class AtomicGrid(Grid):
         )
 
     @staticmethod
-    def _generate_atomic_grid(rad_grid, degs, center):
+    def _generate_atomic_grid(rad_grid, degs):
         """Generate atomic grid for each radial point with given magic L.
 
         Parameters

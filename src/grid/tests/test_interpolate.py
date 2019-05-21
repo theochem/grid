@@ -11,6 +11,7 @@ from grid.interpolate import (
 )
 from grid.lebedev import generate_lebedev_grid
 from grid.onedgrid import HortonLinear
+from grid.rtransform import IdentityRTransform
 
 import numpy as np
 from numpy.testing import assert_allclose, assert_almost_equal, assert_array_equal
@@ -90,9 +91,9 @@ class TestInterpolate(TestCase):
 
     def test_cubicpline_and_interp(self):
         """Test cubicspline interpolation values."""
-        rad = HortonLinear(10)
+        rad = IdentityRTransform().transform_grid(HortonLinear(10))
         rad._points += 1
-        atgrid = AtomicGrid(rad, 1, scales=[], degs=[7])
+        atgrid = AtomicGrid.special_init(rad, 1, scales=[], degs=[7])
         sph_coor = atgrid.convert_cart_to_sph()
         values = self.helper_func_power(atgrid.points)
         l_max = atgrid.l_max // 2

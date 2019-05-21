@@ -28,6 +28,7 @@ from grid.lebedev import (
     match_degree,
     n_degree,
     n_points,
+    size_to_degree,
 )
 
 import numpy as np
@@ -70,6 +71,19 @@ class TestLebedev(TestCase):
         num_list2 = [33, 34, 35, 36, 37, 38, 39, 40]
         result2 = match_degree(num_list2)
         assert_array_equal(result2, [35, 35, 35, 41, 41, 41, 41, 41])
+
+    def test_size_to_degree(self):
+        """Test size to degree conversion."""
+        # first test
+        nums = [38, 50, 74, 86, 110, 38, 50, 74]
+        degs = size_to_degree(nums)
+        ref_degs = [9, 11, 13, 15, 17, 9, 11, 13]
+        assert_array_equal(degs, ref_degs)
+        # second test
+        nums = [6]
+        degs = size_to_degree(nums)
+        ref_degs = [3]
+        assert_array_equal(degs, ref_degs)
 
     def test_errors_and_warnings(self):
         """Tests for errors and warning."""

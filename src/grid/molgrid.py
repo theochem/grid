@@ -1,7 +1,9 @@
 """Molecular grid class."""
 # from grid.atomic_grid import AtomicGrid
+from grid.atomic_grid import AtomicGrid
 from grid.basegrid import Grid, SimpleAtomicGrid
 from grid.becke import BeckeWeights
+from grid.utils import get_cov_radii
 
 import numpy as np
 
@@ -9,7 +11,7 @@ import numpy as np
 class MolGrid(Grid):
     """Molecular Grid for integration."""
 
-    def __init__(self, atomic_grids, radii, aim_weights="becke", store=False):
+    def __init__(self, atomic_grids, numbers, aim_weights="becke", store=False):
         """Initialize molgrid class.
 
         Parameters
@@ -24,6 +26,8 @@ class MolGrid(Grid):
             aim_weights
         """
         # initialize these attributes
+        numbers = np.array(numbers)
+        radii = get_cov_radii(numbers)
         self._coors = np.zeros((len(radii), 3))
         self._indices = np.zeros(len(radii) + 1, dtype=int)
         self._size = np.sum([atomgrid.size for atomgrid in atomic_grids])
@@ -57,10 +61,120 @@ class MolGrid(Grid):
         else:
             raise TypeError(f"Not supported aim_weights type, got {type(aim_weights)}.")
 
+    @classmethod
+    def horton_molgrid(cls, coors, numbers, radial, points_of_angular, store=False):
+        """Initialize a MolGrid instance with Horton Style input.
+
+        Parameters
+        ----------
+        coors : np.ndarray(N, 3)
+            Cartesian coordinates for each atoms
+        numbers : np.ndarray(N,)
+            Atomic number for each atoms
+        radial : RadialGrid
+            RadialGrid instance for constructing atomic grid for each atom
+        points_of_angular : TYPE
+            Num of points on each shell of angular grid
+        store : bool, default to False
+            Flag to store each original atomic grid information
+
+        Returns
+        -------
+        MolGrid
+            MolGrid instance with specified grid property
+        """
+        at_grids = []
+        for i, _ in enumerate(numbers):
+            at_grids.append(
+                AtomicGrid(radial, nums=[points_of_angular], center=coors[i])
+            )
+        return cls(at_grids, numbers, store=store)
+
+    def get_atomic_grid(self, index):
+        """Get the stored atomic grid with all infromation.
+
+        Parameters
+        ----------
+        index : int
+            index of atomic grid for constructing molecular grid.
+            index starts from 0 to n-1
+
+        Returns
+        -------
+        AtomicGrid
+            AtomicGrid for n_th atom in the molecular grid
+
+        Raises
+        ------
+        NotImplementedError
+            If the atomic grid information is not store
+        ValueError
+            The input index is negative
+        """
+        if self._atomic_grids is None:
+            raise NotImplementedError(
+                "Atomic Grid info is not stored during initialization."
+            )
+        if index < 0:
+            raise ValueError(f"Invalid negative index value, got {index}")
+        return self._atomic_grids[index]
+
+    def get_simple_atomic_grid(self, index, with_aim_wts=True):
+        """Get a simple atomic grid with points, weights, and center.
+
+        Parameters
+        ----------
+        index : int
+            index of atomic grid for constructing molecular grid.
+            index starts from 0 to n-1
+        with_aim_wts : bool, default to True
+            The flag for pre-multiply molecular weights
+            if True, the weights *= aim_weights
+
+        Returns
+        -------
+        SimpleAtomicGrid
+            A SimpleAtomicGrid instance for local integral
+        """
+        s_ind = self._indices[index]
+        f_ind = self._indices[index + 1]
+        # coors
+        pts = self.points[s_ind:f_ind]
+        # wts
+        wts = self.weights[s_ind:f_ind]
+        if with_aim_wts:
+            wts *= self.get_aim_weights(index)
+        # generate simple atomic grid
+        return SimpleAtomicGrid(pts, wts, self._coors[index])
+
     @property
     def aim_weights(self):
-        """np.ndarray(K,): Atom in molecule weights."""
+        """np.ndarray(N,): atom in molecular weights for all points in grid."""
         return self._aim_weights
+
+    def get_aim_weights(self, index):
+        """Get aim weights value for given atoms in the molecule.
+
+        Parameters
+        ----------
+        index : int
+            index of atomic grid for constructing molecular grid.
+            index starts from 0 to n-1
+
+        Returns
+        -------
+        np.ndarray(K,)
+            The aim_weights for points in the given atomic grid
+
+        Raises
+        ------
+        ValueError
+            The input index is negative
+        """
+        if index >= 0:
+            return self._aim_weights[self._indices[index] : self._indices[index + 1]]
+        else:
+            raise ValueError(f"Invalid negative index value, got {index}")
 
     def integrate(self, *value_arrays):
         """Integrate given value_arrays on molecular grid.
