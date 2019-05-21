@@ -22,23 +22,25 @@ class AtomicGrid(Grid):
         Parameters
         ----------
         radial_grid : Grid
-            Radial grid for x in xrange(1,10):
-                pass each unit spherical shell
+            Radial grid.
         atomic_rad : float
-            Atomic radium for targit atom
+            Atomic radius for target atom.
         scales : np.ndarray(N,), keyword-only argument
-            Scales for selecting different spherical grids.
-        degs : np.ndarray(N+1, dtype=int), keyword-only argument
-            Different magic number for each section of atomic radium region
-        center : np.ndarray(3,), default to [0., 0., 0.], keyword-only argument
-            Central cartesian coordinates of atomic grid
+            Scales to define different regions on the radial axis. The first
+            region is ``[0, atomic_rad*scale[0]]``, then ``[atomic_rad*scale[0],
+            atomic_rad*scale[1]]``, and so on.
+        degs : np.ndarray(N + 1, dtype=int), keyword-only argument
+            The number of Lebedev-Laikov grid points for each section of atomic
+            radius region.
+        center : np.ndarray(3, ), default to [0., 0., 0.], keyword-only argument
+            Cartesian coordinates of to origin of the spherical grids.
 
         Raises
         ------
         TypeError
-            Radial_grid need to ba an instance of Grid class
+            ``radial_grid`` needs to be an instance of ``Grid`` class.
         ValueError
-            Length of degs should be one more than scales
+            Length of ``degs`` should be one more than ``scales``.
         """
         scales = np.array(scales)
         degs = np.array(degs)
