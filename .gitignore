@@ -25,6 +25,8 @@ cext.cpp
 *.so
 *.pyc
 build
+dist
+src/grid.egg-info
 MANIFEST
 doc/_build
 
