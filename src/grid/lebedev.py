@@ -119,6 +119,17 @@ def match_degree(degree_nums):
     return np.array([_select_grid_type(degree=i)[0] for i in degree_nums], dtype=int)
 
 
+def size_to_degree(num_array):
+    """Generate degs given nums."""
+    num_array = np.array(num_array)
+    unik_arr = np.unique(num_array)
+    degs = np.zeros(num_array.size)
+    for i in unik_arr:
+        deg = _select_grid_type(size=i)[0]
+        degs[np.where(num_array == i)] = deg
+    return degs
+
+
 def _select_grid_type(*, degree=None, size=None):
     """Select proper lebedev grid scheme for given degree or size.
 
