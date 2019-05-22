@@ -65,6 +65,12 @@ class MolGrid(Grid):
     def horton_molgrid(cls, coors, numbers, radial, points_of_angular, store=False):
         """Initialize a MolGrid instance with Horton Style input.
 
+        Example
+        -------
+        >>> onedg = HortonLinear(100) # number of points, oned grid before TF.
+        >>> rgrid = ExpRTransform(1e-5, 2e1).transform_grid(onedg) # radial grid
+        >>> molgrid = MolGrid.horton_molgrid(coors, numbers, rgrid, 110)
+
         Parameters
         ----------
         coors : np.ndarray(N, 3)
@@ -212,6 +218,8 @@ class MolGrid(Grid):
 
     def __getitem__(self, index):
         """Get separate atomic grid in molecules.
+
+        Same function as get_simple_atomic_grid. May be removed in the future.
 
         Parameters
         ----------
