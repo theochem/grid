@@ -20,7 +20,7 @@
 from unittest import TestCase
 
 from grid.atomic_grid import AtomicGrid
-from grid.basegrid import RadialGrid, SimpleAtomicGrid
+from grid.basegrid import SimpleAtomicGrid
 from grid.molgrid import MolGrid
 from grid.onedgrid import HortonLinear
 from grid.rtransform import ExpRTransform
@@ -37,9 +37,7 @@ class TestMolGrid(TestCase):
         """Set up radial grid for integral tests."""
         pts = HortonLinear(100)
         tf = ExpRTransform(1e-3, 1e1)
-        rad_pts = tf.transform(pts.points)
-        rad_wts = tf.deriv(pts.points) * pts.weights
-        self.rgrid = RadialGrid(rad_pts, rad_wts)
+        self.rgrid = tf.transform_grid(pts)
 
     def test_integrate_hydrogen_single_1s(self):
         """Test molecular integral in H atom."""

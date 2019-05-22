@@ -51,8 +51,19 @@ class AtomicGrid(Grid):
         self._size = self._weights.size
 
     @classmethod
-    def special_init(cls, radial_grid, radius, degs, scales, center=np.zeros(3)):
+    def special_init(cls, radial_grid, radius, *_, degs, scales, center=np.zeros(3)):
         """Initialize an instance for given scles of radius and degrees.
+
+        Examples
+        --------
+        >>> scales = [0.5, 1., 1.5]
+        >>> degs = [3, 7, 5, 3]
+        rad is the radius of atom
+        # 0 <= r < 0.5rad, angular grid with degree 3
+        # 0.5rad <= r < rad, angular grid with degree 7
+        # rad <= r < 1.5rad, angular grid with degree 5
+        # 1.5rad <= r, angular grid with degree 5
+        >>> atgrid = AtomicGrid.special_init(radial_grid, radius, degs, scales, center)
 
         Parameters
         ----------
