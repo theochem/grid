@@ -3,32 +3,27 @@
 # Add steps that analyze code, save the dist with the build record, publish to a PyPI-compatible index, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/python
 
+name: $(BuildDefinitionName)_$(Date:yyyyMMdd)$(Rev:.rr)
+
 resources:
   repositories:
   - repository: tox
     type: github
     endpoint: theochem
     name: tox-dev/azure-pipelines-template
-    ref: refs/tags/0.1
+    ref: refs/tags/0.2
+
 jobs:
 - template: run-tox-env.yml@tox
   parameters:
     jobs:
-      windows:
-        toxenvs:
-        - py37
-        - py36
-      linux:
-        toxenvs:
-        - py37
-        - py36
-      macOs:
-        toxenvs:
-        - py37
-        - py36
-      check:
+      py37:
+        image: [linux, windows, macOs]
+      py36:
+        image: [linux, windows, macOs]
+      build:
         py: '3.6'
-        toxenvs:
-        - build
-        - flake8
-        - black
+      flake8:
+        py: '3.6'
+      black:
+        py: '3.6'
