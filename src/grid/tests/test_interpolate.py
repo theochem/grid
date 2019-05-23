@@ -89,7 +89,44 @@ class TestInterpolate(TestCase):
         """Compute function value for test interpolation."""
         return 2 * points[:, 0] ** 2 + 3 * points[:, 1] ** 2 + 4 * points[:, 2] ** 2
 
-    def test_cubicpline_and_interp(self):
+    def helper_func_power_deriv(self, points):
+        """Compute function derivative for test derivation.
+
+        Not fully understandd why this work, but gave the same result.
+        """
+        r = np.linalg.norm(points, axis=1)
+        dxf = 4 * points[:, 0] * points[:, 0] / r
+        dyf = 6 * points[:, 1] * points[:, 1] / r
+        dzf = 8 * points[:, 2] * points[:, 2] / r
+        return dxf + dyf + dzf
+
+    def test_spline_with_sph_harms(self):
+        """Test spline projection the same as spherical harmonics."""
+        rad = IdentityRTransform().transform_grid(HortonLinear(10))
+        rad._points += 1
+        atgrid = AtomicGrid.special_init(rad, 1, scales=[], degs=[7])
+        sph_coor = atgrid.convert_cart_to_sph()
+        values = self.helper_func_power(atgrid.points)
+        l_max = atgrid.l_max // 2
+        r_sph = generate_real_sph_harms(l_max, sph_coor[:, 0], sph_coor[:, 1])
+        result = spline_with_sph_harms(
+            r_sph, values, atgrid.weights, atgrid.indices, rad.points
+        )
+        # generate ref
+        # for shell in range(1, 11):
+        for shell in range(1, 11):
+            sh_grid = atgrid.get_shell_grid(shell - 1, r_sq=False)
+            r = np.linalg.norm(sh_grid._points, axis=1)
+            theta = np.arctan2(sh_grid._points[:, 1], sh_grid._points[:, 0])
+            phi = np.arccos(sh_grid._points[:, 2] / r)
+            r_sph = generate_real_sph_harms(l_max, theta, phi)
+            r_sph_proj = np.sum(
+                r_sph * self.helper_func_power(sh_grid.points) * sh_grid.weights,
+                axis=-1,
+            )
+            assert_allclose(r_sph_proj, result(shell), atol=1e-10)
+
+    def test_cubicspline_and_interp(self):
         """Test cubicspline interpolation values."""
         rad = IdentityRTransform().transform_grid(HortonLinear(10))
         rad._points += 1
@@ -114,3 +151,56 @@ class TestInterpolate(TestCase):
                 assert_allclose(
                     interp[i], values[atgrid.indices[j - 1] : atgrid.indices[j]]
                 )
+
+        # test random x, y, z
+        xyz = np.random.rand(10, 3)
+        xyz /= np.linalg.norm(xyz, axis=-1)[:, None]
+        rad = np.random.normal() * np.random.randint(1, 11)
+        xyz *= rad
+        ref_value = self.helper_func_power(xyz)
+
+        r = np.linalg.norm(xyz, axis=-1)
+        theta = np.arctan2(xyz[:, 1], xyz[:, 0])
+        phi = np.arccos(xyz[:, 2] / r)
+        interp = interpolate(result, np.abs(rad), theta, phi)
+        assert_allclose(interp, ref_value)
+
+    def test_cubicspline_and_deriv(self):
+        """Test spline for derivation."""
+        rad = IdentityRTransform().transform_grid(HortonLinear(10))
+        rad._points += 1
+        atgrid = AtomicGrid.special_init(rad, 1, scales=[], degs=[7])
+        sph_coor = atgrid.convert_cart_to_sph()
+        values = self.helper_func_power(atgrid.points)
+        l_max = atgrid.l_max // 2
+        r_sph = generate_real_sph_harms(l_max, sph_coor[:, 0], sph_coor[:, 1])
+        result = spline_with_sph_harms(
+            r_sph, values, atgrid.weights, atgrid.indices, rad.points
+        )
+        semi_sph_c = sph_coor[atgrid.indices[5] : atgrid.indices[6]]
+        interp = interpolate(result, 6, semi_sph_c[:, 0], semi_sph_c[:, 1], deriv=1)
+        # same result from points and interpolation
+        ref_deriv = self.helper_func_power_deriv(
+            atgrid.points[atgrid.indices[5] : atgrid.indices[6]]
+        )
+        assert_allclose(interp, ref_deriv)
+
+        # test random x, y, z with fd
+        xyz = np.random.rand(1, 3)
+        xyz /= np.linalg.norm(xyz, axis=-1)[:, None]
+        rad = np.random.normal() * np.random.randint(1, 11)
+        xyz *= rad
+        ref_value = self.helper_func_power_deriv(xyz)
+
+        r = np.linalg.norm(xyz, axis=-1)
+        theta = np.arctan2(xyz[:, 1], xyz[:, 0])
+        phi = np.arccos(xyz[:, 2] / r)
+        interp = interpolate(result, np.abs(rad), theta, phi, deriv=1)
+        assert_allclose(interp, ref_value)
+
+        with self.assertRaises(ValueError):
+            interp = interpolate(result, 6, semi_sph_c[:, 0], semi_sph_c[:, 1], deriv=4)
+        with self.assertRaises(ValueError):
+            interp = interpolate(
+                result, 6, semi_sph_c[:, 0], semi_sph_c[:, 1], deriv=-1
+            )
