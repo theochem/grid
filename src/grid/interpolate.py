@@ -117,10 +117,12 @@ def spline_with_sph_harms(sph_harm, value_arrays, weights, indices, radial):
         sum_i = np.sum(prod_value[:, :, indices[i] : indices[i + 1]], axis=-1)
         axis_value.append(sum_i)
     ml_sph_value = np.nan_to_num(np.stack(axis_value))
-    return CubicSpline(x=radial, y=ml_sph_value)
+    # sin \theta d \theta d \phi = d{S_r} / (r^2)
+    ml_sph_value_with_r = ml_sph_value / (radial ** 2)[:, None, None]
+    return CubicSpline(x=radial, y=ml_sph_value_with_r)
 
 
-def interpolate(spline, r_points, theta, phi):
+def interpolate(spline, r_points, theta, phi, deriv=0):
     """Interpolate angular points on given r value.
 
     Parameters
@@ -133,23 +135,27 @@ def interpolate(spline, r_points, theta, phi):
         Azimuthal angle of angular grid
     phi : np.ndarray(N,)
         Polar angle of angular grid
+    deriv : int, default to 0
+        0 for interpolation, 1, 2, 3 for 1st, 2nd and 3rd derivatives
 
     Returns
     -------
     np.ndarry(N,) or np.ndarray(n, N)
         Interpolated function value at spherical grid
     """
-    r_value = spline(r_points)
+    if deriv == 0:
+        r_value = spline(r_points)
+    elif 1 <= deriv <= 3:
+        r_value = spline(r_points, deriv)
+    else:
+        raise ValueError(f"deriv should be between [0, 3], got {deriv}")
     l_max = r_value.shape[-1] - 1
     r_sph_harm = generate_real_sph_harms(l_max, theta, phi)
     # single value interpolation
-    if isinstance(r_points, (int, np.integer)):
-        return np.sum(r_sph_harm * r_value[..., None], axis=(0, 1)) / (r_points ** 2)
-    # interpolate for multiple values
+    if np.isscalar(r_points):
+        return np.sum(r_sph_harm * r_value[..., None], axis=(0, 1))
+    # intepolate for multiple values
     else:
         # convert to np.array if list
         r_points = np.array(r_points)
-        return (
-            np.sum(r_sph_harm * r_value[..., None], axis=(-3, -2))
-            / (r_points ** 2)[:, None]
-        )
+        return np.sum(r_sph_harm * r_value[..., None], axis=(-3, -2))

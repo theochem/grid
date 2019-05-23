@@ -2,7 +2,7 @@
 from unittest import TestCase
 
 from grid.atomic_grid import AtomicGrid
-from grid.basegrid import RadialGrid
+from grid.basegrid import AngularGrid, RadialGrid
 from grid.lebedev import generate_lebedev_grid
 
 import numpy as np
@@ -105,6 +105,31 @@ class TestAtomicGrid(TestCase):
         assert_allclose(pts, ref_pts)
         assert_allclose(wts, ref_wts)
         # assert_allclose(target_grid.center + ref_center, ref_grid.center)
+
+    def test_get_shell_grid(self):
+        """Test angular grid get from get_shell_grid function."""
+        rad_pts = np.array([0.1, 0.5, 1])
+        rad_wts = np.array([0.3, 0.4, 0.3])
+        rad_grid = RadialGrid(rad_pts, rad_wts)
+        degs = [3, 5, 7]
+        atgrid = AtomicGrid(rad_grid, degs=degs)
+        assert atgrid.n_shells == 3
+        # grep shell with r^2
+        for i in range(atgrid.n_shells):
+            sh_grid = atgrid.get_shell_grid(i)
+            assert isinstance(sh_grid, AngularGrid)
+            ref_grid = generate_lebedev_grid(degree=degs[i])
+            assert np.allclose(sh_grid.points, ref_grid.points * rad_pts[i])
+            assert np.allclose(
+                sh_grid.weights, ref_grid.weights * rad_wts[i] * rad_pts[i] ** 2
+            )
+        # grep shell without r^2
+        for i in range(atgrid.n_shells):
+            sh_grid = atgrid.get_shell_grid(i, r_sq=False)
+            assert isinstance(sh_grid, AngularGrid)
+            ref_grid = generate_lebedev_grid(degree=degs[i])
+            assert np.allclose(sh_grid.points, ref_grid.points * rad_pts[i])
+            assert np.allclose(sh_grid.weights, ref_grid.weights * rad_wts[i])
 
     def test_error_raises(self):
         """Tests for error raises."""

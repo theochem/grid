@@ -1,5 +1,5 @@
 """Module for generating Atomic Grid."""
-from grid.basegrid import Grid, RadialGrid
+from grid.basegrid import AngularGrid, Grid, RadialGrid
 from grid.lebedev import generate_lebedev_grid, match_degree, size_to_degree
 
 import numpy as np
@@ -108,9 +108,41 @@ class AtomicGrid(Grid):
         return self._center
 
     @property
+    def n_shells(self):
+        """int: return the number of shells in radial points."""
+        return len(self._rad_degs)
+
+    @property
     def l_max(self):
         """int: Largest angular degree L value in angular grids."""
         return np.max(self._rad_degs)
+
+    def get_shell_grid(self, index, r_sq=True):
+        """Get the spherical integral grid at radial point {index}.
+
+        Parameters
+        ----------
+        index : int
+            index of radial points, start from 0
+        r_sq : bool, default True
+            the grid weights times r**2, total integral sum to 4 pi r**2
+            if False, the total intergral sum to 4 pi
+
+        Returns
+        -------
+        AngularGrid
+            AngularGrid at given radial index position.
+        """
+        ind_start = self._indices[index]
+        ind_end = self._indices[index + 1]
+        pts = self._points[ind_start:ind_end]
+        wts = self._weights[ind_start:ind_end]
+        # try not to modify wts incase some weird situation.
+        if r_sq is False:
+            new_wts = wts / (self._radial_grid.points[index] ** 2)
+        else:
+            new_wts = wts
+        return AngularGrid(pts, new_wts)
 
     def convert_cart_to_sph(self):
         """Compute spherical coordinates of the grid.
