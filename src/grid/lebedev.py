@@ -80,7 +80,7 @@ n_degree = [
 
 
 def generate_lebedev_grid(*, degree=None, size=None):
-    """Generate lebedev grid for given degree or size.
+    """Generate Lebedev grid for given degree or size.
 
     Either degree or size is needed to generate proper grid. If both provided,
     degree will be used instead of size.
@@ -131,7 +131,7 @@ def size_to_degree(num_array):
 
 
 def _select_grid_type(*, degree=None, size=None):
-    """Select proper lebedev grid scheme for given degree or size.
+    """Select proper Lebedev grid scheme for given degree or size.
 
     Parameters
     ----------
@@ -140,7 +140,7 @@ def _select_grid_type(*, degree=None, size=None):
 
     Returns
     -------
-    tuple(int, int), proper matic number and its correspounding number of points.
+    tuple(int, int), proper magic number and its corresponding number of points.
     """
     if degree and size:
         warnings.warn(
@@ -167,7 +167,7 @@ def _select_grid_type(*, degree=None, size=None):
 
 
 def _load_grid_filename(degree: int, size: int):
-    """Construct lebedev file name for given degree and size.
+    """Construct Lebedev file name for given degree and size.
 
     Parameters
     ----------
@@ -176,13 +176,13 @@ def _load_grid_filename(degree: int, size: int):
 
     Returns
     -------
-    str, file name for given type of lebedev grid
+    str, file name for given type of Lebedev grid
     """
     return f"lebedev_{degree}_{size}.npz"
 
 
 def _load_grid_arrays(filename):
-    """Load .npz presaved file to generate lebedev points.
+    """Load saved .npz file to generate Lebedev points.
 
     Parameters
     ----------

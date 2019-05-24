@@ -52,7 +52,7 @@ class AtomicGrid(Grid):
 
     @classmethod
     def special_init(cls, radial_grid, radius, *_, degs, scales, center=np.zeros(3)):
-        """Initialize an instance for given scles of radius and degrees.
+        """Initialize an instance for given scales of radius and degrees.
 
         Examples
         --------
@@ -151,7 +151,7 @@ class AtomicGrid(Grid):
 
     @staticmethod
     def _generate_degree_from_radius(radial_grid, radius, scales, degs):
-        """Generate proper degress for radius."""
+        """Generate proper degrees for radius."""
         scales = np.array(scales)
         degs = np.array(degs)
         if len(degs) == 0:
@@ -188,7 +188,7 @@ class AtomicGrid(Grid):
 
     @staticmethod
     def _preload_unit_sphere_grid(degs):
-        """Preload spherical information incase repeated IO.
+        """Preload spherical information in case of repeated IO.
 
         Parameters
         ----------
@@ -205,7 +205,7 @@ class AtomicGrid(Grid):
 
     @staticmethod
     def _generate_sphere_grid(one_pt_grid, angle_grid, rad_order=2):
-        """Generate spherical grid's points(coords) and weights.
+        """Generate spherical grid's points/coordinates and weights.
 
         Parameters
         ----------

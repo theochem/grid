@@ -99,7 +99,7 @@ def HortonLinear(npoints):
 
     Returns
     -------
-    OnedGrid
+    OneDGrid
         A grid instance with points and weights
     """
     points = np.arange(npoints)

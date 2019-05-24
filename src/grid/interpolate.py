@@ -23,7 +23,7 @@ def generate_real_sph_harms(l_max, theta, phi):
     Returns
     -------
     np.ndarray(l_max * 2 + 1, l_max + 1, N)
-        value of angular grid in each m, n sperical harmonics
+        value of angular grid in each m, n spherical harmonics
     """
     sph_h = generate_sph_harms(l_max, theta, phi)
     return np.nan_to_num(_convert_ylm_to_zlm(sph_h))
@@ -44,7 +44,7 @@ def generate_sph_harms(l_max, theta, phi):
     Returns
     -------
     np.ndarray(l_max * 2 + 1, l_max + 1, N)
-        value of angular grid in each m, n sperical harmonics
+        value of angular grid in each m, n spherical harmonics
     """
     # theta azimuthal, phi polar
     l, m = _generate_sph_paras(l_max)
@@ -71,7 +71,7 @@ def _generate_sph_paras(l_max):
 
 
 def _convert_ylm_to_zlm(sp_harm_arrs):
-    """Converge complex spherical into real sperical harmonics."""
+    """Converge complex spherical into real spherical harmonics."""
     ms, ls, arrs = sp_harm_arrs.shape  # got list of Ls, and Ms
     # ls = l_max + 1
     # ms = 2 * l_max + 1
@@ -120,7 +120,7 @@ def spline_with_sph_harms(sph_harm, value_arrays, weights, indices, radial):
     return CubicSpline(x=radial, y=ml_sph_value)
 
 
-def interpelate(spline, r_points, theta, phi):
+def interpolate(spline, r_points, theta, phi):
     """Interpolate angular points on given r value.
 
     Parameters
@@ -145,7 +145,7 @@ def interpelate(spline, r_points, theta, phi):
     # single value interpolation
     if isinstance(r_points, (int, np.integer)):
         return np.sum(r_sph_harm * r_value[..., None], axis=(0, 1)) / (r_points ** 2)
-    # intepolate for multiple values
+    # interpolate for multiple values
     else:
         # convert to np.array if list
         r_points = np.array(r_points)

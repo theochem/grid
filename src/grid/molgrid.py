@@ -97,7 +97,7 @@ class MolGrid(Grid):
         return cls(at_grids, numbers, store=store)
 
     def get_atomic_grid(self, index):
-        """Get the stored atomic grid with all infromation.
+        """Get the stored atomic grid with all information.
 
         Parameters
         ----------
@@ -193,7 +193,7 @@ class MolGrid(Grid):
         Returns
         -------
         float
-            The intergral of the desired integrand(s)
+            The integral of the desired integrand(s)
 
         Raises
         ------

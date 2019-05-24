@@ -1,4 +1,4 @@
-"""Comstruct basic grid data structure."""
+"""Construct basic grid data structure."""
 import numpy as np
 
 

@@ -6,7 +6,7 @@ from grid.interpolate import (
     _generate_sph_paras,
     generate_real_sph_harms,
     generate_sph_harms,
-    interpelate,
+    interpolate,
     spline_with_sph_harms,
 )
 from grid.lebedev import generate_lebedev_grid
@@ -102,14 +102,14 @@ class TestInterpolate(TestCase):
             r_sph, values, atgrid.weights, atgrid.indices, rad.points
         )
         semi_sph_c = sph_coor[atgrid.indices[5] : atgrid.indices[6]]
-        interp = interpelate(result, 6, semi_sph_c[:, 0], semi_sph_c[:, 1])
+        interp = interpolate(result, 6, semi_sph_c[:, 0], semi_sph_c[:, 1])
         # same result from points and interpolation
         assert_allclose(interp, values[atgrid.indices[5] : atgrid.indices[6]])
 
         # random multiple interpolation test
         for _ in range(100):
             indices = np.random.randint(1, 11, np.random.randint(1, 10))
-            interp = interpelate(result, indices, semi_sph_c[:, 0], semi_sph_c[:, 1])
+            interp = interpolate(result, indices, semi_sph_c[:, 0], semi_sph_c[:, 1])
             for i, j in enumerate(indices):
                 assert_allclose(
                     interp[i], values[atgrid.indices[j - 1] : atgrid.indices[j]]
