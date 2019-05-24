@@ -27,7 +27,7 @@ import numpy as np
 
 
 class BeckeWeights:
-    """Beckec weights functions holder class."""
+    """Becke weights functions holder class."""
 
     @staticmethod
     def _calculate_alpha(radii, cutoff=0.45):
@@ -42,7 +42,7 @@ class BeckeWeights:
         radii : np.array(N,)
             Covalent radii of each atoms in the molecule
         cutoff : float, default 0.45
-            Cutoff need to be smaller than 0.5 to ganrantee monotonous
+            Cutoff need to be smaller than 0.5 to guarantee monotonous
             transformation.
 
         Returns
@@ -100,18 +100,18 @@ class BeckeWeights:
     def generate_becke_weights(
         points, radii, atom_coors, *, select=[], pt_ind=[], order=3
     ):
-        """Calculate becke weights of points for select atom.
+        """Calculate Becke weights of points for select atom.
 
         Parameters
         ----------
         points : np.ndarray(M, 3)
             Coordinates for each grid point
         radii : np.ndarray(N,)
-            Covalent radiis for each atom in molecule
+            Covalent radii for each atom in molecule
         atom_coors : np.ndarray(N, 3)
             Coordinates for each atom in molecule
         select : list,
-            Index of atom index to calculate becke weights
+            Index of atom index to calculate Becke weights
         pt_ind : list, optional
             Index of points for splitting sectors
         order : int, default to 3
@@ -135,7 +135,7 @@ class BeckeWeights:
         if select == []:
             select = np.arange(len(atom_coors))
         if sectors != len(select):
-            raise ValueError("# of selec does not equal to # of indices.")
+            raise ValueError("# of select does not equal to # of indices.")
         n_p = np.linalg.norm(atom_coors[:, None] - points, axis=-1)
         # |r_A - r| - |r_B - r| for each points with pair(A, B) nucleus
         p_p_n = n_p[:, None] - n_p

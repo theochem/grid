@@ -66,7 +66,7 @@ class BaseTransform(ABC):
         Raises
         ------
         TypeError
-            Input is not a proper onedgrid instance.
+            Input is not a proper OneDGrid instance.
         """
         if not isinstance(oned_grid, OneDGrid):
             raise TypeError(f"Input grid is not OneDGrid, got {type(oned_grid)}")
@@ -85,7 +85,7 @@ class BaseTransform(ABC):
             raise TypeError(f"Input array needs to be np.array, got: {type(array)}")
 
     def _convert_inf(self, array, replace_inf=1e16):
-        """Convert np.inf(float) to 1e16(float) incase numerical failure.
+        """Convert np.inf(float) to 1e16(float) in case of numerical failure.
 
         Parameters
         ----------
@@ -209,7 +209,7 @@ class BeckeTF(BaseTransform):
         return (r_array - self._r0 - self._R) / (r_array - self._r0 + self._R)
 
     def deriv(self, array):
-        """Compute the 1st derivatvie of Becke transformation.
+        """Compute the 1st derivative of Becke transformation.
 
         Parameters
         ----------
@@ -225,7 +225,7 @@ class BeckeTF(BaseTransform):
         return 2 * self._R / ((1 - array) ** 2)
 
     def deriv2(self, array):
-        """Compute the 2nd derivatvie of Becke transformation.
+        """Compute the 2nd derivative of Becke transformation.
 
         Parameters
         ----------
@@ -241,7 +241,7 @@ class BeckeTF(BaseTransform):
         return 4 * self._R / (1 - array) ** 3
 
     def deriv3(self, array):
-        """Compute the 3rd derivatvie of Becke transformation.
+        """Compute the 3rd derivative of Becke transformation.
 
         Parameters
         ----------
@@ -311,7 +311,7 @@ class InverseTF(BaseTransform):
         return self._tfm.transform(array)
 
     def deriv(self, r_array):
-        """Compute the 1st derivatvie of inverse transformation.
+        """Compute the 1st derivative of inverse transformation.
 
         Parameters
         ----------
@@ -329,7 +329,7 @@ class InverseTF(BaseTransform):
         return 1 / d1(x)
 
     def deriv2(self, r_array):
-        """Compute the 2nd derivatvie of inverse transformation.
+        """Compute the 2nd derivative of inverse transformation.
 
         Parameters
         ----------
@@ -349,7 +349,7 @@ class InverseTF(BaseTransform):
         return -d2(x) / d1(x) ** 3
 
     def deriv3(self, r_array):
-        """Compute the 3rd derivatvie of inverse transformation.
+        """Compute the 3rd derivative of inverse transformation.
 
         Parameters
         ----------
@@ -403,12 +403,12 @@ class LinearRTransform(BaseTransform):
     """Linear transform class."""
 
     def __init__(self, rmin: float, rmax: float):
-        """Initilize linear transform class.
+        """Initialize linear transform class.
 
         Parameters
         ----------
         rmin : float
-            Defind the lower end of the linear transform
+            Define the lower end of the linear transform
         rmax : float
             Define the upper end of the linear transform
 

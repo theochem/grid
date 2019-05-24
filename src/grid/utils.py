@@ -207,7 +207,7 @@ def get_cov_radii(numbers, type="bragg"):
     Raises
     ------
     ValueError
-        Invalid covalent type, or input atomicn number is 0
+        Invalid covalent type, or input atomic number is 0
     """
     if isinstance(numbers, (int, np.integer)):
         numbers = np.array([numbers])
