@@ -41,7 +41,7 @@ class BeckeWeights:
         ----------
         radii : np.array(N,)
             Covalent radii of each atoms in the molecule
-        cutoff : float, default 0.45
+        cutoff : float, optional
             Cutoff need to be smaller than 0.5 to guarantee monotonous
             transformation.
 
@@ -84,7 +84,7 @@ class BeckeWeights:
         ----------
         x : float or np.ndarray
             Input variable
-        order : int, default to 3
+        order : int, optional
             Order of iteration for switching function
 
         Returns
@@ -98,7 +98,7 @@ class BeckeWeights:
 
     @staticmethod
     def generate_becke_weights(
-        points, radii, atom_coors, *, select=[], pt_ind=[], order=3
+        points, radii, atom_coors, *, select=None, pt_ind=None, order=3
     ):
         """Calculate Becke weights of points for select atom.
 
@@ -110,32 +110,39 @@ class BeckeWeights:
             Covalent radii for each atom in molecule
         atom_coors : np.ndarray(N, 3)
             Coordinates for each atom in molecule
-        select : list,
+        select : list or integer, optional
             Index of atom index to calculate Becke weights
         pt_ind : list, optional
             Index of points for splitting sectors
-        order : int, default to 3
+        order : int, optional
             Order of iteration for switching function
 
-        Return
-        ------
+        Returned
+        ------------------
         np.ndarray(M, )
             Becke weights for each grid point
         """
         # select could be an array for more complicated case
         # |r_A - r| for each points, nucleus pair
-        if len(pt_ind) == 1:
+        # check ``select``
+        if select is None:
+            select = np.arange(len(atom_coors))
+        elif isinstance(select, (np.integer, int)):
+            select = [select]
+        # check ``pt_ind`` points index
+        if pt_ind is None:
+            pt_ind = []
+        elif len(pt_ind) == 1:
             raise ValueError("pt_ind need include the ends of each section")
+        # check how many sectors for becke weights need to be calculated
         sectors = max(len(pt_ind) - 1, 1)  # total sectors
-        weights = np.zeros(len(points))
         if atom_coors.ndim != 2:
             raise ValueError(
                 f"Atom coors need to be in shape (N, 3), got {atom_coors.shape}"
             )
-        if select == []:
-            select = np.arange(len(atom_coors))
         if sectors != len(select):
             raise ValueError("# of select does not equal to # of indices.")
+        weights = np.zeros(len(points))
         n_p = np.linalg.norm(atom_coors[:, None] - points, axis=-1)
         # |r_A - r| - |r_B - r| for each points with pair(A, B) nucleus
         p_p_n = n_p[:, None] - n_p
