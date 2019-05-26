@@ -67,7 +67,7 @@ class TestBecke(TestCase):
             points, radii, centers, select=[1], order=3
         )
         weights2 = BeckeWeights.generate_becke_weights(
-            points, radii, centers, select=[2], order=3
+            points, radii, centers, select=2, order=3
         )
 
         assert_allclose(weights0 + weights1 + weights2, np.ones(100))
@@ -78,17 +78,17 @@ class TestBecke(TestCase):
         centers = np.array([[1.2, 2.3, 0.1], [-0.4, 0.0, -2.2], [2.2, -1.5, 0.0]])
 
         weights = BeckeWeights.generate_becke_weights(
-            centers, radii, centers, select=[0], order=3
+            centers, radii, centers, select=0, order=3
         )
         assert_allclose(weights, [1, 0, 0])
 
         weights = BeckeWeights.generate_becke_weights(
-            centers, radii, centers, select=[1], order=3
+            centers, radii, centers, select=1, order=3
         )
         assert_allclose(weights, [0, 1, 0])
 
         weights = BeckeWeights.generate_becke_weights(
-            centers, radii, centers, select=[2], order=3
+            centers, radii, centers, select=2, order=3
         )
         assert_allclose(weights, [0, 0, 1])
 
