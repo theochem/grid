@@ -6,7 +6,12 @@ from grid.basegrid import AngularGrid, RadialGrid
 from grid.lebedev import generate_lebedev_grid
 
 import numpy as np
-from numpy.testing import assert_allclose, assert_array_equal, assert_equal
+from numpy.testing import (
+    assert_allclose,
+    assert_almost_equal,
+    assert_array_equal,
+    assert_equal,
+)
 
 
 class TestAtomicGrid(TestCase):
@@ -91,7 +96,7 @@ class TestAtomicGrid(TestCase):
                 ref_grid.weights * rad_wts[i] * rad_pts[i] ** 2,
             )
 
-    def test_atomic_grid(center):
+    def test_atomic_grid(self):
         """Test atomic grid center transilation."""
         rad_pts = np.array([0.1, 0.5, 1])
         rad_wts = np.array([0.3, 0.4, 0.3])
@@ -105,6 +110,33 @@ class TestAtomicGrid(TestCase):
         assert_allclose(pts, ref_pts)
         assert_allclose(wts, ref_wts)
         # assert_allclose(target_grid.center + ref_center, ref_grid.center)
+
+    def test_atomic_rotate(self):
+        """Test random rotation for atomic grid."""
+        rad_pts = np.array([0.1, 0.5, 1])
+        rad_wts = np.array([0.3, 0.4, 0.3])
+        rad_grid = RadialGrid(rad_pts, rad_wts)
+        degs = [3, 5, 7]
+        atgrid = AtomicGrid(rad_grid, degs=degs)
+        # make sure True and 1 is not the same result
+        atgrid1 = AtomicGrid(rad_grid, degs=degs, rotate=True)
+        atgrid2 = AtomicGrid(rad_grid, degs=degs, rotate=1)
+        # test diff points, same weights
+        assert not np.allclose(atgrid.points, atgrid1.points)
+        assert not np.allclose(atgrid.points, atgrid2.points)
+        assert not np.allclose(atgrid1.points, atgrid2.points)
+        assert_allclose(atgrid.weights, atgrid1.weights)
+        assert_allclose(atgrid.weights, atgrid2.weights)
+        assert_allclose(atgrid1.weights, atgrid2.weights)
+        # test same integral
+        value = np.prod(atgrid.points ** 2, axis=-1)
+        value1 = np.prod(atgrid.points ** 2, axis=-1)
+        value2 = np.prod(atgrid.points ** 2, axis=-1)
+        res = atgrid.integrate(value)
+        res1 = atgrid1.integrate(value1)
+        res2 = atgrid2.integrate(value2)
+        assert_almost_equal(res, res1)
+        assert_almost_equal(res1, res2)
 
     def test_get_shell_grid(self):
         """Test angular grid get from get_shell_grid function."""
@@ -176,3 +208,9 @@ class TestAtomicGrid(TestCase):
             AtomicGrid(RadialGrid(np.arange(3), np.arange(3)), nums=110)
         with self.assertRaises(TypeError):
             AtomicGrid(RadialGrid(np.arange(3), np.arange(3)), degs=17)
+        with self.assertRaises(ValueError):
+            AtomicGrid(RadialGrid(np.arange(3), np.arange(3)), degs=[17], rotate=-1)
+        with self.assertRaises(ValueError):
+            AtomicGrid(
+                RadialGrid(np.arange(3), np.arange(3)), degs=[17], rotate="asdfaf"
+            )
