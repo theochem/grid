@@ -4,12 +4,20 @@ from grid.lebedev import generate_lebedev_grid, match_degree, size_to_degree
 
 import numpy as np
 
+from scipy.spatial.transform import Rotation as R
+
 
 class AtomicGrid(Grid):
     """Atomic grid construction class."""
 
     def __init__(
-        self, radial_grid, *, degs=None, nums=None, center=np.array([0.0, 0.0, 0.0])
+        self,
+        radial_grid,
+        *,
+        degs=None,
+        nums=None,
+        center=np.array([0.0, 0.0, 0.0]),
+        rotate=False,
     ):
         """Construct atomic grid for given arguments.
 
@@ -21,8 +29,11 @@ class AtomicGrid(Grid):
             Different degree value for each radial point
         nums : np.ndarray(N, dtype=int) or list, keyword-only argument
             Different number of angular points for eah radial point
-        center : np.ndarray(3,), default to [0., 0., 0.], keyword-only argument
+        center : np.ndarray(3,), optional, keyword-only argument
             Central cartesian coordinates of atomic grid
+        rotate : bool or int , optional
+            Flag to set auto rotation for atomic grid, if given int, the number
+            will be used as a seed to generate rantom matrix.
 
         Raises
         ------
@@ -49,9 +60,24 @@ class AtomicGrid(Grid):
             self._radial_grid, self._rad_degs
         )
         self._size = self._weights.size
+        # add random rotation
+        if rotate is not False:
+            if rotate is True:
+                rot_mt = R.random().as_dcm()
+                self._points = np.dot(self._points, rot_mt)
+            elif isinstance(rotate, (int, np.integer)) and rotate >= 0:
+                rot_mt = R.random(random_state=rotate).as_dcm()
+                self._points = np.dot(self._points, rot_mt)
+            else:
+                raise ValueError(
+                    f"rotate need to be an integer [0, 2^32 - 1]\n"
+                    f"rotate is not within [0, 2^32 - 1], got {rotate}"
+                )
 
     @classmethod
-    def special_init(cls, radial_grid, radius, *_, degs, scales, center=np.zeros(3)):
+    def special_init(
+        cls, radial_grid, radius, *_, degs, scales, center=np.zeros(3), rotate=False
+    ):
         """Initialize an instance for given scales of radius and degrees.
 
         Examples
@@ -80,7 +106,9 @@ class AtomicGrid(Grid):
             radius region.
         center : np.ndarray(3, ), default to [0., 0., 0.], keyword-only argument
             Cartesian coordinates of to origin of the spherical grids.
-
+        rotate : bool or int , optional
+            Flag to set auto rotation for atomic grid, if given int, the number
+            will be used as a seed to generate rantom matrix.
 
         Returns
         -------
@@ -89,7 +117,7 @@ class AtomicGrid(Grid):
         """
         cls._input_type_check(radial_grid, center)
         degs = cls._generate_degree_from_radius(radial_grid, radius, scales, degs)
-        return cls(radial_grid, degs=degs, center=center)
+        return cls(radial_grid, degs=degs, center=center, rotate=rotate)
 
     @property
     def points(self):

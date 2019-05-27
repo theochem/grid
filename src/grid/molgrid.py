@@ -1,5 +1,4 @@
 """Molecular grid class."""
-# from grid.atomic_grid import AtomicGrid
 from grid.atomic_grid import AtomicGrid
 from grid.basegrid import Grid, SimpleAtomicGrid
 from grid.becke import BeckeWeights
@@ -62,7 +61,9 @@ class MolGrid(Grid):
             raise TypeError(f"Not supported aim_weights type, got {type(aim_weights)}.")
 
     @classmethod
-    def horton_molgrid(cls, coors, numbers, radial, points_of_angular, store=False):
+    def horton_molgrid(
+        cls, coors, numbers, radial, points_of_angular, store=False, rotate=False
+    ):
         """Initialize a MolGrid instance with Horton Style input.
 
         Example
@@ -79,10 +80,13 @@ class MolGrid(Grid):
             Atomic number for each atoms
         radial : RadialGrid
             RadialGrid instance for constructing atomic grid for each atom
-        points_of_angular : TYPE
+        points_of_angular : int
             Num of points on each shell of angular grid
-        store : bool, default to False
+        store : bool, optional
             Flag to store each original atomic grid information
+        rotate : bool or int , optional
+            Flag to set auto rotation for atomic grid, if given int, the number
+            will be used as a seed to generate rantom matrix.
 
         Returns
         -------
@@ -92,7 +96,9 @@ class MolGrid(Grid):
         at_grids = []
         for i, _ in enumerate(numbers):
             at_grids.append(
-                AtomicGrid(radial, nums=[points_of_angular], center=coors[i])
+                AtomicGrid(
+                    radial, nums=[points_of_angular], center=coors[i], rotate=rotate
+                )
             )
         return cls(at_grids, numbers, store=store)
 
@@ -126,7 +132,7 @@ class MolGrid(Grid):
         return self._atomic_grids[index]
 
     def get_simple_atomic_grid(self, index, with_aim_wts=True):
-        """Get a simple atomic grid with points, weights, and center.
+        r"""Get a simple atomic grid with points, weights, and center.
 
         Parameters
         ----------
@@ -135,7 +141,7 @@ class MolGrid(Grid):
             index starts from 0 to n-1
         with_aim_wts : bool, default to True
             The flag for pre-multiply molecular weights
-            if True, the weights *= aim_weights
+            if True, the weights \*= aim_weights
 
         Returns
         -------
