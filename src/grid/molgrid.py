@@ -42,8 +42,20 @@ class MolGrid(Grid):
 
         if isinstance(aim_weights, str):
             if aim_weights == "becke":
-                self._aim_weights = BeckeWeights.generate_becke_weights(
-                    self._points, radii, self._coors, pt_ind=self._indices
+                # Becke weights are computed for "chunks" of grid points
+                # to counteract the scaling of the memory usage of the
+                # vectorized implementation of the Becke partitioning.
+                chunk_size = max(1, (100 * self._size) // self._coors.shape[0] ** 2)
+                self._aim_weights = np.concatenate(
+                    [
+                        BeckeWeights.generate_becke_weights(
+                            self._points[ibegin : ibegin + chunk_size],
+                            radii,
+                            self._coors,
+                            pt_ind=self._indices,
+                        )
+                        for ibegin in range(0, self._size, chunk_size)
+                    ]
                 )
             else:
                 raise NotImplementedError(
