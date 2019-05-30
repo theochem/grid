@@ -46,14 +46,13 @@ class MolGrid(Grid):
                 # to counteract the scaling of the memory usage of the
                 # vectorized implementation of the Becke partitioning.
                 chunk_size = max(1, (10 * self._size) // self._coors.shape[0] ** 2)
-                print(chunk_size, self._size)
                 self._aim_weights = np.concatenate(
                     [
                         BeckeWeights.generate_becke_weights(
                             self._points[ibegin : ibegin + chunk_size],
                             radii,
                             self._coors,
-                            pt_ind=self._indices,
+                            pt_ind=(self._indices - ibegin).clip(min=0),
                         )
                         for ibegin in range(0, self._size, chunk_size)
                     ]
