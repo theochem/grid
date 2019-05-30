@@ -151,9 +151,12 @@ class BeckeWeights:
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             mu_n_p_p = p_p_n.transpose([2, 0, 1]) / atomic_dist
+        del p_p_n
         alpha = BeckeWeights._calculate_alpha(radii)
         v_pp = mu_n_p_p + alpha * (1 - mu_n_p_p ** 2)
+        del mu_n_p_p
         s_ab = 0.5 * (1 - BeckeWeights._switch_func(v_pp, order=order))
+        del v_pp
         # convert nan to 1
         s_ab[np.isnan(s_ab)] = 1
         # product up A_B, A_C, A_D ... along rows
