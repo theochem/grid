@@ -135,6 +135,24 @@ class TestMolGrid(TestCase):
             numbers[1] -= 1
     """
 
+    def test_integrate_hydrogen_8_1s(self):
+        """Test molecular integral in H2."""
+        x, y, z = np.meshgrid(*(3 * [[-0.5, 0.5]]))
+        centers = np.stack([x.ravel(), y.ravel(), z.ravel()], axis=1)
+        atgs = [
+            AtomicGrid.special_init(
+                self.rgrid, 0.5, scales=np.array([]), degs=np.array([17]), center=center
+            )
+            for center in centers
+        ]
+        mg = MolGrid(atgs, np.array([1] * len(centers)))
+        fn = 0
+        for center in centers:
+            dist = np.linalg.norm(center - mg.points, axis=1)
+            fn += np.exp(-2 * dist) / np.pi
+        occupation = mg.integrate(fn)
+        assert_almost_equal(occupation, len(centers), decimal=2)
+
     def test_molgrid_attrs_subgrid(self):
         """Test sub atomic grid attributes."""
         # numbers = np.array([6, 8], int)
