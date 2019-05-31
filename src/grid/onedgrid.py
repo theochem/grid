@@ -33,7 +33,10 @@ def generate_onedgrid(npoints, *args):
 
 
 def GaussLaguerre(npoints, alpha=0):
-    """Generate Gauss-Laguerre grid.
+    r"""Generate Gauss-Laguerre grid.
+
+    .. math::
+        \int_{0}^{\infty} e^{-x} f(x)dx \approx \sum_{i=1}^n w_i f(x_i)
 
     Parameters
     ----------
@@ -45,7 +48,7 @@ def GaussLaguerre(npoints, alpha=0):
     Returns
     -------
     OneDGrid
-        A grid instance with points and weights
+        A grid instance with points and weights, (0, inf)
     """
     if alpha <= -1:
         raise ValueError(f"Alpha need to be bigger than -1, given {alpha}")
@@ -64,14 +67,17 @@ def GaussLegendre(npoints):
     Returns
     -------
     OneDGrid
-        A grid instance with points and weights
+        A grid instance with points and weights, [-1, 1]
     """
     points, weights = np.polynomial.legendre.leggauss(npoints)
     return OneDGrid(points, weights)
 
 
 def GaussChebyshev(npoints):
-    """Generate Gauss-Chebyshev grid.
+    r"""Generate Gauss-Chebyshev grid.
+
+    .. math::
+        \int_{-1}^{1} \frac{f(x)}{\sqrt{1-x^2}}dx \approx \sum_{i=1}^n w_i f(x_i)
 
     Parameters
     ----------
@@ -81,7 +87,7 @@ def GaussChebyshev(npoints):
     Returns
     -------
     OneDGrid
-        A grid instance with points and weights
+        A grid instance with points and weights, [-1, 1]
     """
     # points are generated in decreasing order
     # weights are pi/n, all weights are the same
@@ -100,7 +106,7 @@ def HortonLinear(npoints):
     Returns
     -------
     OneDGrid
-        A grid instance with points and weights
+        A grid instance with points and weights, [0, inf)
     """
     points = np.arange(npoints)
     weights = np.ones(npoints)
