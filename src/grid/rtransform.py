@@ -21,6 +21,7 @@
 """Transformation from uniform 1D to non-uniform 1D grids."""
 import warnings
 from abc import ABC, abstractmethod
+from numbers import Number
 
 from grid.basegrid import OneDGrid, RadialGrid
 
@@ -82,7 +83,13 @@ class BaseTransform(ABC):
         array : np.ndarray(N,)
         """
         if not isinstance(array, np.ndarray):
-            raise TypeError(f"Input array needs to be np.array, got: {type(array)}")
+            raise TypeError(f"Input needs to be np.array, got: {type(array)}")
+
+    def _array_num_type_check(self, array):
+        if not isinstance(array, np.ndarray) and not isinstance(array, Number):
+            raise TypeError(
+                f"Input needs to be np.array or a number, got: {type(array)}"
+            )
 
     def _convert_inf(self, array, replace_inf=1e16):
         """Convert np.inf(float) to 1e16(float) in case of numerical failure.
@@ -91,7 +98,12 @@ class BaseTransform(ABC):
         ----------
         array : np.ndarray(N,)
         """
-        array[array == np.inf] = replace_inf
+        if isinstance(array, Number):  # change for number
+            new_v = replace_inf if np.isinf(array) else array
+        else:
+            new_v = array.copy()  # change for arrays with copy
+            new_v[new_v == np.inf] = replace_inf
+        return new_v
 
     # def _check_inf(self, array):
     #     if np.any(array == np.inf):
@@ -186,10 +198,10 @@ class BeckeTF(BaseTransform):
         np.ndarray(N,)
             Transformed radial array located between [r0, inf)
         """
-        self._array_type_check(array)
+        self._array_num_type_check(array)
         rf_array = self._R * (1 + array) / (1 - array) + self._r0
         if trim_inf:
-            self._convert_inf(rf_array)
+            rf_array = self._convert_inf(rf_array)
         return rf_array
 
     def inverse(self, r_array):
@@ -205,7 +217,7 @@ class BeckeTF(BaseTransform):
         np.ndarray(N,)
             The original one dimension array located between [-1, 1]
         """
-        self._array_type_check(r_array)
+        self._array_num_type_check(r_array)
         return (r_array - self._r0 - self._R) / (r_array - self._r0 + self._R)
 
     def deriv(self, array):
@@ -221,7 +233,7 @@ class BeckeTF(BaseTransform):
         np.ndarray(N,)
             1st derivative of Becke transformation at each points
         """
-        self._array_type_check(array)
+        self._array_num_type_check(array)
         return 2 * self._R / ((1 - array) ** 2)
 
     def deriv2(self, array):
@@ -237,7 +249,7 @@ class BeckeTF(BaseTransform):
         np.ndarray(N,)
             2nd derivative of Becke transformation at each points
         """
-        self._array_type_check(array)
+        self._array_num_type_check(array)
         return 4 * self._R / (1 - array) ** 3
 
     def deriv3(self, array):
@@ -253,7 +265,7 @@ class BeckeTF(BaseTransform):
         np.ndarray(N,)
             3rd derivative of Becke transformation at each points
         """
-        self._array_type_check(array)
+        self._array_num_type_check(array)
         return 12 * self._R / (1 - array) ** 4
 
 
@@ -376,27 +388,32 @@ class IdentityRTransform(BaseTransform):
 
     def transform(self, t: np.ndarray):
         """Perform given array into itself."""
+        self._array_num_type_check(t)
         return t
 
     def deriv(self, t: np.ndarray):
         """Compute the first derivative of identity transform."""
+        self._array_num_type_check(t)
         t = np.array(t)
-        return np.ones(t.size)
+        return 1 if isinstance(t, Number) else np.ones(t.size)
 
     def deriv2(self, t: np.ndarray):
         """Compute the second Derivative of identity transform."""
+        self._array_num_type_check(t)
         t = np.array(t)
-        return np.zeros(t.size)
+        return 0 if isinstance(t, Number) else np.zeros(t.size)
 
     def deriv3(self, t: np.ndarray):
         """Compute the third Derivative of identity transform."""
+        self._array_num_type_check(t)
         t = np.array(t)
-        return np.zeros(t.size)
+        return 0 if isinstance(t, Number) else np.zeros(t.size)
 
     def inverse(self, r: np.ndarray):
         """Compute the inverse of identity transform."""
+        self._array_num_type_check(r)
         r = np.array(r)
-        return np.ones(r.size)
+        return 0 if isinstance(r, Number) else np.zeros(r.size)
 
 
 class LinearRTransform(BaseTransform):
@@ -436,26 +453,31 @@ class LinearRTransform(BaseTransform):
 
     def transform(self, t: np.ndarray):
         """Perform linear transformation."""
+        self._array_type_check(t)
         t = np.array(t)
         alpha = (self._rmax - self._rmin) / (t.size - 1)
         return alpha * t + self._rmin
 
     def deriv(self, t: np.ndarray):
         """Compute the first derivative of linear transformation."""
+        self._array_type_check(t)
         t = np.array(t)
         alpha = (self._rmax - self._rmin) / (t.size - 1)
         return np.ones(t.size) * alpha
 
     def deriv2(self, t: np.ndarray):
         """Compute the second derivative of linear transformation."""
+        self._array_type_check(t)
         return np.zeros(t.size)
 
     def deriv3(self, t: np.ndarray):
         """Compute the third derivative of linear transformation."""
+        self._array_type_check(t)
         return np.zeros(t.size)
 
     def inverse(self, r: np.ndarray):
         """Compute the inverse of linear transformation."""
+        self._array_type_check(r)
         r = np.array(r)
         alpha = (self._rmax - self._rmin) / (r.size - 1)
         return (r - self._rmin) / alpha
@@ -521,30 +543,35 @@ class ExpRTransform(BaseTransform):
 
     def transform(self, t: np.ndarray):
         """Perform exponential transform."""
+        self._array_type_check(t)
         t = np.array(t)
         alpha = np.log(self._rmax / self._rmin) / (t.size - 1)
         return self._rmin * np.exp(t * alpha)
 
     def deriv(self, t: np.ndarray):
         """Compute the first derivative of exponential transform."""
+        self._array_type_check(t)
         t = np.array(t)
         alpha = np.log(self._rmax / self._rmin) / (t.size - 1)
         return self.transform(t) * alpha
 
     def deriv2(self, t: np.ndarray):
         """Compute the second derivative of exponential transform."""
+        self._array_type_check(t)
         t = np.array(t)
         alpha = np.log(self._rmax / self._rmin) / (t.size - 1)
         return self.deriv(t) * alpha
 
     def deriv3(self, t: np.ndarray):
         """Compute the third derivative of exponential transform."""
+        self._array_type_check(t)
         t = np.array(t)
         alpha = np.log(self._rmax / self._rmin) / (t.size - 1)
         return self.deriv2(t) * alpha
 
     def inverse(self, r: np.ndarray):
         """Compute the inverse of exponential transform."""
+        self._array_type_check(r)
         r = np.array(r)
         alpha = np.log(self._rmax / self._rmin) / (r.size - 1)
         return np.log(r / self._rmin) / alpha
@@ -605,6 +632,7 @@ class PowerRTransform(BaseTransform):
 
     def transform(self, t: np.ndarray):
         """Perform power transform."""
+        self._array_type_check(t)
         t = np.array(t)
         power = (np.log(self._rmax) - np.log(self._rmin)) / np.log(t.size)
         if power < 2:
@@ -615,18 +643,21 @@ class PowerRTransform(BaseTransform):
 
     def deriv(self, t: np.ndarray):
         """Compute first derivative of power transform."""
+        self._array_type_check(t)
         t = np.array(t)
         power = (np.log(self._rmax) - np.log(self._rmin)) / np.log(t.size)
         return power * self._rmin * np.power(t + 1, power - 1)
 
     def deriv2(self, t: np.ndarray):
         """Compute second derivative of power transform."""
+        self._array_type_check(t)
         t = np.array(t)
         power = (np.log(self._rmax) - np.log(self._rmin)) / np.log(t.size)
         return power * (power - 1) * self._rmin * np.power(t + 1, power - 2)
 
     def deriv3(self, t: np.ndarray):
         """Compute third derivative of power transform."""
+        self._array_type_check(t)
         t = np.array(t)
         power = (np.log(self._rmax) - np.log(self._rmin)) / np.log(t.size)
         return (
@@ -635,6 +666,7 @@ class PowerRTransform(BaseTransform):
 
     def inverse(self, r: np.ndarray):
         """Compute the inverse of power transform."""
+        self._array_type_check(r)
         r = np.array(r)
         power = (np.log(self._rmax) - np.log(self._rmin)) / np.log(r.size)
         return np.power(r / self._rmin, 1.0 / power) - 1
@@ -695,6 +727,7 @@ class HyperbolicRTransform(BaseTransform):
 
     def transform(self, t: np.ndarray):
         """Perform hyperbolic transformation."""
+        self._array_type_check(t)
         t = np.array(t)
         if self._b * (t.size - 1) >= 1.0:
             raise ValueError("b*(npoint-1) must be smaller than one.")
@@ -702,6 +735,7 @@ class HyperbolicRTransform(BaseTransform):
 
     def deriv(self, t: np.ndarray):
         """Compute the first derivative of hyperbolic transformation."""
+        self._array_type_check(t)
         t = np.array(t)
         if self._b * (t.size - 1) >= 1.0:
             raise ValueError("b*(npoint-1) must be smaller than one.")
@@ -710,6 +744,7 @@ class HyperbolicRTransform(BaseTransform):
 
     def deriv2(self, t: np.ndarray):
         """Compute the second derivative of hyperbolic transformation."""
+        self._array_type_check(t)
         t = np.array(t)
         if self._b * (t.size - 1) >= 1.0:
             raise ValueError("b*(npoint-1) must be smaller than one.")
@@ -718,6 +753,7 @@ class HyperbolicRTransform(BaseTransform):
 
     def deriv3(self, t: np.ndarray):
         """Compute the third derivative of hyperbolic transformation."""
+        self._array_type_check(t)
         t = np.array(t)
         if self._b * (t.size - 1) >= 1.0:
             raise ValueError("b*(npoint-1) must be smaller than one.")
@@ -726,6 +762,7 @@ class HyperbolicRTransform(BaseTransform):
 
     def inverse(self, r: np.ndarray):
         """Compute the inverse of hyperbolic transformation."""
+        self._array_type_check(r)
         r = np.array(r)
         if self._b * (r.size - 1) >= 1.0:
             raise ValueError("b*(npoint-1) must be smaller than one.")
