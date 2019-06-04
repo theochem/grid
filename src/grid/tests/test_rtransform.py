@@ -138,6 +138,10 @@ class TestRTransform(TestCase):
         assert abs(rtf.transform(gd)[0] - 0.8) < 1e-10
         self.check_consistency(rtf)
         self.check_deriv(rtf)
+        with self.assertRaises(TypeError):
+            rtf.transform(1.0)
+        with self.assertRaises(TypeError):
+            rtf.transform("safda")
         # check_chop(rtf)
         # check_half(rtf)
 
@@ -150,6 +154,10 @@ class TestRTransform(TestCase):
         assert abs(rtf.transform(gd)[0] - 1e1) < 1e-10
         self.check_consistency(rtf)
         self.check_deriv(rtf)
+        with self.assertRaises(TypeError):
+            rtf.transform(1.0)
+        with self.assertRaises(TypeError):
+            rtf.transform("safda")
         # check_chop(rtf)
         # check_half(rtf)
 
@@ -167,6 +175,10 @@ class TestRTransform(TestCase):
             assert abs(rtf.transform(gd)[0] - rmax) < 1e-9
             self.check_consistency(rtf)
             self.check_deriv(rtf)
+            with self.assertRaises(TypeError):
+                rtf.transform(1.0)
+            with self.assertRaises(TypeError):
+                rtf.transform("safda")
             # check_chop(rtf)
             # check_half(rtf)
 
@@ -175,6 +187,10 @@ class TestRTransform(TestCase):
         rtf = HyperbolicRTransform(0.4 / 450, 1.0 / 450)
         self.check_consistency(rtf)
         self.check_deriv(rtf)
+        with self.assertRaises(TypeError):
+            rtf.transform(1.0)
+        with self.assertRaises(TypeError):
+            rtf.transform("safda")
 
     # def test_identity_properties():
     #     rtf = IdentityRTransform(100)

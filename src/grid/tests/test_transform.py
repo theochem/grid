@@ -35,6 +35,8 @@ class TestTransform(TestCase):
         """Test setup function."""
         self.array = np.linspace(-0.9, 0.9, 19)
         self.array_2 = np.linspace(-0.9, 0.9, 10)
+        self.num = -0.9
+        self.num_2 = 0.9
 
     def _deriv_finite_diff(self, tf, array1):
         """General function to test analytic deriv and finite difference."""
@@ -80,8 +82,12 @@ class TestTransform(TestCase):
         """Test becke transformation."""
         btf = BeckeTF(0.1, 1.1)
         tf_array = btf.transform(self.array)
+        single_v = btf.transform(self.num)
+        single_v2 = btf.transform(self.num_2)
         new_array = btf.inverse(tf_array)
         assert_allclose(new_array, self.array)
+        assert_allclose(tf_array[0], single_v)
+        assert_allclose(tf_array[-1], single_v2)
 
     def test_becke_infinite(self):
         """Test becke transformation when inf generated."""
@@ -97,6 +103,8 @@ class TestTransform(TestCase):
         btf = BeckeTF(0.1, 1.1)
         # call finite diff test function with given arrays
         self._deriv_finite_diff(btf, self.array)
+        self._deriv_finite_diff(btf, self.num)
+        self._deriv_finite_diff(btf, self.num_2)
 
     def test_becke_inverse(self):
         """Test inverse transform basic function."""
@@ -111,6 +119,7 @@ class TestTransform(TestCase):
         inv = InverseTF(btf)
         r_array = 2 ** (np.arange(-1, 8, dtype=float))
         self._deriv_finite_diff(inv, r_array)
+        self._deriv_finite_diff(inv, (np.random.rand(1) * 10)[0])
 
     def test_becke_inverse_inverse(self):
         """Test inverse of inverse of Becke transformation."""
@@ -127,7 +136,7 @@ class TestTransform(TestCase):
         # transform non array type
         with self.assertRaises(TypeError):
             btf = BeckeTF(0.1, 1.1)
-            btf.transform(0.5)
+            btf.transform("dafasdf")
         # inverse init error
         with self.assertRaises(TypeError):
             InverseTF(0.5)
