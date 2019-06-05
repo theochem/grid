@@ -83,11 +83,16 @@ def GaussLegendre(npoints):
 
 
 def GaussChebyshev(npoints):
-    r"""Generate Gauss-Chebyshev grid.
+    r"""Generate a grid based on Gauss-Chebyshev grid.
 
+    Gauss Chebyshev grid is defined as:
     .. math::
         \int_{-1}^{1} \frac{f(x)}{\sqrt{1-x^2}}dx \approx \sum_{i=1}^n w_i f(x_i)
 
+    This integration grid is defined as :
+    .. math::
+        \int_{-1}^{1}f(x)dx\approx\sum_{i=1}^n  w_i \sqrt{1-x_i^2} f(x_i)
+        = \sum_{i=1}^n  w_i' f(x_i)
     Parameters
     ----------
     npoints : int
@@ -101,6 +106,7 @@ def GaussChebyshev(npoints):
     # points are generated in decreasing order
     # weights are pi/n, all weights are the same
     points, weights = np.polynomial.chebyshev.chebgauss(npoints)
+    weights = weights * np.sqrt(1 - np.power(points, 2))
     return OneDGrid(points[::-1], weights)
 
 
