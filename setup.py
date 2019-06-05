@@ -67,5 +67,6 @@ setup(
         "pytest>=2.6",
         "scipy>=1.2",
         "importlib_resources",
+        "sympy",
     ],
 )
