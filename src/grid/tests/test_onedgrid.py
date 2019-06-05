@@ -29,6 +29,7 @@ class TestOneDGrid(TestCase):
     def test_gausslaguerre(self):
         """Test Guass Laguerre polynomial grid."""
         points, weights = np.polynomial.laguerre.laggauss(10)
+        weights = weights * np.exp(points) * np.power(points, 0)
         grid = GaussLaguerre(10)
         assert_allclose(grid.points, points)
         assert_allclose(grid.weights, weights)
@@ -43,6 +44,7 @@ class TestOneDGrid(TestCase):
     def test_gausschebyshev(self):
         """Test Guass Chebyshev polynomial grid."""
         points, weights = np.polynomial.chebyshev.chebgauss(10)
+        weights = weights * np.sqrt(1 - np.power(points, 2))
         grid = GaussChebyshev(10)
         assert_allclose(grid.points, np.sort(points))
         assert_allclose(grid.weights, weights)
