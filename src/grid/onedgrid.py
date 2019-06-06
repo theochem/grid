@@ -33,16 +33,24 @@ def generate_onedgrid(npoints, *args):
 
 
 def GaussLaguerre(npoints, alpha=0):
-    r"""Generate Gauss-Laguerre grid.
+    r"""Generate a grid based on generalized Gauss-Laguerre grid.
 
+    Generalizeed Gauss Laguerre grid is defined as:
     .. math::
-        \int_{0}^{\infty} e^{-x} f(x)dx \approx \sum_{i=1}^n w_i f(x_i)
+        \int_{0}^{\infty} x^{\alpha}e^{-x} f(x)dx \approx
+        \sum_{i=1}^n w_i f(x_i)
+
+    This integration grid is defined as :
+    .. math::
+        \int_{0}^{\infty} f(x)dx \approx
+        \sum_{i=1}^n \frac{w_i}{x_i^{\alpha} e^{-x_i}} f(x_i)
+        = \sum_{i=1}^n  w_i' f(x_i)
 
     Parameters
     ----------
     npoints : int
         Number of points in the grid
-    alpha : int, default to 0, required to be > -1
+    alpha : float, default to 0, required to be > -1
         parameter alpha value
 
     Returns
@@ -53,6 +61,7 @@ def GaussLaguerre(npoints, alpha=0):
     if alpha <= -1:
         raise ValueError(f"Alpha need to be bigger than -1, given {alpha}")
     points, weights = roots_genlaguerre(npoints, alpha)
+    weights = weights * np.exp(points) * np.power(points, -alpha)
     return OneDGrid(points, weights)
 
 
@@ -74,11 +83,16 @@ def GaussLegendre(npoints):
 
 
 def GaussChebyshev(npoints):
-    r"""Generate Gauss-Chebyshev grid.
+    r"""Generate a grid based on Gauss-Chebyshev grid.
 
+    Gauss Chebyshev grid is defined as:
     .. math::
         \int_{-1}^{1} \frac{f(x)}{\sqrt{1-x^2}}dx \approx \sum_{i=1}^n w_i f(x_i)
 
+    This integration grid is defined as :
+    .. math::
+        \int_{-1}^{1}f(x)dx\approx\sum_{i=1}^n  w_i \sqrt{1-x_i^2} f(x_i)
+        = \sum_{i=1}^n  w_i' f(x_i)
     Parameters
     ----------
     npoints : int
@@ -92,6 +106,7 @@ def GaussChebyshev(npoints):
     # points are generated in decreasing order
     # weights are pi/n, all weights are the same
     points, weights = np.polynomial.chebyshev.chebgauss(npoints)
+    weights = weights * np.sqrt(1 - np.power(points, 2))
     return OneDGrid(points[::-1], weights)
 
 
