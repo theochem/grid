@@ -269,6 +269,101 @@ class BeckeTF(BaseTransform):
         return 12 * self._R / (1 - array) ** 4
 
 
+class LinearTF(BaseTransform):
+    """Linear transformation class."""
+
+    def __init__(self, rmin, rmax):
+        """Construct linear transformation instance.
+
+        Parameters
+        ----------
+        rmin : float
+            Minimum value for transformed grid
+        rmax : float
+            Maximum value for transformed grid
+        """
+        self._rmin = rmin
+        self._rmax = rmax
+
+    def transform(self, x):
+        """Transform onedgrid form [-1, 1] to [rmin, rmax].
+
+        Parameters
+        ----------
+        x : float or np.ndarray
+            number or arrays to be transformed
+
+        Returns
+        -------
+        float or np.ndarray
+            Transformed points between [rmin, rmax]
+        """
+        return (self._rmax - self._rmin) / 2 * (1 + x) + self._rmin
+
+    def deriv(self, x):
+        """Compute the 1st order derivative.
+
+        Parameters
+        ----------
+        x : float or np.ndarray
+            number or arrays to be transformed
+
+        Returns
+        -------
+        float or np.ndarray
+            1st order derivative at given points
+        """
+        if isinstance(x, Number):
+            return (self._rmax - self._rmin) / 2
+        else:
+            return np.ones(x.size) * (self._rmax - self._rmin) / 2
+
+    def deriv2(self, x):
+        """Compute the 2nd order derivative.
+
+        Parameters
+        ----------
+        x : float or np.ndarray
+            number or arrays to be transformed
+
+        Returns
+        -------
+        float or np.ndarray
+            2nd order derivative at given points
+        """
+        return np.array(0) if isinstance(x, Number) else np.zeros(x.size)
+
+    def deriv3(self, x):
+        """Compute the 3rd order derivative.
+
+        Parameters
+        ----------
+        x : float or np.ndarray
+            number or arrays to be transformed
+
+        Returns
+        -------
+        float or np.ndarray
+            3rd order derivative at given points
+        """
+        return np.array(0) if isinstance(x, Number) else np.zeros(x.size)
+
+    def inverse(self, r):
+        """Compute the inverse of the transformation.
+
+        Parameters
+        ----------
+        x : float or np.ndarray
+            transformed number or arrays
+
+        Returns
+        -------
+        float or np.ndarray
+            Original number of array before the transformation
+        """
+        return (2 * r - (self._rmax + self._rmin)) / (self._rmax - self._rmin)
+
+
 class InverseTF(BaseTransform):
     """Inverse transformation class, [r0, rmax] or [r0, inf) -> [-1, 1]."""
 
@@ -413,7 +508,7 @@ class IdentityRTransform(BaseTransform):
         """Compute the inverse of identity transform."""
         self._array_num_type_check(r)
         r = np.array(r)
-        return 0 if isinstance(r, Number) else np.zeros(r.size)
+        return r
 
 
 class LinearRTransform(BaseTransform):
