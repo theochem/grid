@@ -325,417 +325,557 @@ class InverseTF(BaseTransform):
         return (3 * d2(x) ** 2 - d1(x) * d3(x)) / d1(x) ** 5
 
 
-# class RTransform:
-#     def __init__(self, npoint: int):
-#         if npoint < 2:
-#             raise ValueError("A radial grid consists of at least two points")
-#         self._npoint = npoint
-
-#     @property
-#     def npoint(self):
-#         return self._npoint
-
-#     def get_npoint(self):
-#         return self.npoint
-
-#     def radius(self, t: float):
-#         if isinstance(t, Number):
-#             return self._radius(t)
-#         elif isinstance(t, np.ndarray):
-#             return self._radius_array(t)
-#         else:
-#             raise NotImplementedError
-
-#     def deriv(self, t):
-#         if isinstance(t, Number):
-#             return self._deriv(t)
-#         elif isinstance(t, np.ndarray):
-#             return self._deriv_array(t)
-#         else:
-#             raise NotImplementedError
-
-#     def deriv2(self, t: float):
-#         if isinstance(t, Number):
-#             return self._deriv2(t)
-#         elif isinstance(t, np.ndarray):
-#             return self._deriv2_array(t)
-#         else:
-#             raise NotImplementedError
-
-#     def deriv3(self, t: float):
-#         if isinstance(t, Number):
-#             return self._deriv3(t)
-#         elif isinstance(t, np.ndarray):
-#             return self._deriv3_array(t)
-#         else:
-#             raise NotImplementedError
-
-#     def inv(self, r: float):
-#         if isinstance(r, Number):
-#             return self._inv(r)
-#         elif isinstance(r, np.ndarray):
-#             return self._inv_array(r)
-#         else:
-#             raise NotImplementedError
-
-#     def _radius_array(self, t: np.ndarray):
-#         vf = np.vectorize(self.radius)
-#         return vf(t)
-
-#     def _deriv_array(self, t: np.ndarray):
-#         vf = np.vectorize(self.deriv)
-#         return vf(t)
-
-#     def _deriv2_array(self, t: np.ndarray):
-#         vf = np.vectorize(self.deriv2)
-#         return vf(t)
-
-#     def _deriv3_array(self, t: np.ndarray):
-#         vf = np.vectorize(self.deriv3)
-#         return vf(t)
-
-#     def _inv_array(self, r: np.ndarray):
-#         vf = np.vectorize(self.inv)
-#         return vf(r)
-
-#     def get_radii(self):
-#         """Return an array with radii"""
-#         result = np.arange(self.npoint, dtype=float)
-#         return self._radius_array(result)
-
-#     def get_deriv(self):
-#         """Return an array with derivatives at the grid points"""
-#         result = np.arange(self.npoint, dtype=float)
-#         return self._deriv_array(result)
-
-#     def get_deriv2(self):
-#         """Return an array with second derivatives at the grid points"""
-#         result = np.arange(self.npoint, dtype=float)
-#         return self._deriv2_array(result)
-
-#     def get_deriv3(self):
-#         """Return an array with third derivatives at the grid points"""
-#         result = np.arange(self.npoint, dtype=float)
-#         return self._deriv3_array(result)
-
-#     @classmethod
-#     def from_string(cls, s: str):
-#         """Construct a RTransform subclass from a string."""
-#         words = s.split()
-#         clsname = words[0]
-#         args = words[1:]
-#         if clsname == "IdentityRTransform":
-#             if len(args) != 1:
-#                 raise ValueError(
-#                     "The IdentityRTransform needs one argument, got %i." % len(words)
-#                 )
-#             npoint = int(args[0])
-#             return IdentityRTransform(npoint)
-#         elif clsname == "LinearRTransform":
-#             if len(args) != 3:
-#                 raise ValueError(
-#                     "The LinearRTransform needs three arguments, got %i." % len(words)
-#                 )
-#             rmin = float(args[0])
-#             rmax = float(args[1])
-#             npoint = int(args[2])
-#             return LinearRTransform(rmin, rmax, npoint)
-#         elif clsname == "ExpRTransform":
-#             if len(args) != 3:
-#                 raise ValueError(
-#                     "The ExpRTransform needs three arguments, got %i." % len(words)
-#                 )
-#             rmin = float(args[0])
-#             rmax = float(args[1])
-#             npoint = int(args[2])
-#             return ExpRTransform(rmin, rmax, npoint)
-#         elif clsname == "PowerRTransform":
-#             if len(args) != 3:
-#                 raise ValueError(
-#                     "The PowerRTransform needs three arguments, got %i." % len(words)
-#                 )
-#             rmin = float(args[0])
-#             rmax = float(args[1])
-#             npoint = int(args[2])
-#             return PowerRTransform(rmin, rmax, npoint)
-#         elif clsname == "HyperbolicRTransform":
-#             if len(args) != 3:
-#                 raise ValueError(
-#                     "The HyperbolicRTransform needs three arguments, got %i."
-#                     % len(words)
-#                 )
-#             a = float(args[0])
-#             b = float(args[1])
-#             npoint = int(args[2])
-#             return HyperbolicRTransform(a, b, npoint)
-#         else:
-#             raise TypeError("Unkown RTransform subclass: %s" % clsname)
-
-#     def to_string(self):
-#         """Represent the rtransform object as a string"""
-#         raise NotImplementedError
-
-#     def chop(self, npoint):
-#         """Return an rtransform with ``npoint`` number of grid points
-
-#            The remaining grid points are such that they coincide with those from
-#            the old rtransform.
-#         """
-#         raise NotImplementedError
-
-#     def half(self):
-#         """Return an rtransform with half the number of grid points
-
-#            The returned rtransform is such that old(2t+1) = new(t).
-#         """
-#         raise NotImplementedError
-
-
-# class IdentityRTransform(RTransform):
-#     def __init__(self, npoint: int):
-#         super().__init__(npoint)
-
-#     def _radius(self, t: float):
-#         return t
-
-#     def _deriv(self, t: float):
-#         return 1.0
-
-#     def _deriv2(self, t: float):
-#         return 0.0
-
-#     def _deriv3(self, t: float):
-#         return 0.0
-
-#     def _inv(self, r: float):
-#         return r
-
-#     def to_string(self):
-#         return " ".join(["IdentityRTransform", repr(self.npoint)])
-
-#     def chop(self, npoint):
-#         return IdentityRTransform(npoint)
-
-
-# class LinearRTransform(RTransform):
-#     def __init__(self, rmin: float, rmax: float, npoint: int):
-#         super().__init__(npoint)
-#         if rmin >= rmax:
-#             raise ValueError("rmin must be smaller rmax")
-#         self._rmin = rmin
-#         self._rmax = rmax
-#         self._alpha: float = (rmax - rmin) / (npoint - 1)
-
-#     @property
-#     def rmin(self):
-#         return self._rmin
-
-#     @property
-#     def rmax(self):
-#         return self._rmax
-
-#     @property
-#     def alpha(self):
-#         return self._alpha
-
-#     def _radius(self, t: float):
-#         return self._alpha * t + self._rmin
-
-#     def _deriv(self, t: float):
-#         return self._alpha
-
-#     def _deriv2(self, t: float):
-#         return 0.0
-
-#     def _deriv3(self, t: float):
-#         return 0.0
-
-#     def _inv(self, r: float):
-#         return (r - self._rmin) / self._alpha
-
-#     def to_string(self):
-#         return " ".join(
-#             ["LinearRTransform", repr(self.rmin), repr(self.rmax), repr(self.npoint)]
-#         )
-
-#     def chop(self, npoint):
-#         rmax = self.radius(npoint - 1)
-#         return LinearRTransform(self.rmin, rmax, npoint)
-
-#     def half(self):
-#         if self.npoint % 2 != 0:
-#             raise ValueError(
-#                 "Half method can only be called on a rtransform with an even number of points."
-#             )
-#         rmin = self.radius(1)
-#         return LinearRTransform(rmin, self.rmax, self.npoint / 2)
-
-
-# class ExpRTransform(RTransform):
-#     def __init__(self, rmin: float, rmax: float, npoint: int):
-#         super().__init__(npoint)
-#         if rmin >= rmax:
-#             raise ValueError("rmin must be smaller rmax.")
-#         if (rmin <= 0) or (rmax <= 0.0):
-#             raise ValueError("rmin and rmax must be positive.")
-#         self._rmin = rmin
-#         self._rmax = rmax
-#         self._alpha = np.log(rmax / rmin) / (npoint - 1)
-
-#     @property
-#     def rmin(self):
-#         return self._rmin
-
-#     @property
-#     def rmax(self):
-#         return self._rmax
-
-#     @property
-#     def alpha(self):
-#         return self._alpha
-
-#     def _radius(self, t: float):
-#         return self._rmin * np.exp(t * self._alpha)
-
-#     def _deriv(self, t: float):
-#         return self.radius(t) * self._alpha
-
-#     def _deriv2(self, t: float):
-#         return self.deriv(t) * self._alpha
-
-#     def _deriv3(self, t: float):
-#         return self.deriv2(t) * self._alpha
-
-#     def _inv(self, r: float):
-#         return np.log(r / self._rmin) / self._alpha
-
-#     def to_string(self):
-#         return " ".join(
-#             ["ExpRTransform", repr(self.rmin), repr(self.rmax), repr(self.npoint)]
-#         )
-
-#     def chop(self, npoint):
-#         rmax = self.radius(npoint - 1)
-#         return ExpRTransform(self.rmin, rmax, npoint)
-
-#     def half(self):
-#         if self.npoint % 2 != 0:
-#             raise ValueError(
-#                 "Half method can only be called on a rtransform with an even number of points."
-#             )
-#         rmin = self.radius(1)
-#         return ExpRTransform(rmin, self.rmax, self.npoint / 2)
-
-
-# class PowerRTransform(RTransform):
-#     def __init__(self, rmin: float, rmax: float, npoint: float):
-#         super().__init__(npoint)
-#         if rmin >= rmax:
-#             raise ValueError("rmin must be smaller rmax.")
-#         if (rmin <= 0.0) or (rmax <= 0.0):
-#             raise ValueError("rmin and rmax must be positive.")
-#         self._power = (np.log(rmax) - np.log(rmin)) / np.log(npoint)
-#         if self._power < 2.0:
-#             raise ValueError("Power must be at least two for a decent intgration")
-#         self._rmin = rmin
-#         self._rmax = rmax
-
-#     @property
-#     def rmin(self):
-#         return self._rmin
-
-#     @property
-#     def rmax(self):
-#         return self._rmax
-
-#     @property
-#     def power(self):
-#         return self._power
-
-#     def _radius(self, t: float):
-#         return self._rmin * np.power(t + 1, self._power)
-
-#     def _deriv(self, t: float):
-#         return self._power * self._rmin * np.power(t + 1, self._power - 1)
-
-#     def _deriv2(self, t: float):
-#         return (
-#             self._power
-#             * (self._power - 1)
-#             * self._rmin
-#             * np.power(t + 1, self._power - 2)
-#         )
-
-#     def _deriv3(self, t: float):
-#         return (
-#             self._power
-#             * (self._power - 1)
-#             * (self._power - 2)
-#             * self._rmin
-#             * np.power(t + 1, self._power - 3)
-#         )
-
-#     def _inv(self, r: float):
-#         return np.power(r / self._rmin, 1.0 / self._power) - 1
-
-#     def to_string(self):
-#         return " ".join(
-#             ["PowerRTransform", repr(self.rmin), repr(self.rmax), repr(self.npoint)]
-#         )
-
-#     def chop(self, npoint):
-#         rmax = self.radius(npoint - 1)
-#         return PowerRTransform(self.rmin, rmax, npoint)
-
-#     def half(self):
-#         if self.npoint % 2 != 0:
-#             raise ValueError(
-#                 "Half method can only be called on a rtransform with an even number of points."
-#             )
-#         rmin = self.radius(1)
-#         return PowerRTransform(rmin, self.rmax, self.npoint / 2)
-
-
-# class HyperbolicRTransform(RTransform):
-#     def __init__(self, a, b, npoint):
-#         if a <= 0:
-#             raise ValueError("a must be strctly positive.")
-#         if b <= 0:
-#             raise ValueError("b must be strctly positive.")
-#         if b * (npoint - 1) >= 1.0:
-#             raise ValueError("b*(npoint-1) must be smaller than one.")
-
-#         super().__init__(npoint)
-#         self._a = a
-#         self._b = b
-
-#     @property
-#     def a(self):
-#         return self._a
-
-#     @property
-#     def b(self):
-#         return self._b
-
-#     def _radius(self, t: float):
-#         return self._a * t / (1 - self._b * t)
-
-#     def _deriv(self, t: float):
-#         x = 1.0 / (1 - self._b * t)
-#         return self._a * x * x
-
-#     def _deriv2(self, t: float):
-#         x = 1.0 / (1 - self._b * t)
-#         return 2.0 * self._a * self._b * x ** 3
-
-#     def _deriv3(self, t: float):
-#         x = 1.0 / (1 - self._b * t)
-#         return 6.0 * self._a * self._b * self._b * x ** 4
-
-#     def _inv(self, r: float):
-#         return r / (self._a + self._b * r)
-
-#     def to_string(self):
-#         return " ".join(
-#             ["HyperbolicRTransform", repr(self.a), repr(self.b), repr(self.npoint)]
-#         )
+class MultiExpTF(BaseTransform):
+    """MultiExp Transformation class."""
+
+    def __init__(self, r0, R):
+        """Construct MultiExp transform [-1,1] -> [r0,inf).
+
+        Parameters
+        ----------
+        r0: float
+            The minimum coordinate for transformed radial array.
+        R: float
+            The scale factor for transformed radial array.
+        """
+        self._r0 = r0
+        self._R = R
+
+    @property
+    def r0(self):
+        """float: The minimum value for the transformed radial array."""
+        return self._r0
+
+    @property
+    def R(self):
+        """float: The scale factor for the transformed radial array."""
+        return self._R
+
+    def transform(self, array, trim_inf=True):
+        """Transform given array [-1,1] to radial array [r0,inf).
+
+        Parameters
+        ----------
+        array: np.ndarray(N,)
+            One dimension numpy array with values between [-1,1]
+        trim_inf : bool, oprtional, default to True
+            Flag to trim infinite value in transformed array. If true
+            will trim np.inf -> 1E16. If false, leave np.inf as it is.
+            This may cause unexpected errors in the following operations.
+
+        Returns
+        -------
+        rf_array: np.ndarray(N,)
+            One dimension numpy array with values between [r0,inf).
+        """
+        self._array_type_check(array)
+        rf_array = -self._R * np.log((array + 1) / 2) + self._r0
+        if trim_inf:
+            self._convert_inf(rf_array)
+
+        return rf_array
+
+    def inverse(self, r_array):
+        """Transform radiar array [r0,inf) back to original array [-1,1].
+
+        Parameters
+        ----------
+        r_array: np.ndarray(N,)
+            Sorted one dimension radial array with values bewteen [r0,inf).
+
+        Returns
+        -------
+        np.ndarray(N,)
+            The original one dimension array with values bewteen [-1,1]
+        """
+        self._array_type_check(r_array)
+
+        return 2 * np.exp(-(r_array - self._r0) / self._R) - 1
+
+    def deriv(self, array):
+        """Compute the 1st derivative of MultiExp transformation.
+
+        Parameters
+        ----------
+        array: np.ndarray(N,)
+            One dimension numpy array with values between [-1,1].
+
+        Returns
+        -------
+        np.ndarray(N,)
+            The first derivative of MultiExp transformation at each point.
+        """
+        self._array_type_check(array)
+
+        return -self._R / (1 + array)
+
+    def deriv2(self, array):
+        """Compute the 2nd derivative of MultiExp transformation.
+
+        Parameters
+        ----------
+        array: np.ndarray(N,)
+            One dimension numpy array with values between [-1,1].
+
+        Returns
+        -------
+        np.ndarray(N,)
+            The second derivative of MultiExp transformation at each point.
+        """
+        self._array_type_check(array)
+
+        return self._R / ((1 + array) ** 2)
+
+    def deriv3(self, array):
+        """Compute the 3rd derivative of MultiExp transformation.
+
+        Parameters
+        ----------
+        array: np.ndarray(N,)
+            One dimension numpy array with values between [-1,1].
+
+        Returns
+        -------
+        np.ndarray(N,)
+            The third derivative of MultiExp transformation at each point.
+        """
+        self._array_type_check(array)
+
+        return -2 * self._R / ((1 + array) ** 3)
+
+
+class KnowlesTF(BaseTransform):
+    """Knowles Transformation class."""
+
+    def __init__(self, r0, R, k):
+        """Construct Knowles transform [-1,1] -> [r0,inf).
+
+        Parameters
+        ----------
+        r0: float
+            The minimum coordinate for transformed radial array.
+        R: float
+            The scale factor for transformed radial array.
+        k: float k > 0
+            Free parameter, k must be > 0.
+        """
+        if k <= 0:
+            raise ValueError(f"k need to be greater than 0.")
+
+        self._r0 = r0
+        self._R = R
+        self._k = k
+
+    @property
+    def r0(self):
+        """float: The minimum value for the transformed radial array."""
+        return self._r0
+
+    @property
+    def R(self):
+        """float: The scale factor for the transformed radial array."""
+        return self._R
+
+    @property
+    def k(self):
+        """float: Free and extra parameter, k must be > 0."""
+        return self._k
+
+    def transform(self, array, trim_inf=True):
+        """Transform given array [-1,1] to radial array [r0,inf).
+
+        Parameters
+        ----------
+        array: np.ndarray(N,)
+            One dimension numpy array with values between [-1,1]
+        trim_inf : bool, oprtional, default to True
+            Flag to trim infinite value in transformed array. If true
+            will trim np.inf -> 1E16. If false, leave np.inf as it is.
+            This may cause unexpected errors in the following operations.
+
+        Returns
+        -------
+        rf_array: np.ndarray(N,)
+            One dimension numpy array with values between [r0,inf).
+        """
+        self._array_type_check(array)
+
+        rf_array = (
+            -self._R * np.log(1 - (2 ** -self._k) * (array + 1) ** self._k) + self._r0
+        )
+
+        if trim_inf:
+            self._convert_inf(rf_array)
+
+        return rf_array
+
+    def inverse(self, r_array):
+        """Transform radiar array [r0,inf) back to original array [-1,1].
+
+        Parameters
+        ----------
+        r_array: np.ndarray(N,)
+            Sorted one dimension radial array with values bewteen [r0,inf).
+
+        Returns
+        -------
+        np.ndarray(N,)
+            The original one dimension array with values bewteen [-1,1]
+        """
+        self._array_type_check(r_array)
+
+        return -1 + 2 * (1 - np.exp((self._r0 - r_array) / self._R)) ** (1 / self._k)
+
+    def deriv(self, array):
+        """Compute the 1st derivative of Knowles transformation.
+
+        Parameters
+        ----------
+        array: np.ndarray(N,)
+            One dimension numpy array with values between [-1,1].
+
+        Returns
+        -------
+        np.ndarray(N,)
+            The first derivative of Knowles transformation at each point.
+        """
+        self._array_type_check(array)
+        qi = 1 + array
+
+        return (
+            self._R * self._k * (qi ** (self._k - 1)) / (2 ** self._k - qi ** self._k)
+        )
+
+    def deriv2(self, array):
+        """Compute the 2nd derivative of Knowles transformation.
+
+        Parameters
+        ----------
+        array: np.ndarray(N,)
+            One dimension numpy array with values between [-1,1].
+
+        Returns
+        -------
+        np.ndarray(N,)
+            The second derivative of Knowles transformation at each point.
+        """
+        self._array_type_check(array)
+        qi = 1 + array
+
+        return (
+            self._R
+            * self._k
+            * (qi ** (self._k - 2))
+            * (2 ** self._k * (self._k - 1) + qi ** self._k)
+            / (2 ** self._k - qi ** self._k) ** 2
+        )
+
+    def deriv3(self, array):
+        """Compute the 3rd derivative of Knowles transformation.
+
+        Parameters
+        ----------
+        array: np.ndarray(N,)
+            One dimension numpy array with values between [-1,1].
+
+        Returns
+        -------
+        np.ndarray(N,)
+            The third derivative of Knowles transformation at each point.
+        """
+        self._array_type_check(array)
+
+        qi = 1 + array
+
+        return (
+            self._R
+            * self._k
+            * (qi ** (self._k - 3))
+            * (
+                -(4 ** self._k) * (self._k - 2) * (self._k - 1)
+                - 2 ** self._k * (self._k - 1) * (self._k + 4) * (qi ** self._k)
+                - 2 * qi ** (2 * self._k)
+            )
+            / (-2 ** self._k + qi ** self._k) ** 3
+        )
+
+
+class HandyTF(BaseTransform):
+    """Handy Transformation class."""
+
+    def __init__(self, r0, R, m):
+        """Construct Handy transform [-1,1] -> [r0,inf).
+
+        Parameters
+        ----------
+        r0: float
+            The minimum coordinate for transformed radial array.
+        R: float
+            The scale factor for transformed radial array.
+        m: float m > 0
+            Free parameter, m must be > 0.
+        """
+        if m <= 0:
+            raise ValueError(f"m need to be greater than 0.")
+
+        self._r0 = r0
+        self._R = R
+        self._m = m
+
+    @property
+    def r0(self):
+        """float: The minimum value for the transformed radial array."""
+        return self._r0
+
+    @property
+    def R(self):
+        """float: The scale factor for the transformed radial array."""
+        return self._R
+
+    @property
+    def m(self):
+        """float: Free and extra parameter, m must be > 0."""
+        return self._m
+
+    def transform(self, array, trim_inf=True):
+        """Transform given array [-1,1] to radial array [r0,inf).
+
+        Parameters
+        ----------
+        array: np.ndarray(N,)
+            One dimension numpy array with values between [-1,1]
+        trim_inf : bool, oprtional, default to True
+            Flag to trim infinite value in transformed array. If true
+            will trim np.inf -> 1E16. If false, leave np.inf as it is.
+            This may cause unexpected errors in the following operations.
+
+        Returns
+        -------
+        rf_array: np.ndarray(N,)
+            One dimension numpy array with values between [r0,inf).
+        """
+        self._array_type_check(array)
+
+        rf_array = -self._R * ((1 + array) / (1 - array)) ** self._m + self._r0
+
+        if trim_inf:
+            self._convert_inf(rf_array)
+
+        return rf_array
+
+    def inverse(self, r_array):
+        """Transform radiar array [r0,inf) back to original array [-1,1].
+
+        Parameters
+        ----------
+        r_array: np.ndarray(N,)
+            Sorted one dimension radial array with values bewteen [r0,inf).
+
+        Returns
+        -------
+        np.ndarray(N,)
+            The original one dimension array with values bewteen [-1,1]
+        """
+        self._array_type_check(r_array)
+
+        tmp_ri = (r_array - self._r0) ** (1 / self._m)
+        tmp_R = self._R ** (1 / self._m)
+
+        return (tmp_ri - tmp_R) / (tmp_ri + tmp_R)
+
+    def deriv(self, array):
+        """Compute the 1st derivative of Handy transformation.
+
+        Parameters
+        ----------
+        array: np.ndarray(N,)
+            One dimension numpy array with values between [-1,1].
+
+        Returns
+        -------
+        np.ndarray(N,)
+            The first derivative of Handy transformation at each point.
+        """
+        self._array_type_check(array)
+        qplus = 1 + array
+        qmin = 1 - array
+
+        return (
+            2 * self._m * self._R * (qplus ** (self._m - 1)) / (qmin ** (self._m + 1))
+        )
+
+    def deriv2(self, array):
+        """Compute the 2nd derivative of Handy transformation.
+
+        Parameters
+        ----------
+        array: np.ndarray(N,)
+            One dimension numpy array with values between [-1,1].
+
+        Returns
+        -------
+        np.ndarray(N,)
+            The second derivative of Handy transformation at each point.
+        """
+        self._array_type_check(array)
+        qplus = 1 + array
+        qmin = 1 - array
+
+        return (
+            4
+            * self._m
+            * self._R
+            * (self._m + array)
+            * (qplus ** (self._m - 2))
+            / (qmin ** (self._m + 2))
+        )
+
+    def deriv3(self, array):
+        """Compute the 3rd derivative of Handy transformation.
+
+        Parameters
+        ----------
+        array: np.ndarray(N,)
+            One dimension numpy array with values between [-1,1].
+
+        Returns
+        -------
+        np.ndarray(N,)
+            The third derivative of Handy transformation at each point.
+        """
+        self._array_type_check(array)
+        qplus = 1 + array
+        qmin = 1 - array
+
+        return (
+            4
+            * self._m
+            * self._R
+            * (1 + 6 * self._m * array + 2 * self._m ** 2 + 3 * array ** 3)
+            * (qplus ** (self._m - 3))
+            / (qmin ** (self._m + 3))
+        )
+
+
+class LinearTF(BaseTransform):
+    """Linear Transformation class."""
+
+    def __init__(self, r0, rmax):
+        """Construct Linear modifiactiontransform [-1,1] -> [r0,rmax).
+
+        Parameters
+        ----------
+        r0: float
+            The minimum coordinate for transformed radial array.
+        R: float
+            The maximum coordinate for transformed radiar array.
+        """
+        self._r0 = r0
+        self._rmax = rmax
+
+    @property
+    def r0(self):
+        """float: The minimum value for the transformed radial array."""
+        return self._r0
+
+    @property
+    def R(self):
+        """float: The maximum value for the transformed radial array."""
+        return self._rmax
+
+    def transform(self, array, trim_inf=True):
+        """Transform given array [-1,1] to radial array [r0,rmax).
+
+        Parameters
+        ----------
+        array: np.ndarray(N,)
+            One dimension numpy array with values between [-1,1]
+        trim_inf : bool, oprtional, default to True
+            Flag to trim infinite value in transformed array. If true
+            will trim np.inf -> 1E16. If false, leave np.inf as it is.
+            This may cause unexpected errors in the following operations.
+
+        Returns
+        -------
+        rf_array: np.ndarray(N,)
+            One dimension numpy array with values between [r0,inf).
+        """
+        self._array_type_check(array)
+
+        rf_array = 0.5 * (self._rmax - self._r0) * (1 + array) + self._r0
+
+        if trim_inf:
+            self._convert_inf(rf_array)
+
+        return rf_array
+
+    def inverse(self, r_array):
+        """Transform radiar array [r0,inf) back to original array [-1,1].
+
+        Parameters
+        ----------
+        r_array: np.ndarray(N,)
+            Sorted one dimension radial array with values bewteen [r0,inf).
+
+        Returns
+        -------
+        np.ndarray(N,)
+            The original one dimension array with values bewteen [-1,1]
+        """
+        self._array_type_check(r_array)
+
+        q_array = self._rmax - self._r0 - 2 * r_array
+        q_array /= self._rmax - self.r0
+
+        return q_array
+
+    def deriv(self, array):
+        """Compute the 1st derivative of Linear transformation.
+
+        Parameters
+        ----------
+        array: np.ndarray(N,)
+            One dimension numpy array with values between [-1,1].
+
+        Returns
+        -------
+        np.ndarray(N,)
+            The first derivative of Linear transformation at each point.
+        """
+        self._array_type_check(array)
+
+        return 0.5 * (self._rmax - self._r0)
+
+    def deriv2(self, array):
+        """Compute the 2nd derivative of Linear transformation.
+
+        Parameters
+        ----------
+        array: np.ndarray(N,)
+            One dimension numpy array with values between [-1,1].
+
+        Returns
+        -------
+        np.ndarray(N,)
+            The second derivative of Linear transformation at each point.
+        """
+        self._array_type_check(array)
+
+        return 0
+
+    def deriv3(self, array):
+        """Compute the 3rd derivative of Linear transformation.
+
+        Parameters
+        ----------
+        array: np.ndarray(N,)
+            One dimension numpy array with values between [-1,1].
+
+        Returns
+        -------
+        np.ndarray(N,)
+            The third derivative of Linear transformation at each point.
+        """
+        self._array_type_check(array)
+
+        return 0
