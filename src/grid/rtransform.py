@@ -656,7 +656,7 @@ class HandyTF(BaseTransform):
         """
         self._array_type_check(array)
 
-        rf_array = -self._R * ((1 + array) / (1 - array)) ** self._m + self._r0
+        rf_array = self._R * ((1 + array) / (1 - array)) ** self._m + self._r0
 
         if trim_inf:
             self._convert_inf(rf_array)
@@ -697,12 +697,9 @@ class HandyTF(BaseTransform):
             The first derivative of Handy transformation at each point.
         """
         self._array_type_check(array)
-        qplus = 1 + array
-        qmin = 1 - array
+        q_tmp = ((1 + array) / (1 - array)) ** self._m
 
-        return (
-            2 * self._m * self._R * (qplus ** (self._m - 1)) / (qmin ** (self._m + 1))
-        )
+        return -2 * self._m * self._R * q_tmp / (array ** 2 - 1)
 
     def deriv2(self, array):
         """Compute the 2nd derivative of Handy transformation.
@@ -718,16 +715,10 @@ class HandyTF(BaseTransform):
             The second derivative of Handy transformation at each point.
         """
         self._array_type_check(array)
-        qplus = 1 + array
-        qmin = 1 - array
+        q_tmp = ((1 + array) / (1 - array)) ** self._m
 
         return (
-            4
-            * self._m
-            * self._R
-            * (self._m + array)
-            * (qplus ** (self._m - 2))
-            / (qmin ** (self._m + 2))
+            4 * self._m * self._R * (self._m + array) * q_tmp / ((array ** 2 - 1) ** 2)
         )
 
     def deriv3(self, array):
@@ -744,16 +735,15 @@ class HandyTF(BaseTransform):
             The third derivative of Handy transformation at each point.
         """
         self._array_type_check(array)
-        qplus = 1 + array
-        qmin = 1 - array
+        q_tmp = ((1 + array) / (1 - array)) ** self._m
 
         return (
-            4
+            -4
             * self._m
             * self._R
-            * (1 + 6 * self._m * array + 2 * self._m ** 2 + 3 * array ** 3)
-            * (qplus ** (self._m - 3))
-            / (qmin ** (self._m + 3))
+            * (1 + 6 * self._m * array + 2 * self._m ** 2 + 3 * array ** 2)
+            * q_tmp
+            / ((array ** 2 - 1) ** 3)
         )
 
 
@@ -779,7 +769,7 @@ class LinearTF(BaseTransform):
         return self._r0
 
     @property
-    def R(self):
+    def rmax(self):
         """float: The maximum value for the transformed radial array."""
         return self._rmax
 
@@ -824,8 +814,7 @@ class LinearTF(BaseTransform):
         """
         self._array_type_check(r_array)
 
-        q_array = self._rmax - self._r0 - 2 * r_array
-        q_array /= self._rmax - self.r0
+        q_array = (2 * (r_array - self._r0) / (self._rmax - self._r0)) - 1
 
         return q_array
 

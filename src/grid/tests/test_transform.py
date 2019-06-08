@@ -22,7 +22,7 @@
 
 from unittest import TestCase
 
-from grid.rtransform import BeckeTF, InverseTF
+from grid.rtransform import BeckeTF, HandyTF, InverseTF, KnowlesTF, LinearTF, MultiExpTF
 
 import numpy as np
 
@@ -38,21 +38,21 @@ class TestTransform(TestCase):
     def _deriv_finite_diff(self, tf, array1):
         """General function to test analytic deriv and finite difference."""
         # 1st derivative analytic and finite diff
-        array2 = array1 - 1e-6
+        array2 = array1 - 1e-7
         # analytic
         a_d1 = tf.deriv(array1)
         # finit diff
-        df_d1 = (tf.transform(array1) - tf.transform(array2)) / 1e-6
+        df_d1 = (tf.transform(array1) - tf.transform(array2)) / 1e-7
         assert np.allclose(a_d1, df_d1, rtol=1e-5)
 
         # 2nd derivative analytic and finite diff
         a_d2 = tf.deriv2(array1)
-        df_d2 = (tf.deriv(array1) - tf.deriv(array2)) / 1e-6
+        df_d2 = (tf.deriv(array1) - tf.deriv(array2)) / 1e-7
         assert np.allclose(a_d2, df_d2, rtol=1e-4)
 
         # 3rd derivative analytic and finite diff
         a_d3 = tf.deriv3(array1)
-        df_d3 = (tf.deriv2(array1) - tf.deriv2(array2)) / 1e-6
+        df_d3 = (tf.deriv2(array1) - tf.deriv2(array2)) / 1e-7
         assert np.allclose(a_d3, df_d3, rtol=1e-4)
 
     def test_becke_tf(self):
@@ -130,3 +130,187 @@ class TestTransform(TestCase):
         # inverse init error
         with self.assertRaises(TypeError):
             InverseTF(0.5)
+
+    # MultiExp
+    def test_multiexp_tf(self):
+        """Test MultiExp initialization."""
+        metf = MultiExpTF(0.1, 1.1)
+        assert metf.R == 1.1
+        assert metf.r0 == 0.1
+
+    def test_multiexp_transform(self):
+        """Test MultiExp transformation."""
+        metf = MultiExpTF(0.1, 1.1)
+        tf_array = metf.transform(self.array)
+        new_array = metf.inverse(tf_array)
+        assert np.allclose(new_array, self.array)
+
+    def test_multiexp_infinite(self):
+        """Test Multiexp transformation when inf generated."""
+        inf_array = np.linspace(-1, 1, 21)
+        metf = MultiExpTF(0.1, 1.1)
+        tf_array = metf.transform(inf_array, trim_inf=True)
+        inv_array = metf.inverse(tf_array)
+        assert np.allclose(inv_array, inf_array)
+
+    def test_multiexp_deriv(self):
+        """Test Multiexp transform derivatives with finite diff."""
+        metf = MultiExpTF(0.1, 1.1)
+        # call finite diff test function with given arrays
+        self._deriv_finite_diff(metf, self.array)
+
+    def test_multiexp_inverse(self):
+        """Test inverse transform."""
+        metf = MultiExpTF(0.1, 1.1)
+        inv = InverseTF(metf)
+        new_array = inv.transform(metf.transform(self.array))
+        assert np.allclose(new_array, self.array)
+
+    def test_multiexp_inverse_inverse(self):
+        """Test inverse of inverse of MultiExp transformation."""
+        metf = MultiExpTF(0.1, 1.1)
+        inv = InverseTF(metf)
+        inv_inv = inv.inverse(inv.transform(self.array))
+        assert np.allclose(inv_inv, self.array)
+
+    # KnowlesTF
+    def test_knowles_tf(self):
+        """Test Knowles initialization."""
+        ktf = KnowlesTF(0.1, 1.1, 2)
+        assert ktf.R == 1.1
+        assert ktf.r0 == 0.1
+        assert ktf.k == 2
+
+    def test_knowles_transform(self):
+        """Test Knowles transformation."""
+        ktf = KnowlesTF(0.1, 1.1, 2)
+        tf_array = ktf.transform(self.array)
+        new_array = ktf.inverse(tf_array)
+        assert np.allclose(new_array, self.array)
+
+    def test_knowles_infinite(self):
+        """Test Knowles transformation when inf generated."""
+        inf_array = np.linspace(-1, 1, 21)
+        ktf = KnowlesTF(0.1, 1.1, 2)
+        tf_array = ktf.transform(inf_array, trim_inf=True)
+        inv_array = ktf.inverse(tf_array)
+        assert np.allclose(inv_array, inf_array)
+
+    def test_knowles_deriv(self):
+        """Test Knowles transform derivatives with finite diff."""
+        ktf = KnowlesTF(0.1, 1.1, 2)
+        # call finite diff test function with given arrays
+        self._deriv_finite_diff(ktf, self.array)
+
+    def test_knowles_inverse(self):
+        """Test inverse transform."""
+        ktf = KnowlesTF(0.1, 1.1, 2)
+        inv = InverseTF(ktf)
+        new_array = inv.transform(ktf.transform(self.array))
+        assert np.allclose(new_array, self.array)
+
+    def test_knowles_inverse_inverse(self):
+        """Test inverse of inverse of Knowles transformation."""
+        ktf = KnowlesTF(0.1, 1.1, 1)
+        inv = InverseTF(ktf)
+        inv_inv = inv.inverse(inv.transform(self.array))
+        assert np.allclose(inv_inv, self.array)
+
+    # HandyTF
+    def test_handy_tf(self):
+        """Test Handy initialization."""
+        htf = HandyTF(0.1, 1.1, 2)
+        assert htf.R == 1.1
+        assert htf.r0 == 0.1
+        assert htf.m == 2
+
+    def test_handy_transform(self):
+        """Test Handy transformation."""
+        htf = HandyTF(0.1, 1.1, 2)
+        tf_array = htf.transform(self.array)
+        new_array = htf.inverse(tf_array)
+        assert np.allclose(new_array, self.array)
+
+    def test_handy_infinite(self):
+        """Test Handy transformation when inf generated."""
+        inf_array = np.linspace(-1, 1, 21)
+        htf = HandyTF(0.1, 1.1, 2)
+        tf_array = htf.transform(inf_array, trim_inf=True)
+        inv_array = htf.inverse(tf_array)
+        assert np.allclose(inv_array, inf_array)
+
+    def test_handy_deriv(self):
+        """Test Handy transform derivatives with finite diff."""
+        htf = HandyTF(0.1, 1.1, 2)
+        # call finite diff test function with given arrays
+        self._deriv_finite_diff(htf, self.array)
+
+    def test_handy_inverse(self):
+        """Test inverse transform."""
+        htf = HandyTF(0.1, 1.1, 2)
+        inv = InverseTF(htf)
+        new_array = inv.transform(htf.transform(self.array))
+        assert np.allclose(new_array, self.array)
+
+    def test_handy_inverse_deriv(self):
+        """Test inverse transformation derivatives with finite diff."""
+        htf = HandyTF(0.1, 1.1, 2)
+        inv = InverseTF(htf)
+        r_array = 2 ** (np.arange(-1, 8, dtype=float))
+        self._deriv_finite_diff(inv, r_array)
+
+    def test_handy_inverse_inverse(self):
+        """Test inverse of inverse of Handy transformation."""
+        htf = HandyTF(0.1, 1.1, 1)
+        inv = InverseTF(htf)
+        inv_inv = inv.inverse(inv.transform(self.array))
+        assert np.allclose(inv_inv, self.array)
+
+    # LinearTF
+    def test_linear_tf(self):
+        """Test Linear initialization."""
+        ltf = LinearTF(0.1, 1.1)
+        assert ltf.r0 == 0.1
+        assert ltf.rmax == 1.1
+
+    def test_linear_transform(self):
+        """Test Linear transformation."""
+        ltf = LinearTF(0.1, 1.1)
+        tf_array = ltf.transform(self.array)
+        new_array = ltf.inverse(tf_array)
+        assert np.allclose(new_array, self.array)
+
+    def test_linear_infinite(self):
+        """Test Linear transformation when inf generated."""
+        inf_array = np.linspace(-1, 1, 21)
+        ltf = LinearTF(0.1, 1.1)
+        tf_array = ltf.transform(inf_array, trim_inf=True)
+        inv_array = ltf.inverse(tf_array)
+        assert np.allclose(inv_array, inf_array)
+
+    def test_linear_deriv(self):
+        """Test linear transform derivatives with finite diff."""
+        ltf = LinearTF(0.1, 1.1)
+        # call finite diff test function with given arrays
+        self._deriv_finite_diff(ltf, self.array)
+
+    def test_linear_inverse(self):
+        """Test inverse transform."""
+        ltf = LinearTF(0.1, 1.1)
+        inv = InverseTF(ltf)
+        new_array = inv.transform(ltf.transform(self.array))
+        assert np.allclose(new_array, self.array)
+
+    def test_linear_inverse_deriv(self):
+        """Test inverse transformation derivatives with finite diff."""
+        ltf = LinearTF(0.1, 1.1)
+        inv = InverseTF(ltf)
+        r_array = 2 ** (np.arange(-1, 8, dtype=float))
+        self._deriv_finite_diff(inv, r_array)
+
+    def test_linear_inverse_inverse(self):
+        """Test inverse of inverse of MultiExp transformation."""
+        ltf = LinearTF(0.1, 1.1)
+        inv = InverseTF(ltf)
+        inv_inv = inv.inverse(inv.transform(self.array))
+        assert np.allclose(inv_inv, self.array)
