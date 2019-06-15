@@ -2,7 +2,13 @@ from unittest import TestCase
 from numbers import Number
 
 from grid.ode import ODE
-from grid.rtransform import IdentityRTransform, InverseTF, LinearTF, BaseTransform, BeckeTF
+from grid.rtransform import (
+    IdentityRTransform,
+    InverseTF,
+    LinearTF,
+    BaseTransform,
+    BeckeTF,
+)
 from grid.onedgrid import GaussLaguerre
 
 import numpy as np
@@ -130,10 +136,10 @@ class TestODE(TestCase):
         r = np.linspace(1, 2, 10)  # r
         y = np.zeros((2, r.size))
         x = stf.transform(r)  # transformed x
-        assert_almost_equal(x, r ** 2)
+        # assert_almost_equal(x, r ** 2)
 
         def fx(x):
-            return 1 if isinstance(x, Number) else np.ones(x.size)
+            return 1 / x ** 3 + 3 * x ** 2 + x
 
         def func(x, y):
             dy_dx = ODE._rearrange_trans_ode(x, y, coeff, stf, fx)
@@ -154,7 +160,7 @@ class TestODE(TestCase):
 
     def test_second_order_ode_with_fx(self):
         stf = SqTF()
-        coeff = np.array([0, 0, 1])
+        coeff = np.array([2, 2, 3])
         # transform
         r = np.linspace(1, 2, 10)  # r
         y = np.zeros((2, r.size))
@@ -176,42 +182,106 @@ class TestODE(TestCase):
         ref_y = np.zeros((2, r.size))
 
         def func_ref(x, y):
-            return np.vstack((y[1], fx(x)))
+            dy_dx = ODE._rearrange_ode(x, y, coeff, fx(x))
+            return np.vstack((*y[1:], dy_dx))
 
         res_ref = solve_bvp(func_ref, bc, r, ref_y)
         assert_allclose(res.sol(x)[0], res_ref.sol(r)[0], atol=1e-4)
 
-    def becke_transform_3rd_order_ode(self):
-        btf = BeckeTF(0.1, 10)
-        coeff = np.array([1.3, 1.2, 1.5, 1.4])
-        x = np.linspace(-0.9999, 0.9999, 20)  # transformed x locates at (-1, 1)
-        r = btf.inverse(x)  # original r
-        y = np.zeros((3, r.size))
+    def test_becke_transform_2nd_order_ode(self):
+        btf = BeckeTF(0.1, 2)
+        ibtf = InverseTF(btf)
+        coeff = np.array([0, 1, 1])
+        # transform
+        # r = np.linspace(1, 2, 10)  # r
+        # x = ibtf.transform(r)  # transformed x
+        x = np.linspace(-0.9, 0.9, 20)
+        r = ibtf.inverse(x)
+        y = np.zeros((2, r.size))
 
-        def fx(r):  # function on radial
-            1 / r ** 2
+        def fx(x):
+            return 1 / x ** 2
 
-        def func_ref(x, y):
-            dy_dx = ODE._rearrange_ode(x, y, coeff, fx)
+        def func(x, y):
+            dy_dx = ODE._rearrange_trans_ode(x, y, coeff, ibtf, fx)
             return np.vstack((*y[1:], dy_dx))
 
         def bc(ya, yb):
             return np.array([ya[0], yb[0]])
 
-        res_ref = solve_bvp(func_ref, bc, r, y)
+        res = solve_bvp(func, bc, x, y)
+        print(res.sol(x)[0])
 
-        def func_tf(x, y):
-            dy_dx = ODE._rearrange_trans_ode(x, y, coeff, btf, fx)
+        def func_ref(x, y):
+            dy_dx = ODE._rearrange_ode(x, y, coeff, fx(x))
             return np.vstack((*y[1:], dy_dx))
 
-        res = solve_bvp(func_tf, bc, x, y)
-        assert_allclose(res.sol(x)[0], res_ref.sol(r)[0])
+        res_ref = solve_bvp(func_ref, bc, r, y)
+        print(res_ref.sol(r)[0])
+
+        assert_allclose(res.sol(x)[0], res_ref.sol(r)[0], atol=5e-3)
+
+    def test_becke_transform_3nd_order_ode(self):
+        btf = BeckeTF(0.1, 10)
+        ibtf = InverseTF(btf)
+        coeff = np.array([0, 2, 3, 3])
+        # transform
+        # r = np.linspace(1, 2, 10)  # r
+        # x = ibtf.transform(r)  # transformed x
+        x = np.linspace(-0.9, 0.9, 20)
+        r = ibtf.inverse(x)
+        y = np.random.rand(3, r.size)
+
+        def fx(x):
+            return 1 / x ** 4
+
+        def func(x, y):
+            dy_dx = ODE._rearrange_trans_ode(x, y, coeff, ibtf, fx)
+            return np.vstack((*y[1:], dy_dx))
+
+        def bc(ya, yb):
+            return np.array([ya[0], yb[0], ya[1]])
+
+        res = solve_bvp(func, bc, x, y)
+        print(res.sol(x)[0])
+
+        def func_ref(x, y):
+            dy_dx = ODE._rearrange_ode(x, y, coeff, fx(x))
+            return np.vstack((*y[1:], dy_dx))
+
+        res_ref = solve_bvp(func_ref, bc, r, y)
+        print(res_ref.sol(r)[0])
+
+        assert_allclose(res.sol(x)[0], res_ref.sol(r)[0], atol=3e-4)
+
+    def test_solve_ode_bvp(self):
+        x = np.linspace(0, 2, 10)
+
+        def fx(x):
+            return 1 if isinstance(x, Number) else np.ones(x.size)
+
+        coeffs = [0, 0, 1]
+        bd_cond = [[0, 0, 0], [1, 0, 0]]
+
+        res = ODE.solve_bvp(x, fx, coeffs, bd_cond)
+
+        assert_almost_equal(res.sol(0)[0], 0)
+        assert_almost_equal(res.sol(1)[0], -0.5)
+        assert_almost_equal(res.sol(2)[0], 0)
+        assert_almost_equal(res.sol(0)[1], -1)
+        assert_almost_equal(res.sol(1)[1], 0)
+        assert_almost_equal(res.sol(2)[1], 1)
+
+    def test_solver_ode_bvp_with_tf(self):
+        x = np.linspace(-1, 1, 20)
+        # btf = BeckeTF(0.1, 1.5)
+        # r = btf.transform(x)
 
 
 class SqTF(BaseTransform):
     def __init__(self, exp=2, extra=0):
-        self._exp = 2
-        self._extra = 0
+        self._exp = exp
+        self._extra = extra
 
     def transform(self, x):
         return x ** self._exp + self._extra
