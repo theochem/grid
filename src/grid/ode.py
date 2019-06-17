@@ -1,18 +1,48 @@
 """Generic ode solver module."""
-from numbers import Number
+# from numbers import Number
 
-from grid.rtransform import InverseTF
-
+# from grid.rtransform import InverseTF
 import numpy as np
-from scipy.interpolate import CubicSpline
+
 from scipy.integrate import solve_bvp
-from sympy import bell
+
+# from sympy import bell
 
 
 class ODE:
+    """General ordinary differential equation solver."""
 
     @staticmethod
-    def solve_bvp(x, fx, coeffs, bd_cond, transform=None):
+    def bvp_solver(x, fx, coeffs, bd_cond, transform=None):
+        """Solve generic boundary condition ODE.
+
+        .. math::
+            ...
+
+        Parameters
+        ----------
+        x : np.ndarray(N,)
+            Points from domain for solver ODE
+        fx : callable
+            Non homogeneous term in ODE
+        coeffs : list or np.ndarray(K,)
+            Coefficients of each differential term
+        bd_cond : iterable
+            Boundary condition for specific solution
+        transform : BaseTransform, optional
+            Transformation instance r -> x
+
+        Returns
+        -------
+        PPoly
+            scipy.interpolate.PPoly instance for interpolating new values
+            and its derivative
+
+        Raises
+        ------
+        NotImplementedError
+            ODE over 3rd order is not supported at this stage.
+        """
         order = len(coeffs) - 1
         if len(bd_cond) != order:
             raise NotImplementedError(
@@ -39,17 +69,54 @@ class ODE:
             return np.array(conds)
 
         y = np.random.rand(order, x.size)
-        sol = solve_bvp(func, bc, x, y)
-        return sol
+        res = solve_bvp(func, bc, x, y)
+        # raise error if didn't converge
+        if res.status != 0:
+            raise ValueError(
+                f"The ode solver didn't converge, got status: {res.status}"
+            )
+        return res.sol
 
     @staticmethod
     def _transformed_coeff_ode(coeff_a, tf, x):
+        """Compute coeff for transformed domain.
+
+        Parameters
+        ----------
+        coeff_a : list or np.ndarray
+            Coefficients for normal ODE
+        tf : BaseTransform
+            Transform instance form r -> x
+        x : np.ndarray(N,)
+            Points in the transformed domain
+
+        Returns
+        -------
+        np.ndarray
+            Coefficients for transformed ODE
+        """
         deriv_func = [tf.deriv, tf.deriv2, tf.deriv3]
         r = tf.inverse(x)
         return ODE._transformed_coeff_ode_with_r(coeff_a, deriv_func, r)
 
     @staticmethod
     def _transformed_coeff_ode_with_r(coeff_a, deriv_func_list, r):
+        """Convert higher order ODE into 1st order ODE with original domain r.
+
+        Parameters
+        ----------
+        coeff_a : list or np.ndarray
+            Coefficients for each differential part
+        deriv_func_list : list[Callable]
+            A list of functions for compute transformation derivatives
+        r : np.ndarray
+            Points from the non-transformed domain
+
+        Returns
+        -------
+        np.ndarray
+            Coefficients for transformed ODE
+        """
         derivs = np.array([dev(r) for dev in deriv_func_list])
         total = len(coeff_a)
         coeff_b = np.zeros((total, r.size), dtype=float)
@@ -78,12 +145,50 @@ class ODE:
 
     @staticmethod
     def _rearrange_trans_ode(x, y, coeff_a, tf, fx):
+        """Rearrange coefficients in transformed domain.
+
+        Parameters
+        ----------
+        x : np.ndarray(n,)
+            points from desired domain
+        y : np.ndarray(order, n)
+            initial guess for the function values and its derivatives
+        coeff_a : list or np.ndarray(Order + 1)
+            Coefficients for each differential from non-transformed part on ODE
+        tf: BaseTransform
+            transform instance r -> x
+        fx : Callable
+            Non-homogeneous term at given x
+
+        Returns
+        -------
+        np.ndarray(N,)
+            proper expr for the right side of the transformed ODE equation
+        """
         coeff_b = ODE._transformed_coeff_ode(coeff_a, tf, x)
         result = ODE._rearrange_ode(x, y, coeff_b, fx(tf.inverse(x)))
         return result
 
     @staticmethod
     def _rearrange_ode(x, y, coeff_b, fx):
+        """Rearrange coefficients for scipy solver.
+
+        Parameters
+        ----------
+        x : np.ndarray(N,)
+            Points from desired domain
+        y : np.ndarray(order, N)
+            Initial guess for the function values and its derivatives
+        coeff_b : list or np.ndarray(Order + 1)
+            Coefficients for each differential part on ODE
+        fx : np.ndarray(N,)
+            Non-homogeneous term at given x
+
+        Returns
+        -------
+        np.ndarray(N,)
+            proper expr for the right side of the ODE equation
+        """
         result = fx
         for i, b in enumerate(coeff_b[:-1]):
             # if isinstance(b, Number):
