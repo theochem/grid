@@ -2,6 +2,8 @@
 # from numbers import Number
 
 # from grid.rtransform import InverseTF
+from numbers import Number
+
 import numpy as np
 
 from scipy.integrate import solve_bvp
@@ -25,7 +27,7 @@ class ODE:
             Points from domain for solver ODE
         fx : callable
             Non homogeneous term in ODE
-        coeffs : list or np.ndarray(K,)
+        coeffs : list[int or callable] or np.ndarray(K,)
             Coefficients of each differential term
         bd_cond : iterable
             Boundary condition for specific solution
@@ -57,7 +59,8 @@ class ODE:
             if transform:
                 dy_dx = ODE._rearrange_trans_ode(x, y, coeffs, transform, fx)
             else:
-                dy_dx = ODE._rearrange_ode(x, y, coeffs, fx(x))
+                coeffs_mt = ODE._construct_coeff_array(x, coeffs)
+                dy_dx = ODE._rearrange_ode(x, y, coeffs_mt, fx(x))
             return np.vstack((*y[1:], dy_dx))
 
         # define boundary condition
@@ -83,7 +86,7 @@ class ODE:
 
         Parameters
         ----------
-        coeff_a : list or np.ndarray
+        coeff_a : list[number or callable] or np.ndarray
             Coefficients for normal ODE
         tf : BaseTransform
             Transform instance form r -> x
@@ -105,7 +108,7 @@ class ODE:
 
         Parameters
         ----------
-        coeff_a : list or np.ndarray
+        coeff_a : list[callable or numnber] or np.ndarray
             Coefficients for each differential part
         deriv_func_list : list[Callable]
             A list of functions for compute transformation derivatives
@@ -119,18 +122,26 @@ class ODE:
         """
         derivs = np.array([dev(r) for dev in deriv_func_list])
         total = len(coeff_a)
+        # coeff_a = np.zeros((total, r.size), dtype=float)
+        # # construct coeff matrix
+        # for i, val in enumerate(coeff_a_ori):
+        #     if isinstance(val, Number):
+        #         coeff_a[i] += val
+        #     else:
+        #         coeff_a[i] += val(r)
+        coeff_a_mtr = ODE._construct_coeff_array(r, coeff_a)
         coeff_b = np.zeros((total, r.size), dtype=float)
         # constrcut 1 - 3 directly
-        coeff_b[0] += coeff_a[0]
+        coeff_b[0] += coeff_a_mtr[0]
         if total > 1:
-            coeff_b[1] += coeff_a[1] * derivs[0]
+            coeff_b[1] += coeff_a_mtr[1] * derivs[0]
         if total > 2:
-            coeff_b[1] += coeff_a[2] * derivs[1]
-            coeff_b[2] += coeff_a[2] * derivs[0] ** 2
+            coeff_b[1] += coeff_a_mtr[2] * derivs[1]
+            coeff_b[2] += coeff_a_mtr[2] * derivs[0] ** 2
         if total > 3:
-            coeff_b[1] += coeff_a[3] * derivs[2]
-            coeff_b[2] += coeff_a[3] * 3 * derivs[0] * derivs[1]
-            coeff_b[3] += coeff_a[3] * derivs[0] ** 3
+            coeff_b[1] += coeff_a_mtr[3] * derivs[2]
+            coeff_b[2] += coeff_a_mtr[3] * 3 * derivs[0] * derivs[1]
+            coeff_b[3] += coeff_a_mtr[3] * derivs[0] ** 3
 
         # construct 4th order and onwards
         # if total >= 4:
@@ -144,7 +155,7 @@ class ODE:
         return coeff_b
 
     @staticmethod
-    def _rearrange_trans_ode(x, y, coeff_a, tf, fx):
+    def _rearrange_trans_ode(x, y, coeff_a, tf, fx_func):
         """Rearrange coefficients in transformed domain.
 
         Parameters
@@ -153,11 +164,11 @@ class ODE:
             points from desired domain
         y : np.ndarray(order, n)
             initial guess for the function values and its derivatives
-        coeff_a : list or np.ndarray(Order + 1)
+        coeff_a : list[number or callable] or np.ndarray(Order + 1)
             Coefficients for each differential from non-transformed part on ODE
         tf: BaseTransform
             transform instance r -> x
-        fx : Callable
+        fx_func : Callable
             Non-homogeneous term at given x
 
         Returns
@@ -166,8 +177,32 @@ class ODE:
             proper expr for the right side of the transformed ODE equation
         """
         coeff_b = ODE._transformed_coeff_ode(coeff_a, tf, x)
-        result = ODE._rearrange_ode(x, y, coeff_b, fx(tf.inverse(x)))
+        result = ODE._rearrange_ode(x, y, coeff_b, fx_func(tf.inverse(x)))
         return result
+
+    @staticmethod
+    def _construct_coeff_array(x, coeff):
+        """Construct coefficient matrix for given points.
+
+        Parameters
+        ----------
+        x : np.ndarray(K,)
+            Points on the mesh grid
+        coeff : list[number or callable] or np.ndarray, length N
+            Coefficient for each derivatives in the ode
+
+        Returns
+        -------
+        np.ndarray(N, K)
+            Numerical coefficient value for ODE
+        """
+        coeff_mtr = np.zeros((len(coeff), x.size), dtype=float)
+        for i, val in enumerate(coeff):
+            if isinstance(val, Number):
+                coeff_mtr[i] += val
+            else:
+                coeff_mtr[i] += val(x)
+        return coeff_mtr
 
     @staticmethod
     def _rearrange_ode(x, y, coeff_b, fx):
@@ -179,7 +214,7 @@ class ODE:
             Points from desired domain
         y : np.ndarray(order, N)
             Initial guess for the function values and its derivatives
-        coeff_b : list or np.ndarray(Order + 1)
+        coeff_b : list[number] or np.ndarray(Order + 1)
             Coefficients for each differential part on ODE
         fx : np.ndarray(N,)
             Non-homogeneous term at given x

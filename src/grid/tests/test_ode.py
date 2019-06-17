@@ -63,12 +63,12 @@ class TestODE(TestCase):
 
     def test_rearange_ode_coeff(self):
         """Test rearange ode coeff and solver result."""
-        def fx(x):
-            return 1 if isinstance(x, Number) else np.ones(x.size)
-
         coeff_b = [0, 0, 1]
         x = np.linspace(0, 2, 20)
         y = np.zeros((2, x.size))
+
+        def fx(x):
+            return 1 if isinstance(x, Number) else np.ones(x.size)
 
         def func(x, y):
             dy_dx = ODE._rearrange_ode(x, y, coeff_b, fx(x))
@@ -257,16 +257,15 @@ class TestODE(TestCase):
             return np.array([ya[0], yb[0], ya[1]])
 
         res = solve_bvp(func, bc, x, y)
-        print(res.sol(x)[0])
+        # print(res.sol(x)[0])
 
         def func_ref(x, y):
             dy_dx = ODE._rearrange_ode(x, y, coeff, fx(x))
             return np.vstack((*y[1:], dy_dx))
 
         res_ref = solve_bvp(func_ref, bc, r, y)
-        print(res_ref.sol(r)[0])
-
-        assert_allclose(res.sol(x)[0], res_ref.sol(r)[0], atol=3e-4)
+        # print(res_ref.sol(r)[0])
+        assert_allclose(res.sol(x)[0], res_ref.sol(r)[0], atol=1e-4)
 
     def test_becke_transform_f0_ode(self):
         """Test same result for 3rd order ode with becke tf and fx term."""
@@ -327,6 +326,40 @@ class TestODE(TestCase):
             return 1 / x ** 2
 
         coeffs = [-1, 1, 1]
+        bd_cond = [(0, 0, 0), (1, 0, 0)]
+        # calculate diff equation wt/w tf.
+        res = ODE.bvp_solver(x, fx, coeffs, bd_cond, ibtf)
+        res_ref = ODE.bvp_solver(r, fx, coeffs, bd_cond)
+        assert_allclose(res(x)[0], res_ref(r)[0], atol=1e-4)
+
+    def test_construct_coeffs(self):
+        """Test construct coefficients."""
+        # first test
+        x = np.linspace(-0.9, 0.9, 20)
+        coeff = [2, 1.5, lambda x: x ** 2]
+        coeff_a = ODE._construct_coeff_array(x, coeff)
+        assert_allclose(coeff_a[0], np.ones(20) * 2)
+        assert_allclose(coeff_a[1], np.ones(20) * 1.5)
+        assert_allclose(coeff_a[2], x ** 2)
+        # second test
+        coeff = [lambda x: 1 / x, 2, lambda x: x ** 3, lambda x: np.exp(x)]
+        coeff_a = ODE._construct_coeff_array(x, coeff)
+        assert_allclose(coeff_a[0], 1 / x)
+        assert_allclose(coeff_a[1], np.ones(20) * 2)
+        assert_allclose(coeff_a[2], x ** 3)
+        assert_allclose(coeff_a[3], np.exp(x))
+
+    def test_solver_ode_coeff_a_f_x_with_tf(self):
+        """Test ode with a(x) and f(x) involved."""
+        x = np.linspace(-0.999, 0.999, 20)
+        btf = BeckeTF(0.1, 5)
+        r = btf.transform(x)
+        ibtf = InverseTF(btf)
+
+        def fx(x):
+            return 0 * x
+
+        coeffs = [lambda x: x ** 2, lambda x: 1 / x ** 2, 0.5]
         bd_cond = [(0, 0, 0), (1, 0, 0)]
         # calculate diff equation wt/w tf.
         res = ODE.bvp_solver(x, fx, coeffs, bd_cond, ibtf)
