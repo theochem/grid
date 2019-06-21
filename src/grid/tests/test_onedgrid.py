@@ -93,6 +93,8 @@ class TestOneDGrid(TestCase):
             elements *= (1 - np.cos(index_m * np.pi)) / (index_m * np.pi)
 
             weights[i] = (2 / (11)) * np.sum(elements)
+        
+        points = 2 * points - 1
 
         assert np.allclose(grid.points, points)
         assert np.allclose(grid.weights, weights)
@@ -121,6 +123,8 @@ class TestOneDGrid(TestCase):
                 * np.sin(10 * np.pi * points[i])
                 * np.sin(10 * np.pi / 2) ** 2
             )
+
+        points = 2 * points - 1
 
         assert np.allclose(grid.points, points)
         assert np.allclose(grid.weights, weights)

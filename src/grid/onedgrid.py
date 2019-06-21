@@ -135,7 +135,8 @@ def GaussChebyshevLobatto(npoints):
 def RectangleRuleSineEndPoints(npoints):
     """Generate Rectangle rule for sine series with end points.
 
-    The range of this rule is [0:1]
+    The original range of this rule is [0:1], the last part is 
+    a linear transformation for passing from [0:1] to [-1:1]
 
     Parameters
     ----------
@@ -161,13 +162,16 @@ def RectangleRuleSineEndPoints(npoints):
 
         weights[i] = (2 / (npoints + 1)) * np.sum(elements)
 
+    points = 2 * points - 1
+
     return Grid(points, weights)
 
 
 def RectangleRuleSine(npoints):
     """Generate Rectangle rule for sine series without end points.
 
-    The range of this rule is [0:1]
+    The original range of this rule is [0:1], the last part is
+    a linear transformation for passing from [0:1] to [-1:1]
 
     Parameters
     ----------
@@ -199,6 +203,8 @@ def RectangleRuleSine(npoints):
             * np.sin(npoints * np.pi * points[i])
             * np.sin(npoints * np.pi / 2) ** 2
         )
+
+    points = 2 * points - 1
 
     return Grid(points, weights)
 
