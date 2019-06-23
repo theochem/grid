@@ -297,7 +297,7 @@ class TestODE(TestCase):
         assert_allclose(res.sol(x)[0], res_ref.sol(r)[0], atol=1e-4)
 
     def test_solve_ode_bvp(self):
-        """Test result for high level api bvp_solver."""
+        """Test result for high level api solve_ode."""
         x = np.linspace(0, 2, 10)
 
         def fx(x):
@@ -306,7 +306,7 @@ class TestODE(TestCase):
         coeffs = [0, 0, 1]
         bd_cond = [[0, 0, 0], [1, 0, 0]]
 
-        res = ODE.bvp_solver(x, fx, coeffs, bd_cond)
+        res = ODE.solve_ode(x, fx, coeffs, bd_cond)
 
         assert_almost_equal(res(0)[0], 0)
         assert_almost_equal(res(1)[0], -0.5)
@@ -316,7 +316,7 @@ class TestODE(TestCase):
         assert_almost_equal(res(2)[1], 1)
 
     def test_solver_ode_bvp_with_tf(self):
-        """Test result for high level api bvp_solver with fx term."""
+        """Test result for high level api solve_ode with fx term."""
         x = np.linspace(-0.999, 0.999, 20)
         btf = BeckeTF(0.1, 5)
         r = btf.transform(x)
@@ -328,8 +328,8 @@ class TestODE(TestCase):
         coeffs = [-1, 1, 1]
         bd_cond = [(0, 0, 0), (1, 0, 0)]
         # calculate diff equation wt/w tf.
-        res = ODE.bvp_solver(x, fx, coeffs, bd_cond, ibtf)
-        res_ref = ODE.bvp_solver(r, fx, coeffs, bd_cond)
+        res = ODE.solve_ode(x, fx, coeffs, bd_cond, ibtf)
+        res_ref = ODE.solve_ode(r, fx, coeffs, bd_cond)
         assert_allclose(res(x)[0], res_ref(r)[0], atol=1e-4)
 
     def test_construct_coeffs(self):
@@ -362,8 +362,8 @@ class TestODE(TestCase):
         coeffs = [lambda x: x ** 2, lambda x: 1 / x ** 2, 0.5]
         bd_cond = [(0, 0, 0), (1, 0, 0)]
         # calculate diff equation wt/w tf.
-        res = ODE.bvp_solver(x, fx, coeffs, bd_cond, ibtf)
-        res_ref = ODE.bvp_solver(r, fx, coeffs, bd_cond)
+        res = ODE.solve_ode(x, fx, coeffs, bd_cond, ibtf)
+        res_ref = ODE.solve_ode(r, fx, coeffs, bd_cond)
         assert_allclose(res(x)[0], res_ref(r)[0], atol=1e-4)
 
     def test_error_raises(self):
@@ -377,12 +377,12 @@ class TestODE(TestCase):
         coeffs = [-1, -2, 1]
         bd_cond = [(0, 0, 0), (1, 0, 0), (0, 1, 0), (1, 1, 0)]
         with self.assertRaises(NotImplementedError):
-            ODE.bvp_solver(x, fx, coeffs, bd_cond[3:])
+            ODE.solve_ode(x, fx, coeffs, bd_cond[3:])
         with self.assertRaises(NotImplementedError):
-            ODE.bvp_solver(x, fx, coeffs, bd_cond)
+            ODE.solve_ode(x, fx, coeffs, bd_cond)
         with self.assertRaises(NotImplementedError):
             test_coeff = [1, 2, 3, 4, 5]
-            ODE.bvp_solver(x, fx, test_coeff, bd_cond)
+            ODE.solve_ode(x, fx, test_coeff, bd_cond)
         with self.assertRaises(ValueError):
             test_coeff = [1, 2, 3, 3]
             tf = BeckeTF(0.1, 1)
@@ -390,7 +390,7 @@ class TestODE(TestCase):
             def fx(x):
                 return x
 
-            ODE.bvp_solver(x, fx, test_coeff, bd_cond[:3], tf)
+            ODE.solve_ode(x, fx, test_coeff, bd_cond[:3], tf)
 
 
 class SqTF(BaseTransform):

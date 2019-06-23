@@ -88,7 +88,7 @@ class AtomicGrid(Grid):
         # 0 <= r < 0.5rad, angular grid with degree 3
         # 0.5rad <= r < rad, angular grid with degree 7
         # rad <= r < 1.5rad, angular grid with degree 5
-        # 1.5rad <= r, angular grid with degree 5
+        # 1.5rad <= r, angular grid with degree 3
         >>> atgrid = AtomicGrid.special_init(radial_grid, radius, degs, scales, center)
 
         Parameters
@@ -118,6 +118,11 @@ class AtomicGrid(Grid):
         cls._input_type_check(radial_grid, center)
         degs = cls._generate_degree_from_radius(radial_grid, radius, scales, degs)
         return cls(radial_grid, degs=degs, center=center, rotate=rotate)
+
+    @property
+    def rad_grid(self):
+        """RadialGrid: radial points and weights in the atomic grid."""
+        return self._radial_grid
 
     @property
     def points(self):

@@ -22,6 +22,7 @@
 
 from unittest import TestCase
 
+from grid.onedgrid import GaussLegendre
 from grid.rtransform import BeckeTF, InverseTF, LinearTF
 
 import numpy as np
@@ -157,6 +158,19 @@ class TestTransform(TestCase):
         inv = InverseTF(btf)
         inv_inv = inv.inverse(inv.transform(self.array))
         assert_allclose(inv_inv, self.array, atol=1e-7)
+
+    def test_becke_integral(self):
+        """Test transform integral."""
+        oned = GaussLegendre(20)
+        btf = BeckeTF(0.00001, 1.0)
+        rad = btf.transform_grid(oned)
+
+        def gauss(x):
+            return np.exp(-x ** 2)
+
+        result = rad.integrate(gauss(rad.points))
+        ref_result = np.sqrt(np.pi) / 2
+        assert_almost_equal(result, ref_result, decimal=5)
 
     def test_linear_transform(self):
         """Test linear transformation."""
