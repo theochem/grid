@@ -15,7 +15,7 @@ class ODE:
     """General ordinary differential equation solver."""
 
     @staticmethod
-    def bvp_solver(x, fx, coeffs, bd_cond, transform=None):
+    def solve_ode(x, fx, coeffs, bd_cond, transform=None):
         """Solve generic boundary condition ODE.
 
         .. math::

@@ -46,6 +46,9 @@ class TestAtomicGrid(TestCase):
         assert ag_ob2.l_max == 17
         assert_array_equal(ag_ob2._rad_degs, np.ones(10) * 17)
         assert ag_ob2.size == 110 * 10
+        assert isinstance(ag_ob.rad_grid, RadialGrid)
+        assert_allclose(ag_ob.rad_grid.points, radial_grid.points)
+        assert_allclose(ag_ob.rad_grid.weights, radial_grid.weights)
 
     def test_find_l_for_rad_list(self):
         """Test private method find_l_for_rad_list."""

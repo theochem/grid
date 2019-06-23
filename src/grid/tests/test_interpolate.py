@@ -7,11 +7,12 @@ from grid.interpolate import (
     generate_real_sph_harms,
     generate_sph_harms,
     interpolate,
+    spline_with_atomic_grid,
     spline_with_sph_harms,
 )
 from grid.lebedev import generate_lebedev_grid
-from grid.onedgrid import HortonLinear
-from grid.rtransform import IdentityRTransform
+from grid.onedgrid import GaussLegendre, HortonLinear
+from grid.rtransform import BeckeTF, IdentityRTransform
 
 import numpy as np
 from numpy.testing import assert_allclose, assert_almost_equal, assert_array_equal
@@ -85,6 +86,11 @@ class TestInterpolate(TestCase):
             # no nan in the final result
             assert np.sum(np.isnan(re)) == 0
 
+    def helper_func_gauss(self, points):
+        """Compute gauss function value for test interpolation."""
+        x, y, z = points.T
+        return np.exp(-x ** 2) * np.exp(-y ** 2) * np.exp(-z ** 2)
+
     def helper_func_power(self, points):
         """Compute function value for test interpolation."""
         return 2 * points[:, 0] ** 2 + 3 * points[:, 1] ** 2 + 4 * points[:, 2] ** 2
@@ -125,6 +131,41 @@ class TestInterpolate(TestCase):
                 axis=-1,
             )
             assert_allclose(r_sph_proj, result(shell), atol=1e-10)
+
+    def test_cubicspline_and_interp_gauss(self):
+        """Test cubicspline interpolation values."""
+        oned = GaussLegendre(20)
+        btf = BeckeTF(0.0001, 1)
+        rad = btf.transform_grid(oned)
+        atgrid = AtomicGrid.special_init(rad, 1, scales=[], degs=[7])
+        value_array = self.helper_func_gauss(atgrid.points)
+        result = spline_with_atomic_grid(atgrid, value_array)
+        # random test points on gauss function
+        for _ in range(20):
+            r = np.random.rand(1)[0]
+            theta = np.random.rand(10)
+            phi = np.random.rand(10)
+            inters = interpolate(result, r, theta, phi)
+            print(inters.shape)
+            x = r * np.sin(phi) * np.cos(theta)
+            y = r * np.sin(phi) * np.sin(theta)
+            z = r * np.cos(phi)
+            assert_allclose(
+                self.helper_func_gauss(np.array([x, y, z]).T), inters, atol=5e-4
+            )
+
+    def test_cubicspline_and_interp_mol(self):
+        """Test cubicspline interpolation values."""
+        rad = IdentityRTransform().transform_grid(HortonLinear(10))
+        rad._points += 1
+        atgrid = AtomicGrid.special_init(rad, 1, scales=[], degs=[7])
+        values = self.helper_func_power(atgrid.points)
+        result = spline_with_atomic_grid(atgrid, values)
+        sph_coor = atgrid.convert_cart_to_sph()
+        semi_sph_c = sph_coor[atgrid.indices[5] : atgrid.indices[6]]
+        interp = interpolate(result, rad.points[5], semi_sph_c[:, 0], semi_sph_c[:, 1])
+        # same result from points and interpolation
+        assert_allclose(interp, values[atgrid.indices[5] : atgrid.indices[6]])
 
     def test_cubicspline_and_interp(self):
         """Test cubicspline interpolation values."""
