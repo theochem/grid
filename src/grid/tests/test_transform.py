@@ -22,7 +22,7 @@
 
 from unittest import TestCase
 
-from grid.onedgrid import GaussLegendre
+from grid.onedgrid import GaussLegendre, GaussChebyshev
 from grid.rtransform import BeckeTF, InverseTF, LinearTF
 
 import numpy as np
@@ -171,6 +171,11 @@ class TestTransform(TestCase):
         result = rad.integrate(gauss(rad.points))
         ref_result = np.sqrt(np.pi) / 2
         assert_almost_equal(result, ref_result, decimal=5)
+
+        oned = GaussChebyshev(20)
+        rad = btf.transform_grid(oned)
+        result = rad.integrate(gauss(rad.points))
+        assert_almost_equal(result, ref_result, decimal=3)
 
     def test_linear_transform(self):
         """Test linear transformation."""

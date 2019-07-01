@@ -116,7 +116,7 @@ class TestInterpolate(TestCase):
         l_max = atgrid.l_max // 2
         r_sph = generate_real_sph_harms(l_max, sph_coor[:, 0], sph_coor[:, 1])
         result = spline_with_sph_harms(
-            r_sph, values, atgrid.weights, atgrid.indices, rad.points
+            r_sph, values, atgrid.weights, atgrid.indices, rad
         )
         # generate ref
         # for shell in range(1, 11):
@@ -134,24 +134,23 @@ class TestInterpolate(TestCase):
 
     def test_cubicspline_and_interp_gauss(self):
         """Test cubicspline interpolation values."""
-        oned = GaussLegendre(20)
-        btf = BeckeTF(0.0001, 1)
+        oned = GaussLegendre(30)
+        btf = BeckeTF(0.0001, 1.5)
         rad = btf.generate_radial(oned)
         atgrid = AtomicGrid.special_init(rad, 1, scales=[], degs=[7])
         value_array = self.helper_func_gauss(atgrid.points)
         result = spline_with_atomic_grid(atgrid, value_array)
         # random test points on gauss function
         for _ in range(20):
-            r = np.random.rand(1)[0]
+            r = np.random.rand(1)[0] * 2
             theta = np.random.rand(10)
             phi = np.random.rand(10)
             inters = interpolate(result, r, theta, phi)
-            print(inters.shape)
             x = r * np.sin(phi) * np.cos(theta)
             y = r * np.sin(phi) * np.sin(theta)
             z = r * np.cos(phi)
             assert_allclose(
-                self.helper_func_gauss(np.array([x, y, z]).T), inters, atol=5e-4
+                self.helper_func_gauss(np.array([x, y, z]).T), inters, atol=1e-4
             )
 
     def test_cubicspline_and_interp_mol(self):
@@ -177,7 +176,7 @@ class TestInterpolate(TestCase):
         l_max = atgrid.l_max // 2
         r_sph = generate_real_sph_harms(l_max, sph_coor[:, 0], sph_coor[:, 1])
         result = spline_with_sph_harms(
-            r_sph, values, atgrid.weights, atgrid.indices, rad.points
+            r_sph, values, atgrid.weights, atgrid.indices, rad
         )
         semi_sph_c = sph_coor[atgrid.indices[5] : atgrid.indices[6]]
         interp = interpolate(result, 6, semi_sph_c[:, 0], semi_sph_c[:, 1])
@@ -216,7 +215,7 @@ class TestInterpolate(TestCase):
         l_max = atgrid.l_max // 2
         r_sph = generate_real_sph_harms(l_max, sph_coor[:, 0], sph_coor[:, 1])
         result = spline_with_sph_harms(
-            r_sph, values, atgrid.weights, atgrid.indices, rad.points
+            r_sph, values, atgrid.weights, atgrid.indices, rad
         )
         semi_sph_c = sph_coor[atgrid.indices[5] : atgrid.indices[6]]
         interp = interpolate(result, 6, semi_sph_c[:, 0], semi_sph_c[:, 1], deriv=1)

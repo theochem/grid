@@ -102,18 +102,20 @@ def spline_with_sph_harms(sph_harm, value_arrays, weights, indices, radial):
         weights of each point on the grid
     indices : list[int]
         indices of each chank for each radial angular partsption
-    radial : np.ndarray(K,)
-        radial coordinates of atomic grid
+    radial : RadialGrid
+        radial grid instance with coordinates and weights
 
     Returns
     -------
     scipy.CubicSpline
         CubicSpline object for interpolating values
     """
-    ml_sph_value = _compute_spline_point_value(sph_harm, value_arrays, weights, indices)
+    ml_sph_value = compute_spline_point_value(sph_harm, value_arrays, weights, indices)
     # sin \theta d \theta d \phi = d{S_r} / (r^2)
-    ml_sph_value_with_r = ml_sph_value / (radial ** 2)[:, None, None]
-    return CubicSpline(x=radial, y=ml_sph_value_with_r)
+    ml_sph_value_with_r = (
+        ml_sph_value / (radial.points ** 2 * radial.weights)[:, None, None]
+    )
+    return CubicSpline(x=radial.points, y=ml_sph_value_with_r)
 
 
 def spline_with_atomic_grid(at_grid, value_array):
@@ -134,17 +136,12 @@ def spline_with_atomic_grid(at_grid, value_array):
     l_max = at_grid.l_max // 2
     sph_coor = at_grid.convert_cart_to_sph()
     r_sph = generate_real_sph_harms(l_max, sph_coor[:, 0], sph_coor[:, 1])
-    ml_sph_value = _compute_spline_point_value(
-        r_sph, value_array, at_grid.weights, at_grid.indices
+    return spline_with_sph_harms(
+        r_sph, value_array, at_grid.weights, at_grid.indices, at_grid.rad_grid
     )
-    ml_sph_value_with_r = (
-        ml_sph_value
-        / (at_grid.rad_grid.points ** 2 * at_grid.rad_grid.weights)[:, None, None]
-    )
-    return CubicSpline(x=at_grid.rad_grid.points, y=ml_sph_value_with_r)
 
 
-def _compute_spline_point_value(sph_harm, value_arrays, weights, indices):
+def compute_spline_point_value(sph_harm, value_arrays, weights, indices):
     """Compute each note value for interpotation.
 
     Parameters
@@ -160,7 +157,7 @@ def _compute_spline_point_value(sph_harm, value_arrays, weights, indices):
 
     Returns
     -------
-    np.ndarray(M, L, K)
+    np.ndarray(K, M, L)
         values on each note of K radial points
     """
     prod_value = sph_harm * value_arrays * weights
