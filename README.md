@@ -9,8 +9,17 @@
 
 ## About
 GRID is a pythonic numerical integral package. It derived from legacy HORTON 2 numerical integration module.
+
 ## Platform
 GRID is a pure python package supporting `Windows`, `Linux` and `MacOS`.
+
+## Functionality
+* 1d integral
+* 1d transformation
+* Spherical integral
+* Becke-Lebedev grid & Molecular integral
+* Interpolation & differentiation
+* General ODE solver and Poisson solver
 
 ## License
 GRID is distributed under [GPL License version 3](https://github.com/theochem/grid/blob/master/LICENSE) (GPL v3).
@@ -45,3 +54,17 @@ To run QA locally:
 ```bash
 tox
 ```
+
+## Funding Acknowledgement
+This software was developed using funding from a variety of international
+sources including, but not limited to:
+* Canarie
+* the Canada Research Chairs
+* Compute Canada
+* the European Union's Horizon 2020 Marie Sklodowska-Curie grant (No 800130)
+* the Foundation of Scientific Research--Flanders (FWO)
+* McMaster University
+* the National Fund for Scientific and Technological Development of Chile (FONDECYT)
+* the Natural Sciences and Engineering Research Council of Canada (NSERC)
+* the Research Board of Ghent University (BOF)
+* Sharcnet
