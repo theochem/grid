@@ -72,7 +72,7 @@ class ODE:
             return np.array(conds)
 
         y = np.random.rand(order, x.size)
-        res = solve_bvp(func, bc, x, y)
+        res = solve_bvp(func, bc, x, y, tol=1e-4)
         # raise error if didn't converge
         if res.status != 0:
             raise ValueError(
