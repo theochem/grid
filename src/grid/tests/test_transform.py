@@ -22,7 +22,7 @@
 
 from unittest import TestCase
 
-from grid.onedgrid import GaussLegendre, GaussChebyshev
+from grid.onedgrid import GaussChebyshev, GaussLegendre
 from grid.rtransform import BeckeTF, InverseTF, LinearTF
 
 import numpy as np
@@ -173,7 +173,7 @@ class TestTransform(TestCase):
         assert_almost_equal(result, ref_result, decimal=5)
 
         oned = GaussChebyshev(20)
-        rad = btf.transform_grid(oned)
+        rad = btf.generate_radial(oned)
         result = rad.integrate(gauss(rad.points))
         assert_almost_equal(result, ref_result, decimal=3)
 
@@ -208,7 +208,7 @@ class TestTransform(TestCase):
         # inverse init error
         with self.assertRaises(TypeError):
             InverseTF(0.5)
-        # type error for transform_grid
+        # type error for generate_radial
         with self.assertRaises(TypeError):
             btf = BeckeTF(0.1, 1.1)
             btf.generate_radial(np.arange(3))
