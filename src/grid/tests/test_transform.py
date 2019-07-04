@@ -163,7 +163,7 @@ class TestTransform(TestCase):
         """Test transform integral."""
         oned = GaussLegendre(20)
         btf = BeckeTF(0.00001, 1.0)
-        rad = btf.transform_grid(oned)
+        rad = btf.generate_radial(oned)
 
         def gauss(x):
             return np.exp(-x ** 2)
@@ -206,4 +206,4 @@ class TestTransform(TestCase):
         # type error for transform_grid
         with self.assertRaises(TypeError):
             btf = BeckeTF(0.1, 1.1)
-            btf.transform_grid(np.arange(3))
+            btf.generate_radial(np.arange(3))

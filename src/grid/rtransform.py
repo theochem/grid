@@ -51,8 +51,8 @@ class BaseTransform(ABC):
     def deriv3(self, array):
         """Abstract method for 3nd derivative of transformation."""
 
-    def transform_grid(self, oned_grid):
-        """Transform given OneDGrid into a proper scaled radial grid.
+    def generate_radial(self, oned_grid):
+        """Generate a radial grid by transforming the OneDGrid.
 
         Parameters
         ----------
