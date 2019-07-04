@@ -18,7 +18,11 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
 """Construct basic grid data structure."""
+
+
 import numpy as np
+
+from scipy.spatial import cKDTree
 
 
 class Grid:
@@ -52,6 +56,7 @@ class Grid:
         self._points = points
         self._weights = weights
         self._size = self._weights.size
+        self._kdtree = None
 
     @property
     def points(self):
@@ -124,6 +129,27 @@ class Grid:
             *(np.ravel(i) for i in value_arrays),
         )
 
+    def get_subgrid(self, center, radius):
+        """Create a grid from subset of points within the given radius of center.
+
+        Parameters
+        ----------
+        center : np.ndarray(3,)
+            Cartesian coordinates of subgrid center.
+        radius : float
+            Radius of sphere around the center.
+
+        Returns
+        -------
+        SubGrid
+            Instance of SubGrid.
+
+        """
+        if self._kdtree is None:
+            self._kdtree = cKDTree(self.points)
+        index = self._kdtree.query_ball_point(center, radius, p=2.0)
+        return SubGrid(self.points[index], self.weights[index], center, index)
+
 
 class AngularGrid(Grid):
     """Angular lebedev grid."""
@@ -132,8 +158,8 @@ class AngularGrid(Grid):
 class SubGrid(Grid):
     """Subset of grid surrounding a center."""
 
-    def __init__(self, points, weights, center):
-        r"""Initialize an sub-grid.
+    def __init__(self, points, weights, center, indices=None):
+        r"""Initialize a sub-grid.
 
         Parameters
         ----------
@@ -143,10 +169,13 @@ class SubGrid(Grid):
             Integration weight of :math:`N` grid points
         center : np.ndarray(3,)
             Cartesian coordinates of sub-grid center in 3D space.
+        indices : np.ndarray(N,), optional
+            Indies of :math:`N` grid points and weights in the parent grid.
 
         """
         super().__init__(points, weights)
         self._center = center
+        self._indices = indices
 
     @property
     def center(self):

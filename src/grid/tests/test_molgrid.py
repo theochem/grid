@@ -38,7 +38,7 @@ class TestMolGrid(TestCase):
     def setUp(self):
         """Set up radial grid for integral tests."""
         pts = HortonLinear(100)
-        tf = ExpRTransform(1e-3, 1e1)
+        tf = ExpRTransform(1e-5, 2e1)
         self.rgrid = tf.generate_radial(pts)
 
     def test_integrate_hydrogen_single_1s(self):
@@ -314,6 +314,58 @@ class TestMolGrid(TestCase):
         molg = MolGrid([atg], becke, np.array([1]), store=True)
         with self.assertRaises(ValueError):
             molg.get_atomic_grid(-5)
+
+    def test_get_subgrid_1s(self):
+        """Test subgrid for a molecule with one atom."""
+        nums = np.array([1])
+        coords = np.array([0.0, 0.0, 0.0])
+
+        # initialize MolGrid with atomic grid
+        atg1 = AtomicGrid.special_init(
+            self.rgrid, 0.5, scales=np.array([]), degs=np.array([17]), center=coords
+        )
+        grid = MolGrid([atg1], BeckeWeights(), np.array([1]), store=False)
+        fn = np.exp(-2 * np.linalg.norm(grid.points, axis=-1))
+        assert np.allclose(grid.integrate(fn), np.pi)
+        subgrid = grid.get_subgrid(coords, 12.0)
+        fn = np.exp(-2 * np.linalg.norm(subgrid.points, axis=-1))
+        assert subgrid.size < grid.size
+        assert subgrid.size == 10560
+        assert np.allclose(subgrid.integrate(fn), np.pi)
+
+        # initialize MolGrid like horton
+        grid = MolGrid.horton_molgrid(
+            coords[np.newaxis, :], nums, self.rgrid, 110, BeckeWeights(), store=True
+        )
+        fn = np.exp(-4.0 * np.linalg.norm(grid.points, axis=-1))
+        assert np.allclose(grid.integrate(fn), np.pi / 8)
+        subgrid = grid.get_subgrid(coords, 5.0)
+        fn = np.exp(-4.0 * np.linalg.norm(subgrid.points, axis=-1))
+        assert subgrid.size < grid.size
+        assert subgrid.size == 9900
+        assert np.allclose(subgrid.integrate(fn), np.pi / 8)
+
+    def test_get_subgrid_1s1s(self):
+        """Test subgrid for a molecule with one atom."""
+        nums = np.array([1, 3])
+        coords = np.array([[0.0, 0.0, -0.5], [0.0, 0.0, 0.5]])
+        grid = MolGrid.horton_molgrid(
+            coords, nums, self.rgrid, 110, BeckeWeights(), store=True
+        )
+        fn0 = np.exp(-4.0 * np.linalg.norm(grid.points - coords[0], axis=-1))
+        fn1 = np.exp(-8.0 * np.linalg.norm(grid.points - coords[1], axis=-1))
+        assert np.allclose(grid.integrate(fn0), np.pi / 8)
+        assert np.allclose(grid.integrate(fn1), np.pi / 64)
+        # sub-grid centered on atom 0 to evaluate fn0
+        sub0 = grid.get_subgrid(coords[0], 5.0)
+        assert sub0.size < grid.size
+        fn0 = np.exp(-4.0 * np.linalg.norm(sub0.points - coords[0], axis=-1))
+        assert np.allclose(sub0.integrate(fn0), np.pi / 8)
+        # sub-grid centered on atom 1 to evaluate fn1
+        sub1 = grid.get_subgrid(coords[1], 2.5)
+        assert sub1.size < grid.size
+        fn1 = np.exp(-8.0 * np.linalg.norm(sub1.points - coords[1], axis=-1))
+        assert np.allclose(sub1.integrate(fn1), np.pi / 64)
 
     """
     def test_family():
