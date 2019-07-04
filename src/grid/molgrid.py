@@ -81,7 +81,7 @@ class MolGrid(Grid):
         Example
         -------
         >>> onedg = HortonLinear(100) # number of points, oned grid before TF.
-        >>> rgrid = ExpRTransform(1e-5, 2e1).transform_grid(onedg) # radial grid
+        >>> rgrid = ExpRTransform(1e-5, 2e1).generate_radial(onedg) # radial grid
         >>> molgrid = MolGrid.horton_molgrid(coors, numbers, rgrid, 110)
 
         Parameters

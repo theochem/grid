@@ -108,7 +108,7 @@ class TestInterpolate(TestCase):
 
     def test_spline_with_sph_harms(self):
         """Test spline projection the same as spherical harmonics."""
-        rad = IdentityRTransform().transform_grid(HortonLinear(10))
+        rad = IdentityRTransform().generate_radial(HortonLinear(10))
         rad._points += 1
         atgrid = AtomicGrid.special_init(rad, 1, scales=[], degs=[7])
         sph_coor = atgrid.convert_cart_to_sph()
@@ -136,7 +136,7 @@ class TestInterpolate(TestCase):
         """Test cubicspline interpolation values."""
         oned = GaussLegendre(20)
         btf = BeckeTF(0.0001, 1)
-        rad = btf.transform_grid(oned)
+        rad = btf.generate_radial(oned)
         atgrid = AtomicGrid.special_init(rad, 1, scales=[], degs=[7])
         value_array = self.helper_func_gauss(atgrid.points)
         result = spline_with_atomic_grid(atgrid, value_array)
@@ -156,7 +156,7 @@ class TestInterpolate(TestCase):
 
     def test_cubicspline_and_interp_mol(self):
         """Test cubicspline interpolation values."""
-        rad = IdentityRTransform().transform_grid(HortonLinear(10))
+        rad = IdentityRTransform().generate_radial(HortonLinear(10))
         rad._points += 1
         atgrid = AtomicGrid.special_init(rad, 1, scales=[], degs=[7])
         values = self.helper_func_power(atgrid.points)
@@ -169,7 +169,7 @@ class TestInterpolate(TestCase):
 
     def test_cubicspline_and_interp(self):
         """Test cubicspline interpolation values."""
-        rad = IdentityRTransform().transform_grid(HortonLinear(10))
+        rad = IdentityRTransform().generate_radial(HortonLinear(10))
         rad._points += 1
         atgrid = AtomicGrid.special_init(rad, 1, scales=[], degs=[7])
         sph_coor = atgrid.convert_cart_to_sph()
@@ -208,7 +208,7 @@ class TestInterpolate(TestCase):
 
     def test_cubicspline_and_deriv(self):
         """Test spline for derivation."""
-        rad = IdentityRTransform().transform_grid(HortonLinear(10))
+        rad = IdentityRTransform().generate_radial(HortonLinear(10))
         rad._points += 1
         atgrid = AtomicGrid.special_init(rad, 1, scales=[], degs=[7])
         sph_coor = atgrid.convert_cart_to_sph()
