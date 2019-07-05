@@ -401,22 +401,22 @@ class SqTF(BaseTransform):
         self._exp = exp
         self._extra = extra
 
-    def transform(self, x):
+    def transform(self, r):
         """Transform given array."""
-        return x ** self._exp + self._extra
+        return r ** self._exp + self._extra
 
     def inverse(self, r):
         """Inverse transformed array."""
         return (r - self._extra) ** (1 / self._exp)
 
-    def deriv(self, x):
+    def deriv(self, r):
         """Compute 1st order deriv of TF."""
-        return self._exp * x ** (self._exp - 1)
+        return self._exp * r ** (self._exp - 1)
 
-    def deriv2(self, x):
+    def deriv2(self, r):
         """Compute 2nd order deriv of TF."""
-        return (self._exp - 1) * (self._exp) * x ** (self._exp - 2)
+        return (self._exp - 1) * (self._exp) * r ** (self._exp - 2)
 
-    def deriv3(self, x):
+    def deriv3(self, r):
         """Compute 3rd order deriv of TF."""
-        return (self._exp - 2) * (self._exp - 1) * (self._exp) * x ** (self._exp - 3)
+        return (self._exp - 2) * (self._exp - 1) * (self._exp) * r ** (self._exp - 3)
