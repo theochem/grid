@@ -41,25 +41,21 @@ class TestRTransform(TestCase):
         """Check general consistency."""
         ts = np.random.uniform(0, 99, 200)
         # consistency between radius and radius_array
-        rs = np.zeros(ts.shape)
         rs = rtf.transform(ts)
         for i in range(ts.shape[0]):
             rf_gd = np.ones(200) * ts[i]
             assert rs[i] == rtf.transform(rf_gd)[0]
         # consistency between deriv and deriv_array
-        ds = np.zeros(ts.shape)
         ds = rtf.deriv(ts)
         for i in range(ts.shape[0]):
             rf_gd = np.ones(200) * ts[i]
             assert ds[i] == rtf.deriv(rf_gd)[0]
         # consistency between deriv2 and deriv2_array
-        d2s = np.zeros(ts.shape)
         d2s = rtf.deriv2(ts)
         for i in range(ts.shape[0]):
             rf_gd = np.ones(200) * ts[i]
             assert d2s[i] == rtf.deriv2(rf_gd)[0]
         # consistency between deriv3 and deriv3_array
-        d3s = np.zeros(ts.shape)
         d3s = rtf.deriv3(ts)
         for i in range(ts.shape[0]):
             rf_gd = np.ones(200) * ts[i]
