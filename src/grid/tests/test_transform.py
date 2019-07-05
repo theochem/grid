@@ -128,8 +128,8 @@ class TestTransform(TestCase):
         """Test becke transformation when inf generated."""
         inf_array = np.linspace(-1, 1, 21)
         R = BeckeTF.find_parameter(inf_array, 0.1, 1.2)
-        btf = BeckeTF(0.1, R)
-        tf_array = btf.transform(inf_array, trim_inf=True)
+        btf = BeckeTF(0.1, R, trim_inf=True)
+        tf_array = btf.transform(inf_array)
         inv_array = btf.inverse(tf_array)
         assert_allclose(inv_array, inf_array)
 
