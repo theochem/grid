@@ -1,13 +1,7 @@
 """Onedgrid tests file."""
 from unittest import TestCase
 
-from grid.onedgrid import (
-    GaussChebyshev,
-    GaussLaguerre,
-    GaussLegendre,
-    HortonLinear,
-    generate_onedgrid,
-)
+from grid.onedgrid import GaussChebyshev, GaussLaguerre, GaussLegendre, HortonLinear
 
 import numpy as np
 from numpy.testing import assert_allclose
@@ -21,10 +15,6 @@ class TestOneDGrid(TestCase):
     def setUp(self):
         """Test setup function."""
         ...
-
-    def test_generate_ondgrid(self):
-        """Place holder tests for generate_onedgrid."""
-        generate_onedgrid(0)
 
     def test_gausslaguerre(self):
         """Test Guass Laguerre polynomial grid."""
