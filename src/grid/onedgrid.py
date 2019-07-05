@@ -27,11 +27,6 @@ import numpy as np
 from scipy.special import roots_genlaguerre
 
 
-def generate_onedgrid(npoints, *args):
-    """Place holder for general api."""
-    ...
-
-
 def GaussLaguerre(npoints, alpha=0):
     r"""Generate a grid based on generalized Gauss-Laguerre grid.
 
