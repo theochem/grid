@@ -20,6 +20,8 @@
 #
 # --
 """1D Radial integration grid."""
+
+
 from grid.basegrid import OneDGrid
 
 import numpy as np
@@ -28,30 +30,31 @@ from scipy.special import roots_genlaguerre
 
 
 def GaussLaguerre(npoints, alpha=0):
-    r"""Generate a grid based on generalized Gauss-Laguerre grid.
+    r"""Generate 1D grid on [0, inf) interval based on Generalized Gauss-Laguerre quadrature.
 
-    Generalizeed Gauss Laguerre grid is defined as:
-    .. math::
-        \int_{0}^{\infty} x^{\alpha}e^{-x} f(x)dx \approx
-        \sum_{i=1}^n w_i f(x_i)
+    The fundamental definition of Generalized Gauss-Laguerre quadrature is:
 
-    This integration grid is defined as :
     .. math::
-        \int_{0}^{\infty} f(x)dx \approx
-        \sum_{i=1}^n \frac{w_i}{x_i^{\alpha} e^{-x_i}} f(x_i)
-        = \sum_{i=1}^n  w_i' f(x_i)
+        \int_{0}^{\infty} x^\alpha e^{-x} f(x) dx \approx \sum_{i=1}^n w_i f(x_i)
+
+    However, to integrate function :math:`g(x)` over [0, inf), this is re-written as:
+
+    .. math::
+        \int_{0}^{\infty} g(x)dx \approx
+        \sum_{i=1}^n \frac{w_i}{x_i^\alpha e^{-x_i}} g(x_i) = \sum_{i=1}^n w_i' g(x_i)
 
     Parameters
     ----------
     npoints : int
-        Number of points in the grid
-    alpha : float, default to 0, required to be > -1
-        parameter alpha value
+        Number of grid points.
+    alpha : float, optional
+        Value of parameter :math:`alpha` which should be larger than -1.
 
     Returns
     -------
     OneDGrid
-        A grid instance with points and weights, (0, inf)
+        A 1D grid instance.
+
     """
     if alpha <= -1:
         raise ValueError(f"Alpha need to be bigger than -1, given {alpha}")
@@ -61,42 +64,50 @@ def GaussLaguerre(npoints, alpha=0):
 
 
 def GaussLegendre(npoints):
-    """Generate Gauss-Legendre grid.
+    r"""Generate 1D grid on [-1, 1] interval based on Gauss-Legendre quadrature.
+
+    .. math::
+        \int_{-1}^{1} f(x) dx \approx \sum_{i=1}^n w_i f(x_i)
 
     Parameters
     ----------
     npoints : int
-        Number of points in the grid
+        Number of grid points.
 
     Returns
     -------
     OneDGrid
-        A grid instance with points and weights, [-1, 1]
+        A 1D grid instance.
+
     """
     points, weights = np.polynomial.legendre.leggauss(npoints)
     return OneDGrid(points, weights)
 
 
 def GaussChebyshev(npoints):
-    r"""Generate a grid based on Gauss-Chebyshev grid.
+    r"""Generate 1D grid on [-1, 1] interval based on Gauss-Chebyshev quadrature.
 
-    Gauss Chebyshev grid is defined as:
-    .. math::
-        \int_{-1}^{1} \frac{f(x)}{\sqrt{1-x^2}}dx \approx \sum_{i=1}^n w_i f(x_i)
+    The fundamental definition of Gauss-Chebyshev quadrature is:
 
-    This integration grid is defined as :
     .. math::
-        \int_{-1}^{1}f(x)dx\approx\sum_{i=1}^n  w_i \sqrt{1-x_i^2} f(x_i)
-        = \sum_{i=1}^n  w_i' f(x_i)
+        \int_{-1}^{1} \frac{f(x)}{\sqrt{1-x^2}} dx \approx \sum_{i=1}^n w_i f(x_i)
+
+    However, to integrate function :math:`g(x)` over [-1, 1], this is re-written as:
+
+    .. math::
+        \int_{-1}^{1}g(x) dx \approx \sum_{i=1}^n w_i \sqrt{1-x_i^2} g(x_i)
+        = \sum_{i=1}^n w_i' g(x_i)
+
     Parameters
     ----------
     npoints : int
-        Number of points in the grid
+        Number of grid points.
 
     Returns
     -------
     OneDGrid
-        A grid instance with points and weights, [-1, 1]
+        A 1D grid instance.
+
     """
     # points are generated in decreasing order
     # weights are pi/n, all weights are the same
@@ -106,17 +117,18 @@ def GaussChebyshev(npoints):
 
 
 def HortonLinear(npoints):
-    """Generate even space grid.
+    """Generate 1D grid on [0, npoints] interval using equally spaced uniform distribution.
 
     Parameters
     ----------
     npoints : int
-        Number of points in the grid
+        Number of grid points.
 
     Returns
     -------
     OneDGrid
-        A grid instance with points and weights, [0, inf)
+        A 1D grid instance.
+
     """
     points = np.arange(npoints)
     weights = np.ones(npoints)
