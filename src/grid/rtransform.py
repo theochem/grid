@@ -99,7 +99,7 @@ class BaseTransform(ABC):
 class BeckeTF(BaseTransform):
     """Becke Transformation class."""
 
-    def __init__(self, r0, R):
+    def __init__(self, r0, R, trim_inf=True):
         """Construct Becke transform, [-1, 1] -> [r_0, inf).
 
         Parameters
@@ -108,9 +108,15 @@ class BeckeTF(BaseTransform):
             The minimum coordinates for transformed radial array.
         R : float
             The scale factor for transformed radial array.
+        trim_inf : bool, optional
+            Flag to trim infinite value in transformed array. If True, it will
+            replace np.inf with 1e16. This may cause unexpected errors in the
+            following operations.
+
         """
         self._r0 = r0
         self._R = R
+        self.trim_inf = trim_inf
 
     @property
     def r0(self):
@@ -166,17 +172,13 @@ class BeckeTF(BaseTransform):
             mid_value = (array[size // 2 - 1] + array[size // 2]) / 2
         return (radius - r0) * (1 - mid_value) / (1 + mid_value)
 
-    def transform(self, x, trim_inf=True):
+    def transform(self, x):
         """Transform given array[-1, 1] to radial array[r0, inf).
 
         Parameters
         ----------
         x : np.ndarray(N,)
             One dimension numpy array located between [-1, 1]
-        trim_inf : bool, optional, default to True
-            Flag to trim infinite value in transformed array. If true, will
-            trim np.inf -> 1e16. If false, leave np.inf as it is. This may
-            cause unexpected errors in the following operations.
 
         Returns
         -------
@@ -184,7 +186,7 @@ class BeckeTF(BaseTransform):
             Transformed radial array located between [r0, inf)
         """
         rf_array = self._R * (1 + x) / (1 - x) + self._r0
-        if trim_inf:
+        if self.trim_inf:
             rf_array = self._convert_inf(rf_array)
         return rf_array
 
