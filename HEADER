@@ -1,6 +1,6 @@
-GRID is a numerical integration library for quantum chemistry.
+GRID is a numerical integration module for quantum chemistry.
 
-Copyright (C) 2011-2017 The GRID Development Team
+Copyright (C) 2011-2019 The GRID Development Team
 
 This file is part of GRID.
 
