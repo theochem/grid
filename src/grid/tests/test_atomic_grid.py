@@ -21,7 +21,7 @@
 from unittest import TestCase
 
 from grid.atomic_grid import AtomicGrid
-from grid.basegrid import AngularGrid, RadialGrid
+from grid.basegrid import AngularGrid, Grid
 from grid.lebedev import generate_lebedev_grid
 
 import numpy as np
@@ -40,7 +40,7 @@ class TestAtomicGrid(TestCase):
         """Normal initialization test."""
         radial_pts = np.arange(0.1, 1.1, 0.1)
         radial_wts = np.ones(10) * 0.1
-        radial_grid = RadialGrid(radial_pts, radial_wts)
+        radial_grid = Grid(radial_pts, radial_wts)
         rad = 0.5
         scales = np.array([0.5, 1, 1.5])
         degs = np.array([6, 14, 14, 6])
@@ -65,7 +65,7 @@ class TestAtomicGrid(TestCase):
         assert ag_ob2.l_max == 17
         assert_array_equal(ag_ob2._rad_degs, np.ones(10) * 17)
         assert ag_ob2.size == 110 * 10
-        assert isinstance(ag_ob.rad_grid, RadialGrid)
+        assert isinstance(ag_ob.rad_grid, Grid)
         assert_allclose(ag_ob.rad_grid.points, radial_grid.points)
         assert_allclose(ag_ob.rad_grid.weights, radial_grid.weights)
 
@@ -73,7 +73,7 @@ class TestAtomicGrid(TestCase):
         """Test private method find_l_for_rad_list."""
         radial_pts = np.arange(0.1, 1.1, 0.1)
         radial_wts = np.ones(10) * 0.1
-        radial_grid = RadialGrid(radial_pts, radial_wts)
+        radial_grid = Grid(radial_pts, radial_wts)
         rad = 1
         scales = np.array([0.2, 0.4, 0.8])
         degs = np.array([3, 5, 7, 3])
@@ -101,7 +101,7 @@ class TestAtomicGrid(TestCase):
         # setup testing class
         rad_pts = np.array([0.1, 0.5, 1])
         rad_wts = np.array([0.3, 0.4, 0.3])
-        rad_grid = RadialGrid(rad_pts, rad_wts)
+        rad_grid = Grid(rad_pts, rad_wts)
         degs = np.array([3, 5, 7])
         pts, wts, ind = AtomicGrid._generate_atomic_grid(rad_grid, degs)
         assert len(pts) == 46
@@ -122,7 +122,7 @@ class TestAtomicGrid(TestCase):
         """Test atomic grid center transilation."""
         rad_pts = np.array([0.1, 0.5, 1])
         rad_wts = np.array([0.3, 0.4, 0.3])
-        rad_grid = RadialGrid(rad_pts, rad_wts)
+        rad_grid = Grid(rad_pts, rad_wts)
         degs = np.array([3, 5, 7])
         # origin center
         # randome center
@@ -137,7 +137,7 @@ class TestAtomicGrid(TestCase):
         """Test random rotation for atomic grid."""
         rad_pts = np.array([0.1, 0.5, 1])
         rad_wts = np.array([0.3, 0.4, 0.3])
-        rad_grid = RadialGrid(rad_pts, rad_wts)
+        rad_grid = Grid(rad_pts, rad_wts)
         degs = [3, 5, 7]
         atgrid = AtomicGrid(rad_grid, degs=degs)
         # make sure True and 1 is not the same result
@@ -164,7 +164,7 @@ class TestAtomicGrid(TestCase):
         """Test angular grid get from get_shell_grid function."""
         rad_pts = np.array([0.1, 0.5, 1])
         rad_wts = np.array([0.3, 0.4, 0.3])
-        rad_grid = RadialGrid(rad_pts, rad_wts)
+        rad_grid = Grid(rad_pts, rad_wts)
         degs = [3, 5, 7]
         atgrid = AtomicGrid(rad_grid, degs=degs)
         assert atgrid.n_shells == 3
@@ -193,25 +193,25 @@ class TestAtomicGrid(TestCase):
             )
         with self.assertRaises(ValueError):
             AtomicGrid.special_init(
-                RadialGrid(np.arange(3), np.arange(3)),
+                Grid(np.arange(3), np.arange(3)),
                 radius=1.0,
                 scales=np.arange(2),
                 degs=np.arange(0),
             )
         with self.assertRaises(ValueError):
             AtomicGrid.special_init(
-                RadialGrid(np.arange(3), np.arange(3)),
+                Grid(np.arange(3), np.arange(3)),
                 radius=1.0,
                 scales=np.arange(2),
                 degs=np.arange(4),
             )
         with self.assertRaises(ValueError):
             AtomicGrid._generate_atomic_grid(
-                RadialGrid(np.arange(3), np.arange(3)), np.arange(2)
+                Grid(np.arange(3), np.arange(3)), np.arange(2)
             )
         with self.assertRaises(TypeError):
             AtomicGrid.special_init(
-                RadialGrid(np.arange(3), np.arange(3)),
+                Grid(np.arange(3), np.arange(3)),
                 radius=1.0,
                 scales=np.array([0.3, 0.5, 0.7]),
                 degs=np.array([3, 5, 7, 5]),
@@ -219,7 +219,7 @@ class TestAtomicGrid(TestCase):
             )
         with self.assertRaises(ValueError):
             AtomicGrid.special_init(
-                RadialGrid(np.arange(3), np.arange(3)),
+                Grid(np.arange(3), np.arange(3)),
                 radius=1.0,
                 scales=np.array([0.3, 0.5, 0.7]),
                 degs=np.array([3, 5, 7, 5]),
@@ -227,12 +227,10 @@ class TestAtomicGrid(TestCase):
             )
 
         with self.assertRaises(TypeError):
-            AtomicGrid(RadialGrid(np.arange(3), np.arange(3)), nums=110)
+            AtomicGrid(Grid(np.arange(3), np.arange(3)), nums=110)
         with self.assertRaises(TypeError):
-            AtomicGrid(RadialGrid(np.arange(3), np.arange(3)), degs=17)
+            AtomicGrid(Grid(np.arange(3), np.arange(3)), degs=17)
         with self.assertRaises(ValueError):
-            AtomicGrid(RadialGrid(np.arange(3), np.arange(3)), degs=[17], rotate=-1)
+            AtomicGrid(Grid(np.arange(3), np.arange(3)), degs=[17], rotate=-1)
         with self.assertRaises(ValueError):
-            AtomicGrid(
-                RadialGrid(np.arange(3), np.arange(3)), degs=[17], rotate="asdfaf"
-            )
+            AtomicGrid(Grid(np.arange(3), np.arange(3)), degs=[17], rotate="asdfaf")

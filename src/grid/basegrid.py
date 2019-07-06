@@ -147,7 +147,3 @@ class SimpleAtomicGrid(Grid):
     def center(self):
         """np.ndarray(3,): return the coordinates of the atomic grid center."""
         return self._center
-
-
-class RadialGrid(Grid):
-    """PlaceHolder for Radial Grid."""

@@ -24,7 +24,7 @@ import warnings
 from abc import ABC, abstractmethod
 from numbers import Number
 
-from grid.basegrid import Grid, RadialGrid
+from grid.basegrid import Grid
 
 import numpy as np
 
@@ -62,7 +62,7 @@ class BaseTransform(ABC):
 
         Returns
         -------
-        RadialGrid
+        Grid
             one dimensional grid spanning from (0, inf(certain number))
 
         Raises
@@ -78,7 +78,7 @@ class BaseTransform(ABC):
             raise TypeError(f"The grid.points and grid.weights are not a 1D arrays!")
         new_points = self.transform(grid.points)
         new_weights = self.deriv(grid.points) * grid.weights
-        return RadialGrid(new_points, new_weights)
+        return Grid(new_points, new_weights)
 
     def _convert_inf(self, array, replace_inf=1e16):
         """Convert np.inf(float) to 1e16(float) in case of numerical failure.

@@ -19,7 +19,7 @@
 # --
 """Radial grid test."""
 
-from grid.basegrid import RadialGrid
+from grid.basegrid import Grid
 from grid.onedgrid import HortonLinear
 from grid.rtransform import ExpRTransform, PowerRTransform
 
@@ -32,7 +32,7 @@ def test_basics1():
     oned = HortonLinear(4)
     rtf = ExpRTransform(0.1, 1e1)
     grid = rtf.generate_radial(oned)
-    assert isinstance(grid, RadialGrid)
+    assert isinstance(grid, Grid)
 
     assert grid.size == 4
     # assert grid.shape == (4,)
@@ -47,7 +47,7 @@ def test_basics2():
     oned = HortonLinear(100)
     rtf = ExpRTransform(1e-3, 1e1)
     grid = rtf.generate_radial(oned)
-    assert isinstance(grid, RadialGrid)
+    assert isinstance(grid, Grid)
 
     assert grid.size == 100
     # assert grid.shape == (100,)
@@ -62,7 +62,7 @@ def test_integrate_gauss():
     oned = HortonLinear(100)
     rtf = PowerRTransform(0.0005, 1e1)
     grid = rtf.generate_radial(oned)
-    assert isinstance(grid, RadialGrid)
+    assert isinstance(grid, Grid)
 
     y = np.exp(-0.5 * grid.points ** 2)
     # time 4 \pi and r^2 to accommodate old horton test
