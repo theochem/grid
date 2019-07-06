@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# GRID is a numerical integration library for quantum chemistry.
+# GRID is a numerical integration module for quantum chemistry.
 #
 # Copyright (C) 2011-2019 The GRID Development Team
 #
@@ -17,6 +17,5 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>
-#
 # --
 """Initiate new grid package."""
