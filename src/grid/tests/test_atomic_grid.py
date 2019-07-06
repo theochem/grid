@@ -21,7 +21,7 @@
 from unittest import TestCase
 
 from grid.atomic_grid import AtomicGrid
-from grid.basegrid import AngularGrid, Grid
+from grid.basegrid import Grid
 from grid.lebedev import generate_lebedev_grid
 
 import numpy as np
@@ -171,7 +171,7 @@ class TestAtomicGrid(TestCase):
         # grep shell with r^2
         for i in range(atgrid.n_shells):
             sh_grid = atgrid.get_shell_grid(i)
-            assert isinstance(sh_grid, AngularGrid)
+            assert isinstance(sh_grid, Grid)
             ref_grid = generate_lebedev_grid(degree=degs[i])
             assert np.allclose(sh_grid.points, ref_grid.points * rad_pts[i])
             assert np.allclose(
@@ -180,7 +180,7 @@ class TestAtomicGrid(TestCase):
         # grep shell without r^2
         for i in range(atgrid.n_shells):
             sh_grid = atgrid.get_shell_grid(i, r_sq=False)
-            assert isinstance(sh_grid, AngularGrid)
+            assert isinstance(sh_grid, Grid)
             ref_grid = generate_lebedev_grid(degree=degs[i])
             assert np.allclose(sh_grid.points, ref_grid.points * rad_pts[i])
             assert np.allclose(sh_grid.weights, ref_grid.weights * rad_wts[i])

@@ -21,7 +21,7 @@
 
 import warnings
 
-from grid.basegrid import AngularGrid
+from grid.basegrid import Grid
 
 from importlib_resources import path
 
@@ -113,13 +113,13 @@ def generate_lebedev_grid(*, degree=None, size=None):
 
     Returns
     -------
-    AngularGrid
+    Grid
         An AngularGrid instance with points and weights.
     """
     degree, size = _select_grid_type(degree=degree, size=size)
     points, weights = _load_grid_arrays(_load_grid_filename(degree, size))
     # set weights to 4\pi
-    return AngularGrid(points, weights * 4 * np.pi)
+    return Grid(points, weights * 4 * np.pi)
 
 
 def match_degree(degree_nums):

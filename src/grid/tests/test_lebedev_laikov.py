@@ -20,7 +20,7 @@
 """Test lebedev grid."""
 from unittest import TestCase
 
-from grid.basegrid import AngularGrid
+from grid.basegrid import Grid
 from grid.lebedev import (
     _select_grid_type,
     generate_lebedev_grid,
@@ -49,7 +49,7 @@ class TestLebedev(TestCase):
             npoint = _select_grid_type(degree=i)[1]
             if npoint > previous_npoint:
                 grid = generate_lebedev_grid(size=npoint)
-                assert isinstance(grid, AngularGrid)
+                assert isinstance(grid, Grid)
                 assert_allclose(grid.weights.sum(), 1.0 * 4 * np.pi)
                 assert_allclose(grid.points[:, 0].sum(), 0, atol=1e-10)
                 assert_allclose(grid.points[:, 1].sum(), 0, atol=1e-10)

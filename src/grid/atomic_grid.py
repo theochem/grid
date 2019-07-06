@@ -18,7 +18,9 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
 """Module for generating Atomic Grid."""
-from grid.basegrid import AngularGrid, Grid
+
+
+from grid.basegrid import Grid
 from grid.lebedev import generate_lebedev_grid, match_degree, size_to_degree
 
 import numpy as np
@@ -182,7 +184,7 @@ class AtomicGrid(Grid):
 
         Returns
         -------
-        AngularGrid
+        Grid
             AngularGrid at given radial index position.
         """
         ind_start = self._indices[index]
@@ -194,7 +196,7 @@ class AtomicGrid(Grid):
             new_wts = wts / (self._radial_grid.points[index] ** 2)
         else:
             new_wts = wts
-        return AngularGrid(pts, new_wts)
+        return Grid(pts, new_wts)
 
     def convert_cart_to_sph(self):
         """Compute spherical coordinates of the grid.
@@ -298,7 +300,7 @@ class AtomicGrid(Grid):
         Parameters
         ----------
         one_pt_grid : Grid
-        angle_grid : AngularGrid
+        angle_grid : Grid
 
         Returns
         -------
