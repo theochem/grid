@@ -65,9 +65,7 @@ class AtomicGrid(Grid):
         """
         # check stage
         self._input_type_check(radial_grid, center)
-        # assign stage
-        self._center = np.array(center)
-        self._radial_grid = radial_grid
+        # check degs
         if degs is None:
             if not isinstance(nums, (np.ndarray, list)):
                 raise TypeError(f"nums is not type: np.array or list, got {type(nums)}")
@@ -76,11 +74,16 @@ class AtomicGrid(Grid):
             raise TypeError(f"degs is not type: np.array or list, got {type(degs)}")
         if len(degs) == 1:
             degs = np.ones(radial_grid.size) * degs
+
+        points, weights, indices = self._generate_atomic_grid(radial_grid, degs)
+        super().__init__(points, weights)
+
+        self._center = np.array(center)
         self._rad_degs = degs
-        self._points, self._weights, self._indices = self._generate_atomic_grid(
-            self._radial_grid, self._rad_degs
-        )
+        self._rgrid = radial_grid
+        self._indices = indices
         self._size = self._weights.size
+
         # add random rotation
         if rotate is not False:
             if rotate is True:
@@ -143,7 +146,7 @@ class AtomicGrid(Grid):
     @property
     def rad_grid(self):
         """RadialGrid: radial points and weights in the atomic grid."""
-        return self._radial_grid
+        return self._rgrid
 
     @property
     def points(self):
@@ -193,7 +196,7 @@ class AtomicGrid(Grid):
         wts = self._weights[ind_start:ind_end]
         # try not to modify wts incase some weird situation.
         if r_sq is False:
-            new_wts = wts / (self._radial_grid.points[index] ** 2)
+            new_wts = wts / (self._rgrid.points[index] ** 2)
         else:
             new_wts = wts
         return Grid(pts, new_wts)
