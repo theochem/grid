@@ -20,7 +20,7 @@
 """Molecular grid class."""
 from grid.atomic_grid import AtomicGrid
 from grid.basegrid import Grid, SimpleAtomicGrid
-from grid.becke import BeckeWeights
+from grid.becke import generate_becke_weights
 from grid.utils import get_cov_radii
 
 import numpy as np
@@ -67,7 +67,7 @@ class MolGrid(Grid):
                 chunk_size = max(1, (10 * self._size) // self._coors.shape[0] ** 2)
                 self._aim_weights = np.concatenate(
                     [
-                        BeckeWeights.generate_becke_weights(
+                        generate_becke_weights(
                             self._points[ibegin : ibegin + chunk_size],
                             radii,
                             self._coors,
