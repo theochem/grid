@@ -55,22 +55,6 @@ class BeckeWeights:
         return alpha
 
     @staticmethod
-    def _atomic_dists(coors):
-        """Calculate atomic distance between each atoms.
-
-        Parameters
-        ----------
-        coors : np.ndarray(N, 3)
-            Cartesian coordinates of each atom
-
-        Returns
-        -------
-        np.ndarray(N, N)
-            Atomic distance between each pair atoms
-        """
-        return np.linalg.norm(coors[:, None] - coors, axis=-1)
-
-    @staticmethod
     def _switch_func(x, order=3):
         r"""Switching function that gradient at nuclei become zero.
 
@@ -144,7 +128,7 @@ class BeckeWeights:
         n_p = np.linalg.norm(atom_coors[:, None] - points, axis=-1)
         # |r_A - r| - |r_B - r| for each points with pair(A, B) nucleus
         p_p_n = n_p[:, None] - n_p
-        atomic_dist = BeckeWeights._atomic_dists(atom_coors)
+        atomic_dist = np.linalg.norm(atom_coors[:, None] - atom_coors, axis=-1)
         # ignore 0 / 0 runtime warning
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
