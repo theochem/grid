@@ -35,9 +35,6 @@ class TestBecke(TestCase):
         npoint = 100
         points = np.random.uniform(-5, 5, (npoint, 3))
 
-        weights0 = np.ones(npoint, float)
-        weights1 = np.ones(npoint, float)
-
         radii = np.array([0.5, 0.8])
         centers = np.array([[1.2, 2.3, 0.1], [-0.4, 0.0, -2.2]])
         weights0 = BeckeWeights.generate_becke_weights(
@@ -53,10 +50,6 @@ class TestBecke(TestCase):
         """Test becke weights add up to one with three centers."""
         npoint = 100
         points = np.random.uniform(-5, 5, (npoint, 3))
-
-        weights0 = np.ones(npoint, float)
-        weights1 = np.ones(npoint, float)
-        weights2 = np.ones(npoint, float)
 
         radii = np.array([0.5, 0.8, 5.0])
         centers = np.array([[1.2, 2.3, 0.1], [-0.4, 0.0, -2.2], [2.2, -1.5, 0.0]])
