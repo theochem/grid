@@ -149,9 +149,5 @@ class SimpleAtomicGrid(Grid):
         return self._center
 
 
-class OneDGrid(Grid):
-    """PlaceHolder for 1dGrid object."""
-
-
 class RadialGrid(Grid):
     """PlaceHolder for Radial Grid."""

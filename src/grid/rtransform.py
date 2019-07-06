@@ -24,7 +24,7 @@ import warnings
 from abc import ABC, abstractmethod
 from numbers import Number
 
-from grid.basegrid import OneDGrid, RadialGrid
+from grid.basegrid import Grid, RadialGrid
 
 import numpy as np
 
@@ -52,12 +52,12 @@ class BaseTransform(ABC):
     def deriv3(self, x):
         """Abstract method for 3nd derivative of transformation."""
 
-    def generate_radial(self, oned_grid):
-        """Generate a radial grid by transforming the OneDGrid.
+    def generate_radial(self, grid):
+        """Generate a radial grid by transforming the 1D grid.
 
         Parameters
         ----------
-        oned_grid : OneDGrid
+        grid : Grid
             one dimensional grid generated for integration purpose
 
         Returns
@@ -70,10 +70,14 @@ class BaseTransform(ABC):
         TypeError
             Input is not a proper OneDGrid instance.
         """
-        if not isinstance(oned_grid, OneDGrid):
-            raise TypeError(f"Input grid is not OneDGrid, got {type(oned_grid)}")
-        new_points = self.transform(oned_grid.points)
-        new_weights = self.deriv(oned_grid.points) * oned_grid.weights
+        if not isinstance(grid, Grid):
+            raise TypeError(
+                f"Argument grid should be an instance of Grid, got {type(grid)}"
+            )
+        if grid.points.ndim != 1 or grid.weights.ndim != 1:
+            raise TypeError(f"The grid.points and grid.weights are not a 1D arrays!")
+        new_points = self.transform(grid.points)
+        new_weights = self.deriv(grid.points) * grid.weights
         return RadialGrid(new_points, new_weights)
 
     def _convert_inf(self, array, replace_inf=1e16):
