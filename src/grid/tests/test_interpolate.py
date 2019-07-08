@@ -18,6 +18,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
 """Interpolation tests file."""
+
 from unittest import TestCase
 
 from grid.atomic_grid import AtomicGrid
@@ -29,8 +30,9 @@ from grid.interpolate import (
     spline_with_atomic_grid,
     spline_with_sph_harms,
 )
+from grid.basegrid import OneDGrid
 from grid.lebedev import generate_lebedev_grid
-from grid.onedgrid import GaussLegendre, HortonLinear
+from grid.onedgrid import GaussLegendre
 from grid.rtransform import BeckeTF, IdentityRTransform
 
 import numpy as np
@@ -127,8 +129,8 @@ class TestInterpolate(TestCase):
 
     def test_spline_with_sph_harms(self):
         """Test spline projection the same as spherical harmonics."""
-        rad = IdentityRTransform().generate_radial(HortonLinear(10))
-        rad._points += 1
+        odg = OneDGrid(np.arange(10) + 1, np.ones(10))
+        rad = IdentityRTransform().generate_radial(odg)
         atgrid = AtomicGrid.special_init(rad, 1, scales=[], degs=[7])
         sph_coor = atgrid.convert_cart_to_sph()
         values = self.helper_func_power(atgrid.points)
@@ -174,8 +176,8 @@ class TestInterpolate(TestCase):
 
     def test_cubicspline_and_interp_mol(self):
         """Test cubicspline interpolation values."""
-        rad = IdentityRTransform().generate_radial(HortonLinear(10))
-        rad._points += 1
+        odg = OneDGrid(np.arange(10) + 1, np.ones(10))
+        rad = IdentityRTransform().generate_radial(odg)
         atgrid = AtomicGrid.special_init(rad, 1, scales=[], degs=[7])
         values = self.helper_func_power(atgrid.points)
         result = spline_with_atomic_grid(atgrid, values)
@@ -187,8 +189,8 @@ class TestInterpolate(TestCase):
 
     def test_cubicspline_and_interp(self):
         """Test cubicspline interpolation values."""
-        rad = IdentityRTransform().generate_radial(HortonLinear(10))
-        rad._points += 1
+        odg = OneDGrid(np.arange(10) + 1, np.ones(10))
+        rad = IdentityRTransform().generate_radial(odg)
         atgrid = AtomicGrid.special_init(rad, 1, scales=[], degs=[7])
         sph_coor = atgrid.convert_cart_to_sph()
         values = self.helper_func_power(atgrid.points)
@@ -226,8 +228,8 @@ class TestInterpolate(TestCase):
 
     def test_cubicspline_and_deriv(self):
         """Test spline for derivation."""
-        rad = IdentityRTransform().generate_radial(HortonLinear(10))
-        rad._points += 1
+        odg = OneDGrid(np.arange(10) + 1, np.ones(10))
+        rad = IdentityRTransform().generate_radial(odg)
         atgrid = AtomicGrid.special_init(rad, 1, scales=[], degs=[7])
         sph_coor = atgrid.convert_cart_to_sph()
         values = self.helper_func_power(atgrid.points)

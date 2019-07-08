@@ -58,7 +58,7 @@ def GaussLaguerre(npoints, alpha=0):
         raise ValueError(f"Alpha need to be bigger than -1, given {alpha}")
     points, weights = roots_genlaguerre(npoints, alpha)
     weights = weights * np.exp(points) * np.power(points, -alpha)
-    return OneDGrid(points, weights)
+    return OneDGrid(points, weights, (0, np.inf))
 
 
 def GaussLegendre(npoints):
@@ -79,7 +79,7 @@ def GaussLegendre(npoints):
 
     """
     points, weights = np.polynomial.legendre.leggauss(npoints)
-    return OneDGrid(points, weights)
+    return OneDGrid(points, weights, (-1, 1))
 
 
 def GaussChebyshev(npoints):
@@ -111,7 +111,7 @@ def GaussChebyshev(npoints):
     # weights are pi/n, all weights are the same
     points, weights = np.polynomial.chebyshev.chebgauss(npoints)
     weights = weights * np.sqrt(1 - np.power(points, 2))
-    return OneDGrid(points[::-1], weights)
+    return OneDGrid(points[::-1], weights, (-1, 1))
 
 
 def HortonLinear(npoints):

@@ -18,7 +18,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
 """Module for generating Atomic Grid."""
-from grid.basegrid import AngularGrid, Grid, RadialGrid
+from grid.basegrid import AngularGrid, Grid, OneDGrid
 from grid.lebedev import generate_lebedev_grid, match_degree, size_to_degree
 
 import numpy as np
@@ -42,8 +42,8 @@ class AtomicGrid(Grid):
 
         Parameters
         ----------
-        rgrid : RadialGrid
-            Radial grid
+        rgrid : OneDGrid
+            A 1D grid with positive domain representing the radial component of grid.
         degs : np.ndarray(N, dtype=int) or list, keyword-only argument
             Different degree value for each radial point
         nums : np.ndarray(N, dtype=int) or list, keyword-only argument
@@ -222,9 +222,13 @@ class AtomicGrid(Grid):
         ValueError
             ``center`` needs to be an instance of ``np.ndarray`` class.
         """
-        if not isinstance(rgrid, RadialGrid):
+        if not isinstance(rgrid, OneDGrid):
             raise TypeError(
-                f"Argument rgrid is not an instance of RadialGrid, got {type(rgrid)}."
+                f"Argument rgrid is not an instance of OneDGrid, got {type(rgrid)}."
+            )
+        if rgrid.domain[0] < 0:
+            raise TypeError(
+                f"Argument rgrid should have a positive domain, got {rgrid.domain}"
             )
         if not isinstance(center, np.ndarray):
             raise TypeError(
