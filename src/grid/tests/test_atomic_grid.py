@@ -40,45 +40,43 @@ class TestAtomicGrid(TestCase):
         """Normal initialization test."""
         radial_pts = np.arange(0.1, 1.1, 0.1)
         radial_wts = np.ones(10) * 0.1
-        radial_grid = RadialGrid(radial_pts, radial_wts)
+        rgrid = RadialGrid(radial_pts, radial_wts)
         rad = 0.5
         scales = np.array([0.5, 1, 1.5])
         degs = np.array([6, 14, 14, 6])
         # generate a proper instance without failing.
-        ag_ob = AtomicGrid.special_init(
-            radial_grid, radius=rad, scales=scales, degs=degs
-        )
+        ag_ob = AtomicGrid.special_init(rgrid, radius=rad, scales=scales, degs=degs)
         assert isinstance(ag_ob, AtomicGrid)
         assert len(ag_ob.indices) == 11
         assert ag_ob.l_max == 15
         ag_ob = AtomicGrid.special_init(
-            radial_grid, radius=rad, scales=np.array([]), degs=np.array([6])
+            rgrid, radius=rad, scales=np.array([]), degs=np.array([6])
         )
         assert isinstance(ag_ob, AtomicGrid)
         assert len(ag_ob.indices) == 11
-        ag_ob = AtomicGrid(radial_grid, nums=[110])
+        ag_ob = AtomicGrid(rgrid, nums=[110])
         assert ag_ob.l_max == 17
         assert_array_equal(ag_ob._rad_degs, np.ones(10) * 17)
         assert ag_ob.size == 110 * 10
         # new init AtomicGrid
-        ag_ob2 = AtomicGrid(radial_grid, degs=[17])
+        ag_ob2 = AtomicGrid(rgrid, degs=[17])
         assert ag_ob2.l_max == 17
         assert_array_equal(ag_ob2._rad_degs, np.ones(10) * 17)
         assert ag_ob2.size == 110 * 10
         assert isinstance(ag_ob.rad_grid, RadialGrid)
-        assert_allclose(ag_ob.rad_grid.points, radial_grid.points)
-        assert_allclose(ag_ob.rad_grid.weights, radial_grid.weights)
+        assert_allclose(ag_ob.rad_grid.points, rgrid.points)
+        assert_allclose(ag_ob.rad_grid.weights, rgrid.weights)
 
     def test_find_l_for_rad_list(self):
         """Test private method find_l_for_rad_list."""
         radial_pts = np.arange(0.1, 1.1, 0.1)
         radial_wts = np.ones(10) * 0.1
-        radial_grid = RadialGrid(radial_pts, radial_wts)
+        rgrid = RadialGrid(radial_pts, radial_wts)
         rad = 1
         scales = np.array([0.2, 0.4, 0.8])
         degs = np.array([3, 5, 7, 3])
         atomic_grid_degree = AtomicGrid._find_l_for_rad_list(
-            radial_grid.points, rad, scales, degs
+            rgrid.points, rad, scales, degs
         )
         assert_equal(atomic_grid_degree, [3, 3, 5, 5, 7, 7, 7, 7, 3, 3])
 
