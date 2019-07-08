@@ -31,7 +31,7 @@ class AtomicGrid(Grid):
 
     def __init__(
         self,
-        radial_grid,
+        rgrid,
         *,
         degs=None,
         nums=None,
@@ -42,7 +42,7 @@ class AtomicGrid(Grid):
 
         Parameters
         ----------
-        radial_grid : RadialGrid
+        rgrid : RadialGrid
             Radial grid
         degs : np.ndarray(N, dtype=int) or list, keyword-only argument
             Different degree value for each radial point
@@ -57,15 +57,15 @@ class AtomicGrid(Grid):
         Raises
         ------
         TypeError
-            ``radial_grid`` needs to be an instance of ``Grid`` class.
+            ``rgrid`` needs to be an instance of ``Grid`` class.
         ValueError
             Length of ``degs`` should be one more than ``scales``.
         """
         # check stage
-        self._input_type_check(radial_grid, center)
+        self._input_type_check(rgrid, center)
         # assign stage
         self._center = np.array(center)
-        self._radial_grid = radial_grid
+        self._rgrid = rgrid
         if degs is None:
             if not isinstance(nums, (np.ndarray, list)):
                 raise TypeError(f"nums is not type: np.array or list, got {type(nums)}")
@@ -73,10 +73,10 @@ class AtomicGrid(Grid):
         if not isinstance(degs, (np.ndarray, list)):
             raise TypeError(f"degs is not type: np.array or list, got {type(degs)}")
         if len(degs) == 1:
-            degs = np.ones(radial_grid.size) * degs
+            degs = np.ones(rgrid.size) * degs
         self._rad_degs = degs
         self._points, self._weights, self._indices = self._generate_atomic_grid(
-            self._radial_grid, self._rad_degs
+            self._rgrid, self._rad_degs
         )
         self._size = self._weights.size
         # add random rotation
@@ -95,7 +95,7 @@ class AtomicGrid(Grid):
 
     @classmethod
     def special_init(
-        cls, radial_grid, radius, *_, degs, scales, center=np.zeros(3), rotate=False
+        cls, rgrid, radius, *_, degs, scales, center=np.zeros(3), rotate=False
     ):
         """Initialize an instance for given scales of radius and degrees.
 
@@ -108,11 +108,11 @@ class AtomicGrid(Grid):
         # 0.5rad <= r < rad, angular grid with degree 7
         # rad <= r < 1.5rad, angular grid with degree 5
         # 1.5rad <= r, angular grid with degree 3
-        >>> atgrid = AtomicGrid.special_init(radial_grid, radius, degs, scales, center)
+        >>> atgrid = AtomicGrid.special_init(rgrid, radius, degs, scales, center)
 
         Parameters
         ----------
-        radial_grid : RadialGrid
+        rgrid : RadialGrid
             Radial grid.
         radius : float
             Atomic radius for target atom.
@@ -134,14 +134,14 @@ class AtomicGrid(Grid):
         AtomicGrid
             Generated AtomicGrid instance for this special init method.
         """
-        cls._input_type_check(radial_grid, center)
-        degs = cls._generate_degree_from_radius(radial_grid, radius, scales, degs)
-        return cls(radial_grid, degs=degs, center=center, rotate=rotate)
+        cls._input_type_check(rgrid, center)
+        degs = cls._generate_degree_from_radius(rgrid, radius, scales, degs)
+        return cls(rgrid, degs=degs, center=center, rotate=rotate)
 
     @property
     def rad_grid(self):
         """RadialGrid: radial points and weights in the atomic grid."""
-        return self._radial_grid
+        return self._rgrid
 
     @property
     def points(self):
@@ -191,7 +191,7 @@ class AtomicGrid(Grid):
         wts = self._weights[ind_start:ind_end]
         # try not to modify wts incase some weird situation.
         if r_sq is False:
-            new_wts = wts / (self._radial_grid.points[index] ** 2)
+            new_wts = wts / (self._rgrid.points[index] ** 2)
         else:
             new_wts = wts
         return AngularGrid(pts, new_wts)
@@ -212,19 +212,19 @@ class AtomicGrid(Grid):
         return np.vstack([theta, phi, r]).T
 
     @staticmethod
-    def _input_type_check(radial_grid, center):
+    def _input_type_check(rgrid, center):
         """Check input type.
 
         Raises
         ------
         TypeError
-            ``radial_grid`` needs to be an instance of ``RadialGrid`` class.
+            ``rgrid`` needs to be an instance of ``RadialGrid`` class.
         ValueError
             ``center`` needs to be an instance of ``np.ndarray`` class.
         """
-        if not isinstance(radial_grid, RadialGrid):
+        if not isinstance(rgrid, RadialGrid):
             raise TypeError(
-                f"Radial_grid is not an instance of RadialGrid, got {type(radial_grid)}."
+                f"Argument rgrid is not an instance of RadialGrid, got {type(rgrid)}."
             )
         if not isinstance(center, np.ndarray):
             raise TypeError(
@@ -234,7 +234,7 @@ class AtomicGrid(Grid):
             raise ValueError(f"Center should only have 3 entries, got {len(center)}.")
 
     @staticmethod
-    def _generate_degree_from_radius(radial_grid, radius, scales, degs):
+    def _generate_degree_from_radius(rgrid, radius, scales, degs):
         """Generate proper degrees for radius."""
         scales = np.array(scales)
         degs = np.array(degs)
@@ -242,9 +242,7 @@ class AtomicGrid(Grid):
             raise ValueError("rad_list can't be empty.")
         if len(degs) - len(scales) != 1:
             raise ValueError("degs should have only one more element than scales.")
-        rad_degs = AtomicGrid._find_l_for_rad_list(
-            radial_grid.points, radius, scales, degs
-        )
+        rad_degs = AtomicGrid._find_l_for_rad_list(rgrid.points, radius, scales, degs)
         return match_degree(rad_degs)
 
     @staticmethod
