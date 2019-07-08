@@ -24,7 +24,7 @@ import warnings
 from abc import ABC, abstractmethod
 from numbers import Number
 
-from grid.basegrid import OneDGrid, RadialGrid
+from grid.basegrid import OneDGrid
 
 import numpy as np
 
@@ -58,12 +58,12 @@ class BaseTransform(ABC):
         Parameters
         ----------
         oned_grid : OneDGrid
-            one dimensional grid generated for integration purpose
+            An instance of 1D grid.
 
         Returns
         -------
-        RadialGrid
-            one dimensional grid spanning from (0, inf(certain number))
+        OneDGrid
+            Transformed 1D grid spanning a different domain.
 
         Raises
         ------
@@ -74,7 +74,8 @@ class BaseTransform(ABC):
             raise TypeError(f"Input grid is not OneDGrid, got {type(oned_grid)}")
         new_points = self.transform(oned_grid.points)
         new_weights = self.deriv(oned_grid.points) * oned_grid.weights
-        return RadialGrid(new_points, new_weights)
+        new_domain = self.transform(np.array(oned_grid.domain))
+        return OneDGrid(new_points, new_weights, new_domain)
 
     def _convert_inf(self, array, replace_inf=1e16):
         """Convert np.inf(float) to 1e16(float) in case of numerical failure.
