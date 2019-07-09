@@ -18,9 +18,11 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
 """Grid tests file."""
+
+
 from unittest import TestCase
 
-from grid.basegrid import Grid
+from grid.basegrid import Grid, OneDGrid
 
 import numpy as np
 from numpy.testing import assert_allclose
@@ -89,3 +91,44 @@ class TestGrid(TestCase):
             self.grid.integrate(5)
         with self.assertRaises(ValueError):
             self.grid.integrate(points)
+
+
+class TestOneDGrid(TestCase):
+    """OneDGrid test class."""
+
+    def test_errors_raises(self):
+        """Test errors raised."""
+        arr_1d = np.arange(10)
+        arr_2d = np.arange(20).reshape(4, 5)
+        with self.assertRaises(ValueError):
+            OneDGrid(arr_2d, arr_1d)
+        with self.assertRaises(ValueError):
+            OneDGrid(arr_1d, arr_2d)
+        with self.assertRaises(ValueError):
+            OneDGrid(arr_1d, arr_1d, (0, 5))
+        with self.assertRaises(ValueError):
+            OneDGrid(arr_1d, arr_1d, (1, 5))
+        with self.assertRaises(ValueError):
+            OneDGrid(arr_1d, arr_1d, (1, 9))
+        with self.assertRaises(ValueError):
+            OneDGrid(arr_1d, arr_1d, (0, 1, 2))
+        with self.assertRaises(ValueError):
+            OneDGrid(arr_1d, arr_1d, (9, 0))
+
+    def test_getitem(self):
+        """Test grid indexing."""
+        points = np.arange(20)
+        weights = np.arange(20) * 0.1
+        grid = OneDGrid(points, weights)
+        assert grid.size == 20
+        assert grid.domain == (0, 19)
+        subgrid = grid[0]
+        assert subgrid.size == 1
+        assert np.allclose(subgrid.points, points[0])
+        assert np.allclose(subgrid.weights, weights[0])
+        assert subgrid.domain == (0, 19)
+        subgrid = grid[3:7]
+        assert subgrid.size == 4
+        assert np.allclose(subgrid.points, points[3:7])
+        assert np.allclose(subgrid.weights, weights[3:7])
+        assert subgrid.domain == (0, 19)
