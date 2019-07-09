@@ -18,10 +18,12 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
 """Test class for atomic grid."""
+
+
 from unittest import TestCase
 
 from grid.atomic_grid import AtomicGrid
-from grid.basegrid import AngularGrid, OneDGrid
+from grid.basegrid import AngularGrid, Grid, OneDGrid
 from grid.lebedev import generate_lebedev_grid
 
 import numpy as np
@@ -232,3 +234,8 @@ class TestAtomicGrid(TestCase):
             AtomicGrid(OneDGrid(np.arange(3), np.arange(3)), degs=[17], rotate=-1)
         with self.assertRaises(ValueError):
             AtomicGrid(OneDGrid(np.arange(3), np.arange(3)), degs=[17], rotate="asdfaf")
+        # error of radial grid
+        with self.assertRaises(TypeError):
+            AtomicGrid(Grid(np.arange(1, 5, 1), np.ones(4)), degs=[2, 3, 4, 5])
+        with self.assertRaises(TypeError):
+            AtomicGrid(OneDGrid(np.arange(-2, 2, 1), np.ones(4)), degs=[2, 3, 4, 5])
