@@ -182,3 +182,35 @@ class BeckeWeights:
                     sub_s_ab, axis=-1
                 )
         return weights
+
+    def __call__(self, points, indices):
+        r"""Evaluate integration weights on the given grid points.
+
+        Parameters
+        ----------
+        points : np.ndarray(N, 3)
+            Cartesian coordinates of :math:`N` grid points.
+        indices : np.ndarray(M+1,)
+            Indices of atomic grid points for each :math:`M` atoms in molecule.
+
+        Returns
+        -------
+        np.ndarray(N,)
+            Becke integration weights of :math:`N` grid points.
+
+        """
+        # Becke weights are computed for "chunks" of grid points
+        # to counteract the scaling of the memory usage of the
+        # vectorized implementation of the Becke partitioning.
+        npoints = points.shape[0]
+        chunk_size = max(1, (10 * npoints) // self._atom_coors.shape[0] ** 2)
+        aim_weights = np.concatenate(
+            [
+                self.generate_weights(
+                    points[ibegin : ibegin + chunk_size],
+                    pt_ind=(indices - ibegin).clip(min=0),
+                )
+                for ibegin in range(0, npoints, chunk_size)
+            ]
+        )
+        return aim_weights
