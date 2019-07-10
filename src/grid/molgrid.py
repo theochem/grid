@@ -65,13 +65,12 @@ class MolGrid(Grid):
                 # Becke weights are computed for "chunks" of grid points
                 # to counteract the scaling of the memory usage of the
                 # vectorized implementation of the Becke partitioning.
+                becke = BeckeWeights(self._coors, radii, order=3)
                 chunk_size = max(1, (10 * self._size) // self._coors.shape[0] ** 2)
                 self._aim_weights = np.concatenate(
                     [
-                        BeckeWeights.generate_becke_weights(
+                        becke.generate_weights(
                             self._points[ibegin : ibegin + chunk_size],
-                            radii,
-                            self._coors,
                             pt_ind=(self._indices - ibegin).clip(min=0),
                         )
                         for ibegin in range(0, self._size, chunk_size)

@@ -19,6 +19,7 @@
 # --
 """Becke Weights Module."""
 
+
 import warnings
 
 import numpy as np
@@ -26,6 +27,33 @@ import numpy as np
 
 class BeckeWeights:
     """Becke weights functions holder class."""
+
+    def __init__(self, atom_coors, radii, order=3):
+        r"""Initialize class.
+
+        Parameters
+        ----------
+        atom_coors : np.ndarray(M, 3)
+            Cartesian coordinates of :math:`M` atoms in molecule.
+        radii : np.ndarray(M,)
+            Atomic radii of :math:`M` atoms in molecule.
+        order : int, optional
+            Order of iteration for switching function.
+
+        """
+        if atom_coors.ndim != 2 or atom_coors.shape[1] != 3:
+            raise ValueError(
+                f"atom_coors needs to be in shape (M, 3), got {atom_coors.shape}"
+            )
+        if len(atom_coors) != len(radii):
+            raise ValueError(
+                f"The number of atoms in atom_coors and radii do not match."
+            )
+        if not isinstance(order, int):
+            raise ValueError(f"order should be an integer, got {type(order)}")
+        self._atom_coors = atom_coors
+        self._radii = radii
+        self._order = order
 
     @staticmethod
     def _calculate_alpha(radii, cutoff=0.45):
@@ -78,37 +106,29 @@ class BeckeWeights:
             x = 1.5 * x - 0.5 * x ** 3
         return x
 
-    @staticmethod
-    def generate_becke_weights(
-        points, radii, atom_coors, *, select=None, pt_ind=None, order=3
-    ):
-        """Calculate Becke weights of points for select atom.
+    def generate_weights(self, points, *, select=None, pt_ind=None):
+        r"""Calculate Becke integration weights of points for select atom.
 
         Parameters
         ----------
-        points : np.ndarray(M, 3)
-            Coordinates for each grid point
-        radii : np.ndarray(N,)
-            Covalent radii for each atom in molecule
-        atom_coors : np.ndarray(N, 3)
-            Coordinates for each atom in molecule
+        points : np.ndarray(N, 3)
+            Cartesian coordinates of :math:`N` grid points.
         select : list or integer, optional
             Index of atom index to calculate Becke weights
         pt_ind : list, optional
             Index of points for splitting sectors
-        order : int, optional
-            Order of iteration for switching function
 
-        Returned
-        ------------------
-        np.ndarray(M, )
-            Becke weights for each grid point
+        Return
+        ------
+        np.ndarray(N, )
+            Becke integration weights of :math:`N` grid points.
+
         """
         # select could be an array for more complicated case
         # |r_A - r| for each points, nucleus pair
         # check ``select``
         if select is None:
-            select = np.arange(len(atom_coors))
+            select = np.arange(len(self._atom_coors))
         elif isinstance(select, (np.integer, int)):
             select = [select]
         # check ``pt_ind`` points index
@@ -118,26 +138,24 @@ class BeckeWeights:
             raise ValueError("pt_ind need include the ends of each section")
         # check how many sectors for becke weights need to be calculated
         sectors = max(len(pt_ind) - 1, 1)  # total sectors
-        if atom_coors.ndim != 2:
-            raise ValueError(
-                f"Atom coors need to be in shape (N, 3), got {atom_coors.shape}"
-            )
         if sectors != len(select):
             raise ValueError("# of select does not equal to # of indices.")
         weights = np.zeros(len(points))
-        n_p = np.linalg.norm(atom_coors[:, None] - points, axis=-1)
+        n_p = np.linalg.norm(self._atom_coors[:, None] - points, axis=-1)
         # |r_A - r| - |r_B - r| for each points with pair(A, B) nucleus
         p_p_n = n_p[:, None] - n_p
-        atomic_dist = np.linalg.norm(atom_coors[:, None] - atom_coors, axis=-1)
+        atomic_dist = np.linalg.norm(
+            self._atom_coors[:, None] - self._atom_coors, axis=-1
+        )
         # ignore 0 / 0 runtime warning
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             mu_n_p_p = p_p_n.transpose([2, 0, 1]) / atomic_dist
         del p_p_n
-        alpha = BeckeWeights._calculate_alpha(radii)
+        alpha = BeckeWeights._calculate_alpha(self._radii)
         v_pp = mu_n_p_p + alpha * (1 - mu_n_p_p ** 2)
         del mu_n_p_p
-        s_ab = 0.5 * (1 - BeckeWeights._switch_func(v_pp, order=order))
+        s_ab = 0.5 * (1 - BeckeWeights._switch_func(v_pp, order=self._order))
         del v_pp
         # convert nan to 1
         s_ab[np.isnan(s_ab)] = 1
