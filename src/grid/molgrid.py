@@ -18,10 +18,11 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
 """Molecular grid class."""
+
+
 from grid.atomic_grid import AtomicGrid
 from grid.basegrid import Grid, SimpleAtomicGrid
 from grid.becke import BeckeWeights
-from grid.utils import get_cov_radii
 
 import numpy as np
 
@@ -29,25 +30,20 @@ import numpy as np
 class MolGrid(Grid):
     """Molecular Grid for integration."""
 
-    def __init__(self, atomic_grids, numbers, aim_weights="becke", store=False):
-        """Initialize molgrid class.
+    def __init__(self, atomic_grids, aim_weights, store=False):
+        r"""Initialize class.
 
         Parameters
         ----------
         atomic_grids : list[AtomicGrid]
             list of atomic grid
-        radii : np.ndarray(N,)
-            Radii for each atom in the molecular grid
-        aim_weights : str or np.ndarray(K,), default to "becke"
-            Atoms in molecule weights. If str, certain function will be called
-            to compute aim_weights, if np.ndarray, it will be treated as the
-            aim_weights
+        aim_weights : BeckeWeights or np.ndarray(K,)
+            Atoms in molecule weights.
+
         """
         # initialize these attributes
-        numbers = np.array(numbers)
-        radii = get_cov_radii(numbers)
-        self._coors = np.zeros((len(radii), 3))
-        self._indices = np.zeros(len(radii) + 1, dtype=int)
+        self._coors = np.zeros((len(atomic_grids), 3))
+        self._indices = np.zeros(len(atomic_grids) + 1, dtype=int)
         self._size = np.sum([atomgrid.size for atomgrid in atomic_grids])
         self._points = np.zeros((self._size, 3))
         self._weights = np.zeros(self._size)
@@ -59,26 +55,21 @@ class MolGrid(Grid):
             self._points[self._indices[i] : self._indices[i + 1]] = atom_grid.points
             self._weights[self._indices[i] : self._indices[i + 1]] = atom_grid.weights
 
-        if isinstance(aim_weights, str):
-            if aim_weights == "becke":
-                # Becke weights are computed for "chunks" of grid points
-                # to counteract the scaling of the memory usage of the
-                # vectorized implementation of the Becke partitioning.
-                becke = BeckeWeights(self._coors, radii, order=3)
-                chunk_size = max(1, (10 * self._size) // self._coors.shape[0] ** 2)
-                self._aim_weights = np.concatenate(
-                    [
-                        becke.generate_weights(
-                            self._points[ibegin : ibegin + chunk_size],
-                            pt_ind=(self._indices - ibegin).clip(min=0),
-                        )
-                        for ibegin in range(0, self._size, chunk_size)
-                    ]
-                )
-            else:
-                raise NotImplementedError(
-                    f"Given aim_weights is not supported, got {aim_weights}"
-                )
+        if isinstance(aim_weights, BeckeWeights):
+            # Becke weights are computed for "chunks" of grid points
+            # to counteract the scaling of the memory usage of the
+            # vectorized implementation of the Becke partitioning.
+            chunk_size = max(1, (10 * self._size) // self._coors.shape[0] ** 2)
+            self._aim_weights = np.concatenate(
+                [
+                    aim_weights.generate_weights(
+                        self._points[ibegin : ibegin + chunk_size],
+                        pt_ind=(self._indices - ibegin).clip(min=0),
+                    )
+                    for ibegin in range(0, self._size, chunk_size)
+                ]
+            )
+
         elif isinstance(aim_weights, np.ndarray):
             if aim_weights.size != self.size:
                 raise ValueError(
@@ -92,7 +83,7 @@ class MolGrid(Grid):
 
     @classmethod
     def horton_molgrid(
-        cls, coors, numbers, radial, points_of_angular, store=False, rotate=False
+        cls, coors, radial, points_of_angular, aim_weights, store=False, rotate=False
     ):
         """Initialize a MolGrid instance with Horton Style input.
 
@@ -100,16 +91,13 @@ class MolGrid(Grid):
         -------
         >>> onedg = HortonLinear(100) # number of points, oned grid before TF.
         >>> rgrid = ExpRTransform(1e-5, 2e1).generate_radial(onedg) # radial grid
-        >>> molgrid = MolGrid.horton_molgrid(coors, numbers, rgrid, 110)
+        >>> becke = BeckeWeights(coords, numbers)
+        >>> molgrid = MolGrid.horton_molgrid(coors, rgrid, 110, becke)
 
         Parameters
         ----------
         coors : np.ndarray(N, 3)
             Cartesian coordinates for each atoms
-        numbers : np.ndarray(N,)
-            Atomic number for each atoms
-        radial : RadialGrid
-            RadialGrid instance for constructing atomic grid for each atom
         points_of_angular : int
             Num of points on each shell of angular grid
         store : bool, optional
@@ -124,13 +112,13 @@ class MolGrid(Grid):
             MolGrid instance with specified grid property
         """
         at_grids = []
-        for i, _ in enumerate(numbers):
+        for i in range(len(coors)):
             at_grids.append(
                 AtomicGrid(
                     radial, nums=[points_of_angular], center=coors[i], rotate=rotate
                 )
             )
-        return cls(at_grids, numbers, store=store)
+        return cls(at_grids, aim_weights, store=store)
 
     def get_atomic_grid(self, index):
         """Get the stored atomic grid with all information.

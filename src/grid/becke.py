@@ -22,20 +22,24 @@
 
 import warnings
 
+from grid.utils import get_cov_radii
+
 import numpy as np
 
 
 class BeckeWeights:
     """Becke weights functions holder class."""
 
-    def __init__(self, atom_coors, radii, order=3):
+    def __init__(self, atom_coors, atom_nums, radii=None, order=3):
         r"""Initialize class.
 
         Parameters
         ----------
         atom_coors : np.ndarray(M, 3)
             Cartesian coordinates of :math:`M` atoms in molecule.
-        radii : np.ndarray(M,)
+        atom_nums : np.ndarray(M,)
+            Atomic number of :math:`M` atoms in molecule.
+        radii : np.ndarray(M,), optional
             Atomic radii of :math:`M` atoms in molecule.
         order : int, optional
             Order of iteration for switching function.
@@ -45,12 +49,19 @@ class BeckeWeights:
             raise ValueError(
                 f"atom_coors needs to be in shape (M, 3), got {atom_coors.shape}"
             )
-        if len(atom_coors) != len(radii):
+        if len(atom_coors) != len(atom_nums):
+            raise ValueError(
+                f"atom_coors & atom_nums represent different number of atoms."
+            )
+        if radii is not None and len(atom_coors) != len(radii):
             raise ValueError(
                 f"The number of atoms in atom_coors and radii do not match."
             )
         if not isinstance(order, int):
             raise ValueError(f"order should be an integer, got {type(order)}")
+
+        if radii is None:
+            radii = get_cov_radii(atom_nums)
         self._atom_coors = atom_coors
         self._radii = radii
         self._order = order
