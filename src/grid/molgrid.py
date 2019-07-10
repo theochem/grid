@@ -56,7 +56,7 @@ class MolGrid(Grid):
             self._atweights[start:end] = atom_grid.weights
 
         if callable(aim_weights):
-            self._aim_weights = aim_weights(self._points, self._indices)
+            self._aim_weights = aim_weights(self._points, self._coors, self._indices)
 
         elif isinstance(aim_weights, np.ndarray):
             if aim_weights.size != self.size:
