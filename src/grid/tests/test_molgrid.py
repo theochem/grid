@@ -26,6 +26,7 @@ from grid.becke import BeckeWeights
 from grid.molgrid import MolGrid
 from grid.onedgrid import HortonLinear
 from grid.rtransform import ExpRTransform
+from grid.utils import get_cov_radii
 
 # from importlib_resources import path
 import numpy as np
@@ -55,7 +56,7 @@ class TestMolGrid(TestCase):
             degs=np.array([17]),
             center=coordinates,
         )
-        becke = BeckeWeights(coordinates[np.newaxis, :], np.array([1]))
+        becke = BeckeWeights(get_cov_radii(np.array([1])), order=3)
         mg = MolGrid([atg1], becke)
         # mg = BeckeMolGrid(coordinates, numbers, None, (rgrid, 110), random_rotate=False)
         dist0 = np.sqrt(((coordinates - mg.points) ** 2).sum(axis=1))
@@ -80,7 +81,7 @@ class TestMolGrid(TestCase):
             degs=np.array([17]),
             center=coordinates[1],
         )
-        becke = BeckeWeights(coordinates, np.array([1, 1]))
+        becke = BeckeWeights(get_cov_radii(np.array([1, 1])), order=3)
         mg = MolGrid([atg1, atg2], becke)
         dist0 = np.sqrt(((coordinates[0] - mg.points) ** 2).sum(axis=1))
         dist1 = np.sqrt(((coordinates[1] - mg.points) ** 2).sum(axis=1))
@@ -114,7 +115,7 @@ class TestMolGrid(TestCase):
             degs=np.array([17]),
             center=coordinates[2],
         )
-        becke = BeckeWeights(coordinates, np.array([1, 1, 1]))
+        becke = BeckeWeights(get_cov_radii(np.array([1, 1, 1])), order=3)
         mg = MolGrid([atg1, atg2, atg3], becke)
         dist0 = np.sqrt(((coordinates[0] - mg.points) ** 2).sum(axis=1))
         dist1 = np.sqrt(((coordinates[1] - mg.points) ** 2).sum(axis=1))
@@ -150,7 +151,7 @@ class TestMolGrid(TestCase):
             for center in centers
         ]
 
-        becke = BeckeWeights(centers, np.array([1] * len(centers)), order=3)
+        becke = BeckeWeights(get_cov_radii(np.array([1] * len(centers))), order=3)
         mg = MolGrid(atgs, becke)
         fn = 0
         for center in centers:
@@ -177,8 +178,7 @@ class TestMolGrid(TestCase):
             degs=np.array([17]),
             center=coordinates[1],
         )
-
-        becke = BeckeWeights(coordinates, np.array([6, 8]), order=3)
+        becke = BeckeWeights(get_cov_radii(np.array([6, 8])), order=3)
         mg = MolGrid([atg1, atg2], becke, store=True)
         # mg = BeckeMolGrid(coordinates, numbers, None, (rgrid, 110), mode='keep')
 
@@ -222,7 +222,7 @@ class TestMolGrid(TestCase):
             center=coordinates[1],
         )
 
-        becke = BeckeWeights(coordinates, np.array([6, 8]), order=3)
+        becke = BeckeWeights(get_cov_radii(np.array([6, 8])), order=3)
         mg = MolGrid([atg1, atg2], becke, store=True)
 
         assert mg.size == 2 * 110 * 100
@@ -274,8 +274,7 @@ class TestMolGrid(TestCase):
     def test_horton_molgrid(self):
         """Test horton style grid."""
         coors = np.array([[0, 0, -0.5], [0, 0, 0.5]])
-        nums = [1, 1]
-        becke = BeckeWeights(coors, nums)
+        becke = BeckeWeights(get_cov_radii(np.array([1, 1])), order=3)
         mol_grid = MolGrid.horton_molgrid(coors, self.rgrid, 110, becke)
         atg1 = AtomicGrid.special_init(
             self.rgrid, 0.5, scales=np.array([]), degs=np.array([17]), center=coors[0]
@@ -306,7 +305,7 @@ class TestMolGrid(TestCase):
             MolGrid([atg], aim_weights=[3, 5])
 
         # integrate errors
-        becke = BeckeWeights(np.array([[0.0, 0.0, 0.0]]), np.array([1]))
+        becke = BeckeWeights(get_cov_radii(np.array([1])), order=3)
         molg = MolGrid([atg], becke)
         with self.assertRaises(ValueError):
             molg.integrate()

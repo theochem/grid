@@ -22,21 +22,17 @@
 
 import warnings
 
-from grid.utils import get_cov_radii
-
 import numpy as np
 
 
 class BeckeWeights:
     """Becke weights functions holder class."""
 
-    def __init__(self, atom_coors, atom_nums, radii=None, order=3):
+    def __init__(self, radii, order=3):
         r"""Initialize class.
 
         Parameters
         ----------
-        atom_coors : np.ndarray(M, 3)
-            Cartesian coordinates of :math:`M` atoms in molecule.
         atom_nums : np.ndarray(M,)
             Atomic number of :math:`M` atoms in molecule.
         radii : np.ndarray(M,), optional
@@ -45,24 +41,9 @@ class BeckeWeights:
             Order of iteration for switching function.
 
         """
-        if atom_coors.ndim != 2 or atom_coors.shape[1] != 3:
-            raise ValueError(
-                f"atom_coors needs to be in shape (M, 3), got {atom_coors.shape}"
-            )
-        if len(atom_coors) != len(atom_nums):
-            raise ValueError(
-                f"atom_coors & atom_nums represent different number of atoms."
-            )
-        if radii is not None and len(atom_coors) != len(radii):
-            raise ValueError(
-                f"The number of atoms in atom_coors and radii do not match."
-            )
         if not isinstance(order, int):
             raise ValueError(f"order should be an integer, got {type(order)}")
 
-        if radii is None:
-            radii = get_cov_radii(atom_nums)
-        self._atom_coors = atom_coors
         self._radii = radii
         self._order = order
 
@@ -117,13 +98,15 @@ class BeckeWeights:
             x = 1.5 * x - 0.5 * x ** 3
         return x
 
-    def generate_weights(self, points, *, select=None, pt_ind=None):
+    def generate_weights(self, points, atom_coords, *, select=None, pt_ind=None):
         r"""Calculate Becke integration weights of points for select atom.
 
         Parameters
         ----------
         points : np.ndarray(N, 3)
             Cartesian coordinates of :math:`N` grid points.
+        atom_coords : np.ndarray(M, 3)
+            Cartesian coordinates of :math:`M` atoms in molecule.
         select : list or integer, optional
             Index of atom index to calculate Becke weights
         pt_ind : list, optional
@@ -139,7 +122,7 @@ class BeckeWeights:
         # |r_A - r| for each points, nucleus pair
         # check ``select``
         if select is None:
-            select = np.arange(len(self._atom_coors))
+            select = np.arange(len(atom_coords))
         elif isinstance(select, (np.integer, int)):
             select = [select]
         # check ``pt_ind`` points index
@@ -152,12 +135,10 @@ class BeckeWeights:
         if sectors != len(select):
             raise ValueError("# of select does not equal to # of indices.")
         weights = np.zeros(len(points))
-        n_p = np.linalg.norm(self._atom_coors[:, None] - points, axis=-1)
+        n_p = np.linalg.norm(atom_coords[:, None] - points, axis=-1)
         # |r_A - r| - |r_B - r| for each points with pair(A, B) nucleus
         p_p_n = n_p[:, None] - n_p
-        atomic_dist = np.linalg.norm(
-            self._atom_coors[:, None] - self._atom_coors, axis=-1
-        )
+        atomic_dist = np.linalg.norm(atom_coords[:, None] - atom_coords, axis=-1)
         # ignore 0 / 0 runtime warning
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
@@ -183,13 +164,15 @@ class BeckeWeights:
                 )
         return weights
 
-    def __call__(self, points, indices):
+    def __call__(self, points, atom_coords, indices):
         r"""Evaluate integration weights on the given grid points.
 
         Parameters
         ----------
         points : np.ndarray(N, 3)
             Cartesian coordinates of :math:`N` grid points.
+        atom_coords : np.ndarray(M, 3)
+            Cartesian coordinates of :math:`M` atoms in molecule.
         indices : np.ndarray(M+1,)
             Indices of atomic grid points for each :math:`M` atoms in molecule.
 
@@ -203,11 +186,12 @@ class BeckeWeights:
         # to counteract the scaling of the memory usage of the
         # vectorized implementation of the Becke partitioning.
         npoints = points.shape[0]
-        chunk_size = max(1, (10 * npoints) // self._atom_coors.shape[0] ** 2)
+        chunk_size = max(1, (10 * npoints) // atom_coords.shape[0] ** 2)
         aim_weights = np.concatenate(
             [
                 self.generate_weights(
                     points[ibegin : ibegin + chunk_size],
+                    atom_coords,
                     pt_ind=(indices - ibegin).clip(min=0),
                 )
                 for ibegin in range(0, npoints, chunk_size)
