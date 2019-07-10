@@ -22,7 +22,6 @@
 
 from grid.atomic_grid import AtomicGrid
 from grid.basegrid import Grid, SimpleAtomicGrid
-from grid.becke import BeckeWeights
 
 import numpy as np
 
@@ -37,7 +36,7 @@ class MolGrid(Grid):
         ----------
         atomic_grids : list[AtomicGrid]
             list of atomic grid
-        aim_weights : BeckeWeights or np.ndarray(K,)
+        aim_weights : Callable or np.ndarray(K,)
             Atoms in molecule weights.
 
         """
@@ -56,20 +55,8 @@ class MolGrid(Grid):
             self._points[start:end] = atom_grid.points
             self._atweights[start:end] = atom_grid.weights
 
-        if isinstance(aim_weights, BeckeWeights):
-            # Becke weights are computed for "chunks" of grid points
-            # to counteract the scaling of the memory usage of the
-            # vectorized implementation of the Becke partitioning.
-            chunk_size = max(1, (10 * self._size) // self._coors.shape[0] ** 2)
-            self._aim_weights = np.concatenate(
-                [
-                    aim_weights.generate_weights(
-                        self._points[ibegin : ibegin + chunk_size],
-                        pt_ind=(self._indices - ibegin).clip(min=0),
-                    )
-                    for ibegin in range(0, self._size, chunk_size)
-                ]
-            )
+        if callable(aim_weights):
+            self._aim_weights = aim_weights(self._points, self._indices)
 
         elif isinstance(aim_weights, np.ndarray):
             if aim_weights.size != self.size:
@@ -104,6 +91,8 @@ class MolGrid(Grid):
             Cartesian coordinates for each atoms
         points_of_angular : int
             Num of points on each shell of angular grid
+        aim_weights : Callable or np.ndarray(K,)
+            Atoms in molecule weights.
         store : bool, optional
             Flag to store each original atomic grid information
         rotate : bool or int , optional
