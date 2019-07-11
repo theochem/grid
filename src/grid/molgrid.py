@@ -29,7 +29,7 @@ import numpy as np
 class MolGrid(Grid):
     """Molecular Grid for integration."""
 
-    def __init__(self, atomic_grids, aim_weights, store=False):
+    def __init__(self, atomic_grids, aim_weights, atom_nums, store=False):
         r"""Initialize class.
 
         Parameters
@@ -38,6 +38,8 @@ class MolGrid(Grid):
             list of atomic grid
         aim_weights : Callable or np.ndarray(K,)
             Atoms in molecule weights.
+        atom_nums : np.ndarray(M, 3)
+            Atomic number of :math:`M` atoms in molecule.
 
         """
         # initialize these attributes
@@ -56,7 +58,9 @@ class MolGrid(Grid):
             self._atweights[start:end] = atom_grid.weights
 
         if callable(aim_weights):
-            self._aim_weights = aim_weights(self._points, self._coors, self._indices)
+            self._aim_weights = aim_weights(
+                self._points, self._coors, atom_nums, self._indices
+            )
 
         elif isinstance(aim_weights, np.ndarray):
             if aim_weights.size != self.size:
@@ -74,7 +78,14 @@ class MolGrid(Grid):
 
     @classmethod
     def horton_molgrid(
-        cls, coors, radial, points_of_angular, aim_weights, store=False, rotate=False
+        cls,
+        coors,
+        nums,
+        radial,
+        points_of_angular,
+        aim_weights,
+        store=False,
+        rotate=False,
     ):
         """Initialize a MolGrid instance with Horton Style input.
 
@@ -82,13 +93,15 @@ class MolGrid(Grid):
         -------
         >>> onedg = HortonLinear(100) # number of points, oned grid before TF.
         >>> rgrid = ExpRTransform(1e-5, 2e1).generate_radial(onedg) # radial grid
-        >>> becke = BeckeWeights(coords, numbers)
-        >>> molgrid = MolGrid.horton_molgrid(coors, rgrid, 110, becke)
+        >>> becke = BeckeWeights(order=3)
+        >>> molgrid = MolGrid.horton_molgrid(coors, nums, rgrid, 110, becke)
 
         Parameters
         ----------
         coors : np.ndarray(N, 3)
             Cartesian coordinates for each atoms
+        nums : np.ndarray(M, 3)
+            Atomic number of :math:`M` atoms in molecule.
         points_of_angular : int
             Num of points on each shell of angular grid
         aim_weights : Callable or np.ndarray(K,)
@@ -111,7 +124,7 @@ class MolGrid(Grid):
                     radial, nums=[points_of_angular], center=coors[i], rotate=rotate
                 )
             )
-        return cls(at_grids, aim_weights, store=store)
+        return cls(at_grids, aim_weights, nums, store=store)
 
     def get_atomic_grid(self, index):
         """Get the stored atomic grid with all information.

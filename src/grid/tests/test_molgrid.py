@@ -26,7 +26,6 @@ from grid.becke import BeckeWeights
 from grid.molgrid import MolGrid
 from grid.onedgrid import HortonLinear
 from grid.rtransform import ExpRTransform
-from grid.utils import get_cov_radii
 
 # from importlib_resources import path
 import numpy as np
@@ -56,8 +55,8 @@ class TestMolGrid(TestCase):
             degs=np.array([17]),
             center=coordinates,
         )
-        becke = BeckeWeights(get_cov_radii(np.array([1])), order=3)
-        mg = MolGrid([atg1], becke)
+        becke = BeckeWeights(order=3)
+        mg = MolGrid([atg1], becke, np.array([1]))
         # mg = BeckeMolGrid(coordinates, numbers, None, (rgrid, 110), random_rotate=False)
         dist0 = np.sqrt(((coordinates - mg.points) ** 2).sum(axis=1))
         fn = np.exp(-2 * dist0) / np.pi
@@ -81,8 +80,8 @@ class TestMolGrid(TestCase):
             degs=np.array([17]),
             center=coordinates[1],
         )
-        becke = BeckeWeights(get_cov_radii(np.array([1, 1])), order=3)
-        mg = MolGrid([atg1, atg2], becke)
+        becke = BeckeWeights(order=3)
+        mg = MolGrid([atg1, atg2], becke, np.array([1, 1]))
         dist0 = np.sqrt(((coordinates[0] - mg.points) ** 2).sum(axis=1))
         dist1 = np.sqrt(((coordinates[1] - mg.points) ** 2).sum(axis=1))
         fn = np.exp(-2 * dist0) / np.pi + np.exp(-2 * dist1) / np.pi
@@ -115,8 +114,8 @@ class TestMolGrid(TestCase):
             degs=np.array([17]),
             center=coordinates[2],
         )
-        becke = BeckeWeights(get_cov_radii(np.array([1, 1, 1])), order=3)
-        mg = MolGrid([atg1, atg2, atg3], becke)
+        becke = BeckeWeights(order=3)
+        mg = MolGrid([atg1, atg2, atg3], becke, np.array([1, 1, 1]))
         dist0 = np.sqrt(((coordinates[0] - mg.points) ** 2).sum(axis=1))
         dist1 = np.sqrt(((coordinates[1] - mg.points) ** 2).sum(axis=1))
         dist2 = np.sqrt(((coordinates[2] - mg.points) ** 2).sum(axis=1))
@@ -151,8 +150,8 @@ class TestMolGrid(TestCase):
             for center in centers
         ]
 
-        becke = BeckeWeights(get_cov_radii(np.array([1] * len(centers))), order=3)
-        mg = MolGrid(atgs, becke)
+        becke = BeckeWeights(order=3)
+        mg = MolGrid(atgs, becke, np.array([1] * len(centers)))
         fn = 0
         for center in centers:
             dist = np.linalg.norm(center - mg.points, axis=1)
@@ -178,8 +177,8 @@ class TestMolGrid(TestCase):
             degs=np.array([17]),
             center=coordinates[1],
         )
-        becke = BeckeWeights(get_cov_radii(np.array([6, 8])), order=3)
-        mg = MolGrid([atg1, atg2], becke, store=True)
+        becke = BeckeWeights(order=3)
+        mg = MolGrid([atg1, atg2], becke, np.array([6, 8]), store=True)
         # mg = BeckeMolGrid(coordinates, numbers, None, (rgrid, 110), mode='keep')
 
         assert mg.size == 2 * 110 * 100
@@ -197,7 +196,7 @@ class TestMolGrid(TestCase):
             assert atgrid.points.shape == (100 * 110, 3)
             assert atgrid.weights.shape == (100 * 110,)
             assert (atgrid.center == coordinates[i]).all()
-        mg = MolGrid([atg1, atg2], becke)
+        mg = MolGrid([atg1, atg2], becke, np.array([6, 8]))
         for i in range(2):
             atgrid = mg[i]
             assert isinstance(atgrid, SimpleAtomicGrid)
@@ -222,8 +221,8 @@ class TestMolGrid(TestCase):
             center=coordinates[1],
         )
 
-        becke = BeckeWeights(get_cov_radii(np.array([6, 8])), order=3)
-        mg = MolGrid([atg1, atg2], becke, store=True)
+        becke = BeckeWeights(order=3)
+        mg = MolGrid([atg1, atg2], becke, np.array([6, 8]), store=True)
 
         assert mg.size == 2 * 110 * 100
         assert mg.points.shape == (mg.size, 3)
@@ -264,7 +263,7 @@ class TestMolGrid(TestCase):
             center=coordinates[1],
         )
         # use an array as aim_weights
-        mg = MolGrid([atg1, atg2], np.ones(22000))
+        mg = MolGrid([atg1, atg2], np.ones(22000), np.array([1, 1]))
         dist0 = np.sqrt(((coordinates[0] - mg.points) ** 2).sum(axis=1))
         dist1 = np.sqrt(((coordinates[1] - mg.points) ** 2).sum(axis=1))
         fn = np.exp(-2 * dist0) / np.pi + np.exp(-2 * dist1) / np.pi
@@ -273,16 +272,17 @@ class TestMolGrid(TestCase):
 
     def test_horton_molgrid(self):
         """Test horton style grid."""
+        nums = np.array([1, 1])
         coors = np.array([[0, 0, -0.5], [0, 0, 0.5]])
-        becke = BeckeWeights(get_cov_radii(np.array([1, 1])), order=3)
-        mol_grid = MolGrid.horton_molgrid(coors, self.rgrid, 110, becke)
+        becke = BeckeWeights(order=3)
+        mol_grid = MolGrid.horton_molgrid(coors, nums, self.rgrid, 110, becke)
         atg1 = AtomicGrid.special_init(
             self.rgrid, 0.5, scales=np.array([]), degs=np.array([17]), center=coors[0]
         )
         atg2 = AtomicGrid.special_init(
             self.rgrid, 0.5, scales=np.array([]), degs=np.array([17]), center=coors[1]
         )
-        ref_grid = MolGrid([atg1, atg2], becke, store=True)
+        ref_grid = MolGrid([atg1, atg2], becke, nums, store=True)
         assert_allclose(ref_grid.points, mol_grid.points)
         assert_allclose(ref_grid.weights, mol_grid.weights)
 
@@ -298,15 +298,15 @@ class TestMolGrid(TestCase):
 
         # errors of aim_weight
         with self.assertRaises(TypeError):
-            MolGrid([atg], aim_weights="test")
+            MolGrid([atg], aim_weights="test", atom_nums=np.array([1]))
         with self.assertRaises(ValueError):
-            MolGrid([atg], aim_weights=np.array(3))
+            MolGrid([atg], aim_weights=np.array(3), atom_nums=np.array([1]))
         with self.assertRaises(TypeError):
-            MolGrid([atg], aim_weights=[3, 5])
+            MolGrid([atg], aim_weights=[3, 5], atom_nums=np.array([1]))
 
         # integrate errors
-        becke = BeckeWeights(get_cov_radii(np.array([1])), order=3)
-        molg = MolGrid([atg], becke)
+        becke = BeckeWeights({1: 0.472_431_53}, order=3)
+        molg = MolGrid([atg], becke, np.array([1]))
         with self.assertRaises(ValueError):
             molg.integrate()
         with self.assertRaises(TypeError):
@@ -318,7 +318,7 @@ class TestMolGrid(TestCase):
         with self.assertRaises(ValueError):
             molg.get_aim_weights(-3)
 
-        molg = MolGrid([atg], becke, store=True)
+        molg = MolGrid([atg], becke, np.array([1]), store=True)
         with self.assertRaises(ValueError):
             molg.get_atomic_grid(-5)
 
