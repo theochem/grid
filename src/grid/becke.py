@@ -22,28 +22,36 @@
 
 import warnings
 
+from grid.utils import get_cov_radii
+
 import numpy as np
 
 
 class BeckeWeights:
     """Becke weights functions holder class."""
 
-    def __init__(self, radii, order=3):
+    def __init__(self, radii=None, order=3):
         r"""Initialize class.
 
         Parameters
         ----------
-        atom_nums : np.ndarray(M,)
-            Atomic number of :math:`M` atoms in molecule.
-        radii : np.ndarray(M,), optional
-            Atomic radii of :math:`M` atoms in molecule.
+        radii : dict, optional
+            Dictionary of atomic number and corresponding atomic radius.
+            If None, Bragg-Slater empirically measured covalent radii are used.
         order : int, optional
             Order of iteration for switching function.
 
         """
         if not isinstance(order, int):
             raise ValueError(f"order should be an integer, got {type(order)}")
-
+        if radii is not None:
+            if not isinstance(radii, dict):
+                raise TypeError(f"radii should be a dictionary, got {type(radii)}")
+            if not np.all([isinstance(k, int) for k in radii.keys()]):
+                raise TypeError(f"radii keys should be integers.")
+        else:
+            radii = get_cov_radii(np.arange(1, 87, 1), "bragg")
+            radii = dict([(index + 1, r) for index, r in enumerate(radii)])
         self._radii = radii
         self._order = order
 
@@ -98,7 +106,9 @@ class BeckeWeights:
             x = 1.5 * x - 0.5 * x ** 3
         return x
 
-    def generate_weights(self, points, atom_coords, *, select=None, pt_ind=None):
+    def generate_weights(
+        self, points, atom_coords, atom_nums, *, select=None, pt_ind=None
+    ):
         r"""Calculate Becke integration weights of points for select atom.
 
         Parameters
@@ -107,6 +117,8 @@ class BeckeWeights:
             Cartesian coordinates of :math:`N` grid points.
         atom_coords : np.ndarray(M, 3)
             Cartesian coordinates of :math:`M` atoms in molecule.
+        atom_nums : np.ndarray(M, 3)
+            Atomic number of :math:`M` atoms in molecule.
         select : list or integer, optional
             Index of atom index to calculate Becke weights
         pt_ind : list, optional
@@ -144,7 +156,8 @@ class BeckeWeights:
             warnings.simplefilter("ignore")
             mu_n_p_p = p_p_n.transpose([2, 0, 1]) / atomic_dist
         del p_p_n
-        alpha = BeckeWeights._calculate_alpha(self._radii)
+        radii = np.array([self._radii[num] for num in atom_nums])
+        alpha = BeckeWeights._calculate_alpha(radii)
         v_pp = mu_n_p_p + alpha * (1 - mu_n_p_p ** 2)
         del mu_n_p_p
         s_ab = 0.5 * (1 - BeckeWeights._switch_func(v_pp, order=self._order))
@@ -164,7 +177,7 @@ class BeckeWeights:
                 )
         return weights
 
-    def __call__(self, points, atom_coords, indices):
+    def __call__(self, points, atom_coords, atom_nums, indices):
         r"""Evaluate integration weights on the given grid points.
 
         Parameters
@@ -173,6 +186,8 @@ class BeckeWeights:
             Cartesian coordinates of :math:`N` grid points.
         atom_coords : np.ndarray(M, 3)
             Cartesian coordinates of :math:`M` atoms in molecule.
+        atom_nums : np.ndarray(M, 3)
+            Atomic number of :math:`M` atoms in molecule.
         indices : np.ndarray(M+1,)
             Indices of atomic grid points for each :math:`M` atoms in molecule.
 
@@ -192,6 +207,7 @@ class BeckeWeights:
                 self.generate_weights(
                     points[ibegin : ibegin + chunk_size],
                     atom_coords,
+                    atom_nums,
                     pt_ind=(indices - ibegin).clip(min=0),
                 )
                 for ibegin in range(0, npoints, chunk_size)

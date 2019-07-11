@@ -36,12 +36,12 @@ class TestBecke(TestCase):
         npoint = 100
         points = np.random.uniform(-5, 5, (npoint, 3))
 
-        radii = np.array([0.5, 0.8])
+        nums = np.array([1, 2])
         centers = np.array([[1.2, 2.3, 0.1], [-0.4, 0.0, -2.2]])
-        becke = BeckeWeights(radii, order=3)
+        becke = BeckeWeights({1: 0.5, 2: 0.8}, order=3)
 
-        weights0 = becke.generate_weights(points, centers, select=[0])
-        weights1 = becke.generate_weights(points, centers, select=[1])
+        weights0 = becke.generate_weights(points, centers, nums, select=[0])
+        weights1 = becke.generate_weights(points, centers, nums, select=[1])
 
         assert_allclose(weights0 + weights1, np.ones(100))
 
@@ -50,42 +50,42 @@ class TestBecke(TestCase):
         npoint = 100
         points = np.random.uniform(-5, 5, (npoint, 3))
 
-        radii = np.array([0.5, 0.8, 5.0])
+        nums = np.array([1, 2, 3])
         centers = np.array([[1.2, 2.3, 0.1], [-0.4, 0.0, -2.2], [2.2, -1.5, 0.0]])
-        becke = BeckeWeights(radii, order=3)
+        becke = BeckeWeights({1: 0.5, 2: 0.8, 3: 5.0}, order=3)
 
-        weights0 = becke.generate_weights(points, centers, select=[0])
-        weights1 = becke.generate_weights(points, centers, select=[1])
-        weights2 = becke.generate_weights(points, centers, select=2)
+        weights0 = becke.generate_weights(points, centers, nums, select=[0])
+        weights1 = becke.generate_weights(points, centers, nums, select=[1])
+        weights2 = becke.generate_weights(points, centers, nums, select=2)
 
         assert_allclose(weights0 + weights1 + weights2, np.ones(100))
 
     def test_becke_special_points(self):
         """Test becke weights for special cases."""
-        radii = np.array([0.5, 0.8, 5.0])
+        nums = np.array([1, 2, 3])
         centers = np.array([[1.2, 2.3, 0.1], [-0.4, 0.0, -2.2], [2.2, -1.5, 0.0]])
-        becke = BeckeWeights(radii, order=3)
+        becke = BeckeWeights({1: 0.5, 2: 0.8, 3: 5.0}, order=3)
 
-        weights = becke.generate_weights(centers, centers, select=0)
+        weights = becke.generate_weights(centers, centers, nums, select=0)
         assert_allclose(weights, [1, 0, 0])
 
-        weights = becke.generate_weights(centers, centers, select=1)
+        weights = becke.generate_weights(centers, centers, nums, select=1)
         assert_allclose(weights, [0, 1, 0])
 
-        weights = becke.generate_weights(centers, centers, select=2)
+        weights = becke.generate_weights(centers, centers, nums, select=2)
         assert_allclose(weights, [0, 0, 1])
 
         # each point in seperate sectors.
-        weights = becke.generate_weights(centers, centers, pt_ind=[0, 1, 2, 3])
+        weights = becke.generate_weights(centers, centers, nums, pt_ind=[0, 1, 2, 3])
         assert_allclose(weights, [1, 1, 1])
 
         weights = becke.generate_weights(
-            centers, centers, select=[0, 1], pt_ind=[0, 1, 3]
+            centers, centers, nums, select=[0, 1], pt_ind=[0, 1, 3]
         )
         assert_allclose(weights, [1, 1, 0])
 
         weights = becke.generate_weights(
-            centers, centers, select=[2, 0], pt_ind=[0, 2, 3]
+            centers, centers, nums, select=[2, 0], pt_ind=[0, 2, 3]
         )
         assert_allclose(weights, [0, 0, 0])
 
@@ -93,22 +93,27 @@ class TestBecke(TestCase):
         """Test errors raise."""
         npoint = 100
         points = np.random.uniform(-5, 5, (npoint, 3))
-        radii = np.array([0.5, 0.8])
+        nums = np.array([1, 2])
         centers = np.array([[1.2, 2.3, 0.1], [-0.4, 0.0, -2.2]])
         # error of select and pt_ind
-        becke = BeckeWeights(radii)
+        becke = BeckeWeights({1: 0.5, 2: 0.8})
         with self.assertRaises(ValueError):
-            becke.generate_weights(points, centers, select=[])
+            becke.generate_weights(points, centers, nums, select=[])
         with self.assertRaises(ValueError):
-            becke.generate_weights(points, centers, pt_ind=[3])
+            becke.generate_weights(points, centers, nums, pt_ind=[3])
         with self.assertRaises(ValueError):
-            becke.generate_weights(points, centers, pt_ind=[3, 6])
+            becke.generate_weights(points, centers, nums, pt_ind=[3, 6])
         with self.assertRaises(ValueError):
-            becke.generate_weights(points, centers, select=[], pt_ind=[])
+            becke.generate_weights(points, centers, nums, select=[], pt_ind=[])
         with self.assertRaises(ValueError):
             becke.generate_weights(
-                points, centers, select=[0, 1], pt_ind=[0, 10, 50, 99]
+                points, centers, nums, select=[0, 1], pt_ind=[0, 10, 50, 99]
             )
         # error of order
         with self.assertRaises(ValueError):
-            BeckeWeights(radii, order=3.0)
+            BeckeWeights({1: 0.5, 2: 0.8}, order=3.0)
+        # error of radii
+        with self.assertRaises(TypeError):
+            BeckeWeights({1.0: 0.5, 2: 0.8}, order=3)
+        with self.assertRaises(TypeError):
+            BeckeWeights(np.array([0.5, 0.8]), order=3)
