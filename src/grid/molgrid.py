@@ -50,14 +50,15 @@ class MolGrid(Grid):
         self._indices = np.zeros(len(radii) + 1, dtype=int)
         self._size = np.sum([atomgrid.size for atomgrid in atomic_grids])
         self._points = np.zeros((self._size, 3))
-        self._weights = np.zeros(self._size)
+        self._atweights = np.zeros(self._size)
         self._atomic_grids = atomic_grids if store else None
 
         for i, atom_grid in enumerate(atomic_grids):
             self._coors[i] = atom_grid.center
             self._indices[i + 1] += self._indices[i] + atom_grid.size
-            self._points[self._indices[i] : self._indices[i + 1]] = atom_grid.points
-            self._weights[self._indices[i] : self._indices[i + 1]] = atom_grid.weights
+            start, end = self._indices[i], self._indices[i + 1]
+            self._points[start:end] = atom_grid.points
+            self._atweights[start:end] = atom_grid.weights
 
         if isinstance(aim_weights, str):
             if aim_weights == "becke":
@@ -90,6 +91,9 @@ class MolGrid(Grid):
 
         else:
             raise TypeError(f"Not supported aim_weights type, got {type(aim_weights)}.")
+
+        # initialize parent class
+        super().__init__(self.points, self._atweights * self._aim_weights)
 
     @classmethod
     def horton_molgrid(
@@ -184,7 +188,7 @@ class MolGrid(Grid):
         # coors
         pts = self.points[s_ind:f_ind]
         # wts
-        wts = self.weights[s_ind:f_ind]
+        wts = self._atweights[s_ind:f_ind]
         if with_aim_wts:
             wts *= self.get_aim_weights(index)
         # generate simple atomic grid
@@ -218,40 +222,6 @@ class MolGrid(Grid):
             return self._aim_weights[self._indices[index] : self._indices[index + 1]]
         else:
             raise ValueError(f"Invalid negative index value, got {index}")
-
-    def integrate(self, *value_arrays):
-        """Integrate given value_arrays on molecular grid.
-
-        Parameters
-        ----------
-        *value_arrays, np.ndarray
-            Evaluated integrand on the grid
-
-        Returns
-        -------
-        float
-            The integral of the desired integrand(s)
-
-        Raises
-        ------
-        TypeError
-            Given value_arrays is not np.ndarray
-        ValueError
-            The size of the value_arrays does not match with grid size.
-        """
-        if len(value_arrays) < 1:
-            raise ValueError(f"No array is given to integrate.")
-        for i, array in enumerate(value_arrays):
-            if not isinstance(array, np.ndarray):
-                raise TypeError(f"Arg {i} is {type(i)}, Need Numpy Array.")
-            if array.size != self.size:
-                raise ValueError(f"Arg {i} need to be of shape {self.size}.")
-        return np.einsum(
-            "i, i" + ",i" * len(value_arrays),
-            self.weights,
-            self.aim_weights,
-            *(np.ravel(i) for i in value_arrays),
-        )
 
     def __getitem__(self, index):
         """Get separate atomic grid in molecules.
