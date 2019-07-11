@@ -105,6 +105,8 @@ class TestOneDGrid(TestCase):
         with self.assertRaises(ValueError):
             OneDGrid(arr_1d, arr_2d)
         with self.assertRaises(ValueError):
+            OneDGrid(arr_1d, arr_1d[:, np.newaxis])
+        with self.assertRaises(ValueError):
             OneDGrid(arr_1d, arr_1d, (0, 5))
         with self.assertRaises(ValueError):
             OneDGrid(arr_1d, arr_1d, (1, 5))
@@ -121,14 +123,14 @@ class TestOneDGrid(TestCase):
         weights = np.arange(20) * 0.1
         grid = OneDGrid(points, weights)
         assert grid.size == 20
-        assert grid.domain == (0, 19)
+        assert grid.domain is None
         subgrid = grid[0]
         assert subgrid.size == 1
         assert np.allclose(subgrid.points, points[0])
         assert np.allclose(subgrid.weights, weights[0])
-        assert subgrid.domain == (0, 19)
+        assert subgrid.domain is None
         subgrid = grid[3:7]
         assert subgrid.size == 4
         assert np.allclose(subgrid.points, points[3:7])
         assert np.allclose(subgrid.weights, weights[3:7])
-        assert subgrid.domain == (0, 19)
+        assert subgrid.domain is None

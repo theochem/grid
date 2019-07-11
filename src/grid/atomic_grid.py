@@ -226,9 +226,13 @@ class AtomicGrid(Grid):
             raise TypeError(
                 f"Argument rgrid is not an instance of OneDGrid, got {type(rgrid)}."
             )
-        if rgrid.domain[0] < 0:
+        if rgrid.domain is not None and rgrid.domain[0] < 0:
             raise TypeError(
                 f"Argument rgrid should have a positive domain, got {rgrid.domain}"
+            )
+        elif np.min(rgrid.points) < 0.0:
+            raise TypeError(
+                f"Smallest rgrid.points is negative, got {np.min(rgrid.points)}"
             )
         if not isinstance(center, np.ndarray):
             raise TypeError(
