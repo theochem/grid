@@ -129,27 +129,28 @@ class AngularGrid(Grid):
     """Angular lebedev grid."""
 
 
-class SimpleAtomicGrid(Grid):
-    """Simplified Atomic grid."""
+class SubGrid(Grid):
+    """Subset of grid surrounding a center."""
 
     def __init__(self, points, weights, center):
-        """Initialize an atomic grid.
+        r"""Initialize an sub-grid.
 
         Parameters
         ----------
         points : np.ndarray(N, 3)
-            Points on 3d space
+            Cartesian coordinates of :math:`N` grid points in 3D space.
         weights : np.ndarray(N)
-            Weights for each points on the grid
+            Integration weight of :math:`N` grid points
         center : np.ndarray(3,)
-            The center of the atomic grid
+            Cartesian coordinates of sub-grid center in 3D space.
+
         """
         super().__init__(points, weights)
         self._center = center
 
     @property
     def center(self):
-        """np.ndarray(3,): return the coordinates of the atomic grid center."""
+        """np.ndarray(3,): Cartesian coordinates of sub-grid center."""
         return self._center
 
 

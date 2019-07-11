@@ -21,7 +21,8 @@
 
 
 from grid.atomic_grid import AtomicGrid
-from grid.basegrid import Grid, SimpleAtomicGrid
+from grid.basegrid import Grid, SubGrid
+from grid.becke import BeckeWeights
 
 import numpy as np
 
@@ -169,7 +170,7 @@ class MolGrid(Grid):
 
         Returns
         -------
-        SimpleAtomicGrid
+        SubGrid
             A SimpleAtomicGrid instance for local integral
         """
         s_ind = self._indices[index]
@@ -181,7 +182,7 @@ class MolGrid(Grid):
         if with_aim_wts:
             wts *= self.get_aim_weights(index)
         # generate simple atomic grid
-        return SimpleAtomicGrid(pts, wts, self._coors[index])
+        return SubGrid(pts, wts, self._coors[index])
 
     @property
     def aim_weights(self):
@@ -230,7 +231,7 @@ class MolGrid(Grid):
         if self._atomic_grids is None:
             s_ind = self._indices[index]
             f_ind = self._indices[index + 1]
-            return SimpleAtomicGrid(
+            return SubGrid(
                 self.points[s_ind:f_ind], self.weights[s_ind:f_ind], self._coors[index]
             )
         return self._atomic_grids[index]
