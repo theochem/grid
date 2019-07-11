@@ -45,6 +45,10 @@ class Grid:
                 "Shape of points and weight does not match. \n"
                 "shape of points: {len(poitns)}, shape of weights: {len(weights)}."
             )
+        if weights.ndim != 1:
+            raise ValueError(
+                f"Argument weights should be a 1-D array. weights.ndim={weights.ndim}"
+            )
         self._points = points
         self._weights = weights
         self._size = self._weights.size
@@ -161,8 +165,11 @@ class OneDGrid(Grid):
             A 1-D array of coordinates of :math:`N` points in one-dimension.
         weights : np.ndarray(N,)
             A 1-D array of integration weights of :math:`N` points in one-dimension.
-        domain : tuple(int, int), optional
-            The range of coordinate of points in ascending order.
+        domain : tuple(float, float), optional
+            Lower and upper bounds for which the grid can carry out numerical
+            integration. This does not always coincide with the positions of the first
+            and last grid point. For example, in case of the Gauss-Chebyshev quadrature
+            the domain is [-1,1] but all grid points lie in (-1, 1).
 
         """
         # check points & weights
@@ -170,34 +177,29 @@ class OneDGrid(Grid):
             raise ValueError(
                 f"Argument points should be a 1-D array. points.ndim={points.ndim}"
             )
-        if weights.ndim != 1:
-            raise ValueError(
-                f"Argument weights should be a 1-D array. weights.ndim={weights.ndim}"
-            )
-        # assign domain
-        if domain is None:
-            domain = (np.min(points), np.max(points))
+
         # check domain
-        if len(domain) != 2 or domain[0] > domain[1]:
-            raise ValueError(
-                f"domain should be an ascending tuple of length 2. domain={domain}"
-            )
-        min_p = np.min(points)
-        if domain[0] >= min_p and abs(domain[0] - min_p) > 1e-6:
-            raise ValueError(
-                f"point coordinates should not be below domain! {min_p < domain[0]}"
-            )
-        max_p = np.max(points)
-        if domain[1] <= max_p and abs(domain[1] - max_p) > 1e-6:
-            raise ValueError(
-                f"point coordinates should not be above domain! {domain[1] < max_p}"
-            )
+        if domain is not None:
+            if len(domain) != 2 or domain[0] > domain[1]:
+                raise ValueError(
+                    f"domain should be an ascending tuple of length 2. domain={domain}"
+                )
+            min_p = np.min(points)
+            if domain[0] >= min_p and abs(domain[0] - min_p) > 1e-6:
+                raise ValueError(
+                    f"point coordinates should not be below domain! {min_p < domain[0]}"
+                )
+            max_p = np.max(points)
+            if domain[1] <= max_p and abs(domain[1] - max_p) > 1e-6:
+                raise ValueError(
+                    f"point coordinates should not be above domain! {domain[1] < max_p}"
+                )
         super().__init__(points, weights)
         self._domain = domain
 
     @property
     def domain(self):
-        """(int, int): the range of grid points."""
+        """(float, float): the range of grid points."""
         return self._domain
 
     def __getitem__(self, index):

@@ -239,3 +239,9 @@ class TestAtomicGrid(TestCase):
             AtomicGrid(Grid(np.arange(1, 5, 1), np.ones(4)), degs=[2, 3, 4, 5])
         with self.assertRaises(TypeError):
             AtomicGrid(OneDGrid(np.arange(-2, 2, 1), np.ones(4)), degs=[2, 3, 4, 5])
+        with self.assertRaises(TypeError):
+            rgrid = OneDGrid(np.arange(1, 3, 1), np.ones(2), domain=(-1, 5))
+            AtomicGrid(rgrid, degs=[2])
+        with self.assertRaises(TypeError):
+            rgrid = OneDGrid(np.arange(-1, 1, 1), np.ones(2))
+            AtomicGrid(rgrid, degs=[2])

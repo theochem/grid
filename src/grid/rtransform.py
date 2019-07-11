@@ -74,7 +74,9 @@ class BaseTransform(ABC):
             raise TypeError(f"Input grid is not OneDGrid, got {type(oned_grid)}")
         new_points = self.transform(oned_grid.points)
         new_weights = self.deriv(oned_grid.points) * oned_grid.weights
-        new_domain = self.transform(np.array(oned_grid.domain))
+        new_domain = oned_grid.domain
+        if new_domain is not None:
+            new_domain = self.transform(np.array(oned_grid.domain))
         return OneDGrid(new_points, new_weights, new_domain)
 
     def _convert_inf(self, array, replace_inf=1e16):
