@@ -242,8 +242,6 @@ class MolGrid(Grid):
             s_ind = self._indices[index]
             f_ind = self._indices[index + 1]
             return SimpleAtomicGrid(
-                self.points[s_ind:f_ind],
-                self.weights[s_ind:f_ind] * self.aim_weights[s_ind:f_ind],
-                self._coors[index],
+                self.points[s_ind:f_ind], self.weights[s_ind:f_ind], self._coors[index]
             )
         return self._atomic_grids[index]
