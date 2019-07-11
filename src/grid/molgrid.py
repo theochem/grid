@@ -22,7 +22,6 @@
 
 from grid.atomic_grid import AtomicGrid
 from grid.basegrid import Grid, SubGrid
-from grid.becke import BeckeWeights
 
 import numpy as np
 
@@ -128,90 +127,40 @@ class MolGrid(Grid):
         return cls(at_grids, aim_weights, nums, store=store)
 
     def get_atomic_grid(self, index):
-        """Get the stored atomic grid with all information.
+        r"""Get atomic grid corresponding to the given atomic index.
 
         Parameters
         ----------
         index : int
-            index of atomic grid for constructing molecular grid.
-            index starts from 0 to n-1
+            index of atom starting from 0 to :math:`N-1` where :math:`N` is the
+            number of atoms in molecule.
 
         Returns
         -------
-        AtomicGrid
-            AtomicGrid for n_th atom in the molecular grid
+        AtomicGrid or SubGrid
+            If store=True, the AtomicGrid instance used is returned.
+            If store=False, the SubGrid containing points and weights of AtomicGrid
+            is returned.
 
         Raises
         ------
-        NotImplementedError
-            If the atomic grid information is not store
         ValueError
             The input index is negative
         """
-        if self._atomic_grids is None:
-            raise NotImplementedError(
-                "Atomic Grid info is not stored during initialization."
-            )
         if index < 0:
-            raise ValueError(f"Invalid negative index value, got {index}")
-        return self._atomic_grids[index]
-
-    def get_simple_atomic_grid(self, index, with_aim_wts=True):
-        r"""Get a simple atomic grid with points, weights, and center.
-
-        Parameters
-        ----------
-        index : int
-            index of atomic grid for constructing molecular grid.
-            index starts from 0 to n-1
-        with_aim_wts : bool, default to True
-            The flag for pre-multiply molecular weights
-            if True, the weights \*= aim_weights
-
-        Returns
-        -------
-        SubGrid
-            A SimpleAtomicGrid instance for local integral
-        """
-        s_ind = self._indices[index]
-        f_ind = self._indices[index + 1]
-        # coors
-        pts = self.points[s_ind:f_ind]
-        # wts
-        wts = self._atweights[s_ind:f_ind]
-        if with_aim_wts:
-            wts *= self.get_aim_weights(index)
-        # generate simple atomic grid
+            raise ValueError(f"index should be non-negative, got {index}")
+        # get atomic grid if stored
+        if self._atomic_grids is not None:
+            return self._atomic_grids[index]
+        # make a sub-grid
+        pts = self.points[self._indices[index] : self._indices[index + 1]]
+        wts = self._atweights[self._indices[index] : self._indices[index + 1]]
         return SubGrid(pts, wts, self._coors[index])
 
     @property
     def aim_weights(self):
         """np.ndarray(N,): atom in molecular weights for all points in grid."""
         return self._aim_weights
-
-    def get_aim_weights(self, index):
-        """Get aim weights value for given atoms in the molecule.
-
-        Parameters
-        ----------
-        index : int
-            index of atomic grid for constructing molecular grid.
-            index starts from 0 to n-1
-
-        Returns
-        -------
-        np.ndarray(K,)
-            The aim_weights for points in the given atomic grid
-
-        Raises
-        ------
-        ValueError
-            The input index is negative
-        """
-        if index >= 0:
-            return self._aim_weights[self._indices[index] : self._indices[index + 1]]
-        else:
-            raise ValueError(f"Invalid negative index value, got {index}")
 
     def __getitem__(self, index):
         """Get separate atomic grid in molecules.
