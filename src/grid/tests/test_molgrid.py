@@ -21,8 +21,8 @@
 from unittest import TestCase
 
 from grid.atomic_grid import AtomicGrid
-from grid.basegrid import SimpleAtomicGrid
 from grid.becke import BeckeWeights
+from grid.basegrid import SubGrid
 from grid.molgrid import MolGrid
 from grid.onedgrid import HortonLinear
 from grid.rtransform import ExpRTransform
@@ -199,7 +199,7 @@ class TestMolGrid(TestCase):
         mg = MolGrid([atg1, atg2], becke, np.array([6, 8]))
         for i in range(2):
             atgrid = mg[i]
-            assert isinstance(atgrid, SimpleAtomicGrid)
+            assert isinstance(atgrid, SubGrid)
             assert_allclose(atgrid.center, mg._coors[i])
 
     def test_molgrid_attrs(self):
