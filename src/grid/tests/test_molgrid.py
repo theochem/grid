@@ -21,8 +21,8 @@
 from unittest import TestCase
 
 from grid.atomic_grid import AtomicGrid
-from grid.becke import BeckeWeights
 from grid.basegrid import SubGrid
+from grid.becke import BeckeWeights
 from grid.molgrid import MolGrid
 from grid.onedgrid import HortonLinear
 from grid.rtransform import ExpRTransform
@@ -231,15 +231,11 @@ class TestMolGrid(TestCase):
         assert mg.get_atomic_grid(0) is atg1
         assert mg.get_atomic_grid(1) is atg2
 
-        simple_ag1 = mg.get_simple_atomic_grid(0)
-        simple_ag2 = mg.get_simple_atomic_grid(1)
+        simple_ag1 = mg.get_atomic_grid(0)
+        simple_ag2 = mg.get_atomic_grid(1)
         assert_allclose(simple_ag1.points, atg1.points)
-        assert_allclose(simple_ag2.points, atg2.points)
-
-        aim_at1 = mg.get_aim_weights(0)
-        aim_at2 = mg.get_aim_weights(1)
-        assert_allclose(simple_ag1.weights, atg1.weights * aim_at1)
-        assert_allclose(simple_ag2.weights, atg2.weights * aim_at2)
+        assert_allclose(simple_ag1.weights, atg1.weights)
+        assert_allclose(simple_ag2.weights, atg2.weights)
 
         # assert mg.subgrids is None
         # assert mg.k == 3
@@ -313,11 +309,8 @@ class TestMolGrid(TestCase):
             molg.integrate(1)
         with self.assertRaises(ValueError):
             molg.integrate(np.array([3, 5]))
-        with self.assertRaises(NotImplementedError):
-            molg.get_atomic_grid(0)
         with self.assertRaises(ValueError):
-            molg.get_aim_weights(-3)
-
+            molg.get_atomic_grid(-3)
         molg = MolGrid([atg], becke, np.array([1]), store=True)
         with self.assertRaises(ValueError):
             molg.get_atomic_grid(-5)
