@@ -44,16 +44,17 @@ class BeckeWeights:
         """
         if not isinstance(order, int):
             raise ValueError(f"order should be an integer, got {type(order)}")
+        self._order = order
+        # make dictionary of covalent radius for elements up to Z=86
+        data = get_cov_radii(np.arange(1, 87, 1), "bragg")
+        self._radii = dict([(i + 1, radius) for i, radius in enumerate(data)])
+        # update given covalent radii
         if radii is not None:
             if not isinstance(radii, dict):
                 raise TypeError(f"radii should be a dictionary, got {type(radii)}")
             if not np.all([isinstance(k, int) for k in radii.keys()]):
                 raise TypeError(f"radii keys should be integers.")
-        else:
-            radii = get_cov_radii(np.arange(1, 87, 1), "bragg")
-            radii = dict([(index + 1, r) for index, r in enumerate(radii)])
-        self._radii = radii
-        self._order = order
+            self._radii.update(radii)
 
     @staticmethod
     def _calculate_alpha(radii, cutoff=0.45):
