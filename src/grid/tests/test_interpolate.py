@@ -22,6 +22,7 @@
 from unittest import TestCase
 
 from grid.atomic_grid import AtomicGrid
+from grid.basegrid import OneDGrid
 from grid.interpolate import (
     _generate_sph_paras,
     generate_real_sph_harms,
@@ -30,7 +31,6 @@ from grid.interpolate import (
     spline_with_atomic_grid,
     spline_with_sph_harms,
 )
-from grid.basegrid import OneDGrid
 from grid.lebedev import generate_lebedev_grid
 from grid.onedgrid import GaussLegendre
 from grid.rtransform import BeckeTF, IdentityRTransform
