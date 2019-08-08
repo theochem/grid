@@ -42,7 +42,7 @@ class TestPoisson(TestCase):
             # assert similar value less than 1e-4 discrepancy
             assert_allclose(result, result_ref, atol=1e-4)
 
-        sph_coor = atgrid.convert_cart_to_sph()[:, :2]
+        sph_coor = atgrid.convert_cart_to_sph()[:, 1:3]
         spls_mt = Poisson._proj_sph_value(
             atgrid.rad_grid,
             sph_coor,
@@ -74,7 +74,7 @@ class TestPoisson(TestCase):
 
         # test density sum up to np.pi**(3 / 2)
         assert_allclose(p_0, np.pi ** 1.5, atol=1e-4)
-        sph_coor = atgrid.convert_cart_to_sph()[:, :2]
+        sph_coor = atgrid.convert_cart_to_sph()[:, 1:3]
         spls_mt = Poisson._proj_sph_value(
             atgrid.rad_grid,
             sph_coor,
@@ -152,7 +152,7 @@ class TestPoisson(TestCase):
 
         # test density sum up to np.pi**(3 / 2)
         assert_allclose(p_0, np.pi ** 1.5, atol=1e-4)
-        sph_coor = atgrid.convert_cart_to_sph()[:, :2]
+        sph_coor = atgrid.convert_cart_to_sph()[:, 1:3]
         spls_mt = Poisson._proj_sph_value(
             atgrid.rad_grid,
             sph_coor,
