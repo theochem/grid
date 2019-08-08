@@ -196,6 +196,29 @@ class AtomicGrid(Grid):
             new_wts = wts
         return AngularGrid(pts, new_wts)
 
+    def convert_point_to_sph(self, points):  # TODO: need tests
+        """Convert a set of Cartesian points to sphercial coordinates.
+
+        Parameters
+        ----------
+        points : np.ndarray(N, 3) or np.ndarray(3,)
+            3 dimentional numpy array
+
+        Returns
+        -------
+        np.ndarray(N, 3)
+            Converted spherical coordinates relatived to the atom center
+        """
+        if points.ndim == 1:
+            points = points.reshape(-1, 3)
+        relat_pts = points - self.center
+        r = np.linalg.norm(relat_pts, axis=1)
+        # polar angle: arccos(z / r)
+        phi = np.arccos(relat_pts[:, 2] / r)
+        # azimuthal angle arctan2(y / x)
+        theta = np.arctan2(relat_pts[:, 1], relat_pts[:, 0])
+        return np.vstack([r, theta, phi]).T
+
     def convert_cart_to_sph(self):
         """Compute spherical coordinates of the grid.
 
@@ -209,7 +232,7 @@ class AtomicGrid(Grid):
         phi = np.arccos(self._points[:, 2] / r)
         # azimuthal angle arctan2(y / x)
         theta = np.arctan2(self._points[:, 1], self._points[:, 0])
-        return np.vstack([theta, phi, r]).T
+        return np.vstack([r, theta, phi]).T
 
     @staticmethod
     def _input_type_check(rgrid, center):

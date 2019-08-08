@@ -135,7 +135,7 @@ class TestInterpolate(TestCase):
         sph_coor = atgrid.convert_cart_to_sph()
         values = self.helper_func_power(atgrid.points)
         l_max = atgrid.l_max // 2
-        r_sph = generate_real_sph_harms(l_max, sph_coor[:, 0], sph_coor[:, 1])
+        r_sph = generate_real_sph_harms(l_max, sph_coor[:, 1], sph_coor[:, 2])
         result = spline_with_sph_harms(
             r_sph, values, atgrid.weights, atgrid.indices, rad
         )
@@ -183,7 +183,7 @@ class TestInterpolate(TestCase):
         result = spline_with_atomic_grid(atgrid, values)
         sph_coor = atgrid.convert_cart_to_sph()
         semi_sph_c = sph_coor[atgrid.indices[5] : atgrid.indices[6]]
-        interp = interpolate(result, rad.points[5], semi_sph_c[:, 0], semi_sph_c[:, 1])
+        interp = interpolate(result, rad.points[5], semi_sph_c[:, 1], semi_sph_c[:, 2])
         # same result from points and interpolation
         assert_allclose(interp, values[atgrid.indices[5] : atgrid.indices[6]])
 
@@ -195,19 +195,19 @@ class TestInterpolate(TestCase):
         sph_coor = atgrid.convert_cart_to_sph()
         values = self.helper_func_power(atgrid.points)
         l_max = atgrid.l_max // 2
-        r_sph = generate_real_sph_harms(l_max, sph_coor[:, 0], sph_coor[:, 1])
+        r_sph = generate_real_sph_harms(l_max, sph_coor[:, 1], sph_coor[:, 2])
         result = spline_with_sph_harms(
             r_sph, values, atgrid.weights, atgrid.indices, rad
         )
         semi_sph_c = sph_coor[atgrid.indices[5] : atgrid.indices[6]]
-        interp = interpolate(result, 6, semi_sph_c[:, 0], semi_sph_c[:, 1])
+        interp = interpolate(result, 6, semi_sph_c[:, 1], semi_sph_c[:, 2])
         # same result from points and interpolation
         assert_allclose(interp, values[atgrid.indices[5] : atgrid.indices[6]])
 
         # random multiple interpolation test
         for _ in range(100):
             indices = np.random.randint(1, 11, np.random.randint(1, 10))
-            interp = interpolate(result, indices, semi_sph_c[:, 0], semi_sph_c[:, 1])
+            interp = interpolate(result, indices, semi_sph_c[:, 1], semi_sph_c[:, 2])
             for i, j in enumerate(indices):
                 assert_allclose(
                     interp[i], values[atgrid.indices[j - 1] : atgrid.indices[j]]
@@ -234,12 +234,12 @@ class TestInterpolate(TestCase):
         sph_coor = atgrid.convert_cart_to_sph()
         values = self.helper_func_power(atgrid.points)
         l_max = atgrid.l_max // 2
-        r_sph = generate_real_sph_harms(l_max, sph_coor[:, 0], sph_coor[:, 1])
+        r_sph = generate_real_sph_harms(l_max, sph_coor[:, 1], sph_coor[:, 2])
         result = spline_with_sph_harms(
             r_sph, values, atgrid.weights, atgrid.indices, rad
         )
         semi_sph_c = sph_coor[atgrid.indices[5] : atgrid.indices[6]]
-        interp = interpolate(result, 6, semi_sph_c[:, 0], semi_sph_c[:, 1], deriv=1)
+        interp = interpolate(result, 6, semi_sph_c[:, 1], semi_sph_c[:, 2], deriv=1)
         # same result from points and interpolation
         ref_deriv = self.helper_func_power_deriv(
             atgrid.points[atgrid.indices[5] : atgrid.indices[6]]
@@ -260,8 +260,8 @@ class TestInterpolate(TestCase):
         assert_allclose(interp, ref_value)
 
         with self.assertRaises(ValueError):
-            interp = interpolate(result, 6, semi_sph_c[:, 0], semi_sph_c[:, 1], deriv=4)
+            interp = interpolate(result, 6, semi_sph_c[:, 1], semi_sph_c[:, 2], deriv=4)
         with self.assertRaises(ValueError):
             interp = interpolate(
-                result, 6, semi_sph_c[:, 0], semi_sph_c[:, 1], deriv=-1
+                result, 6, semi_sph_c[:, 1], semi_sph_c[:, 2], deriv=-1
             )

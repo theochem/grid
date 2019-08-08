@@ -154,7 +154,7 @@ def spline_with_atomic_grid(at_grid, value_array):
     """
     l_max = at_grid.l_max // 2
     sph_coor = at_grid.convert_cart_to_sph()
-    r_sph = generate_real_sph_harms(l_max, sph_coor[:, 0], sph_coor[:, 1])
+    r_sph = generate_real_sph_harms(l_max, sph_coor[:, 1], sph_coor[:, 2])
     return spline_with_sph_harms(
         r_sph, value_array, at_grid.weights, at_grid.indices, at_grid.rad_grid
     )
