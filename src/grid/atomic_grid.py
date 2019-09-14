@@ -212,7 +212,7 @@ class AtomicGrid(Grid):
         if points.ndim == 1:
             points = points.reshape(-1, 3)
         relat_pts = points - self.center
-        r = np.linalg.norm(relat_pts, axis=1)
+        r = np.linalg.norm(relat_pts, axis=-1)
         # polar angle: arccos(z / r)
         phi = np.arccos(relat_pts[:, 2] / r)
         # azimuthal angle arctan2(y / x)

@@ -185,6 +185,34 @@ class TestAtomicGrid(TestCase):
             assert np.allclose(sh_grid.points, ref_grid.points * rad_pts[i])
             assert np.allclose(sh_grid.weights, ref_grid.weights * rad_wts[i])
 
+    def test_convert_points_to_sph(self):
+        """Test convert random points to spherical based on atomic structure."""
+        rad_pts = np.array([0.1, 0.5, 1])
+        rad_wts = np.array([0.3, 0.4, 0.3])
+        rad_grid = OneDGrid(rad_pts, rad_wts)
+        center = np.random.rand(3)
+        atgrid = AtomicGrid(rad_grid, degs=[7], center=center)
+        points = np.random.rand(100, 3)
+        calc_sph = atgrid.convert_point_to_sph(points)
+        # compute ref result
+        ref_coor = points - center
+        # radius
+        r = np.linalg.norm(ref_coor, axis=-1)
+        # azimuthal
+        theta = np.arctan2(ref_coor[:, 1], ref_coor[:, 0])
+        # polar
+        phi = np.arccos(ref_coor[:, 2] / r)
+        assert_allclose(np.stack([r, theta, phi]).T, calc_sph)
+
+        # test single point
+        point = np.random.rand(3)
+        calc_sph = atgrid.convert_point_to_sph(point)
+        ref_coor = point - center
+        r = np.linalg.norm(ref_coor)
+        theta = np.arctan2(ref_coor[1], ref_coor[0])
+        phi = np.arccos(ref_coor[2] / r)
+        assert_allclose(np.array([r, theta, phi]).reshape(-1, 3), calc_sph)
+
     def test_error_raises(self):
         """Tests for error raises."""
         with self.assertRaises(TypeError):

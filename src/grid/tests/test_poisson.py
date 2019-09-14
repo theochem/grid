@@ -197,3 +197,26 @@ class TestPoisson(TestCase):
             assert_allclose(
                 result / near_rg_pts[i] - ref_short_res[i], np.zeros(5), atol=1e-3
             )
+
+    def test_raises_errors(self):
+        """Test proper error raises."""
+        oned = GaussChebyshev(50)
+        btf = BeckeTF(1e-7, 1.5)
+        rad = btf.generate_radial(oned)
+        l_max = 7
+        atgrid = AtomicGrid(rad, degs=[l_max])
+        value_array = self.helper_func_gauss(atgrid.points)
+        p_0 = atgrid.integrate(value_array)
+
+        # test density sum up to np.pi**(3 / 2)
+        assert_allclose(p_0, np.pi ** 1.5, atol=1e-4)
+        sph_coor = atgrid.convert_cart_to_sph()
+        with self.assertRaises(ValueError):
+            Poisson._proj_sph_value(
+                atgrid.rad_grid,
+                sph_coor,
+                l_max // 2,
+                value_array,
+                atgrid.weights,
+                atgrid.indices,
+            )
