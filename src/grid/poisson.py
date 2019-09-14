@@ -19,8 +19,8 @@ class Poisson:
         ----------
         radial : RadialGrid
             Radial grids for compute coeffs on each Real Spherical Harmonics.
-        coors : numpy.ndarray(N, 2+)
-            Spherical coordinates for comput coeff. [azimuthal, polar ,...]
+        coors : numpy.ndarray(N, 2)
+            Spherical coordinates for comput coeff. [azimuthal, polar]
         l_max : int, >= 0
             The maximum value l in generated real spherical harmonics
         value_array : np.ndarray(N)
@@ -36,6 +36,11 @@ class Poisson:
         np.ndarray[scipy.PPoly], shape(2L - 1, L + 1)
             scipy cubic spline instance of each harmonic shell
         """
+        if coors.shape[1] > 2:
+            raise ValueError(
+                f"Input coordinates contains too many columns\n"
+                f"Only 2 columns needed, got coors shape:{coors.shape}"
+            )
         theta, phi = coors[:, 0], coors[:, 1]
         real_sph = generate_real_sph_harms(l_max, theta, phi)
         # real_sph shape: (m, l, n)

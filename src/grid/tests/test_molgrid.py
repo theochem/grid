@@ -237,6 +237,16 @@ class TestMolGrid(TestCase):
         assert_allclose(simple_ag1.weights, atg1.weights)
         assert_allclose(simple_ag2.weights, atg2.weights)
 
+        # test molgrid is not stored
+        mg2 = MolGrid([atg1, atg2], becke, np.array([6, 8]), store=False)
+        assert mg2._atomic_grids is None
+        simple2_ag1 = mg2.get_atomic_grid(0)
+        simple2_ag2 = mg2.get_atomic_grid(1)
+        assert isinstance(simple2_ag1, SubGrid)
+        assert isinstance(simple2_ag2, SubGrid)
+        assert_allclose(simple2_ag1.points, atg1.points)
+        assert_allclose(simple2_ag1.weights, atg1.weights)
+        assert_allclose(simple2_ag2.weights, atg2.weights)
         # assert mg.subgrids is None
         # assert mg.k == 3
         # assert mg.random_rotate
