@@ -95,7 +95,7 @@ class TestTransform(TestCase):
         """Test Becke initializaiton."""
         btf = BeckeTF(0.1, 1.2)
         assert btf.R == 1.2
-        assert btf.r0 == 0.1
+        assert btf.rmin == 0.1
 
     def test_becke_parameter_calc(self):
         """Test parameter function."""
@@ -163,7 +163,7 @@ class TestTransform(TestCase):
         """Test transform integral."""
         oned = GaussLegendre(20)
         btf = BeckeTF(0.00001, 1.0)
-        rad = btf.generate_radial(oned)
+        rad = btf.generate_grid(oned)
 
         def gauss(x):
             return np.exp(-x ** 2)
@@ -173,7 +173,7 @@ class TestTransform(TestCase):
         assert_almost_equal(result, ref_result, decimal=5)
 
         oned = GaussChebyshev(20)
-        rad = btf.generate_radial(oned)
+        rad = btf.generate_grid(oned)
         result = rad.integrate(gauss(rad.points))
         assert_almost_equal(result, ref_result, decimal=3)
 
@@ -208,7 +208,7 @@ class TestTransform(TestCase):
         # inverse init error
         with self.assertRaises(TypeError):
             InverseTF(0.5)
-        # type error for generate_radial
+        # type error for generate_grid
         with self.assertRaises(TypeError):
             btf = BeckeTF(0.1, 1.1)
-            btf.generate_radial(np.arange(3))
+            btf.generate_grid(np.arange(3))

@@ -39,7 +39,7 @@ class TestMolGrid(TestCase):
         """Set up radial grid for integral tests."""
         pts = HortonLinear(100)
         tf = ExpRTransform(1e-5, 2e1)
-        self.rgrid = tf.generate_radial(pts)
+        self.rgrid = tf.generate_grid(pts)
 
     def test_integrate_hydrogen_single_1s(self):
         """Test molecular integral in H atom."""
