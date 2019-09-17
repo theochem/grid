@@ -52,8 +52,8 @@ class BaseTransform(ABC):
     def deriv3(self, x):
         """Abstract method for 3nd derivative of transformation."""
 
-    def generate_radial(self, oned_grid):
-        """Generate a radial grid by transforming the OneDGrid.
+    def generate_grid(self, oned_grid):
+        """Generate a new integral grid by transforming given the OneDGrid.
 
         Parameters
         ----------
@@ -87,10 +87,11 @@ class BaseTransform(ABC):
         array : np.ndarray(N,)
         """
         if isinstance(array, Number):  # change for number
-            new_v = replace_inf if np.isinf(array) else array
+            new_v = np.sign(array) * replace_inf if np.isinf(array) else array
         else:
             new_v = array.copy()  # change for arrays with copy
             new_v[new_v == np.inf] = replace_inf
+            new_v[new_v == -np.inf] = -replace_inf
         return new_v
 
     # def _check_inf(self, array):
@@ -102,54 +103,54 @@ class BaseTransform(ABC):
 class BeckeTF(BaseTransform):
     """Becke Transformation class."""
 
-    def __init__(self, r0, R, trim_inf=True):
+    def __init__(self, rmin, R, trim_inf=True):
         """Construct Becke transform, [-1, 1] -> [r_0, inf).
 
         Parameters
         ----------
-        r0 : float
-            The minimum coordinates for transformed radial array.
+        rmin : float
+            The minimum coordinates for transformed array.
         R : float
-            The scale factor for transformed radial array.
+            The scale factor for transformed array.
         trim_inf : bool, optional
             Flag to trim infinite value in transformed array. If True, it will
             replace np.inf with 1e16. This may cause unexpected errors in the
             following operations.
 
         """
-        self._r0 = r0
+        self._rmin = rmin
         self._R = R
         self.trim_inf = trim_inf
 
     @property
-    def r0(self):
-        """float: the minimum value for the transformed radial array."""
-        return self._r0
+    def rmin(self):
+        """float: the minimum value for the transformed array."""
+        return self._rmin
 
     @property
     def R(self):
-        """float: the scale factor for the transformed radial array."""
+        """float: the scale factor for the transformed array."""
         return self._R
 
     # @classmethod
-    # def transform_grid(cls, oned_grid, r0, radius):
+    # def transform_grid(cls, oned_grid, rmin, radius):
     #     if not isinstance(oned_grid, OneDGrid):
     #         raise ValueError(f"Given grid is not OneDGrid, got {type(oned_grid)}")
-    #     R = BeckeTF.find_parameter(oned_grid.points, r0, radius)
-    #     tfm = cls(r0=r0, R=R)
+    #     R = BeckeTF.find_parameter(oned_grid.points, rmin, radius)
+    #     tfm = cls(rmin=rmin, R=R)
     #     new_points = tfm.transform(oned_grid.points)
     #     new_weights = tfm.deriv(oned_grid.points) * oned_grid.weights
     #     return RadialGrid(new_points, new_weights), tfm
 
     @staticmethod
-    def find_parameter(array, r0, radius):
-        """Compute for optimal R for certain atom, given array and r0.
+    def find_parameter(array, rmin, radius):
+        """Compute for optimal R for certain atom, given array and rmin.
 
         Parameters
         ----------
         array : np.ndarray(N,)
             one dimention array locates within [-1, 1]
-        r0 : float
+        rmin : float
             Minimum value for transformed array.
         radius : float
             Atomic radius of interest
@@ -162,21 +163,21 @@ class BeckeTF(BaseTransform):
         Raises
         ------
         ValueError
-            r0 needs to be smaller than atomic radius to compute R
+            rmin needs to be smaller than atomic radius to compute R
         """
-        if r0 > radius:
+        if rmin > radius:
             raise ValueError(
-                f"r0 need to be smaller than radius, r0: {r0}, radius: {radius}."
+                f"rmin need to be smaller than radius, rmin: {rmin}, radius: {radius}."
             )
         size = array.size
         if size % 2:
             mid_value = array[size // 2]
         else:
             mid_value = (array[size // 2 - 1] + array[size // 2]) / 2
-        return (radius - r0) * (1 - mid_value) / (1 + mid_value)
+        return (radius - rmin) * (1 - mid_value) / (1 + mid_value)
 
     def transform(self, x):
-        """Transform given array[-1, 1] to radial array[r0, inf).
+        """Transform given array[-1, 1] to array[rmin, inf).
 
         Parameters
         ----------
@@ -186,27 +187,27 @@ class BeckeTF(BaseTransform):
         Returns
         -------
         np.ndarray(N,)
-            Transformed radial array located between [r0, inf)
+            Transformed array located between [rmin, inf)
         """
-        rf_array = self._R * (1 + x) / (1 - x) + self._r0
+        rf_array = self._R * (1 + x) / (1 - x) + self._rmin
         if self.trim_inf:
             rf_array = self._convert_inf(rf_array)
         return rf_array
 
     def inverse(self, r):
-        """Transform radial array[r0, inf) back to original array[-1, 1].
+        """Transform array[rmin, inf) back to original array[-1, 1].
 
         Parameters
         ----------
         r : np.ndarray(N,)
-            Sorted one dimension radial array located between [r0, inf)
+            Sorted one dimension array located between [rmin, inf)
 
         Returns
         -------
         np.ndarray(N,)
             The original one dimension array located between [-1, 1]
         """
-        return (r - self._r0 - self._R) / (r - self._r0 + self._R)
+        return (r - self._rmin - self._R) / (r - self._rmin + self._R)
 
     def deriv(self, x):
         """Compute the 1st derivative of Becke transformation.
@@ -350,7 +351,7 @@ class LinearTF(BaseTransform):
 
 
 class InverseTF(BaseTransform):
-    """Inverse transformation class, [r0, rmax] or [r0, inf) -> [-1, 1]."""
+    """Inverse transformation class, [rmin, rmax] or [rmin, inf) -> [-1, 1]."""
 
     def __init__(self, transform):
         """Construct InverseTF instance.
@@ -372,12 +373,12 @@ class InverseTF(BaseTransform):
         self._tfm = transform
 
     def transform(self, r):
-        """Transform radial array back to original one dimension array.
+        """Transform array back to original one dimension array.
 
         Parameters
         ----------
         r : np.ndarray(N,)
-            Radial grid locates between [r0, rmax] or [r0, inf) depends on the
+            Grid locates between [rmin, rmax] or [rmin, inf) depends on the
             domain of its original transformation
 
         Returns
@@ -388,7 +389,7 @@ class InverseTF(BaseTransform):
         return self._tfm.inverse(r)
 
     def inverse(self, x):
-        """Transform one dimension array[-1, 1] to radial array [r0, rmax(inf)].
+        """Transform one dimension array[-1, 1] to array [rmin, rmax(inf)].
 
         Parameters
         ----------
@@ -398,7 +399,7 @@ class InverseTF(BaseTransform):
         Returns
         -------
         np.ndarray
-            Radial numpy array located between [r0, rmax(inf)]
+            numpy array located between [rmin, rmax(inf)]
         """
         return self._tfm.transform(x)
 

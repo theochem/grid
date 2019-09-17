@@ -96,7 +96,12 @@ class Grid:
             )
 
     def integrate(self, *value_arrays):
-        """Integrate over the whole grid for given multiple value arrays.
+        r"""Integrate over the whole grid for given multiple value arrays.
+
+        Product of all value_arrays will be computed element-wise then
+        integrated on the grid with its weights.
+        .. math::
+            Integral = \int w(x) \prod_i f_i(x) dx
 
         Parameters
         ----------
