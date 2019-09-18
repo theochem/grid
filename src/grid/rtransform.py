@@ -53,7 +53,12 @@ class BaseTransform(ABC):
         """Abstract method for 3nd derivative of transformation."""
 
     def generate_grid(self, oned_grid):
-        """Generate a new integral grid by transforming given the OneDGrid.
+        r"""Generate a new integral grid by transforming given the OneDGrid.
+
+        .. math::
+            \int^{\inf}_0 g(r) d r &= \int^b_a g(r(x)) \frac{dr}{dx} dx \\
+                                   &= \int^b_a f(x) \frac{dr}{dx} dx \\
+            w^r_n = w^x_n \cdot \frac{dr}{dx} \vert_{x_n}
 
         Parameters
         ----------
@@ -93,11 +98,6 @@ class BaseTransform(ABC):
             new_v[new_v == np.inf] = replace_inf
             new_v[new_v == -np.inf] = -replace_inf
         return new_v
-
-    # def _check_inf(self, array):
-    #     if np.any(array == np.inf):
-    #         return True
-    #     return False
 
 
 class BeckeTF(BaseTransform):
@@ -146,6 +146,9 @@ class BeckeTF(BaseTransform):
     def find_parameter(array, rmin, radius):
         """Compute for optimal R for certain atom, given array and rmin.
 
+        To find the proper R value to make sure half points are within atomic
+        radius r.
+
         Parameters
         ----------
         array : np.ndarray(N,)
@@ -177,7 +180,10 @@ class BeckeTF(BaseTransform):
         return (radius - rmin) * (1 - mid_value) / (1 + mid_value)
 
     def transform(self, x):
-        """Transform given array[-1, 1] to array[rmin, inf).
+        r"""Transform given array[-1, 1] to array[rmin, inf).
+
+        .. math::
+            r_i = R \frac{1 + x_i}{1 - x_i} + r_{min}
 
         Parameters
         ----------
@@ -195,7 +201,10 @@ class BeckeTF(BaseTransform):
         return rf_array
 
     def inverse(self, r):
-        """Transform array[rmin, inf) back to original array[-1, 1].
+        r"""Transform array[rmin, inf) back to original array[-1, 1].
+
+        .. math::
+            x_i = \frac{r_i - r_{min} - R} {r_i - r_{min} + R}
 
         Parameters
         ----------
@@ -210,7 +219,10 @@ class BeckeTF(BaseTransform):
         return (r - self._rmin - self._R) / (r - self._rmin + self._R)
 
     def deriv(self, x):
-        """Compute the 1st derivative of Becke transformation.
+        r"""Compute the 1st derivative of Becke transformation.
+
+        .. math::
+            \frac{dr_i}{dx_i} = 2R \frac{1}{(1-x)^2}
 
         Parameters
         ----------
@@ -225,7 +237,10 @@ class BeckeTF(BaseTransform):
         return 2 * self._R / ((1 - x) ** 2)
 
     def deriv2(self, x):
-        """Compute the 2nd derivative of Becke transformation.
+        r"""Compute the 2nd derivative of Becke transformation.
+
+        .. math::
+            \frac{d^2r}{dx^2} = 4R \frac{1}{1-x^3}
 
         Parameters
         ----------
@@ -240,7 +255,10 @@ class BeckeTF(BaseTransform):
         return 4 * self._R / (1 - x) ** 3
 
     def deriv3(self, x):
-        """Compute the 3rd derivative of Becke transformation.
+        r"""Compute the 3rd derivative of Becke transformation.
+
+        .. math::
+            \frac{d^3r}{dx^3} = 12R \frac{1}{1 - x^4}
 
         Parameters
         ----------
@@ -272,7 +290,10 @@ class LinearTF(BaseTransform):
         self._rmax = rmax
 
     def transform(self, x):
-        """Transform onedgrid form [-1, 1] to [rmin, rmax].
+        r"""Transform onedgrid form [-1, 1] to [rmin, rmax].
+
+        .. math::
+            r_i = \frac{r_{max} - r_{min}}{2} (1 + x_i)
 
         Parameters
         ----------
@@ -287,7 +308,10 @@ class LinearTF(BaseTransform):
         return (self._rmax - self._rmin) / 2 * (1 + x) + self._rmin
 
     def deriv(self, x):
-        """Compute the 1st order derivative.
+        r"""Compute the 1st order derivative.
+
+        .. math::
+            \frac{dr}{dx} = \frac{r_{max} - r_{min}}{2}
 
         Parameters
         ----------
@@ -305,7 +329,10 @@ class LinearTF(BaseTransform):
             return np.ones(x.size) * (self._rmax - self._rmin) / 2
 
     def deriv2(self, x):
-        """Compute the 2nd order derivative.
+        r"""Compute the 2nd order derivative.
+
+        .. math::
+            \frac{d^2 r}{dx^2} = 0
 
         Parameters
         ----------
@@ -320,7 +347,10 @@ class LinearTF(BaseTransform):
         return np.array(0) if isinstance(x, Number) else np.zeros(x.size)
 
     def deriv3(self, x):
-        """Compute the 3rd order derivative.
+        r"""Compute the 3rd order derivative.
+
+        .. math::
+            \frac{d^2 r}{dx^2} = 0
 
         Parameters
         ----------
@@ -335,7 +365,10 @@ class LinearTF(BaseTransform):
         return np.array(0) if isinstance(x, Number) else np.zeros(x.size)
 
     def inverse(self, r):
-        """Compute the inverse of the transformation.
+        r"""Compute the inverse of the transformation.
+
+        .. math::
+            x_i = \frac{2 r_i - (r_{max} + r_{min})}{r_{max} - r_{min}}
 
         Parameters
         ----------
@@ -375,6 +408,9 @@ class InverseTF(BaseTransform):
     def transform(self, r):
         """Transform array back to original one dimension array.
 
+        InvTF.transfrom is equivalent to OriginTF.inverse
+        InvTF.inverse is equivalent to OriginTF.transform
+
         Parameters
         ----------
         r : np.ndarray(N,)
@@ -403,8 +439,36 @@ class InverseTF(BaseTransform):
         """
         return self._tfm.transform(x)
 
+    def _d1(self, r):
+        """Compute 1st order derivative of the original transformation.
+
+        Parameters
+        ----------
+        r : np.ndarray(n)
+            Transformed r value
+
+        Returns
+        -------
+        np.ndarray(n,)
+            1st order derivative array
+
+        Raises
+        ------
+        ZeroDivisionError
+            Raised when there is 0 value in returned derivative values
+        """
+        d1 = self._tfm.deriv(r)
+        if np.any(d1 == 0):
+            raise ZeroDivisionError(
+                "First derivative of original transformation has 0 value"
+            )
+        return d1
+
     def deriv(self, r):
-        """Compute the 1st derivative of inverse transformation.
+        r"""Compute the 1st derivative of inverse transformation.
+
+        .. math::
+            \frac{dx}{dr} = (\frac{dr}{dx})^{-1}
 
         Parameters
         ----------
@@ -418,11 +482,14 @@ class InverseTF(BaseTransform):
         """
         # x: inverse x array, d1: first derivative
         r = self._tfm.inverse(r)
-        d1 = self._tfm.deriv
-        return 1 / d1(r)
+        return 1 / self._d1(r)
 
     def deriv2(self, r):
-        """Compute the 2nd derivative of inverse transformation.
+        r"""Compute the 2nd derivative of inverse transformation.
+
+        .. math::
+            \frac{d^2 x}{dr^2} = - \frac{d^2 r}{dx^2} (\frac{dx}{dr})^3
+
 
         Parameters
         ----------
@@ -437,12 +504,15 @@ class InverseTF(BaseTransform):
         # x: inverse x array, d1: first derivative
         # d2: second derivative d^2x / dy^2
         r = self._tfm.inverse(r)
-        d1 = self._tfm.deriv
         d2 = self._tfm.deriv2
-        return -d2(r) / d1(r) ** 3
+        return -d2(r) / self._d1(r) ** 3
 
     def deriv3(self, r):
-        """Compute the 3rd derivative of inverse transformation.
+        r"""Compute the 3rd derivative of inverse transformation.
+
+        .. math::
+            \frac{d^3 x}{dr^3} = -\frac{d^3 r}{dx^3} (\frac{dx}{dr})^4
+                               + 3 (\frac{d^2 r}{dx^2})^2 (\frac{dx}{dr})^5
 
         Parameters
         ----------
@@ -461,7 +531,7 @@ class InverseTF(BaseTransform):
         d1 = self._tfm.deriv
         d2 = self._tfm.deriv2
         d3 = self._tfm.deriv3
-        return (3 * d2(r) ** 2 - d1(r) * d3(r)) / d1(r) ** 5
+        return (3 * d2(r) ** 2 - d1(r) * d3(r)) / self._d1(r) ** 5
 
 
 class IdentityRTransform(BaseTransform):
