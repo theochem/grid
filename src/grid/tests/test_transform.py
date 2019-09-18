@@ -132,6 +132,20 @@ class TestTransform(TestCase):
         tf_array = btf.transform(inf_array)
         inv_array = btf.inverse(tf_array)
         assert_allclose(inv_array, inf_array)
+        # extra test for neg inf
+        # test for number
+        result = btf._convert_inf(-np.inf)
+        assert_almost_equal(result, -1e16)
+        result = btf._convert_inf(np.inf)
+        assert_almost_equal(result, 1e16)
+        # test for array
+        test_array = np.random.rand(5)
+        test_array[3] = -np.inf
+        result = btf._convert_inf(test_array)
+        assert_almost_equal(result[3], -1e16)
+        test_array[3] = np.inf
+        result = btf._convert_inf(test_array)
+        assert_almost_equal(result[3], 1e16)
 
     def test_becke_deriv(self):
         """Test becke transform derivatives with finite diff."""
@@ -212,3 +226,11 @@ class TestTransform(TestCase):
         with self.assertRaises(TypeError):
             btf = BeckeTF(0.1, 1.1)
             btf.generate_grid(np.arange(3))
+        with self.assertRaises(ZeroDivisionError):
+            btf = BeckeTF(0.1, 0)
+            itf = InverseTF(btf)
+            itf._d1(0.5)
+        with self.assertRaises(ZeroDivisionError):
+            btf = BeckeTF(0.1, 0)
+            itf = InverseTF(btf)
+            itf._d1(np.array([0.1, 0.2, 0.3]))
