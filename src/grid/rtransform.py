@@ -50,9 +50,9 @@ class BaseTransform(ABC):
 
     @abstractmethod
     def deriv3(self, x):
-        """Abstract method for 3nd derivative of transformation."""
+        """Abstract method for 3rd derivative of transformation."""
 
-    def generate_grid(self, oned_grid):
+    def transform_1d_grid(self, oned_grid):
         r"""Generate a new integral grid by transforming given the OneDGrid.
 
         .. math::
