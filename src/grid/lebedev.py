@@ -107,9 +107,9 @@ def generate_lebedev_grid(*, degree=None, size=None):
     Parameters
     ----------
     degree : None, optional
-        Degree L for lebedev grid
+        Degree L for Lebedev grid
     size : None, optional
-        Number of preferred points on lebedev grid
+        Number of preferred points on Lebedev grid
 
     Returns
     -------
@@ -139,7 +139,18 @@ def match_degree(degree_nums):
 
 
 def size_to_degree(num_array):
-    """Generate degs given nums."""
+    """Generate degs given nums.
+
+    Parameters
+    ----------
+    num_array : np.ndarray(N,)
+        Numpy array with # of points for each shell
+
+    Returns
+    -------
+    np.ndarray(N,)
+        Numpy array with L value for each shell
+    """
     num_array = np.array(num_array)
     unik_arr = np.unique(num_array)
     degs = np.zeros(num_array.size)
@@ -168,14 +179,14 @@ def _select_grid_type(*, degree=None, size=None):
     if degree:
         if degree < 0 or degree > 131:
             raise ValueError(
-                f"'degree' needs to be an positive integer < 131, got {degree}"
+                f"'degree' needs to be an positive integer <= 131, got {degree}"
             )
         for index, pre_degree in enumerate(n_degree):
             if degree <= pre_degree:
                 return n_degree[index], n_points[index]
     elif size:
         if size < 0 or size > 5810:
-            raise ValueError(f"'size' needs to be an integer < 5810, got {degree}")
+            raise ValueError(f"'size' needs to be an integer <= 5810, got {degree}")
         for index, pre_point in enumerate(n_points):
             if size <= pre_point:
                 return n_degree[index], n_points[index]

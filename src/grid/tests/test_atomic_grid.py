@@ -34,6 +34,8 @@ from numpy.testing import (
     assert_equal,
 )
 
+from scipy.spatial.transform import Rotation as R
+
 
 class TestAtomicGrid(TestCase):
     """Atomic grid factory test class."""
@@ -159,6 +161,12 @@ class TestAtomicGrid(TestCase):
         res2 = atgrid2.integrate(value2)
         assert_almost_equal(res, res1)
         assert_almost_equal(res1, res2)
+        # test rotated shells
+        for i in range(len(degs)):
+            non_rot_shell = atgrid.get_shell_grid(i).points
+            rot_shell = atgrid2.get_shell_grid(i).points
+            rot_mt = R.random(random_state=1 + i).as_dcm()
+            assert_allclose(rot_shell, np.dot(non_rot_shell, rot_mt))
 
     def test_get_shell_grid(self):
         """Test angular grid get from get_shell_grid function."""
@@ -260,7 +268,7 @@ class TestAtomicGrid(TestCase):
             AtomicGrid(OneDGrid(np.arange(3), np.arange(3)), degs=17)
         with self.assertRaises(ValueError):
             AtomicGrid(OneDGrid(np.arange(3), np.arange(3)), degs=[17], rotate=-1)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             AtomicGrid(OneDGrid(np.arange(3), np.arange(3)), degs=[17], rotate="asdfaf")
         # error of radial grid
         with self.assertRaises(TypeError):

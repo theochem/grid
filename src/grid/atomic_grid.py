@@ -66,6 +66,14 @@ class AtomicGrid(Grid):
         # assign stage
         self._center = np.array(center)
         self._rgrid = rgrid
+        if not isinstance(rotate, (int, np.integer)):
+            raise TypeError(f"rotate need to be an bool or integer, got {type(rotate)}")
+        if (rotate is not False) and (not 0 <= rotate < 2 ** 32):
+            raise ValueError(
+                f"rotate need to be an integer [0, 2^32 - 1]\n"
+                f"rotate is not within [0, 2^32 - 1], got {rotate}"
+            )
+        self._rot = rotate
         if degs is None:
             if not isinstance(nums, (np.ndarray, list)):
                 raise TypeError(f"nums is not type: np.array or list, got {type(nums)}")
@@ -76,22 +84,17 @@ class AtomicGrid(Grid):
             degs = np.ones(rgrid.size) * degs
         self._rad_degs = degs
         self._points, self._weights, self._indices = self._generate_atomic_grid(
-            self._rgrid, self._rad_degs
+            self._rgrid, self._rad_degs, rotate=self._rot
         )
         self._size = self._weights.size
         # add random rotation
-        if rotate is not False:
-            if rotate is True:
-                rot_mt = R.random().as_dcm()
-                self._points = np.dot(self._points, rot_mt)
-            elif isinstance(rotate, (int, np.integer)) and rotate >= 0:
-                rot_mt = R.random(random_state=rotate).as_dcm()
-                self._points = np.dot(self._points, rot_mt)
-            else:
-                raise ValueError(
-                    f"rotate need to be an integer [0, 2^32 - 1]\n"
-                    f"rotate is not within [0, 2^32 - 1], got {rotate}"
-                )
+
+        # if rotate is True:
+        #     rot_mt = R.random().as_dcm()
+        #     self._points = np.dot(self._points, rot_mt)
+        # elif isinstance(rotate, (int, np.integer)) and rotate >= 0:
+        #     rot_mt = R.random(random_state=rotate).as_dcm()
+        #     self._points = np.dot(self._points, rot_mt)
 
     @classmethod
     def special_init(
@@ -178,7 +181,7 @@ class AtomicGrid(Grid):
             index of radial points, start from 0
         r_sq : bool, default True
             the grid weights times r**2, total integral sum to 4 pi r**2
-            if False, the total intergral sum to 4 pi
+            if False, the total integral sum to 4 pi
 
         Returns
         -------
@@ -335,7 +338,7 @@ class AtomicGrid(Grid):
         )
 
     @staticmethod
-    def _generate_atomic_grid(rad_grid, degs):
+    def _generate_atomic_grid(rad_grid, degs, rotate=False):
         """Generate atomic grid for each radial point with given magic L.
 
         Parameters
@@ -345,21 +348,34 @@ class AtomicGrid(Grid):
 
         Returns
         -------
-        tuple(AtomicGrid, np.ndarray(N,)), atomic grid and indices for each shell.
+        tuple(np.ndarray(M,), np.ndarray(M,), np.ndarray(N,)),
+            grid points, grid weights, and indices for each shell.
         """
         if len(degs) != rad_grid.size:
             raise ValueError("The shape of radial grid does not match given degs.")
         all_points, all_weights = [], []
         sphere_grids = AtomicGrid._preload_unit_sphere_grid(degs)
-        index_array = np.zeros(len(degs) + 1, dtype=int)  # set index to int
-        for i, j in enumerate(degs):
-            points, weights = AtomicGrid._generate_sphere_grid(
-                rad_grid[i], sphere_grids[j]
-            )
-            index_array[i + 1] = index_array[i] + len(points)
+        shell_pt_indices = np.zeros(len(degs) + 1, dtype=int)  # set index to int
+        for i, deg_i in enumerate(degs):  # TODO: proper tests
+            sphere_grid = sphere_grids[deg_i]
+            if rotate is False:
+                pass
+            # if rotate is True, rotate each shell
+            elif rotate is True:
+                rot_mt = R.random().as_dcm()
+                new_points = np.dot(sphere_grid.points, rot_mt)
+                sphere_grid = AngularGrid(new_points, sphere_grid.weights)
+            # if rotate is a seed
+            else:
+                rot_mt = R.random(random_state=rotate + i).as_dcm()
+                new_points = np.dot(sphere_grid.points, rot_mt)
+                sphere_grid = AngularGrid(new_points, sphere_grid.weights)
+            # construct atomic grid with each radial point and each spherical shell
+            points, weights = AtomicGrid._generate_sphere_grid(rad_grid[i], sphere_grid)
+            shell_pt_indices[i + 1] = shell_pt_indices[i] + len(points)
             all_points.append(points)
             all_weights.append(weights)
-        indices = index_array
+        indices = shell_pt_indices
         points = np.vstack(all_points)
         weights = np.hstack(all_weights)
         # atomic_grid = AtomicGrid(
