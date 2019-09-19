@@ -123,12 +123,12 @@ def generate_lebedev_grid(*, degree=None, size=None):
 
 
 def match_degree(degree_nums):
-    """Generate proper angular degree for given random degree list.
+    """Generate proper angular degree for given arbitrary degree list.
 
     Parameters
     ----------
     degree_nums : list[int]
-        a list of random degree nums
+        a list of arbitrary degree nums
 
     Returns
     -------

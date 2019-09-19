@@ -46,15 +46,17 @@ class TestAtomicGrid(TestCase):
         radial_wts = np.ones(10) * 0.1
         rgrid = OneDGrid(radial_pts, radial_wts)
         rad = 0.5
-        scales = np.array([0.5, 1, 1.5])
+        r_sectors = np.array([0.5, 1, 1.5])
         degs = np.array([6, 14, 14, 6])
         # generate a proper instance without failing.
-        ag_ob = AtomicGrid.special_init(rgrid, radius=rad, scales=scales, degs=degs)
+        ag_ob = AtomicGrid.special_init(
+            rgrid, radius=rad, r_sectors=r_sectors, degs=degs
+        )
         assert isinstance(ag_ob, AtomicGrid)
         assert len(ag_ob.indices) == 11
         assert ag_ob.l_max == 15
         ag_ob = AtomicGrid.special_init(
-            rgrid, radius=rad, scales=np.array([]), degs=np.array([6])
+            rgrid, radius=rad, r_sectors=np.array([]), degs=np.array([6])
         )
         assert isinstance(ag_ob, AtomicGrid)
         assert len(ag_ob.indices) == 11
@@ -77,10 +79,10 @@ class TestAtomicGrid(TestCase):
         radial_wts = np.ones(10) * 0.1
         rgrid = OneDGrid(radial_pts, radial_wts)
         rad = 1
-        scales = np.array([0.2, 0.4, 0.8])
+        r_sectors = np.array([0.2, 0.4, 0.8])
         degs = np.array([3, 5, 7, 3])
         atomic_grid_degree = AtomicGrid._find_l_for_rad_list(
-            rgrid.points, rad, scales, degs
+            rgrid.points, rad, r_sectors, degs
         )
         assert_equal(atomic_grid_degree, [3, 3, 5, 5, 7, 7, 7, 7, 3, 3])
 
@@ -225,20 +227,20 @@ class TestAtomicGrid(TestCase):
         """Tests for error raises."""
         with self.assertRaises(TypeError):
             AtomicGrid.special_init(
-                np.arange(3), 1.0, scales=np.arange(2), degs=np.arange(3)
+                np.arange(3), 1.0, r_sectors=np.arange(2), degs=np.arange(3)
             )
         with self.assertRaises(ValueError):
             AtomicGrid.special_init(
                 OneDGrid(np.arange(3), np.arange(3)),
                 radius=1.0,
-                scales=np.arange(2),
+                r_sectors=np.arange(2),
                 degs=np.arange(0),
             )
         with self.assertRaises(ValueError):
             AtomicGrid.special_init(
                 OneDGrid(np.arange(3), np.arange(3)),
                 radius=1.0,
-                scales=np.arange(2),
+                r_sectors=np.arange(2),
                 degs=np.arange(4),
             )
         with self.assertRaises(ValueError):
@@ -249,7 +251,7 @@ class TestAtomicGrid(TestCase):
             AtomicGrid.special_init(
                 OneDGrid(np.arange(3), np.arange(3)),
                 radius=1.0,
-                scales=np.array([0.3, 0.5, 0.7]),
+                r_sectors=np.array([0.3, 0.5, 0.7]),
                 degs=np.array([3, 5, 7, 5]),
                 center=(0, 0, 0),
             )
@@ -257,7 +259,7 @@ class TestAtomicGrid(TestCase):
             AtomicGrid.special_init(
                 OneDGrid(np.arange(3), np.arange(3)),
                 radius=1.0,
-                scales=np.array([0.3, 0.5, 0.7]),
+                r_sectors=np.array([0.3, 0.5, 0.7]),
                 degs=np.array([3, 5, 7, 5]),
                 center=np.array([0, 0, 0, 0]),
             )

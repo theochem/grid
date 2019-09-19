@@ -51,7 +51,7 @@ class TestMolGrid(TestCase):
         atg1 = AtomicGrid.special_init(
             self.rgrid,
             0.5,
-            scales=np.array([]),
+            r_sectors=np.array([]),
             degs=np.array([17]),
             center=coordinates,
         )
@@ -69,14 +69,14 @@ class TestMolGrid(TestCase):
         atg1 = AtomicGrid.special_init(
             self.rgrid,
             0.5,
-            scales=np.array([]),
+            r_sectors=np.array([]),
             degs=np.array([17]),
             center=coordinates[0],
         )
         atg2 = AtomicGrid.special_init(
             self.rgrid,
             0.5,
-            scales=np.array([]),
+            r_sectors=np.array([]),
             degs=np.array([17]),
             center=coordinates[1],
         )
@@ -96,21 +96,21 @@ class TestMolGrid(TestCase):
         atg1 = AtomicGrid.special_init(
             self.rgrid,
             0.5,
-            scales=np.array([]),
+            r_sectors=np.array([]),
             degs=np.array([17]),
             center=coordinates[0],
         )
         atg2 = AtomicGrid.special_init(
             self.rgrid,
             0.5,
-            scales=np.array([]),
+            r_sectors=np.array([]),
             degs=np.array([17]),
             center=coordinates[1],
         )
         atg3 = AtomicGrid.special_init(
             self.rgrid,
             0.5,
-            scales=np.array([]),
+            r_sectors=np.array([]),
             degs=np.array([17]),
             center=coordinates[2],
         )
@@ -145,7 +145,11 @@ class TestMolGrid(TestCase):
         centers = np.stack([x.ravel(), y.ravel(), z.ravel()], axis=1)
         atgs = [
             AtomicGrid.special_init(
-                self.rgrid, 0.5, scales=np.array([]), degs=np.array([17]), center=center
+                self.rgrid,
+                0.5,
+                r_sectors=np.array([]),
+                degs=np.array([17]),
+                center=center,
             )
             for center in centers
         ]
@@ -166,14 +170,14 @@ class TestMolGrid(TestCase):
         atg1 = AtomicGrid.special_init(
             self.rgrid,
             1.228,
-            scales=np.array([]),
+            r_sectors=np.array([]),
             degs=np.array([17]),
             center=coordinates[0],
         )
         atg2 = AtomicGrid.special_init(
             self.rgrid,
             0.945,
-            scales=np.array([]),
+            r_sectors=np.array([]),
             degs=np.array([17]),
             center=coordinates[1],
         )
@@ -209,14 +213,14 @@ class TestMolGrid(TestCase):
         atg1 = AtomicGrid.special_init(
             self.rgrid,
             1.228,
-            scales=np.array([]),
+            r_sectors=np.array([]),
             degs=np.array([17]),
             center=coordinates[0],
         )
         atg2 = AtomicGrid.special_init(
             self.rgrid,
             0.945,
-            scales=np.array([]),
+            r_sectors=np.array([]),
             degs=np.array([17]),
             center=coordinates[1],
         )
@@ -257,14 +261,14 @@ class TestMolGrid(TestCase):
         atg1 = AtomicGrid.special_init(
             self.rgrid,
             0.5,
-            scales=np.array([]),
+            r_sectors=np.array([]),
             degs=np.array([17]),
             center=coordinates[0],
         )
         atg2 = AtomicGrid.special_init(
             self.rgrid,
             0.5,
-            scales=np.array([]),
+            r_sectors=np.array([]),
             degs=np.array([17]),
             center=coordinates[1],
         )
@@ -283,10 +287,18 @@ class TestMolGrid(TestCase):
         becke = BeckeWeights(order=3)
         mol_grid = MolGrid.horton_molgrid(coors, nums, self.rgrid, 110, becke)
         atg1 = AtomicGrid.special_init(
-            self.rgrid, 0.5, scales=np.array([]), degs=np.array([17]), center=coors[0]
+            self.rgrid,
+            0.5,
+            r_sectors=np.array([]),
+            degs=np.array([17]),
+            center=coors[0],
         )
         atg2 = AtomicGrid.special_init(
-            self.rgrid, 0.5, scales=np.array([]), degs=np.array([17]), center=coors[1]
+            self.rgrid,
+            0.5,
+            r_sectors=np.array([]),
+            degs=np.array([17]),
+            center=coors[1],
         )
         ref_grid = MolGrid([atg1, atg2], becke, nums, store=True)
         assert_allclose(ref_grid.points, mol_grid.points)
@@ -297,7 +309,7 @@ class TestMolGrid(TestCase):
         atg = AtomicGrid.special_init(
             self.rgrid,
             0.5,
-            scales=np.array([]),
+            r_sectors=np.array([]),
             degs=np.array([17]),
             center=np.array([0.0, 0.0, 0.0]),
         )
@@ -332,7 +344,7 @@ class TestMolGrid(TestCase):
 
         # initialize MolGrid with atomic grid
         atg1 = AtomicGrid.special_init(
-            self.rgrid, 0.5, scales=np.array([]), degs=np.array([17]), center=coords
+            self.rgrid, 0.5, r_sectors=np.array([]), degs=np.array([17]), center=coords
         )
         grid = MolGrid([atg1], BeckeWeights(), np.array([1]), store=False)
         fn = np.exp(-2 * np.linalg.norm(grid.points, axis=-1))

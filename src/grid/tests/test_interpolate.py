@@ -131,7 +131,7 @@ class TestInterpolate(TestCase):
         """Test spline projection the same as spherical harmonics."""
         odg = OneDGrid(np.arange(10) + 1, np.ones(10))
         rad = IdentityRTransform().transform_1d_grid(odg)
-        atgrid = AtomicGrid.special_init(rad, 1, scales=[], degs=[7])
+        atgrid = AtomicGrid.special_init(rad, 1, r_sectors=[], degs=[7])
         sph_coor = atgrid.convert_cart_to_sph()
         values = self.helper_func_power(atgrid.points)
         l_max = atgrid.l_max // 2
@@ -158,7 +158,7 @@ class TestInterpolate(TestCase):
         oned = GaussLegendre(30)
         btf = BeckeTF(0.0001, 1.5)
         rad = btf.transform_1d_grid(oned)
-        atgrid = AtomicGrid.special_init(rad, 1, scales=[], degs=[7])
+        atgrid = AtomicGrid.special_init(rad, 1, r_sectors=[], degs=[7])
         value_array = self.helper_func_gauss(atgrid.points)
         result = spline_with_atomic_grid(atgrid, value_array)
         # random test points on gauss function
@@ -178,7 +178,7 @@ class TestInterpolate(TestCase):
         """Test cubicspline interpolation values."""
         odg = OneDGrid(np.arange(10) + 1, np.ones(10))
         rad = IdentityRTransform().transform_1d_grid(odg)
-        atgrid = AtomicGrid.special_init(rad, 1, scales=[], degs=[7])
+        atgrid = AtomicGrid.special_init(rad, 1, r_sectors=[], degs=[7])
         values = self.helper_func_power(atgrid.points)
         result = spline_with_atomic_grid(atgrid, values)
         sph_coor = atgrid.convert_cart_to_sph()
@@ -191,7 +191,7 @@ class TestInterpolate(TestCase):
         """Test cubicspline interpolation values."""
         odg = OneDGrid(np.arange(10) + 1, np.ones(10))
         rad = IdentityRTransform().transform_1d_grid(odg)
-        atgrid = AtomicGrid.special_init(rad, 1, scales=[], degs=[7])
+        atgrid = AtomicGrid.special_init(rad, 1, r_sectors=[], degs=[7])
         sph_coor = atgrid.convert_cart_to_sph()
         values = self.helper_func_power(atgrid.points)
         l_max = atgrid.l_max // 2
@@ -230,7 +230,7 @@ class TestInterpolate(TestCase):
         """Test spline for derivation."""
         odg = OneDGrid(np.arange(10) + 1, np.ones(10))
         rad = IdentityRTransform().transform_1d_grid(odg)
-        atgrid = AtomicGrid.special_init(rad, 1, scales=[], degs=[7])
+        atgrid = AtomicGrid.special_init(rad, 1, r_sectors=[], degs=[7])
         sph_coor = atgrid.convert_cart_to_sph()
         values = self.helper_func_power(atgrid.points)
         l_max = atgrid.l_max // 2
