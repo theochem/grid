@@ -24,7 +24,7 @@ class TestPoisson(TestCase):
         """Test the project function."""
         oned = GaussChebyshev(30)
         btf = BeckeTF(0.0001, 1.5)
-        rad = btf.generate_grid(oned)
+        rad = btf.transform_1d_grid(oned)
         l_max = 7
         atgrid = AtomicGrid(rad, degs=[l_max])
         value_array = self.helper_func_gauss(atgrid.points)
@@ -66,7 +66,7 @@ class TestPoisson(TestCase):
         oned = GaussChebyshev(30)
         oned = GaussChebyshev(50)
         btf = BeckeTF(1e-7, 1.5)
-        rad = btf.generate_grid(oned)
+        rad = btf.transform_1d_grid(oned)
         l_max = 7
         atgrid = AtomicGrid(rad, degs=[l_max])
         value_array = self.helper_func_gauss(atgrid.points)
@@ -144,7 +144,7 @@ class TestPoisson(TestCase):
         """Test solve poisson equation and interpolate the result."""
         oned = GaussChebyshev(50)
         btf = BeckeTF(1e-7, 1.5)
-        rad = btf.generate_grid(oned)
+        rad = btf.transform_1d_grid(oned)
         l_max = 7
         atgrid = AtomicGrid(rad, degs=[l_max])
         value_array = self.helper_func_gauss(atgrid.points)
@@ -202,7 +202,7 @@ class TestPoisson(TestCase):
         """Test proper error raises."""
         oned = GaussChebyshev(50)
         btf = BeckeTF(1e-7, 1.5)
-        rad = btf.generate_grid(oned)
+        rad = btf.transform_1d_grid(oned)
         l_max = 7
         atgrid = AtomicGrid(rad, degs=[l_max])
         value_array = self.helper_func_gauss(atgrid.points)

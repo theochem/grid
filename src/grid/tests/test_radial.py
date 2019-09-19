@@ -31,7 +31,7 @@ def test_basics1():
     """Test basic radial grid transform properties."""
     oned = HortonLinear(4)
     rtf = ExpRTransform(0.1, 1e1)
-    grid = rtf.generate_grid(oned)
+    grid = rtf.transform_1d_grid(oned)
     assert isinstance(grid, OneDGrid)
 
     assert grid.size == 4
@@ -46,7 +46,7 @@ def test_basics2():
     """Test basic radial grid transform properties for bigger grid."""
     oned = HortonLinear(100)
     rtf = ExpRTransform(1e-3, 1e1)
-    grid = rtf.generate_grid(oned)
+    grid = rtf.transform_1d_grid(oned)
     assert isinstance(grid, OneDGrid)
 
     assert grid.size == 100
@@ -61,7 +61,7 @@ def test_integrate_gauss():
     """Test radial grid integral."""
     oned = HortonLinear(100)
     rtf = PowerRTransform(0.0005, 1e1)
-    grid = rtf.generate_grid(oned)
+    grid = rtf.transform_1d_grid(oned)
     assert isinstance(grid, OneDGrid)
 
     y = np.exp(-0.5 * grid.points ** 2)
