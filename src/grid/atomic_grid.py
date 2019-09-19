@@ -59,7 +59,7 @@ class AtomicGrid(Grid):
         TypeError
             ``rgrid`` needs to be an instance of ``Grid`` class.
         ValueError
-            Length of ``degs`` should be one more than ``scales``.
+            Length of ``degs`` should be one more than ``r_sectors``.
         """
         # check stage
         self._input_type_check(rgrid, center)
@@ -98,20 +98,20 @@ class AtomicGrid(Grid):
 
     @classmethod
     def special_init(
-        cls, rgrid, radius, *_, degs, scales, center=np.zeros(3), rotate=False
+        cls, rgrid, radius, *_, degs, r_sectors, center=np.zeros(3), rotate=False
     ):
-        """Initialize an instance for given scales of radius and degrees.
+        """Initialize an instance for given r_sectors of radius and degrees.
 
         Examples
         --------
-        >>> scales = [0.5, 1., 1.5]
+        >>> r_sectors = [0.5, 1., 1.5]
         >>> degs = [3, 7, 5, 3]
         rad is the radius of atom
         # 0 <= r < 0.5rad, angular grid with degree 3
         # 0.5rad <= r < rad, angular grid with degree 7
         # rad <= r < 1.5rad, angular grid with degree 5
         # 1.5rad <= r, angular grid with degree 3
-        >>> atgrid = AtomicGrid.special_init(rgrid, radius, degs, scales, center)
+        >>> atgrid = AtomicGrid.special_init(rgrid, radius, degs, r_sectors, center)
 
         Parameters
         ----------
@@ -119,10 +119,10 @@ class AtomicGrid(Grid):
             Radial grid.
         radius : float
             Atomic radius for target atom.
-        scales : np.ndarray(N,), keyword-only argument
-            Scales to define different regions on the radial axis. The first
-            region is ``[0, radius*scale[0]]``, then ``[radius*scale[0],
-            radius*scale[1]]``, and so on.
+        r_sectors : np.ndarray(N,), keyword-only argument
+            r_sectors to define different regions on the radial axis. The first
+            region is ``[0, radius*r_sectors[0]]``, then ``[radius*r_sectors[0],
+            radius*r_sectors[1]]``, and so on.
         degs : np.ndarray(N + 1, dtype=int), keyword-only argument
             The number of Lebedev-Laikov grid points for each section of atomic
             radius region.
@@ -138,7 +138,7 @@ class AtomicGrid(Grid):
             Generated AtomicGrid instance for this special init method.
         """
         cls._input_type_check(rgrid, center)
-        degs = cls._generate_degree_from_radius(rgrid, radius, scales, degs)
+        degs = cls._generate_degree_from_radius(rgrid, radius, r_sectors, degs)
         return cls(rgrid, degs=degs, center=center, rotate=rotate)
 
     @property
@@ -199,7 +199,7 @@ class AtomicGrid(Grid):
             new_wts = wts
         return AngularGrid(pts, new_wts)
 
-    def convert_point_to_sph(self, points):  # TODO: need tests
+    def convert_point_to_sph(self, points):
         """Convert a set of Cartesian points to sphercial coordinates.
 
         Parameters
@@ -228,7 +228,7 @@ class AtomicGrid(Grid):
         Returns
         -------
         np.ndarray(N, 3):
-            [azimuthal angle(0, 2pi), polar angle(0, pi), radius]
+            [radius, azimuthal angle(0, 2pi), polar angle(0, pi)]
         """
         r = np.linalg.norm(self._points, axis=1)
         # polar angle: arccos(z / r)
@@ -268,35 +268,59 @@ class AtomicGrid(Grid):
             raise ValueError(f"Center should only have 3 entries, got {len(center)}.")
 
     @staticmethod
-    def _generate_degree_from_radius(rgrid, radius, scales, degs):
-        """Generate proper degrees for radius."""
-        scales = np.array(scales)
+    def _generate_degree_from_radius(rgrid, radius, r_sectors, degs):
+        """Generate proper degrees for radius.
+
+        Parameters
+        ----------
+        rgrid : RadialGrid
+            A radialgrid instance
+        radius : float
+            radius of interested atom
+        r_sectors : list or np.ndarray
+            a list of r_sectors number
+        degs : list or np.ndarray
+            a list of degs for each radius section
+
+        Returns
+        -------
+        np.ndarray
+            a numpy array of L degree value for each radial point
+
+        Raises
+        ------
+        ValueError
+            Description
+        """
+        r_sectors = np.array(r_sectors)
         degs = np.array(degs)
         if len(degs) == 0:
             raise ValueError("rad_list can't be empty.")
-        if len(degs) - len(scales) != 1:
-            raise ValueError("degs should have only one more element than scales.")
-        rad_degs = AtomicGrid._find_l_for_rad_list(rgrid.points, radius, scales, degs)
+        if len(degs) - len(r_sectors) != 1:
+            raise ValueError("degs should have only one more element than r_sectors.")
+        rad_degs = AtomicGrid._find_l_for_rad_list(
+            rgrid.points, radius, r_sectors, degs
+        )
         return match_degree(rad_degs)
 
     @staticmethod
-    def _find_l_for_rad_list(radial_arrays, radius, scales, degs):
-        """Find proper magic L value for given scales.
+    def _find_l_for_rad_list(radial_arrays, radius, r_sectors, degs):
+        """Find proper magic L value for given r_sectors.
 
         Parameters
         ----------
         radial_arrays : np.ndarray(N,), radial grid points
         radius : float, atomic radius of desired atom
-        scales : np.ndarray(K,), an array of scales
-        degs : np.ndarray(K+1,), an array of degs for different scales
+        r_sectors : np.ndarray(K,), an array of r_sectors
+        degs : np.ndarray(K+1,), an array of degs for different r_sectors
 
         Returns
         -------
         np.ndarray(N,), an array of magic numbers for each radial points
         """
-        # scale_list   R_row * a
-        radius = scales * radius
-        # use broadcast to compare each point with scale
+        # r_sectors_list   R_row * a
+        radius = r_sectors * radius
+        # use broadcast to compare each point with r_sectors
         # then sum over all the True value, which should equal to the
         # position of L
         position = np.sum(radial_arrays[:, None] > radius[None, :], axis=1)
