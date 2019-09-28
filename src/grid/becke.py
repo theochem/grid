@@ -118,7 +118,7 @@ class BeckeWeights:
             Cartesian coordinates of :math:`N` grid points.
         atom_coords : np.ndarray(M, 3)
             Cartesian coordinates of :math:`M` atoms in molecule.
-        atom_nums : np.ndarray(M, 3)
+        atom_nums : np.ndarray(M,)
             Atomic number of :math:`M` atoms in molecule.
         select : list or integer, optional
             Index of atom index to calculate Becke weights
@@ -149,18 +149,21 @@ class BeckeWeights:
             raise ValueError("# of select does not equal to # of indices.")
         weights = np.zeros(len(points))
         n_p = np.linalg.norm(atom_coords[:, None] - points, axis=-1)
+        # shape of n_p is (#nucs, #points)
         # |r_A - r| - |r_B - r| for each points with pair(A, B) nucleus
-        p_p_n = n_p[:, None] - n_p
+        # (#nucs, None, #points) - (#nucs, #points) -> (#nucs, #nucs, #points)
+        n_n_p = n_p[:, None] - n_p
         atomic_dist = np.linalg.norm(atom_coords[:, None] - atom_coords, axis=-1)
         # ignore 0 / 0 runtime warning
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            mu_n_p_p = p_p_n.transpose([2, 0, 1]) / atomic_dist
-        del p_p_n
+            # mu_p_n_n shape (#points, #uncs, #uncs)
+            mu_p_n_n = n_n_p.transpose([2, 0, 1]) / atomic_dist
+        del n_n_p
         radii = np.array([self._radii[num] for num in atom_nums])
         alpha = BeckeWeights._calculate_alpha(radii)
-        v_pp = mu_n_p_p + alpha * (1 - mu_n_p_p ** 2)
-        del mu_n_p_p
+        v_pp = mu_p_n_n + alpha * (1 - mu_p_n_n ** 2)
+        del mu_p_n_n
         s_ab = 0.5 * (1 - BeckeWeights._switch_func(v_pp, order=self._order))
         del v_pp
         # convert nan to 1
@@ -175,6 +178,107 @@ class BeckeWeights:
                 sub_s_ab = s_ab[pt_ind[i] : pt_ind[i + 1]]
                 weights[pt_ind[i] : pt_ind[i + 1]] += sub_s_ab[:, select[i]] / np.sum(
                     sub_s_ab, axis=-1
+                )
+        return weights
+
+    def compute_atom_weight(self, points, atom_coords, atom_nums, select, cutoff=0.45):
+        """Compute Becke weights for given atomic grid points.
+
+        Parameters
+        ----------
+        points : np.ndarray(N, 3)
+            Coordinates of points from given atomic grid
+        atom_coords : np.ndarray(M, 3)
+            Coordinates of nucleis
+        atom_nums : np.ndarray(M,)
+            Atomic number for each nuclei
+        select : int
+            Index of atom A for computing the weights
+        cutoff : float, optional
+            Cufoff for a_AB if the value is too big or too small
+
+        Returns
+        -------
+        np.ndarray(N,)
+            Becke weights of points for selected atom
+        """
+        # #Nucs: M, #Pts: N
+        # initialize points array (N,)
+        weights = np.zeros(len(points))
+        # shape of n_p is (M, N)
+        n_p = np.linalg.norm(atom_coords[:, None] - points, axis=-1)
+        # |r_A - r| - |r_B - r| for each points with pair(A, B) nucleus
+        # (M, None, N) - (M, N) -> (M, M, N)
+        n_n_p = n_p[:, None] - n_p
+        atomic_dist = np.linalg.norm(atom_coords[:, None] - atom_coords, axis=-1)
+        # ignore 0 / 0 runtime warning
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            # mu_p_n_n shape (N, M, M)
+            mu_p_n_n = n_n_p.transpose([2, 0, 1]) / atomic_dist
+        del n_n_p
+        radii = np.array([self._radii[num] for num in atom_nums])
+        alpha = BeckeWeights._calculate_alpha(radii)
+        v_pp = mu_p_n_n + alpha * (1 - mu_p_n_n ** 2)
+        del mu_p_n_n
+        s_ab = 0.5 * (1 - BeckeWeights._switch_func(v_pp, order=self._order))
+        del v_pp
+        # convert nan to 1
+        s_ab[np.isnan(s_ab)] = 1
+        # product up A_B, A_C, A_D ... along rows
+        s_ab = np.prod(s_ab, axis=-1)
+        # calculate weight for each point in select
+        weights += s_ab[:, select] / np.sum(s_ab, axis=-1)
+        return weights
+
+    def compute_weights(
+        self, points, atom_coords, atom_nums, *, select=None, pt_ind=None
+    ):
+        """Compute becke weights for given points and select atoms.
+
+        Parameters
+        ----------
+        points : np.ndarray(N, 3)
+            Cartesian coordinates of :math:`N` grid points.
+        atom_coords : np.ndarray(M, 3)
+            Cartesian coordinates of :math:`M` atoms in molecule.
+        atom_nums : np.ndarray(M,)
+            Atomic number of :math:`M` atoms in molecule.
+        select : list or integer, optional
+            Index of atom index to calculate Becke weights
+        pt_ind : list, optional
+            Index of points for splitting sectors
+
+        Return
+        ------
+        np.ndarray(N, )
+            Becke integration weights of :math:`N` grid points.
+        """
+        if select is None:
+            select = np.arange(len(atom_coords))
+        elif isinstance(select, (np.integer, int)):
+            select = [select]
+        # check ``pt_ind`` points index
+        if pt_ind is None:
+            pt_ind = []
+        elif len(pt_ind) == 1:
+            raise ValueError("pt_ind need include the ends of each section")
+        # check how many sectors for becke weights need to be calculated
+        sectors = max(len(pt_ind) - 1, 1)  # total sectors
+        if sectors != len(select):
+            raise ValueError("# of select does not equal to # of indices.")
+        weights = np.zeros(len(points))
+        # only weight for one atom
+        if sectors == 1:
+            weights += self.compute_atom_weight(
+                points, atom_coords, atom_nums, select[0]
+            )
+        else:
+            for i in select:
+                ind_start = pt_ind[i]
+                ind_end = pt_ind[i + 1]
+                weights[ind_start:ind_end] += self.compute_atom_weight(
+                    points[ind_start:ind_end], atom_coords, atom_nums, i
                 )
         return weights
 
