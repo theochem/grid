@@ -1,30 +1,37 @@
-# -*- coding: utf-8 -*-
-# OLDGRIDS: Helpful Open-source Research TOol for N-fermion systems.
-# Copyright (C) 2011-2017 The OLDGRIDS Development Team
+# GRID is a numerical integration module for quantum chemistry.
 #
-# This file is part of OLDGRIDS.
+# Copyright (C) 2011-2019 The GRID Development Team
 #
-# OLDGRIDS is free software; you can redistribute it and/or
+# This file is part of GRID.
+#
+# GRID is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 3
 # of the License, or (at your option) any later version.
 #
-# OLDGRIDS is distributed in the hope that it will be useful,
+# GRID is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>
-#
 # --
 """Test lebedev grid."""
 from unittest import TestCase
 
-from grid.grid import AngularGrid
-from grid.lebedev import _select_grid_type, generate_lebedev_grid, n_degree, n_points
+from grid.basegrid import AngularGrid
+from grid.lebedev import (
+    _select_grid_type,
+    generate_lebedev_grid,
+    match_degree,
+    n_degree,
+    n_points,
+    size_to_degree,
+)
 
 import numpy as np
+from numpy.testing import assert_allclose, assert_array_equal, assert_equal
 
 
 class TestLebedev(TestCase):
@@ -33,7 +40,7 @@ class TestLebedev(TestCase):
     def test_consistency(self):
         """Consistency tests from old grid."""
         for i in range(len(n_points)):
-            assert _select_grid_type(degree=n_degree[i])[1] == n_points[i]
+            assert_equal(_select_grid_type(degree=n_degree[i])[1], n_points[i])
 
     def test_lebedev_laikov_sphere(self):
         """Levedev grid tests from old grid."""
@@ -43,14 +50,39 @@ class TestLebedev(TestCase):
             if npoint > previous_npoint:
                 grid = generate_lebedev_grid(size=npoint)
                 assert isinstance(grid, AngularGrid)
-                assert abs(grid.weights.sum() - 1.0) < 1e-10
-                assert abs(grid.points[:, 0].sum()) < 1e-10
-                assert abs(grid.points[:, 1].sum()) < 1e-10
-                assert abs(grid.points[:, 2].sum()) < 1e-10
-                assert abs(np.dot(grid.points[:, 0], grid.weights)) < 1e-15
-                assert abs(np.dot(grid.points[:, 1], grid.weights)) < 1e-15
-                assert abs(np.dot(grid.points[:, 2], grid.weights)) < 1e-15
+                assert_allclose(grid.weights.sum(), 1.0 * 4 * np.pi)
+                assert_allclose(grid.points[:, 0].sum(), 0, atol=1e-10)
+                assert_allclose(grid.points[:, 1].sum(), 0, atol=1e-10)
+                assert_allclose(grid.points[:, 2].sum(), 0, atol=1e-10)
+                assert_allclose(np.dot(grid.points[:, 0], grid.weights), 0, atol=1e-10)
+                assert_allclose(np.dot(grid.points[:, 1], grid.weights), 0, atol=1e-10)
+                assert_allclose(np.dot(grid.points[:, 2], grid.weights), 0, atol=1e-10)
             previous_npoint = npoint
+
+    def test_match_degree(self):
+        """Test match proper degree for random given values."""
+        # test array 1
+        num_list1 = [3, 4, 5, 6, 7, 8, 9, 10]
+        result1 = match_degree(num_list1)
+        assert_array_equal(result1, [3, 5, 5, 7, 7, 9, 9, 11])
+
+        # test array 2
+        num_list2 = [33, 34, 35, 36, 37, 38, 39, 40]
+        result2 = match_degree(num_list2)
+        assert_array_equal(result2, [35, 35, 35, 41, 41, 41, 41, 41])
+
+    def test_size_to_degree(self):
+        """Test size to degree conversion."""
+        # first test
+        nums = [38, 50, 74, 86, 110, 38, 50, 74]
+        degs = size_to_degree(nums)
+        ref_degs = [9, 11, 13, 15, 17, 9, 11, 13]
+        assert_array_equal(degs, ref_degs)
+        # second test
+        nums = [6]
+        degs = size_to_degree(nums)
+        ref_degs = [3]
+        assert_array_equal(degs, ref_degs)
 
     def test_errors_and_warnings(self):
         """Tests for errors and warning."""

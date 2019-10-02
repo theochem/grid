@@ -1,8 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
-# GRID is a numerical integration library for quantum chemistry.
+# GRID is a numerical integration module for quantum chemistry.
 #
-# Copyright (C) 2011-2017 The GRID Development Team
+# Copyright (C) 2011-2019 The GRID Development Team
 #
 # This file is part of GRID.
 #
@@ -18,7 +17,6 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>
-#
 # --
 """Get the version string from the git tag."""
 

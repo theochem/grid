@@ -1,8 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
-# GRID is a numerical integration library for quantum chemistry.
+# GRID is a numerical integration module for quantum chemistry.
 #
-# Copyright (C) 2011-2017 The GRID Development Team
+# Copyright (C) 2011-2019 The GRID Development Team
 #
 # This file is part of GRID.
 #
@@ -18,13 +17,12 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>
-#
 # --
 # pragma pylint: disable=invalid-name
 """Package build and install script."""
 
 
-from setuptools import find_namespace_packages, setup
+from setuptools import find_packages, setup
 
 
 def get_version():
@@ -56,9 +54,17 @@ setup(
     author_email="horton.chemtools@gmail.com",
     url="https://github.com/theochem/grid",
     package_dir={"": "src"},
-    packages=find_namespace_packages(where='src'),
-    package_data={"grid.data.lebedev": ["*.npz"]},
+    packages=find_packages(where="src"),
+    package_data={
+        "grid.data": ["*.*"],
+        "grid.data.lebedev": ["*.npz"],
+    },
     zip_safe=False,
-    install_requires=["numpy>=1.16", "pytest>=2.6", "scipy>=1.2",
-                      "importlib_resources"],
+    install_requires=[
+        "numpy>=1.16",
+        "pytest>=2.6",
+        "scipy>=1.2",
+        "importlib_resources",
+        "sympy",
+    ],
 )

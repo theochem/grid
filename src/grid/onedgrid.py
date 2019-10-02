@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
-# GRID is a numerical integration library for quantum chemistry.
+# GRID is a numerical integration module for quantum chemistry.
 #
-# Copyright (C) 2011-2017 The GRID Development Team
+# Copyright (C) 2011-2019 The GRID Development Team
 #
 # This file is part of GRID.
 #
@@ -17,226 +16,118 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>
-#
 # --
-"""1D Radial integration grid."""
-from grid.grid import Grid
+"""1D integration grid."""
+
+
+from grid.basegrid import OneDGrid
 
 import numpy as np
 
 from scipy.special import roots_chebyu, roots_genlaguerre
 
 
-def generate_onedgrid(npoints, *args):
-    """Place holder for general api."""
-    ...
-
-
 def GaussLaguerre(npoints, alpha=0):
-    """Generate Gauss-Laguerre grid.
+    r"""Generate 1D grid on [0, inf) interval based on Generalized Gauss-Laguerre quadrature.
+
+    The fundamental definition of Generalized Gauss-Laguerre quadrature is:
+
+    .. math::
+        \int_{0}^{\infty} x^\alpha e^{-x} f(x) dx \approx \sum_{i=1}^n w_i f(x_i)
+
+    However, to integrate function :math:`g(x)` over [0, inf), this is re-written as:
+
+    .. math::
+        \int_{0}^{\infty} g(x)dx \approx
+        \sum_{i=1}^n \frac{w_i}{x_i^\alpha e^{-x_i}} g(x_i) = \sum_{i=1}^n w_i' g(x_i)
 
     Parameters
     ----------
     npoints : int
-        Number of points in the grid
-    alpha : int, default to 0, required to be > -1
-        parameter alpha value
+        Number of grid points.
+    alpha : float, optional
+        Value of parameter :math:`alpha` which should be larger than -1.
 
     Returns
     -------
-    Grid
-        A grid instance with points and weights
+    OneDGrid
+        A 1D grid instance.
+
     """
     if alpha <= -1:
         raise ValueError(f"Alpha need to be bigger than -1, given {alpha}")
     points, weights = roots_genlaguerre(npoints, alpha)
-    return Grid(points, weights)
+    weights = weights * np.exp(points) * np.power(points, -alpha)
+    return OneDGrid(points, weights, (0, np.inf))
 
 
 def GaussLegendre(npoints):
-    """Generate Gauss-Legendre grid.
+    r"""Generate 1D grid on [-1, 1] interval based on Gauss-Legendre quadrature.
+
+    .. math::
+        \int_{-1}^{1} f(x) dx \approx \sum_{i=1}^n w_i f(x_i)
 
     Parameters
     ----------
     npoints : int
-        Number of points in the grid
+        Number of grid points.
 
     Returns
     -------
-    Grid
-        A grid instance with points and weights
+    OneDGrid
+        A 1D grid instance.
+
     """
     points, weights = np.polynomial.legendre.leggauss(npoints)
-    return Grid(points, weights)
+    return OneDGrid(points, weights, (-1, 1))
 
 
 def GaussChebyshev(npoints):
-    """Generate Gauss-Legendre grid.
+    r"""Generate 1D grid on [-1, 1] interval based on Gauss-Chebyshev quadrature.
+
+    The fundamental definition of Gauss-Chebyshev quadrature is:
+
+    .. math::
+        \int_{-1}^{1} \frac{f(x)}{\sqrt{1-x^2}} dx \approx \sum_{i=1}^n w_i f(x_i)
+
+    However, to integrate function :math:`g(x)` over [-1, 1], this is re-written as:
+
+    .. math::
+        \int_{-1}^{1}g(x) dx \approx \sum_{i=1}^n w_i \sqrt{1-x_i^2} g(x_i)
+        = \sum_{i=1}^n w_i' g(x_i)
 
     Parameters
     ----------
     npoints : int
-        Number of points in the grid
+        Number of grid points.
 
     Returns
     -------
-    Grid
-        A grid instance with points and weights
+    OneDGrid
+        A 1D grid instance.
+
     """
+    # points are generated in decreasing order
+    # weights are pi/n, all weights are the same
     points, weights = np.polynomial.chebyshev.chebgauss(npoints)
-    return Grid(points, weights)
+    weights = weights * np.sqrt(1 - np.power(points, 2))
+    return OneDGrid(points[::-1], weights, (-1, 1))
 
 
-def GaussChebyshevType2(npoints):
-    """Generate Gauss-Chebyshev (type 2) grid.
-
-    Parameters
-    ----------
-    npoints : int
-        Number of points in the grid
-
-    Returns
-    -------
-    Grid
-        An grid instance with points and weights
-    """
-    points, weights = roots_chebyu(npoints)
-    return Grid(points, weights)
-
-
-def GaussChebyshevLobatto(npoints):
-    """Generate Gauss-Chebyshev-Lobatto grid.
+def HortonLinear(npoints):
+    """Generate 1D grid on [0, npoints] interval using equally spaced uniform distribution.
 
     Parameters
     ----------
     npoints : int
-        Number of points in the grid
+        Number of grid points.
 
     Returns
     -------
-    Grid
-        An grid instance with points and weights
+    OneDGrid
+        A 1D grid instance.
+
     """
-    idx = np.arange(npoints)
+    points = np.arange(npoints)
     weights = np.ones(npoints)
-
-    idx = (idx * np.pi) / (npoints - 1)
-
-    points = np.cos(idx)
-    points = np.sort(points)
-
-    weights *= np.pi / (npoints - 1)
-    weights[0] /= 2
-    weights[npoints - 1] = weights[0]
-
-    return Grid(points, weights)
-
-
-def RectangleRuleSineEndPoints(npoints):
-    """Generate Rectangle rule for sine series with end points.
-
-    The range of this rule is [0:1]
-
-    Parameters
-    ----------
-    npoints : int
-        Number of points in the grid
-
-    Returns
-    -------
-    Grid
-        An grid instance with points and weights
-    """
-    idx = np.arange(npoints) + 1
-    points = idx / (npoints + 1)
-
-    weights = np.zeros(npoints)
-
-    index_m = np.arange(npoints) + 1
-
-    for i in range(0, npoints):
-        elements = np.zeros(npoints)
-        elements = np.sin(index_m * np.pi * points[i])
-        elements = elements * (1 - np.cos(index_m * np.pi)) / (index_m * np.pi)
-
-        weights[i] = (2 / (npoints + 1)) * np.sum(elements)
-
-    return Grid(points, weights)
-
-
-def RectangleRuleSine(npoints):
-    """Generate Rectangle rule for sine series without end points.
-
-    The range of this rule is [0:1]
-
-    Parameters
-    ----------
-    npoints : int
-        Number of points in the grid
-
-    Returns
-    -------
-    Grid
-        An grid instance with points and weights
-    """
-    idx = np.arange(npoints) + 1
-    points = (2 * idx - 1) / (2 * npoints)
-
-    weights = np.zeros(npoints)
-
-    index_m = np.arange(npoints - 1) + 1
-
-    for i in range(0, npoints):
-        elements = np.zeros(npoints - 1)
-        elements = np.sin(index_m * np.pi * points[i])
-        elements *= np.sin(index_m * np.pi / 2) ** 2
-        elements /= index_m
-
-        weights[i] = (4 / (npoints * np.pi)) * np.sum(elements)
-
-        weights[i] += (
-            (2 / (npoints * np.pi ** 2))
-            * np.sin(npoints * np.pi * points[i])
-            * np.sin(npoints * np.pi / 2) ** 2
-        )
-
-    return Grid(points, weights)
-
-
-def TanhSinh(npoints, delta):
-    """Generate Tanh-Sinh rule.
-
-    The ranges is [-1:1] you need proporcionate
-    a delta value for this rule.
-
-    Parameters
-    ----------
-    npoints : int
-        Number of points in the grid, this value must be odd.
-
-    delta : float
-        A parameter of size.
-
-    Returns
-    -------
-    Grid
-        An grid instance with points and weights.
-    """
-    if npoints % 2 == 0:
-        raise ValueError("npoints must be odd, given {npoints}")
-
-    jmin = (int)(1 - npoints) / 2
-
-    points = np.zeros(npoints)
-    weights = np.zeros(npoints)
-
-    for i in range(0, npoints):
-        j = jmin + i
-        arg = np.pi * np.sinh(j * delta) / 2
-
-        points[i] = np.tanh(arg)
-
-        weights[i] = np.pi * delta * np.cosh(j * delta) * 0.5
-        weights[i] /= np.cosh(arg) ** 2
-
-    return Grid(points, weights)
+    return OneDGrid(points, weights)
