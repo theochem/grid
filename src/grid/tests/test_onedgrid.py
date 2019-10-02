@@ -22,12 +22,23 @@
 
 from unittest import TestCase
 
-from grid.onedgrid import GaussChebyshev, GaussLaguerre, GaussLegendre, HortonLinear
+from grid.onedgrid import (
+    GaussChebyshev,
+    GaussChebyshevLobatto,
+    GaussChebyshevType2,
+    GaussLaguerre,
+    GaussLegendre,
+    HortonLinear,
+    RectangleRuleSine,
+    RectangleRuleSineEndPoints,
+    TanhSinh,
+    Trapezoidal,
+)
 
 import numpy as np
 from numpy.testing import assert_allclose
 
-from scipy.special import roots_legendre
+from scipy.special import roots_chebyu, roots_legendre
 
 
 class TestOneDGrid(TestCase):
@@ -87,6 +98,20 @@ class TestOneDGrid(TestCase):
         weights *= np.pi / 9
         weights[0] /= 2
         weights[9] /= 2
+
+        assert np.allclose(grid.points, points)
+        assert np.allclose(grid.weights, weights)
+
+    def test_trapezoidal(self):
+        """Test for Trapezoidal rule."""
+        grid = Trapezoidal(10)
+
+        idx = np.arange(10)
+        points = -1 + (2 * idx / 9)
+
+        weights = 2 * np.ones(10) / 10
+        weights[0] /= 2
+        weights[9] = weights[0]
 
         assert np.allclose(grid.points, points)
         assert np.allclose(grid.weights, weights)
