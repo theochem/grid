@@ -385,7 +385,7 @@ def TanhSinh(npoints, delta):
     if npoints % 2 == 0:
         raise ValueError("npoints must be odd, given {npoints}")
 
-    jmin = (int)(1 - npoints) / 2
+    jmin = int((1 - npoints) / 2)
 
     points = np.zeros(npoints)
     weights = np.zeros(npoints)
