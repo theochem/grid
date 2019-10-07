@@ -24,7 +24,7 @@ from grid.basegrid import OneDGrid
 
 import numpy as np
 
-from scipy.special import roots_genlaguerre
+from scipy.special import roots_chebyu, roots_genlaguerre
 
 
 def GaussLaguerre(npoints, alpha=0):
@@ -259,12 +259,17 @@ def Trapezoidal(npoints):
 
 
 def RectangleRuleSineEndPoints(npoints):
-    r"""Generate 1D grid on [0:1] interval based on rectangle rule.
+    r"""Generate 1D grid on [-1:1] interval based on rectangle rule.
 
     The fundamental definition of this quadrature is:
 
     .. math::
-        \int_{0}^{1} f(x) dx \approx \sum_{i=1}^n w_i f(x_i)
+        \int_{-1}^{1} f(x) dx \approx \sum_{i=1}^n w_i f(x_i)
+
+    The range of integration can be modified by :math: `q = 2 x - 1`.
+
+    .. math::
+        2 \int_{0}^{1} f(x) dx = \int_{-1}^{1} f(q) dq
 
     Where
 
@@ -299,11 +304,14 @@ def RectangleRuleSineEndPoints(npoints):
     for i in range(0, npoints):
         elements = np.zeros(npoints)
         elements = np.sin(index_m * np.pi * points[i])
-        elements = elements * (1 - np.cos(index_m * np.pi)) / (index_m * np.pi)
+        elements *= (1 - np.cos(index_m * np.pi)) / (index_m * np.pi)
 
         weights[i] = (2 / (npoints + 1)) * np.sum(elements)
 
-    return OneDGrid(points, weights, (0, 1))
+    points = 2 * points - 1
+    weights *= 2
+
+    return OneDGrid(points, weights, (-1, 1))
 
 
 def RectangleRuleSine(npoints):
@@ -313,6 +321,11 @@ def RectangleRuleSine(npoints):
 
     .. math::
         \int_{0}^{1} f(x) dx \approx \sum_{i=1}^n w_i f(x_i)
+
+    The range of integration can be modified by :math: `q = 2 x - 1`.
+
+    .. math::
+        2 \int_{0}^{1} f(x) dx = \int_{-1}^{1} f(q) dq
 
     Where
 
@@ -359,10 +372,13 @@ def RectangleRuleSine(npoints):
             * np.sin(npoints * np.pi / 2) ** 2
         )
 
-    return OneDGrid(points, weights, (0, 1))
+    points = 2 * points - 1
+    weights *= 2
+
+    return OneDGrid(points, weights, (-1, 1))
 
 
-def TanhSinh(npoints, delta):
+def TanhSinh(npoints, delta=0.1):
     r"""Generate 1D grid on [-1,1] interval based on Tanh-Sinh rule.
 
     The fundamental definition is:
