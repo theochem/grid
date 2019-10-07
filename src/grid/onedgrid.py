@@ -24,7 +24,7 @@ from grid.basegrid import OneDGrid
 
 import numpy as np
 
-from scipy.special import roots_genlaguerre
+from scipy.special import roots_chebyu, roots_genlaguerre
 
 
 def GaussLaguerre(npoints, alpha=0):
