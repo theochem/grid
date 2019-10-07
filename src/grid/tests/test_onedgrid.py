@@ -22,12 +22,23 @@
 
 from unittest import TestCase
 
-from grid.onedgrid import GaussChebyshev, GaussLaguerre, GaussLegendre, HortonLinear
+from grid.onedgrid import (
+    GaussChebyshev,
+    GaussChebyshevLobatto,
+    GaussChebyshevType2,
+    GaussLaguerre,
+    GaussLegendre,
+    HortonLinear,
+    RectangleRuleSine,
+    RectangleRuleSineEndPoints,
+    TanhSinh,
+    Trapezoidal,
+)
 
 import numpy as np
 from numpy.testing import assert_allclose, assert_almost_equal
 
-from scipy.special import roots_legendre
+from scipy.special import roots_chebyu, roots_legendre
 
 
 class TestOneDGrid(TestCase):
@@ -45,8 +56,8 @@ class TestOneDGrid(TestCase):
         assert_allclose(grid.points, points)
         assert_allclose(grid.weights, weights)
 
-    def test_gausslengendre(self):
-        """Test Guass Lengendre polynomial grid."""
+    def test_gausslegendre(self):
+        """Test Guass Legendre polynomial grid."""
         points, weights = roots_legendre(10)
         grid = GaussLegendre(10)
         assert_allclose(grid.points, points)
@@ -70,6 +81,7 @@ class TestOneDGrid(TestCase):
         """Test Gauss Chebyshev type 2 polynomial grid."""
         points, weights = roots_chebyu(10)
         grid = GaussChebyshevType2(10)
+        weights /= np.sqrt(1 - np.power(points, 2))
         assert np.allclose(grid.points, points)
         assert np.allclose(grid.weights, weights)
 
@@ -85,8 +97,23 @@ class TestOneDGrid(TestCase):
         points = np.sort(points)
 
         weights *= np.pi / 9
+        weights *= np.sqrt(1 - np.power(points, 2))
         weights[0] /= 2
         weights[9] /= 2
+
+        assert np.allclose(grid.points, points)
+        assert np.allclose(grid.weights, weights)
+
+    def test_trapezoidal(self):
+        """Test for Trapezoidal rule."""
+        grid = Trapezoidal(10)
+
+        idx = np.arange(10)
+        points = -1 + (2 * idx / 9)
+
+        weights = 2 * np.ones(10) / 10
+        weights[0] /= 2
+        weights[9] = weights[0]
 
         assert np.allclose(grid.points, points)
         assert np.allclose(grid.weights, weights)
@@ -108,6 +135,9 @@ class TestOneDGrid(TestCase):
             elements *= (1 - np.cos(index_m * np.pi)) / (index_m * np.pi)
 
             weights[i] = (2 / (11)) * np.sum(elements)
+
+        points = 2 * points - 1
+        weights *= 2
 
         assert np.allclose(grid.points, points)
         assert np.allclose(grid.weights, weights)
@@ -136,6 +166,9 @@ class TestOneDGrid(TestCase):
                 * np.sin(10 * np.pi * points[i])
                 * np.sin(10 * np.pi / 2) ** 2
             )
+
+        points = 2 * points - 1
+        weights *= 2
 
         assert np.allclose(grid.points, points)
         assert np.allclose(grid.weights, weights)
@@ -184,7 +217,16 @@ class TestOneDGrid(TestCase):
         """A simple integral tests for basic oned grid."""
         # create candidate function
         # add more ``quadratures: npoints`` if needed
-        candidates_quadratures = {GaussChebyshev: 15, GaussLegendre: 15}
+        candidates_quadratures = {
+            GaussChebyshev: 15,
+            GaussLegendre: 15,
+            GaussChebyshevType2: 20,
+            GaussChebyshevLobatto: 25,
+            Trapezoidal: 1000,
+            RectangleRuleSineEndPoints: 400,
+            RectangleRuleSine: 150,
+            TanhSinh: 31,
+        }
         # loop each pair to create pts instance
         for quadrature, n_points in candidates_quadratures.items():
             grid = quadrature(n_points)
