@@ -198,7 +198,10 @@ class TestOneDGrid(TestCase):
         """Test errors raise."""
         with self.assertRaises(ValueError):
             GaussLaguerre(10, -1)
-
+        with self.assertRaises(ValueError):
+            TanhSinh(10, 1)
+            
+            
     @staticmethod
     def helper_gaussian(x):
         """Compute gauss function for integral between [-1, 1]."""

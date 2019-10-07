@@ -206,6 +206,7 @@ def GaussChebyshevLobatto(npoints):
 
     weights *= np.pi / (npoints - 1)
     weights *= np.sqrt(1 - np.power(points, 2))
+
     weights[0] /= 2
     weights[npoints - 1] = weights[0]
 
