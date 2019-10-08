@@ -878,3 +878,669 @@ class HyperbolicRTransform(BaseTransform):
 #         return " ".join(
 #             ["HyperbolicRTransform", repr(self.a), repr(self.b), repr(self.npoint)]
 #         )
+
+
+class MultiExpTF(BaseTransform):
+    """MultiExp Transformation class."""
+
+    def __init__(self, rmin, R, trim_inf=True):
+        """Construct MultiExp transform [-1,1] -> [rmin,inf).
+
+        Parameters
+        ----------
+        rmin: float
+            The minimum coordinate for transformed radial array.
+        R: float
+            The scale factor for transformed radial array.
+        trim_inf : bool, optional
+            Flag to trim infinite value in transformed array. If True, it will
+            replace np.inf with 1e16. This may cause unexpected errors in the
+            following operations.
+        """
+        self._rmin = rmin
+        self._R = R
+        self.trim_inf = trim_inf
+
+    @property
+    def rmin(self):
+        """float: The minimum value for the transformed radial array."""
+        return self._rmin
+
+    @property
+    def R(self):
+        """float: The scale factor for the transformed radial array."""
+        return self._R
+
+    def transform(self, x):
+        r"""Transform given array [-1,1] to radial array [rmin,inf).
+
+        .. math::
+            r_i = -R \log \left( \frac{x_i + 1}{2} \right) + r_{min}
+
+        Parameters
+        ----------
+        x : np.ndarray(N,)
+            One dimension numpy array with values between [-1,1].
+
+        Returns
+        -------
+        np.ndarray(N,)
+            Transformed array located between [rmin,inf).
+        """
+        rf_array = -self._R * np.log((x + 1) / 2) + self._rmin
+        if self.trim_inf:
+            rf_array = self._convert_inf(rf_array)
+        return rf_array
+
+    def inverse(self, r):
+        r"""Transform array [rmin,inf) back to original array [-1,1].
+
+        .. math::
+            x_i = 2 \exp \left( \frac{-(r_i - r_{min})}{R} \right) - 1
+
+        Parameters
+        ----------
+        r : np.ndarray(N,)
+            Sorted one dimension radial array with values bewteen [rmin, inf).
+
+        Returns
+        -------
+        np.ndarray(N,)
+            The original one dimension array located bewteen [-1, 1].
+        """
+        return 2 * np.exp(-(r - self._rmin) / self._R) - 1
+
+    def deriv(self, x):
+        r"""Compute the 1st derivative of MultiExp transformation.
+
+        .. math::
+            \frac{dr}{dx} = -\frac{R}{1+x}
+
+        Parameters
+        ----------
+        x: np.ndarray(N,)
+            One dimension numpy array with values between [-1, 1].
+
+        Returns
+        -------
+        np.ndarray(N,)
+            The first derivative of MultiExp transformation at each point.
+        """
+        return -self._R / (1 + x)
+
+    def deriv2(self, x):
+        r"""Compute the 2nd derivative of MultiExp transformation.
+
+        .. math::
+            \frac{d^2r}{dx^2} = \frac{R}{(1 + x)^2}
+
+        Parameters
+        ----------
+        x: np.ndarray(N,)
+            One dimension numpy array with values between [-1,1].
+
+        Returns
+        -------
+        np.ndarray(N,)
+            The second derivative of MultiExp transformation at each point.
+        """
+        return self._R / (1 + x) ** 2
+
+    def deriv3(self, x):
+        r"""Compute the 3rd derivative of MultiExp transformation.
+
+        .. math::
+            \frac{d^3r}{dx^3} = -\frac{2R}{(1 + x)^3}
+
+        Parameters
+        ----------
+        x: np.ndarray(N,)
+            One dimension numpy array with values between [-1,1].
+
+        Returns
+        -------
+        np.ndarray(N,)
+            The third derivative of MultiExp transformation at each point.
+        """
+        return -2 * self._R / (1 + x) ** 3
+
+
+class KnowlesTF(BaseTransform):
+    """Knowles Transformation class."""
+
+    def __init__(self, rmin, R, k, trim_inf=True):
+        """Construct Knowles transform [-1,1] -> [rmin,inf).
+
+        Parameters
+        ----------
+        rmin: float
+            The minimum coordinate for transformed radial array.
+        R: float
+            The scale factor for transformed radial array.
+        k: integer k > 0
+            Free parameter, k must be > 0.
+        trim_inf : bool, optional
+            Flag to trim infinite value in transformed array. If True, it will
+            replace np.inf with 1e16. This may cause unexpected errors in the
+            following operations.
+        """
+        if k <= 0:
+            raise ValueError(f"k needs to be greater than 0.")
+        self._rmin = rmin
+        self._R = R
+        self._k = k
+        self.trim_inf = trim_inf
+
+    @property
+    def rmin(self):
+        """float: The minimum value for the transformed radial array."""
+        return self._rmin
+
+    @property
+    def R(self):
+        """float: The scale factor for the transformed radial array."""
+        return self._R
+
+    @property
+    def k(self):
+        """float: Free and extra parameter, k must be > 0."""
+        return self._k
+
+    def transform(self, x):
+        r"""Transform given array [-1,1] to radial array [rmin,inf).
+
+        .. math::
+            r_i = r_{min} - R \log \left( 1 - 2^{-k} (x_i + 1)^k \right)
+
+        Parameters
+        ----------
+        x: np.ndarray(N,)
+            One dimension numpy array with values between [-1,1]
+
+        Returns
+        -------
+        np.ndarray(N,)
+            One dimension numpy array with values between [rmin,inf).
+        """
+        rf_array = (
+            -self._R * np.log(1 - (2 ** -self._k) * (x + 1) ** self._k) + self._rmin
+        )
+        if self.trim_inf:
+            rf_array = self._convert_inf(rf_array)
+        return rf_array
+
+    def inverse(self, r):
+        r"""Transform radiar array [rmin,inf) back to original array [-1,1].
+
+        .. math::
+            x_i = 2 \sqrt[k]{1-\exp \left( -\frac{r_i-r_{min}}{R}\right)}-1
+
+        Parameters
+        ----------
+        r: np.ndarray(N,)
+            Sorted one dimension radial array with values bewteen [rmin,inf).
+
+        Returns
+        -------
+        np.ndarray(N,)
+            The original one dimension array with values bewteen [-1,1]
+        """
+        return -1 + 2 * (1 - np.exp((self._rmin - r) / self._R)) ** (1 / self._k)
+
+    def deriv(self, x):
+        r"""Compute the 1st derivative of Knowles transformation.
+
+        .. math::
+            \frac{dr}{dx} = kR \frac{(1+x_i)^{k-1}}{2^k-(1+x_i)^k}
+
+        Parameters
+        ----------
+        x: np.ndarray(N,)
+            One dimension numpy array with values between [-1,1].
+
+        Returns
+        -------
+        np.ndarray(N,)
+            The first derivative of Knowles transformation at each point.
+        """
+        qi = 1 + x
+        return (
+            self._R * self._k * (qi ** (self._k - 1)) / (2 ** self._k - qi ** self._k)
+        )
+
+    def deriv2(self, x):
+        r"""Compute the 2nd derivative of Knowles transformation.
+
+        .. math::
+            \frac{d^2r}{dx^2} = kR \frac{(1+x_i)^{k-2}
+            \left(2^k(k-1) + (1+x_i)^k \right)}{\left( 2^k-(1+x_i)^k\right)^2}
+
+        Parameters
+        ----------
+        x : np.ndarray(N,)
+            One dimension numpy array with values between [-1,1].
+
+        Returns
+        -------
+        np.ndarray(N,)
+            The second derivative of Knowles transformation at each point.
+        """
+        qi = 1 + x
+        return (
+            self._R
+            * self._k
+            * (qi ** (self._k - 2))
+            * (2 ** self._k * (self._k - 1) + qi ** self._k)
+            / (2 ** self._k - qi ** self._k) ** 2
+        )
+
+    def deriv3(self, x):
+        r"""Compute the 3rd derivative of Knowles transformation.
+
+        .. math::
+            \frac{d^3r}{dx^3} = kR \frac{(1+x_i)^{k-3}
+            \left( 4^k (k-1) (k-2) + 2^k (k-1)(k+4)(1+x_i)^k
+                   +2(1+x_i)^k
+            \right)}{\left( 2^k - (1+x_i)^k \right)^3}
+
+        Parameters
+        ----------
+        array: np.ndarray(N,)
+            One dimension numpy array with values between [-1,1].
+
+        Returns
+        -------
+        np.ndarray(N,)
+            The third derivative of Knowles transformation at each point.
+        """
+        qi = 1 + x
+        return (
+            self._R
+            * self._k
+            * (qi ** (self._k - 3))
+            * (
+                4 ** self._k * (self._k - 2) * (self._k - 1)
+                + 2 ** self._k * (self._k - 1) * (self._k + 4) * (qi ** self._k)
+                + 2 * qi ** (2 * self._k)
+            )
+            / (2 ** self._k - qi ** self._k) ** 3
+        )
+
+
+class HandyTF(BaseTransform):
+    """Handy Transformation class."""
+
+    def __init__(self, rmin, R, m, trim_inf=True):
+        """Construct Handy transform [-1,1] -> [rmin,inf).
+
+        Parameters
+        ----------
+        rmin: float
+            The minimum coordinate for transformed radial array.
+        R: float
+            The scale factor for transformed radial array.
+        m: integer m > 0
+            Free parameter, m must be > 0.
+        trim_inf : bool, optional
+            Flag to trim infinite value in transformed array. If True, it will
+            replace np.inf with 1e16. This may cause unexpected errors in the
+            following operations.
+        """
+        if m <= 0:
+            raise ValueError(f"m needs to be greater than 0.")
+        self._rmin = rmin
+        self._R = R
+        self._m = m
+        self.trim_inf = trim_inf
+
+    @property
+    def rmin(self):
+        """float: The minimum value for the transformed radial array."""
+        return self._rmin
+
+    @property
+    def R(self):
+        """float: The scale factor for the transformed radial array."""
+        return self._R
+
+    @property
+    def m(self):
+        """integer: Free and extra parameter, m must be > 0."""
+        return self._m
+
+    def transform(self, x):
+        r"""Transform given array [-1,1] to radial array [rmin,inf).
+
+        .. math::
+            r_i = R \left( \frac{1+x_i}{1-x_i} \right)^m + r_{min}
+
+        Parameters
+        ----------
+        x: np.ndarray(N,)
+            One dimension numpy array with values between [-1,1]
+
+        Returns
+        -------
+        np.ndarray(N,)
+            One dimension numpy array with values between [rmin,inf).
+        """
+        rf_array = self._R * ((1 + x) / (1 - x)) ** self._m + self._rmin
+        if self.trim_inf:
+            self._convert_inf(rf_array)
+        return rf_array
+
+    def inverse(self, r):
+        r"""Transform radiar array [rmin,inf) back to original array [-1,1].
+
+        .. math::
+            x_i = \frac{\sqrt[m]{r_i-r_{min}} - \sqrt[m]{R}}
+                       {\sqrt[m]{r_i-r_{min}} + \sqrt[m]{R}}
+
+        Parameters
+        ----------
+        r : np.ndarray(N,)
+            Sorted one dimension radial array with values bewteen [rmin,inf).
+
+        Returns
+        -------
+        np.ndarray(N,)
+            The original one dimension array with values bewteen [-1,1]
+        """
+        tmp_ri = (r - self._rmin) ** (1 / self._m)
+        tmp_R = self._R ** (1 / self._m)
+
+        return (tmp_ri - tmp_R) / (tmp_ri + tmp_R)
+
+    def deriv(self, x):
+        r"""Compute the 1st derivative of Handy transformation.
+
+        .. math::
+            \frac{dr}{dx} = 2mR \frac{(1+x)^{m-1}}{(1-x)^{m+1}}
+
+        Parameters
+        ----------
+        x: np.ndarray(N,)
+            One dimension numpy array with values between [-1,1].
+
+        Returns
+        -------
+        np.ndarray(N,)
+            The first derivative of Handy transformation at each point.
+        """
+        dr = 2 * self._m * self._R * (1 + x) ** (self._m - 1) / (1 - x) ** (self._m + 1)
+        if self.trim_inf:
+            self._convert_inf(dr)
+        return dr
+
+    def deriv2(self, x):
+        r"""Compute the 2nd derivative of Handy transformation.
+
+        .. math::
+            \frac{d^2r}{dx^2} = 4mR (m + x) \frac{(1+x)^{m-2}}{(1-x)^{m+2}}
+
+        Parameters
+        ----------
+        array: np.ndarray(N,)
+            One dimension numpy array with values between [-1,1].
+
+        Returns
+        -------
+        np.ndarray(N,)
+            The second derivative of Handy transformation at each point.
+        """
+        dr = (
+            4
+            * self._m
+            * self._R
+            * (self._m + x)
+            * (1 + x) ** (self._m - 2)
+            / (1 - x) ** (self._m + 2)
+        )
+
+        if self.trim_inf:
+            self._convert_inf(dr)
+        return dr
+
+    def deriv3(self, x):
+        r"""Compute the 3rd derivative of Handy transformation.
+
+        .. math::
+            \frac{d^3r}{dx^3} = 4mR ( 1 + 6 m x + 2 m^2 + 3 x^2)
+            \frac{(1+x)^{m-3}}{(1-x)^{m+3}}
+
+        Parameters
+        ----------
+        array: np.ndarray(N,)
+            One dimension numpy array with values between [-1,1].
+
+        Returns
+        -------
+        np.ndarray(N,)
+            The third derivative of Handy transformation at each point.
+        """
+        dr = (
+            4
+            * self._m
+            * self._R
+            * (1 + 6 * self._m * x + 2 * self._m ** 2 + 3 * x ** 2)
+            * (1 + x) ** (self._m - 3)
+            / (1 - x) ** (self._m + 3)
+        )
+
+        if self.trim_inf:
+            self._convert_inf(dr)
+        return dr
+
+
+class HandyModTF(BaseTransform):
+    """Modified Handy Transformation class."""
+
+    def __init__(self, rmin, rmax, m, trim_inf=True):
+        """Construct a modified Handy transform [-1,1] -> [rmin,rmax].
+
+        Parameters
+        ----------
+        rmin: float
+            The minimum coordinate for transformed radial array.
+        rmax: float
+            The maximum coordinate for transformed radial array.
+        m: integer m > 0
+            Free parameter, m must be > 0.
+        trim_inf : bool, optional
+            Flag to trim infinite value in transformed array. If True, it will
+            replace np.inf with 1e16. This may cause unexpected errors in the
+            following operations.
+        """
+        if m <= 0:
+            raise ValueError(f"m needs to be greater than 0.")
+
+        if rmax < rmin:
+            raise ValueError(
+                f"rmax needs to be greater than rmin. rmax : {rmax}, rmin : {rmin}."
+            )
+        self._rmin = rmin
+        self._rmax = rmax
+        self._m = m
+        self.trim_inf = trim_inf
+
+    @property
+    def rmin(self):
+        """float: The minimum value for the transformed radial array."""
+        return self._rmin
+
+    @property
+    def rmax(self):
+        """float: The maximum value for the transformed radial array."""
+        return self._rmax
+
+    @property
+    def m(self):
+        """integer: Free and extra parameter, m must be > 0."""
+        return self._m
+
+    def transform(self, x):
+        r"""Transform given array [-1,1] to radial array [rmin,rmax].
+
+        .. math::
+            r_i = \frac{(1+x_i)^m (r_{max} - r_{min})}
+                { 2^m (1 - 2^m + r_{max} - r_{min})
+                  - (1 + x_i)^m (r_{max} - r_{min} - 2^m )} + r_{min}
+
+        Parameters
+        ----------
+        x: np.ndarray(N,)
+            One dimension numpy array with values between [-1,1]
+
+        Returns
+        -------
+        np.ndarray(N,)
+            One dimension numpy array with values between [rmin,rmax].
+        """
+        two_m = 2 ** self._m
+        size_r = self._rmax - self._rmin
+        qi = (1 + x) ** self._m
+
+        rf_array = qi * size_r / (two_m * (1 - two_m + size_r) - qi * (size_r - two_m))
+        rf_array += self._rmin
+
+        if self.trim_inf:
+            self._convert_inf(rf_array)
+        return rf_array
+
+    def inverse(self, r):
+        r"""Transform radiar array [rmin,rmax] back to original array [-1,1].
+
+        .. math::
+            x_i = 2 \sqrt[m]{
+                \frac{(r_i - r_{min})(r_{max} - r_{min} - 2^m + 1)}
+                {(r_i - r_{min})(r_{max} - r_{min} - 2^m) + r_{max} - r_{min}}
+                } - 1
+
+        Parameters
+        ----------
+        r : np.ndarray(N,)
+            Sorted one dimension radial array with values bewteen [rmin,inf).
+
+        Returns
+        -------
+        np.ndarray(N,)
+            The original one dimension array with values bewteen [-1,1]
+        """
+        two_m = 2 ** self._m
+        size_r = self._rmax - self._rmin
+
+        tmp_r = (
+            (r - self._rmin)
+            * (size_r - two_m + 1)
+            / ((r - self._rmin) * (size_r - two_m) + size_r)
+        )
+
+        return 2 * (tmp_r) ** (1 / self._m) - 1
+
+    def deriv(self, x):
+        r"""Compute the 1st derivative of  modified Handy transformation.
+
+        .. math::
+            \frac{dr}{dx} = -\frac{
+                2^m m (r_{max}-r_{min})(2^m-r_{max}+r_{min}-1)(1+x)^{m-1}}
+                {\left( 2^m (2^m-1-r_{max}+r_{min})-(2^m-r_{max}
+                + r_{min})(1 + x)^m\right)^2}
+
+        Parameters
+        ----------
+        x: np.ndarray(N,)
+            One dimension numpy array with values between [-1,1].
+
+        Returns
+        -------
+        np.ndarray(N,)
+            The first derivative of Handy transformation at each point.
+        """
+        two_m = 2 ** self._m
+        size_r = self._rmax - self._rmin
+        return (
+            -(
+                self._m
+                * two_m
+                * (two_m - size_r - 1)
+                * size_r
+                * (1 + x) ** (self._m - 1)
+            )
+            / (two_m * (1 - two_m + size_r) + (two_m - size_r) * (1 + x) ** self._m)
+            ** 2
+        )
+
+    def deriv2(self, x):
+        r"""Compute the 2nd derivative of modified Handy transformation.
+
+        Parameters
+        ----------
+        array: np.ndarray(N,)
+            One dimension numpy array with values between [-1,1].
+
+        Returns
+        -------
+        np.ndarray(N,)
+            The second derivative of Handy transformation at each point.
+        """
+        two_m = 2 ** self._m
+        size_r = self._rmax - self._rmin
+        return (
+            -(
+                self._m
+                * two_m
+                * (two_m - size_r - 1)
+                * size_r
+                * (1 + x) ** (self._m - 2)
+                * (
+                    -two_m * (self._m - 1) * (two_m - size_r - 1)
+                    - (self._m + 1) * (two_m - size_r) * (1 + x) ** (self._m)
+                )
+            )
+            / (two_m * (1 - two_m + size_r) + (two_m - size_r) * (1 + x) ** self._m)
+            ** 3
+        )
+
+    def deriv3(self, x):
+        r"""Compute the 3rd derivative of modified Handy transformation.
+
+        Parameters
+        ----------
+        array: np.ndarray(N,)
+            One dimension numpy array with values between [-1,1].
+
+        Returns
+        -------
+        np.ndarray(N,)
+            The third derivative of Handy transformation at each point.
+        """
+        two_m = 2 ** self._m
+        size_r = self._rmax - self._rmin
+        return (
+            -(
+                self._m
+                * two_m
+                * size_r
+                * (two_m - size_r - 1)
+                * (1 + x) ** (self._m - 3)
+                * (
+                    2
+                    * two_m
+                    * (self._m - 2)
+                    * (self._m - 1)
+                    * (1 - two_m + size_r) ** 2
+                    + 2 ** (self._m + 2)
+                    * (self._m - 1)
+                    * (self._m + 1)
+                    * (two_m - 1 - size_r)
+                    * (two_m - size_r)
+                    * (1 + x) ** self._m
+                    + (self._m + 2)
+                    * (self._m + 1)
+                    * (two_m - size_r) ** 2
+                    * (x + 1) ** (2 * self._m)
+                )
+            )
+            / (two_m * (1 - two_m + size_r) + (two_m - size_r) * (1 + x) ** self._m)
+            ** 4
+        )

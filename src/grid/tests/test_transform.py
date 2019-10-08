@@ -23,7 +23,15 @@
 from unittest import TestCase
 
 from grid.onedgrid import GaussChebyshev, GaussLegendre
-from grid.rtransform import BeckeTF, InverseTF, LinearTF
+from grid.rtransform import (
+    BeckeTF,
+    HandyModTF,
+    HandyTF,
+    InverseTF,
+    KnowlesTF,
+    LinearTF,
+    MultiExpTF,
+)
 
 import numpy as np
 from numpy.testing import assert_allclose, assert_almost_equal
@@ -60,7 +68,6 @@ class TestTransform(TestCase):
         df_d3 = (tf.deriv2(array1) - tf.deriv2(array2)) / 1e-6
         assert_allclose(a_d3, df_d3, rtol=1e-4)
 
-        # finite diff for num
         # finite diff for num
         for _ in range(50):
             num1 = np.random.uniform(rmin, rmax, 1)[0]
@@ -234,3 +241,130 @@ class TestTransform(TestCase):
             btf = BeckeTF(0.1, 0)
             itf = InverseTF(btf)
             itf._d1(np.array([0.1, 0.2, 0.3]))
+
+    def test_multiexp_tf(self):
+        """Test MultiExp initializaiton."""
+        btf = MultiExpTF(0.1, 1.2)
+        assert btf.R == 1.2
+        assert btf.rmin == 0.1
+
+    def test_multiexp_transform(self):
+        """Test MultiExp transformation."""
+        btf = MultiExpTF(0.1, 1.1)
+        tf_array = btf.transform(self.array)
+        single_v = btf.transform(self.num)
+        single_v2 = btf.transform(self.num_2)
+        new_array = btf.inverse(tf_array)
+        assert_allclose(new_array, self.array)
+        assert_allclose(tf_array[0], single_v)
+        assert_allclose(tf_array[-1], single_v2)
+        # test tf and inverse
+        self._transform_and_inverse(-1, 1, btf)
+
+    def test_multiexp_deriv(self):
+        """Test MultiExp transform derivatives with finite diff."""
+        btf = MultiExpTF(0.1, 1.1)
+        # call finite diff test function with given arrays
+        self._deriv_finite_diff(-0.9, 0.90, btf)
+
+    def test_multiexp_inverse(self):
+        """Test inverse transform basic function."""
+        btf = MultiExpTF(0.1, 1.1)
+        inv = InverseTF(btf)
+        new_array = inv.transform(btf.transform(self.array))
+        assert_allclose(new_array, self.array)
+
+    def test_knowles_tf(self):
+        """Test Knowles initializaiton."""
+        btf = KnowlesTF(0.1, 1.2, 2)
+        assert btf.R == 1.2
+        assert btf.rmin == 0.1
+        assert btf.k == 2
+
+    def test_knowles_transform(self):
+        """Test knowles transformation."""
+        btf = KnowlesTF(0.1, 1.1, 2)
+        tf_array = btf.transform(self.array)
+        single_v = btf.transform(self.num)
+        single_v2 = btf.transform(self.num_2)
+        new_array = btf.inverse(tf_array)
+        assert_allclose(new_array, self.array)
+        assert_allclose(tf_array[0], single_v)
+        assert_allclose(tf_array[-1], single_v2)
+        # test tf and inverse
+        self._transform_and_inverse(-1, 1, btf)
+
+    def test_knowles_deriv(self):
+        """Test Knowles transform derivatives with finite diff."""
+        btf = KnowlesTF(0.1, 1.1, 2)
+        # call finite diff test function with given arrays
+        self._deriv_finite_diff(-0.9, 0.90, btf)
+
+    def test_knowles_inverse(self):
+        """Test inverse transform basic function."""
+        btf = KnowlesTF(0.1, 1.1, 2)
+        inv = InverseTF(btf)
+        new_array = inv.transform(btf.transform(self.array))
+        assert_allclose(new_array, self.array)
+
+    def test_handy_tf(self):
+        """Test Handy initializaiton."""
+        btf = HandyTF(0.1, 1.2, 2)
+        assert btf.R == 1.2
+        assert btf.m == 2
+        assert btf.rmin == 0.1
+
+    def test_handy_transform(self):
+        """Test Handy transformation."""
+        btf = HandyTF(0.1, 1.1, 2)
+        tf_array = btf.transform(self.array)
+        single_v = btf.transform(self.num)
+        single_v2 = btf.transform(self.num_2)
+        new_array = btf.inverse(tf_array)
+        assert_allclose(new_array, self.array)
+        assert_allclose(tf_array[0], single_v)
+        assert_allclose(tf_array[-1], single_v2)
+        # test tf and inverse
+        self._transform_and_inverse(-1, 1, btf)
+
+    def test_handy_deriv(self):
+        """Test Handy transform derivatives with finite diff."""
+        btf = HandyTF(0.1, 1.2, 2)
+        # call finite diff test function with given arrays
+        self._deriv_finite_diff(-0.8, 0.8, btf)
+
+    def test_handy_inverse(self):
+        """Test inverse transform basic function."""
+        btf = HandyTF(0.1, 1.1, 2)
+        inv = InverseTF(btf)
+        new_array = inv.transform(btf.transform(self.array))
+        assert_allclose(new_array, self.array)
+
+    def test_handymod_tf(self):
+        """Test Handy Mod initializaiton."""
+        btf = HandyModTF(0.1, 10.0, 2)
+        assert btf.m == 2
+        assert btf.rmin == 0.1
+        assert btf.rmax == 10.0
+
+    def test_handymod_transform(self):
+        """Test Handy Mod transformation."""
+        btf = HandyModTF(0.1, 10.0, 2)
+        tf_array = btf.transform(self.array)
+        new_array = btf.inverse(tf_array)
+        assert_allclose(new_array, self.array)
+        # test tf and inverse
+        self._transform_and_inverse(-0.9, 0.9, btf)
+
+    def test_handymod_deriv(self):
+        """Test Handy Mod transform derivatives with finite diff."""
+        btf = HandyModTF(0.1, 10.0, 2)
+        # call finite diff test function with given arrays
+        self._deriv_finite_diff(-0.9, 0.90, btf)
+
+    def test_handymod_inverse(self):
+        """Test inverse transform basic function."""
+        btf = HandyModTF(0.1, 10.0, 2)
+        inv = InverseTF(btf)
+        new_array = inv.transform(btf.transform(self.array))
+        assert_allclose(new_array, self.array)
