@@ -18,7 +18,7 @@ class TestPoisson(TestCase):
         """Compute gauss function at given center."""
         x, y, z = (coors - center).T
         a, b, c = alphas
-        return a * np.exp(-x ** 2) * b * np.exp(-y ** 2) * c * np.exp(-z ** 2)
+        return a * np.exp(-(x ** 2)) * b * np.exp(-(y ** 2)) * c * np.exp(-(z ** 2))
 
     def test_poisson_proj(self):
         """Test the project function."""
@@ -86,7 +86,7 @@ class TestPoisson(TestCase):
         # test splines project fit gauss function well
 
         def gauss(r):
-            return np.exp(-r ** 2)
+            return np.exp(-(r ** 2))
 
         for _ in range(20):
             coors = np.random.rand(10, 3)

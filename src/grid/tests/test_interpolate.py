@@ -110,7 +110,7 @@ class TestInterpolate(TestCase):
     def helper_func_gauss(self, points):
         """Compute gauss function value for test interpolation."""
         x, y, z = points.T
-        return np.exp(-x ** 2) * np.exp(-y ** 2) * np.exp(-z ** 2)
+        return np.exp(-(x ** 2)) * np.exp(-(y ** 2)) * np.exp(-(z ** 2))
 
     def helper_func_power(self, points):
         """Compute function value for test interpolation."""
