@@ -54,9 +54,9 @@ class TestLebedev(TestCase):
                 assert_allclose(grid.points[:, 0].sum(), 0, atol=1e-10)
                 assert_allclose(grid.points[:, 1].sum(), 0, atol=1e-10)
                 assert_allclose(grid.points[:, 2].sum(), 0, atol=1e-10)
-                assert_allclose(np.dot(grid.points[:, 0], grid.weights), 0, atol=1e-10)
-                assert_allclose(np.dot(grid.points[:, 1], grid.weights), 0, atol=1e-10)
-                assert_allclose(np.dot(grid.points[:, 2], grid.weights), 0, atol=1e-10)
+                assert_allclose(grid.points[:, 0] @ grid.weights, 0, atol=1e-10)
+                assert_allclose(grid.points[:, 1] @ grid.weights, 0, atol=1e-10)
+                assert_allclose(grid.points[:, 2] @ grid.weights, 0, atol=1e-10)
             previous_npoint = npoint
 
     def test_match_degree(self):
