@@ -47,7 +47,7 @@ class Grid:
         if len(points) != len(weights):
             raise ValueError(
                 "Shape of points and weight does not match. \n"
-                "shape of points: {len(poitns)}, shape of weights: {len(weights)}."
+                f"shape of points: {len(points)}, shape of weights: {len(weights)}."
             )
         if weights.ndim != 1:
             raise ValueError(
