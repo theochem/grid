@@ -116,7 +116,7 @@ class TestSubGrid(TestCase):
         with self.assertRaises(ValueError):
             SubGrid(points, weights, center, np.arange(5))
         with self.assertRaises(ValueError):
-            SubGrid(points, weights, center, np.arange(4, 2))
+            SubGrid(points, weights, center, np.arange(8).reshape(4, 2))
 
 
 class TestOneDGrid(TestCase):

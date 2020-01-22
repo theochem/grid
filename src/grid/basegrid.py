@@ -186,8 +186,8 @@ class SubGrid(Grid):
         if indices is not None:
             if len(points) != len(indices):
                 raise ValueError(
-                    "Shape of points and indices does not match. \n"
-                    f"shape of points: {len(points)}, shape of indices: {len(indices)}."
+                    "Number of points and indices does not match. \n"
+                    f"number of points: {len(points)}, number of indices: {len(indices)}."
                 )
             if indices.ndim != 1:
                 raise ValueError(
