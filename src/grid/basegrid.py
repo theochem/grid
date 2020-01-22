@@ -142,7 +142,9 @@ class Grid:
         center : np.ndarray(3,)
             Cartesian coordinates of subgrid center.
         radius : float
-            Radius of sphere around the center.
+            Radius of sphere around the center. When equal to np.inf, the
+            subgrid coincides with the whole grid, which can be useful for
+            debugging.
 
         Returns
         -------
@@ -150,10 +152,13 @@ class Grid:
             Instance of SubGrid.
 
         """
-        if self._kdtree is None:
-            self._kdtree = cKDTree(self.points)
-        index = self._kdtree.query_ball_point(center, radius, p=2.0)
-        return SubGrid(self.points[index], self.weights[index], center, index)
+        if radius == np.inf:
+            return SubGrid(self.points, self.weights, center, np.arange(self.size))
+        else:
+            if self._kdtree is None:
+                self._kdtree = cKDTree(self.points)
+            indices = np.array(self._kdtree.query_ball_point(center, radius, p=2.0))
+            return SubGrid(self.points[indices], self.weights[indices], center, indices)
 
 
 class AngularGrid(Grid):
@@ -175,9 +180,19 @@ class SubGrid(Grid):
         center : np.ndarray(3,)
             Cartesian coordinates of sub-grid center in 3D space.
         indices : np.ndarray(N,), optional
-            Indies of :math:`N` grid points and weights in the parent grid.
+            Indices of :math:`N` grid points and weights in the parent grid.
 
         """
+        if indices is not None:
+            if len(points) != len(indices):
+                raise ValueError(
+                    "Number of points and indices does not match. \n"
+                    f"number of points: {len(points)}, number of indices: {len(indices)}."
+                )
+            if indices.ndim != 1:
+                raise ValueError(
+                    f"Argument indices should be a 1-D array. indices.ndim={indices.ndim}"
+                )
         super().__init__(points, weights)
         self._center = center
         self._indices = indices
@@ -186,6 +201,11 @@ class SubGrid(Grid):
     def center(self):
         """np.ndarray(3,): Cartesian coordinates of sub-grid center."""
         return self._center
+
+    @property
+    def indices(self):
+        """np.ndarray(N,): Indices of grid points and weights in the parent grid."""
+        return self._indices
 
 
 class OneDGrid(Grid):

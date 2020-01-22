@@ -22,7 +22,7 @@
 
 from unittest import TestCase
 
-from grid.basegrid import Grid, OneDGrid
+from grid.basegrid import Grid, OneDGrid, SubGrid
 
 import numpy as np
 from numpy.testing import assert_allclose
@@ -91,6 +91,32 @@ class TestGrid(TestCase):
             self.grid.integrate(5)
         with self.assertRaises(ValueError):
             self.grid.integrate(points)
+
+
+class TestSubGrid(TestCase):
+    """SubGrid test class."""
+
+    def test_properties(self):
+        """Test consistency of the properties with constructor arguments."""
+        weights = np.ones(4)
+        points = np.arange(12).reshape(4, 3)
+        center = np.array([4.0, 5.0, 6.0])
+        indices = np.arange(4)
+        sg = SubGrid(points, weights, center, indices)
+        assert_allclose(sg.weights, weights)
+        assert_allclose(sg.points, points)
+        assert_allclose(sg.center, center)
+        assert_allclose(sg.indices, indices)
+
+    def test_errors_raise(self):
+        """Test exceptions with invalid construct arguments."""
+        weights = np.ones(4)
+        points = np.arange(12).reshape(4, 3)
+        center = np.zeros(3)
+        with self.assertRaises(ValueError):
+            SubGrid(points, weights, center, np.arange(5))
+        with self.assertRaises(ValueError):
+            SubGrid(points, weights, center, np.arange(8).reshape(4, 2))
 
 
 class TestOneDGrid(TestCase):
