@@ -45,9 +45,9 @@ class MolGrid(Grid):
         # initialize these attributes
         self._coors = np.zeros((len(atomic_grids), 3))
         self._indices = np.zeros(len(atomic_grids) + 1, dtype=int)
-        self._size = np.sum([atomgrid.size for atomgrid in atomic_grids])
-        self._points = np.zeros((self._size, 3))
-        self._atweights = np.zeros(self._size)
+        size = np.sum([atomgrid.size for atomgrid in atomic_grids])
+        self._points = np.zeros((size, 3))
+        self._atweights = np.zeros(size)
         self._atomic_grids = atomic_grids if store else None
 
         for i, atom_grid in enumerate(atomic_grids):
@@ -63,10 +63,10 @@ class MolGrid(Grid):
             )
 
         elif isinstance(aim_weights, np.ndarray):
-            if aim_weights.size != self.size:
+            if aim_weights.size != size:
                 raise ValueError(
                     "aim_weights is not the same size as grid.\n"
-                    f"aim_weights.size: {aim_weights.size}, grid.size: {self.size}."
+                    f"aim_weights.size: {aim_weights.size}, grid.size: {size}."
                 )
             self._aim_weights = aim_weights
 
