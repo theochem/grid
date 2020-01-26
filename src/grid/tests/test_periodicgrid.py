@@ -479,6 +479,11 @@ class PeriodicGridTester:
                     self._ref_weights,
                     np.ones((100, self._ref_points.shape[1])),
                 )
+        if self._ref_realvecs is not None and self._ref_realvecs.shape[0] > 1:
+            with pytest.raises(ValueError):
+                realvecs = self._ref_realvecs.copy()
+                realvecs[0] = realvecs[1]
+                PeriodicGrid(self._ref_points, self._ref_weights, realvecs)
         # get_subgrid
         with pytest.raises(ValueError):
             self.grid.get_subgrid(np.zeros(100), 3.0)
