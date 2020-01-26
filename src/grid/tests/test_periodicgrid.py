@@ -19,7 +19,7 @@
 # --
 """PeriodicGrid tests file."""
 from grid.basegrid import Grid
-from grid.periodicgrid import PeriodicGridWarning, PeriodicGrid
+from grid.periodicgrid import PeriodicGrid, PeriodicGridWarning
 
 import numpy as np
 from numpy.testing import assert_allclose
@@ -31,12 +31,15 @@ import pytest
 DELTAS_1D = [0.0, 0.5, 40.0, -5.0]
 DELTAS_2D = [[0.0, 0.0], [0.5, -0.2], [40.0, -60.0]]
 
+
 # text formatting for the deltas
 def format_1d(d):
+    """Format the ID of a DELTA."""
     return "'{:.1f}'".format(d)
 
 
 def format_nd(ds):
+    """Format the ID of a DELTAS vec."""
     return "'{}'".format(",".join(format(d, ".1f") for d in ds))
 
 
@@ -54,7 +57,9 @@ def test_tutorial_periodic_repetition(delta_p, delta_c):
     # is raised. To fix this issue, any may simply add the ``wrap=True``
     # argument to the constructor. (This modifies the grid points.)
     with pytest.warns(PeriodicGridWarning):
-        grid = PeriodicGrid(np.linspace(-1, 1, 21) + delta_p, np.full(21, 0.1), np.array([a]))
+        grid = PeriodicGrid(
+            np.linspace(-1, 1, 21) + delta_p, np.full(21, 0.1), np.array([a])
+        )
     # The subgrid is wider than one primitive cell, such that there will be
     # more points in the subgrid than in the periodic grid. The test is repeated
     # with two displacements of the center by an integer multiple of the
@@ -83,8 +88,8 @@ def test_tutorial_periodic_repetition(delta_p, delta_c):
         assert_allclose(subgrid.integrate(subfn), grid.integrate(fn))
         # Manually construct the periodic repetition and compare.
         fn2 = np.zeros(grid.size)
-        jmin = np.ceil((grid.points.min() - center - radius)/a).astype(int)
-        jmax = np.floor((grid.points.max() - center + radius)/a).astype(int)
+        jmin = np.ceil((grid.points.min() - center - radius) / a).astype(int)
+        jmax = np.floor((grid.points.max() - center + radius) / a).astype(int)
         assert jmax >= jmin
         for j in range(jmin, jmax + 1):
             center_translated = center + a * j
@@ -123,12 +128,15 @@ def setup_equidistant_grid(origin, realvecs, npts):
     # First build grid points in fractional coordinates and then transform
     # to real space.
     fractional_tuple = np.meshgrid(*[np.arange(npt) / npt for npt in npts])
-    points = sum(
-        [
-            np.outer(fractional.ravel(), realvec)
-            for fractional, realvec in zip(fractional_tuple, realvecs)
-        ]
-    ) + origin
+    points = (
+        sum(
+            [
+                np.outer(fractional.ravel(), realvec)
+                for fractional, realvec in zip(fractional_tuple, realvecs)
+            ]
+        )
+        + origin
+    )
     # The weights take into account the Jacobian of the affine transformation
     # from fractional to Cartesian grid points.
     npt_total = np.product(npts)
@@ -222,7 +230,7 @@ def test_tutorial_local_integral_2(delta_p, delta_c):
             delta_01 = delta_mic + grid.realvecs[0] * i0 + grid.realvecs[1] * i1
             dist_01 = np.linalg.norm(delta_01)
             # Compute the overlap integral derived with Gaussian-Product theorem
-            overlap_01 = np.pi * np.exp(-dist_01 ** 2 / 4)
+            overlap_01 = np.pi * np.exp(-0.25 * dist_01 ** 2)
             oint_b += overlap_01
     assert_allclose(oint_a, oint_b)
 
@@ -453,7 +461,6 @@ class PeriodicGridTester:
             assert subgrid.points.ndim == self.grid.points.ndim
             assert subgrid.weights.ndim == self.grid.weights.ndim
             if self._ref_points.ndim == 2:
-                eps = 1e-15
                 assert (np.linalg.norm(subgrid.points - center, axis=1) <= radius).all()
             else:
                 assert (abs(subgrid.points - center) <= radius).all()

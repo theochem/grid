@@ -155,7 +155,6 @@ fractional coordinate of the center and :math:`s_k` is the spacing between
 adjacent crystal planes along the :math:`k`th lattice vector.
 """
 import itertools
-
 import warnings
 
 from grid.basegrid import Grid, SubGrid
@@ -166,7 +165,7 @@ from scipy.spatial import cKDTree
 
 
 class PeriodicGridWarning(Warning):
-    """Raised when the fractional coordinates span an interval wider than 1.1"""
+    """Raised when the fractional coordinates span an interval wider than 1.1."""
 
 
 class PeriodicGrid(Grid):
