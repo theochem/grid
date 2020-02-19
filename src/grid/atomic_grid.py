@@ -21,6 +21,8 @@
 from grid.basegrid import AngularGrid, Grid, OneDGrid
 from grid.lebedev import generate_lebedev_grid, match_degree, size_to_degree
 
+from importlib_resources import path
+
 import numpy as np
 
 from scipy.spatial.transform import Rotation as R
@@ -47,7 +49,7 @@ class AtomicGrid(Grid):
         degs : np.ndarray(N, dtype=int) or list, keyword-only argument
             Different degree value for each radial point
         nums : np.ndarray(N, dtype=int) or list, keyword-only argument
-            Different number of angular points for eah radial point
+            Different number of angular points for each radial point
         center : np.ndarray(3,), optional, keyword-only argument
             Central cartesian coordinates of atomic grid
         rotate : bool or int , optional
@@ -97,8 +99,60 @@ class AtomicGrid(Grid):
         #     self._points = np.dot(self._points, rot_mt)
 
     @classmethod
+    def quick_grid(
+        cls,
+        atomic_num,
+        rgrid,
+        grid_type,
+        *_,
+        center=np.array([0.0, 0.0, 0.0]),
+        rotate=False,
+    ):
+        """High level to construct prefined atomic grid.
+
+        Examples
+        --------
+        # construct an atomic grid for H with fine grid setting
+        >>> atgrid = AtomicGrid.quick_grid(1, rgrid, "fine")
+
+        Parameters
+        ----------
+        atomic_num : int
+            atomic number of atomic grid
+        rgrid : RadialGrid
+            points where sperical grids will be located
+        grid_type : str
+            different accuracy for atomic grid
+            include: 'coarse', 'medium', 'fine', 'veryfine', 'ultrafine', 'insane'
+        center : np.ndarray(3,), optional
+            coordinates of grid center
+        rotate : bool or int , optional
+            Flag to set auto rotation for atomic grid, if given int, the number
+            will be used as a seed to generate rantom matrix.
+        """
+        cls._input_type_check(rgrid, center)
+        # load rad and npt
+        with path("grid.data.prune_grid", f"prune_grid_{grid_type}.npz") as npz_file:
+            data = np.load(npz_file)
+            # load info from npz
+            rad = data[f"{atomic_num}_rad"]
+            npt = data[f"{atomic_num}_npt"]
+
+        degs = size_to_degree(npt)
+        rad_degs = AtomicGrid._find_l_for_rad_list(rgrid.points, rad, degs)
+        return cls(rgrid, degs=rad_degs, center=center, rotate=rotate)
+
+    @classmethod
     def special_init(
-        cls, rgrid, radius, *_, degs, r_sectors, center=np.zeros(3), rotate=False
+        cls,
+        rgrid,
+        radius,
+        *_,
+        r_sectors,
+        degs=None,
+        nums=None,
+        center=np.zeros(3),
+        rotate=False,
     ):
         """Initialize an instance for given r_sectors of radius and degrees.
 
@@ -124,8 +178,14 @@ class AtomicGrid(Grid):
             region is ``[0, radius*r_sectors[0]]``, then ``[radius*r_sectors[0],
             radius*r_sectors[1]]``, and so on.
         degs : np.ndarray(N + 1, dtype=int), keyword-only argument
-            The number of Lebedev-Laikov grid points for each section of atomic
+            The degree of Lebedev-Laikov grid points for each section of atomic
             radius region.
+        nums : np.ndarray(N + 1, dtype=int), keyword-only argument
+            The degree of Lebedev-Laikov grid points for each section of atomic
+            radius region.
+
+            Note: either degs or nums is needed to construct an atomic grid
+
         center : np.ndarray(3, ), default to [0., 0., 0.], keyword-only argument
             Cartesian coordinates of to origin of the spherical grids.
         rotate : bool or int , optional
@@ -137,6 +197,8 @@ class AtomicGrid(Grid):
         AtomicGrid
             Generated AtomicGrid instance for this special init method.
         """
+        if degs is None:
+            degs = size_to_degree(nums)
         cls._input_type_check(rgrid, center)
         degs = cls._generate_degree_from_radius(rgrid, radius, r_sectors, degs)
         return cls(rgrid, degs=degs, center=center, rotate=rotate)
@@ -298,13 +360,14 @@ class AtomicGrid(Grid):
             raise ValueError("rad_list can't be empty.")
         if len(degs) - len(r_sectors) != 1:
             raise ValueError("degs should have only one more element than r_sectors.")
+        matched_deg = match_degree(degs)
         rad_degs = AtomicGrid._find_l_for_rad_list(
-            rgrid.points, radius, r_sectors, degs
+            rgrid.points, radius * r_sectors, matched_deg
         )
-        return match_degree(rad_degs)
+        return rad_degs
 
     @staticmethod
-    def _find_l_for_rad_list(radial_arrays, radius, r_sectors, degs):
+    def _find_l_for_rad_list(radial_arrays, radius_list, degs):
         """Find proper magic L value for given r_sectors.
 
         Parameters
@@ -319,11 +382,11 @@ class AtomicGrid(Grid):
         np.ndarray(N,), an array of magic numbers for each radial points
         """
         # r_sectors_list   R_row * a
-        radius = r_sectors * radius
+        # radius_list = r_sectors * radius
         # use broadcast to compare each point with r_sectors
         # then sum over all the True value, which should equal to the
         # position of L
-        position = np.sum(radial_arrays[:, None] > radius[None, :], axis=1)
+        position = np.sum(radial_arrays[:, None] > radius_list[None, :], axis=1)
         return degs[position]
 
     @staticmethod
