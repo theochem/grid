@@ -25,6 +25,8 @@ from unittest import TestCase
 from grid.atomic_grid import AtomicGrid
 from grid.basegrid import AngularGrid, Grid, OneDGrid
 from grid.lebedev import generate_lebedev_grid
+from grid.onedgrid import HortonLinear
+from grid.rtransform import PowerRTransform
 
 import numpy as np
 from numpy.testing import (
@@ -73,6 +75,98 @@ class TestAtomicGrid(TestCase):
         assert_allclose(ag_ob.rad_grid.points, rgrid.points)
         assert_allclose(ag_ob.rad_grid.weights, rgrid.weights)
 
+    def test_quick_grid(self):
+        """Test grid construction with predefined grid."""
+        # test coarse grid
+        pts = HortonLinear(20)
+        tf = PowerRTransform(7.0879993828935345e-06, 16.05937640019924)
+        rad_grid = tf.transform_1d_grid(pts)
+        atgrid = AtomicGrid.quick_grid(1, rad_grid, "coarse")
+        # 604 points for coarse H atom
+        assert_equal(atgrid.size, 604)
+        assert_almost_equal(
+            np.sum(np.exp(-np.sum(atgrid.points ** 2, axis=1)) * atgrid.weights),
+            5.56840953,
+        )
+
+        # test medium grid
+        pts = HortonLinear(24)
+        tf = PowerRTransform(3.69705074304963e-06, 19.279558946793685)
+        rad_grid = tf.transform_1d_grid(pts)
+        atgrid = AtomicGrid.quick_grid(1, rad_grid, "medium")
+        # 928 points for coarse H atom
+        assert_equal(atgrid.size, 928)
+        assert_almost_equal(
+            np.sum(np.exp(-np.sum(atgrid.points ** 2, axis=1)) * atgrid.weights),
+            5.56834559,
+        )
+        # test fine grid
+        pts = HortonLinear(34)
+        tf = PowerRTransform(2.577533167224667e-07, 16.276983371222354)
+        rad_grid = tf.transform_1d_grid(pts)
+        atgrid = AtomicGrid.quick_grid(1, rad_grid, "fine")
+        # 1984 points for coarse H atom
+        assert_equal(atgrid.size, 1984)
+        assert_almost_equal(
+            np.sum(np.exp(-np.sum(atgrid.points ** 2, axis=1)) * atgrid.weights),
+            5.56832800,
+        )
+        # test veryfine grid
+        pts = HortonLinear(41)
+        tf = PowerRTransform(1.1774580743206259e-07, 20.140888089596444)
+        rad_grid = tf.transform_1d_grid(pts)
+        atgrid = AtomicGrid.quick_grid(1, rad_grid, "veryfine")
+        # 3154 points for coarse H atom
+        assert_equal(atgrid.size, 3154)
+        assert_almost_equal(
+            np.sum(np.exp(-np.sum(atgrid.points ** 2, axis=1)) * atgrid.weights),
+            5.56832800,
+        )
+        # test ultrafine grid
+        pts = HortonLinear(49)
+        tf = PowerRTransform(4.883104847991021e-08, 21.05456999309752)
+        rad_grid = tf.transform_1d_grid(pts)
+        atgrid = AtomicGrid.quick_grid(1, rad_grid, "ultrafine")
+        # 4546 points for coarse H atom
+        assert_equal(atgrid.size, 4546)
+        assert_almost_equal(
+            np.sum(np.exp(-np.sum(atgrid.points ** 2, axis=1)) * atgrid.weights),
+            5.56832800,
+        )
+        # test insane grid
+        pts = HortonLinear(59)
+        tf = PowerRTransform(1.9221827244049134e-08, 21.413278983919113)
+        rad_grid = tf.transform_1d_grid(pts)
+        atgrid = AtomicGrid.quick_grid(1, rad_grid, "insane")
+        # 6622 points for coarse H atom
+        assert_equal(atgrid.size, 6622)
+        assert_almost_equal(
+            np.sum(np.exp(-np.sum(atgrid.points ** 2, axis=1)) * atgrid.weights),
+            5.56832800,
+        )
+
+    def test_special_init_with_degs_and_nums(self):
+        """Test different initilize method."""
+        radial_pts = np.arange(0.1, 1.1, 0.1)
+        radial_wts = np.ones(10) * 0.1
+        rgrid = OneDGrid(radial_pts, radial_wts)
+        rad = 0.5
+        r_sectors = np.array([0.5, 1, 1.5])
+        degs = np.array([3, 5, 7, 5])
+        nums = np.array([6, 14, 26, 14])
+        # construct atomic grid with degs
+        atgrid1 = AtomicGrid.special_init(
+            rgrid, radius=rad, r_sectors=r_sectors, degs=degs
+        )
+        # construct atomic grid with nums
+        atgrid2 = AtomicGrid.special_init(
+            rgrid, radius=rad, r_sectors=r_sectors, nums=nums
+        )
+        # test two grids are the same
+        assert_equal(atgrid1.size, atgrid2.size)
+        assert_allclose(atgrid1.points, atgrid2.points)
+        assert_allclose(atgrid1.weights, atgrid2.weights)
+
     def test_find_l_for_rad_list(self):
         """Test private method find_l_for_rad_list."""
         radial_pts = np.arange(0.1, 1.1, 0.1)
@@ -82,7 +176,7 @@ class TestAtomicGrid(TestCase):
         r_sectors = np.array([0.2, 0.4, 0.8])
         degs = np.array([3, 5, 7, 3])
         atomic_grid_degree = AtomicGrid._find_l_for_rad_list(
-            rgrid.points, rad, r_sectors, degs
+            rgrid.points, rad * r_sectors, degs
         )
         assert_equal(atomic_grid_degree, [3, 3, 5, 5, 7, 7, 7, 7, 3, 3])
 
