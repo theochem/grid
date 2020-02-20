@@ -180,7 +180,7 @@ class TestTransform(TestCase):
         rad = btf.transform_1d_grid(oned)
 
         def gauss(x):
-            return np.exp(-x ** 2)
+            return np.exp(-(x ** 2))
 
         result = rad.integrate(gauss(rad.points))
         ref_result = np.sqrt(np.pi) / 2

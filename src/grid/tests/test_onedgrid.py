@@ -172,13 +172,13 @@ class TestOneDGrid(TestCase):
     def helper_gaussian(x):
         """Compute gauss function for integral between [-1, 1]."""
         # integrate (exp(-x^2)) x=[-1, 1], result = 1.49365
-        return np.exp(-x ** 2)
+        return np.exp(-(x ** 2))
 
     @staticmethod
     def helper_quadratic(x):
         """Compute quadratic function for integral between [-1, 1]."""
         # integrate (-x^2 + 1) x=[-1, 1], result = 1.33333
-        return -x ** 2 + 1
+        return -(x ** 2) + 1
 
     def test_oned_integral(self):
         """A simple integral tests for basic oned grid."""

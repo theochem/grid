@@ -33,9 +33,8 @@ class Grid:
 
         Parameters
         ----------
-        points : np.ndarray(N,)
-            An array with coordinates as each entry.
-
+        points : np.ndarray(N,) or np.ndarray(N, M)
+            An array with positions of the grid points.
         weights : np.ndarray(N,)
             An array of weights associated with each point on the grid.
 
@@ -46,21 +45,24 @@ class Grid:
         """
         if len(points) != len(weights):
             raise ValueError(
-                "Shape of points and weight does not match. \n"
-                "shape of points: {len(poitns)}, shape of weights: {len(weights)}."
+                "Number of points and weights does not match. \n"
+                f"Number of points: {len(points)}, Number of weights: {len(weights)}."
             )
         if weights.ndim != 1:
             raise ValueError(
                 f"Argument weights should be a 1-D array. weights.ndim={weights.ndim}"
             )
+        if points.ndim not in [1, 2]:
+            raise ValueError(
+                f"Argument points should be a 1D or 2D array. points.ndim={points.ndim}"
+            )
         self._points = points
         self._weights = weights
-        self._size = self._weights.size
         self._kdtree = None
 
     @property
     def points(self):
-        """np.ndarray(N,): the coordinates of each grid point."""
+        """np.ndarray(N,) or np.ndarray(N, M): Positions of the grid points."""
         return self._points
 
     @property
@@ -71,7 +73,7 @@ class Grid:
     @property
     def size(self):
         """int: the total number of points on the grid."""
-        return self._size
+        return self._weights.size
 
     def __getitem__(self, index):
         """Dunder method for index grid object and slicing.
@@ -125,13 +127,13 @@ class Grid:
         for i, array in enumerate(value_arrays):
             if not isinstance(array, np.ndarray):
                 raise TypeError(f"Arg {i} is {type(i)}, Need Numpy Array.")
-            if array.size != self.size:
-                raise ValueError(f"Arg {i} need to be of shape {self.size}.")
+            if array.shape != (self.size,):
+                raise ValueError(f"Arg {i} need to be of shape ({self.size},).")
         # return np.einsum("i, ..., i", a, ..., z)
         return np.einsum(
             "i" + ",i" * len(value_arrays),
             self.weights,
-            *(np.ravel(i) for i in value_arrays),
+            *(array for array in value_arrays),
         )
 
     def get_subgrid(self, center, radius):
@@ -139,10 +141,12 @@ class Grid:
 
         Parameters
         ----------
-        center : np.ndarray(3,)
+        center : float or np.array(M,)
             Cartesian coordinates of subgrid center.
         radius : float
-            Radius of sphere around the center.
+            Radius of sphere around the center. When equal to np.inf, the
+            subgrid coincides with the whole grid, which can be useful for
+            debugging.
 
         Returns
         -------
@@ -150,10 +154,29 @@ class Grid:
             Instance of SubGrid.
 
         """
-        if self._kdtree is None:
-            self._kdtree = cKDTree(self.points)
-        index = self._kdtree.query_ball_point(center, radius, p=2.0)
-        return SubGrid(self.points[index], self.weights[index], center, index)
+        center = np.asarray(center)
+        if center.shape != self._points.shape[1:]:
+            raise ValueError(
+                "Argument center has the wrong shape \n"
+                f"center.shape: {center.shape}, points.shape: {self._points.shape}"
+            )
+        if radius < 0:
+            raise ValueError(f"Negative radius: {radius}")
+        if not (np.isfinite(radius) or radius == np.inf):
+            raise ValueError(f"Invalid radius: {radius}")
+        if radius == np.inf:
+            return SubGrid(self._points, self._weights, center, np.arange(self.size))
+        else:
+            # When points.ndim == 1, we have to reshape a few things to
+            # make the input compatible with cKDTree
+            _points = self._points.reshape(self.size, -1)
+            _center = np.array([center]) if center.ndim == 0 else center
+            if self._kdtree is None:
+                self._kdtree = cKDTree(_points)
+            indices = np.array(self._kdtree.query_ball_point(_center, radius, p=2.0))
+            return SubGrid(
+                self._points[indices], self._weights[indices], center, indices
+            )
 
 
 class AngularGrid(Grid):
@@ -168,16 +191,26 @@ class SubGrid(Grid):
 
         Parameters
         ----------
-        points : np.ndarray(N, 3)
-            Cartesian coordinates of :math:`N` grid points in 3D space.
+        points : np.ndarray(N,) or np.ndarray(N,M)
+            Cartesian coordinates of :math:`N` grid points in 1D or M-D space.
         weights : np.ndarray(N)
             Integration weight of :math:`N` grid points
-        center : np.ndarray(3,)
+        center : float or np.ndarray(M,)
             Cartesian coordinates of sub-grid center in 3D space.
         indices : np.ndarray(N,), optional
-            Indies of :math:`N` grid points and weights in the parent grid.
+            Indices of :math:`N` grid points and weights in the parent grid.
 
         """
+        if indices is not None:
+            if len(points) != len(indices):
+                raise ValueError(
+                    "Number of points and indices does not match. \n"
+                    f"number of points: {len(points)}, number of indices: {len(indices)}."
+                )
+            if indices.ndim != 1:
+                raise ValueError(
+                    f"Argument indices should be a 1-D array. indices.ndim={indices.ndim}"
+                )
         super().__init__(points, weights)
         self._center = center
         self._indices = indices
@@ -186,6 +219,11 @@ class SubGrid(Grid):
     def center(self):
         """np.ndarray(3,): Cartesian coordinates of sub-grid center."""
         return self._center
+
+    @property
+    def indices(self):
+        """np.ndarray(N,): Indices of grid points and weights in the parent grid."""
+        return self._indices
 
 
 class OneDGrid(Grid):

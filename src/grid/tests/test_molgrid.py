@@ -348,24 +348,33 @@ class TestMolGrid(TestCase):
         )
         grid = MolGrid([atg1], BeckeWeights(), np.array([1]), store=False)
         fn = np.exp(-2 * np.linalg.norm(grid.points, axis=-1))
-        assert np.allclose(grid.integrate(fn), np.pi)
+        assert_allclose(grid.integrate(fn), np.pi)
+        # conventional subgrid
         subgrid = grid.get_subgrid(coords, 12.0)
-        fn = np.exp(-2 * np.linalg.norm(subgrid.points, axis=-1))
+        subfn = np.exp(-2 * np.linalg.norm(subgrid.points, axis=-1))
         assert subgrid.size < grid.size
         assert subgrid.size == 10560
-        assert np.allclose(subgrid.integrate(fn), np.pi)
+        assert_allclose(subgrid.integrate(subfn), np.pi)
+        assert_allclose(fn[subgrid.indices], subfn)
+        # "whole" subgrid, useful for debugging code using subgrids
+        wholegrid = grid.get_subgrid(coords, np.inf)
+        assert wholegrid.size == grid.size
+        assert_allclose(wholegrid.points, grid.points)
+        assert_allclose(wholegrid.weights, grid.weights)
+        assert_allclose(wholegrid.indices, np.arange(grid.size))
 
         # initialize MolGrid like horton
         grid = MolGrid.horton_molgrid(
             coords[np.newaxis, :], nums, self.rgrid, 110, BeckeWeights(), store=True
         )
         fn = np.exp(-4.0 * np.linalg.norm(grid.points, axis=-1))
-        assert np.allclose(grid.integrate(fn), np.pi / 8)
+        assert_allclose(grid.integrate(fn), np.pi / 8)
         subgrid = grid.get_subgrid(coords, 5.0)
-        fn = np.exp(-4.0 * np.linalg.norm(subgrid.points, axis=-1))
+        subfn = np.exp(-4.0 * np.linalg.norm(subgrid.points, axis=-1))
         assert subgrid.size < grid.size
         assert subgrid.size == 9900
-        assert np.allclose(subgrid.integrate(fn), np.pi / 8)
+        assert_allclose(subgrid.integrate(subfn), np.pi / 8, rtol=1e-5)
+        assert_allclose(fn[subgrid.indices], subfn)
 
     def test_get_subgrid_1s1s(self):
         """Test subgrid for a molecule with one atom."""
@@ -376,18 +385,25 @@ class TestMolGrid(TestCase):
         )
         fn0 = np.exp(-4.0 * np.linalg.norm(grid.points - coords[0], axis=-1))
         fn1 = np.exp(-8.0 * np.linalg.norm(grid.points - coords[1], axis=-1))
-        assert np.allclose(grid.integrate(fn0), np.pi / 8)
-        assert np.allclose(grid.integrate(fn1), np.pi / 64)
+        assert_allclose(grid.integrate(fn0), np.pi / 8, rtol=1e-5)
+        assert_allclose(grid.integrate(fn1), np.pi / 64)
         # sub-grid centered on atom 0 to evaluate fn0
         sub0 = grid.get_subgrid(coords[0], 5.0)
         assert sub0.size < grid.size
-        fn0 = np.exp(-4.0 * np.linalg.norm(sub0.points - coords[0], axis=-1))
-        assert np.allclose(sub0.integrate(fn0), np.pi / 8)
+        subfn0 = np.exp(-4.0 * np.linalg.norm(sub0.points - coords[0], axis=-1))
+        assert_allclose(fn0[sub0.indices], subfn0)
+        assert_allclose(sub0.integrate(subfn0), np.pi / 8, rtol=1e-5)
         # sub-grid centered on atom 1 to evaluate fn1
         sub1 = grid.get_subgrid(coords[1], 2.5)
         assert sub1.size < grid.size
-        fn1 = np.exp(-8.0 * np.linalg.norm(sub1.points - coords[1], axis=-1))
-        assert np.allclose(sub1.integrate(fn1), np.pi / 64)
+        subfn1 = np.exp(-8.0 * np.linalg.norm(sub1.points - coords[1], axis=-1))
+        assert_allclose(sub1.integrate(subfn1), np.pi / 64, rtol=1e-6)
+        assert_allclose(fn1[sub1.indices], subfn1)
+        # approximate the sum of fn0 and fn2 by combining results from subgrids.
+        fnsum = np.zeros(grid.size)
+        fnsum[sub0.indices] += subfn0
+        fnsum[sub1.indices] += subfn1
+        assert_allclose(grid.integrate(fnsum), np.pi * (1 / 8 + 1 / 64), rtol=1e-5)
 
     """
     def test_family():

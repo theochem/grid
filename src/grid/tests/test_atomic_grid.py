@@ -168,7 +168,7 @@ class TestAtomicGrid(TestCase):
             non_rot_shell = atgrid.get_shell_grid(i).points
             rot_shell = atgrid2.get_shell_grid(i).points
             rot_mt = R.random(random_state=1 + i).as_dcm()
-            assert_allclose(rot_shell, np.dot(non_rot_shell, rot_mt))
+            assert_allclose(rot_shell, non_rot_shell @ rot_mt)
 
     def test_get_shell_grid(self):
         """Test angular grid get from get_shell_grid function."""
