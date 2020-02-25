@@ -195,7 +195,9 @@ class BeckeTF(BaseTransform):
         np.ndarray(N,)
             Transformed array located between [rmin, inf)
         """
-        rf_array = self._R * (1 + x) / (1 - x) + self._rmin
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=RuntimeWarning)
+            rf_array = self._R * (1 + x) / (1 - x) + self._rmin
         if self.trim_inf:
             rf_array = self._convert_inf(rf_array)
         return rf_array

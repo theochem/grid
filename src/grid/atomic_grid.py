@@ -449,13 +449,13 @@ class AtomicGrid(Grid):
                 pass
             # if rotate is True, rotate each shell
             elif rotate is True:
-                rot_mt = R.random().as_dcm()
+                rot_mt = R.random().as_matrix()
                 new_points = sphere_grid.points @ rot_mt
                 sphere_grid = AngularGrid(new_points, sphere_grid.weights)
             # if rotate is a seed
             else:
                 assert isinstance(rotate, int)  # check seed proper value
-                rot_mt = R.random(random_state=rotate + i).as_dcm()
+                rot_mt = R.random(random_state=rotate + i).as_matrix()
                 new_points = sphere_grid.points @ rot_mt
                 sphere_grid = AngularGrid(new_points, sphere_grid.weights)
             # construct atomic grid with each radial point and each spherical shell

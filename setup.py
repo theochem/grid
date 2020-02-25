@@ -64,7 +64,7 @@ setup(
     install_requires=[
         "numpy>=1.16",
         "pytest>=2.6",
-        "scipy>=1.2",
+        "scipy>=1.4",
         "importlib_resources",
         "sympy",
     ],
