@@ -261,7 +261,7 @@ class TestAtomicGrid(TestCase):
         for i in range(len(degs)):
             non_rot_shell = atgrid.get_shell_grid(i).points
             rot_shell = atgrid2.get_shell_grid(i).points
-            rot_mt = R.random(random_state=1 + i).as_dcm()
+            rot_mt = R.random(random_state=1 + i).as_matrix()
             assert_allclose(rot_shell, non_rot_shell @ rot_mt)
 
     def test_get_shell_grid(self):
