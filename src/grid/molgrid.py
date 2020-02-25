@@ -21,7 +21,7 @@
 
 
 from grid.atomic_grid import AtomicGrid
-from grid.basegrid import Grid, SubGrid
+from grid.basegrid import Grid, OneDGrid, SubGrid
 
 import numpy as np
 
@@ -75,6 +75,82 @@ class MolGrid(Grid):
 
         # initialize parent class
         super().__init__(self.points, self._atweights * self._aim_weights)
+
+    @classmethod
+    def make_grid(
+        cls,
+        atom_nums,
+        coordinates,
+        radial_grid,
+        grid_type,
+        aim_weights,
+        *_,
+        rotate=False,
+        store=False,
+    ):
+        """Contruct molecular grid wih preset parameters.
+
+        Parameters
+        ----------
+        atom_nums : np.ndarray(N,)
+            array of atomic number
+        coordinates : np.ndarray(N, 3)
+            atomic coordinates of atoms
+        radial_grid : OneDGrid
+            one dimension grid  to construct spherical grid
+        grid_type : str
+            preset grid accuracy scheme, support "coarse", "medium", "fine",
+            "veryfine", "ultrafine", "insane"
+        aim_weights : Callable or np.ndarray(K,)
+            Atoms in molecule weights.
+        rotate : bool, optional
+            Random rotate for each shell of atomic grid
+        store : bool, optional
+            Store atomic grid separately
+        """
+        # construct for a atom molecule
+        if coordinates.ndim != 2:
+            raise ValueError(
+                "The dimension of coordinates need to be 2\n"
+                f"got shape: {coordinates.ndim}"
+            )
+        if len(atom_nums) != coordinates.shape[0]:
+            raise ValueError(
+                "shape of atomic nums does not match with coordinates\n"
+                f"atomic numbers: {atom_nums.shape}, coordinates: {coordinates.shape}"
+            )
+        total_atm = len(atom_nums)
+        atomic_grids = []
+        for i in range(total_atm):
+            # get proper radial grid
+            if isinstance(radial_grid, OneDGrid):
+                rad = radial_grid
+            elif isinstance(radial_grid, list):
+                rad = radial_grid[i]
+            elif isinstance(radial_grid, dict):
+                rad = radial_grid[atom_nums[i]]
+            else:
+                raise TypeError(
+                    "not supported radial grid input\n"
+                    f"got input type: {type(radial_grid)}"
+                )
+            # get proper grid type
+            if isinstance(grid_type, str):
+                gd_type = grid_type
+            elif isinstance(grid_type, list):
+                gd_type = grid_type[i]
+            elif isinstance(grid_type, dict):
+                gd_type = grid_type[atom_nums[i]]
+            else:
+                raise TypeError(
+                    "not supported grid_type input\n"
+                    f"got input type: {type(grid_type)}"
+                )
+            at_grid = AtomicGrid.quick_grid(
+                atom_nums[i], rad, gd_type, center=coordinates[i], rotate=rotate
+            )
+            atomic_grids.append(at_grid)
+        return cls(atomic_grids, aim_weights, atom_nums, store=store)
 
     @classmethod
     def horton_molgrid(
