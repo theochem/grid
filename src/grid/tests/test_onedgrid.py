@@ -220,12 +220,20 @@ class TestOneDGrid(TestCase):
         candidates_quadratures = {
             GaussChebyshev: 15,
             GaussLegendre: 15,
-            GaussChebyshevType2: 20,
+            GaussChebyshevType2: 23,
             GaussChebyshevLobatto: 25,
-            Trapezoidal: 1000,
-            RectangleRuleSineEndPoints: 400,
-            RectangleRuleSine: 150,
-            TanhSinh: 31,
+            Trapezoidal: 33,
+            RectangleRuleSineEndPoints: 375,
+            RectangleRuleSine: 25,
+            TanhSinh: 33,
+            MidPoint: 25,
+            ClenshawCurtis: 9,
+            FejerFirst: 9,
+            FejerSecond: 9,
+            TrefethenCC: 11,
+            TrefethenGC2: 29,
+            TrefethenStripCC: 19,
+            TrefethenStripGC2: 69,
         }
         # loop each pair to create pts instance
         for quadrature, n_points in candidates_quadratures.items():
