@@ -23,16 +23,24 @@
 from unittest import TestCase
 
 from grid.onedgrid import (
+    ClenshawCurtis,
+    FejerFirst,
+    FejerSecond,
     GaussChebyshev,
     GaussChebyshevLobatto,
     GaussChebyshevType2,
     GaussLaguerre,
     GaussLegendre,
     HortonLinear,
+    MidPoint,
     RectangleRuleSine,
     RectangleRuleSineEndPoints,
     TanhSinh,
     Trapezoidal,
+    TrefethenCC,
+    TrefethenGC2,
+    TrefethenStripCC,
+    TrefethenStripGC2,
 )
 
 import numpy as np
@@ -111,7 +119,7 @@ class TestOneDGrid(TestCase):
         idx = np.arange(10)
         points = -1 + (2 * idx / 9)
 
-        weights = 2 * np.ones(10) / 10
+        weights = 2 * np.ones(10) / 9
         weights[0] /= 2
         weights[9] = weights[0]
 
@@ -220,20 +228,20 @@ class TestOneDGrid(TestCase):
         candidates_quadratures = {
             GaussChebyshev: 15,
             GaussLegendre: 15,
-            GaussChebyshevType2: 23,
+            GaussChebyshevType2: 25,
             GaussChebyshevLobatto: 25,
-            Trapezoidal: 33,
+            Trapezoidal: 35,
             RectangleRuleSineEndPoints: 375,
             RectangleRuleSine: 25,
-            TanhSinh: 33,
+            TanhSinh: 35,
             MidPoint: 25,
-            ClenshawCurtis: 9,
-            FejerFirst: 9,
-            FejerSecond: 9,
-            TrefethenCC: 11,
-            TrefethenGC2: 29,
-            TrefethenStripCC: 19,
-            TrefethenStripGC2: 69,
+            ClenshawCurtis: 10,
+            FejerFirst: 10,
+            FejerSecond: 10,
+            TrefethenCC: 15,
+            TrefethenGC2: 30,
+            TrefethenStripCC: 20,
+            TrefethenStripGC2: 70,
         }
         # loop each pair to create pts instance
         for quadrature, n_points in candidates_quadratures.items():

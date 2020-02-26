@@ -270,9 +270,9 @@ def Trapezoidal(npoints):
     idx = np.arange(npoints)
     points = -1 + (2 * idx / (npoints - 1))
 
-    weights = 2 * np.ones(npoints) / npoints
+    weights = 2 * np.ones(npoints) / (npoints - 1)
 
-    weights[0] = 1 / npoints
+    weights[0] = 1 / (npoints - 1)
     weights[npoints - 1] = weights[0]
 
     return OneDGrid(points, weights, (-1, 1))
@@ -448,5 +448,472 @@ def TanhSinh(npoints, delta=0.1):
 
         weights[i] = np.pi * delta * np.cosh(j * delta) * 0.5
         weights[i] /= np.cosh(arg) ** 2
+
+    return OneDGrid(points, weights, (-1, 1))
+
+
+def Simpson(npoints):
+    r"""Generate 1D grid on [-1:1] interval based on Simpson rule.
+
+    The fundamental definition of this rule is:
+
+    .. math::
+        \int_{-1}^{1} f(x) dx \approx \sum_{i=1}^n w_i f(x_i)
+
+    Where
+
+    .. math::
+        x_i = -1 + 2 \left(\frac{i-1}{n-1}\right)
+
+
+    Parameters
+    ----------
+    npoints : int
+        Number of points in the grid.
+
+    Returns
+    -------
+    OneDGrid
+        A 1D grid instance.
+
+    """
+    if npoints % 2 == 0:
+        raise ValueError("npoints must be odd, given {npoints}")
+    idx = np.arange(npoints)
+    points = -1 + (2 * idx / (npoints - 1))
+
+    weights = 2 * np.ones(npoints) / (3 * (npoints - 1))
+
+    for i in range(1, npoints - 1):
+        if i % 2 == 0:
+            weights[i] *= 2
+        else:
+            weights[i] *= 4
+
+    return OneDGrid(points, weights, (-1, 1))
+
+
+def MidPoint(npoints):
+    r"""Generate 1D grid on [-1,1] interval based on Mid Point rule.
+
+    The fundamental definition is:
+
+    .. math::
+        \int_{-1}^{1} f(x) dx \approx
+        \sum_{i=1}^n w_i f(x_i)
+
+    Where
+
+    .. math::
+        x_i = (2*i + 1)/n - 1
+
+    And the weights
+
+    .. math::
+        w_i = 2/n
+
+
+    Parameters
+    ----------
+    npoints : int
+        Number of points in the grid.
+
+    Returns
+    -------
+    OneDGrid
+        A 1D grid instance.
+    """
+    points = np.zeros(npoints)
+    weights = np.ones(npoints)
+
+    idx = np.arange(npoints)
+
+    weights *= 2 / npoints
+
+    points = -1 + (2 * idx + 1) / npoints
+
+    return OneDGrid(points, weights, (-1, 1))
+
+
+def ClenshawCurtis(npoints):
+    r"""Generate 1D grid on [-1,1] interval based on Clenshaw-Curtis method.
+
+    The fundamental definition is:
+
+    .. math::
+        \int_{-1}^{1} f(x) dx \approx
+        \sum_{i=1}^n w_i f(x_i)
+
+
+    Parameters
+    ----------
+    npoints : int
+        Number of points in the grid.
+
+    Returns
+    -------
+    OneDGrid
+        A 1D grid instance.
+    """
+    if npoints == 1:
+        points = np.zeros(npoints)
+        weights = np.zeros(npoints)
+
+        weights[0] = 2.0
+    else:
+        theta = np.zeros(npoints)
+
+        for i in range(0, npoints):
+            theta[i] = (npoints - 1 - i) * np.pi / (npoints - 1)
+
+        points = np.cos(theta)
+        weights = np.zeros(npoints)
+
+        jmed = (npoints - 1) // 2
+
+        for i in range(0, npoints):
+            weights[i] = 1
+
+            for j in range(0, jmed):
+                if (2 * (j + 1)) == (npoints - 1):
+                    b = 1
+                else:
+                    b = 2
+                weights[i] = weights[i] - b * np.cos(2 * (j + 1) * theta[i]) / (
+                    4 * j * (j + 2) + 3
+                )
+
+        for i in range(1, npoints - 1):
+            weights[i] = 2 * weights[i] / (npoints - 1)
+
+        weights[0] = weights[0] / (npoints - 1)
+        weights[npoints - 1] = weights[npoints - 1] / (npoints - 1)
+
+    return OneDGrid(points, weights, (-1, 1))
+
+
+def FejerFirst(npoints):
+    r"""Generate 1D grid on [-1,1] interval based on Fejer-1 method.
+
+    The fundamental definition is:
+
+    .. math::
+        \int_{-1}^{1} f(x) dx \approx
+        \sum_{i=1}^n w_i f(x_i)
+
+
+    Parameters
+    ----------
+    npoints : int
+        Number of points in the grid.
+
+    Returns
+    -------
+    OneDGrid
+        A 1D grid instance.
+    """
+    if npoints <= 1:
+        raise ValueError("npoints must be greater that one, given {npoints}")
+
+    theta = np.pi * (2 * np.arange(npoints) + 1) / (2 * npoints)
+
+    points = np.cos(theta)
+    weights = np.zeros(npoints)
+
+    nsum = npoints // 2
+
+    for k in range(0, npoints):
+        serie = 0
+
+        for m in range(1, nsum):
+            serie += np.cos(2 * m * theta[k]) / (4 * m ** 2 - 1)
+
+        serie = 1 - 2 * serie
+
+        weights[k] = (2 / npoints) * serie
+
+    points = points[::-1]
+    weights = weights[::-1]
+
+    return OneDGrid(points, weights, (-1, 1))
+
+
+def FejerSecond(npoints):
+    r"""Generate 1D grid on [-1,1] interval based on Fejer-2 method.
+
+    The fundamental definition is:
+
+    .. math::
+        \int_{-1}^{1} f(x) dx \approx
+        \sum_{i=1}^n w_i f(x_i)
+
+
+    Parameters
+    ----------
+    npoints : int
+        Number of points in the grid.
+
+    Returns
+    -------
+    OneDGrid
+        A 1D grid instance.
+    """
+    if npoints <= 1:
+        raise ValueError("npoints must be greater that one, given {npoints}")
+
+    theta = np.pi * (np.arange(npoints) + 1) / (npoints + 1)
+
+    points = np.cos(theta)
+    weights = np.zeros(npoints)
+
+    nsum = (npoints + 1) // 2
+
+    for k in range(0, npoints):
+        serie = 0
+
+        for m in range(1, nsum):
+            serie += np.sin((2 * m - 1) * theta[k]) / (2 * m - 1)
+
+        weights[k] = (4 * np.sin(theta[k]) / (npoints + 1)) * serie
+
+    points = points[::-1]
+    weights = weights[::-1]
+
+    return OneDGrid(points, weights, (-1, 1))
+
+
+# Auxiliar functions for Trefethen "sausage" transformation
+# g2 is the function and derg2 is the first derivative.
+# g3 is other function with the same boundary conditions of g2 and
+# derg3 is the first derivative.
+# this functions work for TrefethenCC, TrefethenGC2, and TrefethenGeneral
+def _g2(x):
+    r"""Return an auxiliary function g2(x) for Trefethen transformation."""
+    return (1 / 149) * (120 * x + 20 * x ** 3 + 9 * x ** 5)
+
+
+def _derg2(x):
+    r"""Return the derivative function g2(x) for Trefethen transformation."""
+    return (1 / 149) * (120 + 60 * x ** 2 + 45 * x ** 4)
+
+
+def _g3(x):
+    r"""Return an auxiliary function g3(x) for Trefethen transformation."""
+    return (1 / 53089) * (
+        40320 * x + 6720 * x ** 3 + 3024 * x ** 5 + 1800 * x ** 7 + 1225 * x ** 9
+    )
+
+
+def _derg3(x):
+    r"""Return the derivative function g3(x) for Trefethen transformation."""
+    return (1 / 53089) * (
+        40320 + 20160 * x ** 2 + 15120 * x ** 4 + 12600 * x ** 6 + 11025 * x ** 8
+    )
+
+
+def TrefethenCC(npoints, d=3):
+    r"""Generate 1D grid on [-1,1] interval based on Trefethen-Clenshaw-Curtis.
+
+    Parameters
+    ----------
+    npoints : int
+        Number of points in the grid.
+
+    Returns
+    -------
+    OneDGrid
+        A 1D grid instance.
+    """
+    grid = ClenshawCurtis(npoints)
+
+    points = np.zeros(npoints)
+    weights = np.zeros(npoints)
+
+    if d == 2:
+        points = _g2(grid.points)
+        weights = _derg2(grid.points) * grid.weights
+    elif d == 3:
+        points = _g3(grid.points)
+        weights = _derg3(grid.points) * grid.weights
+    else:
+        points = grid.points
+        weights = grid.weights
+
+    return OneDGrid(points, weights, (-1, 1))
+
+
+def TrefethenGC2(npoints, d=3):
+    r"""Generate 1D grid on [-1,1] interval based on Trefethen-Gauss-Chebyshev.
+
+    Parameters
+    ----------
+    npoints : int
+        Number of points in the grid.
+
+    Returns
+    -------
+    OneDGrid
+        A 1D grid instance.
+    """
+    grid = GaussChebyshevType2(npoints)
+
+    points = np.zeros(npoints)
+    weights = np.zeros(npoints)
+
+    if d == 2:
+        points = _g2(grid.points)
+        weights = _derg2(grid.points) * grid.weights
+    elif d == 3:
+        points = _g3(grid.points)
+        weights = _derg3(grid.points) * grid.weights
+    else:
+        points = grid.points
+        weights = grid.weights
+
+    return OneDGrid(points, weights, (-1, 1))
+
+
+def TrefethenGeneral(npoints, quadrature, d=3):
+    r"""Generate 1D grid on [-1,1] interval based on Trefethen-General.
+
+    Parameters
+    ----------
+    npoints : int
+        Number of points in the grid.
+
+    Returns
+    -------
+    OneDGrid
+        A 1D grid instance.
+    """
+    grid = quadrature(npoints)
+
+    points = np.zeros(npoints)
+    weights = np.zeros(npoints)
+
+    if d == 2:
+        points = _g2(grid.points)
+        weights = _derg2(grid.points) * grid.weights
+    elif d == 3:
+        points = _g3(grid.points)
+        weights = _derg3(grid.points) * grid.weights
+    else:
+        points = grid.points
+        weights = grid.weights
+
+    return OneDGrid(points, weights, (-1, 1))
+
+
+# Auxiliar functions for Trefethen "strip" transformation
+# gstrip is the function and dergstrio is the first derivative.
+# this functions work for TrefethenStripCC, TrefethenStripGC2,
+# and TrefethenStripGeneral
+def _gstrip(rho, s):
+    r"""Auxiliary function g(x) for Trefethen strip transformation."""
+    tau = np.pi / np.log(rho)
+    termd = 0.5 + 1 / (np.exp(tau * np.pi) + 1)
+    u = np.arcsin(s)
+
+    cn = 1 / (np.log(1 + np.exp(-tau * np.pi)) - np.log(2) + np.pi * tau * termd / 2)
+
+    g = cn * (
+        np.log(1 + np.exp(-tau * (np.pi / 2 + u)))
+        - np.log(1 + np.exp(-tau * (np.pi / 2 - u)))
+        + termd * tau * u
+    )
+
+    return g
+
+
+def _dergstrip(rho, s):
+    r"""First derivative of g(x) for Trefethen strip transformation."""
+    tau = np.pi / np.log(rho)
+    termd = 0.5 + 1 / (np.exp(tau * np.pi) + 1)
+
+    cn = 1 / (np.log(1 + np.exp(-tau * np.pi)) - np.log(2) + np.pi * tau * termd / 2)
+
+    gp = np.zeros(len(s))
+
+    for i in range(0, len(s)):
+        if np.fabs(np.fabs(s[i]) - 1) < 1.0e-8:
+            gp[i] = cn * tau ** 2 / 4
+            gp[i] *= np.tanh(tau * np.pi / 2) ** 2
+        else:
+            u = np.arcsin(s[i])
+            gp[i] = 1 / (np.exp(tau * (np.pi / 2 + u)) + 1)
+            gp[i] += 1 / (np.exp(tau * (np.pi / 2 - u)) + 1) - termd
+            gp[i] *= -cn * tau / np.sqrt(1 - s[i] ** 2)
+
+    return gp
+
+
+def TrefethenStripCC(npoints, rho=1.1):
+    r"""Generate 1D grid on [-1,1] interval based on Trefethen-Clenshaw-Curtis.
+
+    Parameters
+    ----------
+    npoints : int
+        Number of points in the grid.
+
+    Returns
+    -------
+    OneDGrid
+        A 1D grid instance.
+    """
+    grid = ClenshawCurtis(npoints)
+
+    points = np.zeros(npoints)
+    weights = np.zeros(npoints)
+
+    points = _gstrip(rho, grid.points)
+    weights = _dergstrip(rho, grid.points) * grid.weights
+
+    return OneDGrid(points, weights, (-1, 1))
+
+
+def TrefethenStripGC2(npoints, rho=1.1):
+    r"""Generate 1D grid on [-1,1] interval based on Trefethen-Gauss-Chebyshev.
+
+    Parameters
+    ----------
+    npoints : int
+        Number of points in the grid.
+
+    Returns
+    -------
+    OneDGrid
+        A 1D grid instance.
+    """
+    grid = GaussChebyshevType2(npoints)
+
+    points = np.zeros(npoints)
+    weights = np.zeros(npoints)
+
+    points = _gstrip(rho, grid.points)
+    weights = _dergstrip(rho, grid.points) * grid.weights
+
+    return OneDGrid(points, weights, (-1, 1))
+
+
+def TrefethenStripGeneral(npoints, quadrature, rho=1.1):
+    r"""Generate 1D grid on [-1,1] interval based on Trefethen-General.
+
+    Parameters
+    ----------
+    npoints : int
+        Number of points in the grid.
+
+    Returns
+    -------
+    OneDGrid
+        A 1D grid instance.
+    """
+    grid = quadrature(npoints)
+
+    points = np.zeros(npoints)
+    weights = np.zeros(npoints)
+
+    points = _gstrip(rho, grid.points)
+    weights = _dergstrip(rho, grid.points) * grid.weights
 
     return OneDGrid(points, weights, (-1, 1))
