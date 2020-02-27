@@ -35,12 +35,21 @@ from grid.onedgrid import (
     MidPoint,
     RectangleRuleSine,
     RectangleRuleSineEndPoints,
+    Simpson,
     TanhSinh,
     Trapezoidal,
     TrefethenCC,
     TrefethenGC2,
+    TrefethenGeneral,
     TrefethenStripCC,
     TrefethenStripGC2,
+    TrefethenStripGeneral,
+    _derg2,
+    _derg3,
+    _dergstrip,
+    _g2,
+    _g3,
+    _gstrip,
 )
 
 import numpy as np
@@ -208,6 +217,30 @@ class TestOneDGrid(TestCase):
             GaussLaguerre(10, -1)
         with self.assertRaises(ValueError):
             TanhSinh(10, 1)
+        with self.assertRaises(ValueError):
+            Simpson(4)
+        with self.assertRaises(ValueError):
+            GaussChebyshevType2(-10)
+        with self.assertRaises(ValueError):
+            GaussChebyshevLobatto(-10)
+        with self.assertRaises(ValueError):
+            Trapezoidal(-10)
+        with self.assertRaises(ValueError):
+            RectangleRuleSineEndPoints(-10)
+        with self.assertRaises(ValueError):
+            RectangleRuleSine(-10)
+        with self.assertRaises(ValueError):
+            TanhSinh(-11, 1)
+        with self.assertRaises(ValueError):
+            Simpson(-11)
+        with self.assertRaises(ValueError):
+            MidPoint(-10)
+        with self.assertRaises(ValueError):
+            ClenshawCurtis(-10)
+        with self.assertRaises(ValueError):
+            FejerFirst(-10)
+        with self.assertRaises(ValueError):
+            FejerSecond(-10)
 
     @staticmethod
     def helper_gaussian(x):
@@ -233,6 +266,7 @@ class TestOneDGrid(TestCase):
             Trapezoidal: 35,
             RectangleRuleSineEndPoints: 375,
             RectangleRuleSine: 25,
+            Simpson: 11,
             TanhSinh: 35,
             MidPoint: 25,
             ClenshawCurtis: 10,
@@ -258,3 +292,278 @@ class TestOneDGrid(TestCase):
             ref_value = 1.33333
             assert_almost_equal(f2_value, ref_value, decimal=3)
             print(f"{quadrature.__name__} passed the tests.")
+
+    def test_Simpson(self):
+        """Test for Simpson rule."""
+        grid = Simpson(11)
+        idx = np.arange(11)
+        points = -1 + (2 * idx / 10)
+        weights = 2 * np.ones(11) / 30
+
+        for i in range(1, 10):
+            if i % 2 == 0:
+                weights[i] *= 2
+            else:
+                weights[i] *= 4
+        assert np.allclose(grid.points, points)
+        assert np.allclose(grid.weights, weights)
+
+    def test_MidPoint(self):
+        """Test for midpoint rule."""
+        grid = MidPoint(10)
+        points = np.zeros(10)
+        weights = np.ones(10)
+
+        idx = np.arange(10)
+
+        weights *= 2 / 10
+        points = -1 + (2 * idx + 1) / 10
+
+        assert np.allclose(grid.points, points)
+        assert np.allclose(grid.weights, weights)
+
+    def test_ClenshawCurtis1(self):
+        """Test for ClenshawCurtis when npoints is equal to 1."""
+        grid = ClenshawCurtis(1)
+        points = np.zeros(1)
+        weights = 2 * np.ones(1)
+
+        assert np.allclose(grid.points, points)
+        assert np.allclose(grid.weights, weights)
+
+    def test_ClenshawCurtis2(self):
+        """Test for ClenshawCurtis."""
+        grid = ClenshawCurtis(10)
+        points = np.zeros(10)
+        weights = 2 * np.ones(10)
+
+        theta = np.zeros(10)
+
+        for i in range(0, 10):
+            theta[i] = (9 - i) * np.pi / 9
+
+        points = np.cos(theta)
+        weights = np.zeros(10)
+
+        jmed = 9 // 2
+
+        for i in range(0, 10):
+            weights[i] = 1
+
+            for j in range(0, jmed):
+                if (2 * (j + 1)) == 9:
+                    b = 1
+                else:
+                    b = 2
+
+                weights[i] = weights[i] - b * np.cos(2 * (j + 1) * theta[i]) / (
+                    4 * j * (j + 2) + 3
+                )
+
+        for i in range(1, 9):
+            weights[i] = 2 * weights[i] / 9
+
+        weights[0] /= 9
+        weights[9] /= 9
+
+        assert np.allclose(grid.points, points)
+        assert np.allclose(grid.weights, weights)
+
+    def test_FejerFirst(self):
+        """Test for Fejer first rule."""
+        grid = FejerFirst(10)
+
+        theta = np.pi * (2 * np.arange(10) + 1) / 20
+
+        points = np.cos(theta)
+        weights = np.zeros(10)
+
+        nsum = 10 // 2
+
+        for k in range(0, 10):
+            serie = 0
+
+            for m in range(1, nsum):
+                serie += np.cos(2 * m * theta[k]) / (4 * m ** 2 - 1)
+
+            serie = 1 - 2 * serie
+
+            weights[k] = (2 / 10) * serie
+
+        points = points[::-1]
+        weights = weights[::-1]
+
+        assert np.allclose(grid.points, points)
+        assert np.allclose(grid.weights, weights)
+
+    def test_FejerSecond(self):
+        """Test for Fejer second rule."""
+        grid = FejerSecond(10)
+
+        theta = np.pi * (np.arange(10) + 1) / 11
+
+        points = np.cos(theta)
+        weights = np.zeros(10)
+
+        nsum = 11 // 2
+
+        for k in range(0, 10):
+            serie = 0
+
+            for m in range(1, nsum):
+                serie += np.sin((2 * m - 1) * theta[k]) / (2 * m - 1)
+
+            weights[k] = (4 * np.sin(theta[k]) / 11) * serie
+
+        points = points[::-1]
+        weights = weights[::-1]
+
+        assert np.allclose(grid.points, points)
+        assert np.allclose(grid.weights, weights)
+
+    def test_AuxiliarTrefethenSausage(self):
+        """Test for Auxiliary functions using in Trefethen Sausage."""
+        xref = np.array([-1.0, 0.0, 1.0])
+        d2ref = np.array([1.5100671140939597, 0.8053691275167785, 1.5100671140939597])
+        d3ref = np.array([1.869031249411366, 0.7594793648401741, 1.869031249411366])
+        newxg2 = _g2(xref)
+        newxg3 = _g3(xref)
+        newd2 = _derg2(xref)
+        newd3 = _derg3(xref)
+
+        assert np.allclose(xref, newxg2)
+        assert np.allclose(xref, newxg3)
+        assert np.allclose(d2ref, newd2)
+        assert np.allclose(d3ref, newd3)
+
+    def test_TrefethenCC_d2(self):
+        """Test for Trefethen - Sausage Clenshaw Curtis and parameter d=2."""
+        grid = TrefethenCC(10, 2)
+
+        tmp = ClenshawCurtis(10)
+
+        new_points = _g2(tmp.points)
+        new_weights = _derg2(tmp.points) * tmp.weights
+
+        assert np.allclose(grid.points, new_points)
+        assert np.allclose(grid.weights, new_weights)
+
+    def test_TrefethenCC_d3(self):
+        """Test for Trefethen - Sausage Clenshaw Curtis and parameter d=3."""
+        grid = TrefethenCC(10, 3)
+
+        tmp = ClenshawCurtis(10)
+
+        new_points = _g3(tmp.points)
+        new_weights = _derg3(tmp.points) * tmp.weights
+
+        assert np.allclose(grid.points, new_points)
+        assert np.allclose(grid.weights, new_weights)
+
+    def test_TrefethenCC_d0(self):
+        """Test for Trefethen - Sausage Clenshaw Curtis and parameter d=0."""
+        grid = TrefethenCC(10, 0)
+
+        tmp = ClenshawCurtis(10)
+
+        assert np.allclose(grid.points, tmp.points)
+        assert np.allclose(grid.weights, tmp.weights)
+
+    def test_TrefethenGC2_d2(self):
+        """Test for Trefethen - Sausage GaussChebyshev2 and parameter d=2."""
+        grid = TrefethenGC2(10, 2)
+
+        tmp = GaussChebyshevType2(10)
+
+        new_points = _g2(tmp.points)
+        new_weights = _derg2(tmp.points) * tmp.weights
+
+        assert np.allclose(grid.points, new_points)
+        assert np.allclose(grid.weights, new_weights)
+
+    def test_TrefethenGC2_d3(self):
+        """Test for Trefethen - Sausage GaussChebyshev2 and parameter d=3."""
+        grid = TrefethenGC2(10, 3)
+
+        tmp = GaussChebyshevType2(10)
+
+        new_points = _g3(tmp.points)
+        new_weights = _derg3(tmp.points) * tmp.weights
+
+        assert np.allclose(grid.points, new_points)
+        assert np.allclose(grid.weights, new_weights)
+
+    def test_TrefethenGC2_d0(self):
+        """Test for Trefethen - Sausage GaussChebyshev2 and parameter d=0."""
+        grid = TrefethenGC2(10, 0)
+
+        tmp = GaussChebyshevType2(10)
+
+        assert np.allclose(grid.points, tmp.points)
+        assert np.allclose(grid.weights, tmp.weights)
+
+    def test_TrefethenGeneral_d2(self):
+        """Test for Trefethen - Sausage General and parameter d=2."""
+        grid = TrefethenGeneral(10, ClenshawCurtis, 2)
+        new = TrefethenCC(10, 2)
+
+        assert np.allclose(grid.points, new.points)
+        assert np.allclose(grid.weights, new.weights)
+
+    def test_TrefethenGeneral_d3(self):
+        """Test for Trefethen - Sausage General and parameter d=2."""
+        grid = TrefethenGeneral(10, ClenshawCurtis, 3)
+        new = TrefethenCC(10, 3)
+
+        assert np.allclose(grid.points, new.points)
+        assert np.allclose(grid.weights, new.weights)
+
+    def test_TrefethenGeneral_d0(self):
+        """Test for Trefethen - Sausage General and parameter d=0."""
+        grid = TrefethenGeneral(10, ClenshawCurtis, 0)
+        new = TrefethenCC(10, 0)
+
+        assert np.allclose(grid.points, new.points)
+        assert np.allclose(grid.weights, new.weights)
+
+    def test_AuxiliarTrefethenStrip(self):
+        """Test for Auxiliary functions using in Trefethen Strip."""
+        xref = np.array([-1.0, 0.0, 1.0])
+        dref = np.array([10.7807092, 0.65413403, 10.7807092])
+        newx = _gstrip(1.1, xref)
+        newd = _dergstrip(1.1, xref)
+
+        assert np.allclose(xref, newx)
+        assert np.allclose(dref, newd)
+
+    def test_TrefethenStripCC(self):
+        """Test for Trefethen - Strip Clenshaw Curtis."""
+        grid = TrefethenStripCC(10, 1.1)
+
+        tmp = ClenshawCurtis(10)
+
+        new_points = _gstrip(1.1, tmp.points)
+        new_weights = _dergstrip(1.1, tmp.points) * tmp.weights
+
+        assert np.allclose(grid.points, new_points)
+        assert np.allclose(grid.weights, new_weights)
+
+    def test_TrefethenStripGC2(self):
+        """Test for Trefethen - Strip Gauss Chebyshev 2."""
+        grid = TrefethenStripGC2(10, 1.1)
+
+        tmp = GaussChebyshevType2(10)
+
+        new_points = _gstrip(1.1, tmp.points)
+        new_weights = _dergstrip(1.1, tmp.points) * tmp.weights
+
+        assert np.allclose(grid.points, new_points)
+        assert np.allclose(grid.weights, new_weights)
+
+    def test_TrefethenStripGeneral(self):
+        """Test for Trefethen - Strip General."""
+        grid = TrefethenStripGeneral(10, ClenshawCurtis, 3)
+        new = TrefethenStripCC(10, 3)
+
+        assert np.allclose(grid.points, new.points)
+        assert np.allclose(grid.weights, new.weights)

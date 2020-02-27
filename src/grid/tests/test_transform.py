@@ -368,3 +368,14 @@ class TestTransform(TestCase):
         inv = InverseTF(btf)
         new_array = inv.transform(btf.transform(self.array))
         assert_allclose(new_array, self.array)
+
+    def test_errors_raises(self):
+        """Test errors raise."""
+        with self.assertRaises(ValueError):
+            KnowlesTF(0.1, 10.0, 0)
+        with self.assertRaises(ValueError):
+            HandyTF(0.1, 10.0, 0)
+        with self.assertRaises(ValueError):
+            HandyModTF(0.1, 10.0, 0)
+        with self.assertRaises(ValueError):
+            HandyModTF(10.0, 1.0, 2)

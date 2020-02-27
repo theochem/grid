@@ -168,6 +168,8 @@ def GaussChebyshevType2(npoints):
         A 1D grid instance.
 
     """
+    if npoints < 1:
+        raise ValueError("npoints must be greater that one, given {npoints}")
     points, weights = roots_chebyu(npoints)
     weights /= np.sqrt(1 - np.power(points, 2))
     return OneDGrid(points, weights, (-1, 1))
@@ -215,6 +217,8 @@ def GaussChebyshevLobatto(npoints):
         A 1D grid instance.
 
     """
+    if npoints <= 1:
+        raise ValueError("npoints must be greater that one, given {npoints}")
     idx = np.arange(npoints)
     weights = np.ones(npoints)
 
@@ -267,6 +271,8 @@ def Trapezoidal(npoints):
         A 1D grid instance.
 
     """
+    if npoints <= 1:
+        raise ValueError("npoints must be greater that one, given {npoints}")
     idx = np.arange(npoints)
     points = -1 + (2 * idx / (npoints - 1))
 
@@ -314,6 +320,8 @@ def RectangleRuleSineEndPoints(npoints):
         A 1D grid instance.
 
     """
+    if npoints <= 1:
+        raise ValueError("npoints must be greater that one, given {npoints}")
     idx = np.arange(npoints) + 1
     points = idx / (npoints + 1)
 
@@ -371,6 +379,8 @@ def RectangleRuleSine(npoints):
         A 1D grid instance.
 
     """
+    if npoints <= 1:
+        raise ValueError("npoints must be greater that one, given {npoints}")
     idx = np.arange(npoints) + 1
     points = (2 * idx - 1) / (2 * npoints)
 
@@ -432,6 +442,8 @@ def TanhSinh(npoints, delta=0.1):
     OneDGrid
         A 1D grid instance.
     """
+    if npoints <= 1:
+        raise ValueError("npoints must be greater that one, given {npoints}")
     if npoints % 2 == 0:
         raise ValueError("npoints must be odd, given {npoints}")
 
@@ -477,6 +489,8 @@ def Simpson(npoints):
         A 1D grid instance.
 
     """
+    if npoints <= 1:
+        raise ValueError("npoints must be greater that one, given {npoints}")
     if npoints % 2 == 0:
         raise ValueError("npoints must be odd, given {npoints}")
     idx = np.arange(npoints)
@@ -523,6 +537,8 @@ def MidPoint(npoints):
     OneDGrid
         A 1D grid instance.
     """
+    if npoints <= 1:
+        raise ValueError("npoints must be greater that one, given {npoints}")
     points = np.zeros(npoints)
     weights = np.ones(npoints)
 
@@ -555,6 +571,8 @@ def ClenshawCurtis(npoints):
     OneDGrid
         A 1D grid instance.
     """
+    if npoints < 1:
+        raise ValueError("npoints must be greater that one, given {npoints}")
     if npoints == 1:
         points = np.zeros(npoints)
         weights = np.zeros(npoints)
