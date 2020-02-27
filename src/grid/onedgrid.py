@@ -852,15 +852,17 @@ def _dergstrip(rho, s):
 
     gp = np.zeros(len(s))
 
-    for i in range(0, len(s)):
-        if np.fabs(np.fabs(s[i]) - 1) < 1.0e-8:
-            gp[i] = cn * tau ** 2 / 4
-            gp[i] *= np.tanh(tau * np.pi / 2) ** 2
-        else:
-            u = np.arcsin(s[i])
-            gp[i] = 1 / (np.exp(tau * (np.pi / 2 + u)) + 1)
-            gp[i] += 1 / (np.exp(tau * (np.pi / 2 - u)) + 1) - termd
-            gp[i] *= -cn * tau / np.sqrt(1 - s[i] ** 2)
+    # get true label
+    mask_true = np.isclose(np.fabs(s) - 1, 0, atol=1.0e-8)
+    # get false label
+    mask_false = mask_true == 0
+    u = np.arcsin(s)
+    gp[mask_true] = cn * tau ** 2 / 4 * np.tanh(tau * np.pi / 2) ** 2
+    gp[mask_false] = (
+        1 / (np.exp(tau * (np.pi / 2 + u[mask_false])) + 1)
+        + 1 / (np.exp(tau * (np.pi / 2 - u[mask_false])) + 1)
+        - termd
+    ) * (-cn * tau / np.sqrt(1 - s[mask_false] ** 2))
 
     return gp
 

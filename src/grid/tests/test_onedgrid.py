@@ -99,8 +99,8 @@ class TestOneDGrid(TestCase):
         points, weights = roots_chebyu(10)
         grid = GaussChebyshevType2(10)
         weights /= np.sqrt(1 - np.power(points, 2))
-        assert np.allclose(grid.points, points)
-        assert np.allclose(grid.weights, weights)
+        assert_allclose(grid.points, points)
+        assert_allclose(grid.weights, weights)
 
     def test_gausschebyshevlobatto(self):
         """Test Gauss Chebyshev Lobatto grid."""
@@ -118,8 +118,8 @@ class TestOneDGrid(TestCase):
         weights[0] /= 2
         weights[9] /= 2
 
-        assert np.allclose(grid.points, points)
-        assert np.allclose(grid.weights, weights)
+        assert_allclose(grid.points, points)
+        assert_allclose(grid.weights, weights)
 
     def test_trapezoidal(self):
         """Test for Trapezoidal rule."""
@@ -132,8 +132,8 @@ class TestOneDGrid(TestCase):
         weights[0] /= 2
         weights[9] = weights[0]
 
-        assert np.allclose(grid.points, points)
-        assert np.allclose(grid.weights, weights)
+        assert_allclose(grid.points, points)
+        assert_allclose(grid.weights, weights)
 
     def test_rectanglesineendpoints(self):
         """Test for rectangle rule for sine series with endpoints."""
@@ -156,8 +156,8 @@ class TestOneDGrid(TestCase):
         points = 2 * points - 1
         weights *= 2
 
-        assert np.allclose(grid.points, points)
-        assert np.allclose(grid.weights, weights)
+        assert_allclose(grid.points, points)
+        assert_allclose(grid.weights, weights)
 
     def test_rectanglesine(self):
         """Test for rectangle rule for sine series without endpoint."""
@@ -187,8 +187,8 @@ class TestOneDGrid(TestCase):
         points = 2 * points - 1
         weights *= 2
 
-        assert np.allclose(grid.points, points)
-        assert np.allclose(grid.weights, weights)
+        assert_allclose(grid.points, points)
+        assert_allclose(grid.weights, weights)
 
     def test_tanhsinh(self):
         """Test for Tanh - Sinh rule."""
@@ -208,8 +208,8 @@ class TestOneDGrid(TestCase):
             weights[i] = np.pi * delta * np.cosh(j * delta) * 0.5
             weights[i] /= np.cosh(arg) ** 2
 
-        assert np.allclose(grid.points, points)
-        assert np.allclose(grid.weights, weights)
+        assert_allclose(grid.points, points)
+        assert_allclose(grid.weights, weights)
 
     def test_errors_raise(self):
         """Test errors raise."""
@@ -305,8 +305,8 @@ class TestOneDGrid(TestCase):
                 weights[i] *= 2
             else:
                 weights[i] *= 4
-        assert np.allclose(grid.points, points)
-        assert np.allclose(grid.weights, weights)
+        assert_allclose(grid.points, points)
+        assert_allclose(grid.weights, weights)
 
     def test_MidPoint(self):
         """Test for midpoint rule."""
@@ -319,8 +319,8 @@ class TestOneDGrid(TestCase):
         weights *= 2 / 10
         points = -1 + (2 * idx + 1) / 10
 
-        assert np.allclose(grid.points, points)
-        assert np.allclose(grid.weights, weights)
+        assert_allclose(grid.points, points)
+        assert_allclose(grid.weights, weights)
 
     def test_ClenshawCurtis1(self):
         """Test for ClenshawCurtis when npoints is equal to 1."""
@@ -328,8 +328,8 @@ class TestOneDGrid(TestCase):
         points = np.zeros(1)
         weights = 2 * np.ones(1)
 
-        assert np.allclose(grid.points, points)
-        assert np.allclose(grid.weights, weights)
+        assert_allclose(grid.points, points)
+        assert_allclose(grid.weights, weights)
 
     def test_ClenshawCurtis2(self):
         """Test for ClenshawCurtis."""
@@ -366,8 +366,8 @@ class TestOneDGrid(TestCase):
         weights[0] /= 9
         weights[9] /= 9
 
-        assert np.allclose(grid.points, points)
-        assert np.allclose(grid.weights, weights)
+        assert_allclose(grid.points, points)
+        assert_allclose(grid.weights, weights)
 
     def test_FejerFirst(self):
         """Test for Fejer first rule."""
@@ -393,8 +393,8 @@ class TestOneDGrid(TestCase):
         points = points[::-1]
         weights = weights[::-1]
 
-        assert np.allclose(grid.points, points)
-        assert np.allclose(grid.weights, weights)
+        assert_allclose(grid.points, points)
+        assert_allclose(grid.weights, weights)
 
     def test_FejerSecond(self):
         """Test for Fejer second rule."""
@@ -418,8 +418,8 @@ class TestOneDGrid(TestCase):
         points = points[::-1]
         weights = weights[::-1]
 
-        assert np.allclose(grid.points, points)
-        assert np.allclose(grid.weights, weights)
+        assert_allclose(grid.points, points)
+        assert_allclose(grid.weights, weights)
 
     def test_AuxiliarTrefethenSausage(self):
         """Test for Auxiliary functions using in Trefethen Sausage."""
@@ -431,10 +431,10 @@ class TestOneDGrid(TestCase):
         newd2 = _derg2(xref)
         newd3 = _derg3(xref)
 
-        assert np.allclose(xref, newxg2)
-        assert np.allclose(xref, newxg3)
-        assert np.allclose(d2ref, newd2)
-        assert np.allclose(d3ref, newd3)
+        assert_allclose(xref, newxg2)
+        assert_allclose(xref, newxg3)
+        assert_allclose(d2ref, newd2)
+        assert_allclose(d3ref, newd3)
 
     def test_TrefethenCC_d2(self):
         """Test for Trefethen - Sausage Clenshaw Curtis and parameter d=2."""
@@ -445,8 +445,8 @@ class TestOneDGrid(TestCase):
         new_points = _g2(tmp.points)
         new_weights = _derg2(tmp.points) * tmp.weights
 
-        assert np.allclose(grid.points, new_points)
-        assert np.allclose(grid.weights, new_weights)
+        assert_allclose(grid.points, new_points)
+        assert_allclose(grid.weights, new_weights)
 
     def test_TrefethenCC_d3(self):
         """Test for Trefethen - Sausage Clenshaw Curtis and parameter d=3."""
@@ -457,8 +457,8 @@ class TestOneDGrid(TestCase):
         new_points = _g3(tmp.points)
         new_weights = _derg3(tmp.points) * tmp.weights
 
-        assert np.allclose(grid.points, new_points)
-        assert np.allclose(grid.weights, new_weights)
+        assert_allclose(grid.points, new_points)
+        assert_allclose(grid.weights, new_weights)
 
     def test_TrefethenCC_d0(self):
         """Test for Trefethen - Sausage Clenshaw Curtis and parameter d=0."""
@@ -466,8 +466,8 @@ class TestOneDGrid(TestCase):
 
         tmp = ClenshawCurtis(10)
 
-        assert np.allclose(grid.points, tmp.points)
-        assert np.allclose(grid.weights, tmp.weights)
+        assert_allclose(grid.points, tmp.points)
+        assert_allclose(grid.weights, tmp.weights)
 
     def test_TrefethenGC2_d2(self):
         """Test for Trefethen - Sausage GaussChebyshev2 and parameter d=2."""
@@ -478,8 +478,8 @@ class TestOneDGrid(TestCase):
         new_points = _g2(tmp.points)
         new_weights = _derg2(tmp.points) * tmp.weights
 
-        assert np.allclose(grid.points, new_points)
-        assert np.allclose(grid.weights, new_weights)
+        assert_allclose(grid.points, new_points)
+        assert_allclose(grid.weights, new_weights)
 
     def test_TrefethenGC2_d3(self):
         """Test for Trefethen - Sausage GaussChebyshev2 and parameter d=3."""
@@ -490,8 +490,8 @@ class TestOneDGrid(TestCase):
         new_points = _g3(tmp.points)
         new_weights = _derg3(tmp.points) * tmp.weights
 
-        assert np.allclose(grid.points, new_points)
-        assert np.allclose(grid.weights, new_weights)
+        assert_allclose(grid.points, new_points)
+        assert_allclose(grid.weights, new_weights)
 
     def test_TrefethenGC2_d0(self):
         """Test for Trefethen - Sausage GaussChebyshev2 and parameter d=0."""
@@ -499,32 +499,32 @@ class TestOneDGrid(TestCase):
 
         tmp = GaussChebyshevType2(10)
 
-        assert np.allclose(grid.points, tmp.points)
-        assert np.allclose(grid.weights, tmp.weights)
+        assert_allclose(grid.points, tmp.points)
+        assert_allclose(grid.weights, tmp.weights)
 
     def test_TrefethenGeneral_d2(self):
         """Test for Trefethen - Sausage General and parameter d=2."""
         grid = TrefethenGeneral(10, ClenshawCurtis, 2)
         new = TrefethenCC(10, 2)
 
-        assert np.allclose(grid.points, new.points)
-        assert np.allclose(grid.weights, new.weights)
+        assert_allclose(grid.points, new.points)
+        assert_allclose(grid.weights, new.weights)
 
     def test_TrefethenGeneral_d3(self):
         """Test for Trefethen - Sausage General and parameter d=2."""
         grid = TrefethenGeneral(10, ClenshawCurtis, 3)
         new = TrefethenCC(10, 3)
 
-        assert np.allclose(grid.points, new.points)
-        assert np.allclose(grid.weights, new.weights)
+        assert_allclose(grid.points, new.points)
+        assert_allclose(grid.weights, new.weights)
 
     def test_TrefethenGeneral_d0(self):
         """Test for Trefethen - Sausage General and parameter d=0."""
         grid = TrefethenGeneral(10, ClenshawCurtis, 0)
         new = TrefethenCC(10, 0)
 
-        assert np.allclose(grid.points, new.points)
-        assert np.allclose(grid.weights, new.weights)
+        assert_allclose(grid.points, new.points)
+        assert_allclose(grid.weights, new.weights)
 
     def test_AuxiliarTrefethenStrip(self):
         """Test for Auxiliary functions using in Trefethen Strip."""
@@ -533,8 +533,8 @@ class TestOneDGrid(TestCase):
         newx = _gstrip(1.1, xref)
         newd = _dergstrip(1.1, xref)
 
-        assert np.allclose(xref, newx)
-        assert np.allclose(dref, newd)
+        assert_allclose(xref, newx)
+        assert_allclose(dref, newd)
 
     def test_TrefethenStripCC(self):
         """Test for Trefethen - Strip Clenshaw Curtis."""
@@ -545,8 +545,8 @@ class TestOneDGrid(TestCase):
         new_points = _gstrip(1.1, tmp.points)
         new_weights = _dergstrip(1.1, tmp.points) * tmp.weights
 
-        assert np.allclose(grid.points, new_points)
-        assert np.allclose(grid.weights, new_weights)
+        assert_allclose(grid.points, new_points)
+        assert_allclose(grid.weights, new_weights)
 
     def test_TrefethenStripGC2(self):
         """Test for Trefethen - Strip Gauss Chebyshev 2."""
@@ -557,13 +557,13 @@ class TestOneDGrid(TestCase):
         new_points = _gstrip(1.1, tmp.points)
         new_weights = _dergstrip(1.1, tmp.points) * tmp.weights
 
-        assert np.allclose(grid.points, new_points)
-        assert np.allclose(grid.weights, new_weights)
+        assert_allclose(grid.points, new_points)
+        assert_allclose(grid.weights, new_weights)
 
     def test_TrefethenStripGeneral(self):
         """Test for Trefethen - Strip General."""
         grid = TrefethenStripGeneral(10, ClenshawCurtis, 3)
         new = TrefethenStripCC(10, 3)
 
-        assert np.allclose(grid.points, new.points)
-        assert np.allclose(grid.weights, new.weights)
+        assert_allclose(grid.points, new.points)
+        assert_allclose(grid.weights, new.weights)
