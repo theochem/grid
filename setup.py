@@ -58,12 +58,13 @@ setup(
     package_data={
         "grid.data": ["*.*"],
         "grid.data.lebedev": ["*.npz"],
+        "grid.data.prune_grid": ["*.npz"]
     },
     zip_safe=False,
     install_requires=[
         "numpy>=1.16",
         "pytest>=2.6",
-        "scipy>=1.2",
+        "scipy>=1.4",
         "importlib_resources",
         "sympy",
     ],
