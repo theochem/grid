@@ -170,19 +170,18 @@ class TestOneDGrid(TestCase):
 
         index_m = np.arange(9) + 1
 
+        weights = (
+            (2 / (10 * np.pi ** 2))
+            * np.sin(10 * np.pi * points)
+            * np.sin(10 * np.pi / 2) ** 2
+        )
+
         for i in range(0, 10):
             elements = np.zeros(9)
             elements = np.sin(index_m * np.pi * points[i])
             elements *= np.sin(index_m * np.pi / 2) ** 2
             elements /= index_m
-
-            weights[i] = (4 / (10 * np.pi)) * np.sum(elements)
-
-            weights[i] += (
-                (2 / (10 * np.pi ** 2))
-                * np.sin(10 * np.pi * points[i])
-                * np.sin(10 * np.pi / 2) ** 2
-            )
+            weights[i] += (4 / (10 * np.pi)) * np.sum(elements)
 
         points = 2 * points - 1
         weights *= 2
@@ -322,16 +321,7 @@ class TestOneDGrid(TestCase):
         assert_allclose(grid.points, points)
         assert_allclose(grid.weights, weights)
 
-    def test_ClenshawCurtis1(self):
-        """Test for ClenshawCurtis when npoints is equal to 1."""
-        grid = ClenshawCurtis(1)
-        points = np.zeros(1)
-        weights = 2 * np.ones(1)
-
-        assert_allclose(grid.points, points)
-        assert_allclose(grid.weights, weights)
-
-    def test_ClenshawCurtis2(self):
+    def test_ClenshawCurtis(self):
         """Test for ClenshawCurtis."""
         grid = ClenshawCurtis(10)
         points = np.zeros(10)
