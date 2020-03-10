@@ -329,10 +329,9 @@ def RectangleRuleSineEndPoints(npoints):
 
     m = np.arange(npoints) + 1
 
-    for i in range(0, npoints):
-        weights[i] = np.sum(
-            np.sin(m * np.pi * points[i]) * (1 - np.cos(m * np.pi)) / (m * np.pi)
-        )
+    bm = (np.ones(npoints) - np.cos(m * np.pi)) / (m * np.pi)
+    sim = np.sin(np.outer(m * np.pi, points))
+    weights = bm @ sim
 
     points = 2 * points - 1
     weights *= 4 / (npoints + 1)
@@ -389,11 +388,10 @@ def RectangleRuleSine(npoints):
     )
 
     m = np.arange(npoints - 1) + 1
-
-    for i in range(0, npoints):
-        weights[i] += (4 / (npoints * np.pi)) * np.sum(
-            np.sin(m * np.pi * points[i]) * np.sin(m * np.pi / 2) ** 2 / m
-        )
+    bm = np.sin(m * np.pi / 2) ** 2 / m
+    sim = np.sin(np.outer(m * np.pi, points))
+    wi = bm @ sim
+    weights += (4 / (npoints * np.pi)) * wi
 
     points = 2 * points - 1
     weights *= 2
@@ -562,26 +560,21 @@ def ClenshawCurtis(npoints):
     if npoints <= 1:
         raise ValueError("npoints must be greater that one, given {npoints}")
 
-    theta = np.pi * (npoints - 1 - np.arange(npoints)) / (npoints - 1)
-
+    theta = np.pi * np.arange(npoints) / (npoints - 1)
+    theta = theta[::-1]
     points = np.cos(theta)
 
-    weights = np.zeros(npoints)
-
     jmed = (npoints - 1) // 2
+    bj = 2.0 * np.ones(jmed)
+    if 2 * jmed + 1 == npoints:
+        bj[jmed - 1] = 1.0
 
     j = np.arange(jmed)
-    b = 2.0 * np.ones(jmed)
+    bj /= 4 * j * (j + 2) + 3
+    cij = np.cos(np.outer(2 * (j + 1), theta))
+    wi = bj @ cij
 
-    if 2 * jmed + 1 == npoints:
-        b[jmed - 1] = 1.0
-
-    for i in range(0, npoints):
-        weights[i] = 1 - np.sum(
-            b * np.cos(2 * (j + 1) * theta[i]) / (4 * j * (j + 2) + 3)
-        )
-
-    weights *= 2 / (npoints - 1)
+    weights = 2 * (1 - wi) / (npoints - 1)
     weights[0] /= 2
     weights[npoints - 1] /= 2
 
@@ -612,16 +605,16 @@ def FejerFirst(npoints):
         raise ValueError("npoints must be greater that one, given {npoints}")
 
     theta = np.pi * (2 * np.arange(npoints) + 1) / (2 * npoints)
-
     points = np.cos(theta)
     weights = np.zeros(npoints)
 
     nsum = npoints // 2
-
     j = np.arange(nsum - 1) + 1
 
-    for i in range(0, npoints):
-        weights[i] = 1 - 2 * np.sum(np.cos(2 * j * theta[i]) / (4 * j ** 2 - 1))
+    bj = 2.0 * np.ones(nsum - 1) / (4 * j ** 2 - 1)
+    cij = np.cos(np.outer(2 * j, theta))
+    di = bj @ cij
+    weights = 1 - di
 
     points = points[::-1]
     weights = weights[::-1] * (2 / npoints)
@@ -655,16 +648,14 @@ def FejerSecond(npoints):
     theta = np.pi * (np.arange(npoints) + 1) / (npoints + 1)
 
     points = np.cos(theta)
-    weights = np.zeros(npoints)
 
     nsum = (npoints + 1) // 2
-
     j = np.arange(nsum - 1) + 1
 
-    for i in range(0, npoints):
-        weights[i] = (
-            4 * np.sin(theta[i]) * np.sum(np.sin((2 * j - 1) * theta[i]) / (2 * j - 1))
-        )
+    bj = np.ones(nsum - 1) / (2 * j - 1)
+    sij = np.sin(np.outer(2 * j - 1, theta))
+    wi = bj @ sij
+    weights = 4 * np.sin(theta) * wi
 
     points = points[::-1]
     weights = weights[::-1] / (npoints + 1)
