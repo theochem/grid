@@ -327,17 +327,14 @@ def RectangleRuleSineEndPoints(npoints):
 
     weights = np.zeros(npoints)
 
-    index_m = np.arange(npoints) + 1
+    m = np.arange(npoints) + 1
 
-    for i in range(0, npoints):
-        elements = np.zeros(npoints)
-        elements = np.sin(index_m * np.pi * points[i])
-        elements *= (1 - np.cos(index_m * np.pi)) / (index_m * np.pi)
-
-        weights[i] = (2 / (npoints + 1)) * np.sum(elements)
+    bm = (np.ones(npoints) - np.cos(m * np.pi)) / (m * np.pi)
+    sim = np.sin(np.outer(m * np.pi, points))
+    weights = bm @ sim
 
     points = 2 * points - 1
-    weights *= 2
+    weights *= 4 / (npoints + 1)
 
     return OneDGrid(points, weights, (-1, 1))
 
@@ -384,23 +381,17 @@ def RectangleRuleSine(npoints):
     idx = np.arange(npoints) + 1
     points = (2 * idx - 1) / (2 * npoints)
 
-    weights = np.zeros(npoints)
+    weights = (
+        (2 / (npoints * np.pi ** 2))
+        * np.sin(npoints * np.pi * points)
+        * np.sin(npoints * np.pi / 2) ** 2
+    )
 
-    index_m = np.arange(npoints - 1) + 1
-
-    for i in range(0, npoints):
-        elements = np.zeros(npoints - 1)
-        elements = np.sin(index_m * np.pi * points[i])
-        elements *= np.sin(index_m * np.pi / 2) ** 2
-        elements /= index_m
-
-        weights[i] = (4 / (npoints * np.pi)) * np.sum(elements)
-
-        weights[i] += (
-            (2 / (npoints * np.pi ** 2))
-            * np.sin(npoints * np.pi * points[i])
-            * np.sin(npoints * np.pi / 2) ** 2
-        )
+    m = np.arange(npoints - 1) + 1
+    bm = np.sin(m * np.pi / 2) ** 2 / m
+    sim = np.sin(np.outer(m * np.pi, points))
+    wi = bm @ sim
+    weights += (4 / (npoints * np.pi)) * wi
 
     points = 2 * points - 1
     weights *= 2
@@ -447,19 +438,17 @@ def TanhSinh(npoints, delta=0.1):
     if npoints % 2 == 0:
         raise ValueError("npoints must be odd, given {npoints}")
 
-    jmin = int((1 - npoints) / 2)
-
     points = np.zeros(npoints)
     weights = np.zeros(npoints)
 
-    for i in range(0, npoints):
-        j = jmin + i
-        arg = np.pi * np.sinh(j * delta) / 2
+    j = int((1 - npoints) / 2) + np.arange(npoints)
 
-        points[i] = np.tanh(arg)
+    theta = j * delta
 
-        weights[i] = np.pi * delta * np.cosh(j * delta) * 0.5
-        weights[i] /= np.cosh(arg) ** 2
+    points = np.tanh(np.pi * np.sinh(theta) / 2)
+    weights = (
+        np.pi * delta * np.cosh(theta) / (2 * np.cosh(np.pi * np.sinh(theta) / 2) ** 2)
+    )
 
     return OneDGrid(points, weights, (-1, 1))
 
@@ -498,11 +487,8 @@ def Simpson(npoints):
 
     weights = 2 * np.ones(npoints) / (3 * (npoints - 1))
 
-    for i in range(1, npoints - 1):
-        if i % 2 == 0:
-            weights[i] *= 2
-        else:
-            weights[i] *= 4
+    weights[1 : npoints - 1 : 2] *= 4.0
+    weights[2 : npoints - 1 : 2] *= 2.0
 
     return OneDGrid(points, weights, (-1, 1))
 
@@ -571,41 +557,26 @@ def ClenshawCurtis(npoints):
     OneDGrid
         A 1D grid instance.
     """
-    if npoints < 1:
+    if npoints <= 1:
         raise ValueError("npoints must be greater that one, given {npoints}")
-    if npoints == 1:
-        points = np.zeros(npoints)
-        weights = np.zeros(npoints)
 
-        weights[0] = 2.0
-    else:
-        theta = np.zeros(npoints)
+    theta = np.pi * np.arange(npoints) / (npoints - 1)
+    theta = theta[::-1]
+    points = np.cos(theta)
 
-        for i in range(0, npoints):
-            theta[i] = (npoints - 1 - i) * np.pi / (npoints - 1)
+    jmed = (npoints - 1) // 2
+    bj = 2.0 * np.ones(jmed)
+    if 2 * jmed + 1 == npoints:
+        bj[jmed - 1] = 1.0
 
-        points = np.cos(theta)
-        weights = np.zeros(npoints)
+    j = np.arange(jmed)
+    bj /= 4 * j * (j + 2) + 3
+    cij = np.cos(np.outer(2 * (j + 1), theta))
+    wi = bj @ cij
 
-        jmed = (npoints - 1) // 2
-
-        for i in range(0, npoints):
-            weights[i] = 1
-
-            for j in range(0, jmed):
-                if (2 * (j + 1)) == (npoints - 1):
-                    b = 1
-                else:
-                    b = 2
-                weights[i] = weights[i] - b * np.cos(2 * (j + 1) * theta[i]) / (
-                    4 * j * (j + 2) + 3
-                )
-
-        for i in range(1, npoints - 1):
-            weights[i] = 2 * weights[i] / (npoints - 1)
-
-        weights[0] = weights[0] / (npoints - 1)
-        weights[npoints - 1] = weights[npoints - 1] / (npoints - 1)
+    weights = 2 * (1 - wi) / (npoints - 1)
+    weights[0] /= 2
+    weights[npoints - 1] /= 2
 
     return OneDGrid(points, weights, (-1, 1))
 
@@ -634,24 +605,19 @@ def FejerFirst(npoints):
         raise ValueError("npoints must be greater that one, given {npoints}")
 
     theta = np.pi * (2 * np.arange(npoints) + 1) / (2 * npoints)
-
     points = np.cos(theta)
     weights = np.zeros(npoints)
 
     nsum = npoints // 2
+    j = np.arange(nsum - 1) + 1
 
-    for k in range(0, npoints):
-        serie = 0
-
-        for m in range(1, nsum):
-            serie += np.cos(2 * m * theta[k]) / (4 * m ** 2 - 1)
-
-        serie = 1 - 2 * serie
-
-        weights[k] = (2 / npoints) * serie
+    bj = 2.0 * np.ones(nsum - 1) / (4 * j ** 2 - 1)
+    cij = np.cos(np.outer(2 * j, theta))
+    di = bj @ cij
+    weights = 1 - di
 
     points = points[::-1]
-    weights = weights[::-1]
+    weights = weights[::-1] * (2 / npoints)
 
     return OneDGrid(points, weights, (-1, 1))
 
@@ -682,20 +648,17 @@ def FejerSecond(npoints):
     theta = np.pi * (np.arange(npoints) + 1) / (npoints + 1)
 
     points = np.cos(theta)
-    weights = np.zeros(npoints)
 
     nsum = (npoints + 1) // 2
+    j = np.arange(nsum - 1) + 1
 
-    for k in range(0, npoints):
-        serie = 0
-
-        for m in range(1, nsum):
-            serie += np.sin((2 * m - 1) * theta[k]) / (2 * m - 1)
-
-        weights[k] = (4 * np.sin(theta[k]) / (npoints + 1)) * serie
+    bj = np.ones(nsum - 1) / (2 * j - 1)
+    sij = np.sin(np.outer(2 * j - 1, theta))
+    wi = bj @ sij
+    weights = 4 * np.sin(theta) * wi
 
     points = points[::-1]
-    weights = weights[::-1]
+    weights = weights[::-1] / (npoints + 1)
 
     return OneDGrid(points, weights, (-1, 1))
 
