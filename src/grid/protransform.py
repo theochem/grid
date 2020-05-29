@@ -32,9 +32,77 @@ from scipy.special import erf
 PromolParams = namedtuple("PromolParams", ["c_m", "e_m", "coords", "dim", "pi_over_exponents"])
 
 
+class ProCubicTransform:
+    def __init__(self, stepsize, weights, coeffs, exps, coords):
+        self.stepsizes = stepsize
+        self.num_pts = (int(1 / stepsize[0]) + 1,
+                        int(1. / stepsize[1]) + 1,
+                        int(1. / stepsize[2]) + 1)
+
+        # pad coefficients and exponents with zeros to have the same size.
+        coeffs, exps = _pad_coeffs_exps_with_zeros(coeffs, exps)
+
+        # Rather than computing this repeatedly. It is fixed.
+        with np.errstate(divide='ignore'):
+            pi_over_exponents = np.sqrt(np.pi / exps)
+            pi_over_exponents[exps == 0] = 0
+
+        self.promol = PromolParams(coeffs, exps, coords, 3, pi_over_exponents)
+        self.points = np.empty((np.prod(self.num_pts), 3), dtype=np.float64)
+        self._transform()  # Fill out self.points.
+        self.weights = weights
+
+    def _transform(self):
+        counter = 0
+        for ix in range(self.num_pts[0]):
+            cart_pt = [None, None, None]
+            unit_x = self.stepsizes[0] * ix
+
+            initx = self._get_bracket((ix,), 0)
+            transformx = inverse_coordinate(unit_x, 0, self.promol, cart_pt, initx)
+            cart_pt[0] = transformx
+
+            for iy in range(self.num_pts[1]):
+                unit_y = self.stepsizes[1] * iy
+
+                inity = self._get_bracket((ix, iy), 1)
+                transformy = inverse_coordinate(unit_y, 1, self.promol, cart_pt, inity)
+                cart_pt[1] = transformy
+
+                for iz in range(self.num_pts[2]):
+                    unit_z = self.stepsizes[2] * iz
+
+                    initz = self._get_bracket((ix, iy, iz), 2)
+                    transformz = inverse_coordinate(unit_z, 2, self.promol, cart_pt, initz)
+                    cart_pt[2] = transformz
+                    self.points[counter] = cart_pt.copy()
+                    counter += 1
+
+    def _get_bracket(self, coord, i_var):
+        # If it is a boundary point, then return nan.
+        if 0. in coord[:i_var + 1] or (self.num_pts[i_var] - 1) in coord[:i_var + 1]:
+            return np.nan, np.nan
+        # If it is a new point, with no nearby point, get a large initial guess.
+        elif coord[i_var] == 1:
+            min = (np.min(self.promol.coords[:, i_var]) - 3.) * 20.
+            max = (np.max(self.promol.coords[:, i_var]) + 3.) * 20.
+            return min, max
+        # If the previous point has been converted, use that as a initial guess.
+        if i_var == 0:
+            index = (coord[0] - 1) * self.num_pts[1] * self.num_pts[2]
+        elif i_var == 1:
+            index = coord[0] * self.num_pts[1] * self.num_pts[2] + self.num_pts[2] * (coord[1] - 1)
+        elif i_var == 2:
+            index = (coord[0] * self.num_pts[1] * self.num_pts[2] +
+                     self.num_pts[2] * coord[1] + coord[2] - 1)
+
+        # FIXME : Rather than using fixed +10., use truncated taylor series.
+        return self.points[index, i_var], self.points[index, i_var] + 10.
+
+
 def transform_coordinate(real_pt, i_var, promol_params, deriv=False, sderiv=False):
     r"""
-    Transform the `i_var` coordinate in a real point to [0, 1]^D using promolecular.
+    Transform the `i_var` coordinate in a real point to [0, 1] using promolecular density.
 
     Parameters
     ----------
@@ -98,6 +166,7 @@ def _root_equation(init_guess, prev_trans_pts, theta_pt, i_var, params):
 
 def inverse_coordinate(theta_pt, i_var, params, transformed, bracket=(-10, 10)):
     r"""
+    Transform a point in [0, 1] to the real space corresponding to the `i_var` variable.
 
     Parameters
     ----------
@@ -131,3 +200,12 @@ def inverse_coordinate(theta_pt, i_var, params, transformed, bracket=(-10, 10)):
                               bracket=[bracket[0], bracket[1]], maxiter=50, xtol=2e-15)
     assert root_result.converged
     return root_result.root
+
+
+def _pad_coeffs_exps_with_zeros(coeffs, exps):
+    max_numb_of_gauss = max(len(c) for c in coeffs)
+    coeffs = np.array([np.pad(a, (0, max_numb_of_gauss - len(a)), 'constant',
+                              constant_values=0.) for a in coeffs], dtype=np.float64)
+    exps = np.array([np.pad(a, (0, max_numb_of_gauss - len(a)), 'constant',
+                            constant_values=0.) for a in exps], dtype=np.float64)
+    return coeffs, exps
