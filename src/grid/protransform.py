@@ -34,7 +34,7 @@ PromolParams = namedtuple("PromolParams", ["c_m", "e_m", "coords", "dim", "pi_ov
 
 class ProCubicTransform:
     def __init__(self, stepsize, weights, coeffs, exps, coords):
-        self.stepsizes = stepsize
+        self.ss = stepsize
         self.num_pts = (int(1 / stepsize[0]) + 1,
                         int(1. / stepsize[1]) + 1,
                         int(1. / stepsize[2]) + 1)
@@ -52,25 +52,55 @@ class ProCubicTransform:
         self._transform()  # Fill out self.points.
         self.weights = weights
 
+    def _promolecular(self, grid):
+        r"""
+        Evaluate the promolecular density over a grid.
+
+        Parameters
+        ----------
+        grid : np.ndarray(M,)
+            Grid points.
+
+        Returns
+        -------
+        np.ndarray(M,) :
+            Promolecular density evaluated at the grid points.
+
+        """
+        # TODO: For Design, Store this or constantly re-evaluate it?
+        # N is the number of grid points.
+        # M is the number of centers/atoms.
+        # D is the number of dimensions, usually 3.
+        # K is maximum number of gaussian functions over all M atoms.
+        cm, em, coords, _, _ = self.promol
+        # Shape (N, M, D), then Summing gives (N, M, 1)
+        distance = np.sum((grid - coords[:, np.newaxis])**2., axis=2, keepdims=True)
+        # At each center, multiply Each Distance of a Coordinate, with its exponents.
+        exponen = np.exp(-np.einsum("MND, MK-> MNK" , distance, em))
+        # At each center, multiply the exponential with its coefficients.
+        gaussian = np.einsum("MNK, MK -> MNK", exponen, cm)
+        # At each point, summing the gaussians for each center, then summing all centers together.
+        return np.einsum("MNK -> N", gaussian)
+
     def _transform(self):
         counter = 0
         for ix in range(self.num_pts[0]):
             cart_pt = [None, None, None]
-            unit_x = self.stepsizes[0] * ix
+            unit_x = self.ss[0] * ix
 
             initx = self._get_bracket((ix,), 0)
             transformx = inverse_coordinate(unit_x, 0, self.promol, cart_pt, initx)
             cart_pt[0] = transformx
 
             for iy in range(self.num_pts[1]):
-                unit_y = self.stepsizes[1] * iy
+                unit_y = self.ss[1] * iy
 
                 inity = self._get_bracket((ix, iy), 1)
                 transformy = inverse_coordinate(unit_y, 1, self.promol, cart_pt, inity)
                 cart_pt[1] = transformy
 
                 for iz in range(self.num_pts[2]):
-                    unit_z = self.stepsizes[2] * iz
+                    unit_z = self.ss[2] * iz
 
                     initz = self._get_bracket((ix, iy, iz), 2)
                     transformz = inverse_coordinate(unit_z, 2, self.promol, cart_pt, initz)
