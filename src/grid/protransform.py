@@ -33,11 +33,61 @@ PromolParams = namedtuple("PromolParams", ["c_m", "e_m", "coords", "dim", "pi_ov
 
 
 class ProCubicTransform(Grid):
+    r"""
+    Promolecular Grid Transformation of a Cubic Grid in [0,1]^3.
+
+    Attributes
+    ----------
+    num_pts : (int, int, int)
+        The number of points in x, y, and z direction.
+    ss : (float, float, float)
+        The step-size in each x, y, and z direction.
+    points : np.ndarray(N, 3)
+        The transformed points in real space.
+    prointegral : float
+        The integration value of the promolecular density over Euclidean space.
+    weights : np.ndarray(N,)
+        The weights multiplied by `prointegral`.
+    promol : namedTuple
+        Data about the Promolecular density.
+
+    Methods
+    -------
+    integrate(trick=False)
+        Integral of a real-valued function over Euclidean space.
+
+    Examples
+    --------
+    Define information of the Promolecular Density.
+    >> c = np.array([[5.], [10.]])
+    >> e = np.array([[2.], [3.]])
+    >> coord = np.array([[0., 0., 0.], [2., 2., 2.]])
+
+    Define information of the grid and its weights.
+    >> stepsize = 0.01
+    >> weights = np.array([0.01] * 101**3)  # Simple Riemannian weights.
+    >> promol = ProCubicTransform([ss] * 3, weights, c, e, coord)
+
+    To integrate some function f.
+    >> def func(pt):
+    >>    return np.exp(-0.1 * np.linalg.norm(pt, axis=1)**2.)
+    >> func_values = func(promol.points)
+    >> print("The integral is %.4f" % promol.integrate(func_values, trick=False)
+
+    References
+    ----------
+    .. [1] J. I. Rodríguez, D. C. Thompson, P. W. Ayers, and A. M. Koster, "Numerical integration
+            of exchange-correlation energies and potentials using transformed sparse grids."
+
+    Notes
+    -----
+
+    """
     def __init__(self, stepsize, weights, coeffs, exps, coords):
-        self.ss = stepsize
-        self.num_pts = (int(1 / stepsize[0]) + 1,
-                        int(1. / stepsize[1]) + 1,
-                        int(1. / stepsize[2]) + 1)
+        self._ss = stepsize
+        self._num_pts = (int(1 / stepsize[0]) + 1,
+                         int(1. / stepsize[1]) + 1,
+                         int(1. / stepsize[2]) + 1)
 
         # pad coefficients and exponents with zeros to have the same size.
         coeffs, exps = _pad_coeffs_exps_with_zeros(coeffs, exps)
@@ -45,27 +95,70 @@ class ProCubicTransform(Grid):
         with np.errstate(divide='ignore'):
             pi_over_exponents = np.sqrt(np.pi / exps)
             pi_over_exponents[exps == 0] = 0
-        self.prointegral = np.sum(coeffs * pi_over_exponents**(1.5))
-        self.promol = PromolParams(coeffs, exps, coords, 3, pi_over_exponents)
+        self._prointegral = np.sum(coeffs * pi_over_exponents ** (1.5))
+        self._promol = PromolParams(coeffs, exps, coords, 3, pi_over_exponents)
 
         # initialize parent class
-        empty_points = np.empty((np.prod(self.num_pts), 3), dtype=np.float64)
-        super().__init__(empty_points, weights * self.prointegral)
+        empty_points = np.empty((np.prod(self._num_pts), 3), dtype=np.float64)
+        super().__init__(empty_points, weights * self._prointegral)
         self._transform()
 
-    def integrate(self, *value_arrays, promol_trick=False):
+    @property
+    def num_pts(self):
+        r"""Number of points in each direction."""
+        return self._num_pts
+
+    @property
+    def ss(self):
+        r"""Stepsize of the cubic grid."""
+        return self._ss
+
+    @property
+    def prointegral(self):
+        r"""Integration of Promolecular density."""
+        return self._prointegral
+
+    @property
+    def promol(self):
+        r"""PromolParams namedTuple."""
+        return self._promol
+
+    def integrate(self, *value_arrays, trick=False):
+        r"""
+        Integrate any function.
+
+        Parameters
+        ----------
+        *value_arrays : np.ndarray(N, )
+            One or multiple value array to integrate.
+        trick : bool
+            If true, uses the promolecular trick.
+
+        Returns
+        -------
+        float :
+            Return the integration of the function.
+
+        Raises
+        ------
+        TypeError
+            Input integrand is not of type np.ndarray.
+        ValueError
+            Input integrand array is given or not of proper shape.
+
+        """
         promolecular = self._promolecular(self.points)
         integrands = []
         with np.errstate(divide='ignore'):
             for arr in value_arrays:
-                if promol_trick:
+                if trick:
                     integrand = (arr - promolecular) / promolecular
                 else:
                     integrand = arr / promolecular
                 integrand[np.isnan(self.points).any(axis=1)] = 0.
                 integrands.append(arr)
-        if promol_trick:
-            return self.prointegral + super().integrate(*integrands)
+        if trick:
+            return self._prointegral + super().integrate(*integrands)
         return super().integrate(*integrands)
 
     def _promolecular(self, grid):
@@ -74,17 +167,16 @@ class ProCubicTransform(Grid):
 
         Parameters
         ----------
-        grid : np.ndarray(M,)
+        grid : np.ndarray(N,)
             Grid points.
 
         Returns
         -------
-        np.ndarray(M,) :
+        np.ndarray(N,) :
             Promolecular density evaluated at the grid points.
 
         """
         # TODO: For Design, Store this or constantly re-evaluate it?
-        # N is the number of grid points.
         # M is the number of centers/atoms.
         # D is the number of dimensions, usually 3.
         # K is maximum number of gaussian functions over all M atoms.
