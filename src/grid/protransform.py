@@ -22,7 +22,7 @@ r"""Promolecular Grid Transformation"""
 
 from collections import namedtuple
 
-from grid.rtransform import BaseTransform
+from grid.basegrid import Grid
 
 import numpy as np
 from scipy.optimize import root_scalar
@@ -32,7 +32,7 @@ from scipy.special import erf
 PromolParams = namedtuple("PromolParams", ["c_m", "e_m", "coords", "dim", "pi_over_exponents"])
 
 
-class ProCubicTransform:
+class ProCubicTransform(Grid):
     def __init__(self, stepsize, weights, coeffs, exps, coords):
         self.ss = stepsize
         self.num_pts = (int(1 / stepsize[0]) + 1,
@@ -41,16 +41,32 @@ class ProCubicTransform:
 
         # pad coefficients and exponents with zeros to have the same size.
         coeffs, exps = _pad_coeffs_exps_with_zeros(coeffs, exps)
-
         # Rather than computing this repeatedly. It is fixed.
         with np.errstate(divide='ignore'):
             pi_over_exponents = np.sqrt(np.pi / exps)
             pi_over_exponents[exps == 0] = 0
-
+        self.prointegral = np.sum(coeffs * pi_over_exponents**(1.5))
         self.promol = PromolParams(coeffs, exps, coords, 3, pi_over_exponents)
-        self.points = np.empty((np.prod(self.num_pts), 3), dtype=np.float64)
-        self._transform()  # Fill out self.points.
-        self.weights = weights
+
+        # initialize parent class
+        empty_points = np.empty((np.prod(self.num_pts), 3), dtype=np.float64)
+        super().__init__(empty_points, weights * self.prointegral)
+        self._transform()
+
+    def integrate(self, *value_arrays, promol_trick=False):
+        promolecular = self._promolecular(self.points)
+        integrands = []
+        with np.errstate(divide='ignore'):
+            for arr in value_arrays:
+                if promol_trick:
+                    integrand = (arr - promolecular) / promolecular
+                else:
+                    integrand = arr / promolecular
+                integrand[np.isnan(self.points).any(axis=1)] = 0.
+                integrands.append(arr)
+        if promol_trick:
+            return self.prointegral + super().integrate(*integrands)
+        return super().integrate(*integrands)
 
     def _promolecular(self, grid):
         r"""
