@@ -29,7 +29,9 @@ from scipy.optimize import root_scalar
 from scipy.special import erf
 
 
-PromolParams = namedtuple("PromolParams", ["c_m", "e_m", "coords", "dim", "pi_over_exponents"])
+PromolParams = namedtuple(
+    "PromolParams", ["c_m", "e_m", "coords", "dim", "pi_over_exponents"]
+)
 
 
 class ProCubicTransform(Grid):
@@ -38,10 +40,10 @@ class ProCubicTransform(Grid):
 
     Attributes
     ----------
-    num_pts : (int, int, int)
-        The number of points in x, y, and z direction.
     ss : (float, float, float)
         The step-size in each x, y, and z direction.
+    num_pts : (int, int, int)
+        The number of points in x, y, and z direction. This is calculated as `int(1. / ss[i]) + 1`
     points : np.ndarray(N, 3)
         The transformed points in real space.
     prointegral : float
@@ -69,9 +71,9 @@ class ProCubicTransform(Grid):
     >> promol = ProCubicTransform([ss] * 3, weights, c, e, coord)
 
     To integrate some function f.
-    >> def func(pt):
+    >> def f(pt):
     >>    return np.exp(-0.1 * np.linalg.norm(pt, axis=1)**2.)
-    >> func_values = func(promol.points)
+    >> func_values = f(promol.points)
     >> print("The integral is %.4f" % promol.integrate(func_values, trick=False)
 
     References
@@ -83,16 +85,27 @@ class ProCubicTransform(Grid):
     -----
 
     """
+
     def __init__(self, stepsize, weights, coeffs, exps, coords):
+        if not isinstance(stepsize, tuple):
+            pass
+        if not isinstance(coeffs, (list, np.ndarray)):
+            pass
+        if not isinstance(exps, (list, np.ndarray)):
+            pass
+        if not isinstance(coords, (list, np.ndarray)):
+            pass
         self._ss = stepsize
-        self._num_pts = (int(1 / stepsize[0]) + 1,
-                         int(1. / stepsize[1]) + 1,
-                         int(1. / stepsize[2]) + 1)
+        self._num_pts = (
+            int(1 / stepsize[0]) + 1,
+            int(1 / stepsize[1]) + 1,
+            int(1 / stepsize[2]) + 1,
+        )
 
         # pad coefficients and exponents with zeros to have the same size.
         coeffs, exps = _pad_coeffs_exps_with_zeros(coeffs, exps)
         # Rather than computing this repeatedly. It is fixed.
-        with np.errstate(divide='ignore'):
+        with np.errstate(divide="ignore"):
             pi_over_exponents = np.sqrt(np.pi / exps)
             pi_over_exponents[exps == 0] = 0
         self._prointegral = np.sum(coeffs * pi_over_exponents ** (1.5))
@@ -149,13 +162,13 @@ class ProCubicTransform(Grid):
         """
         promolecular = self._promolecular(self.points)
         integrands = []
-        with np.errstate(divide='ignore'):
+        with np.errstate(divide="ignore"):
             for arr in value_arrays:
                 if trick:
                     integrand = (arr - promolecular) / promolecular
                 else:
                     integrand = arr / promolecular
-                integrand[np.isnan(self.points).any(axis=1)] = 0.
+                integrand[np.isnan(self.points).any(axis=1)] = 0.0
                 integrands.append(arr)
         if trick:
             return self._prointegral + super().integrate(*integrands)
@@ -182,12 +195,12 @@ class ProCubicTransform(Grid):
         # K is maximum number of gaussian functions over all M atoms.
         cm, em, coords, _, _ = self.promol
         # Shape (N, M, D), then Summing gives (N, M, 1)
-        distance = np.sum((grid - coords[:, np.newaxis])**2., axis=2, keepdims=True)
+        distance = np.sum((grid - coords[:, np.newaxis]) ** 2.0, axis=2, keepdims=True)
         # At each center, multiply Each Distance of a Coordinate, with its exponents.
-        exponen = np.exp(-np.einsum("MND, MK-> MNK" , distance, em))
+        exponen = np.exp(-np.einsum("MND, MK-> MNK", distance, em))
         # At each center, multiply the exponential with its coefficients.
         gaussian = np.einsum("MNK, MK -> MNK", exponen, cm)
-        # At each point, summing the gaussians for each center, then summing all centers together.
+        # At each point, sum for each center, then sum all centers together.
         return np.einsum("MNK -> N", gaussian)
 
     def _transform(self):
@@ -197,45 +210,51 @@ class ProCubicTransform(Grid):
             unit_x = self.ss[0] * ix
 
             initx = self._get_bracket((ix,), 0)
-            transformx = inverse_coordinate(unit_x, 0, self.promol, cart_pt, initx)
-            cart_pt[0] = transformx
+            transfx = inverse_coordinate(unit_x, 0, self.promol, cart_pt, initx)
+            cart_pt[0] = transfx
 
             for iy in range(self.num_pts[1]):
                 unit_y = self.ss[1] * iy
 
                 inity = self._get_bracket((ix, iy), 1)
-                transformy = inverse_coordinate(unit_y, 1, self.promol, cart_pt, inity)
-                cart_pt[1] = transformy
+                transfy = inverse_coordinate(unit_y, 1, self.promol, cart_pt, inity)
+                cart_pt[1] = transfy
 
                 for iz in range(self.num_pts[2]):
                     unit_z = self.ss[2] * iz
 
                     initz = self._get_bracket((ix, iy, iz), 2)
-                    transformz = inverse_coordinate(unit_z, 2, self.promol, cart_pt, initz)
-                    cart_pt[2] = transformz
+                    transfz = inverse_coordinate(unit_z, 2, self.promol, cart_pt, initz)
+                    cart_pt[2] = transfz
                     self.points[counter] = cart_pt.copy()
                     counter += 1
 
     def _get_bracket(self, coord, i_var):
         # If it is a boundary point, then return nan.
-        if 0. in coord[:i_var + 1] or (self.num_pts[i_var] - 1) in coord[:i_var + 1]:
+        if 0.0 in coord[: i_var + 1] or (self.num_pts[i_var] - 1) in coord[: i_var + 1]:
             return np.nan, np.nan
         # If it is a new point, with no nearby point, get a large initial guess.
         elif coord[i_var] == 1:
-            min = (np.min(self.promol.coords[:, i_var]) - 3.) * 20.
-            max = (np.max(self.promol.coords[:, i_var]) + 3.) * 20.
+            min = (np.min(self.promol.coords[:, i_var]) - 3.0) * 20.0
+            max = (np.max(self.promol.coords[:, i_var]) + 3.0) * 20.0
             return min, max
         # If the previous point has been converted, use that as a initial guess.
         if i_var == 0:
             index = (coord[0] - 1) * self.num_pts[1] * self.num_pts[2]
         elif i_var == 1:
-            index = coord[0] * self.num_pts[1] * self.num_pts[2] + self.num_pts[2] * (coord[1] - 1)
+            index = coord[0] * self.num_pts[1] * self.num_pts[2] + self.num_pts[2] * (
+                coord[1] - 1
+            )
         elif i_var == 2:
-            index = (coord[0] * self.num_pts[1] * self.num_pts[2] +
-                     self.num_pts[2] * coord[1] + coord[2] - 1)
+            index = (
+                coord[0] * self.num_pts[1] * self.num_pts[2]
+                + self.num_pts[2] * coord[1]
+                + coord[2]
+                - 1
+            )
 
         # FIXME : Rather than using fixed +10., use truncated taylor series.
-        return self.points[index, i_var], self.points[index, i_var] + 10.
+        return self.points[index, i_var], self.points[index, i_var] + 10.0
 
 
 def transform_coordinate(real_pt, i_var, promol_params, deriv=False, sderiv=False):
@@ -267,18 +286,18 @@ def transform_coordinate(real_pt, i_var, promol_params, deriv=False, sderiv=Fals
     c_m, e_m, coords, dim, pi_over_exps = promol_params
 
     # Distance to centers/nuclei`s and Prefactors.
-    diff_coords = real_pt[:i_var + 1] - coords[:, :i_var + 1]
-    diff_squared = diff_coords**2.
+    diff_coords = real_pt[: i_var + 1] - coords[:, : i_var + 1]
+    diff_squared = diff_coords ** 2.0
     distance = np.sum(diff_squared[:, :i_var], axis=1)[:, np.newaxis]
     # If i_var is zero, then distance is just all zeros.
 
     # Gaussian Integrals Over Entire Space For Numerator and Denomator.
-    gaussian_integrals = np.exp(-e_m * distance) * pi_over_exps**(dim - i_var)
+    gaussian_integrals = np.exp(-e_m * distance) * pi_over_exps ** (dim - i_var)
     coeff_num = c_m * gaussian_integrals
 
     # Get the integral of Gaussian till a point.
     coord_ivar = diff_coords[:, i_var][:, np.newaxis]
-    integrate_till_pt_x = (erf(np.sqrt(e_m) * coord_ivar) + 1.) / 2.
+    integrate_till_pt_x = (erf(np.sqrt(e_m) * coord_ivar) + 1.0) / 2.0
 
     # Final Result.
     transf_num = np.sum(coeff_num * integrate_till_pt_x)
@@ -290,7 +309,7 @@ def transform_coordinate(real_pt, i_var, promol_params, deriv=False, sderiv=Fals
         deriv = np.sum(inner_term) / transf_den
 
         if sderiv:
-            sderiv = np.sum(inner_term * -e_m * 2. * coord_ivar) / transf_den
+            sderiv = np.sum(inner_term * -e_m * 2.0 * coord_ivar) / transf_den
             return transform_value, deriv, sderiv
         return transform_value, deriv
     return transform_value
@@ -334,16 +353,32 @@ def inverse_coordinate(theta_pt, i_var, params, transformed, bracket=(-10, 10)):
     if np.isnan(bracket[0]) or np.nan in transformed[:i_var]:
         return np.nan
     args = (transformed[:i_var], theta_pt, i_var, params)
-    root_result = root_scalar(_root_equation, args=args, method="brentq",
-                              bracket=[bracket[0], bracket[1]], maxiter=50, xtol=2e-15)
+    root_result = root_scalar(
+        _root_equation,
+        args=args,
+        method="brentq",
+        bracket=[bracket[0], bracket[1]],
+        maxiter=50,
+        xtol=2e-15,
+    )
     assert root_result.converged
     return root_result.root
 
 
 def _pad_coeffs_exps_with_zeros(coeffs, exps):
     max_numb_of_gauss = max(len(c) for c in coeffs)
-    coeffs = np.array([np.pad(a, (0, max_numb_of_gauss - len(a)), 'constant',
-                              constant_values=0.) for a in coeffs], dtype=np.float64)
-    exps = np.array([np.pad(a, (0, max_numb_of_gauss - len(a)), 'constant',
-                            constant_values=0.) for a in exps], dtype=np.float64)
+    coeffs = np.array(
+        [
+            np.pad(a, (0, max_numb_of_gauss - len(a)), "constant", constant_values=0.0)
+            for a in coeffs
+        ],
+        dtype=np.float64,
+    )
+    exps = np.array(
+        [
+            np.pad(a, (0, max_numb_of_gauss - len(a)), "constant", constant_values=0.0)
+            for a in exps
+        ],
+        dtype=np.float64,
+    )
     return coeffs, exps
