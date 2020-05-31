@@ -67,7 +67,8 @@ class ProCubicTransform(Grid):
 
     Define information of the grid and its weights.
     >> stepsize = 0.01
-    >> weights = np.array([0.01] * 101**3)  # Simple Riemannian weights.
+    >> numb_x = int(1. / stepsize) + 1
+    >> weights = np.array([0.01] * numb_x**3)  # Simple Riemannian weights.
     >> promol = ProCubicTransform([ss] * 3, weights, c, e, coord)
 
     To integrate some function f.
@@ -108,7 +109,7 @@ class ProCubicTransform(Grid):
         with np.errstate(divide="ignore"):
             pi_over_exponents = np.sqrt(np.pi / exps)
             pi_over_exponents[exps == 0] = 0
-        self._prointegral = np.sum(coeffs * pi_over_exponents ** (1.5))
+        self._prointegral = np.sum(coeffs * pi_over_exponents ** 3.)
         self._promol = PromolParams(coeffs, exps, coords, 3, pi_over_exponents)
 
         # initialize parent class
@@ -142,7 +143,7 @@ class ProCubicTransform(Grid):
 
         Parameters
         ----------
-        *value_arrays : np.ndarray(N, )
+        *value_arrays : (np.ndarray(N, dtype=float),)
             One or multiple value array to integrate.
         trick : bool
             If true, uses the promolecular trick.
@@ -164,14 +165,15 @@ class ProCubicTransform(Grid):
         integrands = []
         with np.errstate(divide="ignore"):
             for arr in value_arrays:
+                assert arr.dtype != object, "Array dtype should not be object."
                 if trick:
                     integrand = (arr - promolecular) / promolecular
                 else:
                     integrand = arr / promolecular
                 integrand[np.isnan(self.points).any(axis=1)] = 0.0
-                integrands.append(arr)
+                integrands.append(integrand)
         if trick:
-            return self._prointegral + super().integrate(*integrands)
+            return self.prointegral + super().integrate(*integrands)
         return super().integrate(*integrands)
 
     def _promolecular(self, grid):
@@ -201,7 +203,7 @@ class ProCubicTransform(Grid):
         # At each center, multiply the exponential with its coefficients.
         gaussian = np.einsum("MNK, MK -> MNK", exponen, cm)
         # At each point, sum for each center, then sum all centers together.
-        return np.einsum("MNK -> N", gaussian)
+        return np.einsum("MNK -> N", gaussian, dtype=np.float64)
 
     def _transform(self):
         counter = 0
@@ -252,7 +254,6 @@ class ProCubicTransform(Grid):
                 + coord[2]
                 - 1
             )
-
         # FIXME : Rather than using fixed +10., use truncated taylor series.
         return self.points[index, i_var], self.points[index, i_var] + 10.0
 
