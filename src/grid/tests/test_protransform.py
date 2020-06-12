@@ -30,48 +30,65 @@ TestOneGaussianAgainstNumerics :
 
 """
 
+
+from grid.protransform import (
+    CubicProTransform,
+    PromolParams,
+    _pad_coeffs_exps_with_zeros,
+    transform_coordinate,
+)
+
 import numpy as np
-from scipy.special import erf
-from scipy.optimize import approx_fprime
 
 import pytest
 
-from grid.protransform import (
-    CubicProTransform, PromolParams, transform_coordinate, _pad_coeffs_exps_with_zeros
-)
+from scipy.optimize import approx_fprime
+from scipy.special import erf
 
 
 class TestTwoGaussianDiffCenters:
-    r"""
-    Test a Sum of Two Gaussian function against analytic formulas and numerical procedures.
-    """
+    r"""Test a Sum of Two Gaussian function against analytic formulas and numerical procedures."""
+
     def setUp(self, ss=0.1, return_obj=False):
-        c = np.array([[5.], [10.]])
-        e = np.array([[2.], [3.]])
-        coord = np.array([[1., 2., 3.], [2., 2., 2.]])
+        r"""Set up a two parameter Gaussian function."""
+        c = np.array([[5.0], [10.0]])
+        e = np.array([[2.0], [3.0]])
+        coord = np.array([[1.0, 2.0, 3.0], [2.0, 2.0, 2.0]])
         params = PromolParams(c, e, coord, dim=3, pi_over_exponents=np.sqrt(np.pi / e))
         if return_obj:
             num_pts = int(1 / ss) + 1
-            weights = np.array([((1. / (num_pts - 2)))**3.] * num_pts**3)
-            obj = CubicProTransform([ss] * 3, weights, params.c_m, params.e_m, params.coords)
-            return params,  obj
+            weights = np.array([(1.0 / (num_pts - 2)) ** 3.0] * num_pts ** 3)
+            obj = CubicProTransform(
+                [ss] * 3, weights, params.c_m, params.e_m, params.coords
+            )
+            return params, obj
         return params
 
     def promolecular(self, x, y, z, params):
+        r"""Hard-Code the promolecular density."""
         # Promolecular in CubicProTransform class uses einsum, this tests it against that.
         # Also could be used for integration tests.
         cm, em, coords, _, _ = params
-        promol = 0.
+        promol = 0.0
         for i, coeffs in enumerate(cm):
             xc, yc, zc = coords[i]
             for j, coeff in enumerate(coeffs):
-                distance = ((x - xc)**2. + (y - yc)**2. + (z - zc)**2.)
-                promol += np.sum(coeff * np.exp(- em[i, j] * distance))
+                distance = (x - xc) ** 2.0 + (y - yc) ** 2.0 + (z - zc) ** 2.0
+                promol += np.sum(coeff * np.exp(-em[i, j] * distance))
         return promol
 
     def test_promolecular_density(self):
-        grid = np.array([[-1., 2., 3.], [5., 10., -1.], [0., 0., 0.],
-                         [3., 2., 1.], [10., 20., 30.], [0., 10., 0.2]])
+        r"""Test Promolecular Density function against hard-coded."""
+        grid = np.array(
+            [
+                [-1.0, 2.0, 3.0],
+                [5.0, 10.0, -1.0],
+                [0.0, 0.0, 0.0],
+                [3.0, 2.0, 1.0],
+                [10.0, 20.0, 30.0],
+                [0.0, 10.0, 0.2],
+            ]
+        )
         params, obj = self.setUp(return_obj=True)
 
         true_ans = []
@@ -82,62 +99,84 @@ class TestTwoGaussianDiffCenters:
         desired = obj._promolecular(grid)
         assert np.all(np.abs(np.array(true_ans) - desired) < 1e-8)
 
-    @pytest.mark.parametrize("pt", np.arange(-5., 5., 0.5))
+    @pytest.mark.parametrize("pt", np.arange(-5.0, 5.0, 0.5))
     def test_transforming_x_against_formula(self, pt):
+        r"""Test transformming the X-transformation against analytic formula."""
+
         def formula_transforming_x(x):
-            r"""Closed form formula for transforming x coordinate."""
-            first_factor = (5. * np.pi ** 1.5 / (4 * 2 ** 0.5)) * (erf(2 ** 0.5 * (x - 1)) + 1.)
-            sec_fac = ((10. * np.pi ** 1.5) / (6. * 3 ** 0.5)) * (erf(3. ** 0.5 * (x - 2)) + 1.)
-            return (first_factor + sec_fac) / (5. * (np.pi / 2) ** 1.5 + 10. * (np.pi / 3.) ** 1.5)
+            r"""Return closed form formula for transforming x coordinate."""
+            first_factor = (5.0 * np.pi ** 1.5 / (4 * 2 ** 0.5)) * (
+                erf(2 ** 0.5 * (x - 1)) + 1.0
+            )
+
+            sec_fac = ((10.0 * np.pi ** 1.5) / (6.0 * 3 ** 0.5)) * (
+                erf(3.0 ** 0.5 * (x - 2)) + 1.0
+            )
+
+            return (first_factor + sec_fac) / (
+                5.0 * (np.pi / 2) ** 1.5 + 10.0 * (np.pi / 3.0) ** 1.5
+            )
 
         true_ans = transform_coordinate([pt], 0, self.setUp())
         assert np.abs(true_ans - formula_transforming_x(pt)) < 1e-8
 
-    @pytest.mark.parametrize("pt", np.arange(-5., 5., 0.75))
-    def test_derivative_transforming_x_with_finite_difference(self, pt):
-        # Unfortunately, pnly one decimal place is obtained.
-        params = self.setUp()
-        _, actual = transform_coordinate([pt], 0, params, deriv=True)
-        def func(x):
-            return transform_coordinate([x], 0, params)
-        desired = approx_fprime([pt], func, epsilon=1.49e-08)
-        assert np.abs(desired - actual) < 1e-1
-
     @pytest.mark.parametrize("x", [-10, -2, 0, 2.2, 1.23])
-    @pytest.mark.parametrize("y", [-3, 2., -10.2321, 20.232109])
+    @pytest.mark.parametrize("y", [-3, 2, -10.2321, 20.232109])
     def test_transforming_y_against_formula(self, x, y):
+        r"""Test transforming the Y-transformation against analytic formula."""
+
         def formula_transforming_y(x, y):
-            r"""Closed form formula for transforming y coordinate."""
-            fac1 = 5. * np.sqrt(np.pi / 2.) * np.exp(-2. * (x - 1.) ** 2.)
-            fac1 *= (np.sqrt(np.pi) * (erf(2. ** 0.5 * (y - 2)) + 1.) / (2. * np.sqrt(2.)))
-            fac2 = 10. * np.sqrt(np.pi / 3.) * np.exp(-3. * (x - 2.) ** 2.)
-            fac2 *= (np.sqrt(np.pi) * (erf(3. ** 0.5 * (y - 2)) + 1.) / (2. * np.sqrt(3.)))
+            r"""Return closed form formula for transforming y coordinate."""
+            fac1 = 5.0 * np.sqrt(np.pi / 2.0) * np.exp(-2.0 * (x - 1) ** 2)
+            fac1 *= (
+                np.sqrt(np.pi)
+                * (erf(2.0 ** 0.5 * (y - 2)) + 1.0)
+                / (2.0 * np.sqrt(2.0))
+            )
+            fac2 = 10.0 * np.sqrt(np.pi / 3.0) * np.exp(-3.0 * (x - 2.0) ** 2.0)
+            fac2 *= (
+                np.sqrt(np.pi)
+                * (erf(3.0 ** 0.5 * (y - 2)) + 1.0)
+                / (2.0 * np.sqrt(3.0))
+            )
             num = fac1 + fac2
 
-            dac1 = 5. * (np.pi / 2.) * np.exp(-2. * (x - 1.) ** 2.)
-            dac2 = 10. * (np.pi / 3.) * np.exp(-3. * (x - 2.) ** 2.)
+            dac1 = 5.0 * (np.pi / 2.0) * np.exp(-2.0 * (x - 1.0) ** 2.0)
+            dac2 = 10.0 * (np.pi / 3.0) * np.exp(-3.0 * (x - 2.0) ** 2.0)
             den = dac1 + dac2
             return num / den
+
         true_ans = transform_coordinate([x, y], 1, self.setUp())
         assert np.abs(true_ans - formula_transforming_y(x, y)) < 1e-8
 
     @pytest.mark.parametrize("x", [-10, -2, 0, 2.2])
-    @pytest.mark.parametrize("y", [-3, 2., -10.2321])
-    @pytest.mark.parametrize("z", [-10., 0., 2.343432])
+    @pytest.mark.parametrize("y", [-3, 2, -10.2321])
+    @pytest.mark.parametrize("z", [-10, 0, 2.343432])
     def test_transforming_z_against_formula(self, x, y, z):
+        r"""Test transforming the Z-transformation against analytic formula."""
+
         def formula_transforming_z(x, y, z):
-            r"""Closed form formula for transforming z coordinate."""
-            a1, a2, a3 = (x - 1.), (y - 2.), (z - 3.)
-            erfx = erf(2. ** 0.5 * a3) + 1.
-            fac1 = 5. * np.exp(-2. * (a1 ** 2. + a2 ** 2.)) * erfx * np.pi ** 0.5 / (2. * 2. ** 0.5)
-
-            b1, b2, b3 = (x - 2.), (y - 2.), (z - 2.)
-            erfy = erf(3. ** 0.5 * b3) + 1.
-            fac2 = 10. * np.exp(-3. * (b1 ** 2. + b2 ** 2.)) * erfy * np.pi ** 0.5 / (
-                    2. * 3. ** 0.5)
-
-            den = 5. * (np.pi / 2.) ** 0.5 * np.exp(-2. * (a1 ** 2. + a2 ** 2.))
-            den += 10. * (np.pi / 3.) ** 0.5 * np.exp(-3. * (b1 ** 2. + b2 ** 2.))
+            r"""Return closed form formula for transforming z coordinate."""
+            a1, a2, a3 = (x - 1.0), (y - 2.0), (z - 3.0)
+            erfx = erf(2.0 ** 0.5 * a3) + 1.0
+            fac1 = (
+                5.0
+                * np.exp(-2.0 * (a1 ** 2.0 + a2 ** 2.0))
+                * erfx
+                * np.pi ** 0.5
+                / (2.0 * 2.0 ** 0.5)
+            )
+            b1, b2, b3 = (x - 2.0), (y - 2.0), (z - 2.0)
+            erfy = erf(3.0 ** 0.5 * b3) + 1.0
+            fac2 = (
+                10.0
+                * np.exp(-3.0 * (b1 ** 2.0 + b2 ** 2.0))
+                * erfy
+                * np.pi ** 0.5
+                / (2.0 * 3.0 ** 0.5)
+            )
+            den = 5.0 * (np.pi / 2.0) ** 0.5 * np.exp(-2.0 * (a1 ** 2.0 + a2 ** 2.0))
+            den += 10.0 * (np.pi / 3.0) ** 0.5 * np.exp(-3.0 * (b1 ** 2.0 + b2 ** 2.0))
             return (fac1 + fac2) / den
 
         params, obj = self.setUp(ss=0.5, return_obj=True)
@@ -155,8 +194,8 @@ class TestTwoGaussianDiffCenters:
         ss = 0.5
         params, obj = self.setUp(ss, return_obj=True)
         num_pt = int(1 / ss) + 1  # number of points in one-direction.
-        assert obj.points.shape == (num_pt**3, 3)
-        non_boundary_pt_index = num_pt**2 + num_pt + 1
+        assert obj.points.shape == (num_pt ** 3, 3)
+        non_boundary_pt_index = num_pt ** 2 + num_pt + 1
         real_pt = obj.points[non_boundary_pt_index]
         # Test that this point is not the boundary.
         assert real_pt[0] != np.nan
@@ -174,6 +213,7 @@ class TestTwoGaussianDiffCenters:
     # @pytest.mark.parametrize("y", [-3, 2., -3.2321])
     # @pytest.mark.parametrize("z", [-2., 1.5, 2.343432])
     def test_transforming_with_inverse_transformation_is_identity(self):
+        r"""Test transforming with inverse transformation is identity."""
         # Note that for points far away from the promolecular gets mapped to nan.
         # So this isn't really the inverse, in the mathematical sense.
         param, obj = self.setUp(0.5, return_obj=True)
@@ -184,7 +224,7 @@ class TestTwoGaussianDiffCenters:
         assert np.all(np.abs(reverse - pt) < 1e-10)
 
     def test_integrating_itself(self):
-        r"""Test integrating the very same promolecular density"""
+        r"""Test integrating the very same promolecular density."""
         params, obj = self.setUp(ss=0.2, return_obj=True)
         promol = []
         for pt in obj.points:
@@ -197,23 +237,26 @@ class TestTwoGaussianDiffCenters:
         actual = obj.integrate(promol, trick=True)
         assert np.abs(actual - desired) < 1e-8
 
-    @pytest.mark.parametrize("pt", np.arange(-5., 5., 0.75))
+    @pytest.mark.parametrize("pt", np.arange(-5.0, 5.0, 0.75))
     def test_derivative_tranformation_x_finite_difference(self, pt):
+        r"""Test the derivative of X-transformation against finite-difference."""
         params, obj = self.setUp(ss=0.2, return_obj=True)
-        pt = np.array([pt, 2., 3.])
+        pt = np.array([pt, 2.0, 3.0])
 
         actual = obj.jacobian(pt)
+
         def tranformation_x(pt):
             return transform_coordinate(pt, 0, params)
 
         grad = approx_fprime([pt[0]], tranformation_x, 1e-6)
         assert np.abs(grad - actual[0, 0]) < 1e-4
 
-    @pytest.mark.parametrize("x", np.arange(-5., 5., 0.75))
+    @pytest.mark.parametrize("x", np.arange(-5.0, 5.0, 0.75))
     @pytest.mark.parametrize("y", [-2.5, -1.5, 0, 1.5])
     def test_derivative_tranformation_y_finite_difference(self, x, y):
+        r"""Test the derivative of Y-transformation against finite-difference."""
         params, obj = self.setUp(ss=0.2, return_obj=True)
-        actual = obj.jacobian(np.array([x, y, 3.]))
+        actual = obj.jacobian(np.array([x, y, 3.0]))
 
         def tranformation_y(pt):
             return transform_coordinate([x, pt[0]], 1, params)
@@ -223,14 +266,16 @@ class TestTwoGaussianDiffCenters:
 
         def transformation_y_wrt_x(pt):
             return transform_coordinate([pt[0], y], 1, params)
+
         h = 1e-8
         deriv = np.imag(transformation_y_wrt_x([complex(x, h)])) / h
         assert np.abs(deriv - actual[1, 0]) < 1e-4
 
     @pytest.mark.parametrize("x", [-1.5, -0.5, 0, 2.5])
-    @pytest.mark.parametrize("y", [-3, 2., -2.2321])
-    @pytest.mark.parametrize("z", [-1.5, 0., 2.343432])
+    @pytest.mark.parametrize("y", [-3.0, 2.0, -2.2321])
+    @pytest.mark.parametrize("z", [-1.5, 0.0, 2.343432])
     def test_derivative_tranformation_z_finite_difference(self, x, y, z):
+        r"""Test the derivative of Z-transformation against finite-difference."""
         params, obj = self.setUp(ss=0.2, return_obj=True)
         actual = obj.jacobian(np.array([x, y, z]))
 
@@ -256,16 +301,17 @@ class TestTwoGaussianDiffCenters:
         assert np.abs(deriv - actual[2, 0]) < 1e-4
 
     @pytest.mark.parametrize("x", [-1.5, -0.5, 0, 2.5])
-    @pytest.mark.parametrize("y", [-3, 2., -2.2321])
-    @pytest.mark.parametrize("z", [-1.5, 0., 2.343432])
+    @pytest.mark.parametrize("y", [-3.0, 2.0, -2.2321])
+    @pytest.mark.parametrize("z", [-1.5, 0.0, 2.343432])
     def test_steepest_ascent_direction_with_numerics(self, x, y, z):
         r"""Test steepest-ascent direction match in real and theta space.
 
         The function to test is x^2 + y^2 + z^2.
         """
+
         def grad(pt):
             # Gradient of x^2 + y^2 + z^2.
-            return np.array([2. * pt[0], 2. * pt[1], 2. * pt[2]])
+            return np.array([2.0 * pt[0], 2.0 * pt[1], 2.0 * pt[2]])
 
         params, obj = self.setUp(ss=0.2, return_obj=True)
 
@@ -285,52 +331,57 @@ class TestTwoGaussianDiffCenters:
         assert np.all(np.abs(actual - grad_finite) < 1e-4)
 
 
-class TestOneGaussianAgainstNumerics():
-    r"""
-    Tests Using Numerical Integration of a One Gaussian function to match transformation function.
+class TestOneGaussianAgainstNumerics:
+    r"""Tests With Numerical Integration of a One Gaussian function."""
 
-    """
     def setUp(self, ss=0.1, return_obj=False):
-        c = np.array([[5.]])
-        e = np.array([[2.]])
-        coord = np.array([[1., 2., 3.]])
+        r"""Return a one Gaussian example and its CubicProTransform object."""
+        c = np.array([[5.0]])
+        e = np.array([[2.0]])
+        coord = np.array([[1.0, 2.0, 3.0]])
         params = PromolParams(c, e, coord, dim=3, pi_over_exponents=np.sqrt(np.pi / e))
         if return_obj:
             num_pts = int(1 / ss) + 1
-            weights = np.array([(1. / (num_pts - 2))**3.] * num_pts**3)
-            obj = CubicProTransform([ss] * 3, weights, params.c_m, params.e_m, params.coords)
-            return params,  obj
+            weights = np.array([(1.0 / (num_pts - 2)) ** 3.0] * num_pts ** 3)
+            obj = CubicProTransform(
+                [ss] * 3, weights, params.c_m, params.e_m, params.coords
+            )
+            return params, obj
         return params
 
-    @pytest.mark.parametrize("pt", np.arange(-5., 5., 0.5))
+    @pytest.mark.parametrize("pt", np.arange(-5.0, 5.0, 0.5))
     def test_transforming_x_against_numerics(self, pt):
+        r"""Test transforming X against numerical algorithms."""
+
         def promolecular_in_x(grid, every_grid):
-            r"""Constructs the formula of promolecular for integration."""
-            promol_x = 5. * np.exp(-2. * (grid - 1.)**2.)
-            promol_x_all = 5. * np.exp(-2. * (every_grid - 1.)**2.)
+            r"""Construct the formula of promolecular for integration."""
+            promol_x = 5.0 * np.exp(-2.0 * (grid - 1.0) ** 2.0)
+            promol_x_all = 5.0 * np.exp(-2.0 * (every_grid - 1.0) ** 2.0)
             return promol_x, promol_x_all
 
         true_ans = transform_coordinate([pt], 0, self.setUp())
-        grid = np.arange(-10., pt, 0.00001)  # Integration till a x point
-        every_grid = np.arange(-10., 10., 0.00001)  # Full Integration
+        grid = np.arange(-10.0, pt, 0.00001)  # Integration till a x point
+        every_grid = np.arange(-10.0, 10.0, 0.00001)  # Full Integration
         promol_x, promol_x_all = promolecular_in_x(grid, every_grid)
 
         # Integration over y and z cancel out from numerator and denominator.
         actual = np.trapz(promol_x, grid) / np.trapz(promol_x_all, every_grid)
         assert np.abs(true_ans - actual) < 1e-5
 
-    @pytest.mark.parametrize("x", [-10, -2, 0, 2.2, 1.23])
-    @pytest.mark.parametrize("y", [-3, 2., -10.2321, 20.232109])
+    @pytest.mark.parametrize("x", [-10.0, -2.0, 0.0, 2.2, 1.23])
+    @pytest.mark.parametrize("y", [-3.0, 2.0, -10.2321, 20.232109])
     def test_transforming_y_against_numerics(self, x, y):
+        r"""Test transformation y against numerical algorithms."""
+
         def promolecular_in_y(grid, every_grid):
-            r"""Constructs the formula of promolecular for integration."""
-            promol_y = 5. * np.exp(-2. * (grid - 2.) ** 2.)
-            promol_y_all = 5. * np.exp(-2. * (every_grid - 2.) ** 2.)
+            r"""Construct the formula of promolecular for integration."""
+            promol_y = 5.0 * np.exp(-2.0 * (grid - 2.0) ** 2.0)
+            promol_y_all = 5.0 * np.exp(-2.0 * (every_grid - 2.0) ** 2.0)
             return promol_y_all, promol_y
 
         true_ans = transform_coordinate([x, y], 1, self.setUp())
-        grid = np.arange(-10., y, 0.00001)  # Integration till a x point
-        every_grid = np.arange(-10., 10., 0.00001)  # Full Integration
+        grid = np.arange(-10.0, y, 0.00001)  # Integration till a x point
+        every_grid = np.arange(-10.0, 10.0, 0.00001)  # Full Integration
         promol_y_all, promol_y = promolecular_in_y(grid, every_grid)
 
         # Integration over z cancel out from numerator and denominator.
@@ -338,28 +389,31 @@ class TestOneGaussianAgainstNumerics():
         actual = np.trapz(promol_y, grid) / np.trapz(promol_y_all, every_grid)
         assert np.abs(true_ans - actual) < 1e-5
 
-    @pytest.mark.parametrize("x", [-10, -2, 0, 2.2])
-    @pytest.mark.parametrize("y", [-3, 2., -10.2321])
-    @pytest.mark.parametrize("z", [-10., 0., 2.343432])
+    @pytest.mark.parametrize("x", [-10.0, -2.0, 0.0, 2.2])
+    @pytest.mark.parametrize("y", [-3.0, 2.0, -10.2321])
+    @pytest.mark.parametrize("z", [-10.0, 0.0, 2.343432])
     def test_transforming_z_against_numerics(self, x, y, z):
+        r"""Test transforming Z against numerical algorithms."""
+
         def promolecular_in_z(grid, every_grid):
-            r"""Constructs the formula of promolecular for integration."""
-            promol_z = 5. * np.exp(-2. * (grid - 3.) ** 2.)
-            promol_z_all = 5. * np.exp(-2. * (every_grid - 3.) ** 2.)
+            r"""Construct the formula of promolecular for integration."""
+            promol_z = 5.0 * np.exp(-2.0 * (grid - 3.0) ** 2.0)
+            promol_z_all = 5.0 * np.exp(-2.0 * (every_grid - 3.0) ** 2.0)
             return promol_z_all, promol_z
 
-        grid = np.arange(-10., z, 0.00001)  # Integration till a x point
-        every_grid = np.arange(-10., 10., 0.00001)  # Full Integration
+        grid = np.arange(-10.0, z, 0.00001)  # Integration till a x point
+        every_grid = np.arange(-10.0, 10.0, 0.00001)  # Full Integration
         promol_z_all, promol_z = promolecular_in_z(grid, every_grid)
 
         actual = np.trapz(promol_z, grid) / np.trapz(promol_z_all, every_grid)
         true_ans = transform_coordinate([x, y, z], 2, self.setUp())
         assert np.abs(true_ans - actual) < 1e-5
 
-    @pytest.mark.parametrize("x", [0., 0.25, 1.1, 0.5, 1.5])
-    @pytest.mark.parametrize("y", [0., 1.25, 2.2, 2.25, 2.5])
-    @pytest.mark.parametrize("z", [0., 2.25, 3.2, 3.25, 4.5])
-    def test_jacobian_is_diagonal(self, x, y, z):
+    @pytest.mark.parametrize("x", [0.0, 0.25, 1.1, 0.5, 1.5])
+    @pytest.mark.parametrize("y", [0.0, 1.25, 2.2, 2.25, 2.5])
+    @pytest.mark.parametrize("z", [0.0, 2.25, 3.2, 3.25, 4.5])
+    def test_jacobian(self, x, y, z):
+        r"""Test that the jacobian of the transformation."""
         params, obj = self.setUp(ss=0.2, return_obj=True)
         actual = obj.jacobian(np.array([x, y, z]))
 
@@ -385,10 +439,12 @@ class TestOneGaussianAgainstNumerics():
         # Test derivative wrt to z
         def tranformation_z(pt):
             return transform_coordinate([x, y, pt[0]], 2, params)
+
         grad = approx_fprime([z], tranformation_z, 1e-8)
         assert np.abs(grad - actual[2, 2]) < 1e-5
 
     def test_integration_slightly_perturbed_gaussian(self):
+        r"""Test integration of a slightly perturbed function."""
         # Only Measured against one decimal place and very similar exponent.
         params, obj = self.setUp(ss=0.03, return_obj=True)
 
@@ -396,20 +452,26 @@ class TestOneGaussianAgainstNumerics():
         exponent = 2.001
 
         def gaussian(grid):
-            return 5. * np.exp(-exponent * np.sum((grid - np.array([1., 2., 3.]))**2., axis=1))
+            return 5.0 * np.exp(
+                -exponent * np.sum((grid - np.array([1.0, 2.0, 3.0])) ** 2.0, axis=1)
+            )
 
         func_vals = gaussian(obj.points)
-        desired = 5. * np.sqrt(np.pi / exponent)**3.
+        desired = 5.0 * np.sqrt(np.pi / exponent) ** 3.0
         actual = obj.integrate(func_vals, trick=True)
         assert np.abs(actual - desired) < 1e-2
 
 
 def test_padding_arrays():
     r"""Test different array sizes are correctly padded."""
-    coeff = np.array([[1., 2.], [1., 2., 3., 4.], [5.]])
-    exps = np.array([[4., 5.], [5., 6., 7., 8.], [9.]])
+    coeff = np.array([[1.0, 2.0], [1.0, 2.0, 3.0, 4.0], [5.0]])
+    exps = np.array([[4.0, 5.0], [5.0, 6.0, 7.0, 8.0], [9.0]])
     coeff_pad, exps_pad = _pad_coeffs_exps_with_zeros(coeff, exps)
-    coeff_desired = np.array([[1., 2., 0., 0.], [1., 2., 3., 4.], [5., 0., 0., 0.]])
+    coeff_desired = np.array(
+        [[1.0, 2.0, 0.0, 0.0], [1.0, 2.0, 3.0, 4.0], [5.0, 0.0, 0.0, 0.0]]
+    )
     np.testing.assert_array_equal(coeff_desired, coeff_pad)
-    exp_desired = np.array([[4., 5., 0., 0.], [5., 6., 7., 8.], [9., 0., 0., 0.]])
+    exp_desired = np.array(
+        [[4.0, 5.0, 0.0, 0.0], [5.0, 6.0, 7.0, 8.0], [9.0, 0.0, 0.0, 0.0]]
+    )
     np.testing.assert_array_equal(exp_desired, exps_pad)

@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
-r"""Promolecular Grid Transformation"""
+r"""Promolecular Grid Transformation."""
 
 
 from collections import namedtuple
@@ -25,6 +25,7 @@ from collections import namedtuple
 from grid.basegrid import Grid
 
 import numpy as np
+
 from scipy.linalg import solve_triangular
 from scipy.optimize import root_scalar
 from scipy.special import erf
@@ -94,7 +95,7 @@ class CubicProTransform(Grid):
 
     Notes
     -----
-
+    TODO: Insert Info About Conditional Distribution Method.
     """
 
     def __init__(self, stepsize, weights, coeffs, exps, coords):
@@ -119,7 +120,7 @@ class CubicProTransform(Grid):
         with np.errstate(divide="ignore"):
             pi_over_exponents = np.sqrt(np.pi / exps)
             pi_over_exponents[exps == 0] = 0
-        self._prointegral = np.sum(coeffs * pi_over_exponents ** 3.)
+        self._prointegral = np.sum(coeffs * pi_over_exponents ** 3.0)
         self._promol = PromolParams(coeffs, exps, coords, 3, pi_over_exponents)
 
         # initialize parent class
@@ -129,22 +130,22 @@ class CubicProTransform(Grid):
 
     @property
     def num_pts(self):
-        r"""Number of points in each direction."""
+        r"""Return number of points in each direction."""
         return self._num_pts
 
     @property
     def ss(self):
-        r"""Stepsize of the cubic grid."""
+        r"""Return stepsize of the cubic grid."""
         return self._ss
 
     @property
     def prointegral(self):
-        r"""Integration of Promolecular density."""
+        r"""Return integration of Promolecular density."""
         return self._prointegral
 
     @property
     def promol(self):
-        r"""PromolParams namedTuple."""
+        r"""Return `PromolParams` namedTuple."""
         return self._promol
 
     def integrate(self, *value_arrays, trick=False):
@@ -240,18 +241,26 @@ class CubicProTransform(Grid):
             for j_deriv in range(0, i_var + 1):
                 if i_var == j_deriv:
                     # Derivative eliminates `integrate_till_pt_x`, and adds a Gaussian.
-                    inner_term = coeff_num * np.exp(-e_m * diff_squared[:, i_var][:, np.newaxis])
+                    inner_term = coeff_num * np.exp(
+                        -e_m * diff_squared[:, i_var][:, np.newaxis]
+                    )
                     # Needed because coeff_num has additional (pi / exponent)^0.5 term.
                     inner_term /= pi_over_exps
                     jacobian[i_var, i_var] = np.sum(inner_term) / transf_den
                 elif j_deriv < i_var:
                     # Derivative of inside of Gaussian.
-                    deriv_quadratic = -e_m * 2. * diff_coords[:, j_deriv][:, np.newaxis]
-                    deriv_num = np.sum(coeff_num * integrate_till_pt_x * deriv_quadratic)
+                    deriv_quadratic = (
+                        -e_m * 2.0 * diff_coords[:, j_deriv][:, np.newaxis]
+                    )
+                    deriv_num = np.sum(
+                        coeff_num * integrate_till_pt_x * deriv_quadratic
+                    )
                     deriv_den = np.sum(coeff_num * deriv_quadratic)
                     # Quotient Rule
-                    jacobian[i_var, j_deriv] = (deriv_num * transf_den - transf_num * deriv_den)
-                    jacobian[i_var, j_deriv] /= transf_den**2.
+                    jacobian[i_var, j_deriv] = (
+                        deriv_num * transf_den - transf_num * deriv_den
+                    )
+                    jacobian[i_var, j_deriv] /= transf_den ** 2.0
 
         return jacobian
 
@@ -270,7 +279,9 @@ class CubicProTransform(Grid):
             Point in :math:`[0, 1]^3`.
 
         """
-        return np.array([transform_coordinate(real_pt, i, self.promol) for i in range(0, 3)])
+        return np.array(
+            [transform_coordinate(real_pt, i, self.promol) for i in range(0, 3)]
+        )
 
     def inverse(self, theta_pt, bracket=(-10, 10)):
         r"""
@@ -297,7 +308,9 @@ class CubicProTransform(Grid):
         """
         real_pt = []
         for i in range(0, 3):
-            scalar = inverse_coordinate(theta_pt[i], i, self.promol, real_pt[:i], bracket)
+            scalar = inverse_coordinate(
+                theta_pt[i], i, self.promol, real_pt[:i], bracket
+            )
             real_pt.append(scalar)
         return np.array(real_pt)
 
@@ -398,7 +411,9 @@ class CubicProTransform(Grid):
                     unit_z = self.ss[2] * iz
 
                     bracz = self._get_bracket((ix, iy, iz), 2)
-                    cart_pt[2] = inverse_coordinate(unit_z, 2, self.promol, cart_pt, bracz)
+                    cart_pt[2] = inverse_coordinate(
+                        unit_z, 2, self.promol, cart_pt, bracz
+                    )
 
                     self.points[counter] = cart_pt.copy()
                     counter += 1
@@ -544,7 +559,8 @@ def inverse_coordinate(theta_pt, i_var, params, transformed, bracket=(-10, 10)):
         Further, if nan is in `transformed[:i_var]` then this function will return nan.
 
     """
-    def _is_boundary_pt(theta, prev_transformed, bound1=0., bound2=1.):
+
+    def _is_boundary_pt(theta, prev_transformed, bound1=0.0, bound2=1.0):
         # Check's if the boundary points are there.
         if np.abs(theta - bound1) < 1e-10:
             return True
@@ -573,6 +589,7 @@ def inverse_coordinate(theta_pt, i_var, params, transformed, bracket=(-10, 10)):
 
 
 def _pad_coeffs_exps_with_zeros(coeffs, exps):
+    r"""Pad Promolecular coefficients and exponents with zero. Results in same size array."""
     max_numb_of_gauss = max(len(c) for c in coeffs)
     coeffs = np.array(
         [
