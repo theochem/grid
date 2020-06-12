@@ -25,18 +25,20 @@ from collections import namedtuple
 from grid.basegrid import Grid
 
 import numpy as np
+from scipy.linalg import solve_triangular
 from scipy.optimize import root_scalar
 from scipy.special import erf
 
+__all__ = ["CubicProTransform"]
 
 PromolParams = namedtuple(
     "PromolParams", ["c_m", "e_m", "coords", "dim", "pi_over_exponents"]
 )
 
 
-class ProCubicTransform(Grid):
+class CubicProTransform(Grid):
     r"""
-    Promolecular Grid Transformation of a Cubic Grid in [0,1]^3.
+    Promolecular Grid Transformation of a Cubic, Uniform Grid in [0,1]^3 to Real space.
 
     Attributes
     ----------
@@ -57,6 +59,14 @@ class ProCubicTransform(Grid):
     -------
     integrate(trick=False)
         Integral of a real-valued function over Euclidean space.
+    jacobian()
+        Jacobian of the transformation from Real space to Theta/Unit cube space.
+    steepest_ascent_theta()
+        Direction of steepest-ascent of a function in theta space from gradient in real space.
+    transform():
+        Transform Real point to theta/unit-cube point :math:`[0,1]^3`.
+    inverse(bracket=(-10, 10))
+        Transform theta/unit-cube point to Real space :math:`\mathbb{R}^3`.
 
     Examples
     --------
@@ -69,7 +79,7 @@ class ProCubicTransform(Grid):
     >> stepsize = 0.01
     >> numb_x = int(1. / stepsize) + 1
     >> weights = np.array([0.01] * numb_x**3)  # Simple Riemannian weights.
-    >> promol = ProCubicTransform([ss] * 3, weights, c, e, coord)
+    >> promol = CubicProTransform([ss] * 3, weights, c, e, coord)
 
     To integrate some function f.
     >> def f(pt):
@@ -141,6 +151,8 @@ class ProCubicTransform(Grid):
         r"""
         Integrate any function.
 
+        Assumes integrand decays faster than the promolecular density.
+
         Parameters
         ----------
         *value_arrays : (np.ndarray(N, dtype=float),)
@@ -170,11 +182,172 @@ class ProCubicTransform(Grid):
                     integrand = (arr - promolecular) / promolecular
                 else:
                     integrand = arr / promolecular
+                # Functions evaluated at points on the boundary is set to zero.
                 integrand[np.isnan(self.points).any(axis=1)] = 0.0
                 integrands.append(integrand)
         if trick:
             return self.prointegral + super().integrate(*integrands)
         return super().integrate(*integrands)
+
+    def jacobian(self, real_pt):
+        r"""
+        Jacobian of the transformation from real space to unit-cube/theta space.
+
+        Precisely, it is the lower-triangular matrix
+        .. math::
+            \begin{bmatrix}
+                \frac{\partial \theta_x}{\partial X} & 0 & 0 \\
+                \frac{\partial \theta_y}{\partial X} & \frac{\partial \theta_y}{\partial Y} & 0 \\
+                \frac{\partial \theta_z}{\partial X} & \frac{\partial \theta_Z}{\partial Y} &
+                \frac{\partial \theta_Z}{\partial Z}
+            \end{bmatrix}.
+
+        Parameters
+        ----------
+        real_pt : np.ndarray(3,)
+            Point in :math:`\mathbb{R}^3`.
+
+        Returns
+        -------
+        np.ndarray(3, 3) :
+            Jacobian of transformation.
+
+        """
+        jacobian = np.zeros((3, 3), dtype=np.float64)
+
+        c_m, e_m, coords, dim, pi_over_exps = self.promol
+
+        # Code is duplicated from `transform_coordinate` due to effiency reasons.
+        for i_var in range(0, 3):
+            # Distance to centers/nuclei`s and Prefactors.
+            diff_coords = real_pt[: i_var + 1] - coords[:, : i_var + 1]
+            diff_squared = diff_coords ** 2.0
+            distance = np.sum(diff_squared[:, :i_var], axis=1)[:, np.newaxis]
+            # If i_var is zero, then distance is just all zeros.
+
+            # Gaussian Integrals Over Entire Space For Numerator and Denomator.
+            coeff_num = c_m * np.exp(-e_m * distance) * pi_over_exps ** (dim - i_var)
+
+            # Get integral of Gaussian till a point.
+            coord_ivar = diff_coords[:, i_var][:, np.newaxis]
+            # (pi / exponent)^0.5 is factored and absorbed in `coeff_num`.
+            integrate_till_pt_x = (erf(np.sqrt(e_m) * coord_ivar) + 1.0) / 2.0
+
+            # Final Result.
+            transf_num = np.sum(coeff_num * integrate_till_pt_x)
+            transf_den = np.sum(coeff_num)
+
+            for j_deriv in range(0, i_var + 1):
+                if i_var == j_deriv:
+                    # Derivative eliminates `integrate_till_pt_x`, and adds a Gaussian.
+                    inner_term = coeff_num * np.exp(-e_m * diff_squared[:, i_var][:, np.newaxis])
+                    # Needed because coeff_num has additional (pi / exponent)^0.5 term.
+                    inner_term /= pi_over_exps
+                    jacobian[i_var, i_var] = np.sum(inner_term) / transf_den
+                elif j_deriv < i_var:
+                    # Derivative of inside of Gaussian.
+                    deriv_quadratic = -e_m * 2. * diff_coords[:, j_deriv][:, np.newaxis]
+                    deriv_num = np.sum(coeff_num * integrate_till_pt_x * deriv_quadratic)
+                    deriv_den = np.sum(coeff_num * deriv_quadratic)
+                    # Quotient Rule
+                    jacobian[i_var, j_deriv] = (deriv_num * transf_den - transf_num * deriv_den)
+                    jacobian[i_var, j_deriv] /= transf_den**2.
+
+        return jacobian
+
+    def transform(self, real_pt):
+        r"""
+        Transform a real point in three-dimensional Reals to theta/unit cube.
+
+        Parameters
+        ----------
+        real_pt : np.ndarray(3)
+            Point in :math:`\mathbb{R}^3`
+
+        Returns
+        -------
+        theta_pt : np.ndarray(3)
+            Point in :math:`[0, 1]^3`.
+
+        """
+        return np.array([transform_coordinate(real_pt, i, self.promol) for i in range(0, 3)])
+
+    def inverse(self, theta_pt, bracket=(-10, 10)):
+        r"""
+        Transform a theta/unit-cube point to three-dimensional Real space.
+
+        Parameters
+        ----------
+        theta_pt : np.ndarray(3)
+            Point in :math:`[0, 1]^3`
+        bracket : (float, float), optional
+            Interval where root is suspected to be in Reals.
+            Used for "brentq" root-finding method. Default is (-10, 10).
+
+        Returns
+        -------
+        real_pt : np.ndarray(3)
+            Point in :math:`\mathbb{R}^3`
+
+        Notes
+        -----
+        - If a point is far away from the promolecular density, then it will be mapped
+            to `np.nan`.
+
+        """
+        real_pt = []
+        for i in range(0, 3):
+            scalar = inverse_coordinate(theta_pt[i], i, self.promol, real_pt[:i], bracket)
+            real_pt.append(scalar)
+        return np.array(real_pt)
+
+    def derivative(self, real_pt, real_derivative):
+        r"""
+        Directional derivative in theta space.
+
+        Parameters
+        ----------
+        real_pt : np.ndarray(3)
+            Point in :math:`\mathbb{R}^3`
+        real_derivative : np.ndarray(3)
+            Derivative of a function in real space with respect to x, y, z coordinates.
+
+        Returns
+        -------
+        theta_derivative : np.ndarray(3)
+            Derivative of a function in theta space with respect to theta coordinates.
+
+        Notes
+        -----
+        This does not preserve the direction of steepest-ascent/gradient.
+
+        """
+        jacobian = self.jacobian(real_pt)
+        return solve_triangular(jacobian.T, real_derivative)
+
+    def steepest_ascent_theta(self, real_pt, real_grad):
+        r"""
+        Steepest ascent direction of a function in theta/unit-cube space.
+
+        Steepest ascent is the gradient ie direction of maximum change of a function.
+        This guarantees moving in direction of steepest ascent in real-space
+        corresponds to moving in the direction of the gradient in theta-space.
+
+        Parameters
+        ----------
+        real_pt : np.ndarray(3)
+            Point in :math:`\mathbb{R}^3`
+        real_grad : np.ndarray(3)
+            Gradient of a function in real space.
+
+        Returns
+        -------
+        theta_grad : np.ndarray(3)
+            Gradient of a function in theta/unit-cube space.
+
+        """
+        jacobian = self.jacobian(real_pt)
+        return jacobian.dot(real_grad)
 
     def _promolecular(self, grid):
         r"""
@@ -206,32 +379,47 @@ class ProCubicTransform(Grid):
         return np.einsum("MNK -> N", gaussian, dtype=np.float64)
 
     def _transform(self):
+        # Coordinates (i, j, k) start from bottom, left-most corner of the unit cube.
         counter = 0
         for ix in range(self.num_pts[0]):
             cart_pt = [None, None, None]
             unit_x = self.ss[0] * ix
 
-            initx = self._get_bracket((ix,), 0)
-            transfx = inverse_coordinate(unit_x, 0, self.promol, cart_pt, initx)
-            cart_pt[0] = transfx
+            bracx = self._get_bracket((ix,), 0)
+            cart_pt[0] = inverse_coordinate(unit_x, 0, self.promol, cart_pt, bracx)
 
             for iy in range(self.num_pts[1]):
                 unit_y = self.ss[1] * iy
 
-                inity = self._get_bracket((ix, iy), 1)
-                transfy = inverse_coordinate(unit_y, 1, self.promol, cart_pt, inity)
-                cart_pt[1] = transfy
+                bracy = self._get_bracket((ix, iy), 1)
+                cart_pt[1] = inverse_coordinate(unit_y, 1, self.promol, cart_pt, bracy)
 
                 for iz in range(self.num_pts[2]):
                     unit_z = self.ss[2] * iz
 
-                    initz = self._get_bracket((ix, iy, iz), 2)
-                    transfz = inverse_coordinate(unit_z, 2, self.promol, cart_pt, initz)
-                    cart_pt[2] = transfz
+                    bracz = self._get_bracket((ix, iy, iz), 2)
+                    cart_pt[2] = inverse_coordinate(unit_z, 2, self.promol, cart_pt, bracz)
+
                     self.points[counter] = cart_pt.copy()
                     counter += 1
 
     def _get_bracket(self, coord, i_var):
+        r"""
+        Obtain brackets for root-finder based on the coordinate of the point.
+
+        Parameters
+        ----------
+        coord : tuple(int, int, int)
+            The coordinate of a point.
+        i_var : int
+            Index of point being transformed.
+
+        Returns
+        -------
+        (float, float) :
+            The bracket for the root-finder solver.
+
+        """
         # If it is a boundary point, then return nan.
         if 0.0 in coord[: i_var + 1] or (self.num_pts[i_var] - 1) in coord[: i_var + 1]:
             return np.nan, np.nan
@@ -260,7 +448,7 @@ class ProCubicTransform(Grid):
 
 def transform_coordinate(real_pt, i_var, promol_params, deriv=False, sderiv=False):
     r"""
-    Transform the `i_var` coordinate in a real point to [0, 1] using promolecular density.
+    Transform the `i_var` coordinate of a real point to [0, 1] using promolecular density.
 
     Parameters
     ----------
@@ -296,7 +484,8 @@ def transform_coordinate(real_pt, i_var, promol_params, deriv=False, sderiv=Fals
     gaussian_integrals = np.exp(-e_m * distance) * pi_over_exps ** (dim - i_var)
     coeff_num = c_m * gaussian_integrals
 
-    # Get the integral of Gaussian till a point.
+    # Get the integral of Gaussian till a point excluding a prefactor.
+    # This prefactor (pi / exponents) is included in `gaussian_integrals`.
     coord_ivar = diff_coords[:, i_var][:, np.newaxis]
     integrate_till_pt_x = (erf(np.sqrt(e_m) * coord_ivar) + 1.0) / 2.0
 
@@ -324,7 +513,7 @@ def _root_equation(init_guess, prev_trans_pts, theta_pt, i_var, params):
 
 def inverse_coordinate(theta_pt, i_var, params, transformed, bracket=(-10, 10)):
     r"""
-    Transform a point in [0, 1] to the real space corresponding to the `i_var` variable.
+    Transform a point in [0, 1] to the real space corresponding to `i_var` variable.
 
     Parameters
     ----------
@@ -349,10 +538,27 @@ def inverse_coordinate(theta_pt, i_var, params, transformed, bracket=(-10, 10)):
     ------
     AssertionError :    If the root did not converge, or brackets did not have opposite sign.
 
+    Notes
+    -----
+    - If the theta point is on the boundary or it is itself a nan, then it get's mapped to nan.
+        Further, if nan is in `transformed[:i_var]` then this function will return nan.
+
     """
-    # The [:i_var] is needed because of the way I've set-up transformed attribute.
-    if np.isnan(bracket[0]) or np.nan in transformed[:i_var]:
+    def _is_boundary_pt(theta, prev_transformed, bound1=0., bound2=1.):
+        # Check's if the boundary points are there.
+        if np.abs(theta - bound1) < 1e-10:
+            return True
+        if np.abs(theta - bound2) < 1e-10:
+            return True
+        # Check's if there is NAN in here.
+        # The [:i_var] is needed because of the way I've set-up transforming points in _transform.
+        if np.isnan(bracket[0]) or np.nan in prev_transformed:
+            return np.nan
+        return False
+
+    if _is_boundary_pt(theta_pt, transformed[:i_var]):
         return np.nan
+
     args = (transformed[:i_var], theta_pt, i_var, params)
     root_result = root_scalar(
         _root_equation,
