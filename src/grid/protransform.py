@@ -536,7 +536,29 @@ def transform_coordinate(real_pt, i_var, promol_params, deriv=False, sderiv=Fals
 
 
 def _root_equation(init_guess, prev_trans_pts, theta_pt, i_var, params):
-    # TODO: Add docs.
+    r"""
+    Equation to solve for the root to find inverse coordinate from theta space to Real space.
+
+    Parameters
+    ----------
+    init_guess : float
+        Initial guess of Real point that transforms to `theta_pt`.
+    prev_trans_pts : list[Float, i_var - 1]
+        The previous points in real-space that were already transformed.
+    theta_pt : float
+        The point in [0, 1] being transformed to the Real space.
+    i_var : int
+        Index of variable being transformed.
+    params : _PromolParams
+        Promolecular density data class.
+
+    Returns
+    -------
+    float :
+        The difference between `theta_pt` and the transformed point based on
+        `init_guess` and `prev_trans_pts`.
+
+    """
     all_points = np.append(prev_trans_pts, init_guess)
     transf_pt = transform_coordinate(all_points, i_var, params)
     return theta_pt - transf_pt
