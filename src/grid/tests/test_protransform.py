@@ -33,7 +33,7 @@ TestOneGaussianAgainstNumerics :
 
 from grid.protransform import (
     CubicProTransform,
-    PromolParams,
+    _PromolParams,
     _pad_coeffs_exps_with_zeros,
     transform_coordinate,
 )
@@ -54,7 +54,7 @@ class TestTwoGaussianDiffCenters:
         c = np.array([[5.0], [10.0]])
         e = np.array([[2.0], [3.0]])
         coord = np.array([[1.0, 2.0, 3.0], [2.0, 2.0, 2.0]])
-        params = PromolParams(c, e, coord, dim=3, pi_over_exponents=np.sqrt(np.pi / e))
+        params = _PromolParams(c, e, coord, pi_over_exponents=np.sqrt(np.pi / e), dim=3)
         if return_obj:
             num_pts = int(1 / ss) + 1
             weights = np.array([(1.0 / (num_pts - 2)) ** 3.0] * num_pts ** 3)
@@ -68,7 +68,7 @@ class TestTwoGaussianDiffCenters:
         r"""Hard-Code the promolecular density."""
         # Promolecular in CubicProTransform class uses einsum, this tests it against that.
         # Also could be used for integration tests.
-        cm, em, coords, _, _ = params
+        cm, em, coords = params.c_m, params.e_m, params.coords
         promol = 0.0
         for i, coeffs in enumerate(cm):
             xc, yc, zc = coords[i]
@@ -89,14 +89,14 @@ class TestTwoGaussianDiffCenters:
                 [0.0, 10.0, 0.2],
             ]
         )
-        params, obj = self.setUp(return_obj=True)
+        params= self.setUp()
 
         true_ans = []
         for pt in grid:
             x, y, z = pt
             true_ans.append(self.promolecular(x, y, z, params))
 
-        desired = obj._promolecular(grid)
+        desired = params.promolecular(grid)
         assert np.all(np.abs(np.array(true_ans) - desired) < 1e-8)
 
     @pytest.mark.parametrize("pt", np.arange(-5.0, 5.0, 0.5))
@@ -339,7 +339,7 @@ class TestOneGaussianAgainstNumerics:
         c = np.array([[5.0]])
         e = np.array([[2.0]])
         coord = np.array([[1.0, 2.0, 3.0]])
-        params = PromolParams(c, e, coord, dim=3, pi_over_exponents=np.sqrt(np.pi / e))
+        params = _PromolParams(c, e, coord, dim=3, pi_over_exponents=np.sqrt(np.pi / e))
         if return_obj:
             num_pts = int(1 / ss) + 1
             weights = np.array([(1.0 / (num_pts - 2)) ** 3.0] * num_pts ** 3)

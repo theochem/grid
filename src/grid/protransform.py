@@ -20,7 +20,7 @@
 r"""Promolecular Grid Transformation."""
 
 
-from collections import namedtuple
+from dataclasses import dataclass, astuple
 
 from grid.basegrid import Grid
 
@@ -32,9 +32,43 @@ from scipy.special import erf
 
 __all__ = ["CubicProTransform"]
 
-PromolParams = namedtuple(
-    "PromolParams", ["c_m", "e_m", "coords", "dim", "pi_over_exponents"]
-)
+
+@dataclass
+class _PromolParams:
+    r"""Private class for Promolecular Density information."""
+    c_m: np.ndarray
+    e_m: np.ndarray
+    coords: np.ndarray
+    pi_over_exponents: np.ndarray
+    dim: int = 3
+
+    def promolecular(self, grid):
+        r"""
+        Evaluate the promolecular density over a grid.
+
+        Parameters
+        ----------
+        grid : np.ndarray(N,)
+            Grid points.
+
+        Returns
+        -------
+        np.ndarray(N,) :
+            Promolecular density evaluated at the grid points.
+
+        """
+        # M is the number of centers/atoms.
+        # D is the number of dimensions, usually 3.
+        # K is maximum number of gaussian functions over all M atoms.
+        cm, em, coords = self.c_m, self.e_m, self.coords
+        # Shape (N, M, D), then Summing gives (N, M, 1)
+        distance = np.sum((grid - coords[:, np.newaxis]) ** 2.0, axis=2, keepdims=True)
+        # At each center, multiply Each Distance of a Coordinate, with its exponents.
+        exponen = np.exp(-np.einsum("MND, MK-> MNK", distance, em))
+        # At each center, multiply the exponential with its coefficients.
+        gaussian = np.einsum("MNK, MK -> MNK", exponen, cm)
+        # At each point, sum for each center, then sum all centers together.
+        return np.einsum("MNK -> N", gaussian, dtype=np.float64)
 
 
 class CubicProTransform(Grid):
@@ -77,10 +111,10 @@ class CubicProTransform(Grid):
     >> coord = np.array([[0., 0., 0.], [2., 2., 2.]])
 
     Define information of the grid and its weights.
-    >> stepsize = 0.01
+    >> stepsize = 0.01  #TODO: Remove
     >> numb_x = int(1. / stepsize) + 1
     >> weights = np.array([0.01] * numb_x**3)  # Simple Riemannian weights.
-    >> promol = CubicProTransform([ss] * 3, weights, c, e, coord)
+    >> promol = CubicProTransform([ss, ss, ss], weights, c, e, coord)
 
     To integrate some function f.
     >> def f(pt):
@@ -99,6 +133,7 @@ class CubicProTransform(Grid):
     """
 
     def __init__(self, stepsize, weights, coeffs, exps, coords):
+        # TODO: Add Types
         if not isinstance(stepsize, tuple):
             pass
         if not isinstance(coeffs, (list, np.ndarray)):
@@ -108,6 +143,7 @@ class CubicProTransform(Grid):
         if not isinstance(coords, (list, np.ndarray)):
             pass
         self._ss = stepsize
+        # TODO: Add boundary info in docs
         self._num_pts = (
             int(1 / stepsize[0]) + 1,
             int(1 / stepsize[1]) + 1,
@@ -115,13 +151,14 @@ class CubicProTransform(Grid):
         )
 
         # pad coefficients and exponents with zeros to have the same size.
+        # Make it easier to use numpy operations.
         coeffs, exps = _pad_coeffs_exps_with_zeros(coeffs, exps)
         # Rather than computing this repeatedly. It is fixed.
         with np.errstate(divide="ignore"):
             pi_over_exponents = np.sqrt(np.pi / exps)
             pi_over_exponents[exps == 0] = 0
         self._prointegral = np.sum(coeffs * pi_over_exponents ** 3.0)
-        self._promol = PromolParams(coeffs, exps, coords, 3, pi_over_exponents)
+        self._promol = _PromolParams(coeffs, exps, coords, pi_over_exponents)
 
         # initialize parent class
         empty_points = np.empty((np.prod(self._num_pts), 3), dtype=np.float64)
@@ -174,11 +211,13 @@ class CubicProTransform(Grid):
             Input integrand array is given or not of proper shape.
 
         """
-        promolecular = self._promolecular(self.points)
+        promolecular = self.promol.promolecular(self.points)
         integrands = []
+        # TODO: Use Mask Array with nan's with user-defined tol.
         with np.errstate(divide="ignore"):
             for arr in value_arrays:
                 assert arr.dtype != object, "Array dtype should not be object."
+                # This may be refactored to fit in the general promolecular trick in `grid`.
                 if trick:
                     integrand = (arr - promolecular) / promolecular
                 else:
@@ -216,10 +255,12 @@ class CubicProTransform(Grid):
         """
         jacobian = np.zeros((3, 3), dtype=np.float64)
 
-        c_m, e_m, coords, dim, pi_over_exps = self.promol
+        c_m, e_m, coords, pi_over_exps, dim = astuple(self.promol)
 
         # Code is duplicated from `transform_coordinate` due to effiency reasons.
+        # TODO: Reduce the number of computation with `i_var`.
         for i_var in range(0, 3):
+
             # Distance to centers/nuclei`s and Prefactors.
             diff_coords = real_pt[: i_var + 1] - coords[:, : i_var + 1]
             diff_squared = diff_coords ** 2.0
@@ -362,37 +403,10 @@ class CubicProTransform(Grid):
         jacobian = self.jacobian(real_pt)
         return jacobian.dot(real_grad)
 
-    def _promolecular(self, grid):
-        r"""
-        Evaluate the promolecular density over a grid.
-
-        Parameters
-        ----------
-        grid : np.ndarray(N,)
-            Grid points.
-
-        Returns
-        -------
-        np.ndarray(N,) :
-            Promolecular density evaluated at the grid points.
-
-        """
-        # TODO: For Design, Store this or constantly re-evaluate it?
-        # M is the number of centers/atoms.
-        # D is the number of dimensions, usually 3.
-        # K is maximum number of gaussian functions over all M atoms.
-        cm, em, coords, _, _ = self.promol
-        # Shape (N, M, D), then Summing gives (N, M, 1)
-        distance = np.sum((grid - coords[:, np.newaxis]) ** 2.0, axis=2, keepdims=True)
-        # At each center, multiply Each Distance of a Coordinate, with its exponents.
-        exponen = np.exp(-np.einsum("MND, MK-> MNK", distance, em))
-        # At each center, multiply the exponential with its coefficients.
-        gaussian = np.einsum("MNK, MK -> MNK", exponen, cm)
-        # At each point, sum for each center, then sum all centers together.
-        return np.einsum("MNK -> N", gaussian, dtype=np.float64)
-
     def _transform(self):
-        # Coordinates (i, j, k) start from bottom, left-most corner of the unit cube.
+        # Indices (i, j, k) start from bottom, left-most corner of the unit cube.
+        # TODO: Add i, j, k integer info.
+        # TODO: Rename coordinates to indices.
         counter = 0
         for ix in range(self.num_pts[0]):
             cart_pt = [None, None, None]
@@ -425,7 +439,7 @@ class CubicProTransform(Grid):
         Parameters
         ----------
         coord : tuple(int, int, int)
-            The coordinate of a point.
+            The coordinate of a point.  # TODO: rename indices.
         i_var : int
             Index of point being transformed.
 
@@ -436,7 +450,7 @@ class CubicProTransform(Grid):
 
         """
         # If it is a boundary point, then return nan.
-        if 0.0 in coord[: i_var + 1] or (self.num_pts[i_var] - 1) in coord[: i_var + 1]:
+        if 0 in coord[: i_var + 1] or (self.num_pts[i_var] - 1) in coord[: i_var + 1]:
             return np.nan, np.nan
         # If it is a new point, with no nearby point, get a large initial guess.
         elif coord[i_var] == 1:
@@ -457,7 +471,8 @@ class CubicProTransform(Grid):
                 + coord[2]
                 - 1
             )
-        # FIXME : Rather than using fixed +10., use truncated taylor series.
+
+        # TODO: Add dynamic bracketing methods with +5.
         return self.points[index, i_var], self.points[index, i_var] + 10.0
 
 
@@ -487,7 +502,7 @@ def transform_coordinate(real_pt, i_var, promol_params, deriv=False, sderiv=Fals
         the second derivative with respect to real point are returned.
 
     """
-    c_m, e_m, coords, dim, pi_over_exps = promol_params
+    c_m, e_m, coords, pi_over_exps, dim = astuple(promol_params)
 
     # Distance to centers/nuclei`s and Prefactors.
     diff_coords = real_pt[: i_var + 1] - coords[:, : i_var + 1]
@@ -521,6 +536,7 @@ def transform_coordinate(real_pt, i_var, promol_params, deriv=False, sderiv=Fals
 
 
 def _root_equation(init_guess, prev_trans_pts, theta_pt, i_var, params):
+    # TODO: Add docs.
     all_points = np.append(prev_trans_pts, init_guess)
     transf_pt = transform_coordinate(all_points, i_var, params)
     return theta_pt - transf_pt
@@ -562,6 +578,8 @@ def inverse_coordinate(theta_pt, i_var, params, transformed, bracket=(-10, 10)):
 
     def _is_boundary_pt(theta, prev_transformed, bound1=0.0, bound2=1.0):
         # Check's if the boundary points are there.
+        # TODO: Remove isnan and keep the following boundary condition.
+        # TODO: Remove helper function.
         if np.abs(theta - bound1) < 1e-10:
             return True
         if np.abs(theta - bound2) < 1e-10:
