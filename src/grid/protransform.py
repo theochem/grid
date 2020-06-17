@@ -130,6 +130,7 @@ class CubicProTransform(Grid):
     Notes
     -----
     TODO: Insert Info About Conditional Distribution Method.
+    TODO: Add Infor about how boundarys on theta-space are mapped to np.nan.
     """
 
     def __init__(self, stepsize, weights, coeffs, exps, coords):
@@ -543,7 +544,7 @@ def _root_equation(init_guess, prev_trans_pts, theta_pt, i_var, params):
     ----------
     init_guess : float
         Initial guess of Real point that transforms to `theta_pt`.
-    prev_trans_pts : list[Float, i_var - 1]
+    prev_trans_pts : list[`i_var` - 1]
         The previous points in real-space that were already transformed.
     theta_pt : float
         The point in [0, 1] being transformed to the Real space.
@@ -576,7 +577,7 @@ def inverse_coordinate(theta_pt, i_var, params, transformed, bracket=(-10, 10)):
         Index that is being tranformed. Less than D.
     promol_params : namedTuple
         Data about the Promolecular density.
-    transformed : list(`i_var` - 1)
+    transformed : list[`i_var` - 1]
         The set of previous points before index `i_var` that were transformed to real space.
     bracket : (float, float)
         Interval where root is suspected to be in Reals. Used for "brentq" root-finding method.
@@ -597,22 +598,16 @@ def inverse_coordinate(theta_pt, i_var, params, transformed, bracket=(-10, 10)):
         Further, if nan is in `transformed[:i_var]` then this function will return nan.
 
     """
-
-    def _is_boundary_pt(theta, prev_transformed, bound1=0.0, bound2=1.0):
-        # Check's if the boundary points are there.
-        # TODO: Remove isnan and keep the following boundary condition.
-        # TODO: Remove helper function.
-        if np.abs(theta - bound1) < 1e-10:
-            return True
-        if np.abs(theta - bound2) < 1e-10:
-            return True
-        # Check's if there is NAN in here.
-        # The [:i_var] is needed because of the way I've set-up transforming points in _transform.
-        if np.isnan(bracket[0]) or np.nan in prev_transformed:
-            return np.nan
-        return False
-
-    if _is_boundary_pt(theta_pt, transformed[:i_var]):
+    # Check's if this is a boundary points which is mapped to np.nan
+    # These two conditions are added for individual point transformation.
+    if np.abs(theta_pt - 0.0) < 1e-10:
+        return np.nan
+    if np.abs(theta_pt - 1.0) < 1e-10:
+        return np.nan
+    # This condition is added for transformation of the entire grid.
+    # The [:i_var] is needed because of the way I've set-up transforming points in _transform.
+    # Likewise for the bracket, see the function `get_bracket`.
+    if np.nan in bracket or np.nan in transformed[:i_var]:
         return np.nan
 
     args = (transformed[:i_var], theta_pt, i_var, params)
