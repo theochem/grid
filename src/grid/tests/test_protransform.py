@@ -59,7 +59,7 @@ class TestTwoGaussianDiffCenters:
             num_pts = int(1 / ss) + 1
             weights = np.array([(1.0 / (num_pts - 2)) ** 3.0] * num_pts ** 3)
             obj = CubicProTransform(
-                [ss] * 3, weights, params.c_m, params.e_m, params.coords
+                [num_pts] * 3, weights, params.c_m, params.e_m, params.coords
             )
             return params, obj
         return params
@@ -344,7 +344,7 @@ class TestOneGaussianAgainstNumerics:
             num_pts = int(1 / ss) + 1
             weights = np.array([(1.0 / (num_pts - 2)) ** 3.0] * num_pts ** 3)
             obj = CubicProTransform(
-                [ss] * 3, weights, params.c_m, params.e_m, params.coords
+                [num_pts] * 3, weights, params.c_m, params.e_m, params.coords
             )
             return params, obj
         return params

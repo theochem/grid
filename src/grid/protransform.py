@@ -77,10 +77,11 @@ class CubicProTransform(Grid):
 
     Attributes
     ----------
+    num_pts : (int, int, int)
+        The number of points, including both of the end/boundary point, in x, y, and z direction.
+        This is calculated as `int(1. / ss[i]) + 1`.
     ss : (float, float, float)
         The step-size in each x, y, and z direction.
-    num_pts : (int, int, int)
-        The number of points in x, y, and z direction. This is calculated as `int(1. / ss[i]) + 1`
     points : np.ndarray(N, 3)
         The transformed points in real space.
     prointegral : float
@@ -111,10 +112,9 @@ class CubicProTransform(Grid):
     >> coord = np.array([[0., 0., 0.], [2., 2., 2.]])
 
     Define information of the grid and its weights.
-    >> stepsize = 0.01  #TODO: Remove
-    >> numb_x = int(1. / stepsize) + 1
+    >> numb_x = 50
     >> weights = np.array([0.01] * numb_x**3)  # Simple Riemannian weights.
-    >> promol = CubicProTransform([ss, ss, ss], weights, c, e, coord)
+    >> promol = CubicProTransform([numb_x, numb_x, numb_x], weights, c, e, coord)
 
     To integrate some function f.
     >> def f(pt):
@@ -131,11 +131,12 @@ class CubicProTransform(Grid):
     -----
     TODO: Insert Info About Conditional Distribution Method.
     TODO: Add Infor about how boundarys on theta-space are mapped to np.nan.
+
     """
 
-    def __init__(self, stepsize, weights, coeffs, exps, coords):
+    def __init__(self, num_pts, weights, coeffs, exps, coords):
         # TODO: Add Types
-        if not isinstance(stepsize, tuple):
+        if not isinstance(num_pts, (tuple, list)):
             pass
         if not isinstance(coeffs, (list, np.ndarray)):
             pass
@@ -143,16 +144,14 @@ class CubicProTransform(Grid):
             pass
         if not isinstance(coords, (list, np.ndarray)):
             pass
-        self._ss = stepsize
-        # TODO: Add boundary info in docs
-        self._num_pts = (
-            int(1 / stepsize[0]) + 1,
-            int(1 / stepsize[1]) + 1,
-            int(1 / stepsize[2]) + 1,
+        self._ss = (
+            1. / (num_pts[0] - 1),
+            1. / (num_pts[1] - 1),
+            1. / (num_pts[2] - 1),
         )
+        self._num_pts = num_pts
 
-        # pad coefficients and exponents with zeros to have the same size.
-        # Make it easier to use numpy operations.
+        # pad coefficients and exponents with zeros to have the same size, easier to use numpy.
         coeffs, exps = _pad_coeffs_exps_with_zeros(coeffs, exps)
         # Rather than computing this repeatedly. It is fixed.
         with np.errstate(divide="ignore"):
