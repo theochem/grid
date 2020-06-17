@@ -419,8 +419,6 @@ class CubicProTransform(Grid):
 
     def _transform(self):
         # Indices (i, j, k) start from bottom, left-most corner of the unit cube.
-        # TODO: Add i, j, k integer info.
-        # TODO: Rename coordinates to indices.
         counter = 0
         for ix in range(self.num_pts[0]):
             cart_pt = [None, None, None]
@@ -446,14 +444,15 @@ class CubicProTransform(Grid):
                     self.points[counter] = cart_pt.copy()
                     counter += 1
 
-    def _get_bracket(self, coord, i_var):
+    def _get_bracket(self, indices, i_var):
         r"""
         Obtain brackets for root-finder based on the coordinate of the point.
 
         Parameters
         ----------
-        coord : tuple(int, int, int)
-            The coordinate of a point.  # TODO: rename indices.
+        indices : tuple(int, int, int)
+            The indices of a point, where (0, 0, 0) is the bottom, left-most, down point
+            of the cube.
         i_var : int
             Index of point being transformed.
 
@@ -464,25 +463,25 @@ class CubicProTransform(Grid):
 
         """
         # If it is a boundary point, then return nan.
-        if 0 in coord[: i_var + 1] or (self.num_pts[i_var] - 1) in coord[: i_var + 1]:
+        if 0 in indices[: i_var + 1] or (self.num_pts[i_var] - 1) in indices[: i_var + 1]:
             return np.nan, np.nan
         # If it is a new point, with no nearby point, get a large initial guess.
-        elif coord[i_var] == 1:
+        elif indices[i_var] == 1:
             min = (np.min(self.promol.coords[:, i_var]) - 3.0) * 20.0
             max = (np.max(self.promol.coords[:, i_var]) + 3.0) * 20.0
             return min, max
         # If the previous point has been converted, use that as a initial guess.
         if i_var == 0:
-            index = (coord[0] - 1) * self.num_pts[1] * self.num_pts[2]
+            index = (indices[0] - 1) * self.num_pts[1] * self.num_pts[2]
         elif i_var == 1:
-            index = coord[0] * self.num_pts[1] * self.num_pts[2] + self.num_pts[2] * (
-                coord[1] - 1
+            index = indices[0] * self.num_pts[1] * self.num_pts[2] + self.num_pts[2] * (
+                indices[1] - 1
             )
         elif i_var == 2:
             index = (
-                coord[0] * self.num_pts[1] * self.num_pts[2]
-                + self.num_pts[2] * coord[1]
-                + coord[2]
+                indices[0] * self.num_pts[1] * self.num_pts[2]
+                + self.num_pts[2] * indices[1]
+                + indices[2]
                 - 1
             )
 
