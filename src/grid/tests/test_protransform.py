@@ -443,7 +443,7 @@ class TestOneGaussianAgainstNumerics:
         grad = approx_fprime([z], tranformation_z, 1e-8)
         assert np.abs(grad - actual[2, 2]) < 1e-5
 
-    def test_integration_slightly_perturbed_gaussian(self):
+    def test_integration_slightly_perturbed_gaussian_with_promolecular_trick(self):
         r"""Test integration of a slightly perturbed function."""
         # Only Measured against one decimal place and very similar exponent.
         params, obj = self.setUp(ss=0.03, return_obj=True)

@@ -78,7 +78,7 @@ class CubicProTransform(Grid):
     Attributes
     ----------
     num_pts : (int, int, int)
-        The number of points, including both of the end/boundary point, in x, y, and z direction.
+        The number of points, including both of the end/boundary points, in x, y, and z direction.
         This is calculated as `int(1. / ss[i]) + 1`.
     ss : (float, float, float)
         The step-size in each x, y, and z direction.
@@ -185,7 +185,7 @@ class CubicProTransform(Grid):
         r"""Return `PromolParams` namedTuple."""
         return self._promol
 
-    def integrate(self, *value_arrays, trick=False):
+    def integrate(self, *value_arrays, trick=False, tol=1e-10):
         r"""
         Integrate any function.
 
@@ -195,8 +195,11 @@ class CubicProTransform(Grid):
         ----------
         *value_arrays : (np.ndarray(N, dtype=float),)
             One or multiple value array to integrate.
-        trick : bool
+        trick : bool, optional
             If true, uses the promolecular trick.
+        tol : float, optional
+            Integrand is set to zero whenever promolecular density is less than tolerance.
+            Default value is 1e-10.
 
         Returns
         -------
@@ -210,21 +213,32 @@ class CubicProTransform(Grid):
         ValueError
             Input integrand array is given or not of proper shape.
 
+        Notes
+        -----
+        - TODO: Insert formula for integration.
+        - This method assumes the integrand decays faster than the promolecular density.
+
         """
         promolecular = self.promol.promolecular(self.points)
+        # Integrand is set to zero when promolecular is less than certain value and,
+        # When on the boundary (hence when promolecular is nan).
+        cond = (promolecular <= tol) | (np.isnan(promolecular))
+        promolecular = np.ma.masked_where(cond, promolecular, copy=False)
+
         integrands = []
-        # TODO: Use Mask Array with nan's with user-defined tol.
-        with np.errstate(divide="ignore"):
-            for arr in value_arrays:
-                assert arr.dtype != object, "Array dtype should not be object."
-                # This may be refactored to fit in the general promolecular trick in `grid`.
-                if trick:
-                    integrand = (arr - promolecular) / promolecular
-                else:
-                    integrand = arr / promolecular
-                # Functions evaluated at points on the boundary is set to zero.
-                integrand[np.isnan(self.points).any(axis=1)] = 0.0
-                integrands.append(integrand)
+        for arr in value_arrays:
+            # This is needed as it gives incorrect results when arr.dtype isn't object.
+            assert arr.dtype != object, "Array dtype should not be object."
+            # This may be refactored to fit in the general promolecular trick in `grid`.
+            # Masked array is needed since division by promolecular contains nan.
+            if trick:
+                integrand = np.ma.divide(arr - promolecular, promolecular)
+            else:
+                integrand = np.ma.divide(arr, promolecular)
+            # Function/Integrand evaluated at points on the boundary is set to zero.
+            np.ma.fix_invalid(integrand, copy=False, fill_value=0)
+            integrands.append(integrand)
+
         if trick:
             return self.prointegral + super().integrate(*integrands)
         return super().integrate(*integrands)
