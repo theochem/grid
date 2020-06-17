@@ -19,7 +19,6 @@
 # --
 r"""Promolecular Grid Transformation."""
 
-
 from dataclasses import dataclass, astuple
 
 from grid.basegrid import Grid
@@ -305,7 +304,7 @@ class CubicProTransform(Grid):
                 elif j_deriv < i_var:
                     # Derivative of inside of Gaussian.
                     deriv_quadratic = (
-                        -e_m * 2.0 * diff_coords[:, j_deriv][:, np.newaxis]
+                            -e_m * 2.0 * diff_coords[:, j_deriv][:, np.newaxis]
                     )
                     deriv_num = np.sum(
                         coeff_num * integrate_till_pt_x * deriv_quadratic
@@ -313,7 +312,7 @@ class CubicProTransform(Grid):
                     deriv_den = np.sum(coeff_num * deriv_quadratic)
                     # Quotient Rule
                     jacobian[i_var, j_deriv] = (
-                        deriv_num * transf_den - transf_num * deriv_den
+                            deriv_num * transf_den - transf_num * deriv_den
                     )
                     jacobian[i_var, j_deriv] /= transf_den ** 2.0
 
@@ -475,17 +474,16 @@ class CubicProTransform(Grid):
             index = (indices[0] - 1) * self.num_pts[1] * self.num_pts[2]
         elif i_var == 1:
             index = indices[0] * self.num_pts[1] * self.num_pts[2] + self.num_pts[2] * (
-                indices[1] - 1
+                    indices[1] - 1
             )
         elif i_var == 2:
             index = (
-                indices[0] * self.num_pts[1] * self.num_pts[2]
-                + self.num_pts[2] * indices[1]
-                + indices[2]
-                - 1
+                    indices[0] * self.num_pts[1] * self.num_pts[2]
+                    + self.num_pts[2] * indices[1]
+                    + indices[2]
+                    - 1
             )
 
-        # TODO: Add dynamic bracketing methods with +5.
         return self.points[index, i_var], self.points[index, i_var] + 10.0
 
 
@@ -602,14 +600,46 @@ def inverse_coordinate(theta_pt, i_var, params, transformed, bracket=(-10, 10)):
 
     Raises
     ------
-    AssertionError :    If the root did not converge, or brackets did not have opposite sign.
+    AssertionError :  If the root did not converge, or brackets did not have opposite sign.
+    RuntimeError :  If dynamic bracketing reached maximum iteration.
 
     Notes
     -----
     - If the theta point is on the boundary or it is itself a nan, then it get's mapped to nan.
         Further, if nan is in `transformed[:i_var]` then this function will return nan.
+    - If Brackets do not have the opposite sign, will change the brackets by adding/subtracting
+        the value 10 to the lower or upper bound that is closest to zero.
 
     """
+    def _dynamic_bracketing(l_bnd, u_bnd, maxiter=50):
+        r"""Dynamically changes either the lower or upper bound to have different sign values."""
+        def is_same_sign(x, y): return (x >= 0 and y >= 0) or (x < 0 and y < 0)
+
+        bounds = [l_bnd, u_bnd]
+        f_l_bnd = _root_equation(l_bnd, *args)
+        f_u_bnd = _root_equation(u_bnd, *args)
+        # Get Index of the one that is closest to zero, the one that needs to change.
+        f_bnds = np.abs([f_l_bnd, f_u_bnd])
+        idx = f_bnds.argmin()
+        # Check if they have the same sign.
+        same_sign = is_same_sign(*bounds)
+        counter = 0
+        while same_sign and counter < maxiter:
+            # Add 10 to the upper bound or subtract 10 to the lower bound to the one that
+            # is closest to zero. This is done based on the sign.
+            bounds[idx] = np.sign(idx - 0.5) * 10 + bracket[idx]
+            # Update info for next iteration.
+            if idx == 0:
+                f_l_bnd = _root_equation(bracket[0], *args)
+            else:
+                f_u_bnd = _root_equation(bracket[1], *args)
+            same_sign = is_same_sign(f_l_bnd, f_u_bnd)
+            counter += 1
+
+        if counter == maxiter:
+            raise RuntimeError("Dynamic Bracketing did not converge.")
+        return tuple(bounds)
+
     # Check's if this is a boundary points which is mapped to np.nan
     # These two conditions are added for individual point transformation.
     if np.abs(theta_pt - 0.0) < 1e-10:
@@ -622,7 +652,9 @@ def inverse_coordinate(theta_pt, i_var, params, transformed, bracket=(-10, 10)):
     if np.nan in bracket or np.nan in transformed[:i_var]:
         return np.nan
 
+    # Set up Arguments for root_equation with dynamic bracketing.
     args = (transformed[:i_var], theta_pt, i_var, params)
+    bracket = _dynamic_bracketing(bracket[0], bracket[1])
     root_result = root_scalar(
         _root_equation,
         args=args,
