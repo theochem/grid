@@ -80,6 +80,8 @@ class CubicProTransform(Grid):
     Promolecular Grid Transformation of a Cubic Grid.
 
     Grid is three dimensional and modeled as Tensor Product of Three, one dimensional grids.
+    Theta space is defined to be :math:`[-1, 1]^3`.
+    Real space is defined to be :math:`\mathbb{R}^3.`
 
     Attributes
     ----------
@@ -100,13 +102,13 @@ class CubicProTransform(Grid):
     integrate(trick=False)
         Integral of a real-valued function over Euclidean space.
     jacobian()
-        Jacobian of the transformation from Real space to Theta/Unit cube space.
+        Jacobian of the transformation from Real space to Theta space :math:`[-1, 1]^3`.
     steepest_ascent_theta()
         Direction of steepest-ascent of a function in theta space from gradient in real space.
     transform():
-        Transform Real point to theta/unit-cube point :math:`[0,1]^3`.
+        Transform Real point to theta point :math:`[-1, 1]^3`.
     inverse(bracket=(-10, 10))
-        Transform theta/unit-cube point to Real space :math:`\mathbb{R}^3`.
+        Transform theta point to Real space :math:`\mathbb{R}^3`.
 
     Examples
     --------
@@ -116,10 +118,10 @@ class CubicProTransform(Grid):
     >> coord = np.array([[0., 0., 0.], [2., 2., 2.]])
 
     Define information of the grid and its weights.
+    >> from grid.onedgrid import GaussChebyshev
+
     >> numb_x = 50
-    >> weights = np.array([(1.0 / (numb_x - 2))] * numb_x)  # Simple Riemannian weights.
-    >> grid = np.linspace(0, 1, num=num_pts, endpoint=True)  # Uniform 1D Grid TODO 0,1
-    >> oned = OneDGrid(grid, weights, domain=(0,1)) TODo 0,1
+    >> oned = GaussChebyshev(numb_x)  # Grid is the same in all x, y, z directions.
     >> promol = CubicProTransform([oned, oned, oned], params.c_m, params.e_m, params.coords)
 
     To integrate some function f.
@@ -138,15 +140,14 @@ class CubicProTransform(Grid):
     TODO: Insert Info About Conditional Distribution Method.
     TODO: Add Infor about how boundarys on theta-space are mapped to np.nan.
 
-
     """
     def __init__(self, oned_grids, coeffs, exps, coords):
         if not isinstance(oned_grids, list):
-            pass
+            raise TypeError("oned_grid should be of type list.")
         if not np.all([isinstance(grid, OneDGrid) for grid in oned_grids]):
-            pass
-        if not np.all([grid.domain == (0., 1.) for grid in oned_grids]):
-            pass
+            raise TypeError("Grid in oned_grids should be of type `OneDGrid`.")
+        if not np.all([grid.domain == (-1, 1.) for grid in oned_grids]):
+            raise ValueError("One Dimensional grid domain should be (-1, 1).")
         if not len(oned_grids) == 3:
             raise ValueError("There should be three One-Dimensional grids in `oned_grids`.")
 
@@ -163,9 +164,13 @@ class CubicProTransform(Grid):
         self._prointegral = self._promol.integrate_all()
 
         empty_pts = np.empty((np.prod(self._num_pts), self._dim), dtype=np.float64)
-        weights = np.kron(np.kron(oned_grids[0].weights, oned_grids[1].weights),
-                          oned_grids[2].weights)
-        super().__init__(empty_pts, weights * self._prointegral)
+        weights = np.kron(
+            np.kron(oned_grids[0].weights, oned_grids[1].weights),
+            oned_grids[2].weights
+        )
+        # The prointegral is needed because of promolecular integration.
+        # Divide by 8 needed because the grid is in [-1, 1] rather than [0, 1].
+        super().__init__(empty_pts, weights * self._prointegral / 2.0**self._dim)
         # Transform Cubic Grid in Theta-Space to Real-space.
         self._transform(oned_grids)
 
@@ -192,7 +197,7 @@ class CubicProTransform(Grid):
 
     def transform(self, real_pt):
         r"""
-        Transform a real point in three-dimensional Reals to theta/unit cube.
+        Transform a real point in three-dimensional Reals to theta space.
 
         Parameters
         ----------
@@ -202,7 +207,7 @@ class CubicProTransform(Grid):
         Returns
         -------
         theta_pt : np.ndarray(3)
-            Point in :math:`[0, 1]^3`.
+            Point in :math:`[-1, 1]^3`.
 
         """
         return np.array(
@@ -212,12 +217,12 @@ class CubicProTransform(Grid):
 
     def inverse(self, theta_pt, bracket=(-10, 10)):
         r"""
-        Transform a theta/unit-cube point to three-dimensional Real space.
+        Transform a theta space point to three-dimensional Real space.
 
         Parameters
         ----------
         theta_pt : np.ndarray(3)
-            Point in :math:`[0, 1]^3`
+            Point in :math:`[-1, 1]^3`
         bracket : (float, float), optional
             Interval where root is suspected to be in Reals.
             Used for "brentq" root-finding method. Default is (-10, 10).
@@ -301,7 +306,7 @@ class CubicProTransform(Grid):
 
     def jacobian(self, real_pt):
         r"""
-        Jacobian of the transformation from real space to unit-cube/theta space.
+        Jacobian of the transformation from real space to theta space.
 
         Precisely, it is the lower-triangular matrix
         .. math::
@@ -373,7 +378,7 @@ class CubicProTransform(Grid):
                     )
                     jacobian[i_var, j_deriv] /= transf_den ** 2.0
 
-        return jacobian
+        return 2.0 * jacobian
 
     def derivative(self, real_pt, real_derivative):
         r"""
@@ -401,7 +406,7 @@ class CubicProTransform(Grid):
 
     def steepest_ascent_theta(self, real_pt, real_grad):
         r"""
-        Steepest ascent direction of a function in theta/unit-cube space.
+        Steepest ascent direction of a function in theta space.
 
         Steepest ascent is the gradient ie direction of maximum change of a function.
         This guarantees moving in direction of steepest ascent in real-space
@@ -417,34 +422,34 @@ class CubicProTransform(Grid):
         Returns
         -------
         theta_grad : np.ndarray(3)
-            Gradient of a function in theta/unit-cube space.
+            Gradient of a function in theta space.
 
         """
         jacobian = self.jacobian(real_pt)
         return jacobian.dot(real_grad)
 
     def _transform(self, oned_grids):
-        # Indices (i, j, k) start from bottom, left-most corner of the unit cube.
+        # Indices (i, j, k) start from bottom, left-most corner of the [-1, 1]^3 cube.
         counter = 0
         for ix in range(self.num_pts[0]):
             cart_pt = [None, None, None]
-            unit_x = oned_grids[0].points[ix]
+            theta_x = oned_grids[0].points[ix]
 
             brack_x = self._get_bracket((ix,), 0)
-            cart_pt[0] = _inverse_coordinate(unit_x, 0, cart_pt, self.promol, brack_x)
+            cart_pt[0] = _inverse_coordinate(theta_x, 0, cart_pt, self.promol, brack_x)
 
             for iy in range(self.num_pts[1]):
-                unit_y = oned_grids[1].points[iy]
+                theta_y = oned_grids[1].points[iy]
 
                 brack_y = self._get_bracket((ix, iy), 1)
-                cart_pt[1] = _inverse_coordinate(unit_y, 1, cart_pt, self.promol, brack_y)
+                cart_pt[1] = _inverse_coordinate(theta_y, 1, cart_pt, self.promol, brack_y)
 
                 for iz in range(self.num_pts[2]):
-                    unit_z = oned_grids[2].points[iz]
+                    theta_z = oned_grids[2].points[iz]
 
                     brack_z = self._get_bracket((ix, iy, iz), 2)
                     cart_pt[2] = _inverse_coordinate(
-                        unit_z, 2, cart_pt, self.promol, brack_z
+                        theta_z, 2, cart_pt, self.promol, brack_z
                     )
 
                     self.points[counter] = cart_pt.copy()
@@ -496,7 +501,7 @@ class CubicProTransform(Grid):
 
 def _transform_coordinate(real_pt, i_var, promol):
     r"""
-    Transform the `i_var` coordinate of a real point to [0, 1] using promolecular density.
+    Transform the `i_var` coordinate of a real point to [-1, 1] using promolecular density.
 
     Parameters
     ----------
@@ -509,8 +514,8 @@ def _transform_coordinate(real_pt, i_var, promol):
 
     Returns
     -------
-    unit_pt : float
-        The transformed point in [0,1]^D.
+    theta_pt : float
+        The transformed point in :math:`[-1, 1]`.
 
     """
     c_m, e_m, coords, pi_over_exps, dim = astuple(promol)
@@ -535,7 +540,8 @@ def _transform_coordinate(real_pt, i_var, promol):
     transf_den = np.sum(coeff_num)
     transform_value = transf_num / transf_den
 
-    return transform_value
+    # -1. + 2. is needed to transform to [-1, 1], rather than [0, 1].
+    return -1.0 + 2.0 * transform_value
 
 
 def _root_equation(init_guess, prev_trans_pts, theta_pt, i_var, promol):
@@ -549,7 +555,7 @@ def _root_equation(init_guess, prev_trans_pts, theta_pt, i_var, promol):
     prev_trans_pts : list[`i_var` - 1]
         The previous points in real-space that were already transformed.
     theta_pt : float
-        The point in [0, 1] being transformed to the Real space.
+        The point in [-1, 1] being transformed to the Real space.
     i_var : int
         Index of variable being transformed.
     promol : _PromolParams
@@ -569,12 +575,12 @@ def _root_equation(init_guess, prev_trans_pts, theta_pt, i_var, promol):
 
 def _inverse_coordinate(theta_pt, i_var, transformed, promol, bracket=(-10, 10)):
     r"""
-    Transform a point in [0, 1] to the real space corresponding to `i_var` variable.
+    Transform a point in [-1, 1] to the real space corresponding to `i_var` variable.
 
     Parameters
     ----------
     theta_pt : float
-        Point in [0, 1].
+        Point in [-1, 1].
     i_var : int
         Index that is being tranformed. Less than D.
     transformed : list[`i_var` - 1]
@@ -637,7 +643,7 @@ def _inverse_coordinate(theta_pt, i_var, transformed, promol, bracket=(-10, 10))
 
     # Check's if this is a boundary points which is mapped to np.nan
     # These two conditions are added for individual point transformation.
-    if np.abs(theta_pt - 0.0) < 1e-10:
+    if np.abs(theta_pt - -1.0) < 1e-10:
         return np.nan
     if np.abs(theta_pt - 1.0) < 1e-10:
         return np.nan
