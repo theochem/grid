@@ -31,11 +31,12 @@ TestOneGaussianAgainstNumerics :
 """
 
 
+from grid.basegrid import OneDGrid
 from grid.protransform import (
     CubicProTransform,
     _PromolParams,
     _pad_coeffs_exps_with_zeros,
-    transform_coordinate,
+    _transform_coordinate,
 )
 
 import numpy as np
@@ -57,16 +58,18 @@ class TestTwoGaussianDiffCenters:
         params = _PromolParams(c, e, coord, pi_over_exponents=np.sqrt(np.pi / e), dim=3)
         if return_obj:
             num_pts = int(1 / ss) + 1
-            weights = np.array([(1.0 / (num_pts - 2)) ** 3.0] * num_pts ** 3)
+            weights = np.array([(1.0 / (num_pts - 2))] * num_pts)
+            oned = OneDGrid(np.linspace(0, 1, num=num_pts, endpoint=True), weights, domain=(0,1))
+
             obj = CubicProTransform(
-                [num_pts] * 3, weights, params.c_m, params.e_m, params.coords
+                [oned, oned, oned], params.c_m, params.e_m, params.coords
             )
             return params, obj
         return params
 
     def promolecular(self, x, y, z, params):
         r"""Hard-Code the promolecular density."""
-        # Promolecular in CubicProTransform class uses einsum, this tests it against that.
+        # Promolecular in UniformProTransform class uses einsum, this tests it against that.
         # Also could be used for integration tests.
         cm, em, coords = params.c_m, params.e_m, params.coords
         promol = 0.0
@@ -117,7 +120,7 @@ class TestTwoGaussianDiffCenters:
                 5.0 * (np.pi / 2) ** 1.5 + 10.0 * (np.pi / 3.0) ** 1.5
             )
 
-        true_ans = transform_coordinate([pt], 0, self.setUp())
+        true_ans = _transform_coordinate([pt], 0, self.setUp())
         assert np.abs(true_ans - formula_transforming_x(pt)) < 1e-8
 
     @pytest.mark.parametrize("x", [-10, -2, 0, 2.2, 1.23])
@@ -146,7 +149,7 @@ class TestTwoGaussianDiffCenters:
             den = dac1 + dac2
             return num / den
 
-        true_ans = transform_coordinate([x, y], 1, self.setUp())
+        true_ans = _transform_coordinate([x, y], 1, self.setUp())
         assert np.abs(true_ans - formula_transforming_y(x, y)) < 1e-8
 
     @pytest.mark.parametrize("x", [-10, -2, 0, 2.2])
@@ -182,7 +185,7 @@ class TestTwoGaussianDiffCenters:
         params, obj = self.setUp(ss=0.5, return_obj=True)
         true_ans = formula_transforming_z(x, y, z)
         # Test function
-        actual = transform_coordinate([x, y, z], 2, params)
+        actual = _transform_coordinate([x, y, z], 2, params)
         assert np.abs(true_ans - actual) < 1e-8
 
         # Test Method
@@ -203,7 +206,7 @@ class TestTwoGaussianDiffCenters:
         assert real_pt[2] != np.nan
         # Test that converting the point back to unit cube gives [0.5, 0.5, 0.5].
         for i_var in range(0, 3):
-            transf = transform_coordinate(real_pt, i_var, obj.promol)
+            transf = _transform_coordinate(real_pt, i_var, obj.promol)
             assert np.abs(transf - 0.5) < 1e-5
         # Test that all other points are indeed boundary points.
         all_nans = np.delete(obj.points, non_boundary_pt_index, axis=0)
@@ -246,7 +249,7 @@ class TestTwoGaussianDiffCenters:
         actual = obj.jacobian(pt)
 
         def tranformation_x(pt):
-            return transform_coordinate(pt, 0, params)
+            return _transform_coordinate(pt, 0, params)
 
         grad = approx_fprime([pt[0]], tranformation_x, 1e-6)
         assert np.abs(grad - actual[0, 0]) < 1e-4
@@ -259,13 +262,13 @@ class TestTwoGaussianDiffCenters:
         actual = obj.jacobian(np.array([x, y, 3.0]))
 
         def tranformation_y(pt):
-            return transform_coordinate([x, pt[0]], 1, params)
+            return _transform_coordinate([x, pt[0]], 1, params)
 
         grad = approx_fprime([y], tranformation_y, 1e-8)
         assert np.abs(grad - actual[1, 1]) < 1e-5
 
         def transformation_y_wrt_x(pt):
-            return transform_coordinate([pt[0], y], 1, params)
+            return _transform_coordinate([pt[0], y], 1, params)
 
         h = 1e-8
         deriv = np.imag(transformation_y_wrt_x([complex(x, h)])) / h
@@ -280,19 +283,19 @@ class TestTwoGaussianDiffCenters:
         actual = obj.jacobian(np.array([x, y, z]))
 
         def tranformation_z(pt):
-            return transform_coordinate([x, y, pt[0]], 2, params)
+            return _transform_coordinate([x, y, pt[0]], 2, params)
 
         grad = approx_fprime([z], tranformation_z, 1e-8)
         assert np.abs(grad - actual[2, 2]) < 1e-5
 
         def transformation_z_wrt_y(pt):
-            return transform_coordinate([x, pt[0], z], 2, params)
+            return _transform_coordinate([x, pt[0], z], 2, params)
 
         deriv = approx_fprime([y], transformation_z_wrt_y, 1e-8)
         assert np.abs(deriv - actual[2, 1]) < 1e-4
 
         def transformation_z_wrt_x(pt):
-            a = transform_coordinate([pt[0], y, z], 2, params)
+            a = _transform_coordinate([pt[0], y, z], 2, params)
             return a
 
         h = 1e-8
@@ -335,16 +338,20 @@ class TestOneGaussianAgainstNumerics:
     r"""Tests With Numerical Integration of a One Gaussian function."""
 
     def setUp(self, ss=0.1, return_obj=False):
-        r"""Return a one Gaussian example and its CubicProTransform object."""
+        r"""Return a one Gaussian example and its UniformProTransform object."""
         c = np.array([[5.0]])
         e = np.array([[2.0]])
         coord = np.array([[1.0, 2.0, 3.0]])
         params = _PromolParams(c, e, coord, dim=3, pi_over_exponents=np.sqrt(np.pi / e))
         if return_obj:
             num_pts = int(1 / ss) + 1
-            weights = np.array([(1.0 / (num_pts - 2)) ** 3.0] * num_pts ** 3)
+            weights = np.array([(1.0 / (num_pts - 2))] * num_pts)
+            oned_x = OneDGrid(np.linspace(0, 1, num=num_pts, endpoint=True), weights, domain=(0, 1))
+            oned_y = OneDGrid(np.linspace(0, 1, num=num_pts, endpoint=True), weights, domain=(0, 1))
+            oned_z = OneDGrid(np.linspace(0, 1, num=num_pts, endpoint=True), weights, domain=(0, 1))
+
             obj = CubicProTransform(
-                [num_pts] * 3, weights, params.c_m, params.e_m, params.coords
+                [oned_x, oned_y, oned_z], params.c_m, params.e_m, params.coords
             )
             return params, obj
         return params
@@ -359,7 +366,7 @@ class TestOneGaussianAgainstNumerics:
             promol_x_all = 5.0 * np.exp(-2.0 * (every_grid - 1.0) ** 2.0)
             return promol_x, promol_x_all
 
-        true_ans = transform_coordinate([pt], 0, self.setUp())
+        true_ans = _transform_coordinate([pt], 0, self.setUp())
         grid = np.arange(-10.0, pt, 0.00001)  # Integration till a x point
         every_grid = np.arange(-10.0, 10.0, 0.00001)  # Full Integration
         promol_x, promol_x_all = promolecular_in_x(grid, every_grid)
@@ -379,7 +386,7 @@ class TestOneGaussianAgainstNumerics:
             promol_y_all = 5.0 * np.exp(-2.0 * (every_grid - 2.0) ** 2.0)
             return promol_y_all, promol_y
 
-        true_ans = transform_coordinate([x, y], 1, self.setUp())
+        true_ans = _transform_coordinate([x, y], 1, self.setUp())
         grid = np.arange(-10.0, y, 0.00001)  # Integration till a x point
         every_grid = np.arange(-10.0, 10.0, 0.00001)  # Full Integration
         promol_y_all, promol_y = promolecular_in_y(grid, every_grid)
@@ -406,7 +413,7 @@ class TestOneGaussianAgainstNumerics:
         promol_z_all, promol_z = promolecular_in_z(grid, every_grid)
 
         actual = np.trapz(promol_z, grid) / np.trapz(promol_z_all, every_grid)
-        true_ans = transform_coordinate([x, y, z], 2, self.setUp())
+        true_ans = _transform_coordinate([x, y, z], 2, self.setUp())
         assert np.abs(true_ans - actual) < 1e-5
 
     @pytest.mark.parametrize("x", [0.0, 0.25, 1.1, 0.5, 1.5])
@@ -424,21 +431,21 @@ class TestOneGaussianAgainstNumerics:
 
         # test derivative wrt to x
         def tranformation_x(pt):
-            return transform_coordinate([pt[0], y, z], 0, params)
+            return _transform_coordinate([pt[0], y, z], 0, params)
 
         grad = approx_fprime([x], tranformation_x, 1e-8)
         assert np.abs(grad - actual[0, 0]) < 1e-5
 
         # test derivative wrt to y
         def tranformation_y(pt):
-            return transform_coordinate([x, pt[0]], 1, params)
+            return _transform_coordinate([x, pt[0]], 1, params)
 
         grad = approx_fprime([y], tranformation_y, 1e-8)
         assert np.abs(grad - actual[1, 1]) < 1e-5
 
         # Test derivative wrt to z
         def tranformation_z(pt):
-            return transform_coordinate([x, y, pt[0]], 2, params)
+            return _transform_coordinate([x, y, pt[0]], 2, params)
 
         grad = approx_fprime([z], tranformation_z, 1e-8)
         assert np.abs(grad - actual[2, 2]) < 1e-5

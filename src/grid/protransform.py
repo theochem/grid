@@ -21,7 +21,8 @@ r"""Promolecular Grid Transformation."""
 
 from dataclasses import dataclass, astuple
 
-from grid.basegrid import Grid
+from grid.basegrid import Grid, OneDGrid
+
 
 import numpy as np
 
@@ -40,6 +41,10 @@ class _PromolParams:
     coords: np.ndarray
     pi_over_exponents: np.ndarray
     dim: int = 3
+
+    def integrate_all(self):
+        r"""Integration of Gaussian over Entire Real space ie :math:`\mathbb{R}^D`."""
+        return np.sum(self.c_m * self.pi_over_exponents ** self.dim)
 
     def promolecular(self, grid):
         r"""
@@ -72,15 +77,15 @@ class _PromolParams:
 
 class CubicProTransform(Grid):
     r"""
-    Promolecular Grid Transformation of a Cubic, Uniform Grid in [0,1]^3 to Real space.
+    Promolecular Grid Transformation of a Cubic Grid.
+
+    Grid is three dimensional and modeled as Tensor Product of Three, one dimensional grids.
 
     Attributes
     ----------
     num_pts : (int, int, int)
         The number of points, including both of the end/boundary points, in x, y, and z direction.
         This is calculated as `int(1. / ss[i]) + 1`.
-    ss : (float, float, float)
-        The step-size in each x, y, and z direction.
     points : np.ndarray(N, 3)
         The transformed points in real space.
     prointegral : float
@@ -112,8 +117,10 @@ class CubicProTransform(Grid):
 
     Define information of the grid and its weights.
     >> numb_x = 50
-    >> weights = np.array([0.01] * numb_x**3)  # Simple Riemannian weights.
-    >> promol = CubicProTransform([numb_x, numb_x, numb_x], weights, c, e, coord)
+    >> weights = np.array([(1.0 / (numb_x - 2))] * numb_x)  # Simple Riemannian weights.
+    >> grid = np.linspace(0, 1, num=num_pts, endpoint=True)  # Uniform 1D Grid TODO 0,1
+    >> oned = OneDGrid(grid, weights, domain=(0,1)) TODo 0,1
+    >> promol = CubicProTransform([oned, oned, oned], params.c_m, params.e_m, params.coords)
 
     To integrate some function f.
     >> def f(pt):
@@ -131,24 +138,20 @@ class CubicProTransform(Grid):
     TODO: Insert Info About Conditional Distribution Method.
     TODO: Add Infor about how boundarys on theta-space are mapped to np.nan.
 
-    """
 
-    def __init__(self, num_pts, weights, coeffs, exps, coords):
-        # TODO: Add Types
-        if not isinstance(num_pts, (tuple, list)):
+    """
+    def __init__(self, oned_grids, coeffs, exps, coords):
+        if not isinstance(oned_grids, list):
             pass
-        if not isinstance(coeffs, (list, np.ndarray)):
+        if not np.all([isinstance(grid, OneDGrid) for grid in oned_grids]):
             pass
-        if not isinstance(exps, (list, np.ndarray)):
+        if not np.all([grid.domain == (0., 1.) for grid in oned_grids]):
             pass
-        if not isinstance(coords, (list, np.ndarray)):
-            pass
-        self._ss = (
-            1. / (num_pts[0] - 1),
-            1. / (num_pts[1] - 1),
-            1. / (num_pts[2] - 1),
-        )
-        self._num_pts = num_pts
+        if not len(oned_grids) == 3:
+            raise ValueError("There should be three One-Dimensional grids in `oned_grids`.")
+
+        self._num_pts = tuple([grid.size for grid in oned_grids])
+        self._dim = len(oned_grids)
 
         # pad coefficients and exponents with zeros to have the same size, easier to use numpy.
         coeffs, exps = _pad_coeffs_exps_with_zeros(coeffs, exps)
@@ -156,23 +159,26 @@ class CubicProTransform(Grid):
         with np.errstate(divide="ignore"):
             pi_over_exponents = np.sqrt(np.pi / exps)
             pi_over_exponents[exps == 0] = 0
-        self._prointegral = np.sum(coeffs * pi_over_exponents ** 3.0)
-        self._promol = _PromolParams(coeffs, exps, coords, pi_over_exponents)
+        self._promol = _PromolParams(coeffs, exps, coords, pi_over_exponents, self._dim)
+        self._prointegral = self._promol.integrate_all()
 
-        # initialize parent class
-        empty_points = np.empty((np.prod(self._num_pts), 3), dtype=np.float64)
-        super().__init__(empty_points, weights * self._prointegral)
-        self._transform()
+        empty_pts = np.empty((np.prod(self._num_pts), self._dim), dtype=np.float64)
+        weights = np.kron(np.kron(oned_grids[0].weights, oned_grids[1].weights),
+                          oned_grids[2].weights)
+        super().__init__(empty_pts, weights * self._prointegral)
+        # Transform Cubic Grid in Theta-Space to Real-space.
+        self._transform(oned_grids)
+
+    @property
+    def dim(self):
+        r"""Return the dimension of the cubic grid."""
+        return self._dim
 
     @property
     def num_pts(self):
         r"""Return number of points in each direction."""
         return self._num_pts
 
-    @property
-    def ss(self):
-        r"""Return stepsize of the cubic grid."""
-        return self._ss
 
     @property
     def prointegral(self):
@@ -183,6 +189,57 @@ class CubicProTransform(Grid):
     def promol(self):
         r"""Return `PromolParams` namedTuple."""
         return self._promol
+
+    def transform(self, real_pt):
+        r"""
+        Transform a real point in three-dimensional Reals to theta/unit cube.
+
+        Parameters
+        ----------
+        real_pt : np.ndarray(3)
+            Point in :math:`\mathbb{R}^3`
+
+        Returns
+        -------
+        theta_pt : np.ndarray(3)
+            Point in :math:`[0, 1]^3`.
+
+        """
+        return np.array(
+            [_transform_coordinate(real_pt, i, self.promol)
+             for i in range(0, self.promol.dim)]
+        )
+
+    def inverse(self, theta_pt, bracket=(-10, 10)):
+        r"""
+        Transform a theta/unit-cube point to three-dimensional Real space.
+
+        Parameters
+        ----------
+        theta_pt : np.ndarray(3)
+            Point in :math:`[0, 1]^3`
+        bracket : (float, float), optional
+            Interval where root is suspected to be in Reals.
+            Used for "brentq" root-finding method. Default is (-10, 10).
+
+        Returns
+        -------
+        real_pt : np.ndarray(3)
+            Point in :math:`\mathbb{R}^3`
+
+        Notes
+        -----
+        - If a point is far away from the promolecular density, then it will be mapped
+            to `np.nan`.
+
+        """
+        real_pt = []
+        for i in range(0, self.promol.dim):
+            scalar = _inverse_coordinate(
+                theta_pt[i], i, real_pt[:i], self.promol, bracket
+            )
+            real_pt.append(scalar)
+        return np.array(real_pt)
 
     def integrate(self, *value_arrays, trick=False, tol=1e-10):
         r"""
@@ -272,7 +329,7 @@ class CubicProTransform(Grid):
 
         # Code is duplicated from `transform_coordinate` due to effiency reasons.
         # TODO: Reduce the number of computation with `i_var`.
-        for i_var in range(0, 3):
+        for i_var in range(0, self.promol.dim):
 
             # Distance to centers/nuclei`s and Prefactors.
             diff_coords = real_pt[: i_var + 1] - coords[:, : i_var + 1]
@@ -317,56 +374,6 @@ class CubicProTransform(Grid):
                     jacobian[i_var, j_deriv] /= transf_den ** 2.0
 
         return jacobian
-
-    def transform(self, real_pt):
-        r"""
-        Transform a real point in three-dimensional Reals to theta/unit cube.
-
-        Parameters
-        ----------
-        real_pt : np.ndarray(3)
-            Point in :math:`\mathbb{R}^3`
-
-        Returns
-        -------
-        theta_pt : np.ndarray(3)
-            Point in :math:`[0, 1]^3`.
-
-        """
-        return np.array(
-            [transform_coordinate(real_pt, i, self.promol) for i in range(0, 3)]
-        )
-
-    def inverse(self, theta_pt, bracket=(-10, 10)):
-        r"""
-        Transform a theta/unit-cube point to three-dimensional Real space.
-
-        Parameters
-        ----------
-        theta_pt : np.ndarray(3)
-            Point in :math:`[0, 1]^3`
-        bracket : (float, float), optional
-            Interval where root is suspected to be in Reals.
-            Used for "brentq" root-finding method. Default is (-10, 10).
-
-        Returns
-        -------
-        real_pt : np.ndarray(3)
-            Point in :math:`\mathbb{R}^3`
-
-        Notes
-        -----
-        - If a point is far away from the promolecular density, then it will be mapped
-            to `np.nan`.
-
-        """
-        real_pt = []
-        for i in range(0, 3):
-            scalar = inverse_coordinate(
-                theta_pt[i], i, self.promol, real_pt[:i], bracket
-            )
-            real_pt.append(scalar)
-        return np.array(real_pt)
 
     def derivative(self, real_pt, real_derivative):
         r"""
@@ -416,28 +423,28 @@ class CubicProTransform(Grid):
         jacobian = self.jacobian(real_pt)
         return jacobian.dot(real_grad)
 
-    def _transform(self):
+    def _transform(self, oned_grids):
         # Indices (i, j, k) start from bottom, left-most corner of the unit cube.
         counter = 0
         for ix in range(self.num_pts[0]):
             cart_pt = [None, None, None]
-            unit_x = self.ss[0] * ix
+            unit_x = oned_grids[0].points[ix]
 
-            bracx = self._get_bracket((ix,), 0)
-            cart_pt[0] = inverse_coordinate(unit_x, 0, self.promol, cart_pt, bracx)
+            brack_x = self._get_bracket((ix,), 0)
+            cart_pt[0] = _inverse_coordinate(unit_x, 0, cart_pt, self.promol, brack_x)
 
             for iy in range(self.num_pts[1]):
-                unit_y = self.ss[1] * iy
+                unit_y = oned_grids[1].points[iy]
 
-                bracy = self._get_bracket((ix, iy), 1)
-                cart_pt[1] = inverse_coordinate(unit_y, 1, self.promol, cart_pt, bracy)
+                brack_y = self._get_bracket((ix, iy), 1)
+                cart_pt[1] = _inverse_coordinate(unit_y, 1, cart_pt, self.promol, brack_y)
 
                 for iz in range(self.num_pts[2]):
-                    unit_z = self.ss[2] * iz
+                    unit_z = oned_grids[2].points[iz]
 
-                    bracz = self._get_bracket((ix, iy, iz), 2)
-                    cart_pt[2] = inverse_coordinate(
-                        unit_z, 2, self.promol, cart_pt, bracz
+                    brack_z = self._get_bracket((ix, iy, iz), 2)
+                    cart_pt[2] = _inverse_coordinate(
+                        unit_z, 2, cart_pt, self.promol, brack_z
                     )
 
                     self.points[counter] = cart_pt.copy()
@@ -461,7 +468,7 @@ class CubicProTransform(Grid):
             The bracket for the root-finder solver.
 
         """
-        # If it is a boundary point, then return nan.
+        # If it is a boundary point, then return nan. Done by indices.
         if 0 in indices[: i_var + 1] or (self.num_pts[i_var] - 1) in indices[: i_var + 1]:
             return np.nan, np.nan
         # If it is a new point, with no nearby point, get a large initial guess.
@@ -487,7 +494,7 @@ class CubicProTransform(Grid):
         return self.points[index, i_var], self.points[index, i_var] + 10.0
 
 
-def transform_coordinate(real_pt, i_var, promol_params, deriv=False, sderiv=False):
+def _transform_coordinate(real_pt, i_var, promol):
     r"""
     Transform the `i_var` coordinate of a real point to [0, 1] using promolecular density.
 
@@ -497,23 +504,16 @@ def transform_coordinate(real_pt, i_var, promol_params, deriv=False, sderiv=Fals
         Real point being transformed.
     i_var : int
         Index that is being tranformed. Less than D.
-    promol_params : namedTuple
-        Data about the Promolecular density.
-    deriv : bool
-        If true, return the derivative of transformation wrt `i_var` real variable.
-        Default is False.
-    sderiv : bool
-        If true, return the second derivative of transformation wrt `i_var` real variable.
-        Default is False.
+    promol : _PromolParams
+        Promolecular Data Class.
 
     Returns
     -------
-    unit_pt, deriv, sderiv : (float, float, float)
-        The transformed point in [0,1]^D and its derivative with respect to real point and
-        the second derivative with respect to real point are returned.
+    unit_pt : float
+        The transformed point in [0,1]^D.
 
     """
-    c_m, e_m, coords, pi_over_exps, dim = astuple(promol_params)
+    c_m, e_m, coords, pi_over_exps, dim = astuple(promol)
 
     # Distance to centers/nuclei`s and Prefactors.
     diff_coords = real_pt[: i_var + 1] - coords[:, : i_var + 1]
@@ -535,18 +535,10 @@ def transform_coordinate(real_pt, i_var, promol_params, deriv=False, sderiv=Fals
     transf_den = np.sum(coeff_num)
     transform_value = transf_num / transf_den
 
-    if deriv:
-        inner_term = coeff_num * np.exp(-e_m * diff_squared[:, i_var][:, np.newaxis])
-        deriv = np.sum(inner_term) / transf_den
-
-        if sderiv:
-            sderiv = np.sum(inner_term * -e_m * 2.0 * coord_ivar) / transf_den
-            return transform_value, deriv, sderiv
-        return transform_value, deriv
     return transform_value
 
 
-def _root_equation(init_guess, prev_trans_pts, theta_pt, i_var, params):
+def _root_equation(init_guess, prev_trans_pts, theta_pt, i_var, promol):
     r"""
     Equation to solve for the root to find inverse coordinate from theta space to Real space.
 
@@ -560,8 +552,8 @@ def _root_equation(init_guess, prev_trans_pts, theta_pt, i_var, params):
         The point in [0, 1] being transformed to the Real space.
     i_var : int
         Index of variable being transformed.
-    params : _PromolParams
-        Promolecular density data class.
+    promol : _PromolParams
+        Promolecular Data Class.
 
     Returns
     -------
@@ -571,11 +563,11 @@ def _root_equation(init_guess, prev_trans_pts, theta_pt, i_var, params):
 
     """
     all_points = np.append(prev_trans_pts, init_guess)
-    transf_pt = transform_coordinate(all_points, i_var, params)
+    transf_pt = _transform_coordinate(all_points, i_var, promol)
     return theta_pt - transf_pt
 
 
-def inverse_coordinate(theta_pt, i_var, params, transformed, bracket=(-10, 10)):
+def _inverse_coordinate(theta_pt, i_var, transformed, promol, bracket=(-10, 10)):
     r"""
     Transform a point in [0, 1] to the real space corresponding to `i_var` variable.
 
@@ -585,10 +577,10 @@ def inverse_coordinate(theta_pt, i_var, params, transformed, bracket=(-10, 10)):
         Point in [0, 1].
     i_var : int
         Index that is being tranformed. Less than D.
-    promol_params : namedTuple
-        Data about the Promolecular density.
     transformed : list[`i_var` - 1]
         The set of previous points before index `i_var` that were transformed to real space.
+    promol : _PromolParams
+        Promolecular Data Class.
     bracket : (float, float)
         Interval where root is suspected to be in Reals. Used for "brentq" root-finding method.
         Default is (-10, 10).
@@ -611,9 +603,12 @@ def inverse_coordinate(theta_pt, i_var, params, transformed, bracket=(-10, 10)):
         the value 10 to the lower or upper bound that is closest to zero.
 
     """
+
     def _dynamic_bracketing(l_bnd, u_bnd, maxiter=50):
-        r"""Dynamically changes either the lower or upper bound to have different sign values."""
-        def is_same_sign(x, y): return (x >= 0 and y >= 0) or (x < 0 and y < 0)
+        r"""Dynamically changes the lower (or upper bound) to have different sign values."""
+
+        def is_same_sign(x, y):
+            return (x >= 0 and y >= 0) or (x < 0 and y < 0)
 
         bounds = [l_bnd, u_bnd]
         f_l_bnd = _root_equation(l_bnd, *args)
@@ -653,7 +648,7 @@ def inverse_coordinate(theta_pt, i_var, params, transformed, bracket=(-10, 10)):
         return np.nan
 
     # Set up Arguments for root_equation with dynamic bracketing.
-    args = (transformed[:i_var], theta_pt, i_var, params)
+    args = (transformed[:i_var], theta_pt, i_var, promol)
     bracket = _dynamic_bracketing(bracket[0], bracket[1])
     root_result = root_scalar(
         _root_equation,
