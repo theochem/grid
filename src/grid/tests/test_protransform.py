@@ -32,6 +32,7 @@ TestOneGaussianAgainstNumerics :
 
 
 from grid.basegrid import OneDGrid
+from grid.onedgrid import GaussChebyshevLobatto
 from grid.protransform import (
     CubicProTransform,
     _PromolParams,
@@ -450,13 +451,32 @@ class TestOneGaussianAgainstNumerics:
         grad = approx_fprime([z], tranformation_z, 1e-8)
         assert np.abs(grad - actual[2, 2]) < 1e-5
 
-    def test_integration_slightly_perturbed_gaussian_with_promolecular_trick(self):
+
+class TestIntegration:
+    r"""
+    Only one integration test as of this moment.  Choose to make it, it's own seperate
+    class since many choices of oned grid is possible.
+    """
+    def setUp_one_gaussian(self, ss=0.03):
+        r"""Return a one Gaussian example and its UniformProTransform object."""
+        c = np.array([[5.0]])
+        e = np.array([[2.0]])
+        coord = np.array([[1.0, 2.0, 3.0]])
+        params = _PromolParams(c, e, coord, dim=3, pi_over_exponents=np.sqrt(np.pi / e))
+        num_pts = int(1 / ss) + 1
+        oned_x = GaussChebyshevLobatto(num_pts)
+        obj = CubicProTransform(
+            [oned_x, oned_x, oned_x], params.c_m, params.e_m, params.coords
+        )
+        return params, obj
+
+    def test_integration_perturbed_gaussian_with_promolecular_trick(self):
         r"""Test integration of a slightly perturbed function."""
         # Only Measured against one decimal place and very similar exponent.
-        params, obj = self.setUp(ss=0.03, return_obj=True)
+        _, obj = self.setUp_one_gaussian(ss=0.03)
 
         # Gaussian exponent is slightly perturbed from 2.
-        exponent = 2.001
+        exponent = 2.01
 
         def gaussian(grid):
             return 5.0 * np.exp(
@@ -466,7 +486,8 @@ class TestOneGaussianAgainstNumerics:
         func_vals = gaussian(obj.points)
         desired = 5.0 * np.sqrt(np.pi / exponent) ** 3.0
         actual = obj.integrate(func_vals, trick=True)
-        assert np.abs(actual - desired) < 1e-2
+
+        assert np.abs(actual - desired) < 1e-3
 
 
 def test_padding_arrays():

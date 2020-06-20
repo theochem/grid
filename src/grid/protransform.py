@@ -121,7 +121,8 @@ class CubicProTransform(Grid):
     >> from grid.onedgrid import GaussChebyshev
 
     >> numb_x = 50
-    >> oned = GaussChebyshev(numb_x)  # Grid is the same in all x, y, z directions.
+    >> oned = GaussChebyshev(numb_x)
+    One dimensional grid is the same in all x, y, z directions.
     >> promol = CubicProTransform([oned, oned, oned], params.c_m, params.e_m, params.coords)
 
     To integrate some function f.
