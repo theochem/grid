@@ -53,7 +53,7 @@ class BeckeWeights:
             if not isinstance(radii, dict):
                 raise TypeError(f"radii should be a dictionary, got {type(radii)}")
             if not np.all([isinstance(k, int) for k in radii.keys()]):
-                raise TypeError(f"radii keys should be integers.")
+                raise TypeError("radii keys have non-integers value")
             self._radii.update(radii)
 
     @staticmethod
