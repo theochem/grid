@@ -123,7 +123,7 @@ class Grid:
             Input integrand array is given or not of proper shape.
         """
         if len(value_arrays) < 1:
-            raise ValueError(f"No array is given to integrate.")
+            raise ValueError("No array is given to integrate.")
         for i, array in enumerate(value_arrays):
             if not isinstance(array, np.ndarray):
                 raise TypeError(f"Arg {i} is {type(i)}, Need Numpy Array.")
