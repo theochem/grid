@@ -56,7 +56,7 @@ class TestTwoGaussianDiffCenters:
         c = np.array([[5.0], [10.0]])
         e = np.array([[2.0], [3.0]])
         coord = np.array([[1.0, 2.0, 3.0], [2.0, 2.0, 2.0]])
-        params = _PromolParams(c, e, coord, pi_over_exponents=np.sqrt(np.pi / e), dim=3)
+        params = _PromolParams(c, e, coord, dim=3)
         if return_obj:
             num_pts = int(1 / ss) + 1
             weights = np.array([(2.0 / (num_pts - 2))] * num_pts)
@@ -334,6 +334,138 @@ class TestTwoGaussianDiffCenters:
         actual = obj.steepest_ascent_theta(pt, grad_pt)
         assert np.all(np.abs(actual - grad_finite) < 1e-4)
 
+    def test_second_derivative_of_theta_x_dx(self):
+        r"""Test the second derivative of d(theta_x)/d(x) ."""
+        params, obj = self.setUp(ss=0.2, return_obj=True)
+        x, y, z = 0., 0., 0.
+        actual = obj.hessian(np.array([x, y, z]))
+
+        # test second derivative of theta_x wrt to dx dx.
+        def tranformation_x(pt):
+            return obj.jacobian([pt[0], y, z])[0, 0]
+
+        dthetax_dx_dx = approx_fprime([x], tranformation_x, 1e-8)
+        assert np.abs(dthetax_dx_dx - actual[0, 0, 0]) < 1e-5
+        # Since theta_x only depends on x, then all other elements
+        # are zero.
+        for i in range(0, 3):
+            for j in range(0, 3):
+                if i != j:
+                    assert np.abs(actual[0, i, j]) < 1e-10
+
+    @pytest.mark.parametrize("x", [-1.5, -0.5, 0, 2.5])
+    @pytest.mark.parametrize("y", [-3.0, 2.0, -2.2321])
+    @pytest.mark.parametrize("z", [-1.5, 0.0, 2.343432])
+    def test_second_derivative_of_theta_y(self, x, y, z):
+        r"""Test the second derivative of d(theta_y)."""
+        params, obj = self.setUp(ss=0.2, return_obj=True)
+        actual = obj.hessian(np.array([x, y, z]))
+
+        # test second derivative of theta_y wrt to dy dy.
+        def dtheta_y_dy(pt):
+            return obj.jacobian([x, pt[0], z])[1, 1]
+
+        dthetay_dy_dy = approx_fprime([y], dtheta_y_dy, 1e-8)
+        assert np.abs(dthetay_dy_dy - actual[1, 1, 1]) < 1e-5
+
+        # test second derivative of d(theta_y)/d(y) wrt dx.
+        def dtheta_y_dy(pt):
+            return obj.jacobian([pt[0], y, z])[1, 1]
+
+        dthetay_dy_dx = approx_fprime([x], dtheta_y_dy, 1e-8)
+        assert np.abs(dthetay_dy_dx - actual[1, 1, 0]) < 1e-5
+
+        # test second derivative of d(theta_y)/(dx) wrt dy
+        def dtheta_y_dx(pt):
+            return obj.jacobian([x, pt[0], z])[1, 0]
+
+        dtheta_y_dx_dy = approx_fprime([y], dtheta_y_dx, 1e-8)
+        assert np.abs(dtheta_y_dx_dy - actual[1, 0, 1]) < 1e-4
+
+        # test second derivative of d(theta_y)/(dx) wrt dx
+        def dtheta_y_dx(pt):
+            return obj.jacobian([pt[0], y, z])[1, 0]
+
+        dtheta_y_dx_dx = approx_fprime([x], dtheta_y_dx, 1e-8)
+        assert np.abs(dtheta_y_dx_dx - actual[1, 0, 0]) < 1e-5
+
+        # Test other elements are all zeros.
+        for i in range(0, 3):
+            assert np.abs(actual[1, 2, i]) < 1e-10
+        assert np.abs(actual[1, 0, 2]) < 1e-10
+        assert np.abs(actual[1, 1, 2]) < 1e-10
+
+    @pytest.mark.parametrize("x", [-1.5, -0.5, 0, 2.5])
+    @pytest.mark.parametrize("y", [-3.0, 2.0, -2.2321])
+    @pytest.mark.parametrize("z", [-1.5, 0.0, 2.343432])
+    def test_second_derivative_of_theta_z(self, x, y, z):
+        r"""Test the second derivative of d(theta_z)."""
+        params, obj = self.setUp(ss=0.2, return_obj=True)
+        actual = obj.hessian(np.array([x, y, z]))
+
+        # test second derivative of theta_z wrt to dz dz.
+        def dtheta_z_dz(pt):
+            return obj.jacobian([x, y, pt[0]])[2, 2]
+
+        dthetaz_dz_dz = approx_fprime([z], dtheta_z_dz, 1e-8)
+        assert np.abs(dthetaz_dz_dz - actual[2, 2, 2]) < 1e-5
+
+        # test second derivative of theta_z wrt to dz dy.
+        def dtheta_z_dz(pt):
+            return obj.jacobian([x, pt[0], z])[2, 2]
+
+        dthetaz_dz_dy = approx_fprime([y], dtheta_z_dz, 1e-8)
+        assert np.abs(dthetaz_dz_dy - actual[2, 2, 1]) < 1e-5
+
+        # test second derivative of theta_z wrt to dz dx.
+        def dtheta_z_dz(pt):
+            return obj.jacobian([pt[0], y, z])[2, 2]
+
+        dthetaz_dz_dx = approx_fprime([x], dtheta_z_dz, 1e-8)
+        assert np.abs(dthetaz_dz_dx - actual[2, 2, 0]) < 1e-5
+
+        # test second derivative of theta_z wrt to dy dz.
+        def dtheta_z_dy(pt):
+            return obj.jacobian([x, y, pt[0]])[2, 1]
+
+        dthetaz_dy_dz = approx_fprime([z], dtheta_z_dy, 1e-8)
+        assert np.abs(dthetaz_dy_dz - actual[2, 1, 2]) < 1e-5
+
+        # test second derivative of theta_z wrt to dy dy.
+        def dtheta_z_dy(pt):
+            return obj.jacobian([x, pt[0], z])[2, 1]
+
+        dthetaz_dy_dy = approx_fprime([y], dtheta_z_dy, 1e-8)
+        assert np.abs(dthetaz_dy_dy - actual[2, 1, 1]) < 1e-5
+
+        # test second derivative of theta_z wrt to dy dx.
+        def dtheta_z_dy(pt):
+            return obj.jacobian([pt[0], y, z])[2, 1]
+
+        dthetaz_dy_dx = approx_fprime([x], dtheta_z_dy, 1e-8)
+        assert np.abs(dthetaz_dy_dx - actual[2, 1, 0]) < 1e-5
+
+        # test second derivative of theta_z wrt to dx dz.
+        def dtheta_z_dx(pt):
+            return obj.jacobian([x, y, pt[0]])[2, 0]
+
+        dthetaz_dx_dz = approx_fprime([z], dtheta_z_dx, 1e-8)
+        assert np.abs(dthetaz_dx_dz - actual[2, 0, 2]) < 1e-5
+
+        # test second derivative of theta_z wrt to dx dy.
+        def dtheta_z_dx(pt):
+            return obj.jacobian([x, pt[0], z])[2, 0]
+
+        dthetaz_dx_dy = approx_fprime([y], dtheta_z_dx, 1e-8)
+        assert np.abs(dthetaz_dx_dy - actual[2, 0, 1]) < 1e-5
+
+        # test second derivative of theta_z wrt to dx dx.
+        def dtheta_z_dx(pt):
+            return obj.jacobian([pt[0], y, z])[2, 0]
+
+        dthetaz_dx_dx = approx_fprime([x], dtheta_z_dx, 1e-8)
+        assert np.abs(dthetaz_dx_dx - actual[2, 0, 0]) < 1e-5
+
 
 class TestOneGaussianAgainstNumerics:
     r"""Tests With Numerical Integration of a One Gaussian function."""
@@ -343,7 +475,7 @@ class TestOneGaussianAgainstNumerics:
         c = np.array([[5.0]])
         e = np.array([[2.0]])
         coord = np.array([[1.0, 2.0, 3.0]])
-        params = _PromolParams(c, e, coord, dim=3, pi_over_exponents=np.sqrt(np.pi / e))
+        params = _PromolParams(c, e, coord, dim=3)
         if return_obj:
             num_pts = int(1 / ss) + 1
             weights = np.array([(2.0 / (num_pts - 2))] * num_pts)
@@ -462,7 +594,7 @@ class TestIntegration:
         c = np.array([[5.0]])
         e = np.array([[2.0]])
         coord = np.array([[1.0, 2.0, 3.0]])
-        params = _PromolParams(c, e, coord, dim=3, pi_over_exponents=np.sqrt(np.pi / e))
+        params = _PromolParams(c, e, coord, dim=3)
         num_pts = int(1 / ss) + 1
         oned_x = GaussChebyshevLobatto(num_pts)
         obj = CubicProTransform(

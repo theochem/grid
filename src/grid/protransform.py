@@ -19,60 +19,16 @@
 # --
 r"""Promolecular Grid Transformation."""
 
-from dataclasses import dataclass, astuple
+from dataclasses import astuple, dataclass, field
 
 from grid.basegrid import Grid, OneDGrid
 
-
 import numpy as np
-
 from scipy.linalg import solve_triangular
 from scipy.optimize import root_scalar
 from scipy.special import erf
 
 __all__ = ["CubicProTransform"]
-
-
-@dataclass
-class _PromolParams:
-    r"""Private class for Promolecular Density information."""
-    c_m: np.ndarray
-    e_m: np.ndarray
-    coords: np.ndarray
-    pi_over_exponents: np.ndarray
-    dim: int = 3
-
-    def integrate_all(self):
-        r"""Integration of Gaussian over Entire Real space ie :math:`\mathbb{R}^D`."""
-        return np.sum(self.c_m * self.pi_over_exponents ** self.dim)
-
-    def promolecular(self, grid):
-        r"""
-        Evaluate the promolecular density over a grid.
-
-        Parameters
-        ----------
-        grid : np.ndarray(N,)
-            Grid points.
-
-        Returns
-        -------
-        np.ndarray(N,) :
-            Promolecular density evaluated at the grid points.
-
-        """
-        # M is the number of centers/atoms.
-        # D is the number of dimensions, usually 3.
-        # K is maximum number of gaussian functions over all M atoms.
-        cm, em, coords = self.c_m, self.e_m, self.coords
-        # Shape (N, M, D), then Summing gives (N, M, 1)
-        distance = np.sum((grid - coords[:, np.newaxis]) ** 2.0, axis=2, keepdims=True)
-        # At each center, multiply Each Distance of a Coordinate, with its exponents.
-        exponen = np.exp(-np.einsum("MND, MK-> MNK", distance, em))
-        # At each center, multiply the exponential with its coefficients.
-        gaussian = np.einsum("MNK, MK -> MNK", exponen, cm)
-        # At each point, sum for each center, then sum all centers together.
-        return np.einsum("MNK -> N", gaussian, dtype=np.float64)
 
 
 class CubicProTransform(Grid):
@@ -157,11 +113,7 @@ class CubicProTransform(Grid):
 
         # pad coefficients and exponents with zeros to have the same size, easier to use numpy.
         coeffs, exps = _pad_coeffs_exps_with_zeros(coeffs, exps)
-        # Rather than computing this repeatedly. It is fixed.
-        with np.errstate(divide="ignore"):
-            pi_over_exponents = np.sqrt(np.pi / exps)
-            pi_over_exponents[exps == 0] = 0
-        self._promol = _PromolParams(coeffs, exps, coords, pi_over_exponents, self._dim)
+        self._promol = _PromolParams(coeffs, exps, coords, self._dim)
         self._prointegral = self._promol.integrate_all()
 
         empty_pts = np.empty((np.prod(self._num_pts), self._dim), dtype=np.float64)
@@ -185,7 +137,6 @@ class CubicProTransform(Grid):
         r"""Return number of points in each direction."""
         return self._num_pts
 
-
     @property
     def prointegral(self):
         r"""Return integration of Promolecular density."""
@@ -193,7 +144,7 @@ class CubicProTransform(Grid):
 
     @property
     def promol(self):
-        r"""Return `PromolParams` namedTuple."""
+        r"""Return `PromolParams` data class."""
         return self._promol
 
     def transform(self, real_pt):
@@ -305,82 +256,6 @@ class CubicProTransform(Grid):
             return self.prointegral + super().integrate(*integrands)
         return super().integrate(*integrands)
 
-    def jacobian(self, real_pt):
-        r"""
-        Jacobian of the transformation from real space to theta space.
-
-        Precisely, it is the lower-triangular matrix
-        .. math::
-            \begin{bmatrix}
-                \frac{\partial \theta_x}{\partial X} & 0 & 0 \\
-                \frac{\partial \theta_y}{\partial X} & \frac{\partial \theta_y}{\partial Y} & 0 \\
-                \frac{\partial \theta_z}{\partial X} & \frac{\partial \theta_Z}{\partial Y} &
-                \frac{\partial \theta_Z}{\partial Z}
-            \end{bmatrix}.
-
-        Parameters
-        ----------
-        real_pt : np.ndarray(3,)
-            Point in :math:`\mathbb{R}^3`.
-
-        Returns
-        -------
-        np.ndarray(3, 3) :
-            Jacobian of transformation.
-
-        """
-        jacobian = np.zeros((3, 3), dtype=np.float64)
-
-        c_m, e_m, coords, pi_over_exps, dim = astuple(self.promol)
-
-        # Code is duplicated from `transform_coordinate` due to effiency reasons.
-        # TODO: Reduce the number of computation with `i_var`.
-        for i_var in range(0, self.promol.dim):
-
-            # Distance to centers/nuclei`s and Prefactors.
-            diff_coords = real_pt[: i_var + 1] - coords[:, : i_var + 1]
-            diff_squared = diff_coords ** 2.0
-            distance = np.sum(diff_squared[:, :i_var], axis=1)[:, np.newaxis]
-            # If i_var is zero, then distance is just all zeros.
-
-            # Gaussian Integrals Over Entire Space For Numerator and Denomator.
-            coeff_num = c_m * np.exp(-e_m * distance) * pi_over_exps ** (dim - i_var)
-
-            # Get integral of Gaussian till a point.
-            coord_ivar = diff_coords[:, i_var][:, np.newaxis]
-            # (pi / exponent)^0.5 is factored and absorbed in `coeff_num`.
-            integrate_till_pt_x = (erf(np.sqrt(e_m) * coord_ivar) + 1.0) / 2.0
-
-            # Final Result.
-            transf_num = np.sum(coeff_num * integrate_till_pt_x)
-            transf_den = np.sum(coeff_num)
-
-            for j_deriv in range(0, i_var + 1):
-                if i_var == j_deriv:
-                    # Derivative eliminates `integrate_till_pt_x`, and adds a Gaussian.
-                    inner_term = coeff_num * np.exp(
-                        -e_m * diff_squared[:, i_var][:, np.newaxis]
-                    )
-                    # Needed because coeff_num has additional (pi / exponent)^0.5 term.
-                    inner_term /= pi_over_exps
-                    jacobian[i_var, i_var] = np.sum(inner_term) / transf_den
-                elif j_deriv < i_var:
-                    # Derivative of inside of Gaussian.
-                    deriv_quadratic = (
-                            -e_m * 2.0 * diff_coords[:, j_deriv][:, np.newaxis]
-                    )
-                    deriv_num = np.sum(
-                        coeff_num * integrate_till_pt_x * deriv_quadratic
-                    )
-                    deriv_den = np.sum(coeff_num * deriv_quadratic)
-                    # Quotient Rule
-                    jacobian[i_var, j_deriv] = (
-                            deriv_num * transf_den - transf_num * deriv_den
-                    )
-                    jacobian[i_var, j_deriv] /= transf_den ** 2.0
-
-        return 2.0 * jacobian
-
     def derivative(self, real_pt, real_derivative):
         r"""
         Directional derivative in theta space.
@@ -429,7 +304,214 @@ class CubicProTransform(Grid):
         jacobian = self.jacobian(real_pt)
         return jacobian.dot(real_grad)
 
+    def differentiation_interpolation(self, real_pt, func_val, use_log=False):
+        r"""
+        Differentiate a point in Real-space using interpolation.
+
+        Parameters
+        ----------
+        real_pt : ndarray(3,)
+
+        func_val : float
+
+        use_log : bool
+
+        """
+        # Map to theta space.
+
+        # Construct Cubic Splines and differentiate.
+
+        # Convert back to Real-Space.
+        pass
+
+    def integration_interpolation(self):
+        pass
+
+    def jacobian(self, real_pt):
+        r"""
+        Jacobian of the transformation from real space to theta space.
+
+        Precisely, it is the lower-triangular matrix
+        .. math::
+            \begin{bmatrix}
+                \frac{\partial \theta_x}{\partial X} & 0 & 0 \\
+                \frac{\partial \theta_y}{\partial X} & \frac{\partial \theta_y}{\partial Y} & 0 \\
+                \frac{\partial \theta_z}{\partial X} & \frac{\partial \theta_z}{\partial Y} &
+                \frac{\partial \theta_z}{\partial Z}
+            \end{bmatrix}.
+
+        Parameters
+        ----------
+        real_pt : np.ndarray(3,)
+            Point in :math:`\mathbb{R}^3`.
+
+        Returns
+        -------
+        np.ndarray(3, 3) :
+            Jacobian of transformation.
+
+        """
+        jacobian = np.zeros((3, 3), dtype=np.float64)
+
+        c_m, e_m, coords, pi_over_exps, dim = astuple(self.promol)
+
+        # Distance to centers/nuclei`s and Prefactors.
+        diff_coords = real_pt - coords
+        diff_squared = diff_coords ** 2.0
+        # If i_var is zero, then distance is just all zeros.
+        for i_var in range(0, self.promol.dim):
+            distance = np.sum(diff_squared[:, :i_var], axis=1)[:, np.newaxis]
+
+            # Gaussian Integrals Over Entire Space For Numerator and Denomator.
+            single_gauss = self.promol.single_gaussians(distance)
+            single_gauss *= pi_over_exps ** (dim - i_var - 1)
+
+            # Get integral of Gaussian till a point.
+            integrate_till_pt_x = self.promol.integration_gaussian_till_point(diff_coords,
+                                                                              i_var,
+                                                                              with_factor=True)
+            # Numerator and Denominator of Original Transformation.
+            transf_num = np.sum(single_gauss * integrate_till_pt_x)
+            transf_den = np.sum(single_gauss * pi_over_exps)
+
+            for j_deriv in range(0, i_var + 1):
+                if i_var == j_deriv:
+                    # Derivative eliminates `integrate_till_pt_x`, and adds a Gaussian.
+                    inner_term = single_gauss * np.exp(
+                        -e_m * diff_squared[:, i_var][:, np.newaxis]
+                    )
+                    jacobian[i_var, i_var] = np.sum(inner_term) / transf_den
+                elif j_deriv < i_var:
+                    # Derivative of inside of Gaussian.
+                    deriv_inside = self.promol.derivative_gaussian(diff_coords, j_deriv)
+                    deriv_num = np.sum(
+                        single_gauss * integrate_till_pt_x * deriv_inside
+                    )
+                    deriv_den = np.sum(single_gauss * deriv_inside * pi_over_exps)
+                    # Quotient Rule
+                    jacobian[i_var, j_deriv] = (
+                            deriv_num * transf_den - transf_num * deriv_den
+                    )
+                    jacobian[i_var, j_deriv] /= transf_den ** 2.0
+
+        return 2.0 * jacobian
+
+    def hessian(self, real_pt):
+        hessian = np.zeros((self.dim, self.dim, self.dim), dtype=np.float64)
+
+        c_m, e_m, coords, pi_over_exps, dim = astuple(self.promol)
+
+        # Distance to centers/nuclei`s and Prefactors.
+        diff_coords = real_pt - coords
+        diff_squared = diff_coords ** 2.0
+
+        # i_var is the transformation to theta-space.
+        # j_deriv is the first partial derivative wrt x, y, z.
+        # k_deriv is the second partial derivative wrt x, y, z.
+        for i_var in range(0, 3):
+            distance = np.sum(diff_squared[:, :i_var], axis=1)[:, np.newaxis]
+
+            # Gaussian Integrals Over Entire Space For Numerator and Denomator.
+            single_gauss = self.promol.single_gaussians(distance)
+            single_gauss *= pi_over_exps ** (dim - i_var - 1)
+
+            # Get integral of Gaussian till a point.
+            integrate_till_pt_x = self.promol.integration_gaussian_till_point(diff_coords,
+                                                                              i_var,
+                                                                              with_factor=True)
+            # Numerator and Denominator of Original Transformation.
+            transf_num = np.sum(single_gauss * integrate_till_pt_x)
+            transf_den = np.sum(single_gauss * pi_over_exps)
+            for j_deriv in range(0, i_var + 1):
+                for k_deriv in range(0, i_var + 1):
+                    derivative = 0.
+
+                    if i_var == j_deriv:
+                        gauss_extra = single_gauss * np.exp(
+                            -e_m * diff_squared[:, j_deriv][:, np.newaxis]
+                        )
+                        if j_deriv == k_deriv:
+                            # Diagonal derivative e.g. d(theta_X)(dx dx)
+                            gauss_extra *= self.promol.derivative_gaussian(diff_coords, j_deriv)
+                            derivative = np.sum(gauss_extra) / transf_den
+                        else:
+                            # Partial derivative of diagonal derivative e.g. d^2(theta_y)(dy dx).
+                            deriv_inside = self.promol.derivative_gaussian(diff_coords, k_deriv)
+                            deriv_num = np.sum(
+                                gauss_extra * deriv_inside
+                            )
+                            deriv_den = np.sum(single_gauss * deriv_inside * pi_over_exps)
+                            # Numerator is different from `transf_num` since Gaussian is added.
+                            new_numerator = np.sum(gauss_extra)
+                            # Quotient Rule
+                            derivative = (
+                                    deriv_num * transf_den - new_numerator * deriv_den
+                            )
+                            derivative /= transf_den ** 2.0
+
+                    # Here, quotient rule all the way down.
+                    elif j_deriv < i_var:
+                        if k_deriv == i_var:
+                            gauss_extra = single_gauss * np.exp(
+                                -e_m * diff_squared[:, k_deriv][:, np.newaxis]
+                            )
+
+                            deriv_inside = self.promol.derivative_gaussian(diff_coords, j_deriv)
+                            ddnum_djdi = np.sum(
+                                gauss_extra * deriv_inside
+                            )
+
+                            dden_dj = np.sum(single_gauss * deriv_inside * pi_over_exps)
+                            # Quotient Rule
+                            dnum_dj = np.sum(gauss_extra)
+                            derivative = ddnum_djdi * transf_den - dnum_dj * dden_dj
+                            derivative /= transf_den ** 2.0
+
+                        elif k_deriv == j_deriv:
+                            # Double Quotient Rule.
+                            # See wikipedia "Quotient Rules Higher order formulas".
+                            deriv_inside = self.promol.derivative_gaussian(diff_coords, k_deriv)
+                            dnum_dj = np.sum(single_gauss * integrate_till_pt_x * deriv_inside)
+                            dden_dj = np.sum(single_gauss * pi_over_exps * deriv_inside)
+
+                            prod_rule = deriv_inside ** 2.0 - 2.0 * e_m
+                            sec_deriv_num = np.sum(single_gauss * integrate_till_pt_x * prod_rule)
+                            sec_deriv_den = np.sum(single_gauss * pi_over_exps * prod_rule)
+
+                            output = (sec_deriv_num * transf_den - dnum_dj * dden_dj)
+                            output /= transf_den ** 2.0
+                            quot = transf_den * (dnum_dj * dden_dj + transf_num * sec_deriv_den)
+                            quot -= 2.0 * transf_num * dden_dj * dden_dj
+                            derivative = output - quot / transf_den ** 3.0
+
+                        elif k_deriv != j_deriv:
+                            # K is i_Sec_diff and i is i_diff
+                            deriv_inside = self.promol.derivative_gaussian(diff_coords, j_deriv)
+                            deriv_inside_sec = self.promol.derivative_gaussian(diff_coords, k_deriv)
+
+                            dnum_di = np.sum(single_gauss * integrate_till_pt_x * deriv_inside)
+                            dden_di = np.sum(single_gauss * pi_over_exps * deriv_inside)
+
+                            dnum_dk = np.sum(single_gauss * integrate_till_pt_x * deriv_inside_sec)
+                            dden_dk = np.sum(single_gauss * pi_over_exps * deriv_inside_sec)
+
+                            ddnum_dkdk = np.sum(single_gauss * deriv_inside * deriv_inside_sec * integrate_till_pt_x)
+                            ddden_dkdk = np.sum(single_gauss * deriv_inside * deriv_inside_sec * pi_over_exps)
+
+                            output = ddnum_dkdk / transf_den
+                            output -= (dnum_di * dden_dk / transf_den ** 2.0)
+                            product = dnum_dk * dden_di + transf_num * ddden_dkdk
+                            derivative = output
+                            derivative -= product * transf_den / transf_den ** 3.
+                            derivative += 2.0 * transf_num * dden_di * dden_dk / transf_den ** 3.
+
+                    # The 2.0 is needed because we're in [-1, 1] rather than [0, 1].
+                    hessian[i_var, j_deriv, k_deriv] = 2.0 * derivative
+
+        return hessian
+
     def _transform(self, oned_grids):
+        # Transform the entire grid.
         # Indices (i, j, k) start from bottom, left-most corner of the [-1, 1]^3 cube.
         counter = 0
         for ix in range(self.num_pts[0]):
@@ -500,6 +582,85 @@ class CubicProTransform(Grid):
         return self.points[index, i_var], self.points[index, i_var] + 10.0
 
 
+@dataclass
+class _PromolParams:
+    r"""
+    Private class for Promolecular Density information.
+
+    Contains helper-functions for Promolecular Transformation.
+    They are coded as pipe-lines for this special purpose and
+    the reason why "diff_coords" is chosen as a attribute rather
+    than a generic "[x, y, z]" point.
+
+    """
+    c_m: np.ndarray  # Coefficients of Promolecular.
+    e_m: np.ndarray  # Exponents of Promolecular.
+    coords: np.ndarray  # Centers/Coordinates of Each Gaussian.
+    pi_over_exponents: np.ndarray = field(init=False)
+    dim: int = 3
+
+    def __post_init__(self):
+        r"""Initialize pi_over_exponents."""
+        # Rather than computing this repeatedly. It is fixed.
+        with np.errstate(divide="ignore"):
+            self.pi_over_exponents = np.sqrt(np.pi / self.e_m)
+            self.pi_over_exponents[self.e_m == 0.0] = 0.0
+
+    def integrate_all(self):
+        r"""Integration of Gaussian over Entire Real space ie :math:`\mathbb{R}^D`."""
+        return np.sum(self.c_m * self.pi_over_exponents ** self.dim)
+
+    def integrate_all_certain_variables(self):
+        r""""""
+        return self.pi_over_exponents ** ()
+
+    def derivative_gaussian(self, diff_coords, j_deriv):
+        r"""Derivative of single Gaussian but without exponential."""
+        return -self.e_m * 2.0 * diff_coords[:, j_deriv][:, np.newaxis]
+
+    def integration_gaussian_till_point(self, diff_coords, i_var, with_factor=False):
+        r"""Integration of Gaussian wrt to `i_var` variable till a point (inside diff_coords)."""
+        coord_ivar = diff_coords[:, i_var][:, np.newaxis]
+        integration = (erf(np.sqrt(self.e_m) * coord_ivar) + 1.0) / 2.0
+        if with_factor:
+            # Included the (pi / exponents), this is the actual integral here.
+            # Not including the (pi / exponents) increasing computation slightly faster.
+            return integration * self.pi_over_exponents
+        return integration
+
+    def single_gaussians(self, distance):
+        r"""Return matrix with entries a single gaussian evaluated at the float distance."""
+        return self.c_m * np.exp(-self.e_m * distance)
+
+    def promolecular(self, points):
+        r"""
+        Evaluate the promolecular density over a grid.
+
+        Parameters
+        ----------
+        points : np.ndarray(N, D)
+            Points in :math:`\mathbb{R}^D`.
+
+        Returns
+        -------
+        np.ndarray(N,) :
+            Promolecular density evaluated at the points.
+
+        """
+        # M is the number of centers/atoms.
+        # D is the number of dimensions, usually 3.
+        # K is maximum number of gaussian functions over all M atoms.
+        cm, em, coords = self.c_m, self.e_m, self.coords
+        # Shape (N, M, D), then Summing gives (N, M, 1)
+        distance = np.sum((points - coords[:, np.newaxis]) ** 2.0, axis=2, keepdims=True)
+        # At each center, multiply Each Distance of a Coordinate, with its exponents.
+        exponen = np.exp(-np.einsum("MND, MK-> MNK", distance, em))
+        # At each center, multiply the exponential with its coefficients.
+        gaussian = np.einsum("MNK, MK -> MNK", exponen, cm)
+        # At each point, sum for each center, then sum all centers together.
+        return np.einsum("MNK -> N", gaussian, dtype=np.float64)
+
+
 def _transform_coordinate(real_pt, i_var, promol):
     r"""
     Transform the `i_var` coordinate of a real point to [-1, 1] using promolecular density.
@@ -519,7 +680,7 @@ def _transform_coordinate(real_pt, i_var, promol):
         The transformed point in :math:`[-1, 1]`.
 
     """
-    c_m, e_m, coords, pi_over_exps, dim = astuple(promol)
+    _, _, coords, pi_over_exps, dim = astuple(promol)
 
     # Distance to centers/nuclei`s and Prefactors.
     diff_coords = real_pt[: i_var + 1] - coords[:, : i_var + 1]
@@ -527,18 +688,17 @@ def _transform_coordinate(real_pt, i_var, promol):
     distance = np.sum(diff_squared[:, :i_var], axis=1)[:, np.newaxis]
     # If i_var is zero, then distance is just all zeros.
 
-    # Gaussian Integrals Over Entire Space For Numerator and Denomator.
-    gaussian_integrals = np.exp(-e_m * distance) * pi_over_exps ** (dim - i_var)
-    coeff_num = c_m * gaussian_integrals
+    # Single Gaussians Including Integration of Exponential over `(dim - i_var)` variables.
+    single_gauss = promol.single_gaussians(distance) * pi_over_exps ** (dim - i_var)
 
     # Get the integral of Gaussian till a point excluding a prefactor.
-    # This prefactor (pi / exponents) is included in `gaussian_integrals`.
-    coord_ivar = diff_coords[:, i_var][:, np.newaxis]
-    integrate_till_pt_x = (erf(np.sqrt(e_m) * coord_ivar) + 1.0) / 2.0
+    # prefactor (pi / exponents) is included in `gaussian_integrals`.
+    cdf_gauss = promol.integration_gaussian_till_point(diff_coords, i_var,
+                                                       with_factor=False)
 
     # Final Result.
-    transf_num = np.sum(coeff_num * integrate_till_pt_x)
-    transf_den = np.sum(coeff_num)
+    transf_num = np.sum(single_gauss * cdf_gauss)
+    transf_den = np.sum(single_gauss)
     transform_value = transf_num / transf_den
 
     # -1. + 2. is needed to transform to [-1, 1], rather than [0, 1].
