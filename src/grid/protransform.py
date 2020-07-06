@@ -24,6 +24,8 @@ from dataclasses import astuple, dataclass, field
 from grid.basegrid import Grid, OneDGrid
 
 import numpy as np
+
+from scipy.interpolate import CubicSpline
 from scipy.linalg import solve_triangular
 from scipy.optimize import root_scalar
 from scipy.special import erf
@@ -43,15 +45,14 @@ class CubicProTransform(Grid):
     ----------
     num_pts : (int, int, int)
         The number of points, including both of the end/boundary points, in x, y, and z direction.
-        This is calculated as `int(1. / ss[i]) + 1`.
-    points : np.ndarray(N, 3)
-        The transformed points in real space.
     prointegral : float
         The integration value of the promolecular density over Euclidean space.
-    weights : np.ndarray(N,)
-        The weights multiplied by `prointegral`.
     promol : namedTuple
         Data about the Promolecular density.
+    points : np.ndarray(N, 3)
+        The transformed points in real space.
+    weights : np.ndarray(N,)
+        The weights multiplied by `prointegral`.
 
     Methods
     -------
@@ -59,12 +60,16 @@ class CubicProTransform(Grid):
         Integral of a real-valued function over Euclidean space.
     jacobian()
         Jacobian of the transformation from Real space to Theta space :math:`[-1, 1]^3`.
+    hessian()
+        Hessian of the transformation from Real space to Theta space :math:`[-1, 1]^3`.
     steepest_ascent_theta()
         Direction of steepest-ascent of a function in theta space from gradient in real space.
     transform():
         Transform Real point to theta point :math:`[-1, 1]^3`.
     inverse(bracket=(-10, 10))
         Transform theta point to Real space :math:`\mathbb{R}^3`.
+    interpolate_function(use_log=False, nu=0)
+        Interpolate a function (or its derivative) at a real point.
 
     Examples
     --------
@@ -98,15 +103,18 @@ class CubicProTransform(Grid):
     TODO: Add Infor about how boundarys on theta-space are mapped to np.nan.
 
     """
+
     def __init__(self, oned_grids, coeffs, exps, coords):
         if not isinstance(oned_grids, list):
             raise TypeError("oned_grid should be of type list.")
         if not np.all([isinstance(grid, OneDGrid) for grid in oned_grids]):
             raise TypeError("Grid in oned_grids should be of type `OneDGrid`.")
-        if not np.all([grid.domain == (-1, 1.) for grid in oned_grids]):
+        if not np.all([grid.domain == (-1, 1) for grid in oned_grids]):
             raise ValueError("One Dimensional grid domain should be (-1, 1).")
         if not len(oned_grids) == 3:
-            raise ValueError("There should be three One-Dimensional grids in `oned_grids`.")
+            raise ValueError(
+                "There should be three One-Dimensional grids in `oned_grids`."
+            )
 
         self._num_pts = tuple([grid.size for grid in oned_grids])
         self._dim = len(oned_grids)
@@ -118,19 +126,13 @@ class CubicProTransform(Grid):
 
         empty_pts = np.empty((np.prod(self._num_pts), self._dim), dtype=np.float64)
         weights = np.kron(
-            np.kron(oned_grids[0].weights, oned_grids[1].weights),
-            oned_grids[2].weights
+            np.kron(oned_grids[0].weights, oned_grids[1].weights), oned_grids[2].weights
         )
         # The prointegral is needed because of promolecular integration.
         # Divide by 8 needed because the grid is in [-1, 1] rather than [0, 1].
-        super().__init__(empty_pts, weights * self._prointegral / 2.0**self._dim)
+        super().__init__(empty_pts, weights * self._prointegral / 2.0 ** self._dim)
         # Transform Cubic Grid in Theta-Space to Real-space.
         self._transform(oned_grids)
-
-    @property
-    def dim(self):
-        r"""Return the dimension of the cubic grid."""
-        return self._dim
 
     @property
     def num_pts(self):
@@ -146,6 +148,11 @@ class CubicProTransform(Grid):
     def promol(self):
         r"""Return `PromolParams` data class."""
         return self._promol
+
+    @property
+    def dim(self):
+        r"""Return the dimension of the cubic grid."""
+        return self._dim
 
     def transform(self, real_pt):
         r"""
@@ -163,8 +170,10 @@ class CubicProTransform(Grid):
 
         """
         return np.array(
-            [_transform_coordinate(real_pt, i, self.promol)
-             for i in range(0, self.promol.dim)]
+            [
+                _transform_coordinate(real_pt, i, self.promol)
+                for i in range(0, self.promol.dim)
+            ]
         )
 
     def inverse(self, theta_pt, bracket=(-10, 10)):
@@ -304,28 +313,90 @@ class CubicProTransform(Grid):
         jacobian = self.jacobian(real_pt)
         return jacobian.dot(real_grad)
 
-    def differentiation_interpolation(self, real_pt, func_val, use_log=False):
+    def interpolate_function(
+        self, real_pt, func_values, oned_grids, use_log=False, nu=0
+    ):
+        # TODO: Should oned_grids be stored as class attribute when only this method requires it.
         r"""
-        Differentiate a point in Real-space using interpolation.
+        Interpolate function at a point.
 
         Parameters
         ----------
-        real_pt : ndarray(3,)
-
-        func_val : float
-
+        real_pt : np.ndarray(3,)
+            Point in :math:`\mathbb{R}^3` that needs to be interpolated.
+        func_values : np.ndarray(N,)
+            Function values at each point of the grid `points`.
+        oned_grids = list(3,)
+            List Containing Three One-Dimensional grid corresponding to x, y, z direction.
         use_log : bool
+            If true, then logarithm is applied before interpolating to the function values,
+            including  `func_values`.
+
+        Returns
+        -------
+        float :
+            If nu is 0: Returns the interpolated of a function at a real point.
+            If nu is 1: Returns the interpolated derivative of a function at a real point.
 
         """
+        # TODO: Ask about use_log and derivative.
         # Map to theta space.
+        theta_pt = self.transform(real_pt)
 
-        # Construct Cubic Splines and differentiate.
+        if use_log:
+            func_values = np.log(func_values)
 
-        # Convert back to Real-Space.
-        pass
+        jac = self.jacobian(real_pt).T
 
-    def integration_interpolation(self):
-        pass
+        # Interpolate the Z-Axis based on x, y coordinates in grid.
+        def z_spline(z, x_index, y_index):
+            # x_index, y_index is assumed to be in the grid while z is not assumed.
+            # Get smallest and largest index for selecting func vals on this specific z-slice.
+            # The `1` and `self.num_puts[2] - 2` is needed because I don't want the boundary.
+            small_index = self._indices_to_index((x_index, y_index, 1))
+            large_index = self._indices_to_index(
+                (x_index, y_index, self.num_pts[2] - 2)
+            )
+            val = CubicSpline(
+                oned_grids[2].points[1 : self.num_pts[2] - 2],
+                func_values[small_index:large_index],
+            )(z, nu)
+
+            if nu == 1:
+                # Derivative in real-space with respect to z.
+                return (jac[:, 2] * val)[2]
+            return val
+
+        # Interpolate the Y-Axis based on x coordinate in grid.
+        def y_splines(y, x_index, z):
+            # The `1` and `self.num_puts[1] - 2` is needed because I don't want the boundary.
+            # Assumes x_index is in the grid while y, z may not be.
+            val = CubicSpline(
+                oned_grids[1].points[1 : self.num_pts[2] - 2],
+                [
+                    z_spline(z, x_index, y_index)
+                    for y_index in range(1, self.num_pts[1] - 2)
+                ],
+            )(y, nu)
+            if nu == 1:
+                # Derivative in real-space with respect to y.
+                return (jac[:, 1] * val)[1]
+            return val
+
+        # Interpolate the X-Axis.
+        def x_spline(x, y, z):
+            # x, y, z may not be in the grid.
+            val = CubicSpline(
+                oned_grids[0].points[1 : self.num_pts[2] - 2],
+                [y_splines(y, x_index, z) for x_index in range(1, self.num_pts[0] - 2)],
+            )(x, nu)
+            if nu == 1:
+                # Derivative in real-space with respect to x.
+                return (jac[:, 0] * val)[0]
+            return val
+
+        interpolated = x_spline(theta_pt[0], theta_pt[1], theta_pt[2])
+        return interpolated
 
     def jacobian(self, real_pt):
         r"""
@@ -360,19 +431,15 @@ class CubicProTransform(Grid):
         diff_squared = diff_coords ** 2.0
         # If i_var is zero, then distance is just all zeros.
         for i_var in range(0, self.promol.dim):
-            distance = np.sum(diff_squared[:, :i_var], axis=1)[:, np.newaxis]
 
-            # Gaussian Integrals Over Entire Space For Numerator and Denomator.
-            single_gauss = self.promol.single_gaussians(distance)
-            single_gauss *= pi_over_exps ** (dim - i_var - 1)
-
-            # Get integral of Gaussian till a point.
-            integrate_till_pt_x = self.promol.integration_gaussian_till_point(diff_coords,
-                                                                              i_var,
-                                                                              with_factor=True)
-            # Numerator and Denominator of Original Transformation.
-            transf_num = np.sum(single_gauss * integrate_till_pt_x)
-            transf_den = np.sum(single_gauss * pi_over_exps)
+            # Basic-Level arrays for integration and derivatives.
+            (
+                distance,
+                single_gauss,
+                integrate_till_pt_x,
+                transf_num,
+                transf_den,
+            ) = self.promol.helper_for_derivatives(diff_squared, diff_coords, i_var)
 
             for j_deriv in range(0, i_var + 1):
                 if i_var == j_deriv:
@@ -390,13 +457,29 @@ class CubicProTransform(Grid):
                     deriv_den = np.sum(single_gauss * deriv_inside * pi_over_exps)
                     # Quotient Rule
                     jacobian[i_var, j_deriv] = (
-                            deriv_num * transf_den - transf_num * deriv_den
+                        deriv_num * transf_den - transf_num * deriv_den
                     )
                     jacobian[i_var, j_deriv] /= transf_den ** 2.0
 
         return 2.0 * jacobian
 
     def hessian(self, real_pt):
+        r"""
+        Hessian of the transformation.
+
+        Parameters
+        ----------
+        real_pt : np.ndarray(3,)
+            Real point in :math:`\mathbb{R}^3`.
+
+        Returns
+        -------
+        hessian : np.ndarray(3, 3, 3)
+            The (i, j, k)th entry is the partial derivative of the ith transformation function
+            with respect to the jth, kth coordinate.  e.g. when i = 0, then hessian entry at
+            (i, j, k) is zero unless j = k = 0.
+
+        """
         hessian = np.zeros((self.dim, self.dim, self.dim), dtype=np.float64)
 
         c_m, e_m, coords, pi_over_exps, dim = astuple(self.promol)
@@ -409,22 +492,24 @@ class CubicProTransform(Grid):
         # j_deriv is the first partial derivative wrt x, y, z.
         # k_deriv is the second partial derivative wrt x, y, z.
         for i_var in range(0, 3):
-            distance = np.sum(diff_squared[:, :i_var], axis=1)[:, np.newaxis]
 
-            # Gaussian Integrals Over Entire Space For Numerator and Denomator.
-            single_gauss = self.promol.single_gaussians(distance)
-            single_gauss *= pi_over_exps ** (dim - i_var - 1)
+            # Basic-Level arrays for integration and derivatives.
+            (
+                distance,
+                single_gauss,
+                integrate_till_pt_x,
+                transf_num,
+                transf_den,
+            ) = self.promol.helper_for_derivatives(diff_squared, diff_coords, i_var)
 
-            # Get integral of Gaussian till a point.
-            integrate_till_pt_x = self.promol.integration_gaussian_till_point(diff_coords,
-                                                                              i_var,
-                                                                              with_factor=True)
-            # Numerator and Denominator of Original Transformation.
-            transf_num = np.sum(single_gauss * integrate_till_pt_x)
-            transf_den = np.sum(single_gauss * pi_over_exps)
             for j_deriv in range(0, i_var + 1):
                 for k_deriv in range(0, i_var + 1):
-                    derivative = 0.
+                    # num is the numerator of transformation function.
+                    # den is the denominator of transformation function.
+                    # dnum_dk is the derivative of numerator wrt to k_deriv.
+                    # dnum_dkdj is the derivative of num wrt to j_deriv then k_deriv.
+                    # The derivative will store the result and pass it to the Hessian.
+                    derivative = 0.0
 
                     if i_var == j_deriv:
                         gauss_extra = single_gauss * np.exp(
@@ -432,21 +517,21 @@ class CubicProTransform(Grid):
                         )
                         if j_deriv == k_deriv:
                             # Diagonal derivative e.g. d(theta_X)(dx dx)
-                            gauss_extra *= self.promol.derivative_gaussian(diff_coords, j_deriv)
+                            gauss_extra *= self.promol.derivative_gaussian(
+                                diff_coords, j_deriv
+                            )
                             derivative = np.sum(gauss_extra) / transf_den
                         else:
                             # Partial derivative of diagonal derivative e.g. d^2(theta_y)(dy dx).
-                            deriv_inside = self.promol.derivative_gaussian(diff_coords, k_deriv)
-                            deriv_num = np.sum(
-                                gauss_extra * deriv_inside
+                            deriv_inside = self.promol.derivative_gaussian(
+                                diff_coords, k_deriv
                             )
-                            deriv_den = np.sum(single_gauss * deriv_inside * pi_over_exps)
+                            dnum_dkdj = np.sum(gauss_extra * deriv_inside)
+                            dden_dk = np.sum(single_gauss * deriv_inside * pi_over_exps)
                             # Numerator is different from `transf_num` since Gaussian is added.
-                            new_numerator = np.sum(gauss_extra)
+                            dnum_dj = np.sum(gauss_extra)
                             # Quotient Rule
-                            derivative = (
-                                    deriv_num * transf_den - new_numerator * deriv_den
-                            )
+                            derivative = dnum_dkdj * transf_den - dnum_dj * dden_dk
                             derivative /= transf_den ** 2.0
 
                     # Here, quotient rule all the way down.
@@ -455,12 +540,10 @@ class CubicProTransform(Grid):
                             gauss_extra = single_gauss * np.exp(
                                 -e_m * diff_squared[:, k_deriv][:, np.newaxis]
                             )
-
-                            deriv_inside = self.promol.derivative_gaussian(diff_coords, j_deriv)
-                            ddnum_djdi = np.sum(
-                                gauss_extra * deriv_inside
+                            deriv_inside = self.promol.derivative_gaussian(
+                                diff_coords, j_deriv
                             )
-
+                            ddnum_djdi = np.sum(gauss_extra * deriv_inside)
                             dden_dj = np.sum(single_gauss * deriv_inside * pi_over_exps)
                             # Quotient Rule
                             dnum_dj = np.sum(gauss_extra)
@@ -470,40 +553,62 @@ class CubicProTransform(Grid):
                         elif k_deriv == j_deriv:
                             # Double Quotient Rule.
                             # See wikipedia "Quotient Rules Higher order formulas".
-                            deriv_inside = self.promol.derivative_gaussian(diff_coords, k_deriv)
-                            dnum_dj = np.sum(single_gauss * integrate_till_pt_x * deriv_inside)
+                            deriv_inside = self.promol.derivative_gaussian(
+                                diff_coords, k_deriv
+                            )
+                            dnum_dj = np.sum(
+                                single_gauss * integrate_till_pt_x * deriv_inside
+                            )
                             dden_dj = np.sum(single_gauss * pi_over_exps * deriv_inside)
 
                             prod_rule = deriv_inside ** 2.0 - 2.0 * e_m
-                            sec_deriv_num = np.sum(single_gauss * integrate_till_pt_x * prod_rule)
-                            sec_deriv_den = np.sum(single_gauss * pi_over_exps * prod_rule)
+                            sec_deriv_num = np.sum(
+                                single_gauss * integrate_till_pt_x * prod_rule
+                            )
+                            sec_deriv_den = np.sum(
+                                single_gauss * pi_over_exps * prod_rule
+                            )
 
-                            output = (sec_deriv_num * transf_den - dnum_dj * dden_dj)
+                            output = sec_deriv_num * transf_den - dnum_dj * dden_dj
                             output /= transf_den ** 2.0
-                            quot = transf_den * (dnum_dj * dden_dj + transf_num * sec_deriv_den)
+                            quot = transf_den * (
+                                dnum_dj * dden_dj + transf_num * sec_deriv_den
+                            )
                             quot -= 2.0 * transf_num * dden_dj * dden_dj
                             derivative = output - quot / transf_den ** 3.0
 
                         elif k_deriv != j_deriv:
                             # K is i_Sec_diff and i is i_diff
-                            deriv_inside = self.promol.derivative_gaussian(diff_coords, j_deriv)
-                            deriv_inside_sec = self.promol.derivative_gaussian(diff_coords, k_deriv)
+                            deriv_inside = self.promol.derivative_gaussian(
+                                diff_coords, j_deriv
+                            )
+                            deriv_inside_sec = self.promol.derivative_gaussian(
+                                diff_coords, k_deriv
+                            )
+                            gauss_and_inte_x = single_gauss * integrate_till_pt_x
+                            gauss_and_inte = single_gauss * pi_over_exps
 
-                            dnum_di = np.sum(single_gauss * integrate_till_pt_x * deriv_inside)
-                            dden_di = np.sum(single_gauss * pi_over_exps * deriv_inside)
+                            dnum_di = np.sum(gauss_and_inte_x * deriv_inside)
+                            dden_di = np.sum(gauss_and_inte * deriv_inside)
 
-                            dnum_dk = np.sum(single_gauss * integrate_till_pt_x * deriv_inside_sec)
-                            dden_dk = np.sum(single_gauss * pi_over_exps * deriv_inside_sec)
+                            dnum_dk = np.sum(gauss_and_inte_x * deriv_inside_sec)
+                            dden_dk = np.sum(gauss_and_inte * deriv_inside_sec)
 
-                            ddnum_dkdk = np.sum(single_gauss * deriv_inside * deriv_inside_sec * integrate_till_pt_x)
-                            ddden_dkdk = np.sum(single_gauss * deriv_inside * deriv_inside_sec * pi_over_exps)
+                            ddnum_dkdk = np.sum(
+                                gauss_and_inte_x * deriv_inside * deriv_inside_sec
+                            )
+                            ddden_dkdk = np.sum(
+                                gauss_and_inte * deriv_inside * deriv_inside_sec
+                            )
 
                             output = ddnum_dkdk / transf_den
-                            output -= (dnum_di * dden_dk / transf_den ** 2.0)
+                            output -= dnum_di * dden_dk / transf_den ** 2.0
                             product = dnum_dk * dden_di + transf_num * ddden_dkdk
                             derivative = output
-                            derivative -= product * transf_den / transf_den ** 3.
-                            derivative += 2.0 * transf_num * dden_di * dden_dk / transf_den ** 3.
+                            derivative -= product / transf_den ** 2.0
+                            derivative += (
+                                2.0 * transf_num * dden_di * dden_dk / transf_den ** 3.0
+                            )
 
                     # The 2.0 is needed because we're in [-1, 1] rather than [0, 1].
                     hessian[i_var, j_deriv, k_deriv] = 2.0 * derivative
@@ -525,7 +630,9 @@ class CubicProTransform(Grid):
                 theta_y = oned_grids[1].points[iy]
 
                 brack_y = self._get_bracket((ix, iy), 1)
-                cart_pt[1] = _inverse_coordinate(theta_y, 1, cart_pt, self.promol, brack_y)
+                cart_pt[1] = _inverse_coordinate(
+                    theta_y, 1, cart_pt, self.promol, brack_y
+                )
 
                 for iz in range(self.num_pts[2]):
                     theta_z = oned_grids[2].points[iz]
@@ -557,7 +664,10 @@ class CubicProTransform(Grid):
 
         """
         # If it is a boundary point, then return nan. Done by indices.
-        if 0 in indices[: i_var + 1] or (self.num_pts[i_var] - 1) in indices[: i_var + 1]:
+        if (
+            0 in indices[: i_var + 1]
+            or (self.num_pts[i_var] - 1) in indices[: i_var + 1]
+        ):
             return np.nan, np.nan
         # If it is a new point, with no nearby point, get a large initial guess.
         elif indices[i_var] == 1:
@@ -569,17 +679,88 @@ class CubicProTransform(Grid):
             index = (indices[0] - 1) * self.num_pts[1] * self.num_pts[2]
         elif i_var == 1:
             index = indices[0] * self.num_pts[1] * self.num_pts[2] + self.num_pts[2] * (
-                    indices[1] - 1
+                indices[1] - 1
             )
         elif i_var == 2:
             index = (
-                    indices[0] * self.num_pts[1] * self.num_pts[2]
-                    + self.num_pts[2] * indices[1]
-                    + indices[2]
-                    - 1
+                indices[0] * self.num_pts[1] * self.num_pts[2]
+                + self.num_pts[2] * indices[1]
+                + indices[2]
+                - 1
             )
 
         return self.points[index, i_var], self.points[index, i_var] + 10.0
+
+    def _closest_point(self, point):
+        r"""
+        Return closest index of the grid point to a point.
+
+        Imagine a point inside a small sub-cube. If `closest` is selected, it will
+        pick the corner in the sub-cube that is closest to that point.
+        if `origin` is selected, it will pick the corner that is the bottom,
+        left-most, down-most in the sub-cube.
+
+        Parameters
+        ----------
+        point : np.ndarray(3,)
+            Point in :math:`\mathbb{R}^3`.
+        which : str
+            If "closest", returns the closest index of the grid point.
+            If "origin", return the bottom, left-most, down-most closest index of the grid point.
+
+        Returns
+        -------
+        index : int
+            Index of the point in `points` closest to the grid point.
+
+        """
+        # O(n) operations,  Index of closest point.
+        idx = np.nanargmin(np.sum((self.points - point) ** 2.0, axis=1))
+        return int(idx)
+
+    def _index_to_indices(self, index):
+        r"""
+        Convert Index to Indices, ie integer m to (i, j, k) position of the Cubic Grid.
+
+        Cubic Grid has shape (N_x, N_y, N_z) where N_x is the number of points
+        in the x-direction, etc.  Then 0 <= i <= N_x - 1, 0 <= j <= N_y - 1, etc.
+
+        Parameters
+        ----------
+        index : int
+            Index of the grid point.
+
+        Returns
+        -------
+        indices : (int, int, int)
+            The ith, jth, kth position of the grid point.
+
+        """
+        assert index >= 0, "Index should be positive. %r" % index
+        n_1d, n_2d = self.num_pts[2], self.num_pts[1] * self.num_pts[2]
+        i = index // n_2d
+        j = (index - n_2d * i) // n_1d
+        k = index - n_2d * i - n_1d * j
+        return i, j, k
+
+    def _indices_to_index(self, indices):
+        r"""
+        Convert Indices to Index, ie (i, j, k) to a index/integer m.
+
+        Parameters
+        ----------
+        indices : (int, int, int)
+            The ith, jth, kth position of the grid point.
+
+        Returns
+        -------
+        index : int
+            Index of the grid point.
+
+        """
+        n_1d, n_2d = self.num_pts[2], self.num_pts[1] * self.num_pts[2]
+        index = n_2d * indices[0] + n_1d * indices[1] + indices[2]
+        return index
 
 
 @dataclass
@@ -593,6 +774,7 @@ class _PromolParams:
     than a generic "[x, y, z]" point.
 
     """
+
     c_m: np.ndarray  # Coefficients of Promolecular.
     e_m: np.ndarray  # Exponents of Promolecular.
     coords: np.ndarray  # Centers/Coordinates of Each Gaussian.
@@ -610,12 +792,8 @@ class _PromolParams:
         r"""Integration of Gaussian over Entire Real space ie :math:`\mathbb{R}^D`."""
         return np.sum(self.c_m * self.pi_over_exponents ** self.dim)
 
-    def integrate_all_certain_variables(self):
-        r""""""
-        return self.pi_over_exponents ** ()
-
     def derivative_gaussian(self, diff_coords, j_deriv):
-        r"""Derivative of single Gaussian but without exponential."""
+        r"""Return derivative of single Gaussian but without exponential."""
         return -self.e_m * 2.0 * diff_coords[:, j_deriv][:, np.newaxis]
 
     def integration_gaussian_till_point(self, diff_coords, i_var, with_factor=False):
@@ -623,7 +801,7 @@ class _PromolParams:
         coord_ivar = diff_coords[:, i_var][:, np.newaxis]
         integration = (erf(np.sqrt(self.e_m) * coord_ivar) + 1.0) / 2.0
         if with_factor:
-            # Included the (pi / exponents), this is the actual integral here.
+            # Included the (pi / exponents), this becomes the actual integral.
             # Not including the (pi / exponents) increasing computation slightly faster.
             return integration * self.pi_over_exponents
         return integration
@@ -652,13 +830,59 @@ class _PromolParams:
         # K is maximum number of gaussian functions over all M atoms.
         cm, em, coords = self.c_m, self.e_m, self.coords
         # Shape (N, M, D), then Summing gives (N, M, 1)
-        distance = np.sum((points - coords[:, np.newaxis]) ** 2.0, axis=2, keepdims=True)
+        distance = np.sum(
+            (points - coords[:, np.newaxis]) ** 2.0, axis=2, keepdims=True
+        )
         # At each center, multiply Each Distance of a Coordinate, with its exponents.
         exponen = np.exp(-np.einsum("MND, MK-> MNK", distance, em))
         # At each center, multiply the exponential with its coefficients.
         gaussian = np.einsum("MNK, MK -> MNK", exponen, cm)
         # At each point, sum for each center, then sum all centers together.
         return np.einsum("MNK -> N", gaussian, dtype=np.float64)
+
+    def helper_for_derivatives(self, diff_squared, diff_coords, i_var):
+        r"""
+        Return Arrays for computing the derivative of transformation functions wrt x, y, z.
+
+        Parameters
+        ----------
+        diff_squared : np.ndarray
+            The squared of difference of position to the center of the Promoleculars.
+        diff_coords : np.ndarray
+            The difference of position to the center of the Promoleculars. This is the square
+            root of `diff_squared`.
+        i_var : int
+            Index of one of x, y, z.
+
+        Returns
+        -------
+        distance : np.ndarray
+            The squared distance from the position to the center of the Promoleculars.
+        single_gauss : np.ndarray
+            Array with entries of a single Gaussian e^(-a distance) with factor (pi / a).
+        integrate_till_pt_x  : np.ndarray
+            Integration of a Gaussian from -inf to x, ie
+                (pi / a)^0.5 * (erf(a^0.5 (x - center of Gaussian) + 1) / 2
+        transf_num : float
+            The numerator of the transformation. Mostly used for quotient rule.
+        transf_den : float
+            The denominator of the transformation. Mostly used for quotient rule.
+
+        """
+        distance = np.sum(diff_squared[:, :i_var], axis=1)[:, np.newaxis]
+
+        # Gaussian Integrals Over Entire Space For Numerator and Denomator.
+        single_gauss = self.single_gaussians(distance)
+        single_gauss *= self.pi_over_exponents ** (self.dim - i_var - 1)
+
+        # Get integral of Gaussian till a point.
+        integrate_till_pt_x = self.integration_gaussian_till_point(
+            diff_coords, i_var, with_factor=True
+        )
+        # Numerator and Denominator of Original Transformation.
+        transf_num = np.sum(single_gauss * integrate_till_pt_x)
+        transf_den = np.sum(single_gauss * self.pi_over_exponents)
+        return distance, single_gauss, integrate_till_pt_x, transf_num, transf_den
 
 
 def _transform_coordinate(real_pt, i_var, promol):
@@ -693,8 +917,9 @@ def _transform_coordinate(real_pt, i_var, promol):
 
     # Get the integral of Gaussian till a point excluding a prefactor.
     # prefactor (pi / exponents) is included in `gaussian_integrals`.
-    cdf_gauss = promol.integration_gaussian_till_point(diff_coords, i_var,
-                                                       with_factor=False)
+    cdf_gauss = promol.integration_gaussian_till_point(
+        diff_coords, i_var, with_factor=False
+    )
 
     # Final Result.
     transf_num = np.sum(single_gauss * cdf_gauss)
@@ -770,14 +995,25 @@ def _inverse_coordinate(theta_pt, i_var, transformed, promol, bracket=(-10, 10))
         the value 10 to the lower or upper bound that is closest to zero.
 
     """
+    # Check's if this is a boundary points which is mapped to np.nan
+    # These two conditions are added for individual point transformation.
+    if np.abs(theta_pt - -1.0) < 1e-10:
+        return np.nan
+    if np.abs(theta_pt - 1.0) < 1e-10:
+        return np.nan
+    # This condition is added for transformation of the entire grid.
+    # The [:i_var] is needed because of the way I've set-up transforming points in _transform.
+    # Likewise for the bracket, see the function `get_bracket`.
+    if np.nan in bracket or np.nan in transformed[:i_var]:
+        return np.nan
 
     def _dynamic_bracketing(l_bnd, u_bnd, maxiter=50):
         r"""Dynamically changes the lower (or upper bound) to have different sign values."""
+        bounds = [l_bnd, u_bnd]
 
         def is_same_sign(x, y):
             return (x >= 0 and y >= 0) or (x < 0 and y < 0)
 
-        bounds = [l_bnd, u_bnd]
         f_l_bnd = _root_equation(l_bnd, *args)
         f_u_bnd = _root_equation(u_bnd, *args)
         # Get Index of the one that is closest to zero, the one that needs to change.
@@ -801,18 +1037,6 @@ def _inverse_coordinate(theta_pt, i_var, transformed, promol, bracket=(-10, 10))
         if counter == maxiter:
             raise RuntimeError("Dynamic Bracketing did not converge.")
         return tuple(bounds)
-
-    # Check's if this is a boundary points which is mapped to np.nan
-    # These two conditions are added for individual point transformation.
-    if np.abs(theta_pt - -1.0) < 1e-10:
-        return np.nan
-    if np.abs(theta_pt - 1.0) < 1e-10:
-        return np.nan
-    # This condition is added for transformation of the entire grid.
-    # The [:i_var] is needed because of the way I've set-up transforming points in _transform.
-    # Likewise for the bracket, see the function `get_bracket`.
-    if np.nan in bracket or np.nan in transformed[:i_var]:
-        return np.nan
 
     # Set up Arguments for root_equation with dynamic bracketing.
     args = (transformed[:i_var], theta_pt, i_var, promol)
