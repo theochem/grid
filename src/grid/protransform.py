@@ -35,7 +35,7 @@ __all__ = ["CubicProTransform"]
 
 class CubicProTransform(Grid):
     r"""
-    Promolecular Grid Transformation of a Cubic Grid.
+    Promolecular Grid Transformation of a Cubic Grid in :math:`[-1, 1]^3`.
 
     Grid is three dimensional and modeled as Tensor Product of Three, one dimensional grids.
     Theta space is defined to be :math:`[-1, 1]^3`.
@@ -82,6 +82,7 @@ class CubicProTransform(Grid):
     >> from grid.onedgrid import GaussChebyshev
 
     >> numb_x = 50
+    This is a grid in :math:`[-1, 1]`.
     >> oned = GaussChebyshev(numb_x)
     One dimensional grid is the same in all x, y, z directions.
     >> promol = CubicProTransform([oned, oned, oned], params.c_m, params.e_m, params.coords)
@@ -99,8 +100,40 @@ class CubicProTransform(Grid):
 
     Notes
     -----
-    TODO: Insert Info About Conditional Distribution Method.
-    TODO: Add Infor about how boundarys on theta-space are mapped to np.nan.
+    Let :math:`\rho^o(x, y, z) = \sum_{i=1}^M \sum_{j=1}^D e^{}` be the Promolecular density of a \
+    linear combination of Gaussian functions.
+
+    The conditional distribution transformation from :math:`\mathbb{R}^3` to :math:`[-1, 1]^3`
+    transfers the (x, y, z) coordinates in :math:`\mathbb{R}^3` to a set of coordinates,
+    denoted as :math:`(\theta_x, \theta_y, \theta_z)`, in :math:`[-1,1]^3` that are "bunched"
+    up where :math:`\rho^o` is large.
+
+    Precisely it is,
+
+    .. math::
+        \begin{eqnarray}
+            \theta_x(x) :&=
+            -1 + 2 \frac{\int_{-\infty}^x \int \int \rho^o(x, y, z)dx dy dz }
+                        {\int \int \int \rho^o(x, y, z)dxdydz}\\
+            \theta_y(x, y) :&=
+            -1 + 2 \frac{\int_{-\infty}^y \int \rho^o(x, y, z)dy dz }
+                        {\int \int \rho^o(x, y, z)dydz} \\
+            \theta_z(x, y, z) :&=
+            -1 + 2 \frac{\int_{-\infty}^z \rho^o(x, y, z)dz }
+                        {\int \rho^o(x, y, z)dz}\\
+        \end{eqnarray}
+
+    Integration of a integrable function :math:`f : \mathbb{R}^3 \rightarrow \mathbb{R}` can be
+    done as follows in theta space:
+
+    .. math::
+        \int \int \int f(x, y, z)dxdy dz \approx
+        \frac{1}{8} N \int_{-1}^1 \int_{-1}^1 \int_{-1}^1 \frac{f(\theta_x, \theta_y, \theta_z)}
+        {\rho^o(\theta_x, \theta_y, \theta_z)} d\theta_x d\theta_y d\theta_z,
+
+        \text{where }  N = \int \int \int \rho^o(x, y, z) dx dy dz.
+
+    Note that this class always assumed the boundary of [-1, 1]^3 is always included.
 
     """
 
@@ -209,7 +242,7 @@ class CubicProTransform(Grid):
 
     def integrate(self, *value_arrays, trick=False, tol=1e-10):
         r"""
-        Integrate any function.
+        Integrate any real-valued function :math:`f: \mathbb{R}^3 \rightarrow \mathbb{R}`.
 
         Assumes integrand decays faster than the promolecular density.
 
@@ -237,7 +270,16 @@ class CubicProTransform(Grid):
 
         Notes
         -----
-        - TODO: Insert formula for integration.
+        - Formula for the integration of a integrable function
+        :math:`f : \mathbb{R}^3 \rightarrow \mathbb{R}` is done as follows:
+
+        .. math::
+            \int \int \int f(x, y, z)dxdy dz \approx
+            \frac{1}{8} N \int_{-1}^1 \int_{-1}^1 \int_{-1}^1 \frac{f(\theta_x, \theta_y, \theta_z)}
+            {\rho^o(\theta_x, \theta_y, \theta_z)} d\theta_x d\theta_y d\theta_z,
+
+            \text{where }  N = \int \int \int \rho^o(x, y, z) dx dy dz.
+
         - This method assumes the integrand decays faster than the promolecular density.
 
         """
@@ -272,7 +314,7 @@ class CubicProTransform(Grid):
         Parameters
         ----------
         real_pt : np.ndarray(3)
-            Point in :math:`\mathbb{R}^3`
+            Point in :math:`\mathbb{R}^3`.
         real_derivative : np.ndarray(3)
             Derivative of a function in real space with respect to x, y, z coordinates.
 
@@ -284,6 +326,10 @@ class CubicProTransform(Grid):
         Notes
         -----
         This does not preserve the direction of steepest-ascent/gradient.
+
+        See Also
+        --------
+        steepest_ascent_theta : Steepest-ascent direction.
 
         """
         jacobian = self.jacobian(real_pt)
@@ -316,7 +362,6 @@ class CubicProTransform(Grid):
     def interpolate_function(
         self, real_pt, func_values, oned_grids, use_log=False, nu=0
     ):
-        # TODO: Should oned_grids be stored as class attribute when only this method requires it.
         r"""
         Interpolate function at a point.
 
@@ -339,7 +384,9 @@ class CubicProTransform(Grid):
             If nu is 1: Returns the interpolated derivative of a function at a real point.
 
         """
+        # TODO: Should oned_grids be stored as class attribute when only this method requires it.
         # TODO: Ask about use_log and derivative.
+        # TODO: Asser that nu can't be beyond 0 or one and integer.
         # Map to theta space.
         theta_pt = self.transform(real_pt)
 
@@ -403,6 +450,7 @@ class CubicProTransform(Grid):
         Jacobian of the transformation from real space to theta space.
 
         Precisely, it is the lower-triangular matrix
+
         .. math::
             \begin{bmatrix}
                 \frac{\partial \theta_x}{\partial X} & 0 & 0 \\
@@ -466,6 +514,13 @@ class CubicProTransform(Grid):
     def hessian(self, real_pt):
         r"""
         Hessian of the transformation.
+
+        The Hessian :math:`H` is a three-dimensional array with (i, j, k)th entry:
+
+        .. math::
+            H_{i, j, k} = \frac{\partial^2 \theta_i(x_0, \cdots, x_{i-1}}{\partial x_i \partial x_j}
+
+            \text{where } (x_0, x_1, x_2) := (x, y, z).
 
         Parameters
         ----------
@@ -690,33 +745,6 @@ class CubicProTransform(Grid):
             )
 
         return self.points[index, i_var], self.points[index, i_var] + 10.0
-
-    def _closest_point(self, point):
-        r"""
-        Return closest index of the grid point to a point.
-
-        Imagine a point inside a small sub-cube. If `closest` is selected, it will
-        pick the corner in the sub-cube that is closest to that point.
-        if `origin` is selected, it will pick the corner that is the bottom,
-        left-most, down-most in the sub-cube.
-
-        Parameters
-        ----------
-        point : np.ndarray(3,)
-            Point in :math:`\mathbb{R}^3`.
-        which : str
-            If "closest", returns the closest index of the grid point.
-            If "origin", return the bottom, left-most, down-most closest index of the grid point.
-
-        Returns
-        -------
-        index : int
-            Index of the point in `points` closest to the grid point.
-
-        """
-        # O(n) operations,  Index of closest point.
-        idx = np.nanargmin(np.sum((self.points - point) ** 2.0, axis=1))
-        return int(idx)
 
     def _index_to_indices(self, index):
         r"""
