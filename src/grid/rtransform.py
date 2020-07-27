@@ -1027,7 +1027,7 @@ class KnowlesTF(BaseTransform):
             following operations.
         """
         if k <= 0:
-            raise ValueError(f"k needs to be greater than 0.")
+            raise ValueError(f"k needs to be greater than 0, got k = {k}")
         self._rmin = rmin
         self._R = R
         self._k = k
@@ -1189,7 +1189,7 @@ class HandyTF(BaseTransform):
             following operations.
         """
         if m <= 0:
-            raise ValueError(f"m needs to be greater than 0.")
+            raise ValueError(f"m needs to be greater than 0, got m = {m}")
         self._rmin = rmin
         self._R = R
         self._m = m
@@ -1354,7 +1354,7 @@ class HandyModTF(BaseTransform):
             following operations.
         """
         if m <= 0:
-            raise ValueError(f"m needs to be greater than 0.")
+            raise ValueError(f"m needs to be greater than 0, got m = {m}")
 
         if rmax < rmin:
             raise ValueError(

@@ -24,7 +24,7 @@ from grid.atomic_grid import AtomicGrid
 from grid.basegrid import SubGrid
 from grid.becke import BeckeWeights
 from grid.molgrid import MolGrid
-from grid.onedgrid import HortonLinear
+from grid.onedgrid import GaussLaguerre, HortonLinear
 from grid.rtransform import ExpRTransform
 
 # from importlib_resources import path
@@ -62,6 +62,151 @@ class TestMolGrid(TestCase):
         fn = np.exp(-2 * dist0) / np.pi
         occupation = mg.integrate(fn)
         assert_almost_equal(occupation, 1.0, decimal=6)
+
+    def test_make_grid_integral(self):
+        """Test molecular make_grid works as designed."""
+        pts = HortonLinear(70)
+        tf = ExpRTransform(1e-5, 2e1)
+        rgrid = tf.transform_1d_grid(pts)
+        numbers = np.array([1, 1])
+        coordinates = np.array([[0.0, 0.0, -0.5], [0.0, 0.0, 0.5]], float)
+        becke = BeckeWeights(order=3)
+        # construct molgrid
+        for grid_type, deci in (
+            ("coarse", 3),
+            ("medium", 4),
+            ("fine", 5),
+            ("veryfine", 6),
+            ("ultrafine", 6),
+            ("insane", 6),
+        ):
+            mg = MolGrid.make_grid(numbers, coordinates, rgrid, grid_type, becke)
+            dist0 = np.sqrt(((coordinates[0] - mg.points) ** 2).sum(axis=1))
+            dist1 = np.sqrt(((coordinates[1] - mg.points) ** 2).sum(axis=1))
+            fn = np.exp(-2 * dist0) / np.pi + np.exp(-2 * dist1) / np.pi
+            occupation = mg.integrate(fn)
+            assert_almost_equal(occupation, 2.0, decimal=deci)
+
+    def test_make_grid_different_grid_type(self):
+        """Test different kind molgrid initizalize setting."""
+        # three different radial grid
+        rad2 = GaussLaguerre(50)
+        rad3 = GaussLaguerre(70)
+        # construct grid
+        numbers = np.array([1, 8, 1])
+        coordinates = np.array(
+            [[0.0, 0.0, -0.5], [0.0, 0.0, 0.5], [0.0, 0.5, 0.0]], float
+        )
+        becke = BeckeWeights(order=3)
+
+        # grid_type test with list
+        mg = MolGrid.make_grid(
+            numbers,
+            coordinates,
+            rad2,
+            ["fine", "veryfine", "medium"],
+            becke,
+            store=True,
+        )
+        dist0 = np.sqrt(((coordinates[0] - mg.points) ** 2).sum(axis=1))
+        dist1 = np.sqrt(((coordinates[1] - mg.points) ** 2).sum(axis=1))
+        dist2 = np.sqrt(((coordinates[2] - mg.points) ** 2).sum(axis=1))
+        fn = (np.exp(-2 * dist0) + np.exp(-2 * dist1) + np.exp(-2 * dist2)) / np.pi
+        occupation = mg.integrate(fn)
+        assert_almost_equal(occupation, 3, decimal=3)
+
+        atgrid1 = AtomicGrid.quick_grid(numbers[0], rad2, "fine", center=coordinates[0])
+        atgrid2 = AtomicGrid.quick_grid(
+            numbers[1], rad2, "veryfine", center=coordinates[1]
+        )
+        atgrid3 = AtomicGrid.quick_grid(
+            numbers[2], rad2, "medium", center=coordinates[2]
+        )
+        assert_allclose(mg._atomic_grids[0].points, atgrid1.points)
+        assert_allclose(mg._atomic_grids[1].points, atgrid2.points)
+        assert_allclose(mg._atomic_grids[2].points, atgrid3.points)
+
+        # grid type test with dict
+        mg = MolGrid.make_grid(
+            numbers, coordinates, rad3, {1: "fine", 8: "veryfine"}, becke, store=True
+        )
+        dist0 = np.sqrt(((coordinates[0] - mg.points) ** 2).sum(axis=1))
+        dist1 = np.sqrt(((coordinates[1] - mg.points) ** 2).sum(axis=1))
+        dist2 = np.sqrt(((coordinates[2] - mg.points) ** 2).sum(axis=1))
+        fn = (np.exp(-2 * dist0) + np.exp(-2 * dist1) + np.exp(-2 * dist2)) / np.pi
+        occupation = mg.integrate(fn)
+        assert_almost_equal(occupation, 3, decimal=3)
+
+        atgrid1 = AtomicGrid.quick_grid(numbers[0], rad3, "fine", center=coordinates[0])
+        atgrid2 = AtomicGrid.quick_grid(
+            numbers[1], rad3, "veryfine", center=coordinates[1]
+        )
+        atgrid3 = AtomicGrid.quick_grid(numbers[2], rad3, "fine", center=coordinates[2])
+        assert_allclose(mg._atomic_grids[0].points, atgrid1.points)
+        assert_allclose(mg._atomic_grids[1].points, atgrid2.points)
+        assert_allclose(mg._atomic_grids[2].points, atgrid3.points)
+
+    def test_make_grid_different_rad_type(self):
+        """Test different radial grid input for make molgrid."""
+        # radial grid test with list
+        rad1 = GaussLaguerre(30)
+        rad2 = GaussLaguerre(50)
+        rad3 = GaussLaguerre(70)
+        # construct grid
+        numbers = np.array([1, 8, 1])
+        coordinates = np.array(
+            [[0.0, 0.0, -0.5], [0.0, 0.0, 0.5], [0.0, 0.5, 0.0]], float
+        )
+        becke = BeckeWeights(order=3)
+        # construct molgrid
+        mg = MolGrid.make_grid(
+            numbers,
+            coordinates,
+            [rad1, rad2, rad3],
+            {1: "fine", 8: "veryfine"},
+            becke,
+            store=True,
+        )
+        dist0 = np.sqrt(((coordinates[0] - mg.points) ** 2).sum(axis=1))
+        dist1 = np.sqrt(((coordinates[1] - mg.points) ** 2).sum(axis=1))
+        dist2 = np.sqrt(((coordinates[2] - mg.points) ** 2).sum(axis=1))
+        fn = (np.exp(-2 * dist0) + np.exp(-2 * dist1) + np.exp(-2 * dist2)) / np.pi
+        occupation = mg.integrate(fn)
+        assert_almost_equal(occupation, 3, decimal=3)
+
+        atgrid1 = AtomicGrid.quick_grid(numbers[0], rad1, "fine", center=coordinates[0])
+        atgrid2 = AtomicGrid.quick_grid(
+            numbers[1], rad2, "veryfine", center=coordinates[1]
+        )
+        atgrid3 = AtomicGrid.quick_grid(numbers[2], rad3, "fine", center=coordinates[2])
+        assert_allclose(mg._atomic_grids[0].points, atgrid1.points)
+        assert_allclose(mg._atomic_grids[1].points, atgrid2.points)
+        assert_allclose(mg._atomic_grids[2].points, atgrid3.points)
+
+        # radial grid test with dict
+        mg = MolGrid.make_grid(
+            numbers,
+            coordinates,
+            {1: rad1, 8: rad3},
+            {1: "fine", 8: "veryfine"},
+            becke,
+            store=True,
+        )
+        dist0 = np.sqrt(((coordinates[0] - mg.points) ** 2).sum(axis=1))
+        dist1 = np.sqrt(((coordinates[1] - mg.points) ** 2).sum(axis=1))
+        dist2 = np.sqrt(((coordinates[2] - mg.points) ** 2).sum(axis=1))
+        fn = (np.exp(-2 * dist0) + np.exp(-2 * dist1) + np.exp(-2 * dist2)) / np.pi
+        occupation = mg.integrate(fn)
+        assert_almost_equal(occupation, 3, decimal=3)
+
+        atgrid1 = AtomicGrid.quick_grid(numbers[0], rad1, "fine", center=coordinates[0])
+        atgrid2 = AtomicGrid.quick_grid(
+            numbers[1], rad3, "veryfine", center=coordinates[1]
+        )
+        atgrid3 = AtomicGrid.quick_grid(numbers[2], rad1, "fine", center=coordinates[2])
+        assert_allclose(mg._atomic_grids[0].points, atgrid1.points)
+        assert_allclose(mg._atomic_grids[1].points, atgrid2.points)
+        assert_allclose(mg._atomic_grids[2].points, atgrid3.points)
 
     def test_integrate_hydrogen_pair_1s(self):
         """Test molecular integral in H2."""
@@ -337,6 +482,40 @@ class TestMolGrid(TestCase):
         with self.assertRaises(ValueError):
             molg.get_atomic_grid(-5)
 
+        # test make_grid error
+        pts = HortonLinear(70)
+        tf = ExpRTransform(1e-5, 2e1)
+        rgrid = tf.transform_1d_grid(pts)
+        numbers = np.array([1, 1])
+        becke = BeckeWeights(order=3)
+        # construct molgrid
+        with self.assertRaises(ValueError):
+            MolGrid.make_grid(numbers, np.array([0.0, 0.0, 0.0]), rgrid, "fine", becke)
+        with self.assertRaises(ValueError):
+            MolGrid.make_grid(
+                np.array([1, 1]), np.array([[0.0, 0.0, 0.0]]), rgrid, "fine", becke
+            )
+        with self.assertRaises(ValueError):
+            MolGrid.make_grid(
+                np.array([1, 1]), np.array([[0.0, 0.0, 0.0]]), rgrid, "fine", becke
+            )
+        with self.assertRaises(TypeError):
+            MolGrid.make_grid(
+                np.array([1, 1]),
+                np.array([[0.0, 0.0, -0.5], [0.0, 0.0, 0.5]]),
+                {3, 5},
+                "fine",
+                becke,
+            )
+        with self.assertRaises(TypeError):
+            MolGrid.make_grid(
+                np.array([1, 1]),
+                np.array([[0.0, 0.0, -0.5], [0.0, 0.0, 0.5]]),
+                rgrid,
+                np.array([3, 5]),
+                becke,
+            )
+
     def test_get_subgrid_1s(self):
         """Test subgrid for a molecule with one atom."""
         nums = np.array([1])
@@ -404,11 +583,3 @@ class TestMolGrid(TestCase):
         fnsum[sub0.indices] += subfn0
         fnsum[sub1.indices] += subfn1
         assert_allclose(grid.integrate(fnsum), np.pi * (1 / 8 + 1 / 64), rtol=1e-5)
-
-    """
-    def test_family():
-        numbers = np.array([6, 8], int)
-        coordinates = np.array([[0.0, 0.2, -0.5], [0.1, 0.0, 0.5]], float)
-        grid = BeckeMolGrid(coordinates, numbers, None, 'tv-13.7-3', random_rotate=False)
-        assert grid.size == 1536 + 1612
-    """

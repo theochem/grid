@@ -231,7 +231,7 @@ def get_cov_radii(numbers, type="bragg"):
     if isinstance(numbers, (int, np.integer)):
         numbers = np.array([numbers])
     if np.any(np.array(numbers) == 0):
-        raise ValueError(f"0 is not a valid atomic number")
+        raise ValueError("0 is not a valid atomic number")
     if type == "bragg":
         return _bragg[numbers]
     elif type == "cambridge":
