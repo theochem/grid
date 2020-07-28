@@ -17,7 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
-"""Promolecular Module."""
+"""Hirshfeld Weights Module."""
+
 
 from importlib_resources import path
 
@@ -26,8 +27,8 @@ import numpy as np
 from scipy.interpolate import CubicSpline
 
 
-class Promolecule:
-    """Promolecule functions holder class."""
+class HirshfeldWeights:
+    """Hirshfeld weights functions holder class."""
 
     def __init__(self):
         """Initialize class."""
@@ -51,14 +52,14 @@ class Promolecule:
     @staticmethod
     def _get_proatomic_density(rad, zatom, charge):
         """Get the density of a spherical atom."""
-        rad_0 = Promolecule._load_npz_radial(zatom)
-        log_rho_0 = Promolecule._load_npz_log_densities(zatom, charge)
+        rad_0 = HirshfeldWeights._load_npz_radial(zatom)
+        log_rho_0 = HirshfeldWeights._load_npz_log_densities(zatom, charge)
         cspline = CubicSpline(rad_0, log_rho_0, bc_type="natural", extrapolate=True)
 
         return np.exp(cspline(rad))
 
-    def generate_promolecule(self, points, atom_coords, atom_nums, atom_charges):
-        """Calculate the promolecular density.
+    def generate_proatoms(self, points, atom_coords, atom_nums, atom_charges):
+        """Evaluate pro-atom densities on the given grid points.
 
         Parameters
         ----------
@@ -71,23 +72,23 @@ class Promolecule:
         atom_charges: np.ndarray(M,)
             Explicit charge in the atom.
 
-        Return
-        ------
-        np.ndarray(N,)
+        Returns
+        -------
+        np.ndarray (M, N)
+            Pro-atom densities evaluated on :math:`N` grid points.
         """
-        promolecule = np.zeros(len(points))
+        proatoms = np.zeros((len(atom_nums), len(points)))
 
-        for atom in len(atom_nums):
-            rad_coord = np.linalg.norm(points[:, None] - atom_coords[atom], axis=-1)
-
-            promolecule += Promolecule._get_proatomic_density(
-                rad_coord, atom_nums[atom], atom_charges[atom]
+        for index, atom_num in enumerate(atom_nums):
+            rad_coord = np.linalg.norm(points[:, None] - atom_coords[index], axis=-1)
+            proatoms[index] = HirshfeldWeights._get_proatomic_density(
+                rad_coord, atom_num, atom_charges[index]
             )
 
-        return promolecule
+        return proatoms
 
     def __call__(self, points, atom_coords, atom_nums, atom_charges):
-        """Evaluate the promolecular density on the given grid points.
+        """Evaluate integration weights on the given grid points.
 
         Parameters
         ----------
@@ -103,6 +104,9 @@ class Promolecule:
         Return
         ------
         np.ndarray(N,)
-            The value of the promolecular density.
+            Hirshfeld integration weights of :math:`N` grid points.
         """
-        pass
+        proatoms = self.generate_proatoms(points, atom_coords, atom_nums, atom_charges)
+        promolecule = np.sum(proatoms, axis=0)
+
+        return np.sum(proatoms / promolecule, axis=0)
