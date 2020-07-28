@@ -57,6 +57,7 @@ class TestLebedev(TestCase):
                 assert_allclose(grid.points[:, 0] @ grid.weights, 0, atol=1e-10)
                 assert_allclose(grid.points[:, 1] @ grid.weights, 0, atol=1e-10)
                 assert_allclose(grid.points[:, 2] @ grid.weights, 0, atol=1e-10)
+                assert grid.weights.min() > 0
             previous_npoint = npoint
 
     def test_match_degree(self):
