@@ -34,54 +34,58 @@ class HirshfeldWeights:
         """Initialize class."""
 
     @staticmethod
-    def _load_npz_radial(zatom):
-        """Load the radial coordinate for an atom."""
-        filename = "a" + str(zatom)
-        with path("grid.data.promolecule.radial", filename) as npz_file:
-            data = np.load(npz_file)
-        return data["points"]
+    def _load_npz_proatom(num):
+        """Return radial grid points and neutral density for a given atomic number."""
+        with path("grid.data.proatoms", f"a{num:03d}.npz") as fname:
+            data = np.load(fname)
+        return data["r"], data["dn"]
 
     @staticmethod
-    def _load_npz_log_densities(zatom):
-        """Load the log of density for an atom."""
-        filename = "a" + str(zatom)
-        with path("grid.data.promolecule.density", filename) as npz_file:
-            data = np.load(npz_file)
-        return data["density"]
+    def _get_proatom_density(num, coords_radial):
+        """Evaluate density of pro-atom on the given points.
+
+        Parameters
+        ----------
+        num: int
+            Atomic number of pro-atom.
+        coords_radial: np.ndarray(K,)
+            Radial grid points.
+
+        Returns
+        -------
+        np.ndarray(K,)
+            Pro-atom densities evaluated on :math:`K` radial grid points.
+        """
+        # get pre-computed radial grid points & density of pro-atom
+        rad, rho = HirshfeldWeights._load_npz_proatom(num)
+        # interpolate pro-atom density
+        cspline = CubicSpline(rad, rho, bc_type="natural", extrapolate=True)
+        # evaluate pro-atom density on the given points
+        out = cspline(coords_radial).flatten()
+        return out
 
     @staticmethod
-    def _get_proatomic_density(rad, zatom):
-        """Get the density of a spherical atom."""
-        rad_0 = HirshfeldWeights._load_npz_radial(zatom)
-        log_rho_0 = HirshfeldWeights._load_npz_log_densities(zatom)
-        cspline = CubicSpline(rad_0, log_rho_0, bc_type="natural", extrapolate=True)
-
-        return np.exp(cspline(rad))
-
-    def generate_proatoms(self, points, atom_coords, atom_nums):
+    def generate_proatom(points, coord, num):
         """Evaluate pro-atom densities on the given grid points.
 
         Parameters
         ----------
-        points: np.ndarray(N,3)
-            Cartesian coordinates of N grid points.
-        atom_coords: np.ndarray(M,3)
-            Cartesian coordinates of the M atoms in molecule.
-        atom_nums: np.ndarray(M,)
-            Atomic number of M atoms in molecule.
+        points: np.ndarray(N, 3)
+            Cartesian coordinates of :math:`N` grid points.
+        coord: np.ndarray(3,)
+            Cartesian coordinates of the atom.
+        num: int
+            Atomic number of the atom.
 
         Returns
         -------
-        np.ndarray (M, N)
+        np.ndarray(N,)
             Pro-atom densities evaluated on :math:`N` grid points.
         """
-        proatoms = np.zeros((len(atom_nums), len(points)))
-
-        for index, atom_num in enumerate(atom_nums):
-            rad_coord = np.linalg.norm(points[:, None] - atom_coords[index], axis=-1)
-            proatoms[index] = HirshfeldWeights._get_proatomic_density(rad_coord, atom_num)
-
-        return proatoms
+        # compute distance of grid points from atom
+        dist = np.linalg.norm(points[:, None] - coord, axis=-1)
+        # compute pro-atom density
+        return HirshfeldWeights._get_proatom_density(num, dist)
 
     def __call__(self, points, atom_coords, atom_nums, indices):
         """Evaluate integration weights on the given grid points.
@@ -89,20 +93,29 @@ class HirshfeldWeights:
         Parameters
         ----------
         points: np.ndarray(N,3)
-            Cartesian coordinates of N grid points.
+            Cartesian coordinates of :math:`N` grid points.
         atom_coords: np.ndarray(M,3)
-            Cartesian coordinates of the M atoms in molecule.
+            Cartesian coordinates of the :math:`M` atoms in molecule.
         atom_nums: np.ndarray(M,)
-            Atomic number of M atoms in molecule.
+            Atomic number of :math:`M` atoms in molecule.
         indices : np.ndarray(M+1,)
             Indices of atomic grid points for each :math:`M` atoms in molecule.
 
         Return
         ------
         np.ndarray(N,)
-            Hirshfeld integration weights of :math:`N` grid points.
+            Hirshfeld integration weights evaluated on :math:`N` grid points.
         """
-        proatoms = self.generate_proatoms(points, atom_coords, atom_nums)
-        promolecule = np.sum(proatoms, axis=0)
-
-        return np.sum(proatoms / promolecule, axis=0)
+        aim_weights = np.zeros(len(points))
+        promolecule = np.zeros(len(points))
+        # evaluate (neutral) pro-atom densities & pro-molecule density
+        for index, atom_num in enumerate(atom_nums):
+            proatom = HirshfeldWeights.generate_proatom(points, atom_coords[index], atom_num)
+            promolecule += proatom
+            start, end = indices[index], indices[index + 1]
+            aim_weights[start: end] = proatom[start: end]
+        # evaluate weights
+        aim_weights /= promolecule
+        # check weights are all positive
+        # assert np.all(aim_weights >= 0), np.min(aim_weights)
+        return aim_weights

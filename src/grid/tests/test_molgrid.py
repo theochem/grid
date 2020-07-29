@@ -23,6 +23,7 @@ from unittest import TestCase
 from grid.atomgrid import AtomGrid
 from grid.basegrid import LocalGrid
 from grid.becke import BeckeWeights
+from grid.hirshfeld import HirshfeldWeights
 from grid.molgrid import MolGrid
 from grid.onedgrid import GaussLaguerre, HortonLinear
 from grid.rtransform import ExpRTransform
@@ -597,3 +598,46 @@ class TestMolGrid(TestCase):
         fnsum[local0.indices] += localfn0
         fnsum[local1.indices] += localfn1
         assert_allclose(grid.integrate(fnsum), np.pi * (1 / 8 + 1 / 64), rtol=1e-5)
+
+    def test_integrate_hirshfeld_weights_single_1s(self):
+        """Test molecular integral in H atom with Hirshfeld weights."""
+        pts = HortonLinear(100)
+        tf = ExpRTransform(1e-5, 2e1)
+        rgrid = tf.transform_1d_grid(pts)
+        coordinates = np.array([0.0, 0.0, -0.5])
+        atg1 = AtomGrid.from_pruned(
+            rgrid,
+            0.5,
+            r_sectors=np.array([]),
+            degs=np.array([17]),
+            center=coordinates,
+        )
+        mg = MolGrid([atg1], HirshfeldWeights(), np.array([7]))
+        dist0 = np.sqrt(((coordinates - mg.points) ** 2).sum(axis=1))
+        fn = np.exp(-2 * dist0) / np.pi
+        occupation = mg.integrate(fn)
+        assert_almost_equal(occupation, 1.0, decimal=6)
+
+    def test_integrate_hirshfeld_weights_pair_1s(self):
+        """Test molecular integral in H2."""
+        coordinates = np.array([[0.0, 0.0, -0.5], [0.0, 0.0, 0.5]])
+        atg1 = AtomGrid.from_pruned(
+            self.rgrid,
+            0.5,
+            r_sectors=np.array([]),
+            degs=np.array([17]),
+            center=coordinates[0],
+        )
+        atg2 = AtomGrid.from_pruned(
+            self.rgrid,
+            0.5,
+            r_sectors=np.array([]),
+            degs=np.array([17]),
+            center=coordinates[1],
+        )
+        mg = MolGrid([atg1, atg2], HirshfeldWeights(), np.array([1, 1]))
+        dist0 = np.sqrt(((coordinates[0] - mg.points) ** 2).sum(axis=1))
+        dist1 = np.sqrt(((coordinates[1] - mg.points) ** 2).sum(axis=1))
+        fn = np.exp(-2 * dist0) / np.pi + 1.5 * np.exp(-2 * dist1) / np.pi
+        occupation = mg.integrate(fn)
+        assert_almost_equal(occupation, 2.5, decimal=5)
