@@ -22,7 +22,7 @@
 
 from unittest import TestCase
 
-from grid.onedgrid import GaussChebyshev, GaussLegendre
+from grid.onedgrid import GaussChebyshev, GaussLegendre, HortonLinear
 from grid.rtransform import (
     BeckeTF,
     HandyModTF,
@@ -379,3 +379,22 @@ class TestTransform(TestCase):
             HandyModTF(0.1, 10.0, 0)
         with self.assertRaises(ValueError):
             HandyModTF(10.0, 1.0, 2)
+
+    def test_domain(self):
+        """Test domain errors."""
+        rad = HortonLinear(10)
+        with self.assertRaises(ValueError):
+            tf = BeckeTF(0.1, 1.2)
+            tf.transform_1d_grid(rad)
+        with self.assertRaises(ValueError):
+            tf = HandyModTF(0.1, 10.0, 2)
+            tf.transform_1d_grid(rad)
+        with self.assertRaises(ValueError):
+            tf = KnowlesTF(0.1, 1.2, 2)
+            tf.transform_1d_grid(rad)
+        with self.assertRaises(ValueError):
+            tf = LinearTF(0.1, 10)
+            tf.transform_1d_grid(rad)
+        with self.assertRaises(ValueError):
+            tf = MultiExpTF(0.1, 1.2)
+            tf.transform_1d_grid(rad)

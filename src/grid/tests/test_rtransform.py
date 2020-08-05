@@ -21,6 +21,7 @@
 
 from unittest import TestCase
 
+from grid.onedgrid import GaussLegendre
 from grid.rtransform import (
     ExpRTransform,
     HyperbolicRTransform,
@@ -207,6 +208,25 @@ class TestRTransform(TestCase):
         assert rtf.a == 0.4 / 450
         assert rtf.b == 1.0 / 450
         # assert rtf.npoint == 450
+
+    def test_domain(self):
+        """Test domain errors."""
+        rad = GaussLegendre(10)
+        with self.assertRaises(ValueError):
+            tf = IdentityRTransform()
+            tf.transform_1d_grid(rad)
+        with self.assertRaises(ValueError):
+            tf = LinearRTransform(0.1, 1.5)
+            tf.transform_1d_grid(rad)
+        with self.assertRaises(ValueError):
+            tf = ExpRTransform(0.1, 1e1)
+            tf.transform_1d_grid(rad)
+        with self.assertRaises(ValueError):
+            tf = PowerRTransform(1e-3, 1e2)
+            tf.transform_1d_grid(rad)
+        with self.assertRaises(ValueError):
+            tf = HyperbolicRTransform(0.4 / 450, 1.0 / 450)
+            tf.transform_1d_grid(rad)
 
     def test_linear_bounds(self):
         """Test linear tf raise errors."""

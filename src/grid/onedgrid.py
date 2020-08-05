@@ -62,7 +62,7 @@ def GaussLaguerre(npoints, alpha=0):
 
 
 def GaussLegendre(npoints):
-    r"""Generate 1D grid on [-1, 1] interval based on Gauss-Legendre quadrature.
+    r"""Generate 1D grid on (-1, 1) interval based on Gauss-Legendre quadrature.
 
     .. math::
         \int_{-1}^{1} f(x) dx \approx \sum_{i=1}^n w_i f(x_i)
@@ -130,7 +130,7 @@ def HortonLinear(npoints):
     """
     points = np.arange(npoints)
     weights = np.ones(npoints)
-    return OneDGrid(points, weights)
+    return OneDGrid(points, weights, (0, np.inf))
 
 
 def GaussChebyshevType2(npoints):
