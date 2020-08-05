@@ -376,6 +376,9 @@ class CubicProTransform(Grid):
         use_log : bool
             If true, then logarithm is applied before interpolating to the function values,
             including  `func_values`.
+        nu : int
+            If zero, then the function is interpolated.
+            If one, then the derivative is interpolated.
 
         Returns
         -------
@@ -386,7 +389,8 @@ class CubicProTransform(Grid):
         """
         # TODO: Should oned_grids be stored as class attribute when only this method requires it.
         # TODO: Ask about use_log and derivative.
-        # TODO: Asser that nu can't be beyond 0 or one and integer.
+        if nu not in (0, 1):
+            raise ValueError("The parameter nu %d is either zero or one " % nu)
         # Map to theta space.
         theta_pt = self.transform(real_pt)
 
@@ -1062,8 +1066,6 @@ def _inverse_coordinate(theta_pt, i_var, transformed, promol, bracket=(-10, 10))
             same_sign = is_same_sign(f_l_bnd, f_u_bnd)
             counter += 1
 
-        if counter == maxiter:
-            raise RuntimeError("Dynamic Bracketing did not converge.")
         return tuple(bounds)
 
     # Set up Arguments for root_equation with dynamic bracketing.
