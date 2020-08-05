@@ -57,7 +57,7 @@ class CubicProTransform(Grid):
     Methods
     -------
     integrate(trick=False)
-        Integral of a real-valued function over Euclidean space.
+        Integral of a real-valued function over Euclidean space. Can use promolecular trick.
     jacobian()
         Jacobian of the transformation from Real space to Theta space :math:`[-1, 1]^3`.
     hessian()
@@ -65,11 +65,11 @@ class CubicProTransform(Grid):
     steepest_ascent_theta()
         Direction of steepest-ascent of a function in theta space from gradient in real space.
     transform():
-        Transform Real point to theta point :math:`[-1, 1]^3`.
+        Transform Real point to Theta space :math:`[-1, 1]^3`.
     inverse(bracket=(-10, 10))
-        Transform theta point to Real space :math:`\mathbb{R}^3`.
+        Transform Theta point to Real space :math:`\mathbb{R}^3`.
     interpolate_function(use_log=False, nu=0)
-        Interpolate a function (or its derivative) at a real point.
+        Interpolate a function (or its logarithm) at a real point. Can interpolate its derivative.
 
     Examples
     --------
@@ -242,9 +242,9 @@ class CubicProTransform(Grid):
 
     def integrate(self, *value_arrays, trick=False, tol=1e-10):
         r"""
-        Integrate any real-valued function :math:`f: \mathbb{R}^3 \rightarrow \mathbb{R}`.
+        Integrate any real-valued function on Euclidean space.
 
-        Assumes integrand decays faster than the promolecular density.
+        Assumes the function decays faster than the promolecular density.
 
         Parameters
         ----------
@@ -271,7 +271,7 @@ class CubicProTransform(Grid):
         Notes
         -----
         - Formula for the integration of a integrable function
-        :math:`f : \mathbb{R}^3 \rightarrow \mathbb{R}` is done as follows:
+          :math:`f : \mathbb{R}^3 \rightarrow \mathbb{R}` is done as follows:
 
         .. math::
             \int \int \int f(x, y, z)dxdy dz \approx
@@ -280,7 +280,7 @@ class CubicProTransform(Grid):
 
             \text{where }  N = \int \int \int \rho^o(x, y, z) dx dy dz.
 
-        - This method assumes the integrand decays faster than the promolecular density.
+        - This method assumes function f decays faster than the promolecular density.
 
         """
         promolecular = self.promol.promolecular(self.points)

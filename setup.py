@@ -67,6 +67,6 @@ setup(
         "scipy>=1.4",
         "importlib_resources",
         "sympy",
-        "dataclass; python_version < '3.7'",
+        "dataclasses; python_version < '3.7'",
     ],
 )
