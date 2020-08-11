@@ -21,7 +21,7 @@
 
 
 from grid.atomic_grid import AtomicGrid
-from grid.basegrid import Grid, OneDGrid, SubGrid
+from grid.basegrid import Grid, LocalGrid, OneDGrid
 
 import numpy as np
 
@@ -213,9 +213,9 @@ class MolGrid(Grid):
 
         Returns
         -------
-        AtomicGrid or SubGrid
+        AtomicGrid or LocalGrid
             If store=True, the AtomicGrid instance used is returned.
-            If store=False, the SubGrid containing points and weights of AtomicGrid
+            If store=False, the LocalGrid containing points and weights of AtomicGrid
             is returned.
 
         Raises
@@ -228,10 +228,10 @@ class MolGrid(Grid):
         # get atomic grid if stored
         if self._atomic_grids is not None:
             return self._atomic_grids[index]
-        # make a sub-grid
+        # make a local grid
         pts = self.points[self._indices[index] : self._indices[index + 1]]
         wts = self._atweights[self._indices[index] : self._indices[index + 1]]
-        return SubGrid(pts, wts, self._coors[index])
+        return LocalGrid(pts, wts, self._coors[index])
 
     @property
     def aim_weights(self):
@@ -256,7 +256,7 @@ class MolGrid(Grid):
         if self._atomic_grids is None:
             s_ind = self._indices[index]
             f_ind = self._indices[index + 1]
-            return SubGrid(
+            return LocalGrid(
                 self.points[s_ind:f_ind], self.weights[s_ind:f_ind], self._coors[index]
             )
         return self._atomic_grids[index]

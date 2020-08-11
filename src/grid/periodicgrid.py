@@ -22,7 +22,7 @@ r"""Grids with periodic boundary conditions.
 Algorithm
 ---------
 
-To understand how the algorithm in ``get_subgrid`` works, it may be useful
+To understand how the algorithm in ``get_localgrid`` works, it may be useful
 review a few basic crystallographic concepts:
 
 - https://en.wikipedia.org/wiki/Bravais_lattice
@@ -44,7 +44,7 @@ grid points in one primitive cell, with the lattice repeated for clarity. The
 last line is the cutoff "sphere" with center ``c`` and the extent of the sphere
 is shown by the parenthesis.
 
-The conventional approach to build the subgrid considers all the relevant
+The conventional approach to build the local grid considers all the relevant
 periodic images of the grid points and retains only those that lie within the
 cutoff sphere:
 
@@ -157,7 +157,7 @@ adjacent crystal planes along the :math:`k`th lattice vector.
 import itertools
 import warnings
 
-from grid.basegrid import Grid, SubGrid
+from grid.basegrid import Grid, LocalGrid
 
 import numpy as np
 
@@ -182,7 +182,7 @@ class PeriodicGrid(Grid):
     form a singular matrix.
 
     The whole-grid integration works in exactly the same way as in the base
-    class. Through the ``get_subgrid`` method, the following two operations can
+    class. Through the ``get_localgrid`` method, the following two operations can
     be carried out easily:
 
     1) The integration of a local function on a part of the periodic grid. The
@@ -193,24 +193,25 @@ class PeriodicGrid(Grid):
     2) The addition of the periodic repetition of a local function to the whole
     grid.
 
-    In both cases, one uses ``get_subgrid`` to construct an aperiodic grid,
+    In both cases, one uses ``get_localgrid`` to construct an aperiodic grid,
     whose grid points lie within a given (hyper)sphere enclosing the local
     function of interest. This grid is a periodic repetition of the
     single-unit-cell grid of which only the points within the (hyper)sphere are
     retained. On this aperiodic grid, one can carry out operations as usual. The
-    attribute ``subgrid.indices`` can be used for two purposes:
+    attribute ``localgrid.indices`` can be used for two purposes:
 
-    1) To transfer a periodic function on the parent grid to the subgrid, one
-    simply uses NumPy slicing: ``fnsub = fnperiodic[subgrid.indices]``
+    1) To transfer a periodic function on the parent grid to the localgrid, one
+    simply uses NumPy slicing: ``fnlocal = fnperiodic[localgrid.indices]``
 
     2) To add a periodic repetition of a local function to the parent grid, one
-    uses ``np.add.att(fnperiodic, subgrid.indices, fnsub)``. One should not
-    use ``fnperiodic[subgrid.indices] += fnsub``, because this will give wrong
-    results when ``subgrid.indices`` contains the same index multiple times,
-    which happens when the cutoff (hyper)sphere covers multiple primitive cells.
+    uses ``np.add.att(fnperiodic, localgrid.indices, fnlocal)``. One should not
+    use ``fnperiodic[localgrid.indices] += fnlocal``, because this will give
+    wrong results when ``localgrid.indices`` contains the same index multiple
+    times, which happens when the cutoff (hyper)sphere covers multiple primitive
+    cells.
     See https://docs.scipy.org/doc/numpy/reference/generated/numpy.ufunc.at.html
 
-    The efficiency of the ``get_subgrid`` method will be optimal when all grid
+    The efficiency of the ``get_localgrid`` method will be optimal when all grid
     points fall within one primitive cell, e.g. the fractional coordinates
     should lie in [0, 1[ or [-0.5, 0.5[. The algorithm will also work when the
     grid points of the primitive cell accidentally overflow into neighboring
@@ -239,7 +240,7 @@ class PeriodicGrid(Grid):
             will have fractional coordinates in the interval [0, 1[. When False,
             a warning is raised when the fractional coordinates span an interval
             wider than 1.1, because this implies a degradation of efficiency of
-            ``get_subgrid``, which can be easily avoided.
+            ``get_localgrid``, which can be easily avoided.
 
         Raises
         ------
@@ -323,7 +324,7 @@ class PeriodicGrid(Grid):
             if intvl_max > 1.1:
                 warnings.warn(
                     f"Interval spanned by fractional coordinates: {intvl_max} > 1.1. \n"
-                    " ``get_subgrid`` will be inefficient.",
+                    " ``get_localgrid`` will be inefficient.",
                     PeriodicGridWarning,
                 )
         # Call the constructor of the base class
@@ -375,20 +376,20 @@ class PeriodicGrid(Grid):
                 self.realvecs,
             )
 
-    def get_subgrid(self, center, radius):
-        """Create a non-peroidic subgrid within the given distance from the center.
+    def get_localgrid(self, center, radius):
+        """Create a non-peroidic local grid within the given distance from the center.
 
         Parameters
         ----------
         center : float or np.array(M,)
-            Cartesian coordinates of the center of the subgrid.
+            Cartesian coordinates of the center of the local grid.
         radius : float
             Radius of sphere around the center.
 
         Returns
         -------
-        SubGrid
-            Instance of SubGrid.
+        LocalGrid
+            Instance of LocalGrid.
         """
         # A) Check arguments
         # ------------------
@@ -436,9 +437,9 @@ class PeriodicGrid(Grid):
         # make the input compatible with cKDTree
         if self._kdtree is None:
             self._kdtree = cKDTree(self._points.reshape(self.size, -1))
-        sub_points = []
-        sub_weights = []
-        sub_indices = []
+        local_points = []
+        local_weights = []
+        local_indices = []
         # The following constructs an iterator over all possibly relevant
         # integer linear combinations of lattice vectors.
         ilc_iterator = itertools.product(
@@ -458,14 +459,14 @@ class PeriodicGrid(Grid):
             # The following line avoids some_array[indices] when indices == [].
             if len(indices) == 0:
                 continue
-            sub_indices.append(indices)
-            sub_weights.append(self._weights[indices])
+            local_indices.append(indices)
+            local_weights.append(self._weights[indices])
             # Store points with the opposite displacement!!
-            sub_points.append(self._points[indices] - delta)
+            local_points.append(self._points[indices] - delta)
 
-        return SubGrid(
-            np.concatenate(sub_points),
-            np.concatenate(sub_weights),
+        return LocalGrid(
+            np.concatenate(local_points),
+            np.concatenate(local_weights),
             center,
-            np.concatenate(sub_indices),
+            np.concatenate(local_indices),
         )

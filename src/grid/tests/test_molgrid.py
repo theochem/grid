@@ -21,7 +21,7 @@
 from unittest import TestCase
 
 from grid.atomic_grid import AtomicGrid
-from grid.basegrid import SubGrid
+from grid.basegrid import LocalGrid
 from grid.becke import BeckeWeights
 from grid.molgrid import MolGrid
 from grid.onedgrid import GaussLaguerre, HortonLinear
@@ -348,7 +348,7 @@ class TestMolGrid(TestCase):
         mg = MolGrid([atg1, atg2], becke, np.array([6, 8]))
         for i in range(2):
             atgrid = mg[i]
-            assert isinstance(atgrid, SubGrid)
+            assert isinstance(atgrid, LocalGrid)
             assert_allclose(atgrid.center, mg._coors[i])
 
     def test_molgrid_attrs(self):
@@ -391,8 +391,8 @@ class TestMolGrid(TestCase):
         assert mg2._atomic_grids is None
         simple2_ag1 = mg2.get_atomic_grid(0)
         simple2_ag2 = mg2.get_atomic_grid(1)
-        assert isinstance(simple2_ag1, SubGrid)
-        assert isinstance(simple2_ag2, SubGrid)
+        assert isinstance(simple2_ag1, LocalGrid)
+        assert isinstance(simple2_ag2, LocalGrid)
         assert_allclose(simple2_ag1.points, atg1.points)
         assert_allclose(simple2_ag1.weights, atg1.weights)
         assert_allclose(simple2_ag2.weights, atg2.weights)
@@ -516,8 +516,8 @@ class TestMolGrid(TestCase):
                 becke,
             )
 
-    def test_get_subgrid_1s(self):
-        """Test subgrid for a molecule with one atom."""
+    def test_get_localgrid_1s(self):
+        """Test local grid for a molecule with one atom."""
         nums = np.array([1])
         coords = np.array([0.0, 0.0, 0.0])
 
@@ -528,15 +528,15 @@ class TestMolGrid(TestCase):
         grid = MolGrid([atg1], BeckeWeights(), np.array([1]), store=False)
         fn = np.exp(-2 * np.linalg.norm(grid.points, axis=-1))
         assert_allclose(grid.integrate(fn), np.pi)
-        # conventional subgrid
-        subgrid = grid.get_subgrid(coords, 12.0)
-        subfn = np.exp(-2 * np.linalg.norm(subgrid.points, axis=-1))
-        assert subgrid.size < grid.size
-        assert subgrid.size == 10560
-        assert_allclose(subgrid.integrate(subfn), np.pi)
-        assert_allclose(fn[subgrid.indices], subfn)
-        # "whole" subgrid, useful for debugging code using subgrids
-        wholegrid = grid.get_subgrid(coords, np.inf)
+        # conventional local grid
+        localgrid = grid.get_localgrid(coords, 12.0)
+        localfn = np.exp(-2 * np.linalg.norm(localgrid.points, axis=-1))
+        assert localgrid.size < grid.size
+        assert localgrid.size == 10560
+        assert_allclose(localgrid.integrate(localfn), np.pi)
+        assert_allclose(fn[localgrid.indices], localfn)
+        # "whole" loal grid, useful for debugging code using local grids
+        wholegrid = grid.get_localgrid(coords, np.inf)
         assert wholegrid.size == grid.size
         assert_allclose(wholegrid.points, grid.points)
         assert_allclose(wholegrid.weights, grid.weights)
@@ -548,15 +548,15 @@ class TestMolGrid(TestCase):
         )
         fn = np.exp(-4.0 * np.linalg.norm(grid.points, axis=-1))
         assert_allclose(grid.integrate(fn), np.pi / 8)
-        subgrid = grid.get_subgrid(coords, 5.0)
-        subfn = np.exp(-4.0 * np.linalg.norm(subgrid.points, axis=-1))
-        assert subgrid.size < grid.size
-        assert subgrid.size == 9900
-        assert_allclose(subgrid.integrate(subfn), np.pi / 8, rtol=1e-5)
-        assert_allclose(fn[subgrid.indices], subfn)
+        localgrid = grid.get_localgrid(coords, 5.0)
+        localfn = np.exp(-4.0 * np.linalg.norm(localgrid.points, axis=-1))
+        assert localgrid.size < grid.size
+        assert localgrid.size == 9900
+        assert_allclose(localgrid.integrate(localfn), np.pi / 8, rtol=1e-5)
+        assert_allclose(fn[localgrid.indices], localfn)
 
-    def test_get_subgrid_1s1s(self):
-        """Test subgrid for a molecule with one atom."""
+    def test_get_localgrid_1s1s(self):
+        """Test local grid for a molecule with one atom."""
         nums = np.array([1, 3])
         coords = np.array([[0.0, 0.0, -0.5], [0.0, 0.0, 0.5]])
         grid = MolGrid.horton_molgrid(
@@ -566,20 +566,20 @@ class TestMolGrid(TestCase):
         fn1 = np.exp(-8.0 * np.linalg.norm(grid.points - coords[1], axis=-1))
         assert_allclose(grid.integrate(fn0), np.pi / 8, rtol=1e-5)
         assert_allclose(grid.integrate(fn1), np.pi / 64)
-        # sub-grid centered on atom 0 to evaluate fn0
-        sub0 = grid.get_subgrid(coords[0], 5.0)
-        assert sub0.size < grid.size
-        subfn0 = np.exp(-4.0 * np.linalg.norm(sub0.points - coords[0], axis=-1))
-        assert_allclose(fn0[sub0.indices], subfn0)
-        assert_allclose(sub0.integrate(subfn0), np.pi / 8, rtol=1e-5)
-        # sub-grid centered on atom 1 to evaluate fn1
-        sub1 = grid.get_subgrid(coords[1], 2.5)
-        assert sub1.size < grid.size
-        subfn1 = np.exp(-8.0 * np.linalg.norm(sub1.points - coords[1], axis=-1))
-        assert_allclose(sub1.integrate(subfn1), np.pi / 64, rtol=1e-6)
-        assert_allclose(fn1[sub1.indices], subfn1)
-        # approximate the sum of fn0 and fn2 by combining results from subgrids.
+        # local grid centered on atom 0 to evaluate fn0
+        local0 = grid.get_localgrid(coords[0], 5.0)
+        assert local0.size < grid.size
+        localfn0 = np.exp(-4.0 * np.linalg.norm(local0.points - coords[0], axis=-1))
+        assert_allclose(fn0[local0.indices], localfn0)
+        assert_allclose(local0.integrate(localfn0), np.pi / 8, rtol=1e-5)
+        # local grid centered on atom 1 to evaluate fn1
+        local1 = grid.get_localgrid(coords[1], 2.5)
+        assert local1.size < grid.size
+        localfn1 = np.exp(-8.0 * np.linalg.norm(local1.points - coords[1], axis=-1))
+        assert_allclose(local1.integrate(localfn1), np.pi / 64, rtol=1e-6)
+        assert_allclose(fn1[local1.indices], localfn1)
+        # approximate the sum of fn0 and fn2 by combining results from local grids.
         fnsum = np.zeros(grid.size)
-        fnsum[sub0.indices] += subfn0
-        fnsum[sub1.indices] += subfn1
+        fnsum[local0.indices] += localfn0
+        fnsum[local1.indices] += localfn1
         assert_allclose(grid.integrate(fnsum), np.pi * (1 / 8 + 1 / 64), rtol=1e-5)
