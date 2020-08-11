@@ -136,22 +136,22 @@ class Grid:
             *(array for array in value_arrays),
         )
 
-    def get_subgrid(self, center, radius):
-        """Create a grid from subset of points within the given radius of center.
+    def get_localgrid(self, center, radius):
+        """Create a grid contain points within the given radius of center.
 
         Parameters
         ----------
         center : float or np.array(M,)
-            Cartesian coordinates of subgrid center.
+            Cartesian coordinates of the center of the local grid.
         radius : float
             Radius of sphere around the center. When equal to np.inf, the
-            subgrid coincides with the whole grid, which can be useful for
+            local grid coincides with the whole grid, which can be useful for
             debugging.
 
         Returns
         -------
-        SubGrid
-            Instance of SubGrid.
+        LocalGrid
+            Instance of LocalGrid.
 
         """
         center = np.asarray(center)
@@ -165,7 +165,7 @@ class Grid:
         if not (np.isfinite(radius) or radius == np.inf):
             raise ValueError(f"Invalid radius: {radius}")
         if radius == np.inf:
-            return SubGrid(self._points, self._weights, center, np.arange(self.size))
+            return LocalGrid(self._points, self._weights, center, np.arange(self.size))
         else:
             # When points.ndim == 1, we have to reshape a few things to
             # make the input compatible with cKDTree
@@ -174,7 +174,7 @@ class Grid:
             if self._kdtree is None:
                 self._kdtree = cKDTree(_points)
             indices = np.array(self._kdtree.query_ball_point(_center, radius, p=2.0))
-            return SubGrid(
+            return LocalGrid(
                 self._points[indices], self._weights[indices], center, indices
             )
 
@@ -183,11 +183,11 @@ class AngularGrid(Grid):
     """Angular lebedev grid."""
 
 
-class SubGrid(Grid):
-    """Subset of grid surrounding a center."""
+class LocalGrid(Grid):
+    """Local portion of a grid, containing all points within a sphere."""
 
     def __init__(self, points, weights, center, indices=None):
-        r"""Initialize a sub-grid.
+        r"""Initialize a local grid.
 
         Parameters
         ----------
@@ -196,7 +196,7 @@ class SubGrid(Grid):
         weights : np.ndarray(N)
             Integration weight of :math:`N` grid points
         center : float or np.ndarray(M,)
-            Cartesian coordinates of sub-grid center in 3D space.
+            Cartesian coordinates of the center of the local grid in 3D space.
         indices : np.ndarray(N,), optional
             Indices of :math:`N` grid points and weights in the parent grid.
 
@@ -217,7 +217,7 @@ class SubGrid(Grid):
 
     @property
     def center(self):
-        """np.ndarray(3,): Cartesian coordinates of sub-grid center."""
+        """np.ndarray(3,): Cartesian coordinates of the center of the local grid."""
         return self._center
 
     @property
