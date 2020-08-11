@@ -53,16 +53,16 @@ class BaseTransform(ABC):
         """Abstract method for 3rd derivative of transformation."""
 
     @property
-    def tf_domain(self):
+    def domain(self):
         """tuple: Transformation domain."""
-        return self._tf_domain
+        return self._domain
 
     @property
-    def tf_codomain(self):
+    def codomain(self):
         """tuple: Transformation codomain."""
-        return self._tf_codomain
+        return self._codomain
 
-    def transform_1d_grid(self, oned_grid):  # TODO: add transform check for domains
+    def transform_1d_grid(self, oned_grid):
         r"""Generate a new integral grid by transforming given the OneDGrid.
 
         .. math::
@@ -88,13 +88,10 @@ class BaseTransform(ABC):
         if not isinstance(oned_grid, OneDGrid):
             raise TypeError(f"Input grid is not OneDGrid, got {type(oned_grid)}")
         # check domain
-        if (
-            oned_grid.domain[0] < self.tf_domain[0]
-            or oned_grid.domain[1] > self.tf_domain[1]
-        ):
+        if oned_grid.domain[0] < self.domain[0] or oned_grid.domain[1] > self.domain[1]:
             raise ValueError(
-                "Input grid domain do not match with tf domain.\n"
-                f"grid domain: {oned_grid.domain}, tf domain: {self.tf_domain}"
+                "Given 1D grid domain does not match the transformation domain.\n"
+                f"grid domain: {oned_grid.domain}, tf domain: {self.domain}"
             )
         new_points = self.transform(oned_grid.points)
         new_weights = self.deriv(oned_grid.points) * oned_grid.weights
@@ -140,8 +137,8 @@ class BeckeTF(BaseTransform):
         self._rmin = rmin
         self._R = R
         self.trim_inf = trim_inf
-        self._tf_domain = (-1, 1)
-        self._tf_codomain = (rmin, np.inf)
+        self._domain = (-1, 1)
+        self._codomain = (rmin, np.inf)
 
     @property
     def rmin(self):
@@ -311,8 +308,8 @@ class LinearTF(BaseTransform):
         """
         self._rmin = rmin
         self._rmax = rmax
-        self._tf_domain = (-1, 1)
-        self._tf_codomain = (rmin, rmax)
+        self._domain = (-1, 1)
+        self._codomain = (rmin, rmax)
 
     def transform(self, x):
         r"""Transform onedgrid form [-1, 1] to [rmin, rmax].
@@ -429,8 +426,8 @@ class InverseTF(BaseTransform):
                 f"Input need to be a transform instance, got {type(transform)}."
             )
         self._tfm = transform
-        self._tf_domain = transform.tf_codomain
-        self._tf_codomain = transform.tf_domain
+        self._domain = transform.codomain
+        self._codomain = transform.domain
 
     def transform(self, r):
         """Transform array back to original one dimension array.
@@ -565,8 +562,8 @@ class IdentityRTransform(BaseTransform):
     """Identity Transform class."""
 
     def __init__(self):
-        self._tf_domain = (0, np.inf)
-        self._tf_codomain = (0, np.inf)
+        self._domain = (0, np.inf)
+        self._codomain = (0, np.inf)
 
     def transform(self, x: np.ndarray):
         """Perform given array into itself."""
@@ -613,8 +610,8 @@ class LinearRTransform(BaseTransform):
             )
         self._rmin = rmin
         self._rmax = rmax
-        self._tf_domain = (0, np.inf)
-        self._tf_codomain = (rmin, rmax)
+        self._domain = (0, np.inf)
+        self._codomain = (rmin, rmax)
 
     @property
     def rmin(self):
@@ -698,8 +695,8 @@ class ExpRTransform(BaseTransform):
             )
         self._rmin = rmin
         self._rmax = rmax
-        self._tf_domain = (0, np.inf)
-        self._tf_codomain = (rmin, rmax)
+        self._domain = (0, np.inf)
+        self._codomain = (rmin, rmax)
 
     @property
     def rmin(self):
@@ -779,8 +776,8 @@ class PowerRTransform(BaseTransform):
             raise ValueError("rmin and rmax must be positive.")
         self._rmin = rmin
         self._rmax = rmax
-        self._tf_domain = (0, np.inf)
-        self._tf_codomain = (rmin, rmax)
+        self._domain = (0, np.inf)
+        self._codomain = (rmin, rmax)
 
     @property
     def rmin(self):
@@ -866,8 +863,8 @@ class HyperbolicRTransform(BaseTransform):
             raise ValueError(f"b must be strctly positive.\n  b: {b}")
         self._a = a
         self._b = b
-        self._tf_domain = (0, np.inf)
-        self._tf_codomain = (0, np.inf)
+        self._domain = (0, np.inf)
+        self._codomain = (0, np.inf)
 
     @property
     def a(self):
@@ -939,8 +936,8 @@ class MultiExpTF(BaseTransform):
         self._rmin = rmin
         self._R = R
         self.trim_inf = trim_inf
-        self._tf_domain = (-1, 1)
-        self._tf_codomain = (rmin, np.inf)
+        self._domain = (-1, 1)
+        self._codomain = (rmin, np.inf)
 
     @property
     def rmin(self):
@@ -1071,8 +1068,8 @@ class KnowlesTF(BaseTransform):
         self._R = R
         self._k = k
         self.trim_inf = trim_inf
-        self._tf_domain = (-1, 1)
-        self._tf_codomain = (rmin, np.inf)
+        self._domain = (-1, 1)
+        self._codomain = (rmin, np.inf)
 
     @property
     def rmin(self):
@@ -1235,8 +1232,8 @@ class HandyTF(BaseTransform):
         self._R = R
         self._m = m
         self.trim_inf = trim_inf
-        self._tf_domain = (-1, 1)
-        self._tf_codomain = (rmin, np.inf)
+        self._domain = (-1, 1)
+        self._codomain = (rmin, np.inf)
 
     @property
     def rmin(self):
@@ -1407,8 +1404,8 @@ class HandyModTF(BaseTransform):
         self._rmax = rmax
         self._m = m
         self.trim_inf = trim_inf
-        self._tf_domain = (-1, 1)
-        self._tf_codomain = (rmin, rmax)
+        self._domain = (-1, 1)
+        self._codomain = (rmin, rmax)
 
     @property
     def rmin(self):
