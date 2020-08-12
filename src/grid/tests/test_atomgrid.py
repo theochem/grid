@@ -22,7 +22,7 @@
 
 from unittest import TestCase
 
-from grid.atomic_grid import AtomicGrid
+from grid.atomgrid import AtomGrid
 from grid.basegrid import AngularGrid, Grid, OneDGrid
 from grid.lebedev import generate_lebedev_grid
 from grid.onedgrid import HortonLinear
@@ -39,7 +39,7 @@ from numpy.testing import (
 from scipy.spatial.transform import Rotation as R
 
 
-class TestAtomicGrid(TestCase):
+class TestAtomGrid(TestCase):
     """Atomic grid factory test class."""
 
     def test_total_atomic_grid(self):
@@ -51,37 +51,35 @@ class TestAtomicGrid(TestCase):
         r_sectors = np.array([0.5, 1, 1.5])
         degs = np.array([6, 14, 14, 6])
         # generate a proper instance without failing.
-        ag_ob = AtomicGrid.special_init(
-            rgrid, radius=rad, r_sectors=r_sectors, degs=degs
-        )
-        assert isinstance(ag_ob, AtomicGrid)
+        ag_ob = AtomGrid.from_pruned(rgrid, radius=rad, r_sectors=r_sectors, degs=degs)
+        assert isinstance(ag_ob, AtomGrid)
         assert len(ag_ob.indices) == 11
         assert ag_ob.l_max == 15
-        ag_ob = AtomicGrid.special_init(
+        ag_ob = AtomGrid.from_pruned(
             rgrid, radius=rad, r_sectors=np.array([]), degs=np.array([6])
         )
-        assert isinstance(ag_ob, AtomicGrid)
+        assert isinstance(ag_ob, AtomGrid)
         assert len(ag_ob.indices) == 11
-        ag_ob = AtomicGrid(rgrid, nums=[110])
+        ag_ob = AtomGrid(rgrid, size=[110])
         assert ag_ob.l_max == 17
         assert_array_equal(ag_ob._rad_degs, np.ones(10) * 17)
         assert ag_ob.size == 110 * 10
-        # new init AtomicGrid
-        ag_ob2 = AtomicGrid(rgrid, degs=[17])
+        # new init AtomGrid
+        ag_ob2 = AtomGrid(rgrid, degs=[17])
         assert ag_ob2.l_max == 17
         assert_array_equal(ag_ob2._rad_degs, np.ones(10) * 17)
         assert ag_ob2.size == 110 * 10
-        assert isinstance(ag_ob.rad_grid, OneDGrid)
-        assert_allclose(ag_ob.rad_grid.points, rgrid.points)
-        assert_allclose(ag_ob.rad_grid.weights, rgrid.weights)
+        assert isinstance(ag_ob.rgrid, OneDGrid)
+        assert_allclose(ag_ob.rgrid.points, rgrid.points)
+        assert_allclose(ag_ob.rgrid.weights, rgrid.weights)
 
-    def test_quick_grid(self):
+    def test_from_predefined(self):
         """Test grid construction with predefined grid."""
         # test coarse grid
         pts = HortonLinear(20)
         tf = PowerRTransform(7.0879993828935345e-06, 16.05937640019924)
         rad_grid = tf.transform_1d_grid(pts)
-        atgrid = AtomicGrid.quick_grid(1, rad_grid, "coarse")
+        atgrid = AtomGrid.from_predefined(1, rad_grid, "coarse")
         # 604 points for coarse H atom
         assert_equal(atgrid.size, 604)
         assert_almost_equal(
@@ -93,7 +91,7 @@ class TestAtomicGrid(TestCase):
         pts = HortonLinear(24)
         tf = PowerRTransform(3.69705074304963e-06, 19.279558946793685)
         rad_grid = tf.transform_1d_grid(pts)
-        atgrid = AtomicGrid.quick_grid(1, rad_grid, "medium")
+        atgrid = AtomGrid.from_predefined(1, rad_grid, "medium")
         # 928 points for coarse H atom
         assert_equal(atgrid.size, 928)
         assert_almost_equal(
@@ -104,7 +102,7 @@ class TestAtomicGrid(TestCase):
         pts = HortonLinear(34)
         tf = PowerRTransform(2.577533167224667e-07, 16.276983371222354)
         rad_grid = tf.transform_1d_grid(pts)
-        atgrid = AtomicGrid.quick_grid(1, rad_grid, "fine")
+        atgrid = AtomGrid.from_predefined(1, rad_grid, "fine")
         # 1984 points for coarse H atom
         assert_equal(atgrid.size, 1984)
         assert_almost_equal(
@@ -115,7 +113,7 @@ class TestAtomicGrid(TestCase):
         pts = HortonLinear(41)
         tf = PowerRTransform(1.1774580743206259e-07, 20.140888089596444)
         rad_grid = tf.transform_1d_grid(pts)
-        atgrid = AtomicGrid.quick_grid(1, rad_grid, "veryfine")
+        atgrid = AtomGrid.from_predefined(1, rad_grid, "veryfine")
         # 3154 points for coarse H atom
         assert_equal(atgrid.size, 3154)
         assert_almost_equal(
@@ -126,7 +124,7 @@ class TestAtomicGrid(TestCase):
         pts = HortonLinear(49)
         tf = PowerRTransform(4.883104847991021e-08, 21.05456999309752)
         rad_grid = tf.transform_1d_grid(pts)
-        atgrid = AtomicGrid.quick_grid(1, rad_grid, "ultrafine")
+        atgrid = AtomGrid.from_predefined(1, rad_grid, "ultrafine")
         # 4546 points for coarse H atom
         assert_equal(atgrid.size, 4546)
         assert_almost_equal(
@@ -137,7 +135,7 @@ class TestAtomicGrid(TestCase):
         pts = HortonLinear(59)
         tf = PowerRTransform(1.9221827244049134e-08, 21.413278983919113)
         rad_grid = tf.transform_1d_grid(pts)
-        atgrid = AtomicGrid.quick_grid(1, rad_grid, "insane")
+        atgrid = AtomGrid.from_predefined(1, rad_grid, "insane")
         # 6622 points for coarse H atom
         assert_equal(atgrid.size, 6622)
         assert_almost_equal(
@@ -145,7 +143,7 @@ class TestAtomicGrid(TestCase):
             5.56832800,
         )
 
-    def test_special_init_with_degs_and_nums(self):
+    def test_from_pruned_with_degs_and_size(self):
         """Test different initilize method."""
         radial_pts = np.arange(0.1, 1.1, 0.1)
         radial_wts = np.ones(10) * 0.1
@@ -153,14 +151,14 @@ class TestAtomicGrid(TestCase):
         rad = 0.5
         r_sectors = np.array([0.5, 1, 1.5])
         degs = np.array([3, 5, 7, 5])
-        nums = np.array([6, 14, 26, 14])
+        size = np.array([6, 14, 26, 14])
         # construct atomic grid with degs
-        atgrid1 = AtomicGrid.special_init(
+        atgrid1 = AtomGrid.from_pruned(
             rgrid, radius=rad, r_sectors=r_sectors, degs=degs
         )
-        # construct atomic grid with nums
-        atgrid2 = AtomicGrid.special_init(
-            rgrid, radius=rad, r_sectors=r_sectors, nums=nums
+        # construct atomic grid with size
+        atgrid2 = AtomGrid.from_pruned(
+            rgrid, radius=rad, r_sectors=r_sectors, size=size
         )
         # test two grids are the same
         assert_equal(atgrid1.size, atgrid2.size)
@@ -175,24 +173,24 @@ class TestAtomicGrid(TestCase):
         rad = 1
         r_sectors = np.array([0.2, 0.4, 0.8])
         degs = np.array([3, 5, 7, 3])
-        atomic_grid_degree = AtomicGrid._find_l_for_rad_list(
+        atomic_grid_degree = AtomGrid._find_l_for_rad_list(
             rgrid.points, rad * r_sectors, degs
         )
         assert_equal(atomic_grid_degree, [3, 3, 5, 5, 7, 7, 7, 7, 3, 3])
 
-    def test_preload_unit_sphere_grid(self):
-        """Test for private method to preload spherical grids."""
-        degs = [3, 3, 5, 5, 7, 7]
-        unit_sphere = AtomicGrid._preload_unit_sphere_grid(degs)
-        assert len(unit_sphere) == 3
-        degs = [3, 4, 5, 6, 7]
-        unit_sphere2 = AtomicGrid._preload_unit_sphere_grid(degs)
-        assert len(unit_sphere2) == 5
-        assert_allclose(unit_sphere2[4].points, unit_sphere2[5].points)
-        assert_allclose(unit_sphere2[6].points, unit_sphere2[7].points)
-        assert not np.allclose(
-            unit_sphere2[4].points.shape, unit_sphere2[6].points.shape
-        )
+    # def test_preload_unit_sphere_grid(self):
+    #     """Test for private method to preload spherical grids."""
+    #     degs = [3, 3, 5, 5, 7, 7]
+    #     unit_sphere = AtomGrid._preload_unit_sphere_grid(degs)
+    #     assert len(unit_sphere) == 3
+    #     degs = [3, 4, 5, 6, 7]
+    #     unit_sphere2 = AtomGrid._preload_unit_sphere_grid(degs)
+    #     assert len(unit_sphere2) == 5
+    #     assert_allclose(unit_sphere2[4].points, unit_sphere2[5].points)
+    #     assert_allclose(unit_sphere2[6].points, unit_sphere2[7].points)
+    #     assert not np.allclose(
+    #         unit_sphere2[4].points.shape, unit_sphere2[6].points.shape
+    #     )
 
     def test_generate_atomic_grid(self):
         """Test for generating atomic grid."""
@@ -201,7 +199,7 @@ class TestAtomicGrid(TestCase):
         rad_wts = np.array([0.3, 0.4, 0.3])
         rad_grid = OneDGrid(rad_pts, rad_wts)
         degs = np.array([3, 5, 7])
-        pts, wts, ind = AtomicGrid._generate_atomic_grid(rad_grid, degs)
+        pts, wts, ind = AtomGrid._generate_atomic_grid(rad_grid, degs)
         assert len(pts) == 46
         assert_equal(ind, [0, 6, 20, 46])
         # set tests for slicing grid from atomic grid
@@ -224,8 +222,8 @@ class TestAtomicGrid(TestCase):
         degs = np.array([3, 5, 7])
         # origin center
         # randome center
-        pts, wts, ind = AtomicGrid._generate_atomic_grid(rad_grid, degs)
-        ref_pts, ref_wts, ref_ind = AtomicGrid._generate_atomic_grid(rad_grid, degs)
+        pts, wts, ind = AtomGrid._generate_atomic_grid(rad_grid, degs)
+        ref_pts, ref_wts, ref_ind = AtomGrid._generate_atomic_grid(rad_grid, degs)
         # diff grid points diff by center and same weights
         assert_allclose(pts, ref_pts)
         assert_allclose(wts, ref_wts)
@@ -237,10 +235,10 @@ class TestAtomicGrid(TestCase):
         rad_wts = np.array([0.3, 0.4, 0.3])
         rad_grid = OneDGrid(rad_pts, rad_wts)
         degs = [3, 5, 7]
-        atgrid = AtomicGrid(rad_grid, degs=degs)
+        atgrid = AtomGrid(rad_grid, degs=degs)
         # make sure True and 1 is not the same result
-        atgrid1 = AtomicGrid(rad_grid, degs=degs, rotate=True)
-        atgrid2 = AtomicGrid(rad_grid, degs=degs, rotate=1)
+        atgrid1 = AtomGrid(rad_grid, degs=degs, rotate=True)
+        atgrid2 = AtomGrid(rad_grid, degs=degs, rotate=1)
         # test diff points, same weights
         assert not np.allclose(atgrid.points, atgrid1.points)
         assert not np.allclose(atgrid.points, atgrid2.points)
@@ -270,7 +268,7 @@ class TestAtomicGrid(TestCase):
         rad_wts = np.array([0.3, 0.4, 0.3])
         rad_grid = OneDGrid(rad_pts, rad_wts)
         degs = [3, 5, 7]
-        atgrid = AtomicGrid(rad_grid, degs=degs)
+        atgrid = AtomGrid(rad_grid, degs=degs)
         assert atgrid.n_shells == 3
         # grep shell with r^2
         for i in range(atgrid.n_shells):
@@ -295,9 +293,9 @@ class TestAtomicGrid(TestCase):
         rad_wts = np.array([0.3, 0.4, 0.3])
         rad_grid = OneDGrid(rad_pts, rad_wts)
         center = np.random.rand(3)
-        atgrid = AtomicGrid(rad_grid, degs=[7], center=center)
+        atgrid = AtomGrid(rad_grid, degs=[7], center=center)
         points = np.random.rand(100, 3)
-        calc_sph = atgrid.convert_point_to_sph(points)
+        calc_sph = atgrid.convert_cart_to_sph(points)
         # compute ref result
         ref_coor = points - center
         # radius
@@ -310,7 +308,7 @@ class TestAtomicGrid(TestCase):
 
         # test single point
         point = np.random.rand(3)
-        calc_sph = atgrid.convert_point_to_sph(point)
+        calc_sph = atgrid.convert_cart_to_sph(point)
         ref_coor = point - center
         r = np.linalg.norm(ref_coor)
         theta = np.arctan2(ref_coor[1], ref_coor[0])
@@ -320,37 +318,29 @@ class TestAtomicGrid(TestCase):
     def test_error_raises(self):
         """Tests for error raises."""
         with self.assertRaises(TypeError):
-            AtomicGrid.special_init(
+            AtomGrid.from_pruned(
                 np.arange(3), 1.0, r_sectors=np.arange(2), degs=np.arange(3)
             )
         with self.assertRaises(ValueError):
-            AtomicGrid.special_init(
+            AtomGrid.from_pruned(
                 OneDGrid(np.arange(3), np.arange(3)),
                 radius=1.0,
                 r_sectors=np.arange(2),
                 degs=np.arange(0),
             )
         with self.assertRaises(ValueError):
-            AtomicGrid.special_init(
+            AtomGrid.from_pruned(
                 OneDGrid(np.arange(3), np.arange(3)),
                 radius=1.0,
                 r_sectors=np.arange(2),
                 degs=np.arange(4),
             )
         with self.assertRaises(ValueError):
-            AtomicGrid._generate_atomic_grid(
+            AtomGrid._generate_atomic_grid(
                 OneDGrid(np.arange(3), np.arange(3)), np.arange(2)
             )
-        with self.assertRaises(TypeError):
-            AtomicGrid.special_init(
-                OneDGrid(np.arange(3), np.arange(3)),
-                radius=1.0,
-                r_sectors=np.array([0.3, 0.5, 0.7]),
-                degs=np.array([3, 5, 7, 5]),
-                center=(0, 0, 0),
-            )
         with self.assertRaises(ValueError):
-            AtomicGrid.special_init(
+            AtomGrid.from_pruned(
                 OneDGrid(np.arange(3), np.arange(3)),
                 radius=1.0,
                 r_sectors=np.array([0.3, 0.5, 0.7]),
@@ -359,21 +349,21 @@ class TestAtomicGrid(TestCase):
             )
 
         with self.assertRaises(TypeError):
-            AtomicGrid(OneDGrid(np.arange(3), np.arange(3)), nums=110)
+            AtomGrid(OneDGrid(np.arange(3), np.arange(3)), size=110)
         with self.assertRaises(TypeError):
-            AtomicGrid(OneDGrid(np.arange(3), np.arange(3)), degs=17)
+            AtomGrid(OneDGrid(np.arange(3), np.arange(3)), degs=17)
         with self.assertRaises(ValueError):
-            AtomicGrid(OneDGrid(np.arange(3), np.arange(3)), degs=[17], rotate=-1)
+            AtomGrid(OneDGrid(np.arange(3), np.arange(3)), degs=[17], rotate=-1)
         with self.assertRaises(TypeError):
-            AtomicGrid(OneDGrid(np.arange(3), np.arange(3)), degs=[17], rotate="asdfaf")
+            AtomGrid(OneDGrid(np.arange(3), np.arange(3)), degs=[17], rotate="asdfaf")
         # error of radial grid
         with self.assertRaises(TypeError):
-            AtomicGrid(Grid(np.arange(1, 5, 1), np.ones(4)), degs=[2, 3, 4, 5])
+            AtomGrid(Grid(np.arange(1, 5, 1), np.ones(4)), degs=[2, 3, 4, 5])
         with self.assertRaises(TypeError):
-            AtomicGrid(OneDGrid(np.arange(-2, 2, 1), np.ones(4)), degs=[2, 3, 4, 5])
+            AtomGrid(OneDGrid(np.arange(-2, 2, 1), np.ones(4)), degs=[2, 3, 4, 5])
         with self.assertRaises(TypeError):
             rgrid = OneDGrid(np.arange(1, 3, 1), np.ones(2), domain=(-1, 5))
-            AtomicGrid(rgrid, degs=[2])
+            AtomGrid(rgrid, degs=[2])
         with self.assertRaises(TypeError):
             rgrid = OneDGrid(np.arange(-1, 1, 1), np.ones(2))
-            AtomicGrid(rgrid, degs=[2])
+            AtomGrid(rgrid, degs=[2])

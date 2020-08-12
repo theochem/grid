@@ -213,19 +213,9 @@ class MolGrid(Grid):
 
         Returns
         -------
-<<<<<<< HEAD
-        AtomicGrid or LocalGrid
-            If store=True, the AtomicGrid instance used is returned.
-            If store=False, the LocalGrid containing points and weights of AtomicGrid
-||||||| parent of 81114aa... Refactorize atomgrid and lebedev
-        AtomicGrid or SubGrid
-            If store=True, the AtomicGrid instance used is returned.
-            If store=False, the SubGrid containing points and weights of AtomicGrid
-=======
-        AtomGrid or SubGrid
+        AtomGrid or LocalGrid
             If store=True, the AtomGrid instance used is returned.
-            If store=False, the SubGrid containing points and weights of AtomGrid
->>>>>>> 81114aa... Refactorize atomgrid and lebedev
+            If store=False, the LocalGrid containing points and weights of AtomGrid
             is returned.
 
         Raises

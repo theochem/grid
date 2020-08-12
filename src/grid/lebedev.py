@@ -123,7 +123,7 @@ def generate_lebedev_grid(*, degree=None, size=None):
     return AngularGrid(points, weights * 4 * np.pi)
 
 
-def match_degree(degree_nums):  # clear way coding
+def match_degree(degree_nums):
     """Generate proper angular degree for given arbitrary degree list.
 
     Parameters
@@ -199,7 +199,7 @@ def _select_grid_type(*, degree=None, size=None):
         )
 
 
-def _load_grid_filename(degree: int, size: int):  # TODO: why i put it.
+def _load_grid_filename(degree: int, size: int):
     """Load saved .npz file to construct Lebedev grid.
 
     Parameters
