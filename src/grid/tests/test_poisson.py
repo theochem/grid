@@ -1,7 +1,7 @@
 """Poisson test module."""
 from unittest import TestCase
 
-from grid.atomic_grid import AtomicGrid
+from grid.atomgrid import AtomGrid
 from grid.interpolate import interpolate, spline_with_atomic_grid
 from grid.onedgrid import GaussChebyshev
 from grid.poisson import Poisson
@@ -26,7 +26,7 @@ class TestPoisson(TestCase):
         btf = BeckeTF(0.0001, 1.5)
         rad = btf.transform_1d_grid(oned)
         l_max = 7
-        atgrid = AtomicGrid(rad, degs=[l_max])
+        atgrid = AtomGrid(rad, degs=[l_max])
         value_array = self.helper_func_gauss(atgrid.points)
         spl_res = spline_with_atomic_grid(atgrid, value_array)
         # test for random, r, theta, phi
@@ -44,7 +44,7 @@ class TestPoisson(TestCase):
 
         sph_coor = atgrid.convert_cart_to_sph()[:, 1:3]
         spls_mt = Poisson._proj_sph_value(
-            atgrid.rad_grid,
+            atgrid.rgrid,
             sph_coor,
             l_max // 2,
             value_array,
@@ -68,7 +68,7 @@ class TestPoisson(TestCase):
         btf = BeckeTF(1e-7, 1.5)
         rad = btf.transform_1d_grid(oned)
         l_max = 7
-        atgrid = AtomicGrid(rad, degs=[l_max])
+        atgrid = AtomGrid(rad, degs=[l_max])
         value_array = self.helper_func_gauss(atgrid.points)
         p_0 = atgrid.integrate(value_array)
 
@@ -76,7 +76,7 @@ class TestPoisson(TestCase):
         assert_allclose(p_0, np.pi ** 1.5, atol=1e-4)
         sph_coor = atgrid.convert_cart_to_sph()[:, 1:3]
         spls_mt = Poisson._proj_sph_value(
-            atgrid.rad_grid,
+            atgrid.rgrid,
             sph_coor,
             l_max // 2,
             value_array,
@@ -146,7 +146,7 @@ class TestPoisson(TestCase):
         btf = BeckeTF(1e-7, 1.5)
         rad = btf.transform_1d_grid(oned)
         l_max = 7
-        atgrid = AtomicGrid(rad, degs=[l_max])
+        atgrid = AtomGrid(rad, degs=[l_max])
         value_array = self.helper_func_gauss(atgrid.points)
         p_0 = atgrid.integrate(value_array)
 
@@ -154,7 +154,7 @@ class TestPoisson(TestCase):
         assert_allclose(p_0, np.pi ** 1.5, atol=1e-4)
         sph_coor = atgrid.convert_cart_to_sph()[:, 1:3]
         spls_mt = Poisson._proj_sph_value(
-            atgrid.rad_grid,
+            atgrid.rgrid,
             sph_coor,
             l_max // 2,
             value_array,
@@ -204,7 +204,7 @@ class TestPoisson(TestCase):
         btf = BeckeTF(1e-7, 1.5)
         rad = btf.transform_1d_grid(oned)
         l_max = 7
-        atgrid = AtomicGrid(rad, degs=[l_max])
+        atgrid = AtomGrid(rad, degs=[l_max])
         value_array = self.helper_func_gauss(atgrid.points)
         p_0 = atgrid.integrate(value_array)
 
@@ -213,7 +213,7 @@ class TestPoisson(TestCase):
         sph_coor = atgrid.convert_cart_to_sph()
         with self.assertRaises(ValueError):
             Poisson._proj_sph_value(
-                atgrid.rad_grid,
+                atgrid.rgrid,
                 sph_coor,
                 l_max // 2,
                 value_array,

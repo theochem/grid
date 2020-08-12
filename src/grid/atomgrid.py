@@ -169,7 +169,7 @@ class AtomGrid(Grid):
         # 0.5rad <= r < rad, angular grid with degree 7
         # rad <= r < 1.5rad, angular grid with degree 5
         # 1.5rad <= r, angular grid with degree 3
-        >>> atgrid = AtomGrid.special_init(rgrid, radius, degs, r_sectors, center)
+        >>> atgrid = AtomGrid.from_pruned(rgrid, radius, degs, r_sectors, center)
 
         Parameters
         ----------
@@ -214,7 +214,7 @@ class AtomGrid(Grid):
         return cls(rgrid, degs=degs, center=center, rotate=rotate)
 
     @property
-    def rgrid(self):  # name rgrid
+    def rgrid(self):
         """RadialGrid: radial points and weights in the atomic grid."""
         return self._rgrid
 
@@ -244,7 +244,7 @@ class AtomGrid(Grid):
         """int: Largest angular degree L value in angular grids."""
         return np.max(self._rad_degs)
 
-    def get_shell_grid(self, index, r_sq=True):  # reason
+    def get_shell_grid(self, index, r_sq=True):
         """Get the spherical integral grid at radial point {index}.
 
         Parameters
@@ -274,15 +274,14 @@ class AtomGrid(Grid):
     def convert_cart_to_sph(self, points=None, center=None):
         """Convert a set of points from cartesian to spherical coordinates.
 
-        The spherical center is selected as the atom if not given
-        The points is selected as all the atomic grid points if not given
-
         Parameters
         ----------
         points : np.ndarray(n, 3), optional
             3 dimentional numpy array for points
+            atomic grid points will be used if `points` is not given
         center : np.ndarray(3,), optional
             center of the spherical coordinates
+            atomic center will be used if `center` is not given
 
         Returns
         -------
@@ -427,13 +426,10 @@ class AtomGrid(Grid):
                 new_points = sphere_grid.points @ rot_mt
                 sphere_grid = AngularGrid(new_points, sphere_grid.weights)
             # construct atomic grid with each radial point and each spherical shell
-            rad_order = 2
             # compute points
             points = sphere_grid.points * rgrid[i].points
             # compute weights
-            weights = (
-                sphere_grid.weights * rgrid[i].weights * rgrid[i].points ** rad_order
-            )
+            weights = sphere_grid.weights * rgrid[i].weights * rgrid[i].points ** 2
             # locate separators
             shell_pt_indices[i + 1] = shell_pt_indices[i] + len(points)
             all_points.append(points)
