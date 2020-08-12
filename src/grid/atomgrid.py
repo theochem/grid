@@ -93,14 +93,6 @@ class AtomGrid(Grid):
             self._rgrid, self._rad_degs, rotate=self._rot
         )
         self._size = self._weights.size
-        # add random rotation
-
-        # if rotate is True:
-        #     rot_mt = R.random().as_dcm()
-        #     self._points = np.dot(self._points, rot_mt)
-        # elif isinstance(rotate, (int, np.integer)) and rotate >= 0:
-        #     rot_mt = R.random(random_state=rotate).as_dcm()
-        #     self._points = np.dot(self._points, rot_mt)
 
     @classmethod
     def from_predefined(
@@ -135,10 +127,10 @@ class AtomGrid(Grid):
             else np.asarray(center, dtype=float)
         )
         cls._input_type_check(rgrid, center)
-        # load rad and npt
+        # load radial points and
         with path("grid.data.prune_grid", f"prune_grid_{grid_type}.npz") as npz_file:
             data = np.load(npz_file)
-            # load info from npz
+            # load predefined_radial sectors and num_of_points in each sectors
             rad = data[f"{atomic_num}_rad"]
             npt = data[f"{atomic_num}_npt"]
 
@@ -367,24 +359,24 @@ class AtomGrid(Grid):
 
     @staticmethod
     def _find_l_for_rad_list(radial_arrays, radius_list, degs):
-        """Find proper magic L value for given r_sectors.
+        """Find proper magic L value for radial points at different radius range.
+
+        use broadcast to compare each point with r_sectors then sum over all
+        the True value, which should equal to the position of L
 
         Parameters
         ----------
-        radial_arrays : np.ndarray(N,), radial grid points
-        radius : float, atomic radius of desired atom
-        r_sectors : np.ndarray(K,), an array of r_sectors
-        degs : np.ndarray(K+1,), an array of degs for different r_sectors
+        radial_arrays : np.ndarray(N,)
+            radial grid points
+        radius_list : np.ndarray(K,)
+            an array of r_sectors * radius
+        degs : np.ndarray(K+1,),
+            an array of degs for different r_sectors
 
         Returns
         -------
         np.ndarray(N,), an array of magic numbers for each radial points
         """
-        # r_sectors_list   R_row * a
-        # radius_list = r_sectors * radius
-        # use broadcast to compare each point with r_sectors
-        # then sum over all the True value, which should equal to the
-        # position of L
         position = np.sum(radial_arrays[:, None] > radius_list[None, :], axis=1)
         return degs[position]
 
@@ -396,6 +388,7 @@ class AtomGrid(Grid):
         ----------
         rgrid : Grid, radial grid of given atomic grid.
         degs : np.ndarray(N,), an array of magic number for each radial point.
+        rotate : boolean or int, whether a rotation will be applied to grid
 
         Returns
         -------
