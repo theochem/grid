@@ -27,6 +27,7 @@ from importlib_resources import path
 
 import numpy as np
 
+
 n_points = [
     6,
     14,
@@ -117,12 +118,12 @@ def generate_lebedev_grid(*, degree=None, size=None):
         An AngularGrid instance with points and weights.
     """
     degree, size = _select_grid_type(degree=degree, size=size)
-    points, weights = _load_grid_arrays(_load_grid_filename(degree, size))
+    points, weights = _load_grid_filename(degree, size)
     # set weights to 4\pi
     return AngularGrid(points, weights * 4 * np.pi)
 
 
-def match_degree(degree_nums):
+def match_degree(degree_nums):  # clear way coding
     """Generate proper angular degree for given arbitrary degree list.
 
     Parameters
@@ -151,7 +152,7 @@ def size_to_degree(num_array):
     np.ndarray(N,)
         Numpy array with L value for each shell
     """
-    num_array = np.array(num_array)
+    num_array = np.asarray(num_array)
     unik_arr = np.unique(num_array)
     degs = np.zeros(num_array.size)
     for i in unik_arr:
@@ -177,16 +178,18 @@ def _select_grid_type(*, degree=None, size=None):
             "Both degree and size are provided, will use degree only", RuntimeWarning
         )
     if degree:
-        if degree < 0 or degree > 131:
+        max_degree = np.max(n_degree)
+        if degree < 0 or degree > max_degree:
             raise ValueError(
-                f"'degree' needs to be an positive integer <= 131, got {degree}"
+                f"'degree' needs to be an positive integer <= {max_degree}, got {degree}"
             )
         for index, pre_degree in enumerate(n_degree):
             if degree <= pre_degree:
                 return n_degree[index], n_points[index]
     elif size:
-        if size < 0 or size > 5810:
-            raise ValueError(f"'size' needs to be an integer <= 5810, got {degree}")
+        max_size = np.max(n_points)
+        if size < 0 or size > max_size:
+            raise ValueError(f"'size' needs to be an integer <= {max_size}, got {size}")
         for index, pre_point in enumerate(n_points):
             if size <= pre_point:
                 return n_degree[index], n_points[index]
@@ -196,8 +199,8 @@ def _select_grid_type(*, degree=None, size=None):
         )
 
 
-def _load_grid_filename(degree: int, size: int):
-    """Construct Lebedev file name for given degree and size.
+def _load_grid_filename(degree: int, size: int):  # TODO: why i put it.
+    """Load saved .npz file to construct Lebedev grid.
 
     Parameters
     ----------
@@ -206,22 +209,9 @@ def _load_grid_filename(degree: int, size: int):
 
     Returns
     -------
-    str, file name for given type of Lebedev grid
-    """
-    return f"lebedev_{degree}_{size}.npz"
-
-
-def _load_grid_arrays(filename):
-    """Load saved .npz file to generate Lebedev points.
-
-    Parameters
-    ----------
-    filename : str or Path
-
-    Returns
-    -------
     tuple(np.ndarray(N,), np.ndarray(N,)), the coordinates and weights of grid.
     """
+    filename = f"lebedev_{degree}_{size}.npz"
     with path("grid.data.lebedev", filename) as npz_file:
         data = np.load(npz_file)
     return data["points"], data["weights"]
