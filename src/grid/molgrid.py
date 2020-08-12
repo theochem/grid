@@ -20,7 +20,7 @@
 """Molecular grid class."""
 
 
-from grid.atomic_grid import AtomicGrid
+from grid.atomgrid import AtomGrid
 from grid.basegrid import Grid, LocalGrid, OneDGrid
 
 import numpy as np
@@ -34,7 +34,7 @@ class MolGrid(Grid):
 
         Parameters
         ----------
-        atomic_grids : list[AtomicGrid]
+        atomic_grids : list[AtomGrid]
             list of atomic grid
         aim_weights : Callable or np.ndarray(K,)
             Atoms in molecule weights.
@@ -146,7 +146,7 @@ class MolGrid(Grid):
                     "not supported grid_type input\n"
                     f"got input type: {type(grid_type)}"
                 )
-            at_grid = AtomicGrid.quick_grid(
+            at_grid = AtomGrid.from_predefined(
                 atom_nums[i], rad, gd_type, center=coordinates[i], rotate=rotate
             )
             atomic_grids.append(at_grid)
@@ -196,8 +196,8 @@ class MolGrid(Grid):
         at_grids = []
         for i in range(len(coors)):
             at_grids.append(
-                AtomicGrid(
-                    radial, nums=[points_of_angular], center=coors[i], rotate=rotate
+                AtomGrid(
+                    radial, size=[points_of_angular], center=coors[i], rotate=rotate
                 )
             )
         return cls(at_grids, aim_weights, nums, store=store)
@@ -213,9 +213,19 @@ class MolGrid(Grid):
 
         Returns
         -------
+<<<<<<< HEAD
         AtomicGrid or LocalGrid
             If store=True, the AtomicGrid instance used is returned.
             If store=False, the LocalGrid containing points and weights of AtomicGrid
+||||||| parent of 81114aa... Refactorize atomgrid and lebedev
+        AtomicGrid or SubGrid
+            If store=True, the AtomicGrid instance used is returned.
+            If store=False, the SubGrid containing points and weights of AtomicGrid
+=======
+        AtomGrid or SubGrid
+            If store=True, the AtomGrid instance used is returned.
+            If store=False, the SubGrid containing points and weights of AtomGrid
+>>>>>>> 81114aa... Refactorize atomgrid and lebedev
             is returned.
 
         Raises
@@ -250,8 +260,8 @@ class MolGrid(Grid):
 
         Returns
         -------
-        AtomicGrid
-            AtomicGrid of desired atom with aim weights integrated
+        AtomGrid
+            AtomGrid of desired atom with aim weights integrated
         """
         if self._atomic_grids is None:
             s_ind = self._indices[index]
