@@ -24,7 +24,7 @@ from unittest import TestCase
 
 from grid.atomgrid import AtomGrid
 from grid.basegrid import AngularGrid, Grid, OneDGrid
-from grid.lebedev import generate_lebedev_grid
+from grid.lebedev import generate_lebedev_grid, n_degree
 from grid.onedgrid import HortonLinear
 from grid.rtransform import PowerRTransform
 
@@ -314,6 +314,38 @@ class TestAtomGrid(TestCase):
         theta = np.arctan2(ref_coor[1], ref_coor[0])
         phi = np.arccos(ref_coor[2] / r)
         assert_allclose(np.array([r, theta, phi]).reshape(-1, 3), calc_sph)
+
+    def test_spherical_complete(self):
+        """Test atomitc grid consistence for spherical integral."""
+        num_pts = len(n_degree)
+        pts = HortonLinear(num_pts)
+        for i in range(10):
+            start = np.random.rand() * 1e-5
+            end = np.random.rand() * 10 + 10
+            tf = PowerRTransform(start, end)
+            rad_grid = tf.transform_1d_grid(pts)
+            atgrid = AtomGrid(rad_grid, degs=n_degree)
+            values = np.random.rand(len(n_degree))
+            pt_val = np.zeros(atgrid.size)
+            for index, value in enumerate(values):
+                pt_val[atgrid._indices[index] : atgrid._indices[index + 1]] = value
+                rad_int_val = (
+                    value
+                    * rad_grid.weights[index]
+                    * 4
+                    * np.pi
+                    * rad_grid.points[index] ** 2
+                )
+                atgrid_int_val = np.sum(
+                    pt_val[atgrid._indices[index] : atgrid._indices[index + 1]]
+                    * atgrid.weights[
+                        atgrid._indices[index] : atgrid._indices[index + 1]
+                    ]
+                )
+                assert_almost_equal(rad_int_val, atgrid_int_val)
+            ref_int_at = atgrid.integrate(pt_val)
+            ref_int_rad = rad_grid.integrate(4 * np.pi * rad_grid.points ** 2 * values)
+            assert_almost_equal(ref_int_at, ref_int_rad)
 
     def test_error_raises(self):
         """Tests for error raises."""
