@@ -32,7 +32,13 @@ class AtomGrid(Grid):
     """Atomic grid construction class."""
 
     def __init__(
-        self, rgrid, *, degs=None, size=None, center=None, rotate=False,
+        self,
+        rgrid,
+        *,
+        degs=None,
+        size=None,
+        center=None,
+        rotate=False,
     ):
         """Construct atomic grid for given arguments.
 
@@ -96,7 +102,13 @@ class AtomGrid(Grid):
 
     @classmethod
     def from_predefined(
-        cls, atomic_num, rgrid, grid_type, *_, center=None, rotate=False,
+        cls,
+        atomic_num,
+        rgrid,
+        grid_type,
+        *_,
+        center=None,
+        rotate=False,
     ):
         """High level to construct prefined atomic grid.
 
