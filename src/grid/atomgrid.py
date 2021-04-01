@@ -103,7 +103,7 @@ class AtomGrid(Grid):
     @classmethod
     def from_predefined(
         cls,
-        atomic_num,
+        atnum,
         rgrid,
         grid_type,
         *_,
@@ -119,7 +119,7 @@ class AtomGrid(Grid):
 
         Parameters
         ----------
-        atomic_num : int
+        atnum : int
             atomic number of atomic grid
         rgrid : RadialGrid
             points where sperical grids will be located
@@ -143,8 +143,8 @@ class AtomGrid(Grid):
         with path("grid.data.prune_grid", f"prune_grid_{grid_type}.npz") as npz_file:
             data = np.load(npz_file)
             # load predefined_radial sectors and num_of_points in each sectors
-            rad = data[f"{atomic_num}_rad"]
-            npt = data[f"{atomic_num}_npt"]
+            rad = data[f"{atnum}_rad"]
+            npt = data[f"{atnum}_npt"]
 
         degs = size_to_degree(npt)
         rad_degs = AtomGrid._find_l_for_rad_list(rgrid.points, rad, degs)
