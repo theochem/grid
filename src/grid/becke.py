@@ -108,7 +108,7 @@ class BeckeWeights:
         return x
 
     def generate_weights(
-        self, points, atom_coords, atom_nums, *, select=None, pt_ind=None
+        self, points, atom_coords, atnums, *, select=None, pt_ind=None
     ):
         r"""Calculate Becke integration weights of points for select atom.
 
@@ -118,7 +118,7 @@ class BeckeWeights:
             Cartesian coordinates of :math:`N` grid points.
         atom_coords : np.ndarray(M, 3)
             Cartesian coordinates of :math:`M` atoms in molecule.
-        atom_nums : np.ndarray(M,)
+        atnums : np.ndarray(M,)
             Atomic number of :math:`M` atoms in molecule.
         select : list or integer, optional
             Index of atom index to calculate Becke weights
@@ -160,7 +160,7 @@ class BeckeWeights:
             # mu_p_n_n shape (#points, #uncs, #uncs)
             mu_p_n_n = n_n_p.transpose([2, 0, 1]) / atomic_dist
         del n_n_p
-        radii = np.array([self._radii[num] for num in atom_nums])
+        radii = np.array([self._radii[num] for num in atnums])
         alpha = BeckeWeights._calculate_alpha(radii)
         v_pp = mu_p_n_n + alpha * (1 - mu_p_n_n ** 2)
         del mu_p_n_n
@@ -181,7 +181,7 @@ class BeckeWeights:
                 )
         return weights
 
-    def compute_atom_weight(self, points, atom_coords, atom_nums, select, cutoff=0.45):
+    def compute_atom_weight(self, points, atom_coords, atnums, select, cutoff=0.45):
         """Compute Becke weights for given atomic grid points.
 
         Parameters
@@ -190,7 +190,7 @@ class BeckeWeights:
             Coordinates of points from given atomic grid
         atom_coords : np.ndarray(M, 3)
             Coordinates of nucleis
-        atom_nums : np.ndarray(M,)
+        atnums : np.ndarray(M,)
             Atomic number for each nuclei
         select : int
             Index of atom A for computing the weights
@@ -217,7 +217,7 @@ class BeckeWeights:
             # mu_p_n_n shape (N, M, M)
             mu_p_n_n = n_n_p.transpose([2, 0, 1]) / atomic_dist
         del n_n_p
-        radii = np.array([self._radii[num] for num in atom_nums])
+        radii = np.array([self._radii[num] for num in atnums])
         alpha = BeckeWeights._calculate_alpha(radii)
         v_pp = mu_p_n_n + alpha * (1 - mu_p_n_n ** 2)
         del mu_p_n_n
@@ -232,7 +232,7 @@ class BeckeWeights:
         return weights
 
     def compute_weights(
-        self, points, atom_coords, atom_nums, *, select=None, pt_ind=None
+        self, points, atom_coords, atnums, *, select=None, pt_ind=None
     ):
         """Compute becke weights for given points and select atoms.
 
@@ -242,7 +242,7 @@ class BeckeWeights:
             Cartesian coordinates of :math:`N` grid points.
         atom_coords : np.ndarray(M, 3)
             Cartesian coordinates of :math:`M` atoms in molecule.
-        atom_nums : np.ndarray(M,)
+        atnums : np.ndarray(M,)
             Atomic number of :math:`M` atoms in molecule.
         select : list or integer, optional
             Index of atom index to calculate Becke weights
@@ -271,18 +271,18 @@ class BeckeWeights:
         # only weight for one atom
         if sectors == 1:
             weights += self.compute_atom_weight(
-                points, atom_coords, atom_nums, select[0]
+                points, atom_coords, atnums, select[0]
             )
         else:
             for i in select:
                 ind_start = pt_ind[i]
                 ind_end = pt_ind[i + 1]
                 weights[ind_start:ind_end] += self.compute_atom_weight(
-                    points[ind_start:ind_end], atom_coords, atom_nums, i
+                    points[ind_start:ind_end], atom_coords, atnums, i
                 )
         return weights
 
-    def __call__(self, points, atom_coords, atom_nums, indices):
+    def __call__(self, points, atom_coords, atnums, indices):
         r"""Evaluate integration weights on the given grid points.
 
         Parameters
@@ -291,7 +291,7 @@ class BeckeWeights:
             Cartesian coordinates of :math:`N` grid points.
         atom_coords : np.ndarray(M, 3)
             Cartesian coordinates of :math:`M` atoms in molecule.
-        atom_nums : np.ndarray(M, 3)
+        atnums : np.ndarray(M, 3)
             Atomic number of :math:`M` atoms in molecule.
         indices : np.ndarray(M+1,)
             Indices of atomic grid points for each :math:`M` atoms in molecule.
@@ -312,7 +312,7 @@ class BeckeWeights:
                 self.generate_weights(
                     points[ibegin : ibegin + chunk_size],
                     atom_coords,
-                    atom_nums,
+                    atnums,
                     pt_ind=(indices - ibegin).clip(min=0),
                 )
                 for ibegin in range(0, npoints, chunk_size)

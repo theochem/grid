@@ -476,11 +476,11 @@ class TestMolGrid(TestCase):
 
         # errors of aim_weight
         with self.assertRaises(TypeError):
-            MolGrid([atg], aim_weights="test", atom_nums=np.array([1]))
+            MolGrid([atg], aim_weights="test", atnums=np.array([1]))
         with self.assertRaises(ValueError):
-            MolGrid([atg], aim_weights=np.array(3), atom_nums=np.array([1]))
+            MolGrid([atg], aim_weights=np.array(3), atnums=np.array([1]))
         with self.assertRaises(TypeError):
-            MolGrid([atg], aim_weights=[3, 5], atom_nums=np.array([1]))
+            MolGrid([atg], aim_weights=[3, 5], atnums=np.array([1]))
 
         # integrate errors
         becke = BeckeWeights({1: 0.472_431_53}, order=3)
@@ -606,11 +606,7 @@ class TestMolGrid(TestCase):
         rgrid = tf.transform_1d_grid(pts)
         coordinates = np.array([0.0, 0.0, -0.5])
         atg1 = AtomGrid.from_pruned(
-            rgrid,
-            0.5,
-            r_sectors=np.array([]),
-            degs=np.array([17]),
-            center=coordinates,
+            rgrid, 0.5, r_sectors=np.array([]), degs=np.array([17]), center=coordinates,
         )
         mg = MolGrid([atg1], HirshfeldWeights(), np.array([7]))
         dist0 = np.sqrt(((coordinates - mg.points) ** 2).sum(axis=1))

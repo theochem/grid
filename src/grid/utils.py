@@ -206,12 +206,12 @@ _cambridge = np.array(
 )
 
 
-def get_cov_radii(numbers, type="bragg"):
+def get_cov_radii(atnums, type="bragg"):
     """Get the covalent radii for given atomic number(s).
 
     Parameters
     ----------
-    numbers : int or np.ndarray
+    atnums : int or np.ndarray
         atomic number of interested
     type : str, default to bragg
         types of covalent radii for elements.
@@ -228,13 +228,13 @@ def get_cov_radii(numbers, type="bragg"):
     ValueError
         Invalid covalent type, or input atomic number is 0
     """
-    if isinstance(numbers, (int, np.integer)):
-        numbers = np.array([numbers])
-    if np.any(np.array(numbers) == 0):
+    if isinstance(atnums, (int, np.integer)):
+        atnums = np.array([atnums])
+    if np.any(np.array(atnums) == 0):
         raise ValueError("0 is not a valid atomic number")
     if type == "bragg":
-        return _bragg[numbers]
+        return _bragg[atnums]
     elif type == "cambridge":
-        return _cambridge[numbers]
+        return _cambridge[atnums]
     else:
         raise ValueError(f"Not supported radii type, got {type}")
