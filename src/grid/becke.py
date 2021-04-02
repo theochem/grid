@@ -108,7 +108,7 @@ class BeckeWeights:
         return x
 
     def generate_weights(
-        self, points, atom_coords, atnums, *, select=None, pt_ind=None
+        self, points, atcoords, atnums, *, select=None, pt_ind=None
     ):
         r"""Calculate Becke integration weights of points for select atom.
 
@@ -116,7 +116,7 @@ class BeckeWeights:
         ----------
         points : np.ndarray(N, 3)
             Cartesian coordinates of :math:`N` grid points.
-        atom_coords : np.ndarray(M, 3)
+        atcoords : np.ndarray(M, 3)
             Cartesian coordinates of :math:`M` atoms in molecule.
         atnums : np.ndarray(M,)
             Atomic number of :math:`M` atoms in molecule.
@@ -135,7 +135,7 @@ class BeckeWeights:
         # |r_A - r| for each points, nucleus pair
         # check ``select``
         if select is None:
-            select = np.arange(len(atom_coords))
+            select = np.arange(len(atcoords))
         elif isinstance(select, (np.integer, int)):
             select = [select]
         # check ``pt_ind`` points index
@@ -148,12 +148,12 @@ class BeckeWeights:
         if sectors != len(select):
             raise ValueError("# of select does not equal to # of indices.")
         weights = np.zeros(len(points))
-        n_p = np.linalg.norm(atom_coords[:, None] - points, axis=-1)
+        n_p = np.linalg.norm(atcoords[:, None] - points, axis=-1)
         # shape of n_p is (#nucs, #points)
         # |r_A - r| - |r_B - r| for each points with pair(A, B) nucleus
         # (#nucs, None, #points) - (#nucs, #points) -> (#nucs, #nucs, #points)
         n_n_p = n_p[:, None] - n_p
-        atomic_dist = np.linalg.norm(atom_coords[:, None] - atom_coords, axis=-1)
+        atomic_dist = np.linalg.norm(atcoords[:, None] - atcoords, axis=-1)
         # ignore 0 / 0 runtime warning
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
@@ -181,14 +181,14 @@ class BeckeWeights:
                 )
         return weights
 
-    def compute_atom_weight(self, points, atom_coords, atnums, select, cutoff=0.45):
+    def compute_atom_weight(self, points, atcoords, atnums, select, cutoff=0.45):
         """Compute Becke weights for given atomic grid points.
 
         Parameters
         ----------
         points : np.ndarray(N, 3)
             Coordinates of points from given atomic grid
-        atom_coords : np.ndarray(M, 3)
+        atcoords : np.ndarray(M, 3)
             Coordinates of nucleis
         atnums : np.ndarray(M,)
             Atomic number for each nuclei
@@ -206,11 +206,11 @@ class BeckeWeights:
         # initialize points array (N,)
         weights = np.zeros(len(points))
         # shape of n_p is (M, N)
-        n_p = np.linalg.norm(atom_coords[:, None] - points, axis=-1)
+        n_p = np.linalg.norm(atcoords[:, None] - points, axis=-1)
         # |r_A - r| - |r_B - r| for each points with pair(A, B) nucleus
         # (M, None, N) - (M, N) -> (M, M, N)
         n_n_p = n_p[:, None] - n_p
-        atomic_dist = np.linalg.norm(atom_coords[:, None] - atom_coords, axis=-1)
+        atomic_dist = np.linalg.norm(atcoords[:, None] - atcoords, axis=-1)
         # ignore 0 / 0 runtime warning
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
@@ -232,7 +232,7 @@ class BeckeWeights:
         return weights
 
     def compute_weights(
-        self, points, atom_coords, atnums, *, select=None, pt_ind=None
+        self, points, atcoords, atnums, *, select=None, pt_ind=None
     ):
         """Compute becke weights for given points and select atoms.
 
@@ -240,7 +240,7 @@ class BeckeWeights:
         ----------
         points : np.ndarray(N, 3)
             Cartesian coordinates of :math:`N` grid points.
-        atom_coords : np.ndarray(M, 3)
+        atcoords : np.ndarray(M, 3)
             Cartesian coordinates of :math:`M` atoms in molecule.
         atnums : np.ndarray(M,)
             Atomic number of :math:`M` atoms in molecule.
@@ -255,7 +255,7 @@ class BeckeWeights:
             Becke integration weights of :math:`N` grid points.
         """
         if select is None:
-            select = np.arange(len(atom_coords))
+            select = np.arange(len(atcoords))
         elif isinstance(select, (np.integer, int)):
             select = [select]
         # check ``pt_ind`` points index
@@ -271,25 +271,25 @@ class BeckeWeights:
         # only weight for one atom
         if sectors == 1:
             weights += self.compute_atom_weight(
-                points, atom_coords, atnums, select[0]
+                points, atcoords, atnums, select[0]
             )
         else:
             for i in select:
                 ind_start = pt_ind[i]
                 ind_end = pt_ind[i + 1]
                 weights[ind_start:ind_end] += self.compute_atom_weight(
-                    points[ind_start:ind_end], atom_coords, atnums, i
+                    points[ind_start:ind_end], atcoords, atnums, i
                 )
         return weights
 
-    def __call__(self, points, atom_coords, atnums, indices):
+    def __call__(self, points, atcoords, atnums, indices):
         r"""Evaluate integration weights on the given grid points.
 
         Parameters
         ----------
         points : np.ndarray(N, 3)
             Cartesian coordinates of :math:`N` grid points.
-        atom_coords : np.ndarray(M, 3)
+        atcoords : np.ndarray(M, 3)
             Cartesian coordinates of :math:`M` atoms in molecule.
         atnums : np.ndarray(M, 3)
             Atomic number of :math:`M` atoms in molecule.
@@ -306,12 +306,12 @@ class BeckeWeights:
         # to counteract the scaling of the memory usage of the
         # vectorized implementation of the Becke partitioning.
         npoints = points.shape[0]
-        chunk_size = max(1, (10 * npoints) // atom_coords.shape[0] ** 2)
+        chunk_size = max(1, (10 * npoints) // atcoords.shape[0] ** 2)
         aim_weights = np.concatenate(
             [
                 self.generate_weights(
                     points[ibegin : ibegin + chunk_size],
-                    atom_coords,
+                    atcoords,
                     atnums,
                     pt_ind=(indices - ibegin).clip(min=0),
                 )
