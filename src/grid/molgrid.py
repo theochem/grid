@@ -81,7 +81,7 @@ class MolGrid(Grid):
         cls,
         atnums,
         atcoords,
-        radial_grid,
+        rgrid,
         grid_type,
         aim_weights,
         *_,
@@ -96,7 +96,7 @@ class MolGrid(Grid):
             array of atomic number
         atcoords : np.ndarray(N, 3)
             atomic coordinates of atoms
-        radial_grid : OneDGrid
+        rgrid : OneDGrid
             one dimension grid  to construct spherical grid
         grid_type : str
             preset grid accuracy scheme, support "coarse", "medium", "fine",
@@ -123,16 +123,15 @@ class MolGrid(Grid):
         atomic_grids = []
         for i in range(total_atm):
             # get proper radial grid
-            if isinstance(radial_grid, OneDGrid):
-                rad = radial_grid
-            elif isinstance(radial_grid, list):
-                rad = radial_grid[i]
-            elif isinstance(radial_grid, dict):
-                rad = radial_grid[atnums[i]]
+            if isinstance(rgrid, OneDGrid):
+                rad = rgrid
+            elif isinstance(rgrid, list):
+                rad = rgrid[i]
+            elif isinstance(rgrid, dict):
+                rad = rgrid[atnums[i]]
             else:
                 raise TypeError(
-                    "not supported radial grid input\n"
-                    f"got input type: {type(radial_grid)}"
+                    f"not supported radial grid input; got input type: {type(rgrid)}"
                 )
             # get proper grid type
             if isinstance(grid_type, str):
