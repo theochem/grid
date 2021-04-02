@@ -29,12 +29,12 @@ import numpy as np
 class MolGrid(Grid):
     """Molecular Grid for integration."""
 
-    def __init__(self, atomic_grids, aim_weights, atnums, store=False):
+    def __init__(self, atgrids, aim_weights, atnums, store=False):
         r"""Initialize class.
 
         Parameters
         ----------
-        atomic_grids : list[AtomGrid]
+        atgrids : list[AtomGrid]
             list of atomic grid
         aim_weights : Callable or np.ndarray(K,)
             Atoms in molecule weights.
@@ -43,14 +43,14 @@ class MolGrid(Grid):
 
         """
         # initialize these attributes
-        self._coors = np.zeros((len(atomic_grids), 3))
-        self._indices = np.zeros(len(atomic_grids) + 1, dtype=int)
-        size = np.sum([atomgrid.size for atomgrid in atomic_grids])
+        self._coors = np.zeros((len(atgrids), 3))
+        self._indices = np.zeros(len(atgrids) + 1, dtype=int)
+        size = np.sum([atomgrid.size for atomgrid in atgrids])
         self._points = np.zeros((size, 3))
         self._atweights = np.zeros(size)
-        self._atomic_grids = atomic_grids if store else None
+        self._atomic_grids = atgrids if store else None
 
-        for i, atom_grid in enumerate(atomic_grids):
+        for i, atom_grid in enumerate(atgrids):
             self._coors[i] = atom_grid.center
             self._indices[i + 1] += self._indices[i] + atom_grid.size
             start, end = self._indices[i], self._indices[i + 1]
