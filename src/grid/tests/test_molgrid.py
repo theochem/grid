@@ -125,9 +125,9 @@ class TestMolGrid(TestCase):
         atgrid3 = AtomGrid.from_predefined(
             numbers[2], rad2, "medium", center=coordinates[2]
         )
-        assert_allclose(mg._atomic_grids[0].points, atgrid1.points)
-        assert_allclose(mg._atomic_grids[1].points, atgrid2.points)
-        assert_allclose(mg._atomic_grids[2].points, atgrid3.points)
+        assert_allclose(mg._atgrids[0].points, atgrid1.points)
+        assert_allclose(mg._atgrids[1].points, atgrid2.points)
+        assert_allclose(mg._atgrids[2].points, atgrid3.points)
 
         # grid type test with dict
         mg = MolGrid.make_grid(
@@ -149,9 +149,9 @@ class TestMolGrid(TestCase):
         atgrid3 = AtomGrid.from_predefined(
             numbers[2], rad3, "fine", center=coordinates[2]
         )
-        assert_allclose(mg._atomic_grids[0].points, atgrid1.points)
-        assert_allclose(mg._atomic_grids[1].points, atgrid2.points)
-        assert_allclose(mg._atomic_grids[2].points, atgrid3.points)
+        assert_allclose(mg._atgrids[0].points, atgrid1.points)
+        assert_allclose(mg._atgrids[1].points, atgrid2.points)
+        assert_allclose(mg._atgrids[2].points, atgrid3.points)
 
     def test_make_grid_different_rad_type(self):
         """Test different radial grid input for make molgrid."""
@@ -190,9 +190,9 @@ class TestMolGrid(TestCase):
         atgrid3 = AtomGrid.from_predefined(
             numbers[2], rad3, "fine", center=coordinates[2]
         )
-        assert_allclose(mg._atomic_grids[0].points, atgrid1.points)
-        assert_allclose(mg._atomic_grids[1].points, atgrid2.points)
-        assert_allclose(mg._atomic_grids[2].points, atgrid3.points)
+        assert_allclose(mg._atgrids[0].points, atgrid1.points)
+        assert_allclose(mg._atgrids[1].points, atgrid2.points)
+        assert_allclose(mg._atgrids[2].points, atgrid3.points)
 
         # radial grid test with dict
         mg = MolGrid.make_grid(
@@ -219,9 +219,9 @@ class TestMolGrid(TestCase):
         atgrid3 = AtomGrid.from_predefined(
             numbers[2], rad1, "fine", center=coordinates[2]
         )
-        assert_allclose(mg._atomic_grids[0].points, atgrid1.points)
-        assert_allclose(mg._atomic_grids[1].points, atgrid2.points)
-        assert_allclose(mg._atomic_grids[2].points, atgrid3.points)
+        assert_allclose(mg._atgrids[0].points, atgrid1.points)
+        assert_allclose(mg._atgrids[1].points, atgrid2.points)
+        assert_allclose(mg._atgrids[2].points, atgrid3.points)
 
     def test_integrate_hydrogen_pair_1s(self):
         """Test molecular integral in H2."""
@@ -364,7 +364,7 @@ class TestMolGrid(TestCase):
         for i in range(2):
             atgrid = mg[i]
             assert isinstance(atgrid, LocalGrid)
-            assert_allclose(atgrid.center, mg._coors[i])
+            assert_allclose(atgrid.center, mg._atcoords[i])
 
     def test_molgrid_attrs(self):
         """Test MolGrid attributes."""
@@ -403,7 +403,7 @@ class TestMolGrid(TestCase):
 
         # test molgrid is not stored
         mg2 = MolGrid([atg1, atg2], becke, np.array([6, 8]), store=False)
-        assert mg2._atomic_grids is None
+        assert mg2._atgrids is None
         simple2_ag1 = mg2.get_atomic_grid(0)
         simple2_ag2 = mg2.get_atomic_grid(1)
         assert isinstance(simple2_ag1, LocalGrid)
