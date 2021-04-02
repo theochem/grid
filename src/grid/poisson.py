@@ -12,14 +12,14 @@ class Poisson:
     """Poisson ODE solver class."""
 
     @staticmethod
-    def _proj_sph_value(radial, coors, l_max, value_array, weights, indices):
+    def _proj_sph_value(radial, atcoords, l_max, value_array, weights, indices):
         """Compute the spline for target function on each spherical harmonics.
 
         Parameters
         ----------
         radial : RadialGrid
             Radial grids for compute coeffs on each Real Spherical Harmonics.
-        coors : numpy.ndarray(N, 2)
+        atcoords : numpy.ndarray(N, 2)
             Spherical coordinates for comput coeff. [azimuthal, polar]
         l_max : int, >= 0
             The maximum value l in generated real spherical harmonics
@@ -36,12 +36,12 @@ class Poisson:
         np.ndarray[scipy.PPoly], shape(2L - 1, L + 1)
             scipy cubic spline instance of each harmonic shell
         """
-        if coors.shape[1] > 2:
+        if atcoords.shape[1] > 2:
             raise ValueError(
                 f"Input coordinates contains too many columns\n"
-                f"Only 2 columns needed, got coors shape:{coors.shape}"
+                f"Only 2 columns needed, got coors shape:{atcoords.shape}"
             )
-        theta, phi = coors[:, 0], coors[:, 1]
+        theta, phi = atcoords[:, 0], atcoords[:, 1]
         real_sph = generate_real_sph_harms(l_max, theta, phi)
         # real_sph shape: (m, l, n)
         ms, ls = real_sph.shape[:-1]

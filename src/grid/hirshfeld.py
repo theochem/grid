@@ -87,14 +87,14 @@ class HirshfeldWeights:
         # compute pro-atom density
         return HirshfeldWeights._get_proatom_density(num, dist)
 
-    def __call__(self, points, atom_coords, atnums, indices):
+    def __call__(self, points, atcoords, atnums, indices):
         """Evaluate integration weights on the given grid points.
 
         Parameters
         ----------
         points: np.ndarray(N,3)
             Cartesian coordinates of :math:`N` grid points.
-        atom_coords: np.ndarray(M,3)
+        atcoords: np.ndarray(M,3)
             Cartesian coordinates of the :math:`M` atoms in molecule.
         atnums: np.ndarray(M,)
             Atomic number of :math:`M` atoms in molecule.
@@ -111,7 +111,7 @@ class HirshfeldWeights:
         # evaluate (neutral) pro-atom densities & pro-molecule density
         for index, atnum in enumerate(atnums):
             proatom = HirshfeldWeights.generate_proatom(
-                points, atom_coords[index], atnum
+                points, atcoords[index], atnum
             )
             promolecule += proatom
             start, end = indices[index], indices[index + 1]
