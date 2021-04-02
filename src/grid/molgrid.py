@@ -43,15 +43,15 @@ class MolGrid(Grid):
 
         """
         # initialize these attributes
-        self._coors = np.zeros((len(atgrids), 3))
+        self._atcoords = np.zeros((len(atgrids), 3))
         self._indices = np.zeros(len(atgrids) + 1, dtype=int)
         size = np.sum([atomgrid.size for atomgrid in atgrids])
         self._points = np.zeros((size, 3))
         self._atweights = np.zeros(size)
-        self._atomic_grids = atgrids if store else None
+        self._atgrids = atgrids if store else None
 
         for i, atom_grid in enumerate(atgrids):
-            self._coors[i] = atom_grid.center
+            self._atcoords[i] = atom_grid.center
             self._indices[i + 1] += self._indices[i] + atom_grid.size
             start, end = self._indices[i], self._indices[i + 1]
             self._points[start:end] = atom_grid.points
@@ -59,7 +59,7 @@ class MolGrid(Grid):
 
         if callable(aim_weights):
             self._aim_weights = aim_weights(
-                self._points, self._coors, atnums, self._indices
+                self._points, self._atcoords, atnums, self._indices
             )
 
         elif isinstance(aim_weights, np.ndarray):
@@ -225,12 +225,12 @@ class MolGrid(Grid):
         if index < 0:
             raise ValueError(f"index should be non-negative, got {index}")
         # get atomic grid if stored
-        if self._atomic_grids is not None:
-            return self._atomic_grids[index]
+        if self._atgrids is not None:
+            return self._atgrids[index]
         # make a local grid
         pts = self.points[self._indices[index] : self._indices[index + 1]]
         wts = self._atweights[self._indices[index] : self._indices[index + 1]]
-        return LocalGrid(pts, wts, self._coors[index])
+        return LocalGrid(pts, wts, self._atcoords[index])
 
     @property
     def aim_weights(self):
@@ -252,10 +252,10 @@ class MolGrid(Grid):
         AtomGrid
             AtomGrid of desired atom with aim weights integrated
         """
-        if self._atomic_grids is None:
+        if self._atgrids is None:
             s_ind = self._indices[index]
             f_ind = self._indices[index + 1]
             return LocalGrid(
-                self.points[s_ind:f_ind], self.weights[s_ind:f_ind], self._coors[index]
+                self.points[s_ind:f_ind], self.weights[s_ind:f_ind], self._atcoords[index]
             )
-        return self._atomic_grids[index]
+        return self._atgrids[index]
