@@ -137,12 +137,12 @@ def spline_with_sph_harms(sph_harm, value_arrays, weights, indices, radial):
     return CubicSpline(x=radial.points, y=ml_sph_value_with_r)
 
 
-def spline_with_atomic_grid(at_grid, value_array):
+def spline_with_atomic_grid(atgrid, value_array):
     """Compute spline with real spherical hormonics for given atomic grid.
 
     Parameters
     ----------
-    at_grid : AtomicGrid
+    atgrid : AtomicGrid
         atomic grid for interpolation
     value_array : np.narray(N,)
         function value of each point on the atomic grid
@@ -152,11 +152,11 @@ def spline_with_atomic_grid(at_grid, value_array):
     scipy.CubicSpline
         CubicSpline object for interpolating values
     """
-    l_max = at_grid.l_max // 2
-    sph_coor = at_grid.convert_cart_to_sph()
+    l_max = atgrid.l_max // 2
+    sph_coor = atgrid.convert_cart_to_sph()
     r_sph = generate_real_sph_harms(l_max, sph_coor[:, 1], sph_coor[:, 2])
     return spline_with_sph_harms(
-        r_sph, value_array, at_grid.weights, at_grid.indices, at_grid.rgrid
+        r_sph, value_array, atgrid.weights, atgrid.indices, atgrid.rgrid
     )
 
 
