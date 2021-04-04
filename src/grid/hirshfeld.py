@@ -110,9 +110,7 @@ class HirshfeldWeights:
         promolecule = np.zeros(len(points))
         # evaluate (neutral) pro-atom densities & pro-molecule density
         for index, atnum in enumerate(atnums):
-            proatom = HirshfeldWeights.generate_proatom(
-                points, atcoords[index], atnum
-            )
+            proatom = HirshfeldWeights.generate_proatom(points, atcoords[index], atnum)
             promolecule += proatom
             start, end = indices[index], indices[index + 1]
             aim_weights[start:end] = proatom[start:end]

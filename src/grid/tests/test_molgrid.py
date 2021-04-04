@@ -606,7 +606,11 @@ class TestMolGrid(TestCase):
         rgrid = tf.transform_1d_grid(pts)
         coordinates = np.array([0.0, 0.0, -0.5])
         atg1 = AtomGrid.from_pruned(
-            rgrid, 0.5, r_sectors=np.array([]), degs=np.array([17]), center=coordinates,
+            rgrid,
+            0.5,
+            r_sectors=np.array([]),
+            degs=np.array([17]),
+            center=coordinates,
         )
         mg = MolGrid([atg1], HirshfeldWeights(), np.array([7]))
         dist0 = np.sqrt(((coordinates - mg.points) ** 2).sum(axis=1))

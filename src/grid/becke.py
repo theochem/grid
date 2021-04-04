@@ -107,9 +107,7 @@ class BeckeWeights:
             x = 1.5 * x - 0.5 * x ** 3
         return x
 
-    def generate_weights(
-        self, points, atcoords, atnums, *, select=None, pt_ind=None
-    ):
+    def generate_weights(self, points, atcoords, atnums, *, select=None, pt_ind=None):
         r"""Calculate Becke integration weights of points for select atom.
 
         Parameters
@@ -231,9 +229,7 @@ class BeckeWeights:
         weights += s_ab[:, select] / np.sum(s_ab, axis=-1)
         return weights
 
-    def compute_weights(
-        self, points, atcoords, atnums, *, select=None, pt_ind=None
-    ):
+    def compute_weights(self, points, atcoords, atnums, *, select=None, pt_ind=None):
         """Compute becke weights for given points and select atoms.
 
         Parameters
@@ -270,9 +266,7 @@ class BeckeWeights:
         weights = np.zeros(len(points))
         # only weight for one atom
         if sectors == 1:
-            weights += self.compute_atom_weight(
-                points, atcoords, atnums, select[0]
-            )
+            weights += self.compute_atom_weight(points, atcoords, atnums, select[0])
         else:
             for i in select:
                 ind_start = pt_ind[i]

@@ -256,6 +256,8 @@ class MolGrid(Grid):
             s_ind = self._indices[index]
             f_ind = self._indices[index + 1]
             return LocalGrid(
-                self.points[s_ind:f_ind], self.weights[s_ind:f_ind], self._atcoords[index]
+                self.points[s_ind:f_ind],
+                self.weights[s_ind:f_ind],
+                self._atcoords[index],
             )
         return self._atgrids[index]
