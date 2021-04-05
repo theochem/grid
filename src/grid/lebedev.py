@@ -28,7 +28,7 @@ from importlib_resources import path
 import numpy as np
 
 
-n_points = [
+lebedev_npoints = [
     6,
     14,
     26,
@@ -63,7 +63,7 @@ n_points = [
     5810,
 ]
 
-n_degree = [
+lebedev_degrees = [
     3,
     5,
     7,
@@ -178,21 +178,21 @@ def _select_grid_type(*, degree=None, size=None):
             "Both degree and size are provided, will use degree only", RuntimeWarning
         )
     if degree:
-        max_degree = np.max(n_degree)
+        max_degree = np.max(lebedev_degrees)
         if degree < 0 or degree > max_degree:
             raise ValueError(
                 f"'degree' needs to be an positive integer <= {max_degree}, got {degree}"
             )
-        for index, pre_degree in enumerate(n_degree):
+        for index, pre_degree in enumerate(lebedev_degrees):
             if degree <= pre_degree:
-                return n_degree[index], n_points[index]
+                return lebedev_degrees[index], lebedev_npoints[index]
     elif size:
-        max_size = np.max(n_points)
+        max_size = np.max(lebedev_npoints)
         if size < 0 or size > max_size:
             raise ValueError(f"'size' needs to be an integer <= {max_size}, got {size}")
-        for index, pre_point in enumerate(n_points):
+        for index, pre_point in enumerate(lebedev_npoints):
             if size <= pre_point:
-                return n_degree[index], n_points[index]
+                return lebedev_degrees[index], lebedev_npoints[index]
     else:
         raise ValueError(
             "Please provide 'degree' or 'size' to define a grid type is provided in arguments"

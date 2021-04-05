@@ -25,8 +25,8 @@ from grid.lebedev import (
     _select_grid_type,
     generate_lebedev_grid,
     match_degree,
-    n_degree,
-    n_points,
+    lebedev_degrees,
+    lebedev_npoints,
     size_to_degree,
 )
 
@@ -39,8 +39,8 @@ class TestLebedev(TestCase):
 
     def test_consistency(self):
         """Consistency tests from old grid."""
-        for i in range(len(n_points)):
-            assert_equal(_select_grid_type(degree=n_degree[i])[1], n_points[i])
+        for i in range(len(lebedev_npoints)):
+            assert_equal(_select_grid_type(degree=lebedev_degrees[i])[1], lebedev_npoints[i])
 
     def test_lebedev_laikov_sphere(self):
         """Levedev grid tests from old grid."""
