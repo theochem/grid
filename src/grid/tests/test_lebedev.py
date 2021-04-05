@@ -25,10 +25,10 @@ from unittest import TestCase
 from grid.basegrid import AngularGrid
 from grid.lebedev import (
     _get_lebedev_size_and_degree,
+    convert_lebedev_sizes_to_degrees,
     generate_lebedev_grid,
     lebedev_degrees,
     lebedev_npoints,
-    convert_lebedev_sizes_to_degrees,
 )
 
 import numpy as np
@@ -41,7 +41,10 @@ class TestLebedev(TestCase):
     def test_consistency(self):
         """Consistency tests from old grid."""
         for i in range(len(lebedev_npoints)):
-            assert_equal(_get_lebedev_size_and_degree(degree=lebedev_degrees[i])[1], lebedev_npoints[i])
+            assert_equal(
+                _get_lebedev_size_and_degree(degree=lebedev_degrees[i])[1],
+                lebedev_npoints[i],
+            )
 
     def test_lebedev_laikov_sphere(self):
         """Levedev grid tests from old grid."""
@@ -55,7 +58,9 @@ class TestLebedev(TestCase):
                 # check surface area (i.e., integral of constant function 1)
                 assert_allclose(grid.integrate(np.ones(grid.size)), 4 * np.pi)
                 # check integral of x * y * z is zero (i.e., f orbital is orthogonal to s orbital)
-                assert_allclose(grid.integrate(np.product(grid.points, axis=1)), 0.0, atol=1.e-12)
+                assert_allclose(
+                    grid.integrate(np.product(grid.points, axis=1)), 0.0, atol=1.0e-12
+                )
                 assert_allclose(grid.points[:, 0].sum(), 0, atol=1e-10)
                 assert_allclose(grid.points[:, 1].sum(), 0, atol=1e-10)
                 assert_allclose(grid.points[:, 2].sum(), 0, atol=1e-10)
