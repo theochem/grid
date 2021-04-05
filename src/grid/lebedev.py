@@ -125,22 +125,6 @@ def generate_lebedev_grid(*, degree=None, size=None):
     return AngularGrid(points, weights * 4 * np.pi)
 
 
-def match_degree(degree_nums):
-    """Generate proper angular degree for given arbitrary degree list.
-
-    Parameters
-    ----------
-    degree_nums : list[int]
-        a list of arbitrary degree nums
-
-    Returns
-    -------
-    np.ndarray[int]
-        An array of proper angular degree values
-    """
-    return np.array([_select_grid_type(degree=i)[0] for i in degree_nums], dtype=int)
-
-
 def size_to_degree(sizes):
     """Convert given Lebedev grid sizes to degrees.
 
