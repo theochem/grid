@@ -141,26 +141,27 @@ def match_degree(degree_nums):
     return np.array([_select_grid_type(degree=i)[0] for i in degree_nums], dtype=int)
 
 
-def size_to_degree(num_array):
-    """Generate degs given nums.
+def size_to_degree(sizes):
+    """Convert given Lebedev grid sizes to degrees.
 
     Parameters
     ----------
-    num_array : np.ndarray(N,)
-        Numpy array with # of points for each shell
+    sizes : array_like
+        Sequence of Lebedev grid sizes (e.g., number of points for each atomic shell).
 
     Returns
     -------
-    np.ndarray(N,)
-        Numpy array with L value for each shell
+    array_like
+        Sequence of the corresponding Lebedev grid degrees.
+
     """
-    num_array = np.asarray(num_array)
-    unik_arr = np.unique(num_array)
-    degs = np.zeros(num_array.size)
-    for i in unik_arr:
-        deg = _select_grid_type(size=i)[0]
-        degs[np.where(num_array == i)] = deg
-    return degs
+    degrees = np.zeros(len(sizes))
+    for size in np.unique(sizes):
+        # get the degree corresponding to the given (unique) size
+        deg = _select_grid_type(size=size)[0]
+        # set value of degree to corresponding to the given size equal to deg
+        degrees[np.where(sizes == size)] = deg
+    return degrees
 
 
 def _select_grid_type(*, degree=None, size=None):
