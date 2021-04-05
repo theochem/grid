@@ -164,41 +164,51 @@ def size_to_degree(num_array):
 
 
 def _select_grid_type(*, degree=None, size=None):
-    """Select proper Lebedev grid scheme for given degree or size.
+    """Map the given degree and/or size to the degree and size of a supported Lebedev grid.
 
     Parameters
     ----------
-    degree : int, the magic number for spherical grid
-    size : int, the number of points for spherical grid
+    degree : int, optional
+        Degree of Lebedev grid. If the Lebedev grid corresponding to the given degree is not
+        supported, the next largest degree is used.
+    size : int, optional
+        Number of Lebedev grid points. If the Lebedev grid corresponding to the given size is not
+        supported, the next largest size is used. If both degree and size are given, degree is
+        used for constructing the grid.
 
     Returns
     -------
-    tuple(int, int), proper magic number and its corresponding number of points.
+    int, int
+        Degree and size of a supported Lebedev grid (equal to or larger than the requested grid).
+
     """
     if degree and size:
         warnings.warn(
-            "Both degree and size are provided, will use degree only", RuntimeWarning
+            "Both degree and size arguments are given, so only degree is used!",
+            RuntimeWarning,
         )
     if degree:
         max_degree = np.max(lebedev_degrees)
         if degree < 0 or degree > max_degree:
             raise ValueError(
-                f"'degree' needs to be an positive integer <= {max_degree}, got {degree}"
+                f"Argument degree should be a positive integer <= {max_degree}, got {degree}"
             )
+        # match the given degree to the existing Lebedev degree or the next largest degree
         for index, pre_degree in enumerate(lebedev_degrees):
             if degree <= pre_degree:
                 return lebedev_degrees[index], lebedev_npoints[index]
     elif size:
         max_size = np.max(lebedev_npoints)
         if size < 0 or size > max_size:
-            raise ValueError(f"'size' needs to be an integer <= {max_size}, got {size}")
+            raise ValueError(
+                f"Argument size should be a positive integer <= {max_size}, got {size}"
+            )
+        # match the given size to the existing Lebedev size or the next largest size
         for index, pre_point in enumerate(lebedev_npoints):
             if size <= pre_point:
                 return lebedev_degrees[index], lebedev_npoints[index]
     else:
-        raise ValueError(
-            "Please provide 'degree' or 'size' to define a grid type is provided in arguments"
-        )
+        raise ValueError("Provide degree and/or size arguments!")
 
 
 def _load_grid_filename(degree: int, size: int):
