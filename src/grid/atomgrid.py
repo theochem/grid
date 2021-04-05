@@ -21,7 +21,11 @@
 
 
 from grid.basegrid import AngularGrid, Grid, OneDGrid
-from grid.lebedev import generate_lebedev_grid, _get_lebedev_size_and_degree, convert_lebedev_sizes_to_degrees
+from grid.lebedev import (
+    _get_lebedev_size_and_degree,
+    convert_lebedev_sizes_to_degrees,
+    generate_lebedev_grid,
+)
 
 from importlib_resources import path
 
@@ -366,7 +370,9 @@ class AtomGrid(Grid):
         if len(degs) - len(r_sectors) != 1:
             raise ValueError("degs should have only one more element than r_sectors.")
         # match given degrees to the supported (i.e., pre-computed) Lebedev degrees
-        matched_deg = np.array([_get_lebedev_size_and_degree(degree=d)[0] for d in degs])
+        matched_deg = np.array(
+            [_get_lebedev_size_and_degree(degree=d)[0] for d in degs]
+        )
         rad_degs = AtomGrid._find_l_for_rad_list(
             rgrid.points, radius * r_sectors, matched_deg
         )
