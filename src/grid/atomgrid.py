@@ -18,8 +18,10 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
 """Module for generating AtomGrid."""
+
+
 from grid.basegrid import AngularGrid, Grid, OneDGrid
-from grid.lebedev import generate_lebedev_grid, match_degree, size_to_degree
+from grid.lebedev import generate_lebedev_grid, _select_grid_type, size_to_degree
 
 from importlib_resources import path
 
@@ -363,7 +365,8 @@ class AtomGrid(Grid):
             raise ValueError("rad_list can't be empty.")
         if len(degs) - len(r_sectors) != 1:
             raise ValueError("degs should have only one more element than r_sectors.")
-        matched_deg = match_degree(degs)
+        # match given degrees to the supported (i.e., pre-computed) Lebedev degrees
+        matched_deg = np.array([_select_grid_type(degree=d)[0] for d in degs])
         rad_degs = AtomGrid._find_l_for_rad_list(
             rgrid.points, radius * r_sectors, matched_deg
         )
