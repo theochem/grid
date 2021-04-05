@@ -100,26 +100,28 @@ lebedev_degrees = [
 
 
 def generate_lebedev_grid(*, degree=None, size=None):
-    """Generate Lebedev grid for given degree or size.
-
-    Either degree or size is needed to generate proper grid. If both provided,
-    degree will be used instead of size.
+    r"""Generate a Lebedev angular grid for the given degree and/or size.
 
     Parameters
     ----------
-    degree : None, optional
-        Degree L for Lebedev grid
-    size : None, optional
-        Number of preferred points on Lebedev grid
+    degree : int, optional
+        Degree of Lebedev grid. If the Lebedev grid corresponding to the given degree is not
+        supported, the next largest degree is used.
+    size : int, optional
+        Number of Lebedev grid points. If the Lebedev grid corresponding to the given size is not
+        supported, the next largest size is used. If both degree and size are given, degree is
+        used for constructing the grid.
 
     Returns
     -------
     AngularGrid
-        An AngularGrid instance with points and weights.
+        An angular grid with Lebedev points and weights (including :math:`4\pi`) on a unit sphere.
+
     """
+    # map degree and size to the supported (i.e., pre-computed) degree and size
     degree, size = _select_grid_type(degree=degree, size=size)
+    # load pre-computed Lebedev points & weights and make angular grid
     points, weights = _load_grid_filename(degree, size)
-    # set weights to 4\pi
     return AngularGrid(points, weights * 4 * np.pi)
 
 
