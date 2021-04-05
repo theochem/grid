@@ -21,7 +21,7 @@
 
 
 from grid.basegrid import AngularGrid, Grid, OneDGrid
-from grid.lebedev import generate_lebedev_grid, _select_grid_type, size_to_degree
+from grid.lebedev import generate_lebedev_grid, _get_lebedev_size_and_degree, convert_lebedev_sizes_to_degrees
 
 from importlib_resources import path
 
@@ -91,7 +91,7 @@ class AtomGrid(Grid):
         if degs is None:
             if not isinstance(size, (np.ndarray, list)):
                 raise TypeError(f"size is not type: np.array or list, got {type(size)}")
-            degs = size_to_degree(size)
+            degs = convert_lebedev_sizes_to_degrees(size)
         if not isinstance(degs, (np.ndarray, list)):
             raise TypeError(f"degs is not type: np.array or list, got {type(degs)}")
         if len(degs) == 1:
@@ -148,7 +148,7 @@ class AtomGrid(Grid):
             rad = data[f"{atnum}_rad"]
             npt = data[f"{atnum}_npt"]
 
-        degs = size_to_degree(npt)
+        degs = convert_lebedev_sizes_to_degrees(npt)
         rad_degs = AtomGrid._find_l_for_rad_list(rgrid.points, rad, degs)
         return cls(rgrid, degs=rad_degs, center=center, rotate=rotate)
 
@@ -209,7 +209,7 @@ class AtomGrid(Grid):
             Generated AtomGrid instance for this special init method.
         """
         if degs is None:
-            degs = size_to_degree(size)
+            degs = convert_lebedev_sizes_to_degrees(size)
         center = (
             np.zeros(3, dtype=float)
             if center is None
@@ -366,7 +366,7 @@ class AtomGrid(Grid):
         if len(degs) - len(r_sectors) != 1:
             raise ValueError("degs should have only one more element than r_sectors.")
         # match given degrees to the supported (i.e., pre-computed) Lebedev degrees
-        matched_deg = np.array([_select_grid_type(degree=d)[0] for d in degs])
+        matched_deg = np.array([_get_lebedev_size_and_degree(degree=d)[0] for d in degs])
         rad_degs = AtomGrid._find_l_for_rad_list(
             rgrid.points, radius * r_sectors, matched_deg
         )

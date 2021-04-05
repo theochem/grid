@@ -119,13 +119,13 @@ def generate_lebedev_grid(*, degree=None, size=None):
 
     """
     # map degree and size to the supported (i.e., pre-computed) degree and size
-    degree, size = _select_grid_type(degree=degree, size=size)
+    degree, size = _get_lebedev_size_and_degree(degree=degree, size=size)
     # load pre-computed Lebedev points & weights and make angular grid
-    points, weights = _load_grid_filename(degree, size)
+    points, weights = _load_lebedev_grid(degree, size)
     return AngularGrid(points, weights * 4 * np.pi)
 
 
-def size_to_degree(sizes):
+def convert_lebedev_sizes_to_degrees(sizes):
     """Convert given Lebedev grid sizes to degrees.
 
     Parameters
@@ -142,13 +142,13 @@ def size_to_degree(sizes):
     degrees = np.zeros(len(sizes))
     for size in np.unique(sizes):
         # get the degree corresponding to the given (unique) size
-        deg = _select_grid_type(size=size)[0]
+        deg = _get_lebedev_size_and_degree(size=size)[0]
         # set value of degree to corresponding to the given size equal to deg
         degrees[np.where(sizes == size)] = deg
     return degrees
 
 
-def _select_grid_type(*, degree=None, size=None):
+def _get_lebedev_size_and_degree(*, degree=None, size=None):
     """Map the given degree and/or size to the degree and size of a supported Lebedev grid.
 
     Parameters
@@ -196,7 +196,7 @@ def _select_grid_type(*, degree=None, size=None):
         raise ValueError("Provide degree and/or size arguments!")
 
 
-def _load_grid_filename(degree: int, size: int):
+def _load_lebedev_grid(degree: int, size: int):
     """Load the .npz file containing the pre-computed Lebedev grid points and weights.
 
     Parameters
