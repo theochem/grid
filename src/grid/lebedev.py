@@ -212,17 +212,31 @@ def _select_grid_type(*, degree=None, size=None):
 
 
 def _load_grid_filename(degree: int, size: int):
-    """Load saved .npz file to construct Lebedev grid.
+    """Load the .npz file containing the pre-computed Lebedev grid points and weights.
 
     Parameters
     ----------
-    degree : int
-    size : int
+    degree : int, optional
+        Degree of Lebedev grid.
+    size : int, optional
+        Number of Lebedev grid points.
 
     Returns
     -------
-    tuple(np.ndarray(N,), np.ndarray(N,)), the coordinates and weights of grid.
+    np.ndarray(N, 3), np.ndarray(N,)
+        The 3-dimensional Cartesian coordinates & weights of :math:`N` grid points on a unit sphere.
+
     """
+    # check given degree & size
+    if degree not in lebedev_degrees:
+        raise ValueError(
+            f"Given degree={degree} is not supported, choose from {lebedev_degrees}"
+        )
+    if size not in lebedev_npoints:
+        raise ValueError(
+            f"Given size={size} is not supported, choose from {lebedev_npoints}"
+        )
+    # load npz file corresponding to the given degree & size
     filename = f"lebedev_{degree}_{size}.npz"
     with path("grid.data.lebedev", filename) as npz_file:
         data = np.load(npz_file)
