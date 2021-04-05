@@ -24,11 +24,11 @@ from unittest import TestCase
 
 from grid.basegrid import AngularGrid
 from grid.lebedev import (
-    _select_grid_type,
+    _get_lebedev_size_and_degree,
     generate_lebedev_grid,
     lebedev_degrees,
     lebedev_npoints,
-    size_to_degree,
+    convert_lebedev_sizes_to_degrees,
 )
 
 import numpy as np
@@ -41,13 +41,13 @@ class TestLebedev(TestCase):
     def test_consistency(self):
         """Consistency tests from old grid."""
         for i in range(len(lebedev_npoints)):
-            assert_equal(_select_grid_type(degree=lebedev_degrees[i])[1], lebedev_npoints[i])
+            assert_equal(_get_lebedev_size_and_degree(degree=lebedev_degrees[i])[1], lebedev_npoints[i])
 
     def test_lebedev_laikov_sphere(self):
         """Levedev grid tests from old grid."""
         previous_npoint = 0
         for i in range(1, 132):
-            npoint = _select_grid_type(degree=i)[1]
+            npoint = _get_lebedev_size_and_degree(degree=i)[1]
             if npoint > previous_npoint:
                 grid = generate_lebedev_grid(size=npoint)
                 assert isinstance(grid, AngularGrid)
@@ -60,16 +60,16 @@ class TestLebedev(TestCase):
                 assert_allclose(grid.points[:, 2] @ grid.weights, 0, atol=1e-10)
             previous_npoint = npoint
 
-    def test_size_to_degree(self):
+    def test_convert_lebedev_sizes_to_degrees(self):
         """Test size to degree conversion."""
         # first test
         nums = [38, 50, 74, 86, 110, 38, 50, 74]
-        degs = size_to_degree(nums)
+        degs = convert_lebedev_sizes_to_degrees(nums)
         ref_degs = [9, 11, 13, 15, 17, 9, 11, 13]
         assert_array_equal(degs, ref_degs)
         # second test
         nums = [6]
-        degs = size_to_degree(nums)
+        degs = convert_lebedev_sizes_to_degrees(nums)
         ref_degs = [3]
         assert_array_equal(degs, ref_degs)
 
@@ -77,17 +77,17 @@ class TestLebedev(TestCase):
         """Tests for errors and warning."""
         # low level function tests
         with self.assertRaises(ValueError):
-            _select_grid_type()
+            _get_lebedev_size_and_degree()
         with self.assertRaises(ValueError):
-            _select_grid_type(degree=-1)
+            _get_lebedev_size_and_degree(degree=-1)
         with self.assertRaises(ValueError):
-            _select_grid_type(degree=132)
+            _get_lebedev_size_and_degree(degree=132)
         with self.assertRaises(ValueError):
-            _select_grid_type(size=-1)
+            _get_lebedev_size_and_degree(size=-1)
         with self.assertRaises(ValueError):
-            _select_grid_type(size=6000)
+            _get_lebedev_size_and_degree(size=6000)
         with self.assertWarns(RuntimeWarning):
-            _select_grid_type(degree=5, size=10)
+            _get_lebedev_size_and_degree(degree=5, size=10)
         # high level function tests
         with self.assertRaises(ValueError):
             generate_lebedev_grid()
