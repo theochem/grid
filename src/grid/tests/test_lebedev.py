@@ -25,6 +25,7 @@ from unittest import TestCase
 from grid.basegrid import AngularGrid
 from grid.lebedev import (
     _get_lebedev_size_and_degree,
+    _load_lebedev_grid,
     convert_lebedev_sizes_to_degrees,
     generate_lebedev_grid,
     lebedev_degrees,
@@ -97,6 +98,11 @@ class TestLebedev(TestCase):
             _get_lebedev_size_and_degree(size=6000)
         with self.assertWarns(RuntimeWarning):
             _get_lebedev_size_and_degree(degree=5, size=10)
+        # load lebedev grid npz file
+        with self.assertRaises(ValueError):
+            _load_lebedev_grid(degree=2, size=6)
+        with self.assertRaises(ValueError):
+            _load_lebedev_grid(degree=3, size=2)
         # high level function tests
         with self.assertRaises(ValueError):
             generate_lebedev_grid()
