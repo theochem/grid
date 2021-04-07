@@ -24,12 +24,12 @@ from unittest import TestCase
 
 from grid.basegrid import AngularGrid
 from grid.lebedev import (
+    LEBEDEV_DEGREES,
+    LEBEDEV_NPOINTS,
     _get_lebedev_size_and_degree,
     _load_lebedev_grid,
     convert_lebedev_sizes_to_degrees,
     generate_lebedev_grid,
-    LEBEDEV_DEGREES,
-    LEBEDEV_NPOINTS,
 )
 
 import numpy as np

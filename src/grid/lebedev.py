@@ -22,8 +22,8 @@
 TODO: Describe how the stored points & weights were calculated.
 """
 
-from bisect import bisect_left
 import warnings
+from bisect import bisect_left
 
 from grid.basegrid import AngularGrid
 
