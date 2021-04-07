@@ -24,7 +24,7 @@ from unittest import TestCase
 
 from grid.atomgrid import AtomGrid
 from grid.basegrid import AngularGrid, Grid, OneDGrid
-from grid.lebedev import generate_lebedev_grid, lebedev_degrees
+from grid.lebedev import generate_lebedev_grid, LEBEDEV_DEGREES
 from grid.onedgrid import HortonLinear
 from grid.rtransform import PowerRTransform
 
@@ -317,15 +317,15 @@ class TestAtomGrid(TestCase):
 
     def test_spherical_complete(self):
         """Test atomitc grid consistence for spherical integral."""
-        num_pts = len(lebedev_degrees)
+        num_pts = len(LEBEDEV_DEGREES)
         pts = HortonLinear(num_pts)
         for i in range(10):
             start = np.random.rand() * 1e-5
             end = np.random.rand() * 10 + 10
             tf = PowerRTransform(start, end)
             rad_grid = tf.transform_1d_grid(pts)
-            atgrid = AtomGrid(rad_grid, degs=lebedev_degrees)
-            values = np.random.rand(len(lebedev_degrees))
+            atgrid = AtomGrid(rad_grid, degs=list(LEBEDEV_DEGREES.keys()))
+            values = np.random.rand(len(LEBEDEV_DEGREES))
             pt_val = np.zeros(atgrid.size)
             for index, value in enumerate(values):
                 pt_val[atgrid._indices[index] : atgrid._indices[index + 1]] = value

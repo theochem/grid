@@ -99,7 +99,7 @@ class AtomGrid(Grid):
         if not isinstance(degs, (np.ndarray, list)):
             raise TypeError(f"degs is not type: np.array or list, got {type(degs)}")
         if len(degs) == 1:
-            degs = np.ones(rgrid.size) * degs
+            degs = np.ones(rgrid.size, dtype=int) * degs
         self._rad_degs = degs
         self._points, self._weights, self._indices = self._generate_atomic_grid(
             self._rgrid, self._rad_degs, rotate=self._rot
