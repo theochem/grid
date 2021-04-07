@@ -23,6 +23,7 @@ TODO: Describe how the stored points & weights were calculated.
 """
 
 import warnings
+from bisect import bisect_left
 
 from grid.basegrid import AngularGrid
 
@@ -31,75 +32,75 @@ from importlib_resources import path
 import numpy as np
 
 
-lebedev_npoints = [
-    6,
-    14,
-    26,
-    38,
-    50,
-    74,
-    86,
-    110,
-    146,
-    170,
-    194,
-    230,
-    266,
-    302,
-    350,
-    434,
-    590,
-    770,
-    974,
-    1202,
-    1454,
-    1730,
-    2030,
-    2354,
-    2702,
-    3074,
-    3470,
-    3890,
-    4334,
-    4802,
-    5294,
-    5810,
-]
+LEBEDEV_NPOINTS = {
+    6: 3,
+    14: 5,
+    26: 7,
+    38: 9,
+    50: 11,
+    74: 13,
+    86: 15,
+    110: 17,
+    146: 19,
+    170: 21,
+    194: 23,
+    230: 25,
+    266: 27,
+    302: 29,
+    350: 31,
+    434: 35,
+    590: 41,
+    770: 47,
+    974: 53,
+    1202: 59,
+    1454: 65,
+    1730: 71,
+    2030: 77,
+    2354: 83,
+    2702: 89,
+    3074: 95,
+    3470: 101,
+    3890: 107,
+    4334: 113,
+    4802: 119,
+    5294: 125,
+    5810: 131,
+}
 
-lebedev_degrees = [
-    3,
-    5,
-    7,
-    9,
-    11,
-    13,
-    15,
-    17,
-    19,
-    21,
-    23,
-    25,
-    27,
-    29,
-    31,
-    35,
-    41,
-    47,
-    53,
-    59,
-    65,
-    71,
-    77,
-    83,
-    89,
-    95,
-    101,
-    107,
-    113,
-    119,
-    125,
-    131,
-]
+LEBEDEV_DEGREES = {
+    3: 6,
+    5: 14,
+    7: 26,
+    9: 38,
+    11: 50,
+    13: 74,
+    15: 86,
+    17: 110,
+    19: 146,
+    21: 170,
+    23: 194,
+    25: 230,
+    27: 266,
+    29: 302,
+    31: 350,
+    35: 434,
+    41: 590,
+    47: 770,
+    53: 974,
+    59: 1202,
+    65: 1454,
+    71: 1730,
+    77: 2030,
+    83: 2354,
+    89: 2702,
+    95: 3074,
+    101: 3470,
+    107: 3890,
+    113: 4334,
+    119: 4802,
+    125: 5294,
+    131: 5810,
+}
 
 
 def generate_lebedev_grid(*, degree=None, size=None):
@@ -142,7 +143,7 @@ def convert_lebedev_sizes_to_degrees(sizes):
         Sequence of the corresponding Lebedev grid degrees.
 
     """
-    degrees = np.zeros(len(sizes))
+    degrees = np.zeros(len(sizes), dtype=int)
     for size in np.unique(sizes):
         # get the degree corresponding to the given (unique) size
         deg = _get_lebedev_size_and_degree(size=size)[0]
@@ -176,25 +177,31 @@ def _get_lebedev_size_and_degree(*, degree=None, size=None):
             RuntimeWarning,
         )
     if degree:
-        max_degree = np.max(lebedev_degrees)
+        leb_degs = list(LEBEDEV_DEGREES.keys())
+        max_degree = max(leb_degs)
         if degree < 0 or degree > max_degree:
             raise ValueError(
                 f"Argument degree should be a positive integer <= {max_degree}, got {degree}"
             )
         # match the given degree to the existing Lebedev degree or the next largest degree
-        for index, pre_degree in enumerate(lebedev_degrees):
-            if degree <= pre_degree:
-                return lebedev_degrees[index], lebedev_npoints[index]
+        degree = (
+            degree
+            if degree in LEBEDEV_DEGREES
+            else leb_degs[bisect_left(leb_degs, degree)]
+        )
+        return degree, LEBEDEV_DEGREES[degree]
     elif size:
-        max_size = np.max(lebedev_npoints)
+        leb_npts = list(LEBEDEV_NPOINTS.keys())
+        max_size = max(leb_npts)
         if size < 0 or size > max_size:
             raise ValueError(
                 f"Argument size should be a positive integer <= {max_size}, got {size}"
             )
         # match the given size to the existing Lebedev size or the next largest size
-        for index, pre_point in enumerate(lebedev_npoints):
-            if size <= pre_point:
-                return lebedev_degrees[index], lebedev_npoints[index]
+        size = (
+            size if size in LEBEDEV_NPOINTS else leb_npts[bisect_left(leb_npts, size)]
+        )
+        return LEBEDEV_NPOINTS[size], size
     else:
         raise ValueError("Provide degree and/or size arguments!")
 
@@ -216,13 +223,13 @@ def _load_lebedev_grid(degree: int, size: int):
 
     """
     # check given degree & size
-    if degree not in lebedev_degrees:
+    if degree not in LEBEDEV_DEGREES:
         raise ValueError(
-            f"Given degree={degree} is not supported, choose from {lebedev_degrees}"
+            f"Given degree={degree} is not supported, choose from {LEBEDEV_DEGREES}"
         )
-    if size not in lebedev_npoints:
+    if size not in LEBEDEV_NPOINTS:
         raise ValueError(
-            f"Given size={size} is not supported, choose from {lebedev_npoints}"
+            f"Given size={size} is not supported, choose from {LEBEDEV_NPOINTS}"
         )
     # load npz file corresponding to the given degree & size
     filename = f"lebedev_{degree}_{size}.npz"

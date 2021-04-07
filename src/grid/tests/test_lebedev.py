@@ -24,12 +24,12 @@ from unittest import TestCase
 
 from grid.basegrid import AngularGrid
 from grid.lebedev import (
+    LEBEDEV_DEGREES,
+    LEBEDEV_NPOINTS,
     _get_lebedev_size_and_degree,
     _load_lebedev_grid,
     convert_lebedev_sizes_to_degrees,
     generate_lebedev_grid,
-    lebedev_degrees,
-    lebedev_npoints,
 )
 
 import numpy as np
@@ -41,10 +41,15 @@ class TestLebedev(TestCase):
 
     def test_consistency(self):
         """Consistency tests from old grid."""
-        for i in range(len(lebedev_npoints)):
+        for i in LEBEDEV_NPOINTS:
             assert_equal(
-                _get_lebedev_size_and_degree(degree=lebedev_degrees[i])[1],
-                lebedev_npoints[i],
+                _get_lebedev_size_and_degree(degree=LEBEDEV_NPOINTS[i]),
+                (LEBEDEV_NPOINTS[i], i),
+            )
+        for j in LEBEDEV_DEGREES:
+            assert_equal(
+                _get_lebedev_size_and_degree(size=LEBEDEV_DEGREES[j]),
+                (j, LEBEDEV_DEGREES[j]),
             )
 
     def test_lebedev_laikov_sphere(self):
