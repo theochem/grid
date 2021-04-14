@@ -26,7 +26,7 @@ class TestPoisson(TestCase):
         btf = BeckeTF(0.0001, 1.5)
         rad = btf.transform_1d_grid(oned)
         l_max = 7
-        atgrid = AtomGrid(rad, degs=[l_max])
+        atgrid = AtomGrid(rad, degrees=[l_max])
         value_array = self.helper_func_gauss(atgrid.points)
         spl_res = spline_with_atomic_grid(atgrid, value_array)
         # test for random, r, theta, phi
@@ -68,7 +68,7 @@ class TestPoisson(TestCase):
         btf = BeckeTF(1e-7, 1.5)
         rad = btf.transform_1d_grid(oned)
         l_max = 7
-        atgrid = AtomGrid(rad, degs=[l_max])
+        atgrid = AtomGrid(rad, degrees=[l_max])
         value_array = self.helper_func_gauss(atgrid.points)
         p_0 = atgrid.integrate(value_array)
 
@@ -146,7 +146,7 @@ class TestPoisson(TestCase):
         btf = BeckeTF(1e-7, 1.5)
         rad = btf.transform_1d_grid(oned)
         l_max = 7
-        atgrid = AtomGrid(rad, degs=[l_max])
+        atgrid = AtomGrid(rad, degrees=[l_max])
         value_array = self.helper_func_gauss(atgrid.points)
         p_0 = atgrid.integrate(value_array)
 
@@ -204,7 +204,7 @@ class TestPoisson(TestCase):
         btf = BeckeTF(1e-7, 1.5)
         rad = btf.transform_1d_grid(oned)
         l_max = 7
-        atgrid = AtomGrid(rad, degs=[l_max])
+        atgrid = AtomGrid(rad, degrees=[l_max])
         value_array = self.helper_func_gauss(atgrid.points)
         p_0 = atgrid.integrate(value_array)
 

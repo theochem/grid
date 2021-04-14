@@ -194,9 +194,7 @@ class MolGrid(Grid):
         at_grids = []
         for i in range(len(atcoords)):
             at_grids.append(
-                AtomGrid(
-                    radial, size=[points_of_angular], center=atcoords[i], rotate=rotate
-                )
+                AtomGrid(radial, sizes=[points_of_angular], center=atcoords[i], rotate=rotate)
             )
         return cls(at_grids, aim_weights, atnums, store=store)
 
