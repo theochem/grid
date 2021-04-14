@@ -79,7 +79,7 @@ class TestAtomGrid(TestCase):
         pts = HortonLinear(20)
         tf = PowerRTransform(7.0879993828935345e-06, 16.05937640019924)
         rad_grid = tf.transform_1d_grid(pts)
-        atgrid = AtomGrid.from_predefined(1, rad_grid, "coarse")
+        atgrid = AtomGrid.from_predefined(rad_grid, 1, "coarse")
         # 604 points for coarse H atom
         assert_equal(atgrid.size, 604)
         assert_almost_equal(
@@ -91,7 +91,7 @@ class TestAtomGrid(TestCase):
         pts = HortonLinear(24)
         tf = PowerRTransform(3.69705074304963e-06, 19.279558946793685)
         rad_grid = tf.transform_1d_grid(pts)
-        atgrid = AtomGrid.from_predefined(1, rad_grid, "medium")
+        atgrid = AtomGrid.from_predefined(rad_grid, 1, "medium")
         # 928 points for coarse H atom
         assert_equal(atgrid.size, 928)
         assert_almost_equal(
@@ -102,7 +102,7 @@ class TestAtomGrid(TestCase):
         pts = HortonLinear(34)
         tf = PowerRTransform(2.577533167224667e-07, 16.276983371222354)
         rad_grid = tf.transform_1d_grid(pts)
-        atgrid = AtomGrid.from_predefined(1, rad_grid, "fine")
+        atgrid = AtomGrid.from_predefined(rad_grid, 1, "fine")
         # 1984 points for coarse H atom
         assert_equal(atgrid.size, 1984)
         assert_almost_equal(
@@ -113,7 +113,7 @@ class TestAtomGrid(TestCase):
         pts = HortonLinear(41)
         tf = PowerRTransform(1.1774580743206259e-07, 20.140888089596444)
         rad_grid = tf.transform_1d_grid(pts)
-        atgrid = AtomGrid.from_predefined(1, rad_grid, "veryfine")
+        atgrid = AtomGrid.from_predefined(rad_grid, 1, "veryfine")
         # 3154 points for coarse H atom
         assert_equal(atgrid.size, 3154)
         assert_almost_equal(
@@ -124,7 +124,7 @@ class TestAtomGrid(TestCase):
         pts = HortonLinear(49)
         tf = PowerRTransform(4.883104847991021e-08, 21.05456999309752)
         rad_grid = tf.transform_1d_grid(pts)
-        atgrid = AtomGrid.from_predefined(1, rad_grid, "ultrafine")
+        atgrid = AtomGrid.from_predefined(rad_grid, 1, "ultrafine")
         # 4546 points for coarse H atom
         assert_equal(atgrid.size, 4546)
         assert_almost_equal(
@@ -135,7 +135,7 @@ class TestAtomGrid(TestCase):
         pts = HortonLinear(59)
         tf = PowerRTransform(1.9221827244049134e-08, 21.413278983919113)
         rad_grid = tf.transform_1d_grid(pts)
-        atgrid = AtomGrid.from_predefined(1, rad_grid, "insane")
+        atgrid = AtomGrid.from_predefined(rad_grid, 1, "insane")
         # 6622 points for coarse H atom
         assert_equal(atgrid.size, 6622)
         assert_almost_equal(
