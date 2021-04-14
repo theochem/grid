@@ -107,28 +107,20 @@ class AtomGrid(Grid):
         self._size = self._weights.size
 
     @classmethod
-    def from_predefined(
-        cls,
-        atnum,
-        rgrid,
-        grid_type,
-        *_,
-        center=None,
-        rotate=False,
-    ):
+    def from_predefined(cls, rgrid, atnum, grid_type, *_, center=None, rotate=False):
         """High level to construct prefined atomic grid.
 
         Examples
         --------
         # construct an atomic grid for H with fine grid setting
-        >>> atgrid = AtomGrid.from_predefined(1, rgrid, "fine")
+        >>> atgrid = AtomGrid.from_predefined(rgrid,1,"fine")
 
         Parameters
         ----------
-        atnum : int
-            atomic number of atomic grid
         rgrid : RadialGrid
             points where sperical grids will be located
+        atnum : int
+            The atomic number corresponding to the grid.
         grid_type : str
             different accuracy for atomic grid
             include: 'coarse', 'medium', 'fine', 'veryfine', 'ultrafine', 'insane'
