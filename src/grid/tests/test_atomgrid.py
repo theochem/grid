@@ -62,12 +62,12 @@ class TestAtomGrid(TestCase):
         assert len(ag_ob.indices) == 11
         ag_ob = AtomGrid(rgrid, size=[110])
         assert ag_ob.l_max == 17
-        assert_array_equal(ag_ob._rad_degs, np.ones(10) * 17)
+        assert_array_equal(ag_ob._degs, np.ones(10) * 17)
         assert ag_ob.size == 110 * 10
         # new init AtomGrid
         ag_ob2 = AtomGrid(rgrid, degs=[17])
         assert ag_ob2.l_max == 17
-        assert_array_equal(ag_ob2._rad_degs, np.ones(10) * 17)
+        assert_array_equal(ag_ob2._degs, np.ones(10) * 17)
         assert ag_ob2.size == 110 * 10
         assert isinstance(ag_ob.rgrid, OneDGrid)
         assert_allclose(ag_ob.rgrid.points, rgrid.points)

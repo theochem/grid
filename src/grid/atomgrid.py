@@ -100,9 +100,9 @@ class AtomGrid(Grid):
             raise TypeError(f"degs is not type: np.array or list, got {type(degs)}")
         if len(degs) == 1:
             degs = np.ones(rgrid.size, dtype=int) * degs
-        self._rad_degs = degs
+        self._degs = degs
         self._points, self._weights, self._indices = self._generate_atomic_grid(
-            self._rgrid, self._rad_degs, rotate=self._rot
+            self._rgrid, self._degs, rotate=self._rot
         )
         self._size = self._weights.size
 
@@ -238,13 +238,13 @@ class AtomGrid(Grid):
 
     @property
     def n_shells(self):
-        """int: return the number of shells in radial points."""
-        return len(self._rad_degs)
+        """int: Number of shells in radial points."""
+        return len(self._degs)
 
     @property
     def l_max(self):
         """int: Largest angular degree L value in angular grids."""
-        return np.max(self._rad_degs)
+        return np.max(self._degs)
 
     def get_shell_grid(self, index, r_sq=True):
         """Get the spherical integral grid at radial point {index}.
