@@ -209,7 +209,9 @@ class AtomGrid(Grid):
             else np.asarray(center, dtype=float)
         )
         cls._input_type_check(rgrid, center)
-        degrees = cls._generate_degree_from_radius(rgrid, radius, sectors_r, sectors_degree)
+        degrees = cls._generate_degree_from_radius(
+            rgrid, radius, sectors_r, sectors_degree
+        )
         return cls(rgrid, degrees=degrees, center=center, rotate=rotate)
 
     @property

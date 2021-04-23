@@ -145,8 +145,9 @@ class MolGrid(Grid):
                     "not supported grid_type input\n"
                     f"got input type: {type(grid_type)}"
                 )
-            at_grid = AtomGrid.from_predefined(rad, atnums[i], gd_type, center=atcoords[i],
-                                               rotate=rotate)
+            at_grid = AtomGrid.from_predefined(
+                rad, atnums[i], gd_type, center=atcoords[i], rotate=rotate
+            )
             atomic_grids.append(at_grid)
         return cls(atomic_grids, aim_weights, atnums, store=store)
 
@@ -194,7 +195,9 @@ class MolGrid(Grid):
         at_grids = []
         for i in range(len(atcoords)):
             at_grids.append(
-                AtomGrid(radial, sizes=[points_of_angular], center=atcoords[i], rotate=rotate)
+                AtomGrid(
+                    radial, sizes=[points_of_angular], center=atcoords[i], rotate=rotate
+                )
             )
         return cls(at_grids, aim_weights, atnums, store=store)
 
