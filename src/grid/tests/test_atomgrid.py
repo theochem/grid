@@ -51,12 +51,15 @@ class TestAtomGrid(TestCase):
         r_sectors = np.array([0.5, 1, 1.5])
         degs = np.array([6, 14, 14, 6])
         # generate a proper instance without failing.
-        ag_ob = AtomGrid.from_pruned(rgrid, radius=rad, sectors_r=r_sectors, sectors_degree=degs)
+        ag_ob = AtomGrid.from_pruned(
+            rgrid, radius=rad, sectors_r=r_sectors, sectors_degree=degs
+        )
         assert isinstance(ag_ob, AtomGrid)
         assert len(ag_ob.indices) == 11
         assert ag_ob.l_max == 15
-        ag_ob = AtomGrid.from_pruned(rgrid, radius=rad, sectors_r=np.array([]),
-                                     sectors_degree=np.array([6]))
+        ag_ob = AtomGrid.from_pruned(
+            rgrid, radius=rad, sectors_r=np.array([]), sectors_degree=np.array([6])
+        )
         assert isinstance(ag_ob, AtomGrid)
         assert len(ag_ob.indices) == 11
         ag_ob = AtomGrid(rgrid, sizes=[110])
@@ -152,9 +155,13 @@ class TestAtomGrid(TestCase):
         degs = np.array([3, 5, 7, 5])
         size = np.array([6, 14, 26, 14])
         # construct atomic grid with degs
-        atgrid1 = AtomGrid.from_pruned(rgrid, radius=rad, sectors_r=r_sectors, sectors_degree=degs)
+        atgrid1 = AtomGrid.from_pruned(
+            rgrid, radius=rad, sectors_r=r_sectors, sectors_degree=degs
+        )
         # construct atomic grid with size
-        atgrid2 = AtomGrid.from_pruned(rgrid, radius=rad, sectors_r=r_sectors, sectors_size=size)
+        atgrid2 = AtomGrid.from_pruned(
+            rgrid, radius=rad, sectors_r=r_sectors, sectors_size=size
+        )
         # test two grids are the same
         assert_equal(atgrid1.size, atgrid2.size)
         assert_allclose(atgrid1.points, atgrid2.points)
@@ -345,21 +352,35 @@ class TestAtomGrid(TestCase):
     def test_error_raises(self):
         """Tests for error raises."""
         with self.assertRaises(TypeError):
-            AtomGrid.from_pruned(np.arange(3), 1.0, sectors_r=np.arange(2),
-                                 sectors_degree=np.arange(3))
+            AtomGrid.from_pruned(
+                np.arange(3), 1.0, sectors_r=np.arange(2), sectors_degree=np.arange(3)
+            )
         with self.assertRaises(ValueError):
-            AtomGrid.from_pruned(OneDGrid(np.arange(3), np.arange(3)), radius=1.0,
-                                 sectors_r=np.arange(2), sectors_degree=np.arange(0))
+            AtomGrid.from_pruned(
+                OneDGrid(np.arange(3), np.arange(3)),
+                radius=1.0,
+                sectors_r=np.arange(2),
+                sectors_degree=np.arange(0),
+            )
         with self.assertRaises(ValueError):
-            AtomGrid.from_pruned(OneDGrid(np.arange(3), np.arange(3)), radius=1.0,
-                                 sectors_r=np.arange(2), sectors_degree=np.arange(4))
+            AtomGrid.from_pruned(
+                OneDGrid(np.arange(3), np.arange(3)),
+                radius=1.0,
+                sectors_r=np.arange(2),
+                sectors_degree=np.arange(4),
+            )
         with self.assertRaises(ValueError):
-            AtomGrid._generate_atomic_grid(OneDGrid(np.arange(3), np.arange(3)), np.arange(2))
+            AtomGrid._generate_atomic_grid(
+                OneDGrid(np.arange(3), np.arange(3)), np.arange(2)
+            )
         with self.assertRaises(ValueError):
-            AtomGrid.from_pruned(OneDGrid(np.arange(3), np.arange(3)), radius=1.0,
-                                 sectors_r=np.array([0.3, 0.5, 0.7]),
-                                 sectors_degree=np.array([3, 5, 7, 5]),
-                                 center=np.array([0, 0, 0, 0]))
+            AtomGrid.from_pruned(
+                OneDGrid(np.arange(3), np.arange(3)),
+                radius=1.0,
+                sectors_r=np.array([0.3, 0.5, 0.7]),
+                sectors_degree=np.array([3, 5, 7, 5]),
+                center=np.array([0, 0, 0, 0]),
+            )
 
         with self.assertRaises(TypeError):
             AtomGrid(OneDGrid(np.arange(3), np.arange(3)), sizes=110)
@@ -368,7 +389,9 @@ class TestAtomGrid(TestCase):
         with self.assertRaises(ValueError):
             AtomGrid(OneDGrid(np.arange(3), np.arange(3)), degrees=[17], rotate=-1)
         with self.assertRaises(TypeError):
-            AtomGrid(OneDGrid(np.arange(3), np.arange(3)), degrees=[17], rotate="asdfaf")
+            AtomGrid(
+                OneDGrid(np.arange(3), np.arange(3)), degrees=[17], rotate="asdfaf"
+            )
         # error of radial grid
         with self.assertRaises(TypeError):
             AtomGrid(Grid(np.arange(1, 5, 1), np.ones(4)), degrees=[2, 3, 4, 5])
