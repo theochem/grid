@@ -219,17 +219,11 @@ def GaussChebyshevLobatto(npoints):
     """
     if npoints <= 1:
         raise ValueError("npoints must be greater that one, given {npoints}")
-    idx = np.arange(npoints)
-    weights = np.ones(npoints)
 
-    idx = (idx * np.pi) / (npoints - 1)
-
-    points = np.cos(idx)
+    points = np.cos(np.arange(npoints) * np.pi / (npoints - 1))
     points = points[::-1]
 
-    weights *= np.pi / (npoints - 1)
-    weights *= np.sqrt(1 - np.power(points, 2))
-
+    weights = np.pi * np.sqrt(1 - np.power(points, 2)) / (npoints - 1)
     weights[0] /= 2
     weights[npoints - 1] = weights[0]
 
@@ -273,11 +267,10 @@ def Trapezoidal(npoints):
     """
     if npoints <= 1:
         raise ValueError("npoints must be greater that one, given {npoints}")
-    idx = np.arange(npoints)
-    points = -1 + (2 * idx / (npoints - 1))
+
+    points = -1 + (2 * np.arange(npoints) / (npoints - 1))
 
     weights = 2 * np.ones(npoints) / (npoints - 1)
-
     weights[0] = 1 / (npoints - 1)
     weights[npoints - 1] = weights[0]
 
@@ -324,8 +317,6 @@ def RectangleRuleSineEndPoints(npoints):
         raise ValueError("npoints must be greater that one, given {npoints}")
     idx = np.arange(npoints) + 1
     points = idx / (npoints + 1)
-
-    weights = np.zeros(npoints)
 
     m = np.arange(npoints) + 1
 
@@ -438,11 +429,7 @@ def TanhSinh(npoints, delta=0.1):
     if npoints % 2 == 0:
         raise ValueError("npoints must be odd, given {npoints}")
 
-    points = np.zeros(npoints)
-    weights = np.zeros(npoints)
-
     j = int((1 - npoints) / 2) + np.arange(npoints)
-
     theta = j * delta
 
     points = np.tanh(np.pi * np.sinh(theta) / 2)
@@ -525,14 +512,9 @@ def MidPoint(npoints):
     """
     if npoints <= 1:
         raise ValueError("npoints must be greater that one, given {npoints}")
-    points = np.zeros(npoints)
-    weights = np.ones(npoints)
 
-    idx = np.arange(npoints)
-
-    weights *= 2 / npoints
-
-    points = -1 + (2 * idx + 1) / npoints
+    weights = 2 * np.ones(npoints) / npoints
+    points = -1 + (2 * np.arange(npoints) + 1) / npoints
 
     return OneDGrid(points, weights, (-1, 1))
 
@@ -606,7 +588,6 @@ def FejerFirst(npoints):
 
     theta = np.pi * (2 * np.arange(npoints) + 1) / (2 * npoints)
     points = np.cos(theta)
-    weights = np.zeros(npoints)
 
     nsum = npoints // 2
     j = np.arange(nsum - 1) + 1
@@ -707,9 +688,6 @@ def TrefethenCC(npoints, d=3):
     """
     grid = ClenshawCurtis(npoints)
 
-    points = np.zeros(npoints)
-    weights = np.zeros(npoints)
-
     if d == 2:
         points = _g2(grid.points)
         weights = _derg2(grid.points) * grid.weights
@@ -738,9 +716,6 @@ def TrefethenGC2(npoints, d=3):
     """
     grid = GaussChebyshevType2(npoints)
 
-    points = np.zeros(npoints)
-    weights = np.zeros(npoints)
-
     if d == 2:
         points = _g2(grid.points)
         weights = _derg2(grid.points) * grid.weights
@@ -768,9 +743,6 @@ def TrefethenGeneral(npoints, quadrature, d=3):
         A 1D grid instance.
     """
     grid = quadrature(npoints)
-
-    points = np.zeros(npoints)
-    weights = np.zeros(npoints)
 
     if d == 2:
         points = _g2(grid.points)
@@ -844,10 +816,6 @@ def TrefethenStripCC(npoints, rho=1.1):
         A 1D grid instance.
     """
     grid = ClenshawCurtis(npoints)
-
-    points = np.zeros(npoints)
-    weights = np.zeros(npoints)
-
     points = _gstrip(rho, grid.points)
     weights = _dergstrip(rho, grid.points) * grid.weights
 
@@ -868,10 +836,6 @@ def TrefethenStripGC2(npoints, rho=1.1):
         A 1D grid instance.
     """
     grid = GaussChebyshevType2(npoints)
-
-    points = np.zeros(npoints)
-    weights = np.zeros(npoints)
-
     points = _gstrip(rho, grid.points)
     weights = _dergstrip(rho, grid.points) * grid.weights
 
@@ -892,10 +856,6 @@ def TrefethenStripGeneral(npoints, quadrature, rho=1.1):
         A 1D grid instance.
     """
     grid = quadrature(npoints)
-
-    points = np.zeros(npoints)
-    weights = np.zeros(npoints)
-
     points = _gstrip(rho, grid.points)
     weights = _dergstrip(rho, grid.points) * grid.weights
 
