@@ -220,48 +220,35 @@ def GaussChebyshevLobatto(npoints):
 
 
 def Trapezoidal(npoints):
-    r"""Generate 1D grid on [-1:1] interval based on trapezoidal rule.
+    r"""Generate 1-D grid on [-1, 1] interval based on Trapezoidal (Euler-Maclaurin) rule.
 
-    The fundamental definition of this rule is:
-
-    .. math::
-        \int_{-1}^{1} f(x) dx \approx \sum_{i=1}^n w_i f(x_i)
-
-    Where
+    The fundamental definition of Trapezoidal rule is:
 
     .. math::
-        x_i = -1 + 2 \left(\frac{i-1}{n-1}\right)
-
-    The weights
-
-    .. math::
-        w_{i\neq 1,n} = \frac{2}{n}
-
-    and
-
-    .. math::
-        w_1 = w_n = \frac{1}{n}
-
+       \int_{-1}^{1} f(x) dx \approx& \sum_{i=1}^n w_i f(x_i) \\
+       x_i =& -1 + 2 \left(\frac{i-1}{n-1}\right) \\
+       w_1 = w_n =& \frac{1}{n} \\
+       w_{i\neq 1,n} =& \frac{2}{n}
 
     Parameters
     ----------
     npoints : int
-        Number of points in the grid.
+        Number of grid points.
 
     Returns
     -------
     OneDGrid
-        A 1D grid instance.
+        A 1-D grid instance containing points and weights.
 
     """
     if npoints <= 1:
-        raise ValueError("npoints must be greater that one, given {npoints}")
+        raise ValueError(f"Argument npoints must be an integer greater than one, given {npoints}")
 
     points = -1 + (2 * np.arange(npoints) / (npoints - 1))
 
     weights = 2 * np.ones(npoints) / (npoints - 1)
-    weights[0] = 1 / (npoints - 1)
-    weights[npoints - 1] = weights[0]
+    weights[0] /= 2
+    weights[npoints - 1] /= 2
 
     return OneDGrid(points, weights, (-1, 1))
 
