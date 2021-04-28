@@ -65,10 +65,12 @@ def GaussLaguerre(npoints, alpha=0):
 
 
 def GaussLegendre(npoints):
-    r"""Generate 1D grid on (-1, 1) interval based on Gauss-Legendre quadrature.
+    r"""Generate 1-D grid on (-1, 1) interval based on Gauss-Legendre quadrature.
+
+    The fundamental definition of Gauss-Legendre quadrature is:
 
     .. math::
-        \int_{-1}^{1} f(x) dx \approx \sum_{i=1}^n w_i f(x_i)
+       \int_{-1}^{1} f(x) dx \approx \sum_{i=1}^n w_i f(x_i)
 
     Parameters
     ----------
@@ -78,9 +80,10 @@ def GaussLegendre(npoints):
     Returns
     -------
     OneDGrid
-        A 1D grid instance.
+        A 1-D grid instance containing points and weights.
 
     """
+    # compute points and weights for Gauss-Legendre quadrature
     points, weights = np.polynomial.legendre.leggauss(npoints)
     return OneDGrid(points, weights, (-1, 1))
 
