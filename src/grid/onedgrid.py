@@ -55,7 +55,7 @@ def GaussLaguerre(npoints, alpha=0):
 
     """
     if npoints <= 1:
-        raise ValueError(f"Argument npoints must be an integer greater than one, given {npoints}")
+        raise ValueError(f"Argument npoints must be an integer > 1, given {npoints}")
     if alpha <= -1:
         raise ValueError(f"Argument alpha must be larger than -1, given {alpha}")
     # compute points and weights for Generalized Gauss-Laguerre quadrature
@@ -83,6 +83,8 @@ def GaussLegendre(npoints):
         A 1-D grid instance containing points and weights.
 
     """
+    if npoints <= 1:
+        raise ValueError(f"Argument npoints must be an integer > 1, given {npoints}")
     # compute points and weights for Gauss-Legendre quadrature
     points, weights = np.polynomial.legendre.leggauss(npoints)
     return OneDGrid(points, weights, (-1, 1))
@@ -115,6 +117,8 @@ def GaussChebyshev(npoints):
         A 1-D grid instance containing points and weights.
 
     """
+    if npoints <= 1:
+        raise ValueError(f"Argument npoints must be an integer > 1, given {npoints}")
     # compute points and weights for Gauss-Chebyshev quadrature (Type 1)
     # points are generated in decreasing order (from +1 to -1), so the order is reversed to
     # correctly traverse [-1, 1] when making an instance of OneDGrid
@@ -142,6 +146,8 @@ def HortonLinear(npoints):
         A 1-D grid instance containing points and weights.
 
     """
+    if npoints <= 1:
+        raise ValueError(f"Argument npoints must be an integer > 1, given {npoints}")
     points = np.arange(npoints)
     weights = np.ones(npoints)
     return OneDGrid(points, weights, (0, np.inf))
@@ -175,7 +181,7 @@ def GaussChebyshevType2(npoints):
 
     """
     if npoints < 1:
-        raise ValueError(f"Argument npoints must be an integer greater than one, given {npoints}")
+        raise ValueError(f"Argument npoints must be an integer > 1, given {npoints}")
     # compute points and weights for Gauss-Chebyshev quadrature (Type 2)
     points, weights = roots_chebyu(npoints)
     weights /= np.sqrt(1 - np.power(points, 2))
@@ -211,12 +217,11 @@ def GaussChebyshevLobatto(npoints):
 
     """
     if npoints <= 1:
-        raise ValueError(f"Argument npoints must be an integer greater than one, given {npoints}")
+        raise ValueError(f"Argument npoints must be an integer > 1, given {npoints}")
 
-    # generate points in ascending order
+    # generate points in ascending order, and then compute weights
     points = np.cos(np.arange(npoints) * np.pi / (npoints - 1))
     points = points[::-1]
-
     weights = np.pi * np.sqrt(1 - np.power(points, 2)) / (npoints - 1)
     weights[0] /= 2
     weights[npoints - 1] /= 2
@@ -247,10 +252,9 @@ def Trapezoidal(npoints):
 
     """
     if npoints <= 1:
-        raise ValueError(f"Argument npoints must be an integer greater than one, given {npoints}")
+        raise ValueError(f"Argument npoints must be an integer > 1, given {npoints}")
 
     points = -1 + (2 * np.arange(npoints) / (npoints - 1))
-
     weights = 2 * np.ones(npoints) / (npoints - 1)
     weights[0] /= 2
     weights[npoints - 1] /= 2
@@ -472,7 +476,7 @@ def MidPoint(npoints):
 
     """
     if npoints <= 1:
-        raise ValueError(f"Argument npoints must be an integer greater than one, given {npoints}")
+        raise ValueError(f"Argument npoints must be an integer > 1, given {npoints}")
 
     points = -1 + (2 * np.arange(npoints) + 1) / npoints
     weights = 2 * np.ones(npoints) / npoints
