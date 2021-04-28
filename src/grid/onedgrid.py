@@ -263,54 +263,46 @@ def Trapezoidal(npoints):
 
 
 def RectangleRuleSineEndPoints(npoints):
-    r"""Generate 1D grid on [-1:1] interval based on rectangle rule.
-
-    The fundamental definition of this quadrature is:
+    r"""Generate 1-D grid on [-1, 1] interval using Rectangle Rule for Sine Series (with endpoints).
 
     .. math::
-        \int_{-1}^{1} f(x) dx \approx \sum_{i=1}^n w_i f(x_i)
+       \int_{0}^{1} f(x) dx \approx& \sum_{i=1}^n w_i f(x_i) \\
+       x_i =& \frac{i}{n+1} \\
+       w_i =& \frac{2}{n+1} \sum_{m=1}^n \frac{\sin(m \pi x_i)(1-\cos(m \pi))}{m \pi}
 
-    The range of integration can be modified by :math: `q = 2 x - 1`.
-
-    .. math::
-        2 \int_{0}^{1} f(x) dx = \int_{-1}^{1} f(q) dq
-
-    Where
+    For consistency with other 1-D grids, the integration range is modified by :math:`q=2x-1`, and
 
     .. math::
-        x_i = \frac{i}{n+1}
-
-    And the weights
-
-    .. math::
-        w_i = \frac{2}{n+1} \sum_{m=1}^n
-                \frac{\sin(m \pi x_i)(1-\cos(m \pi))}{m \pi}
-
+       2 \int_{0}^{1} f(x) dx = \int_{-1}^{1} f(q) dq
 
     Parameters
     ----------
     npoints : int
-        Number of points in the grid.
+        Number of grid points.
 
     Returns
     -------
     OneDGrid
-        A 1D grid instance.
+        A 1-D grid instance containing points and weights.
 
     """
     if npoints <= 1:
-        raise ValueError("npoints must be greater that one, given {npoints}")
-    idx = np.arange(npoints) + 1
-    points = idx / (npoints + 1)
+        raise ValueError(f"Argument npoints must be an integer > 1, given {npoints}")
 
-    m = np.arange(npoints) + 1
+    points = np.arange(1, npoints + 1, 1) / (npoints + 1)
 
-    bm = (np.ones(npoints) - np.cos(m * np.pi)) / (m * np.pi)
+    # make 1-D array of m values going from 1 to n
+    m = np.arange(1, npoints + 1, 1)
+    bm = (1.0 - np.cos(m * np.pi)) / (m * np.pi)
+    # make 2-D array of sin(pi * m * xi) where rows/columns correspond to different m/xi
     sim = np.sin(np.outer(m * np.pi, points))
+    # multiply 2 matrices (bm is treated like a (1, n) matrix)
     weights = bm @ sim
+    weights *= 2 / (npoints + 1)
 
+    # change integration range using variable q = 2x - 1
     points = 2 * points - 1
-    weights *= 4 / (npoints + 1)
+    weights *= 2
 
     return OneDGrid(points, weights, (-1, 1))
 
