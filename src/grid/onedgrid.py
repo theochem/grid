@@ -124,7 +124,12 @@ def GaussChebyshev(npoints):
 
 
 def HortonLinear(npoints):
-    """Generate 1D grid on [0, npoints] interval using equally spaced uniform distribution.
+    """Generate 1-D grid on [0, npoints] interval using equally spaced uniform distribution.
+
+    .. math::
+       \int_{0}^{n} f(x) dx \approx& \sum_{i=1}^n w_i f(x_i) \\
+       x_i =& i - 1 \\
+       w_i =& 1.0
 
     Parameters
     ----------
@@ -134,7 +139,7 @@ def HortonLinear(npoints):
     Returns
     -------
     OneDGrid
-        A 1D grid instance.
+        A 1-D grid instance containing points and weights.
 
     """
     points = np.arange(npoints)
