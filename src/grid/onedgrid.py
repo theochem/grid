@@ -172,56 +172,43 @@ def GaussChebyshevType2(npoints):
 
 
 def GaussChebyshevLobatto(npoints):
-    r"""Generate 1D grid on [-1, 1] interval based on Gauss-Chebyshev-Lobatto.
+    r"""Generate 1-D grid on [-1, 1] interval based on Gauss-Chebyshev-Lobatto quadrature.
 
     The definition of Gauss-Chebyshev-Lobato quadrature is:
 
     .. math::
-        \int_{-1}^{1} \frac{f(x)}{\sqrt{1-x^2}} dx
-        \approx \sum_{i=1}^n w_i f(x_i)
+       \int_{-1}^{1} \frac{f(x)}{\sqrt{1-x^2}} dx \approx& \sum_{i=1}^n w_i f(x_i) \\
+       x_i =& \cos\left( \frac{(i-1)}{n-1}\pi \right) \\
+       w_{1} = w_{n} =& \frac{\pi}{2(n-1)} \\
+       w_{i\neq 1,n} =& \frac{\pi}{n-1}
 
-    However, to integrate function :math:`g(x)` over [-1, 1], this is re-written as:
-
-    .. math::
-        \int_{-1}^{1}g(x) dx \approx \sum_{i=1}^n w_i \sqrt{1-x_i^2} f(x_i)
-        = \sum_{i=1}^n w_i' f(x_i)
-
-    Where
+    However, to integrate a given function :math:`g(x)` over [-1, 1], this is re-written as:
 
     .. math::
-        x_i = \cos\left( \frac{(i-1)\pi}{n-1} \right)
-
-    And the weights
-
-    .. math::
-        w_{1} = w_{n} = \frac{\pi}{2(n-1)}
-
-    And the internal weights
-
-    .. math::
-        w_{i\neq 1,n} = \frac{\pi}{n-1}
-
+       \int_{-1}^{1}g(x) dx \approx \sum_{i=1}^n \left(w_i \sqrt{1-x_i^2}\right) g(x_i) =
+       \sum_{i=1}^n w_i' g(x_i)
 
     Parameters
     ----------
     npoints : int
-        Number of points in the grid
+        Number of grid points.
 
     Returns
     -------
     OneDGrid
-        A 1D grid instance.
+        A 1-D grid instance containing points and weights.
 
     """
     if npoints <= 1:
-        raise ValueError("npoints must be greater that one, given {npoints}")
+        raise ValueError(f"Argument npoints must be an integer greater than one, given {npoints}")
 
+    # generate points in ascending order
     points = np.cos(np.arange(npoints) * np.pi / (npoints - 1))
     points = points[::-1]
 
     weights = np.pi * np.sqrt(1 - np.power(points, 2)) / (npoints - 1)
     weights[0] /= 2
-    weights[npoints - 1] = weights[0]
+    weights[npoints - 1] /= 2
 
     return OneDGrid(points, weights, (-1, 1))
 
