@@ -28,36 +28,39 @@ from scipy.special import roots_chebyu, roots_genlaguerre
 
 
 def GaussLaguerre(npoints, alpha=0):
-    r"""Generate 1D grid on [0, inf) interval based on Generalized Gauss-Laguerre quadrature.
+    r"""Generate 1-D grid on [0, inf) interval based on Generalized Gauss-Laguerre quadrature.
 
     The fundamental definition of Generalized Gauss-Laguerre quadrature is:
 
     .. math::
-        \int_{0}^{\infty} x^\alpha e^{-x} f(x) dx \approx \sum_{i=1}^n w_i f(x_i)
+       \int_{0}^{\infty} x^\alpha e^{-x} f(x) dx \approx \sum_{i=1}^n w_i f(x_i)
 
     However, to integrate function :math:`g(x)` over [0, inf), this is re-written as:
 
     .. math::
-        \int_{0}^{\infty} g(x)dx \approx
-        \sum_{i=1}^n \frac{w_i}{x_i^\alpha e^{-x_i}} g(x_i) = \sum_{i=1}^n w_i' g(x_i)
+       \int_{0}^{\infty} g(x)dx \approx
+       \sum_{i=1}^n \left(\frac{w_i}{x_i^\alpha e^{-x_i}}\right) g(x_i) = \sum_{i=1}^n w_i' g(x_i)
 
     Parameters
     ----------
     npoints : int
         Number of grid points.
     alpha : float, optional
-        Value of parameter :math:`alpha` which should be larger than -1.
+        Value of the parameter :math:`alpha` which must be larger than -1.
 
     Returns
     -------
     OneDGrid
-        A 1D grid instance.
+        A 1-D grid instance containing points and weights.
 
     """
+    if npoints <= 1:
+        raise ValueError(f"Argument npoints must be an integer greater than one, given {npoints}")
     if alpha <= -1:
-        raise ValueError(f"Alpha need to be bigger than -1, given {alpha}")
+        raise ValueError(f"Argument alpha must be larger than -1, given {alpha}")
+    # compute points and weights for Generalized Gauss-Laguerre quadrature
     points, weights = roots_genlaguerre(npoints, alpha)
-    weights = weights * np.exp(points) * np.power(points, -alpha)
+    weights *= np.exp(points) * np.power(points, -alpha)
     return OneDGrid(points, weights, (0, np.inf))
 
 
