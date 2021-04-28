@@ -308,46 +308,34 @@ def RectangleRuleSineEndPoints(npoints):
 
 
 def RectangleRuleSine(npoints):
-    r"""Generate 1D grid on (0:1) interval based on rectangle rule.
-
-    The fundamental definition of this quadrature is:
+    r"""Generate 1-D grid on [-1, 1] interval using Interior Rectangle Rule for Sines.
 
     .. math::
-        \int_{0}^{1} f(x) dx \approx \sum_{i=1}^n w_i f(x_i)
+       \int_{0}^{1} f(x) dx \approx& \sum_{i=1}^n w_i f(x_i) \\
+       x_i =& \frac{2 i - 1}{2 n} \\
+       w_i =& \frac{2}{n^2 \pi} \sin(n\pi x_i) \sin^2(n\pi /2) +
+              \frac{4}{n \pi} \sum_{m=1}^{n-1} \frac{\sin(m \pi x_i)\sin^2(m\pi /2)}{m}
 
-    The range of integration can be modified by :math: `q = 2 x - 1`.
-
-    .. math::
-        2 \int_{0}^{1} f(x) dx = \int_{-1}^{1} f(q) dq
-
-    Where
+    For consistency with other 1-D grids, the integration range is modified by :math:`q=2x-1`, and
 
     .. math::
-        x_i = \frac{2 i - 1}{2 n}
-
-    And the weights
-
-    .. math::
-        w_i = \frac{2}{n^2 \pi} \sin(n\pi x_i) \sin^2(n\pi /2)
-            + \frac{4}{n \pi}\sum_{m=1}^{n-1}
-            \frac{\sin(m \pi x_i)\sin^2(m\pi /2)}
-                {m}
+       2 \int_{0}^{1} f(x) dx = \int_{-1}^{1} f(q) dq
 
     Parameters
     ----------
     npoints : int
-        Number of points in the grid.
+        Number of grid points.
 
     Returns
     -------
     OneDGrid
-        A 1D grid instance.
+        A 1-D grid instance containing points and weights.
 
     """
     if npoints <= 1:
-        raise ValueError("npoints must be greater that one, given {npoints}")
-    idx = np.arange(npoints) + 1
-    points = (2 * idx - 1) / (2 * npoints)
+        raise ValueError(f"Argument npoints must be an integer > 1, given {npoints}")
+
+    points = (2 * np.arange(1, npoints + 1, 1) - 1) / (2 * npoints)
 
     weights = (
         (2 / (npoints * np.pi ** 2))
@@ -361,6 +349,7 @@ def RectangleRuleSine(npoints):
     wi = bm @ sim
     weights += (4 / (npoints * np.pi)) * wi
 
+    # change integration range using variable q = 2x - 1
     points = 2 * points - 1
     weights *= 2
 
