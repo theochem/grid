@@ -137,28 +137,20 @@ def HortonLinear(npoints):
 
 
 def GaussChebyshevType2(npoints):
-    r"""Generate 1D grid on [-1, 1] interval based on Gauss-Chebyshev 2nd kind.
+    r"""Generate 1-D grid on [-1, 1] interval based on Gauss-Chebyshev Type 2.
 
-    The fundamental definition of Gauss-Chebyshev quadrature is:
-
-    .. math::
-        \int_{-1}^{1} \sqrt{1-x^2} f(x) dx \approx \sum_{i=1}^n w_i f(x_i)
-
-    However, to integrate function :math:`g(x)` over [-1, 1], this is re-written as:
+    The fundamental definition of Gauss-Chebyshev Type 2 quadrature is:
 
     .. math::
-        \int_{-1}^{1}g(x) dx \approx \sum_{i=1}^n \frac{w_i}{\sqrt{1-x_i^2}} f(x_i)
-        = \sum_{i=1}^n w_i' f(x_i)
+       \int_{-1}^{1} f(x) \sqrt{1-x^2} dx \approx& \sum_{i=1}^n w_i f(x_i) \\
+       x_i =& \cos\left( \frac{i}{n+1} \pi \right) \\
+       w_i =& \frac{\pi}{n+1} \sin^2 \left( \frac{i}{n+1} \pi \right)
 
-    Where
-
-    .. math::
-        x_i = \cos\left( \frac{i}{n+1} \pi \right)
-
-    and the weights
+    However, to integrate a given function :math:`g(x)` over [-1, 1], this is re-written as:
 
     .. math::
-        w_i = \frac{\pi}{n+1} \sin^2 \left( \frac{i}{n+1} \pi \right)
+       \int_{-1}^{1} g(x) dx \approx \sum_{i=1}^n \left(\frac{w_i}{\sqrt{1-x_i^2}}\right) g(x_i) =
+       \sum_{i=1}^n w_i' g(x_i)
 
     Parameters
     ----------
@@ -168,11 +160,12 @@ def GaussChebyshevType2(npoints):
     Returns
     -------
     OneDGrid
-        A 1D grid instance.
+        A 1-D grid instance containing points and weights.
 
     """
     if npoints < 1:
-        raise ValueError("npoints must be greater that one, given {npoints}")
+        raise ValueError(f"Argument npoints must be an integer greater than one, given {npoints}")
+    # compute points and weights for Gauss-Chebyshev quadrature (Type 2)
     points, weights = roots_chebyu(npoints)
     weights /= np.sqrt(1 - np.power(points, 2))
     return OneDGrid(points, weights, (-1, 1))
