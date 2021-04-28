@@ -83,18 +83,20 @@ def GaussLegendre(npoints):
 
 
 def GaussChebyshev(npoints):
-    r"""Generate 1D grid on [-1, 1] interval based on Gauss-Chebyshev quadrature.
+    r"""Generate 1-D grid on [-1, 1] interval based on Gauss-Chebyshev quadrature.
 
     The fundamental definition of Gauss-Chebyshev quadrature is:
 
     .. math::
-        \int_{-1}^{1} \frac{f(x)}{\sqrt{1-x^2}} dx \approx \sum_{i=1}^n w_i f(x_i)
+       \int_{-1}^{1} \frac{f(x)}{\sqrt{1-x^2}} dx \approx& \sum_{i=1}^n w_i f(x_i) \\
+       x_i =& \cos\left( \frac{2i-1}{2n}\pi \right) \\
+       w_i =& \frac{\pi}{n}
 
-    However, to integrate function :math:`g(x)` over [-1, 1], this is re-written as:
+    However, to integrate a given function :math:`g(x)` over [-1, 1], this is re-written as:
 
     .. math::
-        \int_{-1}^{1}g(x) dx \approx \sum_{i=1}^n w_i \sqrt{1-x_i^2} g(x_i)
-        = \sum_{i=1}^n w_i' g(x_i)
+       \int_{-1}^{1}g(x)dx \approx \sum_{i=1}^n \left(w_i\sqrt{1-x_i^2}\right)g(x_i) =
+       \sum_{i=1}^n w_i'g(x_i)
 
     Parameters
     ----------
@@ -104,13 +106,14 @@ def GaussChebyshev(npoints):
     Returns
     -------
     OneDGrid
-        A 1D grid instance.
+        A 1-D grid instance containing points and weights.
 
     """
-    # points are generated in decreasing order
-    # weights are pi/n, all weights are the same
+    # compute points and weights for Gauss-Chebyshev quadrature (Type 1)
+    # points are generated in decreasing order (from +1 to -1), so the order is reversed to
+    # correctly traverse [-1, 1] when making an instance of OneDGrid
     points, weights = np.polynomial.chebyshev.chebgauss(npoints)
-    weights = weights * np.sqrt(1 - np.power(points, 2))
+    weights *= np.sqrt(1 - np.power(points, 2))
     return OneDGrid(points[::-1], weights, (-1, 1))
 
 
