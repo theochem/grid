@@ -372,51 +372,40 @@ def RectangleRuleSine(npoints):
 
 
 def TanhSinh(npoints, delta=0.1):
-    r"""Generate 1D grid on [-1,1] interval based on Tanh-Sinh rule.
+    r"""Generate 1-D grid on [-1, 1] interval based on Tanh-Sinh rule.
 
     The fundamental definition is:
 
     .. math::
-        \int_{-1}^{1} f(x) dx \approx
-        \sum_{i=-\frac{1}{2}(n-1)}^{\frac{1}{2}(n-1)} w_i f(x_i)
-
-    Where
-
-    .. math::
-        x_i = \tanh\left( \frac{\pi}{2} \sinh(i\delta) \right)
-
-    And the weights
-
-    .. math::
-        w_i = \frac{\frac{\pi}{2}\delta \cosh(i\delta)}
-        {\cosh^2(\frac{\pi}{2}\sinh(i\delta))}
-
+       \int_{-1}^{1} f(x) dx \approx& \sum_{i=-\frac{1}{2}(n-1)}^{\frac{1}{2}(n-1)} w_i f(x_i) \\
+       x_i =& \tanh\left( \frac{\pi}{2} \sinh(i\delta) \right) \\
+       w_i =& \frac{\frac{\pi}{2}\delta \cosh(i\delta)}{\cosh^2(\frac{\pi}{2}\sinh(i\delta))}
 
     Parameters
     ----------
     npoints : int
-        Number of points in the grid, this value must be odd.
-
+        Number of grid points, which should be an odd integer.
     delta : float
-        This values is a parameter :math:`\delta`, is related with the size.
+        The value of parameter :math:`\delta`, which is related with the size.
 
     Returns
     -------
     OneDGrid
-        A 1D grid instance.
+        A 1-D grid instance containing points and weights.
+
     """
     if npoints <= 1:
-        raise ValueError("npoints must be greater that one, given {npoints}")
+        raise ValueError(f"Argument npoints must be an integer > 1, given {npoints}")
     if npoints % 2 == 0:
-        raise ValueError("npoints must be odd, given {npoints}")
+        raise ValueError(f"Argument npoints must be an odd integer, given {npoints}")
 
+    # compute summation indices & angle values
     j = int((1 - npoints) / 2) + np.arange(npoints)
     theta = j * delta
 
-    points = np.tanh(np.pi * np.sinh(theta) / 2)
-    weights = (
-        np.pi * delta * np.cosh(theta) / (2 * np.cosh(np.pi * np.sinh(theta) / 2) ** 2)
-    )
+    points = np.tanh(0.5 * np.pi * np.sinh(theta))
+    weights = np.cosh(theta) / np.cosh(0.5 * np.pi * np.sinh(theta)) ** 2
+    weights *= 0.5 * np.pi * delta
 
     return OneDGrid(points, weights, (-1, 1))
 
