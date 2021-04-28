@@ -457,40 +457,31 @@ def Simpson(npoints):
 
 
 def MidPoint(npoints):
-    r"""Generate 1D grid on [-1,1] interval based on Mid Point rule.
+    r"""Generate 1-D grid on [-1, 1] interval based on Mid-Point rule.
 
     The fundamental definition is:
 
     .. math::
-        \int_{-1}^{1} f(x) dx \approx
-        \sum_{i=1}^n w_i f(x_i)
-
-    Where
-
-    .. math::
-        x_i = (2*i + 1)/n - 1
-
-    And the weights
-
-    .. math::
-        w_i = 2/n
-
+       \int_{-1}^{1} f(x) dx \approx& \sum_{i=1}^n w_i f(x_i) \\
+       x_i =& -1 + \frac{2i + 1}{n} \\
+       w_i =& \frac{2}{n}
 
     Parameters
     ----------
     npoints : int
-        Number of points in the grid.
+        Number of grid points.
 
     Returns
     -------
     OneDGrid
-        A 1D grid instance.
+        A 1-D grid instance containing points and weights.
+
     """
     if npoints <= 1:
-        raise ValueError("npoints must be greater that one, given {npoints}")
+        raise ValueError(f"Argument npoints must be an integer greater than one, given {npoints}")
 
-    weights = 2 * np.ones(npoints) / npoints
     points = -1 + (2 * np.arange(npoints) + 1) / npoints
+    weights = 2 * np.ones(npoints) / npoints
 
     return OneDGrid(points, weights, (-1, 1))
 
