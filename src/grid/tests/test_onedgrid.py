@@ -215,6 +215,14 @@ class TestOneDGrid(TestCase):
         with self.assertRaises(ValueError):
             GaussLaguerre(10, -1)
         with self.assertRaises(ValueError):
+            GaussLaguerre(0, 1)
+        with self.assertRaises(ValueError):
+            GaussLegendre(-10)
+        with self.assertRaises(ValueError):
+            GaussChebyshev(-10)
+        with self.assertRaises(ValueError):
+            HortonLinear(-10)
+        with self.assertRaises(ValueError):
             TanhSinh(10, 1)
         with self.assertRaises(ValueError):
             Simpson(4)
