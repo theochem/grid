@@ -128,7 +128,7 @@ def GaussChebyshev(npoints):
 
 
 def HortonLinear(npoints):
-    """Generate 1-D grid on [0, npoints] interval using equally spaced uniform distribution.
+    r"""Generate 1-D grid on [0, npoints] interval using equally spaced uniform distribution.
 
     .. math::
        \int_{0}^{n} f(x) dx \approx& \sum_{i=1}^n w_i f(x_i) \\
