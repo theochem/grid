@@ -22,6 +22,7 @@
 
 from unittest import TestCase
 
+from grid import cache_dict
 from grid.basegrid import AngularGrid
 from grid.lebedev import (
     LEBEDEV_DEGREES,
@@ -74,6 +75,19 @@ class TestLebedev(TestCase):
                 assert_allclose(grid.points[:, 1] @ grid.weights, 0, atol=1e-10)
                 assert_allclose(grid.points[:, 2] @ grid.weights, 0, atol=1e-10)
             previous_npoint = npoint
+
+    def test_lebedev_cache(self):
+        """Test cache behavior of spherical grid."""
+        degrees = np.random.randint(1, 100, 50)
+        cache_dict.clear()
+        for i in degrees:
+            generate_lebedev_grid(degree=i, cache=False)
+        assert len(cache_dict) == 0
+
+        for i in degrees:
+            generate_lebedev_grid(degree=i)
+            ref_d = _get_lebedev_size_and_degree(degree=i)[0]
+            assert ref_d in cache_dict
 
     def test_convert_lebedev_sizes_to_degrees(self):
         """Test size to degree conversion."""
