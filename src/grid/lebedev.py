@@ -25,6 +25,7 @@ TODO: Describe how the stored points & weights were calculated.
 import warnings
 from bisect import bisect_left
 
+from grid import cache_dict
 from grid.basegrid import AngularGrid
 
 from importlib_resources import path
@@ -71,7 +72,7 @@ LEBEDEV_NPOINTS = {
 LEBEDEV_DEGREES = dict([(v, k) for k, v in LEBEDEV_NPOINTS.items()])
 
 
-def generate_lebedev_grid(*, degree=None, size=None):
+def generate_lebedev_grid(*, degree=None, size=None, cache=True):
     r"""Generate a Lebedev angular grid for the given degree and/or size.
 
     Parameters
@@ -93,8 +94,14 @@ def generate_lebedev_grid(*, degree=None, size=None):
     # map degree and size to the supported (i.e., pre-computed) degree and size
     degree, size = _get_lebedev_size_and_degree(degree=degree, size=size)
     # load pre-computed Lebedev points & weights and make angular grid
-    points, weights = _load_lebedev_grid(degree, size)
-    return AngularGrid(points, weights * 4 * np.pi)
+    if degree not in cache_dict:
+        points, weights = _load_lebedev_grid(degree, size)
+        ang_grid = AngularGrid(points, weights * 4 * np.pi)
+        if cache:
+            cache_dict[degree] = ang_grid
+    else:
+        ang_grid = cache_dict[degree]
+    return ang_grid
 
 
 def convert_lebedev_sizes_to_degrees(sizes):
