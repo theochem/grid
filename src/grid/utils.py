@@ -238,3 +238,35 @@ def get_cov_radii(atnums, type="bragg"):
         return _cambridge[atnums]
     else:
         raise ValueError(f"Not supported radii type, got {type}")
+
+
+def convert_cart_to_sph(points, center=None):
+    """Convert a set of points from cartesian to spherical coordinates.
+
+    Parameters
+    ----------
+    points : np.ndarray(n, 3)
+        3 dimentional numpy array for points
+    center : np.ndarray(3,), list, optional
+        center of the spherical coordinates
+        [0., 0., 0.] will be used if `center` is not given
+
+    Returns
+    -------
+    np.ndarray(N, 3)
+        Spherical coordinates of atoms respect to the center
+        [radius, azumuthal, polar]
+    """
+    if points.ndim != 2 or points.shape[1] != 3:
+        raise ValueError(f"points array requires shape (N, 3), got: {points.ndim}")
+    center = np.zeros(3, dtype=float) if center is None else np.asarray(center)
+    if len(center) != 3:
+        raise ValueError(f"center needs be of length (3), got:{center}")
+    relat_pts = points - center
+    # compute r
+    r = np.linalg.norm(relat_pts, axis=-1)
+    # polar angle: arccos(z / r)
+    phi = np.arccos(relat_pts[:, 2] / r)
+    # azimuthal angle arctan2(y / x)
+    theta = np.arctan2(relat_pts[:, 1], relat_pts[:, 0])
+    return np.vstack([r, theta, phi]).T

@@ -26,6 +26,7 @@ from grid.lebedev import (
     convert_lebedev_sizes_to_degrees,
     generate_lebedev_grid,
 )
+from grid.utils import convert_cart_to_sph
 
 from importlib_resources import path
 
@@ -288,20 +289,14 @@ class AtomGrid(Grid):
         -------
         np.ndarray(N, 3)
             Spherical coordinates of atoms respect to the center
+            [radius, azumuthal, polar]
         """
         if points is None:
             points = self.points
         if points.ndim == 1:
             points = points.reshape(-1, 3)
         center = self.center if center is None else np.asarray(center)
-        relat_pts = points - center
-        # compute r
-        r = np.linalg.norm(relat_pts, axis=-1)
-        # polar angle: arccos(z / r)
-        phi = np.arccos(relat_pts[:, 2] / r)
-        # azimuthal angle arctan2(y / x)
-        theta = np.arctan2(relat_pts[:, 1], relat_pts[:, 0])
-        return np.vstack([r, theta, phi]).T
+        return convert_cart_to_sph(points, center)
 
     @staticmethod
     def _input_type_check(rgrid, center):

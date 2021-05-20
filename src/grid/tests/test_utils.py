@@ -20,10 +20,10 @@
 """Utils function test file."""
 from unittest import TestCase
 
-from grid.utils import get_cov_radii
+from grid.utils import convert_cart_to_sph, get_cov_radii
 
 import numpy as np
-from numpy.testing import assert_allclose
+from numpy.testing import assert_allclose, assert_equal
 
 
 class TestUtils(TestCase):
@@ -59,6 +59,39 @@ class TestUtils(TestCase):
         bragg = get_cov_radii(all_index, type="cambridge")
         assert_allclose(bragg, Cambridge[1:] * 1.8897261339213)
 
+    def test_convert_cart_to_sph(self):
+        """Test convert_cart_sph accuracy."""
+        for _ in range(10):
+            pts = np.random.rand(10, 3)
+            center = np.random.rand(3)
+            # given center
+            sph_coor = convert_cart_to_sph(pts, center)
+            assert_equal(sph_coor.shape, pts.shape)
+            # Check Z
+            z = sph_coor[:, 0] * np.cos(sph_coor[:, 2])
+            assert_allclose(z, pts[:, 2] - center[2])
+            # Check x
+            xy = sph_coor[:, 0] * np.sin(sph_coor[:, 2])
+            x = xy * np.cos(sph_coor[:, 1])
+            assert_allclose(x, pts[:, 0] - center[0])
+            # Check y
+            y = xy * np.sin(sph_coor[:, 1])
+            assert_allclose(y, pts[:, 1] - center[1])
+
+            # no center
+            sph_coor = convert_cart_to_sph(pts)
+            assert_equal(sph_coor.shape, pts.shape)
+            # Check Z
+            z = sph_coor[:, 0] * np.cos(sph_coor[:, 2])
+            assert_allclose(z, pts[:, 2])
+            # Check x
+            xy = sph_coor[:, 0] * np.sin(sph_coor[:, 2])
+            x = xy * np.cos(sph_coor[:, 1])
+            assert_allclose(x, pts[:, 0])
+            # Check y
+            y = xy * np.sin(sph_coor[:, 1])
+            assert_allclose(y, pts[:, 1])
+
     def test_raise_errors(self):
         """Test raise proper errors."""
         with self.assertRaises(ValueError):
@@ -67,3 +100,16 @@ class TestUtils(TestCase):
             get_cov_radii(0)
         with self.assertRaises(ValueError):
             get_cov_radii([3, 5, 0])
+
+        with self.assertRaises(ValueError):
+            pts = np.random.rand(10)
+            convert_cart_to_sph(pts, np.zeros(3))
+        with self.assertRaises(ValueError):
+            pts = np.random.rand(10, 3, 1)
+            convert_cart_to_sph(pts, np.zeros(3))
+        with self.assertRaises(ValueError):
+            pts = np.random.rand(10, 2)
+            convert_cart_to_sph(pts, np.zeros(3))
+        with self.assertRaises(ValueError):
+            pts = np.random.rand(10, 3)
+            convert_cart_to_sph(pts, np.zeros(2))
