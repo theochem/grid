@@ -158,7 +158,14 @@ class BeckeWeights:
             # mu_p_n_n shape (#points, #uncs, #uncs)
             mu_p_n_n = n_n_p.transpose([2, 0, 1]) / atomic_dist
         del n_n_p
-        radii = np.array([self._radii[num] for num in atnums])
+        radii = np.array(
+            [
+                self._radii[num]
+                if not np.isnan(self._radii[num])
+                else self._radii[num - 1]
+                for num in atnums
+            ]
+        )
         alpha = BeckeWeights._calculate_alpha(radii)
         v_pp = mu_p_n_n + alpha * (1 - mu_p_n_n ** 2)
         del mu_p_n_n
@@ -215,7 +222,14 @@ class BeckeWeights:
             # mu_p_n_n shape (N, M, M)
             mu_p_n_n = n_n_p.transpose([2, 0, 1]) / atomic_dist
         del n_n_p
-        radii = np.array([self._radii[num] for num in atnums])
+        radii = np.array(
+            [
+                self._radii[num]
+                if not np.isnan(self._radii[num])
+                else self._radii[num - 1]
+                for num in atnums
+            ]
+        )
         alpha = BeckeWeights._calculate_alpha(radii)
         v_pp = mu_p_n_n + alpha * (1 - mu_p_n_n ** 2)
         del mu_p_n_n
