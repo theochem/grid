@@ -129,6 +129,20 @@ class TestBecke(TestCase):
         weights_compute2 = becke.compute_weights(points, centers, nums, select=1)
         assert_allclose(weights_ref2, weights_compute2)
 
+    def test_noble_gas_radius(self):
+        """Test np.nan value to be handled properly."""
+        for i in [2, 10, 18, 36, 54, 85]:
+            nums = np.array([i, i - 1])
+            centers = np.array([[0.5, 0.0, 0.0], [-0.5, 0.0, 0.0]])
+            pts = np.zeros((10, 3), dtype=float)
+            pts[:, 1:] += np.random.rand(10, 2)
+
+            becke = BeckeWeights(order=3)
+            wts = becke.generate_weights(pts, centers, nums, pt_ind=[0, 5, 10])
+            assert_allclose(wts, 0.5)
+            wts = becke.compute_weights(pts, centers, nums, pt_ind=[0, 5, 10])
+            assert_allclose(wts, 0.5)
+
     def test_raise_errors(self):
         """Test errors raise."""
         npoint = 100
