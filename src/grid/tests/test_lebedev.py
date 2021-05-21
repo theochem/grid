@@ -22,13 +22,13 @@
 
 from unittest import TestCase
 
-from grid import cache_dict
 from grid.basegrid import AngularGrid
 from grid.lebedev import (
     LEBEDEV_DEGREES,
     LEBEDEV_NPOINTS,
     _get_lebedev_size_and_degree,
     _load_lebedev_grid,
+    cache_dict,
     convert_lebedev_sizes_to_degrees,
     generate_lebedev_grid,
 )
