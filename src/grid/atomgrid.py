@@ -416,9 +416,6 @@ class AtomGrid(Grid):
         if len(degrees) != rgrid.size:
             raise ValueError("The shape of radial grid does not match given degs.")
         all_points, all_weights = [], []
-        # Preload spherical information in case of repeated IO
-        # unique_degs = np.unique(degrees)
-        # sphere_grids = {i: generate_lebedev_grid(degree=i) for i in unique_degs}
 
         shell_pt_indices = np.zeros(len(degrees) + 1, dtype=int)  # set index to int
         for i, deg_i in enumerate(degrees):  # TODO: proper tests
