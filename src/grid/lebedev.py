@@ -70,7 +70,7 @@ LEBEDEV_NPOINTS = {
 # Lebedev dictionary for converting grid's degrees (keys) to number of grid points (values)
 LEBEDEV_DEGREES = dict([(v, k) for k, v in LEBEDEV_NPOINTS.items()])
 
-leb_cache = {}
+LEBEDEV_CACHE = {}
 
 
 def generate_lebedev_grid(*, degree=None, size=None, cache=True):
@@ -98,13 +98,13 @@ def generate_lebedev_grid(*, degree=None, size=None, cache=True):
     # map degree and size to the supported (i.e., pre-computed) degree and size
     degree, size = _get_lebedev_size_and_degree(degree=degree, size=size)
     # load pre-computed Lebedev points & weights and make angular grid
-    if degree not in leb_cache:
+    if degree not in LEBEDEV_CACHE:
         points, weights = _load_lebedev_grid(degree, size)
         ang_grid = AngularGrid(points, weights * 4 * np.pi)
         if cache:
-            leb_cache[degree] = ang_grid
+            LEBEDEV_CACHE[degree] = ang_grid
     else:
-        ang_grid = leb_cache[degree]
+        ang_grid = LEBEDEV_CACHE[degree]
     return ang_grid
 
 
