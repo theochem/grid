@@ -28,9 +28,9 @@ from grid.lebedev import (
     LEBEDEV_NPOINTS,
     _get_lebedev_size_and_degree,
     _load_lebedev_grid,
-    cache_dict,
     convert_lebedev_sizes_to_degrees,
     generate_lebedev_grid,
+    leb_cache,
 )
 
 import numpy as np
@@ -79,15 +79,15 @@ class TestLebedev(TestCase):
     def test_lebedev_cache(self):
         """Test cache behavior of spherical grid."""
         degrees = np.random.randint(1, 100, 50)
-        cache_dict.clear()
+        leb_cache.clear()
         for i in degrees:
             generate_lebedev_grid(degree=i, cache=False)
-        assert len(cache_dict) == 0
+        assert len(leb_cache) == 0
 
         for i in degrees:
             generate_lebedev_grid(degree=i)
             ref_d = _get_lebedev_size_and_degree(degree=i)[0]
-            assert ref_d in cache_dict
+            assert ref_d in leb_cache
 
     def test_convert_lebedev_sizes_to_degrees(self):
         """Test size to degree conversion."""
