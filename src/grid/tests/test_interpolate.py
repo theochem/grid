@@ -31,7 +31,7 @@ from grid.interpolate import (
     spline_with_atomic_grid,
     spline_with_sph_harms,
 )
-from grid.lebedev import generate_lebedev_grid
+from grid.lebedev import AngularGrid
 from grid.onedgrid import GaussLegendre
 from grid.rtransform import BeckeTF, IdentityRTransform
 
@@ -44,7 +44,7 @@ class TestInterpolate(TestCase):
 
     def setUp(self):
         """Generate atomic grid for constant test call."""
-        self.ang_grid = generate_lebedev_grid(degree=7)
+        self.ang_grid = AngularGrid(degree=7)
 
     def test_generate_sph_parameters(self):
         """Test spherical harmonics parameter generator function."""
