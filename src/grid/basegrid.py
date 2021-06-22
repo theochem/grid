@@ -289,13 +289,13 @@ class OneDGrid(Grid):
             Return a new grid instance with a subset of points.
         """
         if isinstance(index, int):
-            return self.__class__(
+            return OneDGrid(
                 np.array([self.points[index]]),
                 np.array([self.weights[index]]),
                 self._domain,
             )
         else:
-            return self.__class__(
+            return OneDGrid(
                 np.array(self.points[index]),
                 np.array(self.weights[index]),
                 self._domain,
