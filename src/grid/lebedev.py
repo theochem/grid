@@ -74,6 +74,8 @@ LEBEDEV_CACHE = {}
 
 
 class AngularGrid(Grid):
+    """Unit spehrical integration grid."""
+
     def __init__(
         self, points=None, weights=None, *, degree=None, size=None, cache=True
     ):
@@ -85,9 +87,9 @@ class AngularGrid(Grid):
             Degree of Lebedev grid. If the Lebedev grid corresponding to the given degree is not
             supported, the next largest degree is used.
         size : int, optional
-            Number of Lebedev grid points. If the Lebedev grid corresponding to the given size is not
-            supported, the next largest size is used. If both degree and size are given, degree is
-            used for constructing the grid.
+            Number of Lebedev grid points. If the Lebedev grid corresponding to the given size is
+            not supported, the next largest size is used. If both degree and size are given,
+            degree is used for constructing the grid.
         cache : bool, optional
             Enable to store loaded lebedeve grids in cache to avoid duplicate
             file reading process. Default to `True`
@@ -95,7 +97,8 @@ class AngularGrid(Grid):
         Returns
         -------
         AngularGrid
-            An angular grid with Lebedev points and weights (including :math:`4\pi`) on a unit sphere.
+            An angular grid with Lebedev points and weights (including :math:`4\pi`) on
+            a unit sphere.
 
         """
         # construct grid from pts and wts given directly
@@ -146,14 +149,15 @@ class AngularGrid(Grid):
             Degree of Lebedev grid. If the Lebedev grid corresponding to the given degree is not
             supported, the next largest degree is used.
         size : int, optional
-            Number of Lebedev grid points. If the Lebedev grid corresponding to the given size is not
-            supported, the next largest size is used. If both degree and size are given, degree is
-            used for constructing the grid.
+            Number of Lebedev grid points. If the Lebedev grid corresponding to the given size is
+            not supported, the next largest size is used. If both degree and size are given,
+            degree is used for constructing the grid.
 
         Returns
         -------
         int, int
-            Degree and size of a supported Lebedev grid (equal to or larger than the requested grid).
+            Degree and size of a supported Lebedev grid (equal to or larger than the
+            requested grid).
 
         """
         if degree and size:
@@ -206,7 +210,8 @@ class AngularGrid(Grid):
         Returns
         -------
         np.ndarray(N, 3), np.ndarray(N,)
-            The 3-dimensional Cartesian coordinates & weights of :math:`N` grid points on a unit sphere.
+            The 3-dimensional Cartesian coordinates & weights of :math:`N` grid
+            points on a unit sphere.
 
         """
         # check given degree & size
