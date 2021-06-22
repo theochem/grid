@@ -28,6 +28,8 @@ from scipy.special import roots_chebyu, roots_genlaguerre
 
 
 class GaussLaguerre(OneDGrid):
+    """Gauss Laguerre integral quadrature class."""
+
     def __init__(self, npoints, alpha=0):
         r"""Generate 1-D grid on [0, inf) interval based on Generalized Gauss-Laguerre quadrature.
 
@@ -68,6 +70,8 @@ class GaussLaguerre(OneDGrid):
 
 
 class GaussLegendre(OneDGrid):
+    """Gauss Legendre integral quadrature class."""
+
     def __init__(self, npoints):
         r"""Generate 1-D grid on (-1, 1) interval based on Gauss-Legendre quadrature.
 
@@ -97,6 +101,8 @@ class GaussLegendre(OneDGrid):
 
 
 class GaussChebyshev(OneDGrid):
+    """Gauss Chesbyshev integral quadrature class."""
+
     def __init__(self, npoints):
         r"""Generate 1-D grid on [-1, 1] interval based on Gauss-Chebyshev quadrature.
 
@@ -137,6 +143,8 @@ class GaussChebyshev(OneDGrid):
 
 
 class HortonLinear(OneDGrid):
+    """HORTON2 integral quadrature class."""
+
     def __init__(self, npoints):
         r"""Generate 1-D grid on [0, npoints] interval using equally spaced uniform distribution.
 
@@ -166,6 +174,8 @@ class HortonLinear(OneDGrid):
 
 
 class GaussChebyshevType2(OneDGrid):
+    """Gauss Chebyshev Type2 integral quadrature class."""
+
     def __init__(self, npoints):
         r"""Generate 1-D grid on [-1, 1] interval based on Gauss-Chebyshev Type 2.
 
@@ -204,6 +214,8 @@ class GaussChebyshevType2(OneDGrid):
 
 
 class GaussChebyshevLobatto(OneDGrid):
+    """Gauss Chebyshev Lobatto integral quadrature class."""
+
     def __init__(self, npoints):
         r"""Generate 1-D grid on [-1, 1] interval based on Gauss-Chebyshev-Lobatto quadrature.
 
@@ -248,6 +260,8 @@ class GaussChebyshevLobatto(OneDGrid):
 
 
 class Trapezoidal(OneDGrid):
+    """Trapezoidal Lobatto integral quadrature class."""
+
     def __init__(self, npoints):
         r"""Generate 1-D grid on [-1, 1] interval based on Trapezoidal (Euler-Maclaurin) rule.
 
@@ -284,6 +298,8 @@ class Trapezoidal(OneDGrid):
 
 
 class RectangleRuleSineEndPoints(OneDGrid):
+    """Rectangle-Rule Sine EndPoints integral quadrature class."""
+
     def __init__(self, npoints):
         r"""Generate 1-D grid on [-1, 1] interval using Rectangle Rule for Sine Series (with endpoints).
 
@@ -292,7 +308,8 @@ class RectangleRuleSineEndPoints(OneDGrid):
         x_i =& \frac{i}{n+1} \\
         w_i =& \frac{2}{n+1} \sum_{m=1}^n \frac{\sin(m \pi x_i)(1-\cos(m \pi))}{m \pi}
 
-        For consistency with other 1-D grids, the integration range is modified by :math:`q=2x-1`, and
+        For consistency with other 1-D grids, the integration range is modified
+        by :math:`q=2x-1`, and
 
         .. math::
         2 \int_{0}^{1} f(x) dx = \int_{-1}^{1} f(q) dq
@@ -332,6 +349,8 @@ class RectangleRuleSineEndPoints(OneDGrid):
 
 
 class RectangleRuleSine(OneDGrid):
+    """Rectangle-Rule Sine integral quadrature class."""
+
     def __init__(self, npoints):
         r"""Generate 1-D grid on [-1, 1] interval using Interior Rectangle Rule for Sines.
 
@@ -341,7 +360,8 @@ class RectangleRuleSine(OneDGrid):
         w_i =& \frac{2}{n^2 \pi} \sin(n\pi x_i) \sin^2(n\pi /2) +
                 \frac{4}{n \pi} \sum_{m=1}^{n-1} \frac{\sin(m \pi x_i)\sin^2(m\pi /2)}{m}
 
-        For consistency with other 1-D grids, the integration range is modified by :math:`q=2x-1`, and
+        For consistency with other 1-D grids, the integration range is modified
+        by :math:`q=2x-1`, and
 
         .. math::
         2 \int_{0}^{1} f(x) dx = \int_{-1}^{1} f(q) dq
@@ -384,6 +404,8 @@ class RectangleRuleSine(OneDGrid):
 
 
 class TanhSinh(OneDGrid):
+    """Tanh Sinh integral quadrature class."""
+
     def __init__(self, npoints, delta=0.1):
         r"""Generate 1-D grid on [-1, 1] interval based on Tanh-Sinh rule.
 
@@ -428,6 +450,8 @@ class TanhSinh(OneDGrid):
 
 
 class Simpson(OneDGrid):
+    """Simpson integral quadrature class."""
+
     def __init__(self, npoints):
         r"""Generate 1D grid on [-1:1] interval based on Simpson rule.
 
@@ -469,6 +493,8 @@ class Simpson(OneDGrid):
 
 
 class MidPoint(OneDGrid):
+    """MidPoint integral quadrature class."""
+
     def __init__(self, npoints):
         r"""Generate 1-D grid on [-1, 1] interval based on Mid-Point rule.
 
@@ -502,6 +528,8 @@ class MidPoint(OneDGrid):
 
 
 class ClenshawCurtis(OneDGrid):
+    """Clenshow Curtis integral quadrature class."""
+
     def __init__(self, npoints):
         r"""Generate 1D grid on [-1,1] interval based on Clenshaw-Curtis method.
 
@@ -547,6 +575,8 @@ class ClenshawCurtis(OneDGrid):
 
 
 class FejerFirst(OneDGrid):
+    """Fejer Fisrt integral quadrature class."""
+
     def __init__(self, npoints):
         r"""Generate 1D grid on [-1,1] interval based on Fejer-1 method.
 
@@ -588,6 +618,8 @@ class FejerFirst(OneDGrid):
 
 
 class FejerSecond(OneDGrid):
+    """Fejer Second integral quadrature class."""
+
     def __init__(self, npoints):
         r"""Generate 1D grid on [-1,1] interval based on Fejer-2 method.
 
@@ -659,6 +691,8 @@ def _derg3(x):
 
 
 class TrefethenCC(OneDGrid):
+    """Trefethen CC integral quadrature class."""
+
     def __init__(self, npoints, d=3):
         r"""Generate 1D grid on [-1,1] interval based on Trefethen-Clenshaw-Curtis.
 
@@ -688,6 +722,8 @@ class TrefethenCC(OneDGrid):
 
 
 class TrefethenGC2(OneDGrid):
+    """Trefethen GC2 integral quadrature class."""
+
     def __init__(self, npoints, d=3):
         r"""Generate 1D grid on [-1,1] interval based on Trefethen-Gauss-Chebyshev.
 
@@ -717,6 +753,8 @@ class TrefethenGC2(OneDGrid):
 
 
 class TrefethenGeneral(OneDGrid):
+    """Trefethen General integral quadrature class."""
+
     def __init__(self, npoints, quadrature, d=3):
         r"""Generate 1D grid on [-1,1] interval based on Trefethen-General.
 
@@ -791,6 +829,8 @@ def _dergstrip(rho, s):
 
 
 class TrefethenStripCC(OneDGrid):
+    """Trefethen Strip CC integral quadrature class."""
+
     def __init__(self, npoints, rho=1.1):
         r"""Generate 1D grid on [-1,1] interval based on Trefethen-Clenshaw-Curtis.
 
@@ -812,6 +852,8 @@ class TrefethenStripCC(OneDGrid):
 
 
 class TrefethenStripGC2(OneDGrid):
+    """Trefethen Strip GC2 integral quadrature class."""
+
     def __init__(self, npoints, rho=1.1):
         r"""Generate 1D grid on [-1,1] interval based on Trefethen-Gauss-Chebyshev.
 
@@ -833,6 +875,8 @@ class TrefethenStripGC2(OneDGrid):
 
 
 class TrefethenStripGeneral(OneDGrid):
+    """Trefethen Strip General integral quadrature class."""
+
     def __init__(self, npoints, quadrature, rho=1.1):
         r"""Generate 1D grid on [-1,1] interval based on Trefethen-General.
 
