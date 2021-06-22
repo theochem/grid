@@ -20,12 +20,8 @@
 """Module for generating AtomGrid."""
 
 
-from grid.basegrid import AngularGrid, Grid, OneDGrid
-from grid.lebedev import (
-    _get_lebedev_size_and_degree,
-    convert_lebedev_sizes_to_degrees,
-    generate_lebedev_grid,
-)
+from grid.basegrid import Grid, OneDGrid
+from grid.lebedev import AngularGrid
 from grid.utils import convert_cart_to_sph
 
 from importlib_resources import path
@@ -96,7 +92,7 @@ class AtomGrid(Grid):
                 raise TypeError(
                     f"sizes is not type: np.array or list, got {type(sizes)}"
                 )
-            degrees = convert_lebedev_sizes_to_degrees(sizes)
+            degrees = AngularGrid.convert_lebedev_sizes_to_degrees(sizes)
         if not isinstance(degrees, (np.ndarray, list)):
             raise TypeError(
                 f"degrees is not type: np.array or list, got {type(degrees)}"
@@ -147,7 +143,7 @@ class AtomGrid(Grid):
             rad = data[f"{atnum}_rad"]
             npt = data[f"{atnum}_npt"]
 
-        degs = convert_lebedev_sizes_to_degrees(npt)
+        degs = AngularGrid.convert_lebedev_sizes_to_degrees(npt)
         rad_degs = AtomGrid._find_l_for_rad_list(rgrid.points, rad, degs)
         return cls(rgrid, degrees=rad_degs, center=center, rotate=rotate)
 
@@ -203,7 +199,7 @@ class AtomGrid(Grid):
             Generated AtomGrid instance for this special init method.
         """
         if sectors_degree is None:
-            sectors_degree = convert_lebedev_sizes_to_degrees(sectors_size)
+            sectors_degree = AngularGrid.convert_lebedev_sizes_to_degrees(sectors_size)
         center = (
             np.zeros(3, dtype=float)
             if center is None
@@ -357,7 +353,7 @@ class AtomGrid(Grid):
             raise ValueError("degs should have only one more element than r_sectors.")
         # match given degrees to the supported (i.e., pre-computed) Lebedev degrees
         matched_deg = np.array(
-            [_get_lebedev_size_and_degree(degree=d)[0] for d in degs]
+            [AngularGrid._get_lebedev_size_and_degree(degree=d)[0] for d in degs]
         )
         rad_degs = AtomGrid._find_l_for_rad_list(
             rgrid.points, radius * r_sectors, matched_deg
@@ -414,7 +410,7 @@ class AtomGrid(Grid):
 
         shell_pt_indices = np.zeros(len(degrees) + 1, dtype=int)  # set index to int
         for i, deg_i in enumerate(degrees):  # TODO: proper tests
-            sphere_grid = generate_lebedev_grid(degree=deg_i)
+            sphere_grid = AngularGrid(degree=deg_i)
             if rotate is False:
                 pass
             # if rotate is True, rotate each shell

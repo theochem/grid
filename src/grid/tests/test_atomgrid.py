@@ -23,8 +23,8 @@
 from unittest import TestCase
 
 from grid.atomgrid import AtomGrid
-from grid.basegrid import AngularGrid, Grid, OneDGrid
-from grid.lebedev import LEBEDEV_DEGREES, generate_lebedev_grid
+from grid.basegrid import Grid, OneDGrid
+from grid.lebedev import LEBEDEV_DEGREES, AngularGrid
 from grid.onedgrid import HortonLinear
 from grid.rtransform import PowerRTransform
 
@@ -207,7 +207,7 @@ class TestAtomGrid(TestCase):
         # set tests for slicing grid from atomic grid
         for i in range(3):
             # set each layer of points
-            ref_grid = generate_lebedev_grid(degree=degs[i])
+            ref_grid = AngularGrid(degree=degs[i])
             # check for each point
             assert_allclose(pts[ind[i] : ind[i + 1]], ref_grid.points * rad_pts[i])
             # check for each weight
@@ -276,7 +276,7 @@ class TestAtomGrid(TestCase):
         for i in range(atgrid.n_shells):
             sh_grid = atgrid.get_shell_grid(i)
             assert isinstance(sh_grid, AngularGrid)
-            ref_grid = generate_lebedev_grid(degree=degs[i])
+            ref_grid = AngularGrid(degree=degs[i])
             assert np.allclose(sh_grid.points, ref_grid.points * rad_pts[i])
             assert np.allclose(
                 sh_grid.weights, ref_grid.weights * rad_wts[i] * rad_pts[i] ** 2
@@ -285,7 +285,7 @@ class TestAtomGrid(TestCase):
         for i in range(atgrid.n_shells):
             sh_grid = atgrid.get_shell_grid(i, r_sq=False)
             assert isinstance(sh_grid, AngularGrid)
-            ref_grid = generate_lebedev_grid(degree=degs[i])
+            ref_grid = AngularGrid(degree=degs[i])
             assert np.allclose(sh_grid.points, ref_grid.points * rad_pts[i])
             assert np.allclose(sh_grid.weights, ref_grid.weights * rad_wts[i])
 
