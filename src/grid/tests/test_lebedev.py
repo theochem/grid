@@ -22,12 +22,11 @@
 
 from unittest import TestCase
 
-from grid.basegrid import AngularGrid
 from grid.lebedev import (
+    AngularGrid,
     LEBEDEV_CACHE,
     LEBEDEV_DEGREES,
     LEBEDEV_NPOINTS,
-    AngularGrid,
 )
 
 import numpy as np

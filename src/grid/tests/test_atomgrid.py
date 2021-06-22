@@ -24,7 +24,7 @@ from unittest import TestCase
 
 from grid.atomgrid import AtomGrid
 from grid.basegrid import Grid, OneDGrid
-from grid.lebedev import LEBEDEV_DEGREES, AngularGrid
+from grid.lebedev import AngularGrid, LEBEDEV_DEGREES
 from grid.onedgrid import HortonLinear
 from grid.rtransform import PowerRTransform
 
