@@ -131,3 +131,11 @@ class TestLebedev(TestCase):
             AngularGrid(degree=-2)
         with self.assertWarns(RuntimeWarning):
             AngularGrid(degree=5, size=10)
+        with self.assertWarns(RuntimeWarning):
+            pts = np.array([[0, 1, 0], [1, 0, 1], [0, 1, 1]], dtype=float)
+            wts = np.array([0.3, 0.4, 0.5])
+            AngularGrid(pts, wts, degree=7)
+        with self.assertWarns(RuntimeWarning):
+            pts = np.array([[0, 1, 0], [1, 0, 1], [0, 1, 1]], dtype=float)
+            wts = np.array([0.3, 0.4, 0.5])
+            AngularGrid(pts, wts, size=14)
