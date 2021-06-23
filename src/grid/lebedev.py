@@ -81,8 +81,14 @@ class AngularGrid(Grid):
     ):
         r"""Generate a Lebedev angular grid for the given degree and/or size.
 
+        Use points with weights, or degree, or size to generate Angular Grid
+
         Parameters
         ----------
+        points : np.ndarray(N, N, N)
+            The Cartesian coordinates of integral grid points
+        weights : np.ndarray(N,)
+            The weights of each point on the intergral quadrature grid
         degree : int, optional
             Degree of Lebedev grid. If the Lebedev grid corresponding to the given degree is not
             supported, the next largest degree is used.
@@ -100,10 +106,28 @@ class AngularGrid(Grid):
             An angular grid with Lebedev points and weights (including :math:`4\pi`) on
             a unit sphere.
 
+        Examples
+        --------
+        >>> # Initialize with degree
+        >>> AngularGrid(degree=3)
+        >>>
+        >>> # Initialize with size
+        >>> AngularGrid(size=6)
+        >>>
+        >>> # Initialize with points and weights
+        >>> pts = np.array([[0, 1, 0], [1, 0, 1], [0, 1, 1]], dtype=float)
+        >>> wts = np.array([0.5, 0.4, 0.3])
+        >>> AngularGrid(pts, wts)
         """
         # construct grid from pts and wts given directly
         if points is not None and weights is not None:
             super().__init__(points, weights)
+            if degree or size:
+                warnings.warn(
+                    "degree or size are not used for generating grids "
+                    "because points and weights are provided",
+                    RuntimeWarning,
+                )
             return
         # map degree and size to the supported (i.e., pre-computed) degree and size
         degree, size = self._get_lebedev_size_and_degree(degree=degree, size=size)
