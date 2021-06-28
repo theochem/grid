@@ -85,7 +85,7 @@ class MolGrid(Grid):
         grid_type,
         aim_weights,
         *_,
-        rotate=False,
+        rotate=37,
         store=False,
     ):
         """Contruct molecular grid wih preset parameters.
@@ -160,7 +160,7 @@ class MolGrid(Grid):
         points_of_angular,
         aim_weights,
         store=False,
-        rotate=False,
+        rotate=37,
     ):
         """Initialize a MolGrid instance with Horton Style input.
 
