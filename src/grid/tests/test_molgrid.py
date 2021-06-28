@@ -108,6 +108,7 @@ class TestMolGrid(TestCase):
             ["fine", "veryfine", "medium"],
             becke,
             store=True,
+            rotate=False,
         )
         dist0 = np.sqrt(((coordinates[0] - mg.points) ** 2).sum(axis=1))
         dist1 = np.sqrt(((coordinates[1] - mg.points) ** 2).sum(axis=1))
@@ -131,7 +132,13 @@ class TestMolGrid(TestCase):
 
         # grid type test with dict
         mg = MolGrid.make_grid(
-            numbers, coordinates, rad3, {1: "fine", 8: "veryfine"}, becke, store=True
+            numbers,
+            coordinates,
+            rad3,
+            {1: "fine", 8: "veryfine"},
+            becke,
+            store=True,
+            rotate=False,
         )
         dist0 = np.sqrt(((coordinates[0] - mg.points) ** 2).sum(axis=1))
         dist1 = np.sqrt(((coordinates[1] - mg.points) ** 2).sum(axis=1))
@@ -173,6 +180,7 @@ class TestMolGrid(TestCase):
             {1: "fine", 8: "veryfine"},
             becke,
             store=True,
+            rotate=False,
         )
         dist0 = np.sqrt(((coordinates[0] - mg.points) ** 2).sum(axis=1))
         dist1 = np.sqrt(((coordinates[1] - mg.points) ** 2).sum(axis=1))
@@ -202,6 +210,7 @@ class TestMolGrid(TestCase):
             {1: "fine", 8: "veryfine"},
             becke,
             store=True,
+            rotate=False,
         )
         dist0 = np.sqrt(((coordinates[0] - mg.points) ** 2).sum(axis=1))
         dist1 = np.sqrt(((coordinates[1] - mg.points) ** 2).sum(axis=1))
@@ -445,7 +454,9 @@ class TestMolGrid(TestCase):
         nums = np.array([1, 1])
         coors = np.array([[0, 0, -0.5], [0, 0, 0.5]])
         becke = BeckeWeights(order=3)
-        mol_grid = MolGrid.horton_molgrid(coors, nums, self.rgrid, 110, becke)
+        mol_grid = MolGrid.horton_molgrid(
+            coors, nums, self.rgrid, 110, becke, rotate=False
+        )
         atg1 = AtomGrid.from_pruned(
             self.rgrid,
             0.5,
@@ -579,7 +590,7 @@ class TestMolGrid(TestCase):
         nums = np.array([1, 3])
         coords = np.array([[0.0, 0.0, -0.5], [0.0, 0.0, 0.5]])
         grid = MolGrid.horton_molgrid(
-            coords, nums, self.rgrid, 110, BeckeWeights(), store=True
+            coords, nums, self.rgrid, 110, BeckeWeights(), store=True, rotate=False
         )
         fn0 = np.exp(-4.0 * np.linalg.norm(grid.points - coords[0], axis=-1))
         fn1 = np.exp(-8.0 * np.linalg.norm(grid.points - coords[1], axis=-1))
