@@ -169,10 +169,6 @@ class Grid:
             )
 
 
-class AngularGrid(Grid):
-    """Angular lebedev grid."""
-
-
 class LocalGrid(Grid):
     """Local portion of a grid, containing all points within a sphere."""
 
