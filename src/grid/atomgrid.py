@@ -100,13 +100,13 @@ class AtomGrid(Grid):
         self._size = self._weights.size
 
     @classmethod
-    def from_predefined(cls, rgrid, atnum, preset, *_, center=None, rotate=False):
+    def from_preset(cls, rgrid, atnum, preset, *_, center=None, rotate=False):
         """High level to construct prefined atomic grid.
 
         Examples
         --------
         # construct an atomic grid for H with fine grid setting
-        >>> atgrid = AtomGrid.from_predefined(rgrid, 1, "fine")
+        >>> atgrid = AtomGrid.from_preset(rgrid, 1, "fine")
 
         Parameters
         ----------
