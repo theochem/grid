@@ -29,17 +29,17 @@ import numpy as np
 class MolGrid(Grid):
     """Molecular Grid for integration."""
 
-    def __init__(self, atgrids, aim_weights, atnums, store=False):
+    def __init__(self, atnums, atgrids, aim_weights, store=False):
         r"""Initialize class.
 
         Parameters
         ----------
+        atnums : np.ndarray(M, 3)
+            Atomic number of :math:`M` atoms in molecule.
         atgrids : list[AtomGrid]
             list of atomic grid
         aim_weights : Callable or np.ndarray(K,)
             Atoms in molecule weights.
-        atnums : np.ndarray(M, 3)
-            Atomic number of :math:`M` atoms in molecule.
 
         """
         # initialize these attributes
@@ -149,7 +149,7 @@ class MolGrid(Grid):
                 rad, atnums[i], gd_type, center=atcoords[i], rotate=rotate
             )
             atomic_grids.append(at_grid)
-        return cls(atomic_grids, aim_weights, atnums, store=store)
+        return cls(atnums, atomic_grids, aim_weights, store=store)
 
     @classmethod
     def horton_molgrid(
@@ -199,7 +199,7 @@ class MolGrid(Grid):
                     radial, sizes=[points_of_angular], center=atcoords[i], rotate=rotate
                 )
             )
-        return cls(at_grids, aim_weights, atnums, store=store)
+        return cls(atnums, at_grids, aim_weights, store=store)
 
     def get_atomic_grid(self, index):
         r"""Get atomic grid corresponding to the given atomic index.

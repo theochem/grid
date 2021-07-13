@@ -57,7 +57,7 @@ class TestMolGrid(TestCase):
             center=coordinates,
         )
         becke = BeckeWeights(order=3)
-        mg = MolGrid([atg1], becke, np.array([1]))
+        mg = MolGrid(np.array([1]), [atg1], becke)
         # mg = BeckeMolGrid(coordinates, numbers, None, (rgrid, 110), random_rotate=False)
         dist0 = np.sqrt(((coordinates - mg.points) ** 2).sum(axis=1))
         fn = np.exp(-2 * dist0) / np.pi
@@ -250,7 +250,7 @@ class TestMolGrid(TestCase):
             center=coordinates[1],
         )
         becke = BeckeWeights(order=3)
-        mg = MolGrid([atg1, atg2], becke, np.array([1, 1]))
+        mg = MolGrid(np.array([1, 1]), [atg1, atg2], becke)
         dist0 = np.sqrt(((coordinates[0] - mg.points) ** 2).sum(axis=1))
         dist1 = np.sqrt(((coordinates[1] - mg.points) ** 2).sum(axis=1))
         fn = np.exp(-2 * dist0) / np.pi + np.exp(-2 * dist1) / np.pi
@@ -284,7 +284,7 @@ class TestMolGrid(TestCase):
             center=coordinates[2],
         )
         becke = BeckeWeights(order=3)
-        mg = MolGrid([atg1, atg2, atg3], becke, np.array([1, 1, 1]))
+        mg = MolGrid(np.array([1, 1, 1]), [atg1, atg2, atg3], becke)
         dist0 = np.sqrt(((coordinates[0] - mg.points) ** 2).sum(axis=1))
         dist1 = np.sqrt(((coordinates[1] - mg.points) ** 2).sum(axis=1))
         dist2 = np.sqrt(((coordinates[2] - mg.points) ** 2).sum(axis=1))
@@ -324,7 +324,7 @@ class TestMolGrid(TestCase):
         ]
 
         becke = BeckeWeights(order=3)
-        mg = MolGrid(atgs, becke, np.array([1] * len(centers)))
+        mg = MolGrid(np.array([1] * len(centers)), atgs, becke)
         fn = 0
         for center in centers:
             dist = np.linalg.norm(center - mg.points, axis=1)
@@ -351,7 +351,7 @@ class TestMolGrid(TestCase):
             center=coordinates[1],
         )
         becke = BeckeWeights(order=3)
-        mg = MolGrid([atg1, atg2], becke, np.array([6, 8]), store=True)
+        mg = MolGrid(np.array([6, 8]), [atg1, atg2], becke, store=True)
         # mg = BeckeMolGrid(coordinates, numbers, None, (rgrid, 110), mode='keep')
 
         assert mg.size == 2 * 110 * 100
@@ -369,7 +369,7 @@ class TestMolGrid(TestCase):
             assert atgrid.points.shape == (100 * 110, 3)
             assert atgrid.weights.shape == (100 * 110,)
             assert (atgrid.center == coordinates[i]).all()
-        mg = MolGrid([atg1, atg2], becke, np.array([6, 8]))
+        mg = MolGrid(np.array([6, 8]), [atg1, atg2], becke)
         for i in range(2):
             atgrid = mg[i]
             assert isinstance(atgrid, LocalGrid)
@@ -395,7 +395,7 @@ class TestMolGrid(TestCase):
         )
 
         becke = BeckeWeights(order=3)
-        mg = MolGrid([atg1, atg2], becke, np.array([6, 8]), store=True)
+        mg = MolGrid(np.array([6, 8]), [atg1, atg2], becke, store=True)
 
         assert mg.size == 2 * 110 * 100
         assert mg.points.shape == (mg.size, 3)
@@ -411,7 +411,7 @@ class TestMolGrid(TestCase):
         assert_allclose(simple_ag2.weights, atg2.weights)
 
         # test molgrid is not stored
-        mg2 = MolGrid([atg1, atg2], becke, np.array([6, 8]), store=False)
+        mg2 = MolGrid(np.array([6, 8]), [atg1, atg2], becke, store=False)
         assert mg2._atgrids is None
         simple2_ag1 = mg2.get_atomic_grid(0)
         simple2_ag2 = mg2.get_atomic_grid(1)
@@ -442,7 +442,7 @@ class TestMolGrid(TestCase):
             center=coordinates[1],
         )
         # use an array as aim_weights
-        mg = MolGrid([atg1, atg2], np.ones(22000), np.array([1, 1]))
+        mg = MolGrid(np.array([1, 1]), [atg1, atg2], np.ones(22000))
         dist0 = np.sqrt(((coordinates[0] - mg.points) ** 2).sum(axis=1))
         dist1 = np.sqrt(((coordinates[1] - mg.points) ** 2).sum(axis=1))
         fn = np.exp(-2 * dist0) / np.pi + np.exp(-2 * dist1) / np.pi
@@ -471,7 +471,7 @@ class TestMolGrid(TestCase):
             sectors_degree=np.array([17]),
             center=coors[1],
         )
-        ref_grid = MolGrid([atg1, atg2], becke, nums, store=True)
+        ref_grid = MolGrid(nums, [atg1, atg2], becke, store=True)
         assert_allclose(ref_grid.points, mol_grid.points)
         assert_allclose(ref_grid.weights, mol_grid.weights)
 
@@ -487,15 +487,15 @@ class TestMolGrid(TestCase):
 
         # errors of aim_weight
         with self.assertRaises(TypeError):
-            MolGrid([atg], aim_weights="test", atnums=np.array([1]))
+            MolGrid(atnums=np.array([1]), atgrids=[atg], aim_weights="test")
         with self.assertRaises(ValueError):
-            MolGrid([atg], aim_weights=np.array(3), atnums=np.array([1]))
+            MolGrid(atnums=np.array([1]), atgrids=[atg], aim_weights=np.array(3))
         with self.assertRaises(TypeError):
-            MolGrid([atg], aim_weights=[3, 5], atnums=np.array([1]))
+            MolGrid(atnums=np.array([1]), atgrids=[atg], aim_weights=[3, 5])
 
         # integrate errors
         becke = BeckeWeights({1: 0.472_431_53}, order=3)
-        molg = MolGrid([atg], becke, np.array([1]))
+        molg = MolGrid(np.array([1]), [atg], becke)
         with self.assertRaises(ValueError):
             molg.integrate()
         with self.assertRaises(TypeError):
@@ -504,7 +504,7 @@ class TestMolGrid(TestCase):
             molg.integrate(np.array([3, 5]))
         with self.assertRaises(ValueError):
             molg.get_atomic_grid(-3)
-        molg = MolGrid([atg], becke, np.array([1]), store=True)
+        molg = MolGrid(np.array([1]), [atg], becke, store=True)
         with self.assertRaises(ValueError):
             molg.get_atomic_grid(-5)
 
@@ -555,7 +555,7 @@ class TestMolGrid(TestCase):
             sectors_degree=np.array([17]),
             center=coords,
         )
-        grid = MolGrid([atg1], BeckeWeights(), np.array([1]), store=False)
+        grid = MolGrid(np.array([1]), [atg1], BeckeWeights(), store=False)
         fn = np.exp(-2 * np.linalg.norm(grid.points, axis=-1))
         assert_allclose(grid.integrate(fn), np.pi)
         # conventional local grid
@@ -627,7 +627,7 @@ class TestMolGrid(TestCase):
             sectors_degree=np.array([17]),
             center=coordinates,
         )
-        mg = MolGrid([atg1], HirshfeldWeights(), np.array([7]))
+        mg = MolGrid(np.array([7]), [atg1], HirshfeldWeights())
         dist0 = np.sqrt(((coordinates - mg.points) ** 2).sum(axis=1))
         fn = np.exp(-2 * dist0) / np.pi
         occupation = mg.integrate(fn)
@@ -650,7 +650,7 @@ class TestMolGrid(TestCase):
             sectors_degree=np.array([17]),
             center=coordinates[1],
         )
-        mg = MolGrid([atg1, atg2], HirshfeldWeights(), np.array([1, 1]))
+        mg = MolGrid(np.array([1, 1]), [atg1, atg2], HirshfeldWeights())
         dist0 = np.sqrt(((coordinates[0] - mg.points) ** 2).sum(axis=1))
         dist1 = np.sqrt(((coordinates[1] - mg.points) ** 2).sum(axis=1))
         fn = np.exp(-2 * dist0) / np.pi + 1.5 * np.exp(-2 * dist1) / np.pi
