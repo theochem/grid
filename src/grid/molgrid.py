@@ -77,18 +77,18 @@ class MolGrid(Grid):
         super().__init__(self.points, self._atweights * self._aim_weights)
 
     @classmethod
-    def make_grid(
+    def from_preset(
         cls,
         atnums,
         atcoords,
         rgrid,
-        grid_type,
+        preset,
         aim_weights,
         *_,
         rotate=False,
         store=False,
     ):
-        """Contruct molecular grid wih preset parameters.
+        """Construct molecular grid wih preset parameters.
 
         Parameters
         ----------
@@ -98,7 +98,7 @@ class MolGrid(Grid):
             atomic coordinates of atoms
         rgrid : OneDGrid
             one dimension grid  to construct spherical grid
-        grid_type : str
+        preset : str
             preset grid accuracy scheme, support "coarse", "medium", "fine",
             "veryfine", "ultrafine", "insane"
         aim_weights : Callable or np.ndarray(K,)
@@ -134,16 +134,15 @@ class MolGrid(Grid):
                     f"not supported radial grid input; got input type: {type(rgrid)}"
                 )
             # get proper grid type
-            if isinstance(grid_type, str):
-                gd_type = grid_type
-            elif isinstance(grid_type, list):
-                gd_type = grid_type[i]
-            elif isinstance(grid_type, dict):
-                gd_type = grid_type[atnums[i]]
+            if isinstance(preset, str):
+                gd_type = preset
+            elif isinstance(preset, list):
+                gd_type = preset[i]
+            elif isinstance(preset, dict):
+                gd_type = preset[atnums[i]]
             else:
                 raise TypeError(
-                    "not supported grid_type input\n"
-                    f"got input type: {type(grid_type)}"
+                    f"Not supported preset type; got preset {preset} with type {type(preset)}"
                 )
             at_grid = AtomGrid.from_preset(
                 rad, atnums[i], gd_type, center=atcoords[i], rotate=rotate
