@@ -145,7 +145,7 @@ class MolGrid(Grid):
                     "not supported grid_type input\n"
                     f"got input type: {type(grid_type)}"
                 )
-            at_grid = AtomGrid.from_predefined(
+            at_grid = AtomGrid.from_preset(
                 rad, atnums[i], gd_type, center=atcoords[i], rotate=rotate
             )
             atomic_grids.append(at_grid)

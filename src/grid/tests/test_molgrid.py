@@ -116,13 +116,13 @@ class TestMolGrid(TestCase):
         occupation = mg.integrate(fn)
         assert_almost_equal(occupation, 3, decimal=3)
 
-        atgrid1 = AtomGrid.from_predefined(
+        atgrid1 = AtomGrid.from_preset(
             rad2, numbers[0], "fine", center=coordinates[0]
         )
-        atgrid2 = AtomGrid.from_predefined(
+        atgrid2 = AtomGrid.from_preset(
             rad2, numbers[1], "veryfine", center=coordinates[1]
         )
-        atgrid3 = AtomGrid.from_predefined(
+        atgrid3 = AtomGrid.from_preset(
             rad2, numbers[2], "medium", center=coordinates[2]
         )
         assert_allclose(mg._atgrids[0].points, atgrid1.points)
@@ -140,13 +140,13 @@ class TestMolGrid(TestCase):
         occupation = mg.integrate(fn)
         assert_almost_equal(occupation, 3, decimal=3)
 
-        atgrid1 = AtomGrid.from_predefined(
+        atgrid1 = AtomGrid.from_preset(
             rad3, numbers[0], "fine", center=coordinates[0]
         )
-        atgrid2 = AtomGrid.from_predefined(
+        atgrid2 = AtomGrid.from_preset(
             rad3, numbers[1], "veryfine", center=coordinates[1]
         )
-        atgrid3 = AtomGrid.from_predefined(
+        atgrid3 = AtomGrid.from_preset(
             rad3, numbers[2], "fine", center=coordinates[2]
         )
         assert_allclose(mg._atgrids[0].points, atgrid1.points)
@@ -181,13 +181,13 @@ class TestMolGrid(TestCase):
         occupation = mg.integrate(fn)
         assert_almost_equal(occupation, 3, decimal=3)
 
-        atgrid1 = AtomGrid.from_predefined(
+        atgrid1 = AtomGrid.from_preset(
             rad1, numbers[0], "fine", center=coordinates[0]
         )
-        atgrid2 = AtomGrid.from_predefined(
+        atgrid2 = AtomGrid.from_preset(
             rad2, numbers[1], "veryfine", center=coordinates[1]
         )
-        atgrid3 = AtomGrid.from_predefined(
+        atgrid3 = AtomGrid.from_preset(
             rad3, numbers[2], "fine", center=coordinates[2]
         )
         assert_allclose(mg._atgrids[0].points, atgrid1.points)
@@ -210,13 +210,13 @@ class TestMolGrid(TestCase):
         occupation = mg.integrate(fn)
         assert_almost_equal(occupation, 3, decimal=3)
 
-        atgrid1 = AtomGrid.from_predefined(
+        atgrid1 = AtomGrid.from_preset(
             rad1, numbers[0], "fine", center=coordinates[0]
         )
-        atgrid2 = AtomGrid.from_predefined(
+        atgrid2 = AtomGrid.from_preset(
             rad3, numbers[1], "veryfine", center=coordinates[1]
         )
-        atgrid3 = AtomGrid.from_predefined(
+        atgrid3 = AtomGrid.from_preset(
             rad1, numbers[2], "fine", center=coordinates[2]
         )
         assert_allclose(mg._atgrids[0].points, atgrid1.points)
