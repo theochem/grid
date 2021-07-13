@@ -81,7 +81,7 @@ class TestMolGrid(TestCase):
             ("ultrafine", 6),
             ("insane", 6),
         ):
-            mg = MolGrid.make_grid(numbers, coordinates, rgrid, grid_type, becke)
+            mg = MolGrid.from_preset(numbers, coordinates, rgrid, grid_type, becke)
             dist0 = np.sqrt(((coordinates[0] - mg.points) ** 2).sum(axis=1))
             dist1 = np.sqrt(((coordinates[1] - mg.points) ** 2).sum(axis=1))
             fn = np.exp(-2 * dist0) / np.pi + np.exp(-2 * dist1) / np.pi
@@ -101,7 +101,7 @@ class TestMolGrid(TestCase):
         becke = BeckeWeights(order=3)
 
         # grid_type test with list
-        mg = MolGrid.make_grid(
+        mg = MolGrid.from_preset(
             numbers,
             coordinates,
             rad2,
@@ -131,14 +131,9 @@ class TestMolGrid(TestCase):
         assert_allclose(mg._atgrids[2].points, atgrid3.points)
 
         # grid type test with dict
-        mg = MolGrid.make_grid(
-            numbers,
-            coordinates,
-            rad3,
-            {1: "fine", 8: "veryfine"},
-            becke,
-            store=True,
-            rotate=False,
+        mg = MolGrid.from_preset(
+            numbers, coordinates, rad3, {1: "fine", 8: "veryfine"}, becke,
+            store=True, rotate=False
         )
         dist0 = np.sqrt(((coordinates[0] - mg.points) ** 2).sum(axis=1))
         dist1 = np.sqrt(((coordinates[1] - mg.points) ** 2).sum(axis=1))
@@ -173,7 +168,7 @@ class TestMolGrid(TestCase):
         )
         becke = BeckeWeights(order=3)
         # construct molgrid
-        mg = MolGrid.make_grid(
+        mg = MolGrid.from_preset(
             numbers,
             coordinates,
             [rad1, rad2, rad3],
@@ -203,7 +198,7 @@ class TestMolGrid(TestCase):
         assert_allclose(mg._atgrids[2].points, atgrid3.points)
 
         # radial grid test with dict
-        mg = MolGrid.make_grid(
+        mg = MolGrid.from_preset(
             numbers,
             coordinates,
             {1: rad1, 8: rad3},
@@ -516,17 +511,19 @@ class TestMolGrid(TestCase):
         becke = BeckeWeights(order=3)
         # construct molgrid
         with self.assertRaises(ValueError):
-            MolGrid.make_grid(numbers, np.array([0.0, 0.0, 0.0]), rgrid, "fine", becke)
+            MolGrid.from_preset(
+                numbers, np.array([0.0, 0.0, 0.0]), rgrid, "fine", becke
+            )
         with self.assertRaises(ValueError):
-            MolGrid.make_grid(
+            MolGrid.from_preset(
                 np.array([1, 1]), np.array([[0.0, 0.0, 0.0]]), rgrid, "fine", becke
             )
         with self.assertRaises(ValueError):
-            MolGrid.make_grid(
+            MolGrid.from_preset(
                 np.array([1, 1]), np.array([[0.0, 0.0, 0.0]]), rgrid, "fine", becke
             )
         with self.assertRaises(TypeError):
-            MolGrid.make_grid(
+            MolGrid.from_preset(
                 np.array([1, 1]),
                 np.array([[0.0, 0.0, -0.5], [0.0, 0.0, 0.5]]),
                 {3, 5},
@@ -534,7 +531,7 @@ class TestMolGrid(TestCase):
                 becke,
             )
         with self.assertRaises(TypeError):
-            MolGrid.make_grid(
+            MolGrid.from_preset(
                 np.array([1, 1]),
                 np.array([[0.0, 0.0, -0.5], [0.0, 0.0, 0.5]]),
                 rgrid,
