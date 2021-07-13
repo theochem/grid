@@ -153,13 +153,13 @@ class MolGrid(Grid):
     @classmethod
     def horton_molgrid(
         cls,
-        atcoords,
         atnums,
-        radial,
-        points_of_angular,
+        atcoords,
+        rgrid,
+        sizes,
         aim_weights,
-        store=False,
         rotate=37,
+        store=False,
     ):
         """Initialize a MolGrid instance with Horton Style input.
 
@@ -168,15 +168,17 @@ class MolGrid(Grid):
         >>> onedg = HortonLinear(100) # number of points, oned grid before TF.
         >>> rgrid = ExpRTransform(1e-5, 2e1).generate_radial(onedg) # radial grid
         >>> becke = BeckeWeights(order=3)
-        >>> molgrid = MolGrid.horton_molgrid(atcoords, atnums,rgrid,110,becke)
+        >>> molgrid = MolGrid.horton_molgrid(atnums, atcoords, rgrid, 110, becke)
 
         Parameters
         ----------
-        atcoords : np.ndarray(N, 3)
-            Cartesian coordinates for each atoms
         atnums : np.ndarray(M, 3)
             Atomic number of :math:`M` atoms in molecule.
-        points_of_angular : int
+        atcoords : np.ndarray(N, 3)
+            Cartesian coordinates for each atoms
+        rgrid : OneDGrid
+            one dimension grid  to construct spherical grid
+        sizes : int
             Num of points on each shell of angular grid
         aim_weights : Callable or np.ndarray(K,)
             Atoms in molecule weights.
@@ -194,9 +196,7 @@ class MolGrid(Grid):
         at_grids = []
         for i in range(len(atcoords)):
             at_grids.append(
-                AtomGrid(
-                    radial, sizes=[points_of_angular], center=atcoords[i], rotate=rotate
-                )
+                AtomGrid(rgrid, sizes=[sizes], center=atcoords[i], rotate=rotate)
             )
         return cls(atnums, at_grids, aim_weights, store=store)
 
