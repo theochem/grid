@@ -38,10 +38,6 @@ class Grid:
         weights : np.ndarray(N,)
             An array of weights associated with each point on the grid.
 
-        Raises
-        ------
-        ValueError
-            Shape of points and weights does not match.
         """
         if len(points) != len(weights):
             raise ValueError(
@@ -115,12 +111,6 @@ class Grid:
         float
             The calculated integral over given integrand or function
 
-        Raises
-        ------
-        TypeError
-            Input integrand is not of type np.ndarray.
-        ValueError
-            Input integrand array is given or not of proper shape.
         """
         if len(value_arrays) < 1:
             raise ValueError("No array is given to integrate.")

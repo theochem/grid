@@ -242,14 +242,6 @@ class PeriodicGrid(Grid):
             wider than 1.1, because this implies a degradation of efficiency of
             ``get_localgrid``, which can be easily avoided.
 
-        Raises
-        ------
-        ValueError
-            When the shape of points, weights and realvecs are inconsistent, or
-            when the lattice vectors are singular.
-        PeriodicGridWarning
-            When ``wrap==False`` and the fractional coordinates span an interval
-            wider than 1.1.
         """
         if realvecs is None:
             realvecs = np.zeros((0,) + points.shape[1:])
