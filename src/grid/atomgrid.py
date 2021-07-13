@@ -58,12 +58,6 @@ class AtomGrid(Grid):
             Whether to rotate the Lebedev spherical grids at each radial grid point.
             If given an integer, it is used as a seed for generating random rotation matrices.
 
-        Raises
-        ------
-        TypeError
-            ``rgrid`` needs to be an instance of ``Grid`` class.
-        ValueError
-            Length of ``degs`` should be one more than ``r_sectors``.
         """
         # check stage, if center is None, set to (0., 0., 0.)
         center = (
@@ -298,12 +292,14 @@ class AtomGrid(Grid):
     def _input_type_check(rgrid, center):
         """Check input type.
 
-        Raises
-        ------
-        TypeError
-            ``rgrid`` needs to be an instance of ``RadialGrid`` class.
-        ValueError
-            ``center`` needs to be an instance of ``np.ndarray`` class.
+        Parameters
+        ----------
+        rgrid : OneDGrid
+            The (1-dimensional) radial grid representing the radius of spherical grids.
+        center : np.ndarray(3,), optional
+            center of the spherical coordinates
+            atomic center will be used if `center` is not given
+
         """
         if not isinstance(rgrid, OneDGrid):
             raise TypeError(
@@ -340,10 +336,6 @@ class AtomGrid(Grid):
         np.ndarray
             a numpy array of L degree value for each radial point
 
-        Raises
-        ------
-        ValueError
-            Description
         """
         r_sectors = np.array(r_sectors)
         degs = np.array(degs)

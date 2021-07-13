@@ -217,10 +217,6 @@ class MolGrid(Grid):
             If store=False, the LocalGrid containing points and weights of AtomGrid
             is returned.
 
-        Raises
-        ------
-        ValueError
-            The input index is negative
         """
         if index < 0:
             raise ValueError(f"index should be non-negative, got {index}")
