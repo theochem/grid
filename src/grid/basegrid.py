@@ -244,14 +244,14 @@ class OneDGrid(Grid):
                     f"domain should be an ascending tuple of length 2. domain={domain}"
                 )
             min_p = np.min(points)
-            if domain[0] - 1e-7 >= min_p:
+            if domain[0] - 1e-7 > min_p:
                 raise ValueError(
-                    f"point coordinates should not be below domain! {min_p < domain[0]}"
+                    f"point coordinates should not be below domain! {min_p} < {domain[0]}"
                 )
             max_p = np.max(points)
-            if domain[1] + 1e-7 <= max_p:
+            if domain[1] + 1e-7 < max_p:
                 raise ValueError(
-                    f"point coordinates should not be above domain! {domain[1] < max_p}"
+                    f"point coordinates should not be above domain! {domain[1]} < {max_p}"
                 )
         super().__init__(points, weights)
         self._domain = domain
