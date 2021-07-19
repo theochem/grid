@@ -80,10 +80,6 @@ class BaseTransform(ABC):
         OneDGrid
             Transformed 1D grid spanning a different domain.
 
-        Raises
-        ------
-        TypeError
-            Input is not a proper OneDGrid instance.
         """
         if not isinstance(oned_grid, OneDGrid):
             raise TypeError(f"Input grid is not OneDGrid, got {type(oned_grid)}")
@@ -181,10 +177,6 @@ class BeckeTF(BaseTransform):
         float
             The optimal value of scale factor R
 
-        Raises
-        ------
-        ValueError
-            rmin needs to be smaller than atomic radius to compute R
         """
         if rmin > radius:
             raise ValueError(
@@ -416,10 +408,6 @@ class InverseTF(BaseTransform):
         transform : BaseTransform
             Basic one dimension transformation instance
 
-        Raises
-        ------
-        TypeError
-            The input need to be a BaseTransform instance
         """
         if not isinstance(transform, BaseTransform):
             raise TypeError(
@@ -476,10 +464,6 @@ class InverseTF(BaseTransform):
         np.ndarray(n,)
             1st order derivative array
 
-        Raises
-        ------
-        ZeroDivisionError
-            Raised when there is 0 value in returned derivative values
         """
         d1 = self._tfm.deriv(r)
         if np.any(d1 == 0):
@@ -599,10 +583,6 @@ class LinearRTransform(BaseTransform):
         rmax : float
             Define the upper end of the linear transform
 
-        Raises
-        ------
-        ValueError
-            Value of rmin is larger than rmax
         """
         if rmin >= rmax:
             raise ValueError(
@@ -679,11 +659,6 @@ class ExpRTransform(BaseTransform):
         rmax : float
             Max value for transformed points
 
-
-        Raises
-        ------
-        ValueError
-            If rmin larger than rmax or one of them is negative.
         """
         if rmin < 0 or rmax < 0:
             raise ValueError(
@@ -765,10 +740,6 @@ class PowerRTransform(BaseTransform):
         rmax : float
             Max value for transformed points
 
-        Raises
-        ------
-        ValueError
-            value of rmin larger than rmax or one of them is negative
         """
         if rmin >= rmax:
             raise ValueError("rmin must be smaller rmax.")
@@ -852,10 +823,6 @@ class HyperbolicRTransform(BaseTransform):
         b : float
             parameter b to determine hyperbolic function
 
-        Raises
-        ------
-        ValueError
-            Either a or b is negative.
         """
         if a <= 0:
             raise ValueError(f"a must be strctly positive.\n  a: {a}")

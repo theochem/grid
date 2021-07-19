@@ -59,10 +59,6 @@ class ODE:
             scipy.interpolate.PPoly instance for interpolating new values
             and its derivative
 
-        Raises
-        ------
-        NotImplementedError
-            ODE over 3rd order is not supported at this stage.
         """
         order = len(coeffs) - 1
         if len(bd_cond) != order:

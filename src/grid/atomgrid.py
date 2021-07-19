@@ -58,12 +58,6 @@ class AtomGrid(Grid):
             Whether to rotate the Lebedev spherical grids at each radial grid point.
             If given an integer, it is used as a seed for generating random rotation matrices.
 
-        Raises
-        ------
-        TypeError
-            ``rgrid`` needs to be an instance of ``Grid`` class.
-        ValueError
-            Length of ``degs`` should be one more than ``r_sectors``.
         """
         # check stage, if center is None, set to (0., 0., 0.)
         center = (
@@ -106,13 +100,13 @@ class AtomGrid(Grid):
         self._size = self._weights.size
 
     @classmethod
-    def from_predefined(cls, rgrid, atnum, preset, *_, center=None, rotate=False):
+    def from_preset(cls, rgrid, atnum, preset, *_, center=None, rotate=False):
         """High level to construct prefined atomic grid.
 
         Examples
         --------
         # construct an atomic grid for H with fine grid setting
-        >>> atgrid = AtomGrid.from_predefined(rgrid, 1, "fine")
+        >>> atgrid = AtomGrid.from_preset(rgrid, 1, "fine")
 
         Parameters
         ----------
@@ -298,12 +292,14 @@ class AtomGrid(Grid):
     def _input_type_check(rgrid, center):
         """Check input type.
 
-        Raises
-        ------
-        TypeError
-            ``rgrid`` needs to be an instance of ``RadialGrid`` class.
-        ValueError
-            ``center`` needs to be an instance of ``np.ndarray`` class.
+        Parameters
+        ----------
+        rgrid : OneDGrid
+            The (1-dimensional) radial grid representing the radius of spherical grids.
+        center : np.ndarray(3,), optional
+            center of the spherical coordinates
+            atomic center will be used if `center` is not given
+
         """
         if not isinstance(rgrid, OneDGrid):
             raise TypeError(
@@ -321,7 +317,7 @@ class AtomGrid(Grid):
             raise ValueError(f"Center should be of shape (3,), got {center.shape}.")
 
     @staticmethod
-    def _generate_degree_from_radius(rgrid, radius, r_sectors, degs):
+    def _generate_degree_from_radius(rgrid, radius, r_sectors, degrees):
         """Generate proper degrees for radius.
 
         Parameters
@@ -332,7 +328,7 @@ class AtomGrid(Grid):
             radius of interested atom
         r_sectors : list or np.ndarray
             a list of r_sectors number
-        degs : list or np.ndarray
+        degrees : list or np.ndarray
             a list of degs for each radius section
 
         Returns
@@ -340,28 +336,22 @@ class AtomGrid(Grid):
         np.ndarray
             a numpy array of L degree value for each radial point
 
-        Raises
-        ------
-        ValueError
-            Description
         """
         r_sectors = np.array(r_sectors)
-        degs = np.array(degs)
-        if len(degs) == 0:
+        degrees = np.array(degrees)
+        if len(degrees) == 0:
             raise ValueError("rad_list can't be empty.")
-        if len(degs) - len(r_sectors) != 1:
+        if len(degrees) - len(r_sectors) != 1:
             raise ValueError("degs should have only one more element than r_sectors.")
         # match given degrees to the supported (i.e., pre-computed) Lebedev degrees
         matched_deg = np.array(
-            [AngularGrid._get_lebedev_size_and_degree(degree=d)[0] for d in degs]
+            [AngularGrid._get_lebedev_size_and_degree(degree=d)[0] for d in degrees]
         )
-        rad_degs = AtomGrid._find_l_for_rad_list(
-            rgrid.points, radius * r_sectors, matched_deg
-        )
+        rad_degs = AtomGrid._find_l_for_rad_list(rgrid.points, radius * r_sectors, matched_deg)
         return rad_degs
 
     @staticmethod
-    def _find_l_for_rad_list(radial_arrays, radius_list, degs):
+    def _find_l_for_rad_list(radial_arrays, radius_list, degrees):
         """Find proper magic L value for radial points at different radius range.
 
         use broadcast to compare each point with r_sectors then sum over all
@@ -373,7 +363,7 @@ class AtomGrid(Grid):
             radial grid points
         radius_list : np.ndarray(K,)
             an array of r_sectors * radius
-        degs : np.ndarray(K+1,),
+        degrees : np.ndarray(K+1,),
             an array of degs for different r_sectors
 
         Returns
@@ -381,7 +371,7 @@ class AtomGrid(Grid):
         np.ndarray(N,), an array of magic numbers for each radial points
         """
         position = np.sum(radial_arrays[:, None] > radius_list[None, :], axis=1)
-        return degs[position]
+        return degrees[position]
 
     @staticmethod
     def _generate_atomic_grid(rgrid, degrees, rotate=False):

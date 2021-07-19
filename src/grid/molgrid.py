@@ -29,17 +29,17 @@ import numpy as np
 class MolGrid(Grid):
     """Molecular Grid for integration."""
 
-    def __init__(self, atgrids, aim_weights, atnums, store=False):
+    def __init__(self, atnums, atgrids, aim_weights, store=False):
         r"""Initialize class.
 
         Parameters
         ----------
+        atnums : np.ndarray(M, 3)
+            Atomic number of :math:`M` atoms in molecule.
         atgrids : list[AtomGrid]
             list of atomic grid
         aim_weights : Callable or np.ndarray(K,)
             Atoms in molecule weights.
-        atnums : np.ndarray(M, 3)
-            Atomic number of :math:`M` atoms in molecule.
 
         """
         # initialize these attributes
@@ -77,18 +77,18 @@ class MolGrid(Grid):
         super().__init__(self.points, self._atweights * self._aim_weights)
 
     @classmethod
-    def make_grid(
+    def from_preset(
         cls,
         atnums,
         atcoords,
         rgrid,
-        grid_type,
+        preset,
         aim_weights,
         *_,
         rotate=37,
         store=False,
     ):
-        """Contruct molecular grid wih preset parameters.
+        """Construct molecular grid wih preset parameters.
 
         Parameters
         ----------
@@ -98,7 +98,7 @@ class MolGrid(Grid):
             atomic coordinates of atoms
         rgrid : OneDGrid
             one dimension grid  to construct spherical grid
-        grid_type : str
+        preset : str
             preset grid accuracy scheme, support "coarse", "medium", "fine",
             "veryfine", "ultrafine", "insane"
         aim_weights : Callable or np.ndarray(K,)
@@ -134,33 +134,32 @@ class MolGrid(Grid):
                     f"not supported radial grid input; got input type: {type(rgrid)}"
                 )
             # get proper grid type
-            if isinstance(grid_type, str):
-                gd_type = grid_type
-            elif isinstance(grid_type, list):
-                gd_type = grid_type[i]
-            elif isinstance(grid_type, dict):
-                gd_type = grid_type[atnums[i]]
+            if isinstance(preset, str):
+                gd_type = preset
+            elif isinstance(preset, list):
+                gd_type = preset[i]
+            elif isinstance(preset, dict):
+                gd_type = preset[atnums[i]]
             else:
                 raise TypeError(
-                    "not supported grid_type input\n"
-                    f"got input type: {type(grid_type)}"
+                    f"Not supported preset type; got preset {preset} with type {type(preset)}"
                 )
-            at_grid = AtomGrid.from_predefined(
+            at_grid = AtomGrid.from_preset(
                 rad, atnums[i], gd_type, center=atcoords[i], rotate=rotate
             )
             atomic_grids.append(at_grid)
-        return cls(atomic_grids, aim_weights, atnums, store=store)
+        return cls(atnums, atomic_grids, aim_weights, store=store)
 
     @classmethod
     def horton_molgrid(
         cls,
-        atcoords,
         atnums,
-        radial,
-        points_of_angular,
+        atcoords,
+        rgrid,
+        sizes,
         aim_weights,
-        store=False,
         rotate=37,
+        store=False,
     ):
         """Initialize a MolGrid instance with Horton Style input.
 
@@ -169,15 +168,17 @@ class MolGrid(Grid):
         >>> onedg = HortonLinear(100) # number of points, oned grid before TF.
         >>> rgrid = ExpRTransform(1e-5, 2e1).generate_radial(onedg) # radial grid
         >>> becke = BeckeWeights(order=3)
-        >>> molgrid = MolGrid.horton_molgrid(atcoords, atnums,rgrid,110,becke)
+        >>> molgrid = MolGrid.horton_molgrid(atnums, atcoords, rgrid, 110, becke)
 
         Parameters
         ----------
-        atcoords : np.ndarray(N, 3)
-            Cartesian coordinates for each atoms
         atnums : np.ndarray(M, 3)
             Atomic number of :math:`M` atoms in molecule.
-        points_of_angular : int
+        atcoords : np.ndarray(N, 3)
+            Cartesian coordinates for each atoms
+        rgrid : OneDGrid
+            one dimension grid  to construct spherical grid
+        sizes : int
             Num of points on each shell of angular grid
         aim_weights : Callable or np.ndarray(K,)
             Atoms in molecule weights.
@@ -195,11 +196,9 @@ class MolGrid(Grid):
         at_grids = []
         for i in range(len(atcoords)):
             at_grids.append(
-                AtomGrid(
-                    radial, sizes=[points_of_angular], center=atcoords[i], rotate=rotate
-                )
+                AtomGrid(rgrid, sizes=[sizes], center=atcoords[i], rotate=rotate)
             )
-        return cls(at_grids, aim_weights, atnums, store=store)
+        return cls(atnums, at_grids, aim_weights, store=store)
 
     def get_atomic_grid(self, index):
         r"""Get atomic grid corresponding to the given atomic index.
@@ -217,10 +216,6 @@ class MolGrid(Grid):
             If store=False, the LocalGrid containing points and weights of AtomGrid
             is returned.
 
-        Raises
-        ------
-        ValueError
-            The input index is negative
         """
         if index < 0:
             raise ValueError(f"index should be non-negative, got {index}")
