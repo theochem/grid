@@ -162,7 +162,8 @@ class BeckeWeights:
             [
                 self._radii[num]
                 if not np.isnan(self._radii[num])
-                else self._radii[num - 1]
+                else np.nan_to_num(self._radii[num - 1])
+                or np.nan_to_num(self._radii[num - 2])
                 for num in atnums
             ]
         )
@@ -226,7 +227,8 @@ class BeckeWeights:
             [
                 self._radii[num]
                 if not np.isnan(self._radii[num])
-                else self._radii[num - 1]
+                else np.nan_to_num(self._radii[num - 1])
+                or np.nan_to_num(self._radii[num - 2])
                 for num in atnums
             ]
         )
