@@ -19,6 +19,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
 """Grid Module."""
+# flake8: noqa
 
 
 from grid.atomgrid import *

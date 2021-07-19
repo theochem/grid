@@ -347,7 +347,9 @@ class AtomGrid(Grid):
         matched_deg = np.array(
             [AngularGrid._get_lebedev_size_and_degree(degree=d)[0] for d in degrees]
         )
-        rad_degs = AtomGrid._find_l_for_rad_list(rgrid.points, radius * r_sectors, matched_deg)
+        rad_degs = AtomGrid._find_l_for_rad_list(
+            rgrid.points, radius * r_sectors, matched_deg
+        )
         return rad_degs
 
     @staticmethod
