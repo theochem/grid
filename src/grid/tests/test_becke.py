@@ -131,8 +131,9 @@ class TestBecke(TestCase):
 
     def test_noble_gas_radius(self):
         """Test np.nan value to be handled properly."""
-        for i in [2, 10, 18, 36, 54, 85]:
-            nums = np.array([i, i - 1])
+        noble_list = [2, 10, 18, 36, 54, 85, 86]
+        for i in noble_list:
+            nums = np.array([i, i - 1]) if i != 86 else np.array([i, i - 2])
             centers = np.array([[0.5, 0.0, 0.0], [-0.5, 0.0, 0.0]])
             pts = np.zeros((10, 3), dtype=float)
             pts[:, 1:] += np.random.rand(10, 2)
