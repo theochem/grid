@@ -158,10 +158,11 @@ class BeckeWeights:
             # mu_p_n_n shape (#points, #uncs, #uncs)
             mu_p_n_n = n_n_p.transpose([2, 0, 1]) / atomic_dist
         del n_n_p
+        # if the radii of an atom is np.nan, use the radii with 1 less atomic number
         radii = np.array(
             [
-                self._radii[num]
-                if not np.isnan(self._radii[num])
+                self._radii[num] if not np.isnan(self._radii[num])
+                # if n-1 radii is nan, use the n-2 instead
                 else np.nan_to_num(self._radii[num - 1])
                 or np.nan_to_num(self._radii[num - 2])
                 for num in atnums
@@ -223,10 +224,11 @@ class BeckeWeights:
             # mu_p_n_n shape (N, M, M)
             mu_p_n_n = n_n_p.transpose([2, 0, 1]) / atomic_dist
         del n_n_p
+        # if the radii of an atom is np.nan, use the radii with 1 less atomic number
         radii = np.array(
             [
-                self._radii[num]
-                if not np.isnan(self._radii[num])
+                self._radii[num] if not np.isnan(self._radii[num])
+                # if n-1 radii is nan, use the n-2 instead
                 else np.nan_to_num(self._radii[num - 1])
                 or np.nan_to_num(self._radii[num - 2])
                 for num in atnums
