@@ -14,7 +14,7 @@ class TestTensor1DGrids(TestCase):
     def test_point_and_weights_are_correct(self):
         r"""Test that the points and weights are correctly computed."""
         oned = GaussLaguerre(10)
-        cubic = Tensor1DGrids([oned, oned, oned])
+        cubic = Tensor1DGrids(oned, oned, oned)
 
         index = 0  # Index for cubic points.
         for i in range(oned.size):
@@ -29,7 +29,7 @@ class TestTensor1DGrids(TestCase):
     def test_interpolation_of_gaussian(self):
         r"""Test interpolation of a Gaussian function."""
         oned = MidPoint(50)
-        cubic = Tensor1DGrids([oned, oned, oned])
+        cubic = Tensor1DGrids(oned, oned, oned)
 
         def gaussian(points):
             return np.exp(-3 * np.linalg.norm(points, axis=1)**2.0)
@@ -44,7 +44,7 @@ class TestTensor1DGrids(TestCase):
     def test_interpolation_of_various_derivative_polynomial(self):
         r"""Test interpolation of the derivative of a quadraticpolynomial function."""
         oned = MidPoint(200)
-        cubic = Tensor1DGrids([oned, oned, oned])
+        cubic = Tensor1DGrids(oned, oned, oned)
 
         def quadratic_polynomial(points):
             return np.sum(points**4, axis=1)
@@ -85,7 +85,7 @@ class TestTensor1DGrids(TestCase):
     def test_interpolation_of_various_derivative_gaussian_using_logarithm(self):
         r"""Test interpolation of the derivatives of a Gaussian function."""
         oned = MidPoint(150)
-        cubic = Tensor1DGrids([oned, oned, oned])
+        cubic = Tensor1DGrids(oned, oned, oned)
 
         def gaussian(points):
             return np.exp(-3 * np.linalg.norm(points, axis=1)**2.0)
@@ -120,7 +120,7 @@ class TestTensor1DGrids(TestCase):
     def test_integration_of_gaussian(self):
         r"""Test integration of a rapidly-decreasing Gaussian."""
         oned = MidPoint(250)
-        cubic = Tensor1DGrids([oned, oned, oned])
+        cubic = Tensor1DGrids(oned, oned, oned)
 
         def gaussian(points):
             return np.exp(-6 * np.linalg.norm(points, axis=1)**2.0)
@@ -133,7 +133,7 @@ class TestTensor1DGrids(TestCase):
     def test_moving_coordinates_to_index_and_back(self):
         r"""Test moving from coordinates and index and back."""
         oned = MidPoint(3)
-        cubic = Tensor1DGrids([oned, oned, oned])
+        cubic = Tensor1DGrids(oned, oned, oned)
 
         # Convert index to coordinate.
         index = 3

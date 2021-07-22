@@ -235,28 +235,25 @@ class _CubicGrid(Grid):
 
 
 class Tensor1DGrids(_CubicGrid):
-    def __init__(self, oned_grids):
-        if not isinstance(oned_grids, list):
-            raise TypeError("oned_grid should be of type list.")
-        if not np.all([isinstance(grid, OneDGrid) for grid in oned_grids]):
-            raise TypeError("Grid in oned_grids should be of type `OneDGrid`.")
-        if not len(oned_grids) == 3:
-            raise ValueError(
-                "There should be three One-Dimensional grids in `oned_grids`."
-            )
+    def __init__(self, oned_x, oned_y, oned_z):
+        if not isinstance(oned_x, OneDGrid):
+            raise TypeError("Argument 'oned_x' ({0}) should be of type `OneDGrid`.".
+                            format(type(oned_x)))
+        if not isinstance(oned_y, OneDGrid):
+            raise TypeError("Argument 'oned_y' ({0}) should be of type 'OneDGrid'".
+                            format(type(oned_y)))
+        if not isinstance(oned_z, OneDGrid):
+            raise TypeError("Argument 'oned_z' ({0}) should be of type 'OneDGrid'".
+                            format(type(oned_z)))
 
-        shape = tuple([grid.size for grid in oned_grids])
-        self._dim = len(oned_grids)
+        shape = (oned_x.size, oned_y.size, oned_z.shape)
 
         # Construct 3D set of points
         points = np.vstack(
-            np.meshgrid(
-                oned_grids[0].points, oned_grids[1].points, oned_grids[2].points,
-                indexing="ij",
-            )
+            np.meshgrid(oned_x.points, oned_y.points, oned_z.points,indexing="ij",)
         ).reshape(3,-1).T
         weights = np.kron(
-            np.kron(oned_grids[0].weights, oned_grids[1].weights), oned_grids[2].weights
+            np.kron(oned_x.weights, oned_y.weights), oned_z.weights
         )
         super().__init__(points, weights, shape)
 
