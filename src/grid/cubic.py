@@ -461,11 +461,19 @@ class UniformCubicGrid(_CubicGrid):
             Index of the point in `points` closest to the grid point.
 
         """
+        # I'm not entirely certain that this method will work with non-orthogonal axes.
+        #    Added this just in case, cause I know it will work with orthogonal axes.
         if not np.count_nonzero(self.axes - np.diag(np.diagonal(self.axes))) == 0:
             raise ValueError("Finding closest point only works when the 'axes' attribute"
                              "is a diagonal matrix.")
 
-        coord = np.array([(point[i] - self.origin[i]) / self.step_sizes[i] for i in range(3)])
+        # Calculate step-size of the cube.
+        step_size_x = np.linalg.norm(self.axes[0] - self.origin)
+        step_size_y = np.linalg.norm(self.axes[1] - self.origin)
+        step_size_z = np.linalg.norm(self.axes[2] - self.origin)
+        step_sizes = np.array([step_size_x, step_size_y, step_size_z])
+
+        coord = np.array([(point[i] - self.origin[i]) / step_sizes[i] for i in range(3)])
 
         if which == "origin":
             # Round to smallest integer.
@@ -474,9 +482,9 @@ class UniformCubicGrid(_CubicGrid):
             # Round to nearest integer.
             coord = np.rint(coord)
         else:
-            raise TypeError("`which` parameter was not the standard options.")
+            raise ValueError("`which` parameter was not the standard options.")
 
         # Convert indices (i, j, k) into index.
-        index = self.shape[2] * self.shape[1] * coord[0] + self.shape[2] * coord[1] + coord[2]
+        index = self.coordinates_to_index(coord)
 
-        return int(index)
+        return index
