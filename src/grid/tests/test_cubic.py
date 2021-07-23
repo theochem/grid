@@ -2,7 +2,7 @@ r"""Cubic Grid Testing."""
 
 from unittest import TestCase
 
-from grid.cubic import UniformCubicGrid, Tensor1DGrids
+from grid.cubic import Tensor1DGrids, UniformCubicGrid
 from grid.onedgrid import GaussLaguerre, MidPoint
 
 import numpy as np
@@ -11,6 +11,7 @@ from numpy.testing import assert_allclose
 
 class TestTensor1DGrids(TestCase):
     r"""Test Tensor Product of 1D Grids."""
+
     def test_point_and_weights_are_correct(self):
         r"""Test that the points and weights are correctly computed."""
         oned = GaussLaguerre(10)
@@ -20,7 +21,9 @@ class TestTensor1DGrids(TestCase):
         for i in range(oned.size):
             for j in range(oned.size):
                 for k in range(oned.size):
-                    actual_pt = np.array([oned.points[i], oned.points[j], oned.points[k]])
+                    actual_pt = np.array(
+                        [oned.points[i], oned.points[j], oned.points[k]]
+                    )
                     assert_allclose(actual_pt, cubic.points[index, :])
                     actual_weight = oned.weights[i] * oned.weights[j] * oned.weights[k]
                     assert_allclose(actual_weight, cubic.weights[index])
@@ -32,7 +35,7 @@ class TestTensor1DGrids(TestCase):
         cubic = Tensor1DGrids(oned, oned, oned)
 
         def gaussian(points):
-            return np.exp(-3 * np.linalg.norm(points, axis=1)**2.0)
+            return np.exp(-3 * np.linalg.norm(points, axis=1) ** 2.0)
 
         gaussian_pts = gaussian(cubic.points)
         num_pts = 5
@@ -47,39 +50,56 @@ class TestTensor1DGrids(TestCase):
         cubic = Tensor1DGrids(oned, oned, oned)
 
         def quadratic_polynomial(points):
-            return np.sum(points**4, axis=1)
+            return np.sum(points ** 4, axis=1)
 
         def derivative_wrt_one_var(point, i_var_deriv):
-            if i_var_deriv == 0: return 4 * point[0]**3
-            if i_var_deriv == 1: return 4 * point[1]**3
-            if i_var_deriv == 2: return 4 * point[2]**3
+            if i_var_deriv == 0:
+                return 4 * point[0] ** 3
+            if i_var_deriv == 1:
+                return 4 * point[1] ** 3
+            if i_var_deriv == 2:
+                return 4 * point[2] ** 3
 
         def derivative_second_x(point):
-            return 4 * 3 * point[0]**2
+            return 4 * 3 * point[0] ** 2
 
         # Evaluate function over the grid
         gaussian_pts = quadratic_polynomial(cubic.points)
         pt = np.random.uniform(-1, 1, (3,))
         # Test taking derivative in x-direction
-        interpolated = cubic.interpolate_function(pt, gaussian_pts, use_log=False, nu_x=1)
-        assert_allclose(interpolated, derivative_wrt_one_var(pt, 0), rtol=1e-4, atol=1e-4)
+        interpolated = cubic.interpolate_function(
+            pt, gaussian_pts, use_log=False, nu_x=1
+        )
+        assert_allclose(
+            interpolated, derivative_wrt_one_var(pt, 0), rtol=1e-4, atol=1e-4
+        )
 
         # Test taking derivative in y-direction
-        interpolated = cubic.interpolate_function(pt, gaussian_pts, use_log=False, nu_y=1)
-        assert_allclose(interpolated, derivative_wrt_one_var(pt, 1), rtol=1e-4, atol=1e-4)
+        interpolated = cubic.interpolate_function(
+            pt, gaussian_pts, use_log=False, nu_y=1
+        )
+        assert_allclose(
+            interpolated, derivative_wrt_one_var(pt, 1), rtol=1e-4, atol=1e-4
+        )
 
         # Test taking derivative in z-direction
-        interpolated = cubic.interpolate_function(pt, gaussian_pts, use_log=False, nu_z=1)
-        assert_allclose(interpolated, derivative_wrt_one_var(pt, 2), rtol=1e-4, atol=1e-4)
+        interpolated = cubic.interpolate_function(
+            pt, gaussian_pts, use_log=False, nu_z=1
+        )
+        assert_allclose(
+            interpolated, derivative_wrt_one_var(pt, 2), rtol=1e-4, atol=1e-4
+        )
 
         # Test taking derivative in x,y,z-direction
-        interpolated = cubic.interpolate_function(pt, gaussian_pts, use_log=False,
-                                                  nu_x=1, nu_y=1, nu_z=1)
+        interpolated = cubic.interpolate_function(
+            pt, gaussian_pts, use_log=False, nu_x=1, nu_y=1, nu_z=1
+        )
         assert np.abs(interpolated) < 1e-8
 
         # Test taking second-derivative in x-direction
-        interpolated = cubic.interpolate_function(pt, gaussian_pts, use_log=False,
-                                                  nu_x=2, nu_y=0, nu_z=0)
+        interpolated = cubic.interpolate_function(
+            pt, gaussian_pts, use_log=False, nu_x=2, nu_y=0, nu_z=0
+        )
         assert_allclose(interpolated, derivative_second_x(pt), rtol=1e-3)
 
     def test_interpolation_of_various_derivative_gaussian_using_logarithm(self):
@@ -88,29 +108,39 @@ class TestTensor1DGrids(TestCase):
         cubic = Tensor1DGrids(oned, oned, oned)
 
         def gaussian(points):
-            return np.exp(-3 * np.linalg.norm(points, axis=1)**2.0)
+            return np.exp(-3 * np.linalg.norm(points, axis=1) ** 2.0)
 
         def derivative_wrt_one_var(point, i_var_deriv):
-            return np.exp(-3 * np.linalg.norm(point)**2.0) * point[i_var_deriv] * (-3 * 2.0)
+            return (
+                np.exp(-3 * np.linalg.norm(point) ** 2.0)
+                * point[i_var_deriv]
+                * (-3 * 2.0)
+            )
 
         def derivative_second_x(point):
-            return np.exp(-3 * np.linalg.norm(point)**2.0) * point[0]**2.0 * (-3 * 2.0)**2.0 + \
-                   np.exp(-3 * np.linalg.norm(point) ** 2.0) * (-3 * 2.0)
+            return np.exp(-3 * np.linalg.norm(point) ** 2.0) * point[0] ** 2.0 * (
+                -3 * 2.0
+            ) ** 2.0 + np.exp(-3 * np.linalg.norm(point) ** 2.0) * (-3 * 2.0)
 
         gaussian_pts = gaussian(cubic.points)
 
         pt = np.random.uniform(-0.5, 0.5, (3,))
         # Test taking derivative in x-direction
-        interpolated = cubic.interpolate_function(pt, gaussian_pts, use_log=True, nu_x=1)
+        interpolated = cubic.interpolate_function(
+            pt, gaussian_pts, use_log=True, nu_x=1
+        )
         assert_allclose(interpolated, derivative_wrt_one_var(pt, 0), rtol=1e-4)
 
         # Test taking derivative in z-direction
-        interpolated = cubic.interpolate_function(pt, gaussian_pts, use_log=True, nu_z=1)
+        interpolated = cubic.interpolate_function(
+            pt, gaussian_pts, use_log=True, nu_z=1
+        )
         assert_allclose(interpolated, derivative_wrt_one_var(pt, 2), rtol=1e-4)
 
         # Test taking second-derivative in x-direction
-        interpolated = cubic.interpolate_function(pt, gaussian_pts, use_log=True,
-                                                  nu_x=2, nu_y=0, nu_z=0)
+        interpolated = cubic.interpolate_function(
+            pt, gaussian_pts, use_log=True, nu_x=2, nu_y=0, nu_z=0
+        )
         assert_allclose(interpolated, derivative_second_x(pt), rtol=1e-4)
 
         # Test raises error
@@ -123,10 +153,10 @@ class TestTensor1DGrids(TestCase):
         cubic = Tensor1DGrids(oned, oned, oned)
 
         def gaussian(points):
-            return np.exp(-6 * np.linalg.norm(points, axis=1)**2.0)
+            return np.exp(-6 * np.linalg.norm(points, axis=1) ** 2.0)
 
         gaussian_pts = gaussian(cubic.points)
-        desired = np.sqrt(np.pi / 6)**3
+        desired = np.sqrt(np.pi / 6) ** 3
         actual = cubic.integrate(gaussian_pts)
         assert_allclose(desired, actual, atol=1e-3)
 
@@ -147,92 +177,127 @@ class TestTensor1DGrids(TestCase):
 
         # Convert back
         index = 9
-        assert_allclose(index, cubic.coordinates_to_index(cubic.index_to_coordinates(index)))
+        assert_allclose(
+            index, cubic.coordinates_to_index(cubic.index_to_coordinates(index))
+        )
 
 
 class TestUniformCubicGrid(TestCase):
     r"""Test Uniform Cubic Grid Class."""
+
     def test_fourier1_weights_are_correct(self):
         r"""Test Fourier1 weights are correct against brute force."""
-        origin = np.array([0., 0., 0.])
+        origin = np.array([0.0, 0.0, 0.0])
         axes = np.eye(3)
         shape = np.array([5, 6, 7], dtype=np.int)
-        volume = 5 * 6 * 7  # Volume of cube centered at zero, moves in one step at a time (axes)
+        volume = (
+            5 * 6 * 7
+        )  # Volume of cube centered at zero, moves in one step at a time (axes)
         uniform = UniformCubicGrid(origin, axes, shape=shape, weight_type="Fourier1")
 
-        index = 0   # Index to iterate through uniform.weights.
+        index = 0  # Index to iterate through uniform.weights.
         for j in range(1, shape[0] + 1):
             grid_x = np.arange(1, shape[0] + 1)
             desired_x = np.sum(
-                np.sin(j * np.pi * grid_x / (shape[0] + 1)) * (1 - np.cos(grid_x * np.pi)) / (grid_x * np.pi)
+                np.sin(j * np.pi * grid_x / (shape[0] + 1))
+                * (1 - np.cos(grid_x * np.pi))
+                / (grid_x * np.pi)
             )
             for k in range(1, shape[1] + 1):
 
                 grid_y = np.arange(1, shape[1] + 1)
                 desired_y = np.sum(
-                    np.sin(k * np.pi * grid_y / (shape[1] + 1)) * (
-                                1 - np.cos(grid_y * np.pi)) / (grid_y * np.pi)
+                    np.sin(k * np.pi * grid_y / (shape[1] + 1))
+                    * (1 - np.cos(grid_y * np.pi))
+                    / (grid_y * np.pi)
                 )
-                for l in range(1, shape[2] + 1):
+                for m in range(1, shape[2] + 1):
                     grid_z = np.arange(1, shape[2] + 1)
                     desired_z = np.sum(
-                        np.sin(l * np.pi * grid_z / (shape[2] + 1)) * (
-                                1 - np.cos(grid_z * np.pi)) / (grid_z * np.pi)
+                        np.sin(m * np.pi * grid_z / (shape[2] + 1))
+                        * (1 - np.cos(grid_z * np.pi))
+                        / (grid_z * np.pi)
                     )
-                    desired = 8 * desired_x * desired_y * desired_z * volume / (6 * 7 * 8)
+                    desired = (
+                        8 * desired_x * desired_y * desired_z * volume / (6 * 7 * 8)
+                    )
                     assert_allclose(uniform.weights[index], desired)
                     index += 1
 
     def test_fourier2_weights_are_correct(self):
         r"""Test that the Fourier2 weights are correct against brute force."""
-        origin = np.array([0., 0., 0.])
+        origin = np.array([0.0, 0.0, 0.0])
         axes = np.eye(3)
         shape = np.array([5, 6, 7], dtype=np.int)
-        volume = 5 * 6 * 7  # Volume of cube centered at zero, moves in one step at a time (axes)
-        volume *= (4. / 5.) * (5. / 6) * (6. / 7)  # Alternative volume is used here.
+        volume = (
+            5 * 6 * 7
+        )  # Volume of cube centered at zero, moves in one step at a time (axes)
+        volume *= (
+            (4.0 / 5.0) * (5.0 / 6) * (6.0 / 7)
+        )  # Alternative volume is used here.
         uniform = UniformCubicGrid(origin, axes, shape=shape, weight_type="Fourier2")
         index = 0  # Index to iterate through uniform.weights.
         for j in range(1, shape[0] + 1):
             # Calculate weight in the x-direction
             grid_x = np.arange(1, shape[0])
-            desired_x = 2.0 * np.sin((j - 0.5) * np.pi) * np.sin(shape[0] * np.pi / 2)**2.0
-            desired_x /= (shape[0]**2.0 * np.pi)
-            desired_x += 4.0 * np.sum(
-                np.sin((2.0 * j - 1.) * grid_x * np.pi / shape[0]) *
-                np.sin(grid_x * np.pi / 2)**2.0 /
-                grid_x
-            ) / (shape[0] * np.pi)
+            desired_x = (
+                2.0 * np.sin((j - 0.5) * np.pi) * np.sin(shape[0] * np.pi / 2) ** 2.0
+            )
+            desired_x /= shape[0] ** 2.0 * np.pi
+            desired_x += (
+                4.0
+                * np.sum(
+                    np.sin((2.0 * j - 1.0) * grid_x * np.pi / shape[0])
+                    * np.sin(grid_x * np.pi / 2) ** 2.0
+                    / grid_x
+                )
+                / (shape[0] * np.pi)
+            )
             for k in range(1, shape[1] + 1):
                 # Calculate weight in the y-direction
                 grid_y = np.arange(1, shape[1])
-                desired_y = 2.0 * np.sin((k - 0.5) * np.pi) * np.sin(shape[1] * np.pi / 2) ** 2.0
-                desired_y /= (shape[1] ** 2.0 * np.pi)
-                desired_y += 4.0 * np.sum(
-                    np.sin((2.0 * k - 1.) * grid_y * np.pi / shape[1]) *
-                    np.sin(grid_y * np.pi / 2) ** 2.0 /
-                    grid_y
-                ) / (shape[1] * np.pi)
-                for l in range(1, shape[2] + 1):
+                desired_y = (
+                    2.0
+                    * np.sin((k - 0.5) * np.pi)
+                    * np.sin(shape[1] * np.pi / 2) ** 2.0
+                )
+                desired_y /= shape[1] ** 2.0 * np.pi
+                desired_y += (
+                    4.0
+                    * np.sum(
+                        np.sin((2.0 * k - 1.0) * grid_y * np.pi / shape[1])
+                        * np.sin(grid_y * np.pi / 2) ** 2.0
+                        / grid_y
+                    )
+                    / (shape[1] * np.pi)
+                )
+                for m in range(1, shape[2] + 1):
                     # Calculate weight in the z-direction
                     grid_z = np.arange(1, shape[2])
-                    desired_z = 2.0 * np.sin((l - 0.5) * np.pi) * np.sin(
-                        shape[2] * np.pi / 2) ** 2.0
-                    desired_z /= (shape[2] ** 2.0 * np.pi)
-                    desired_z += 4.0 * np.sum(
-                        np.sin((2.0 * l - 1.) * grid_z * np.pi / shape[2]) *
-                        np.sin(grid_z * np.pi / 2) ** 2.0 /
-                        grid_z
-                    ) / (shape[2] * np.pi)
+                    desired_z = (
+                        2.0
+                        * np.sin((m - 0.5) * np.pi)
+                        * np.sin(shape[2] * np.pi / 2) ** 2.0
+                    )
+                    desired_z /= shape[2] ** 2.0 * np.pi
+                    desired_z += (
+                        4.0
+                        * np.sum(
+                            np.sin((2.0 * m - 1.0) * grid_z * np.pi / shape[2])
+                            * np.sin(grid_z * np.pi / 2) ** 2.0
+                            / grid_z
+                        )
+                        / (shape[2] * np.pi)
+                    )
                     desired = desired_x * desired_y * desired_z * volume
                     assert_allclose(uniform.weights[index], desired)
                     index += 1
 
     def test_calculating_rectangle_weights_with_orthogonal_axes(self):
+        r"""Test calcualting rectangle weights with orthogonal axes."""
         # Set up the grid with easy examples but axes that form a cube.
-        origin = np.array([0., 0., 0.])
-        axes = np.array([[1., 0., 0.],
-                         [0., 1., 0.],
-                         [0., 0., 1.]])
+        origin = np.array([0.0, 0.0, 0.0])
+        axes = np.array([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]])
         shape = np.array([3, 3, 3], dtype=np.int)
         uniform = UniformCubicGrid(origin, axes, shape, weight_type="Rectangle")
         volume = 3 * 3 * 3  # Volume of cube.
@@ -240,11 +305,10 @@ class TestUniformCubicGrid(TestCase):
         assert_allclose(uniform.weights, desired_wghts)
 
     def test_calculating_trapezoid_weights_with_orthogonal_axes(self):
+        r"""Test calculating trapezoid weights with orthogonal axes."""
         # Set up the grid with easy examples but axes that form a cube.
-        origin = np.array([0., 0., 0.])
-        axes = np.array([[1., 0., 0.],
-                         [0., 1., 0.],
-                         [0., 0., 1.]])
+        origin = np.array([0.0, 0.0, 0.0])
+        axes = np.array([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]])
         shape = np.array([3, 3, 3], dtype=np.int)
         uniform = UniformCubicGrid(origin, axes, shape, weight_type="Trapezoid")
         volume = 3 * 3 * 3  # Volume of cube.
@@ -252,38 +316,53 @@ class TestUniformCubicGrid(TestCase):
         assert_allclose(uniform.weights, desired_wghts)
 
     def test_calculating_alternative_weights_with_orthogonal_axes(self):
+        r"""Test calcualting alternative weights with orthogonal axes."""
         # Set up the grid with easy examples but axes that form a cube.
-        origin = np.array([0., 0., 0.])
-        axes = np.array([[1., 0., 0.],
-                         [0., 1., 0.],
-                         [0., 0., 1.]])
+        origin = np.array([0.0, 0.0, 0.0])
+        axes = np.array([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]])
         shape = np.array([3, 3, 3], dtype=np.int)
         uniform = UniformCubicGrid(origin, axes, shape, weight_type="Alternative")
         volume = 3 * 3 * 3  # Volume of cube.
-        desired_wghts = np.ones(uniform.size) * volume * np.prod(shape - 1) / np.prod(shape)
+        desired_wghts = (
+            np.ones(uniform.size) * volume * np.prod(shape - 1) / np.prod(shape)
+        )
         assert_allclose(uniform.weights, desired_wghts)
 
     def test_integration_with_gaussian(self):
-        origin = np.array([-1., -1., -1.])
+        r"""Test integration against a Gaussian."""
+        origin = np.array([-1.0, -1.0, -1.0])
         axes = np.eye(3) * 0.01
         shape = np.array([250, 250, 250], dtype=np.int)
-        uniform = UniformCubicGrid(origin, axes, shape, weight_type="Rectangle")
 
         def gaussian(points):
-            return np.exp(-6 * np.linalg.norm(points, axis=1) ** 2.0)
+            return np.exp(-5 * np.linalg.norm(points, axis=1) ** 2.0)
 
+        # Test with rectangle weights.
+        uniform = UniformCubicGrid(origin, axes, shape, weight_type="Rectangle")
         gaussian_pts = gaussian(uniform.points)
-        desired = np.sqrt(np.pi / 6) ** 3
+        desired = np.sqrt(np.pi / 5) ** 3
         actual = uniform.integrate(gaussian_pts)
-        assert_allclose(desired, actual, atol=1e-3)
+        assert_allclose(desired, actual, atol=1e-2)
+
+        # Test with Trapezoid weights.
+        uniform = UniformCubicGrid(origin, axes, shape, weight_type="Trapezoid")
+        gaussian_pts = gaussian(uniform.points)
+        desired = np.sqrt(np.pi / 5) ** 3
+        actual = uniform.integrate(gaussian_pts)
+        assert_allclose(desired, actual, atol=1e-2)
+
+        # Test with Fourier1 weights.
+        uniform = UniformCubicGrid(origin, axes, shape, weight_type="Fourier1")
+        gaussian_pts = gaussian(uniform.points)
+        desired = np.sqrt(np.pi / 5) ** 3
+        actual = uniform.integrate(gaussian_pts)
+        assert_allclose(desired, actual, atol=1e-2)
 
     def test_finding_closest_point_to_cubic_grid(self):
         r"""Test finding the closest point to a cubic grid."""
         # Set up the grid with easy examples but axes that form a cube.
-        origin = np.array([0., 0., 0.])
-        axes = np.array([[1., 0., 0.],
-                         [0., 1., 0.],
-                         [0., 0., 1.]])
+        origin = np.array([0.0, 0.0, 0.0])
+        axes = np.array([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]])
         shape = np.array([3, 3, 3], dtype=np.int)
         uniform = UniformCubicGrid(origin, axes, shape)
 
@@ -307,10 +386,7 @@ class TestUniformCubicGrid(TestCase):
             uniform.closest_point(pt, "not origin or closest")
 
             # Test axes that are not orthogonal.
-            origin = np.array([0., 0., 0.])
-            axes = np.array([[1., 1., 0.],
-                             [0., 1., 0.],
-                             [0., 0., 1.]])
+            origin = np.array([0.0, 0.0, 0.0])
+            axes = np.array([[1.0, 1.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]])
             shape = np.array([3, 3, 3], dtype=np.int)
             UniformCubicGrid(origin, axes, shape)
-
