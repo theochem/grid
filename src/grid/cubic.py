@@ -17,6 +17,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
+r"""3D Integration Grid"""
+
+
 import numpy as np
 from scipy.interpolate import CubicSpline
 from sympy import symbols
@@ -24,20 +27,11 @@ from sympy.functions.combinatorial.numbers import bell
 
 from grid.basegrid import Grid, OneDGrid
 
-r"""
-Module is for grids in (Cubic) three dimensions:
-
-Classes are:
-Tensor1DGrids : Tensor product of three one-dimensional grids.
-UniformCubicGrid : Grid whose points in each (x, y, z) direction has a constant step-size.
-
-"""
-
 
 class _CubicGrid(Grid):
     def __init__(self, points, weights, shape):
         r"""
-        Construct the CubicGrid class.
+        Construct the CubicGrid class, i.e. each point is specified by (i, j, k) indices.
 
         Parameters
         ----------
@@ -92,8 +86,7 @@ class _CubicGrid(Grid):
         Returns
         -------
         float :
-            If nu is 0: Returns the interpolated of a function at a real point.
-            If nu is 1: Returns the interpolated derivative of a function at a real point.
+            Returns the interpolation of a function (or of it's derivatives) at a point.
 
         """
         if use_log:
@@ -236,6 +229,7 @@ class _CubicGrid(Grid):
 
 class Tensor1DGrids(_CubicGrid):
     def __init__(self, oned_x, oned_y, oned_z):
+        r"""Construct Tensor1DGrids: Tensor product of three one-dimensional grids."""
         if not isinstance(oned_x, OneDGrid):
             raise TypeError("Argument 'oned_x' ({0}) should be of type `OneDGrid`.".
                             format(type(oned_x)))
@@ -246,7 +240,7 @@ class Tensor1DGrids(_CubicGrid):
             raise TypeError("Argument 'oned_z' ({0}) should be of type 'OneDGrid'".
                             format(type(oned_z)))
 
-        shape = (oned_x.size, oned_y.size, oned_z.shape)
+        shape = (oned_x.size, oned_y.size, oned_z.size)
 
         # Construct 3D set of points
         points = np.vstack(
@@ -267,7 +261,9 @@ class Tensor1DGrids(_CubicGrid):
 class UniformCubicGrid(_CubicGrid):
     def __init__(self, origin, axes, shape, weight_type="Trapezoid"):
         """
-        Construct the UniformCubicGrid object.
+        Construct the UniformCubicGrid object:
+
+        Grid whose points in each (x, y, z) direction has a constant step-size/evenly spaced.
 
         Parameters
         ----------
@@ -282,11 +278,18 @@ class UniformCubicGrid(_CubicGrid):
             Number of grid points along "axes" axis.
         weight_type : str
             The integration weighting scheme. Can be either:
-            Trapezoid :
             Rectangle :
+                The weights are the standard Riemannian weights.
+            Trapezoid :
+                Equivalent to rectangle rule with the assumption function is zero on the boundaries.
             Fourier1 :
+                Assumes function can be expanded in a Fourier series, and then use Gaussian
+                quadrature. Assumes the function is zero at the boundary of the cube.
             Fourier2 :
+                Alternative weights based on Fourier series. Assumes the function is zero at the
+                boundary of the cube.
             Alternative :
+                This does not assume function is zero at the boundary.
 
         """
         if not isinstance(origin, np.ndarray):
@@ -474,6 +477,6 @@ class UniformCubicGrid(_CubicGrid):
             raise TypeError("`which` parameter was not the standard options.")
 
         # Convert indices (i, j, k) into index.
-        index = self.num_pts[2] * self.num_pts[1] * coord[0] + self.num_pts[2] * coord[1] + coord[2]
+        index = self.shape[2] * self.shape[1] * coord[0] + self.shape[2] * coord[1] + coord[2]
 
         return int(index)
