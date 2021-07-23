@@ -17,15 +17,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
-r"""3D Integration Grid"""
-
-
-import numpy as np
-from scipy.interpolate import CubicSpline
-from sympy import symbols
-from sympy.functions.combinatorial.numbers import bell
+r"""3D Integration Grid."""
 
 from grid.basegrid import Grid, OneDGrid
+
+import numpy as np
+
+from scipy.interpolate import CubicSpline
+
+from sympy import symbols
+from sympy.functions.combinatorial.numbers import bell
 
 
 class _CubicGrid(Grid):
@@ -45,7 +46,9 @@ class _CubicGrid(Grid):
 
         """
         if len(shape) != 3:
-            raise ValueError("Shape (length {0}) should have length three.".format(len(shape)))
+            raise ValueError(
+                "Shape (length {0}) should have length three.".format(len(shape))
+            )
         self._shape = shape
         super().__init__(points, weights)
 
@@ -55,7 +58,13 @@ class _CubicGrid(Grid):
         return self._shape
 
     def interpolate_function(
-            self, real_pt, func_values, use_log=False, nu_x=0, nu_y=0, nu_z=0,
+        self,
+        real_pt,
+        func_values,
+        use_log=False,
+        nu_x=0,
+        nu_y=0,
+        nu_z=0,
     ):
         r"""
         Interpolate function at a point.
@@ -125,16 +134,24 @@ class _CubicGrid(Grid):
         # Interpolate the point (x, y, z) from a list of interpolated points on x,y-axis.
         def x_spline(x, y, z, nu_x):
             val = CubicSpline(
-                self.points[np.arange(1, self.shape[0] - 2) * self.shape[1] * self.shape[2], 0],
-                [y_splines(y, x_index, z, nu_y) for x_index in range(1, self.shape[0] - 2)],
+                self.points[
+                    np.arange(1, self.shape[0] - 2) * self.shape[1] * self.shape[2], 0
+                ],
+                [
+                    y_splines(y, x_index, z, nu_y)
+                    for x_index in range(1, self.shape[0] - 2)
+                ],
             )(x, nu_x)
 
             return val
 
         if use_log:
             # All derivatives require the interpolation of f at (x,y,z)
-            interpolated = np.exp(self.interpolate_function(real_pt, func_values, use_log=False,
-                                                            nu_x=0, nu_y=0, nu_z=0))
+            interpolated = np.exp(
+                self.interpolate_function(
+                    real_pt, func_values, use_log=False, nu_x=0, nu_y=0, nu_z=0
+                )
+            )
             # Only consider taking the derivative in only one direction
             one_var_deriv = sum([nu_x == 0, nu_y == 0, nu_z == 0]) == 2
 
@@ -146,38 +163,45 @@ class _CubicGrid(Grid):
                 # Interpolate d^k ln(f) d"deriv_var" for all k from 1 to "deriv_var"
                 if nu_x > 0:
                     derivs = [
-                        self.interpolate_function(real_pt, func_values, use_log=False,
-                                                  nu_x=i, nu_y=0, nu_z=0)
+                        self.interpolate_function(
+                            real_pt, func_values, use_log=False, nu_x=i, nu_y=0, nu_z=0
+                        )
                         for i in range(1, nu_x + 1)
                     ]
                     deriv_var = nu_x
                 elif nu_y > 0:
                     derivs = [
-                        self.interpolate_function(real_pt, func_values, use_log=False,
-                                                  nu_x=0, nu_y=i, nu_z=0)
+                        self.interpolate_function(
+                            real_pt, func_values, use_log=False, nu_x=0, nu_y=i, nu_z=0
+                        )
                         for i in range(1, nu_y + 1)
                     ]
                     deriv_var = nu_y
                 else:
                     derivs = [
-                        self.interpolate_function(real_pt, func_values, use_log=False,
-                                                  nu_x=0, nu_y=0, nu_z=i)
+                        self.interpolate_function(
+                            real_pt, func_values, use_log=False, nu_x=0, nu_y=0, nu_z=i
+                        )
                         for i in range(1, nu_z + 1)
                     ]
                     deriv_var = nu_z
                 # Sympy symbols and dictionary of symbols pointing to the derivative values
                 sympy_symbols = symbols("x:" + str(deriv_var))
-                symbol_values = {"x" + str(i): float(derivs[i]) for i in range(0, deriv_var)}
-                return interpolated * float(sum(
-                    [
-                        bell(deriv_var, i, sympy_symbols).evalf(subs=symbol_values)
-                        for i in range(1, deriv_var + 1)
-                    ]
-                )
+                symbol_values = {
+                    "x" + str(i): float(derivs[i]) for i in range(0, deriv_var)
+                }
+                return interpolated * float(
+                    sum(
+                        [
+                            bell(deriv_var, i, sympy_symbols).evalf(subs=symbol_values)
+                            for i in range(1, deriv_var + 1)
+                        ]
+                    )
                 )
             else:
-                raise NotImplementedError("Taking mixed derivative while appling the logarithm is "
-                                          "not supported.")
+                raise NotImplementedError(
+                    "Taking mixed derivative while appling the logarithm is not supported."
+                )
         # Normal interpolation without logarithm.
         interpolated = x_spline(real_pt[0], real_pt[1], real_pt[2], nu_x)
         return interpolated
@@ -228,27 +252,45 @@ class _CubicGrid(Grid):
 
 
 class Tensor1DGrids(_CubicGrid):
+    r"""Tensor1DGrids : Tensor product of three one-dimensional grids."""
+
     def __init__(self, oned_x, oned_y, oned_z):
         r"""Construct Tensor1DGrids: Tensor product of three one-dimensional grids."""
         if not isinstance(oned_x, OneDGrid):
-            raise TypeError("Argument 'oned_x' ({0}) should be of type `OneDGrid`.".
-                            format(type(oned_x)))
+            raise TypeError(
+                "Argument 'oned_x' ({0}) should be of type `OneDGrid`.".format(
+                    type(oned_x)
+                )
+            )
         if not isinstance(oned_y, OneDGrid):
-            raise TypeError("Argument 'oned_y' ({0}) should be of type 'OneDGrid'".
-                            format(type(oned_y)))
+            raise TypeError(
+                "Argument 'oned_y' ({0}) should be of type 'OneDGrid'".format(
+                    type(oned_y)
+                )
+            )
         if not isinstance(oned_z, OneDGrid):
-            raise TypeError("Argument 'oned_z' ({0}) should be of type 'OneDGrid'".
-                            format(type(oned_z)))
+            raise TypeError(
+                "Argument 'oned_z' ({0}) should be of type 'OneDGrid'".format(
+                    type(oned_z)
+                )
+            )
 
         shape = (oned_x.size, oned_y.size, oned_z.size)
 
         # Construct 3D set of points
-        points = np.vstack(
-            np.meshgrid(oned_x.points, oned_y.points, oned_z.points,indexing="ij",)
-        ).reshape(3,-1).T
-        weights = np.kron(
-            np.kron(oned_x.weights, oned_y.weights), oned_z.weights
+        points = (
+            np.vstack(
+                np.meshgrid(
+                    oned_x.points,
+                    oned_y.points,
+                    oned_z.points,
+                    indexing="ij",
+                )
+            )
+            .reshape(3, -1)
+            .T
         )
+        weights = np.kron(np.kron(oned_x.weights, oned_y.weights), oned_z.weights)
         super().__init__(points, weights, shape)
 
     @property
@@ -259,9 +301,11 @@ class Tensor1DGrids(_CubicGrid):
 
 
 class UniformCubicGrid(_CubicGrid):
+    r"""Uniform Cubic Grid, a grid whose points are evenly spaced apart in each axes."""
+
     def __init__(self, origin, axes, shape, weight_type="Trapezoid"):
         """
-        Construct the UniformCubicGrid object:
+        Construct the UniformCubicGrid object.
 
         Grid whose points in each (x, y, z) direction has a constant step-size/evenly spaced.
 
@@ -301,7 +345,9 @@ class UniformCubicGrid(_CubicGrid):
         if origin.size != 3 or shape.size != 3:
             raise ValueError("Origin and shape should have size 3.")
         if axes.shape != (3, 3):
-            raise ValueError("Axes {0} should be a three by three array.".format(axes.shape))
+            raise ValueError(
+                "Axes {0} should be a three by three array.".format(axes.shape)
+            )
         if np.any(shape <= 0):
             raise ValueError("In each coordinate, shape should be positive.")
 
@@ -339,7 +385,7 @@ class UniformCubicGrid(_CubicGrid):
         return self._points.size
 
     def _calculate_volume(self, shape):
-        r"""Returns the volume of the Uniform Cubic Grid."""
+        r"""Return the volume of the Uniform Cubic Grid."""
         volume = np.linalg.norm(shape[0] * self.axes[0])
         volume *= np.linalg.norm(shape[1] * self.axes[1])
         volume *= np.linalg.norm(shape[2] * self.axes[2])
@@ -372,21 +418,27 @@ class UniformCubicGrid(_CubicGrid):
             grid_x = np.arange(1, shape[0] + 1)
             grid_x_2d = np.outer(grid_x, grid_x)
             sin_x = np.sin(grid_x_2d * np.pi / (shape[0] + 1.0))
-            weight_x = np.einsum("ij,j->i", sin_x, (1 - np.cos(grid_x * np.pi)) / (grid_x * np.pi))
+            weight_x = np.einsum(
+                "ij,j->i", sin_x, (1 - np.cos(grid_x * np.pi)) / (grid_x * np.pi)
+            )
             weight = np.einsum("ijk,i->ijk", weight, weight_x)
 
             # Calculate the weights in the y-direction.
             grid_y = np.arange(1, shape[1] + 1)
             grid_y_2d = np.outer(grid_y, grid_y)
             sin_y = np.sin(grid_y_2d * np.pi / (shape[1] + 1.0))
-            weight_y = np.einsum("ij,j->i", sin_y, (1 - np.cos(grid_y * np.pi)) / (grid_y * np.pi))
+            weight_y = np.einsum(
+                "ij,j->i", sin_y, (1 - np.cos(grid_y * np.pi)) / (grid_y * np.pi)
+            )
             weight = np.einsum("ijk,j->ijk", weight, weight_y)
 
             # Calculate the weights in the z-direction.
             grid_z = np.arange(1, shape[2] + 1)
             grid_z_2d = np.outer(grid_z, grid_z)
             sin_z = np.sin(grid_z_2d * np.pi / (shape[2] + 1.0))
-            weight_z = np.einsum("ij,j->i", sin_z, (1 - np.cos(grid_z * np.pi)) / (grid_z * np.pi))
+            weight_z = np.einsum(
+                "ij,j->i", sin_z, (1 - np.cos(grid_z * np.pi)) / (grid_z * np.pi)
+            )
             weight = np.einsum("ijk,k->ijk", weight, weight_z)
 
             return np.ravel(weight)
@@ -400,43 +452,72 @@ class UniformCubicGrid(_CubicGrid):
             grid_x = np.arange(1, shape[0] + 1)
             grid_p = np.arange(1, shape[0])
             grid_2d = np.outer((2.0 * grid_x - 1) / shape[0], grid_p)
-            weight_x = 4.0 * np.einsum(
-                "ij,j->i",
-                np.sin(grid_2d * np.pi),
-                np.sin(grid_p * np.pi / 2.0)**2.0 / grid_p
-            ) / (np.pi * shape[0])
-            weight_x += 2.0 * np.sin(np.pi * shape[0] / 2.0)**2.0 * \
-                np.sin((grid_x - 0.5) * np.pi) / (shape[0]**2.0 * np.pi)
+            weight_x = (
+                4.0
+                * np.einsum(
+                    "ij,j->i",
+                    np.sin(grid_2d * np.pi),
+                    np.sin(grid_p * np.pi / 2.0) ** 2.0 / grid_p,
+                )
+                / (np.pi * shape[0])
+            )
+            weight_x += (
+                2.0
+                * np.sin(np.pi * shape[0] / 2.0) ** 2.0
+                * np.sin((grid_x - 0.5) * np.pi)
+                / (shape[0] ** 2.0 * np.pi)
+            )
 
             # Calculate weights in y-direction
             grid_y = np.arange(1, shape[1] + 1)
             grid_p = np.arange(1, shape[1])
             grid_2d = np.outer((2.0 * grid_y - 1) / shape[1], grid_p)
-            weight_y = 4.0 * np.einsum(
-                "ij,j->i",
-                np.sin(grid_2d * np.pi),
-                np.sin(grid_p * np.pi / 2.0)**2.0 / grid_p
-            ) / (np.pi * shape[1])
-            weight_y += 2.0 * np.sin(np.pi * shape[1] / 2.0)**2.0 * \
-                np.sin((grid_y - 0.5) * np.pi) / (shape[1]**2.0 * np.pi)
+            weight_y = (
+                4.0
+                * np.einsum(
+                    "ij,j->i",
+                    np.sin(grid_2d * np.pi),
+                    np.sin(grid_p * np.pi / 2.0) ** 2.0 / grid_p,
+                )
+                / (np.pi * shape[1])
+            )
+            weight_y += (
+                2.0
+                * np.sin(np.pi * shape[1] / 2.0) ** 2.0
+                * np.sin((grid_y - 0.5) * np.pi)
+                / (shape[1] ** 2.0 * np.pi)
+            )
 
             # Calculate weights in z-direction
             grid_z = np.arange(1, shape[2] + 1)
             grid_p = np.arange(1, shape[2])
             grid_2d = np.outer((2.0 * grid_z - 1) / shape[2], grid_p)
-            weight_z = 4.0 * np.einsum(
-                "ij,j->i",
-                np.sin(grid_2d * np.pi),
-                np.sin(grid_p * np.pi / 2.0)**2.0 / grid_p
-            ) / (np.pi * shape[2])
-            weight_z += 2.0 * np.sin(np.pi * shape[2] / 2.0)**2.0 * \
-                np.sin((grid_z - 0.5) * np.pi) / (shape[2]**2.0 * np.pi)
+            weight_z = (
+                4.0
+                * np.einsum(
+                    "ij,j->i",
+                    np.sin(grid_2d * np.pi),
+                    np.sin(grid_p * np.pi / 2.0) ** 2.0 / grid_p,
+                )
+                / (np.pi * shape[2])
+            )
+            weight_z += (
+                2.0
+                * np.sin(np.pi * shape[2] / 2.0) ** 2.0
+                * np.sin((grid_z - 0.5) * np.pi)
+                / (shape[2] ** 2.0 * np.pi)
+            )
 
             weight = np.ones(shape)
-            weight = np.einsum("ijk,i,j,k->ijk", weight, weight_x, weight_y, weight_z) * alt_volume
+            weight = (
+                np.einsum("ijk,i,j,k->ijk", weight, weight_x, weight_y, weight_z)
+                * alt_volume
+            )
             return np.ravel(weight)
         else:
-            raise ValueError("The weighting type {0} parameter is not known.".format(type))
+            raise ValueError(
+                "The weighting type {0} parameter is not known.".format(type)
+            )
 
     def closest_point(self, point, which="closest"):
         r"""
@@ -464,8 +545,10 @@ class UniformCubicGrid(_CubicGrid):
         # I'm not entirely certain that this method will work with non-orthogonal axes.
         #    Added this just in case, cause I know it will work with orthogonal axes.
         if not np.count_nonzero(self.axes - np.diag(np.diagonal(self.axes))) == 0:
-            raise ValueError("Finding closest point only works when the 'axes' attribute"
-                             "is a diagonal matrix.")
+            raise ValueError(
+                "Finding closest point only works when the 'axes' attribute"
+                " is a diagonal matrix."
+            )
 
         # Calculate step-size of the cube.
         step_size_x = np.linalg.norm(self.axes[0] - self.origin)
@@ -473,7 +556,9 @@ class UniformCubicGrid(_CubicGrid):
         step_size_z = np.linalg.norm(self.axes[2] - self.origin)
         step_sizes = np.array([step_size_x, step_size_y, step_size_z])
 
-        coord = np.array([(point[i] - self.origin[i]) / step_sizes[i] for i in range(3)])
+        coord = np.array(
+            [(point[i] - self.origin[i]) / step_sizes[i] for i in range(3)]
+        )
 
         if which == "origin":
             # Round to smallest integer.
