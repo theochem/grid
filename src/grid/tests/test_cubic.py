@@ -227,14 +227,41 @@ class TestUniformCubicGrid(TestCase):
                     assert_allclose(uniform.weights[index], desired)
                     index += 1
 
-    def test_calculating_rectangle_weights(self):
-        pass
+    def test_calculating_rectangle_weights_with_orthogonal_axes(self):
+        # Set up the grid with easy examples but axes that form a cube.
+        origin = np.array([0., 0., 0.])
+        axes = np.array([[1., 0., 0.],
+                         [0., 1., 0.],
+                         [0., 0., 1.]])
+        shape = np.array([3, 3, 3], dtype=np.int)
+        uniform = UniformCubicGrid(origin, axes, shape, weight_type="Rectangle")
+        volume = 3 * 3 * 3  # Volume of cube.
+        desired_wghts = np.ones(uniform.size) * volume / np.prod(shape)
+        assert_allclose(uniform.weights, desired_wghts)
 
-    def test_calculating_trapezoid_weights(self):
-        pass
+    def test_calculating_trapezoid_weights_with_orthogonal_axes(self):
+        # Set up the grid with easy examples but axes that form a cube.
+        origin = np.array([0., 0., 0.])
+        axes = np.array([[1., 0., 0.],
+                         [0., 1., 0.],
+                         [0., 0., 1.]])
+        shape = np.array([3, 3, 3], dtype=np.int)
+        uniform = UniformCubicGrid(origin, axes, shape, weight_type="Trapezoid")
+        volume = 3 * 3 * 3  # Volume of cube.
+        desired_wghts = np.ones(uniform.size) * volume / np.prod(shape + 1)
+        assert_allclose(uniform.weights, desired_wghts)
 
-    def test_calculating_alternative_weights(self):
-        pass
+    def test_calculating_alternative_weights_with_orthogonal_axes(self):
+        # Set up the grid with easy examples but axes that form a cube.
+        origin = np.array([0., 0., 0.])
+        axes = np.array([[1., 0., 0.],
+                         [0., 1., 0.],
+                         [0., 0., 1.]])
+        shape = np.array([3, 3, 3], dtype=np.int)
+        uniform = UniformCubicGrid(origin, axes, shape, weight_type="Alternative")
+        volume = 3 * 3 * 3  # Volume of cube.
+        desired_wghts = np.ones(uniform.size) * volume * np.prod(shape - 1) / np.prod(shape)
+        assert_allclose(uniform.weights, desired_wghts)
 
     def test_integration_with_gaussian(self):
         origin = np.array([-1., -1., -1.])
@@ -249,3 +276,41 @@ class TestUniformCubicGrid(TestCase):
         desired = np.sqrt(np.pi / 6) ** 3
         actual = uniform.integrate(gaussian_pts)
         assert_allclose(desired, actual, atol=1e-3)
+
+    def test_finding_closest_point_to_cubic_grid(self):
+        r"""Test finding the closest point to a cubic grid."""
+        # Set up the grid with easy examples but axes that form a cube.
+        origin = np.array([0., 0., 0.])
+        axes = np.array([[1., 0., 0.],
+                         [0., 1., 0.],
+                         [0., 0., 1.]])
+        shape = np.array([3, 3, 3], dtype=np.int)
+        uniform = UniformCubicGrid(origin, axes, shape)
+
+        # Create point close to the origin
+        pt = np.array([0.1, 0.1, 0.1])
+        index = uniform.closest_point(pt, "origin")
+        assert index == 0
+        index = uniform.closest_point(pt, "closest")
+        assert index == 0
+
+        # Create point close to the point with coordinates (1, 1, 1) but whose origin is zero.
+        pt = np.array([0.75, 0.75, 0.75])
+        index = uniform.closest_point(pt, "origin")
+        assert index == 0
+        index = uniform.closest_point(pt, "closest")
+        assert index == 13
+
+        # Test raises error
+        with self.assertRaises(ValueError):
+            # Test wrong attribute.
+            uniform.closest_point(pt, "not origin or closest")
+
+            # Test axes that are not orthogonal.
+            origin = np.array([0., 0., 0.])
+            axes = np.array([[1., 1., 0.],
+                             [0., 1., 0.],
+                             [0., 0., 1.]])
+            shape = np.array([3, 3, 3], dtype=np.int)
+            UniformCubicGrid(origin, axes, shape)
+
