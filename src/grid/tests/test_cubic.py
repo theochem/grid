@@ -204,6 +204,15 @@ class TestTensor1DGrids(TestCase):
 class TestUniformCubicGrid(TestCase):
     r"""Test Uniform Cubic Grid Class."""
 
+    def test_volume_generalizes_volume_of_cube_with_orthogonal_axes(self):
+        r"""Test volume of a cube is the same as multiplying by length of axes."""
+        origin = np.array([0.0, 0.0, 0.0])
+        axes = np.eye(3)
+        shape = np.array([5, 6, 7], dtype=np.int)
+        uniform = UniformCubicGrid(origin, axes, shape=shape)
+        volume = 5 * 6 * 7
+        assert_allclose(volume, uniform._calculate_volume(shape))
+
     def test_fourier1_weights_are_correct(self):
         r"""Test Fourier1 weights are correct against brute force."""
         origin = np.array([0.0, 0.0, 0.0])
