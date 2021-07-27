@@ -38,9 +38,9 @@ class _CubicGrid(Grid):
         ----------
         points : np.ndarray(M, 3)
             The 3D points of the cubic grid.
-        weights : np.ndarray(M*3)
+        weights : np.ndarray(M)
             The weights corresponding to each cubic grid point.  It moves in the following
-            order (x, y, z).
+            order (z, y, x).
         shape : np.ndarray(3)
             The number of points in each of the three (x, y, z) directions.
 
@@ -84,12 +84,12 @@ class _CubicGrid(Grid):
             If greater than zero, then the "nu_x"th-order derivative in the x-direction is
             interpolated.
         nu_y : int
-            If zero, then the function in x-direction is interpolated.
-            If greater than zero, then the "nu_x"th-order derivative in the y-direction is
+            If zero, then the function in y-direction is interpolated.
+            If greater than zero, then the "nu_y"th-order derivative in the y-direction is
             interpolated.
         nu_z : int
-            If zero, then the function in x-direction is interpolated.
-            If greater than zero, then the "nu_x"th-order derivative in the z-direction is
+            If zero, then the function in z-direction is interpolated.
+            If greater than zero, then the "nu_z"th-order derivative in the z-direction is
             interpolated.
 
         Returns
@@ -200,7 +200,7 @@ class _CubicGrid(Grid):
                 )
             else:
                 raise NotImplementedError(
-                    "Taking mixed derivative while appling the logarithm is not supported."
+                    "Taking mixed derivative while applying the logarithm is not supported."
                 )
         # Normal interpolation without logarithm.
         interpolated = x_spline(real_pt[0], real_pt[1], real_pt[2], nu_x)
