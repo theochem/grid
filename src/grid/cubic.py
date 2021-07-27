@@ -304,10 +304,22 @@ class UniformCubicGrid(_CubicGrid):
     r"""Uniform Cubic Grid, a grid whose points are evenly spaced apart in each axes."""
 
     def __init__(self, origin, axes, shape, weight_type="Trapezoid"):
-        """
+        r"""
         Construct the UniformCubicGrid object.
 
         Grid whose points in each (x, y, z) direction has a constant step-size/evenly spaced.
+        Given a origin :math:`\mathbf{o} = (o_x, o_y, o_z)` and three directions forming the axes
+        :math:`\mathbf{a_1}, \mathbf{a_2}, \mathbf{a_3}` with shape :math:`(M_x, M_y, M_z)`,
+        then the (i, j, k)th point of the grid are:
+
+        .. math::
+            \begin{align*}
+                x_i &= o_x + i \mathbf{a_1} \\
+                y_i &= o_y + j \mathbf{a_2} \\
+                z_i &= o_z + k \mathbf{a_3},
+            \end{align*}
+        where :math:`0 \leq i \leq M_x,\quad 0 \leq j \leq M_y, \quad 0 \leq k \leq M_z`.
+
 
         Parameters
         ----------
@@ -323,17 +335,47 @@ class UniformCubicGrid(_CubicGrid):
         weight_type : str
             The integration weighting scheme. Can be either:
             Rectangle :
-                The weights are the standard Riemannian weights.
+                The weights are the standard Riemannian weights,
+
+                .. math::
+                    w_{ijk} = \frac{V}{M_x\cdot M_y \cdot M_z}
+                where :math:`V` is the volume of the uniform cubic grid.
+
             Trapezoid :
                 Equivalent to rectangle rule with the assumption function is zero on the boundaries.
+
+                 .. math::
+                    w_{ijk} = \frac{V}{(M_x + 1) \cdot (M_y + 1) \cdot (M_z + 1)}
+                where :math:`V` is the volume of the uniform cubic grid.
+
             Fourier1 :
                 Assumes function can be expanded in a Fourier series, and then use Gaussian
                 quadrature. Assumes the function is zero at the boundary of the cube.
+
+                .. math::
+                    w_{ijk} = \frac{8}{(M_x + 1) \cdot (M_y + 1) \cdot (M_z + 1)} \bigg[
+                    \bigg(\sum_{p=1}^{M_x} \frac{\sin(ip \pi/(M_x + 1)) (1 - \cos(p\pi)}{p\pi}
+                         \bigg)
+                         \bigg(\sum_{p=1}^{M_y} \frac{\sin(jp \pi/(M_y + 1)) (1 - \cos(p\pi)}{p\pi}
+                         \bigg)
+                         \bigg(\sum_{p=1}^{M_z} \frac{\sin(kp \pi/(M_z + 1)) (1 - \cos(p\pi)}{p\pi}
+                         \bigg)
+                    \bigg]
             Fourier2 :
                 Alternative weights based on Fourier series. Assumes the function is zero at the
                 boundary of the cube.
+
+                .. math::
+                    w_{ijk} = V^\prime \cdot w_i w_j w_k,
+                    w_i &= \bigg(\frac{2\sin((j - 0.5)\pi) \sin^2(M_x\pi/2)}{M_x^2 \pi} +
+                     \frac{4}{M_x \pi} \sum_{p=1}^{M_x - 1}
+                     \frac{\sin((2j-1)p\pi /n_x) sin^2(p \pi)\}{\pi}bigg)
+
             Alternative :
                 This does not assume function is zero at the boundary.
+
+            .. math::
+                w_{ijk} = V \cdot \frac{M_x - 1}{M_x} \frac{M_y - 1}{M_y} \frac{M_z - 1}{M_z}
 
         """
         if not isinstance(origin, np.ndarray):
