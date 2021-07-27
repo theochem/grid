@@ -422,16 +422,16 @@ class UniformCubicGrid(_CubicGrid):
         """Cartesian coordinate of the origin of the cubic grid."""
         return self._origin
 
-    def __len__(self):
-        """Return the number of grid points."""
-        return self._points.size
-
     def _calculate_volume(self, shape):
         r"""Return the volume of the Uniform Cubic Grid."""
-        volume = np.linalg.norm(shape[0] * self.axes[0])
-        volume *= np.linalg.norm(shape[1] * self.axes[1])
-        volume *= np.linalg.norm(shape[2] * self.axes[2])
-        return volume
+        # Shape needs to be an argument, because I need to calculate the weights before
+        #       initializing the _CubicGrid (where shape is set there).
+        # Volume of a parallelepiped spanned by a, b, c is  | (a x b) dot c|.
+        volume = np.dot(
+            np.cross(shape[0] * self.axes[0], shape[1] * self.axes[1]),
+            shape[2] * self.axes[2],
+        )
+        return np.abs(volume)
 
     def _calculate_alternative_volume(self, shape):
         volume = self._calculate_volume(shape)
