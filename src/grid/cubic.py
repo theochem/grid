@@ -456,99 +456,61 @@ class UniformCubicGrid(_CubicGrid):
             numpnt = (shape[0] + 1.0) * (shape[1] + 1.0) * (shape[2] + 1.0)
             weight = np.ones(shape) * (8 * volume / numpnt)
 
-            # Calculate the weights in the x-direction.
-            grid_x = np.arange(1, shape[0] + 1)
-            grid_x_2d = np.outer(grid_x, grid_x)
-            sin_x = np.sin(grid_x_2d * np.pi / (shape[0] + 1.0))
-            weight_x = np.einsum(
-                "ij,j->i", sin_x, (1 - np.cos(grid_x * np.pi)) / (grid_x * np.pi)
-            )
-            weight = np.einsum("ijk,i->ijk", weight, weight_x)
+            def _fourier1(weight, shape, index):
+                # Return the fourier1 weights in the "index"-direction.
+                grid_dir = np.arange(1, shape[index] + 1)
+                grid_dir_2d = np.outer(grid_dir, grid_dir)
+                sin_dir = np.sin(grid_dir_2d * np.pi / (shape[index] + 1.0))
+                weight_dir = np.einsum(
+                    "ij,j->i",
+                    sin_dir,
+                    (1 - np.cos(grid_dir * np.pi)) / (grid_dir * np.pi),
+                )
+                if index == 0:
+                    return np.einsum("ijk,i->ijk", weight, weight_dir)
+                elif index == 1:
+                    return np.einsum("ijk,j->ijk", weight, weight_dir)
+                elif index == 2:
+                    return np.einsum("ijk,k->ijk", weight, weight_dir)
 
-            # Calculate the weights in the y-direction.
-            grid_y = np.arange(1, shape[1] + 1)
-            grid_y_2d = np.outer(grid_y, grid_y)
-            sin_y = np.sin(grid_y_2d * np.pi / (shape[1] + 1.0))
-            weight_y = np.einsum(
-                "ij,j->i", sin_y, (1 - np.cos(grid_y * np.pi)) / (grid_y * np.pi)
-            )
-            weight = np.einsum("ijk,j->ijk", weight, weight_y)
-
-            # Calculate the weights in the z-direction.
-            grid_z = np.arange(1, shape[2] + 1)
-            grid_z_2d = np.outer(grid_z, grid_z)
-            sin_z = np.sin(grid_z_2d * np.pi / (shape[2] + 1.0))
-            weight_z = np.einsum(
-                "ij,j->i", sin_z, (1 - np.cos(grid_z * np.pi)) / (grid_z * np.pi)
-            )
-            weight = np.einsum("ijk,k->ijk", weight, weight_z)
-
-            return np.ravel(weight)
+            # Calculate the weights in the x-direction, y-direction and z-direction, respectively.
+            weight = _fourier1(weight, shape, 0)
+            weight = _fourier1(weight, shape, 1)
+            weight = _fourier1(weight, shape, 2)
+            return np.ravel(weight)  # Ravel it to be in the dictionary order (z, y, x).
         elif type == "Alternative":
             alt_volume = self._calculate_alternative_volume(shape)
             return np.ones(np.prod(shape)) * alt_volume
         elif type == "Fourier2":
             alt_volume = self._calculate_alternative_volume(shape)
 
-            # Calculate weights in x-direction
-            grid_x = np.arange(1, shape[0] + 1)
-            grid_p = np.arange(1, shape[0])
-            grid_2d = np.outer((2.0 * grid_x - 1) / shape[0], grid_p)
-            weight_x = (
-                4.0
-                * np.einsum(
-                    "ij,j->i",
-                    np.sin(grid_2d * np.pi),
-                    np.sin(grid_p * np.pi / 2.0) ** 2.0 / grid_p,
+            def _fourier2(shape, index):
+                # Calculate the Fourier2 weights in each of the directions.
+                # Shape of the grid,  index is either 0 (x-direction), 1 (y-dir), 2 (z-dir)
+                grid_dir = np.arange(1, shape[index] + 1)
+                grid_p = np.arange(1, shape[index])
+                grid_2d = np.outer((2.0 * grid_dir - 1) / shape[index], grid_p)
+                weight = (
+                    4.0
+                    * np.einsum(
+                        "ij,j->i",
+                        np.sin(grid_2d * np.pi),
+                        np.sin(grid_p * np.pi / 2.0) ** 2.0 / grid_p,
+                    )
+                    / (np.pi * shape[index])
                 )
-                / (np.pi * shape[0])
-            )
-            weight_x += (
-                2.0
-                * np.sin(np.pi * shape[0] / 2.0) ** 2.0
-                * np.sin((grid_x - 0.5) * np.pi)
-                / (shape[0] ** 2.0 * np.pi)
-            )
+                weight += (
+                    2.0
+                    * np.sin(np.pi * shape[index] / 2.0) ** 2.0
+                    * np.sin((grid_dir - 0.5) * np.pi)
+                    / (shape[index] ** 2.0 * np.pi)
+                )
+                return weight
 
-            # Calculate weights in y-direction
-            grid_y = np.arange(1, shape[1] + 1)
-            grid_p = np.arange(1, shape[1])
-            grid_2d = np.outer((2.0 * grid_y - 1) / shape[1], grid_p)
-            weight_y = (
-                4.0
-                * np.einsum(
-                    "ij,j->i",
-                    np.sin(grid_2d * np.pi),
-                    np.sin(grid_p * np.pi / 2.0) ** 2.0 / grid_p,
-                )
-                / (np.pi * shape[1])
-            )
-            weight_y += (
-                2.0
-                * np.sin(np.pi * shape[1] / 2.0) ** 2.0
-                * np.sin((grid_y - 0.5) * np.pi)
-                / (shape[1] ** 2.0 * np.pi)
-            )
-
-            # Calculate weights in z-direction
-            grid_z = np.arange(1, shape[2] + 1)
-            grid_p = np.arange(1, shape[2])
-            grid_2d = np.outer((2.0 * grid_z - 1) / shape[2], grid_p)
-            weight_z = (
-                4.0
-                * np.einsum(
-                    "ij,j->i",
-                    np.sin(grid_2d * np.pi),
-                    np.sin(grid_p * np.pi / 2.0) ** 2.0 / grid_p,
-                )
-                / (np.pi * shape[2])
-            )
-            weight_z += (
-                2.0
-                * np.sin(np.pi * shape[2] / 2.0) ** 2.0
-                * np.sin((grid_z - 0.5) * np.pi)
-                / (shape[2] ** 2.0 * np.pi)
-            )
+            # Calculate weights in x-direction, y-direction, z-direction, respectively.
+            weight_x = _fourier2(shape, 0)
+            weight_y = _fourier2(shape, 1)
+            weight_z = _fourier2(shape, 2)
 
             weight = np.ones(shape)
             weight = (
