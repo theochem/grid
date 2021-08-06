@@ -408,6 +408,11 @@ class UniformCubicGrid(_CubicGrid):
         weights = self._choose_weight_scheme(weight_type, shape)
         super().__init__(points, weights, shape)
 
+    @classmethod
+    def from_molecule(cls, atnums, atcoords, spacing=0.2, extension=5.0, rotate=True):
+        r"""Construct a uniform grid given the molecular coordinates."""
+        raise NotImplementedError
+
     @property
     def axes(self):
         """Array with axes of the cube.
