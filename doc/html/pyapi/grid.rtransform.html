@@ -1,0 +1,1951 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>grid.rtransform module &mdash; grid  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/override.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="grid.utils module" href="grid.utils.html" />
+    <link rel="prev" title="grid.poisson module" href="grid.poisson.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> grid
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">grid</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="grid.html">grid package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="grid.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="grid.atomgrid.html">grid.atomgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.basegrid.html">grid.basegrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.becke.html">grid.becke module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.hirshfeld.html">grid.hirshfeld module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.interpolate.html">grid.interpolate module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.lebedev.html">grid.lebedev module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.molgrid.html">grid.molgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.ode.html">grid.ode module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.onedgrid.html">grid.onedgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.periodicgrid.html">grid.periodicgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.poisson.html">grid.poisson module</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">grid.rtransform module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.utils.html">grid.utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="grid.html#module-grid">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">grid</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="modules.html">grid</a> &raquo;</li>
+        
+          <li><a href="grid.html">grid package</a> &raquo;</li>
+        
+      <li>grid.rtransform module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/pyapi/grid.rtransform.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-grid.rtransform">
+<span id="grid-rtransform-module"></span><h1>grid.rtransform module<a class="headerlink" href="#module-grid.rtransform" title="Permalink to this headline">¶</a></h1>
+<p>Transformation from uniform 1D to non-uniform 1D grids.</p>
+<dl class="py class">
+<dt id="grid.rtransform.BaseTransform">
+<em class="property">class </em><code class="sig-name descname">BaseTransform</code><a class="headerlink" href="#grid.rtransform.BaseTransform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<p>Abstract class for transformation.</p>
+<dl class="py method">
+<dt id="grid.rtransform.BaseTransform.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BaseTransform.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.BaseTransform.deriv">
+<em class="property">abstract </em><code class="sig-name descname">deriv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BaseTransform.deriv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract method for 1st derivative of transformation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.BaseTransform.deriv2">
+<em class="property">abstract </em><code class="sig-name descname">deriv2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BaseTransform.deriv2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract method for 2nd derivative of transformation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.BaseTransform.deriv3">
+<em class="property">abstract </em><code class="sig-name descname">deriv3</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BaseTransform.deriv3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract method for 3rd derivative of transformation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.BaseTransform.inverse">
+<em class="property">abstract </em><code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BaseTransform.inverse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract method for inverse transformation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.BaseTransform.transform">
+<em class="property">abstract </em><code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BaseTransform.transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract method for transformation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.BaseTransform.transform_1d_grid">
+<code class="sig-name descname">transform_1d_grid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">oned_grid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BaseTransform.transform_1d_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a new integral grid by transforming given the OneDGrid.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\int^{\inf}_0 g(r) d r &amp;= \int^b_a g(r(x)) \frac{dr}{dx} dx \\
+                       &amp;= \int^b_a f(x) \frac{dr}{dx} dx \\
+w^r_n = w^x_n \cdot \frac{dr}{dx} \vert_{x_n}\end{split}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>oned_grid</strong> (<a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><em>OneDGrid</em></a>) – An instance of 1D grid.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Transformed 1D grid spanning a different domain.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid">OneDGrid</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – Input is not a proper OneDGrid instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="grid.rtransform.BeckeTF">
+<em class="property">class </em><code class="sig-name descname">BeckeTF</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rmin</span></em>, <em class="sig-param"><span class="n">R</span></em>, <em class="sig-param"><span class="n">trim_inf</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BeckeTF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.rtransform.BaseTransform</span></code></a></p>
+<p>Becke Transformation class.</p>
+<dl class="py method">
+<dt id="grid.rtransform.BeckeTF.R">
+<em class="property">property </em><code class="sig-name descname">R</code><a class="headerlink" href="#grid.rtransform.BeckeTF.R" title="Permalink to this definition">¶</a></dt>
+<dd><p>the scale factor for the transformed array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.BeckeTF.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rmin</span></em>, <em class="sig-param"><span class="n">R</span></em>, <em class="sig-param"><span class="n">trim_inf</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BeckeTF.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct Becke transform, [-1, 1] -&gt; [r_0, inf).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rmin</strong> (<em>float</em>) – The minimum coordinates for transformed array.</p></li>
+<li><p><strong>R</strong> (<em>float</em>) – The scale factor for transformed array.</p></li>
+<li><p><strong>trim_inf</strong> (<em>bool</em><em>, </em><em>optional</em>) – Flag to trim infinite value in transformed array. If True, it will
+replace np.inf with 1e16. This may cause unexpected errors in the
+following operations.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.BeckeTF.deriv">
+<code class="sig-name descname">deriv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BeckeTF.deriv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the 1st derivative of Becke transformation.</p>
+<div class="math notranslate nohighlight">
+\[\frac{dr_i}{dx_i} = 2R \frac{1}{(1-x)^2}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>np.array</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimension numpy array located between [-1, 1]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>1st derivative of Becke transformation at each points</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.BeckeTF.deriv2">
+<code class="sig-name descname">deriv2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BeckeTF.deriv2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the 2nd derivative of Becke transformation.</p>
+<div class="math notranslate nohighlight">
+\[\frac{d^2r}{dx^2} = 4R \frac{1}{1-x^3}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>np.array</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimension numpy array located between [-1, 1]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>2nd derivative of Becke transformation at each points</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.BeckeTF.deriv3">
+<code class="sig-name descname">deriv3</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BeckeTF.deriv3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the 3rd derivative of Becke transformation.</p>
+<div class="math notranslate nohighlight">
+\[\frac{d^3r}{dx^3} = 12R \frac{1}{1 - x^4}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>np.array</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimension numpy array located between [-1, 1]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>3rd derivative of Becke transformation at each points</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.BeckeTF.find_parameter">
+<em class="property">static </em><code class="sig-name descname">find_parameter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">array</span></em>, <em class="sig-param"><span class="n">rmin</span></em>, <em class="sig-param"><span class="n">radius</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BeckeTF.find_parameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute for optimal R for certain atom, given array and rmin.</p>
+<p>To find the proper R value to make sure half points are within atomic
+radius r.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>array</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – one dimention array locates within [-1, 1]</p></li>
+<li><p><strong>rmin</strong> (<em>float</em>) – Minimum value for transformed array.</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – Atomic radius of interest</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The optimal value of scale factor R</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – rmin needs to be smaller than atomic radius to compute R</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.BeckeTF.inverse">
+<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BeckeTF.inverse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform array[rmin, inf) back to original array[-1, 1].</p>
+<div class="math notranslate nohighlight">
+\[x_i = \frac{r_i - r_{min} - R} {r_i - r_{min} + R}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>r</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – Sorted one dimension array located between [rmin, inf)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The original one dimension array located between [-1, 1]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.BeckeTF.rmin">
+<em class="property">property </em><code class="sig-name descname">rmin</code><a class="headerlink" href="#grid.rtransform.BeckeTF.rmin" title="Permalink to this definition">¶</a></dt>
+<dd><p>the minimum value for the transformed array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.BeckeTF.transform">
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BeckeTF.transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform given array[-1, 1] to array[rmin, inf).</p>
+<div class="math notranslate nohighlight">
+\[r_i = R \frac{1 + x_i}{1 - x_i} + r_{min}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimension numpy array located between [-1, 1]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Transformed array located between [rmin, inf)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.BeckeTF.transform_1d_grid">
+<code class="sig-name descname">transform_1d_grid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">oned_grid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BeckeTF.transform_1d_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a new integral grid by transforming given the OneDGrid.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\int^{\inf}_0 g(r) d r &amp;= \int^b_a g(r(x)) \frac{dr}{dx} dx \\
+                       &amp;= \int^b_a f(x) \frac{dr}{dx} dx \\
+w^r_n = w^x_n \cdot \frac{dr}{dx} \vert_{x_n}\end{split}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>oned_grid</strong> (<a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><em>OneDGrid</em></a>) – An instance of 1D grid.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Transformed 1D grid spanning a different domain.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid">OneDGrid</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – Input is not a proper OneDGrid instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="grid.rtransform.ExpRTransform">
+<em class="property">class </em><code class="sig-name descname">ExpRTransform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rmin</span></em>, <em class="sig-param"><span class="n">rmax</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.ExpRTransform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.rtransform.BaseTransform</span></code></a></p>
+<p>Exponential transform class.</p>
+<dl class="py method">
+<dt id="grid.rtransform.ExpRTransform.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rmin</span></em>, <em class="sig-param"><span class="n">rmax</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.ExpRTransform.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize exp transform instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rmin</strong> (<em>float</em>) – Min value for transformed points</p></li>
+<li><p><strong>rmax</strong> (<em>float</em>) – Max value for transformed points</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If rmin larger than rmax or one of them is negative.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.ExpRTransform.deriv">
+<code class="sig-name descname">deriv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.ExpRTransform.deriv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the first derivative of exponential transform.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.ExpRTransform.deriv2">
+<code class="sig-name descname">deriv2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.ExpRTransform.deriv2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the second derivative of exponential transform.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.ExpRTransform.deriv3">
+<code class="sig-name descname">deriv3</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.ExpRTransform.deriv3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the third derivative of exponential transform.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.ExpRTransform.inverse">
+<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.ExpRTransform.inverse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the inverse of exponential transform.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.ExpRTransform.rmax">
+<em class="property">property </em><code class="sig-name descname">rmax</code><a class="headerlink" href="#grid.rtransform.ExpRTransform.rmax" title="Permalink to this definition">¶</a></dt>
+<dd><p>the value of rmax.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.ExpRTransform.rmin">
+<em class="property">property </em><code class="sig-name descname">rmin</code><a class="headerlink" href="#grid.rtransform.ExpRTransform.rmin" title="Permalink to this definition">¶</a></dt>
+<dd><p>the value of rmin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.ExpRTransform.transform">
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.ExpRTransform.transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform exponential transform.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.ExpRTransform.transform_1d_grid">
+<code class="sig-name descname">transform_1d_grid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">oned_grid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.ExpRTransform.transform_1d_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a new integral grid by transforming given the OneDGrid.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\int^{\inf}_0 g(r) d r &amp;= \int^b_a g(r(x)) \frac{dr}{dx} dx \\
+                       &amp;= \int^b_a f(x) \frac{dr}{dx} dx \\
+w^r_n = w^x_n \cdot \frac{dr}{dx} \vert_{x_n}\end{split}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>oned_grid</strong> (<a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><em>OneDGrid</em></a>) – An instance of 1D grid.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Transformed 1D grid spanning a different domain.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid">OneDGrid</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – Input is not a proper OneDGrid instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="grid.rtransform.HandyModTF">
+<em class="property">class </em><code class="sig-name descname">HandyModTF</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rmin</span></em>, <em class="sig-param"><span class="n">rmax</span></em>, <em class="sig-param"><span class="n">m</span></em>, <em class="sig-param"><span class="n">trim_inf</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyModTF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.rtransform.BaseTransform</span></code></a></p>
+<p>Modified Handy Transformation class.</p>
+<dl class="py method">
+<dt id="grid.rtransform.HandyModTF.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rmin</span></em>, <em class="sig-param"><span class="n">rmax</span></em>, <em class="sig-param"><span class="n">m</span></em>, <em class="sig-param"><span class="n">trim_inf</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyModTF.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a modified Handy transform [-1,1] -&gt; [rmin,rmax].</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rmin</strong> (<em>float</em>) – The minimum coordinate for transformed radial array.</p></li>
+<li><p><strong>rmax</strong> (<em>float</em>) – The maximum coordinate for transformed radial array.</p></li>
+<li><p><strong>m</strong> (<em>integer m &gt; 0</em>) – Free parameter, m must be &gt; 0.</p></li>
+<li><p><strong>trim_inf</strong> (<em>bool</em><em>, </em><em>optional</em>) – Flag to trim infinite value in transformed array. If True, it will
+replace np.inf with 1e16. This may cause unexpected errors in the
+following operations.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.HandyModTF.deriv">
+<code class="sig-name descname">deriv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyModTF.deriv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the 1st derivative of  modified Handy transformation.</p>
+<div class="math notranslate nohighlight">
+\[\frac{dr}{dx} = -\frac{
+    2^m m (r_{max}-r_{min})(2^m-r_{max}+r_{min}-1)(1+x)^{m-1}}
+    {\left( 2^m (2^m-1-r_{max}+r_{min})-(2^m-r_{max}
+    + r_{min})(1 + x)^m\right)^2}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimension numpy array with values between [-1,1].</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The first derivative of Handy transformation at each point.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.HandyModTF.deriv2">
+<code class="sig-name descname">deriv2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyModTF.deriv2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the 2nd derivative of modified Handy transformation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>array</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimension numpy array with values between [-1,1].</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The second derivative of Handy transformation at each point.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.HandyModTF.deriv3">
+<code class="sig-name descname">deriv3</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyModTF.deriv3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the 3rd derivative of modified Handy transformation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>array</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimension numpy array with values between [-1,1].</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The third derivative of Handy transformation at each point.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.HandyModTF.inverse">
+<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyModTF.inverse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform radiar array [rmin,rmax] back to original array [-1,1].</p>
+<div class="math notranslate nohighlight">
+\[x_i = 2 \sqrt[m]{
+    \frac{(r_i - r_{min})(r_{max} - r_{min} - 2^m + 1)}
+    {(r_i - r_{min})(r_{max} - r_{min} - 2^m) + r_{max} - r_{min}}
+    } - 1\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>r</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – Sorted one dimension radial array with values bewteen [rmin,inf).</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The original one dimension array with values bewteen [-1,1]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.HandyModTF.m">
+<em class="property">property </em><code class="sig-name descname">m</code><a class="headerlink" href="#grid.rtransform.HandyModTF.m" title="Permalink to this definition">¶</a></dt>
+<dd><p>Free and extra parameter, m must be &gt; 0.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>integer</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.HandyModTF.rmax">
+<em class="property">property </em><code class="sig-name descname">rmax</code><a class="headerlink" href="#grid.rtransform.HandyModTF.rmax" title="Permalink to this definition">¶</a></dt>
+<dd><p>The maximum value for the transformed radial array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.HandyModTF.rmin">
+<em class="property">property </em><code class="sig-name descname">rmin</code><a class="headerlink" href="#grid.rtransform.HandyModTF.rmin" title="Permalink to this definition">¶</a></dt>
+<dd><p>The minimum value for the transformed radial array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.HandyModTF.transform">
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyModTF.transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform given array [-1,1] to radial array [rmin,rmax].</p>
+<div class="math notranslate nohighlight">
+\[r_i = \frac{(1+x_i)^m (r_{max} - r_{min})}
+    { 2^m (1 - 2^m + r_{max} - r_{min})
+      - (1 + x_i)^m (r_{max} - r_{min} - 2^m )} + r_{min}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimension numpy array with values between [-1,1]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>One dimension numpy array with values between [rmin,rmax].</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.HandyModTF.transform_1d_grid">
+<code class="sig-name descname">transform_1d_grid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">oned_grid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyModTF.transform_1d_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a new integral grid by transforming given the OneDGrid.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\int^{\inf}_0 g(r) d r &amp;= \int^b_a g(r(x)) \frac{dr}{dx} dx \\
+                       &amp;= \int^b_a f(x) \frac{dr}{dx} dx \\
+w^r_n = w^x_n \cdot \frac{dr}{dx} \vert_{x_n}\end{split}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>oned_grid</strong> (<a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><em>OneDGrid</em></a>) – An instance of 1D grid.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Transformed 1D grid spanning a different domain.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid">OneDGrid</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – Input is not a proper OneDGrid instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="grid.rtransform.HandyTF">
+<em class="property">class </em><code class="sig-name descname">HandyTF</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rmin</span></em>, <em class="sig-param"><span class="n">R</span></em>, <em class="sig-param"><span class="n">m</span></em>, <em class="sig-param"><span class="n">trim_inf</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyTF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.rtransform.BaseTransform</span></code></a></p>
+<p>Handy Transformation class.</p>
+<dl class="py method">
+<dt id="grid.rtransform.HandyTF.R">
+<em class="property">property </em><code class="sig-name descname">R</code><a class="headerlink" href="#grid.rtransform.HandyTF.R" title="Permalink to this definition">¶</a></dt>
+<dd><p>The scale factor for the transformed radial array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.HandyTF.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rmin</span></em>, <em class="sig-param"><span class="n">R</span></em>, <em class="sig-param"><span class="n">m</span></em>, <em class="sig-param"><span class="n">trim_inf</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyTF.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct Handy transform [-1,1] -&gt; [rmin,inf).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rmin</strong> (<em>float</em>) – The minimum coordinate for transformed radial array.</p></li>
+<li><p><strong>R</strong> (<em>float</em>) – The scale factor for transformed radial array.</p></li>
+<li><p><strong>m</strong> (<em>integer m &gt; 0</em>) – Free parameter, m must be &gt; 0.</p></li>
+<li><p><strong>trim_inf</strong> (<em>bool</em><em>, </em><em>optional</em>) – Flag to trim infinite value in transformed array. If True, it will
+replace np.inf with 1e16. This may cause unexpected errors in the
+following operations.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.HandyTF.deriv">
+<code class="sig-name descname">deriv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyTF.deriv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the 1st derivative of Handy transformation.</p>
+<div class="math notranslate nohighlight">
+\[\frac{dr}{dx} = 2mR \frac{(1+x)^{m-1}}{(1-x)^{m+1}}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimension numpy array with values between [-1,1].</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The first derivative of Handy transformation at each point.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.HandyTF.deriv2">
+<code class="sig-name descname">deriv2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyTF.deriv2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the 2nd derivative of Handy transformation.</p>
+<div class="math notranslate nohighlight">
+\[\frac{d^2r}{dx^2} = 4mR (m + x) \frac{(1+x)^{m-2}}{(1-x)^{m+2}}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>array</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimension numpy array with values between [-1,1].</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The second derivative of Handy transformation at each point.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.HandyTF.deriv3">
+<code class="sig-name descname">deriv3</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyTF.deriv3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the 3rd derivative of Handy transformation.</p>
+<div class="math notranslate nohighlight">
+\[\frac{d^3r}{dx^3} = 4mR ( 1 + 6 m x + 2 m^2 + 3 x^2)
+\frac{(1+x)^{m-3}}{(1-x)^{m+3}}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>array</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimension numpy array with values between [-1,1].</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The third derivative of Handy transformation at each point.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.HandyTF.inverse">
+<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyTF.inverse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform radiar array [rmin,inf) back to original array [-1,1].</p>
+<div class="math notranslate nohighlight">
+\[x_i = \frac{\sqrt[m]{r_i-r_{min}} - \sqrt[m]{R}}
+           {\sqrt[m]{r_i-r_{min}} + \sqrt[m]{R}}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>r</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – Sorted one dimension radial array with values bewteen [rmin,inf).</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The original one dimension array with values bewteen [-1,1]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.HandyTF.m">
+<em class="property">property </em><code class="sig-name descname">m</code><a class="headerlink" href="#grid.rtransform.HandyTF.m" title="Permalink to this definition">¶</a></dt>
+<dd><p>Free and extra parameter, m must be &gt; 0.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>integer</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.HandyTF.rmin">
+<em class="property">property </em><code class="sig-name descname">rmin</code><a class="headerlink" href="#grid.rtransform.HandyTF.rmin" title="Permalink to this definition">¶</a></dt>
+<dd><p>The minimum value for the transformed radial array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.HandyTF.transform">
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyTF.transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform given array [-1,1] to radial array [rmin,inf).</p>
+<div class="math notranslate nohighlight">
+\[r_i = R \left( \frac{1+x_i}{1-x_i} \right)^m + r_{min}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimension numpy array with values between [-1,1]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>One dimension numpy array with values between [rmin,inf).</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.HandyTF.transform_1d_grid">
+<code class="sig-name descname">transform_1d_grid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">oned_grid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyTF.transform_1d_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a new integral grid by transforming given the OneDGrid.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\int^{\inf}_0 g(r) d r &amp;= \int^b_a g(r(x)) \frac{dr}{dx} dx \\
+                       &amp;= \int^b_a f(x) \frac{dr}{dx} dx \\
+w^r_n = w^x_n \cdot \frac{dr}{dx} \vert_{x_n}\end{split}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>oned_grid</strong> (<a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><em>OneDGrid</em></a>) – An instance of 1D grid.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Transformed 1D grid spanning a different domain.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid">OneDGrid</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – Input is not a proper OneDGrid instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="grid.rtransform.HyperbolicRTransform">
+<em class="property">class </em><code class="sig-name descname">HyperbolicRTransform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">a</span></em>, <em class="sig-param"><span class="n">b</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.rtransform.BaseTransform</span></code></a></p>
+<p>Hyperbolic transform class.</p>
+<dl class="py method">
+<dt id="grid.rtransform.HyperbolicRTransform.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">a</span></em>, <em class="sig-param"><span class="n">b</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hyperbolic transform class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a</strong> (<em>float</em>) – parameter a to determine hyperbolic function</p></li>
+<li><p><strong>b</strong> (<em>float</em>) – parameter b to determine hyperbolic function</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Either a or b is negative.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.HyperbolicRTransform.a">
+<em class="property">property </em><code class="sig-name descname">a</code><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.a" title="Permalink to this definition">¶</a></dt>
+<dd><p>value of parameter a.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.HyperbolicRTransform.b">
+<em class="property">property </em><code class="sig-name descname">b</code><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.b" title="Permalink to this definition">¶</a></dt>
+<dd><p>value of parameter b.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.HyperbolicRTransform.deriv">
+<code class="sig-name descname">deriv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.deriv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the first derivative of hyperbolic transformation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.HyperbolicRTransform.deriv2">
+<code class="sig-name descname">deriv2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.deriv2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the second derivative of hyperbolic transformation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.HyperbolicRTransform.deriv3">
+<code class="sig-name descname">deriv3</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.deriv3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the third derivative of hyperbolic transformation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.HyperbolicRTransform.inverse">
+<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.inverse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the inverse of hyperbolic transformation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.HyperbolicRTransform.transform">
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform hyperbolic transformation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.HyperbolicRTransform.transform_1d_grid">
+<code class="sig-name descname">transform_1d_grid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">oned_grid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.transform_1d_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a new integral grid by transforming given the OneDGrid.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\int^{\inf}_0 g(r) d r &amp;= \int^b_a g(r(x)) \frac{dr}{dx} dx \\
+                       &amp;= \int^b_a f(x) \frac{dr}{dx} dx \\
+w^r_n = w^x_n \cdot \frac{dr}{dx} \vert_{x_n}\end{split}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>oned_grid</strong> (<a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><em>OneDGrid</em></a>) – An instance of 1D grid.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Transformed 1D grid spanning a different domain.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid">OneDGrid</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – Input is not a proper OneDGrid instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="grid.rtransform.IdentityRTransform">
+<em class="property">class </em><code class="sig-name descname">IdentityRTransform</code><a class="headerlink" href="#grid.rtransform.IdentityRTransform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.rtransform.BaseTransform</span></code></a></p>
+<p>Identity Transform class.</p>
+<dl class="py method">
+<dt id="grid.rtransform.IdentityRTransform.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.IdentityRTransform.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.IdentityRTransform.deriv">
+<code class="sig-name descname">deriv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.IdentityRTransform.deriv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the first derivative of identity transform.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.IdentityRTransform.deriv2">
+<code class="sig-name descname">deriv2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.IdentityRTransform.deriv2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the second Derivative of identity transform.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.IdentityRTransform.deriv3">
+<code class="sig-name descname">deriv3</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.IdentityRTransform.deriv3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the third Derivative of identity transform.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.IdentityRTransform.inverse">
+<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.IdentityRTransform.inverse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the inverse of identity transform.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.IdentityRTransform.transform">
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.IdentityRTransform.transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform given array into itself.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.IdentityRTransform.transform_1d_grid">
+<code class="sig-name descname">transform_1d_grid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">oned_grid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.IdentityRTransform.transform_1d_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a new integral grid by transforming given the OneDGrid.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\int^{\inf}_0 g(r) d r &amp;= \int^b_a g(r(x)) \frac{dr}{dx} dx \\
+                       &amp;= \int^b_a f(x) \frac{dr}{dx} dx \\
+w^r_n = w^x_n \cdot \frac{dr}{dx} \vert_{x_n}\end{split}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>oned_grid</strong> (<a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><em>OneDGrid</em></a>) – An instance of 1D grid.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Transformed 1D grid spanning a different domain.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid">OneDGrid</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – Input is not a proper OneDGrid instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="grid.rtransform.InverseTF">
+<em class="property">class </em><code class="sig-name descname">InverseTF</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">transform</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.InverseTF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.rtransform.BaseTransform</span></code></a></p>
+<p>Inverse transformation class, [rmin, rmax] or [rmin, inf) -&gt; [-1, 1].</p>
+<dl class="py method">
+<dt id="grid.rtransform.InverseTF.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">transform</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.InverseTF.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct InverseTF instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>transform</strong> (<a class="reference internal" href="#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><em>BaseTransform</em></a>) – Basic one dimension transformation instance</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – The input need to be a BaseTransform instance</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.InverseTF.deriv">
+<code class="sig-name descname">deriv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.InverseTF.deriv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the 1st derivative of inverse transformation.</p>
+<div class="math notranslate nohighlight">
+\[\frac{dx}{dr} = (\frac{dr}{dx})^{-1}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>r</strong> (<em>np.array</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimension numpy array located between [ro, rmax(inf)]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>1st derivative of inverse transformation at each points</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.InverseTF.deriv2">
+<code class="sig-name descname">deriv2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.InverseTF.deriv2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the 2nd derivative of inverse transformation.</p>
+<div class="math notranslate nohighlight">
+\[\frac{d^2 x}{dr^2} = - \frac{d^2 r}{dx^2} (\frac{dx}{dr})^3\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>r</strong> (<em>np.array</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimension numpy array located between [ro, rmax(inf)]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>2nd derivative of inverse transformation at each points</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.InverseTF.deriv3">
+<code class="sig-name descname">deriv3</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.InverseTF.deriv3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the 3rd derivative of inverse transformation.</p>
+<div class="math notranslate nohighlight">
+\[\frac{d^3 x}{dr^3} = -\frac{d^3 r}{dx^3} (\frac{dx}{dr})^4
+                   + 3 (\frac{d^2 r}{dx^2})^2 (\frac{dx}{dr})^5\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>r</strong> (<em>np.array</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimension numpy array located between [ro, rmax(inf)]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>3rd derivative of inverse transformation at each points</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.InverseTF.inverse">
+<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.InverseTF.inverse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform one dimension array[-1, 1] to array [rmin, rmax(inf)].</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>np.ndarray</em>) – One dimension numpy array located between [-1, 1]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>numpy array located between [rmin, rmax(inf)]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.InverseTF.transform">
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.InverseTF.transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform array back to original one dimension array.</p>
+<p>InvTF.transfrom is equivalent to OriginTF.inverse
+InvTF.inverse is equivalent to OriginTF.transform</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>r</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – Grid locates between [rmin, rmax] or [rmin, inf) depends on the
+domain of its original transformation</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Original one dimension array locates between [-1, 1]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.InverseTF.transform_1d_grid">
+<code class="sig-name descname">transform_1d_grid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">oned_grid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.InverseTF.transform_1d_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a new integral grid by transforming given the OneDGrid.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\int^{\inf}_0 g(r) d r &amp;= \int^b_a g(r(x)) \frac{dr}{dx} dx \\
+                       &amp;= \int^b_a f(x) \frac{dr}{dx} dx \\
+w^r_n = w^x_n \cdot \frac{dr}{dx} \vert_{x_n}\end{split}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>oned_grid</strong> (<a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><em>OneDGrid</em></a>) – An instance of 1D grid.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Transformed 1D grid spanning a different domain.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid">OneDGrid</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – Input is not a proper OneDGrid instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="grid.rtransform.KnowlesTF">
+<em class="property">class </em><code class="sig-name descname">KnowlesTF</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rmin</span></em>, <em class="sig-param"><span class="n">R</span></em>, <em class="sig-param"><span class="n">k</span></em>, <em class="sig-param"><span class="n">trim_inf</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.KnowlesTF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.rtransform.BaseTransform</span></code></a></p>
+<p>Knowles Transformation class.</p>
+<dl class="py method">
+<dt id="grid.rtransform.KnowlesTF.R">
+<em class="property">property </em><code class="sig-name descname">R</code><a class="headerlink" href="#grid.rtransform.KnowlesTF.R" title="Permalink to this definition">¶</a></dt>
+<dd><p>The scale factor for the transformed radial array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.KnowlesTF.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rmin</span></em>, <em class="sig-param"><span class="n">R</span></em>, <em class="sig-param"><span class="n">k</span></em>, <em class="sig-param"><span class="n">trim_inf</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.KnowlesTF.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct Knowles transform [-1,1] -&gt; [rmin,inf).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rmin</strong> (<em>float</em>) – The minimum coordinate for transformed radial array.</p></li>
+<li><p><strong>R</strong> (<em>float</em>) – The scale factor for transformed radial array.</p></li>
+<li><p><strong>k</strong> (<em>integer k &gt; 0</em>) – Free parameter, k must be &gt; 0.</p></li>
+<li><p><strong>trim_inf</strong> (<em>bool</em><em>, </em><em>optional</em>) – Flag to trim infinite value in transformed array. If True, it will
+replace np.inf with 1e16. This may cause unexpected errors in the
+following operations.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.KnowlesTF.deriv">
+<code class="sig-name descname">deriv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.KnowlesTF.deriv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the 1st derivative of Knowles transformation.</p>
+<div class="math notranslate nohighlight">
+\[\frac{dr}{dx} = kR \frac{(1+x_i)^{k-1}}{2^k-(1+x_i)^k}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimension numpy array with values between [-1,1].</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The first derivative of Knowles transformation at each point.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.KnowlesTF.deriv2">
+<code class="sig-name descname">deriv2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.KnowlesTF.deriv2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the 2nd derivative of Knowles transformation.</p>
+<div class="math notranslate nohighlight">
+\[\frac{d^2r}{dx^2} = kR \frac{(1+x_i)^{k-2}
+\left(2^k(k-1) + (1+x_i)^k \right)}{\left( 2^k-(1+x_i)^k\right)^2}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimension numpy array with values between [-1,1].</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The second derivative of Knowles transformation at each point.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.KnowlesTF.deriv3">
+<code class="sig-name descname">deriv3</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.KnowlesTF.deriv3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the 3rd derivative of Knowles transformation.</p>
+<div class="math notranslate nohighlight">
+\[\frac{d^3r}{dx^3} = kR \frac{(1+x_i)^{k-3}
+\left( 4^k (k-1) (k-2) + 2^k (k-1)(k+4)(1+x_i)^k
+       +2(1+x_i)^k
+\right)}{\left( 2^k - (1+x_i)^k \right)^3}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>array</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimension numpy array with values between [-1,1].</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The third derivative of Knowles transformation at each point.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.KnowlesTF.inverse">
+<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.KnowlesTF.inverse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform radiar array [rmin,inf) back to original array [-1,1].</p>
+<div class="math notranslate nohighlight">
+\[x_i = 2 \sqrt[k]{1-\exp \left( -\frac{r_i-r_{min}}{R}\right)}-1\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>r</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – Sorted one dimension radial array with values bewteen [rmin,inf).</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The original one dimension array with values bewteen [-1,1]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.KnowlesTF.k">
+<em class="property">property </em><code class="sig-name descname">k</code><a class="headerlink" href="#grid.rtransform.KnowlesTF.k" title="Permalink to this definition">¶</a></dt>
+<dd><p>Free and extra parameter, k must be &gt; 0.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.KnowlesTF.rmin">
+<em class="property">property </em><code class="sig-name descname">rmin</code><a class="headerlink" href="#grid.rtransform.KnowlesTF.rmin" title="Permalink to this definition">¶</a></dt>
+<dd><p>The minimum value for the transformed radial array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.KnowlesTF.transform">
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.KnowlesTF.transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform given array [-1,1] to radial array [rmin,inf).</p>
+<div class="math notranslate nohighlight">
+\[r_i = r_{min} - R \log \left( 1 - 2^{-k} (x_i + 1)^k \right)\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimension numpy array with values between [-1,1]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>One dimension numpy array with values between [rmin,inf).</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.KnowlesTF.transform_1d_grid">
+<code class="sig-name descname">transform_1d_grid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">oned_grid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.KnowlesTF.transform_1d_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a new integral grid by transforming given the OneDGrid.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\int^{\inf}_0 g(r) d r &amp;= \int^b_a g(r(x)) \frac{dr}{dx} dx \\
+                       &amp;= \int^b_a f(x) \frac{dr}{dx} dx \\
+w^r_n = w^x_n \cdot \frac{dr}{dx} \vert_{x_n}\end{split}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>oned_grid</strong> (<a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><em>OneDGrid</em></a>) – An instance of 1D grid.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Transformed 1D grid spanning a different domain.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid">OneDGrid</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – Input is not a proper OneDGrid instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="grid.rtransform.LinearRTransform">
+<em class="property">class </em><code class="sig-name descname">LinearRTransform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rmin</span></em>, <em class="sig-param"><span class="n">rmax</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearRTransform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.rtransform.BaseTransform</span></code></a></p>
+<p>Linear transform class.</p>
+<dl class="py method">
+<dt id="grid.rtransform.LinearRTransform.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rmin</span></em>, <em class="sig-param"><span class="n">rmax</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearRTransform.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize linear transform class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rmin</strong> (<em>float</em>) – Define the lower end of the linear transform</p></li>
+<li><p><strong>rmax</strong> (<em>float</em>) – Define the upper end of the linear transform</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Value of rmin is larger than rmax</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.LinearRTransform.deriv">
+<code class="sig-name descname">deriv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearRTransform.deriv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the first derivative of linear transformation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.LinearRTransform.deriv2">
+<code class="sig-name descname">deriv2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearRTransform.deriv2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the second derivative of linear transformation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.LinearRTransform.deriv3">
+<code class="sig-name descname">deriv3</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearRTransform.deriv3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the third derivative of linear transformation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.LinearRTransform.inverse">
+<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearRTransform.inverse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the inverse of linear transformation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.LinearRTransform.rmax">
+<em class="property">property </em><code class="sig-name descname">rmax</code><a class="headerlink" href="#grid.rtransform.LinearRTransform.rmax" title="Permalink to this definition">¶</a></dt>
+<dd><p>rmax value of the tf.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.LinearRTransform.rmin">
+<em class="property">property </em><code class="sig-name descname">rmin</code><a class="headerlink" href="#grid.rtransform.LinearRTransform.rmin" title="Permalink to this definition">¶</a></dt>
+<dd><p>rmin value of the tf.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.LinearRTransform.transform">
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearRTransform.transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform linear transformation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.LinearRTransform.transform_1d_grid">
+<code class="sig-name descname">transform_1d_grid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">oned_grid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearRTransform.transform_1d_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a new integral grid by transforming given the OneDGrid.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\int^{\inf}_0 g(r) d r &amp;= \int^b_a g(r(x)) \frac{dr}{dx} dx \\
+                       &amp;= \int^b_a f(x) \frac{dr}{dx} dx \\
+w^r_n = w^x_n \cdot \frac{dr}{dx} \vert_{x_n}\end{split}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>oned_grid</strong> (<a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><em>OneDGrid</em></a>) – An instance of 1D grid.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Transformed 1D grid spanning a different domain.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid">OneDGrid</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – Input is not a proper OneDGrid instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="grid.rtransform.LinearTF">
+<em class="property">class </em><code class="sig-name descname">LinearTF</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rmin</span></em>, <em class="sig-param"><span class="n">rmax</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearTF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.rtransform.BaseTransform</span></code></a></p>
+<p>Linear transformation class.</p>
+<dl class="py method">
+<dt id="grid.rtransform.LinearTF.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rmin</span></em>, <em class="sig-param"><span class="n">rmax</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearTF.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct linear transformation instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rmin</strong> (<em>float</em>) – Minimum value for transformed grid</p></li>
+<li><p><strong>rmax</strong> (<em>float</em>) – Maximum value for transformed grid</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.LinearTF.deriv">
+<code class="sig-name descname">deriv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearTF.deriv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the 1st order derivative.</p>
+<div class="math notranslate nohighlight">
+\[\frac{dr}{dx} = \frac{r_{max} - r_{min}}{2}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>float</em><em> or </em><em>np.ndarray</em>) – number or arrays to be transformed</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>1st order derivative at given points</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float or np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.LinearTF.deriv2">
+<code class="sig-name descname">deriv2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearTF.deriv2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the 2nd order derivative.</p>
+<div class="math notranslate nohighlight">
+\[\frac{d^2 r}{dx^2} = 0\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>float</em><em> or </em><em>np.ndarray</em>) – number or arrays to be transformed</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>2nd order derivative at given points</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float or np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.LinearTF.deriv3">
+<code class="sig-name descname">deriv3</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearTF.deriv3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the 3rd order derivative.</p>
+<div class="math notranslate nohighlight">
+\[\frac{d^2 r}{dx^2} = 0\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>float</em><em> or </em><em>np.ndarray</em>) – number or arrays to be transformed</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>3rd order derivative at given points</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float or np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.LinearTF.inverse">
+<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearTF.inverse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the inverse of the transformation.</p>
+<div class="math notranslate nohighlight">
+\[x_i = \frac{2 r_i - (r_{max} + r_{min})}{r_{max} - r_{min}}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>r</strong> (<em>float</em><em> or </em><em>np.ndarray</em>) – transformed number or arrays</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Original number of array before the transformation</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float or np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.LinearTF.transform">
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearTF.transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform onedgrid form [-1, 1] to [rmin, rmax].</p>
+<div class="math notranslate nohighlight">
+\[r_i = \frac{r_{max} - r_{min}}{2} (1 + x_i)\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>float</em><em> or </em><em>np.ndarray</em>) – number or arrays to be transformed</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Transformed points between [rmin, rmax]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float or np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.LinearTF.transform_1d_grid">
+<code class="sig-name descname">transform_1d_grid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">oned_grid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearTF.transform_1d_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a new integral grid by transforming given the OneDGrid.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\int^{\inf}_0 g(r) d r &amp;= \int^b_a g(r(x)) \frac{dr}{dx} dx \\
+                       &amp;= \int^b_a f(x) \frac{dr}{dx} dx \\
+w^r_n = w^x_n \cdot \frac{dr}{dx} \vert_{x_n}\end{split}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>oned_grid</strong> (<a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><em>OneDGrid</em></a>) – An instance of 1D grid.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Transformed 1D grid spanning a different domain.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid">OneDGrid</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – Input is not a proper OneDGrid instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="grid.rtransform.MultiExpTF">
+<em class="property">class </em><code class="sig-name descname">MultiExpTF</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rmin</span></em>, <em class="sig-param"><span class="n">R</span></em>, <em class="sig-param"><span class="n">trim_inf</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.MultiExpTF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.rtransform.BaseTransform</span></code></a></p>
+<p>MultiExp Transformation class.</p>
+<dl class="py method">
+<dt id="grid.rtransform.MultiExpTF.R">
+<em class="property">property </em><code class="sig-name descname">R</code><a class="headerlink" href="#grid.rtransform.MultiExpTF.R" title="Permalink to this definition">¶</a></dt>
+<dd><p>The scale factor for the transformed radial array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.MultiExpTF.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rmin</span></em>, <em class="sig-param"><span class="n">R</span></em>, <em class="sig-param"><span class="n">trim_inf</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.MultiExpTF.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct MultiExp transform [-1,1] -&gt; [rmin,inf).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rmin</strong> (<em>float</em>) – The minimum coordinate for transformed radial array.</p></li>
+<li><p><strong>R</strong> (<em>float</em>) – The scale factor for transformed radial array.</p></li>
+<li><p><strong>trim_inf</strong> (<em>bool</em><em>, </em><em>optional</em>) – Flag to trim infinite value in transformed array. If True, it will
+replace np.inf with 1e16. This may cause unexpected errors in the
+following operations.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.MultiExpTF.deriv">
+<code class="sig-name descname">deriv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.MultiExpTF.deriv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the 1st derivative of MultiExp transformation.</p>
+<div class="math notranslate nohighlight">
+\[\frac{dr}{dx} = -\frac{R}{1+x}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimension numpy array with values between [-1, 1].</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The first derivative of MultiExp transformation at each point.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.MultiExpTF.deriv2">
+<code class="sig-name descname">deriv2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.MultiExpTF.deriv2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the 2nd derivative of MultiExp transformation.</p>
+<div class="math notranslate nohighlight">
+\[\frac{d^2r}{dx^2} = \frac{R}{(1 + x)^2}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimension numpy array with values between [-1,1].</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The second derivative of MultiExp transformation at each point.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.MultiExpTF.deriv3">
+<code class="sig-name descname">deriv3</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.MultiExpTF.deriv3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the 3rd derivative of MultiExp transformation.</p>
+<div class="math notranslate nohighlight">
+\[\frac{d^3r}{dx^3} = -\frac{2R}{(1 + x)^3}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimension numpy array with values between [-1,1].</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The third derivative of MultiExp transformation at each point.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.MultiExpTF.inverse">
+<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.MultiExpTF.inverse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform array [rmin,inf) back to original array [-1,1].</p>
+<div class="math notranslate nohighlight">
+\[x_i = 2 \exp \left( \frac{-(r_i - r_{min})}{R} \right) - 1\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>r</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – Sorted one dimension radial array with values bewteen [rmin, inf).</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The original one dimension array located bewteen [-1, 1].</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.MultiExpTF.rmin">
+<em class="property">property </em><code class="sig-name descname">rmin</code><a class="headerlink" href="#grid.rtransform.MultiExpTF.rmin" title="Permalink to this definition">¶</a></dt>
+<dd><p>The minimum value for the transformed radial array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.MultiExpTF.transform">
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.MultiExpTF.transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform given array [-1,1] to radial array [rmin,inf).</p>
+<div class="math notranslate nohighlight">
+\[r_i = -R \log \left( \frac{x_i + 1}{2} \right) + r_{min}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimension numpy array with values between [-1,1].</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Transformed array located between [rmin,inf).</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.MultiExpTF.transform_1d_grid">
+<code class="sig-name descname">transform_1d_grid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">oned_grid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.MultiExpTF.transform_1d_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a new integral grid by transforming given the OneDGrid.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\int^{\inf}_0 g(r) d r &amp;= \int^b_a g(r(x)) \frac{dr}{dx} dx \\
+                       &amp;= \int^b_a f(x) \frac{dr}{dx} dx \\
+w^r_n = w^x_n \cdot \frac{dr}{dx} \vert_{x_n}\end{split}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>oned_grid</strong> (<a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><em>OneDGrid</em></a>) – An instance of 1D grid.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Transformed 1D grid spanning a different domain.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid">OneDGrid</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – Input is not a proper OneDGrid instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="grid.rtransform.PowerRTransform">
+<em class="property">class </em><code class="sig-name descname">PowerRTransform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rmin</span></em>, <em class="sig-param"><span class="n">rmax</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.PowerRTransform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.rtransform.BaseTransform</span></code></a></p>
+<p>Power transform class.</p>
+<dl class="py method">
+<dt id="grid.rtransform.PowerRTransform.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rmin</span></em>, <em class="sig-param"><span class="n">rmax</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.PowerRTransform.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize power transform instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rmin</strong> (<em>float</em>) – Min value for transformed points</p></li>
+<li><p><strong>rmax</strong> (<em>float</em>) – Max value for transformed points</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – value of rmin larger than rmax or one of them is negative</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.PowerRTransform.deriv">
+<code class="sig-name descname">deriv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.PowerRTransform.deriv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute first derivative of power transform.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.PowerRTransform.deriv2">
+<code class="sig-name descname">deriv2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.PowerRTransform.deriv2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute second derivative of power transform.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.PowerRTransform.deriv3">
+<code class="sig-name descname">deriv3</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.PowerRTransform.deriv3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute third derivative of power transform.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.PowerRTransform.inverse">
+<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.PowerRTransform.inverse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the inverse of power transform.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.PowerRTransform.rmax">
+<em class="property">property </em><code class="sig-name descname">rmax</code><a class="headerlink" href="#grid.rtransform.PowerRTransform.rmax" title="Permalink to this definition">¶</a></dt>
+<dd><p>the value of rmax.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.PowerRTransform.rmin">
+<em class="property">property </em><code class="sig-name descname">rmin</code><a class="headerlink" href="#grid.rtransform.PowerRTransform.rmin" title="Permalink to this definition">¶</a></dt>
+<dd><p>the value of rmin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.PowerRTransform.transform">
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.PowerRTransform.transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform power transform.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.rtransform.PowerRTransform.transform_1d_grid">
+<code class="sig-name descname">transform_1d_grid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">oned_grid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.PowerRTransform.transform_1d_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a new integral grid by transforming given the OneDGrid.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\int^{\inf}_0 g(r) d r &amp;= \int^b_a g(r(x)) \frac{dr}{dx} dx \\
+                       &amp;= \int^b_a f(x) \frac{dr}{dx} dx \\
+w^r_n = w^x_n \cdot \frac{dr}{dx} \vert_{x_n}\end{split}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>oned_grid</strong> (<a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><em>OneDGrid</em></a>) – An instance of 1D grid.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Transformed 1D grid spanning a different domain.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid">OneDGrid</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – Input is not a proper OneDGrid instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="grid.utils.html" class="btn btn-neutral float-right" title="grid.utils module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="grid.poisson.html" class="btn btn-neutral float-left" title="grid.poisson module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2021, QC-Devs
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

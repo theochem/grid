@@ -1,0 +1,705 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>grid.basegrid module &mdash; grid  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/override.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="grid.becke module" href="grid.becke.html" />
+    <link rel="prev" title="grid.atomgrid module" href="grid.atomgrid.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> grid
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">grid</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="grid.html">grid package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="grid.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="grid.atomgrid.html">grid.atomgrid module</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">grid.basegrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.becke.html">grid.becke module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.hirshfeld.html">grid.hirshfeld module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.interpolate.html">grid.interpolate module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.lebedev.html">grid.lebedev module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.molgrid.html">grid.molgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.ode.html">grid.ode module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.onedgrid.html">grid.onedgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.periodicgrid.html">grid.periodicgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.poisson.html">grid.poisson module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.rtransform.html">grid.rtransform module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.utils.html">grid.utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="grid.html#module-grid">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">grid</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="modules.html">grid</a> &raquo;</li>
+        
+          <li><a href="grid.html">grid package</a> &raquo;</li>
+        
+      <li>grid.basegrid module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/pyapi/grid.basegrid.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-grid.basegrid">
+<span id="grid-basegrid-module"></span><h1>grid.basegrid module<a class="headerlink" href="#module-grid.basegrid" title="Permalink to this headline">¶</a></h1>
+<p>Construct basic grid data structure.</p>
+<dl class="py class">
+<dt id="grid.basegrid.AngularGrid">
+<em class="property">class </em><code class="sig-name descname">AngularGrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">points</span></em>, <em class="sig-param"><span class="n">weights</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.AngularGrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#grid.basegrid.Grid" title="grid.basegrid.Grid"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.basegrid.Grid</span></code></a></p>
+<p>Angular lebedev grid.</p>
+<dl class="py method">
+<dt id="grid.basegrid.AngularGrid.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">points</span></em>, <em class="sig-param"><span class="n">weights</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.AngularGrid.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct Grid instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>points</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>) or </em><em>np.ndarray</em><em>(</em><em>N</em><em>, </em><em>M</em><em>)</em>) – An array with positions of the grid points.</p></li>
+<li><p><strong>weights</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – An array of weights associated with each point on the grid.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Shape of points and weights does not match.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.basegrid.AngularGrid.get_subgrid">
+<code class="sig-name descname">get_subgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">radius</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.AngularGrid.get_subgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a grid from subset of points within the given radius of center.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>center</strong> (<em>float</em><em> or </em><em>np.array</em><em>(</em><em>M</em><em>,</em><em>)</em>) – Cartesian coordinates of subgrid center.</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – Radius of sphere around the center. When equal to np.inf, the
+subgrid coincides with the whole grid, which can be useful for
+debugging.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Instance of SubGrid.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#grid.basegrid.SubGrid" title="grid.basegrid.SubGrid">SubGrid</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.basegrid.AngularGrid.integrate">
+<code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">value_arrays</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.AngularGrid.integrate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integrate over the whole grid for given multiple value arrays.</p>
+<p>Product of all value_arrays will be computed element-wise then
+integrated on the grid with its weights.
+.. math:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Integral</span> <span class="o">=</span> \<span class="nb">int</span> <span class="n">w</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> \<span class="n">prod_i</span> <span class="n">f_i</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="n">dx</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>*value_arrays</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>, </em><em>)</em>) – One or multiple value array to integrate.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The calculated integral over given integrand or function</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TypeError</strong> – Input integrand is not of type np.ndarray.</p></li>
+<li><p><strong>ValueError</strong> – Input integrand array is given or not of proper shape.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.basegrid.AngularGrid.points">
+<em class="property">property </em><code class="sig-name descname">points</code><a class="headerlink" href="#grid.basegrid.AngularGrid.points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Positions of the grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,) or np.ndarray(N, M)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.basegrid.AngularGrid.size">
+<em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#grid.basegrid.AngularGrid.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>the total number of points on the grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.basegrid.AngularGrid.weights">
+<em class="property">property </em><code class="sig-name descname">weights</code><a class="headerlink" href="#grid.basegrid.AngularGrid.weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>the weights of each grid point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="grid.basegrid.Grid">
+<em class="property">class </em><code class="sig-name descname">Grid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">points</span></em>, <em class="sig-param"><span class="n">weights</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.Grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Basic Grid class for grid information storage.</p>
+<dl class="py method">
+<dt id="grid.basegrid.Grid.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">points</span></em>, <em class="sig-param"><span class="n">weights</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.Grid.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct Grid instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>points</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>) or </em><em>np.ndarray</em><em>(</em><em>N</em><em>, </em><em>M</em><em>)</em>) – An array with positions of the grid points.</p></li>
+<li><p><strong>weights</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – An array of weights associated with each point on the grid.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Shape of points and weights does not match.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.basegrid.Grid.get_subgrid">
+<code class="sig-name descname">get_subgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">radius</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.Grid.get_subgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a grid from subset of points within the given radius of center.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>center</strong> (<em>float</em><em> or </em><em>np.array</em><em>(</em><em>M</em><em>,</em><em>)</em>) – Cartesian coordinates of subgrid center.</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – Radius of sphere around the center. When equal to np.inf, the
+subgrid coincides with the whole grid, which can be useful for
+debugging.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Instance of SubGrid.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#grid.basegrid.SubGrid" title="grid.basegrid.SubGrid">SubGrid</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.basegrid.Grid.integrate">
+<code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">value_arrays</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.Grid.integrate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integrate over the whole grid for given multiple value arrays.</p>
+<p>Product of all value_arrays will be computed element-wise then
+integrated on the grid with its weights.
+.. math:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Integral</span> <span class="o">=</span> \<span class="nb">int</span> <span class="n">w</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> \<span class="n">prod_i</span> <span class="n">f_i</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="n">dx</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>*value_arrays</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>, </em><em>)</em>) – One or multiple value array to integrate.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The calculated integral over given integrand or function</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TypeError</strong> – Input integrand is not of type np.ndarray.</p></li>
+<li><p><strong>ValueError</strong> – Input integrand array is given or not of proper shape.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.basegrid.Grid.points">
+<em class="property">property </em><code class="sig-name descname">points</code><a class="headerlink" href="#grid.basegrid.Grid.points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Positions of the grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,) or np.ndarray(N, M)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.basegrid.Grid.size">
+<em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#grid.basegrid.Grid.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>the total number of points on the grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.basegrid.Grid.weights">
+<em class="property">property </em><code class="sig-name descname">weights</code><a class="headerlink" href="#grid.basegrid.Grid.weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>the weights of each grid point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="grid.basegrid.OneDGrid">
+<em class="property">class </em><code class="sig-name descname">OneDGrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">points</span></em>, <em class="sig-param"><span class="n">weights</span></em>, <em class="sig-param"><span class="n">domain</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.OneDGrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#grid.basegrid.Grid" title="grid.basegrid.Grid"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.basegrid.Grid</span></code></a></p>
+<p>One-Dimensional Grid.</p>
+<dl class="py method">
+<dt id="grid.basegrid.OneDGrid.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">points</span></em>, <em class="sig-param"><span class="n">weights</span></em>, <em class="sig-param"><span class="n">domain</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.OneDGrid.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>points</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – A 1-D array of coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in one-dimension.</p></li>
+<li><p><strong>weights</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – A 1-D array of integration weights of <span class="math notranslate nohighlight">\(N\)</span> points in one-dimension.</p></li>
+<li><p><strong>domain</strong> (<em>tuple</em><em>(</em><em>float</em><em>, </em><em>float</em><em>)</em><em>, </em><em>optional</em>) – Lower and upper bounds for which the grid can carry out numerical
+integration. This does not always coincide with the positions of the first
+and last grid point. For example, in case of the Gauss-Chebyshev quadrature
+the domain is [-1,1] but all grid points lie in (-1, 1).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.basegrid.OneDGrid.domain">
+<em class="property">property </em><code class="sig-name descname">domain</code><a class="headerlink" href="#grid.basegrid.OneDGrid.domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>the range of grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>(float, float)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.basegrid.OneDGrid.get_subgrid">
+<code class="sig-name descname">get_subgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">radius</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.OneDGrid.get_subgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a grid from subset of points within the given radius of center.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>center</strong> (<em>float</em><em> or </em><em>np.array</em><em>(</em><em>M</em><em>,</em><em>)</em>) – Cartesian coordinates of subgrid center.</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – Radius of sphere around the center. When equal to np.inf, the
+subgrid coincides with the whole grid, which can be useful for
+debugging.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Instance of SubGrid.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#grid.basegrid.SubGrid" title="grid.basegrid.SubGrid">SubGrid</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.basegrid.OneDGrid.integrate">
+<code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">value_arrays</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.OneDGrid.integrate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integrate over the whole grid for given multiple value arrays.</p>
+<p>Product of all value_arrays will be computed element-wise then
+integrated on the grid with its weights.
+.. math:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Integral</span> <span class="o">=</span> \<span class="nb">int</span> <span class="n">w</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> \<span class="n">prod_i</span> <span class="n">f_i</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="n">dx</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>*value_arrays</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>, </em><em>)</em>) – One or multiple value array to integrate.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The calculated integral over given integrand or function</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TypeError</strong> – Input integrand is not of type np.ndarray.</p></li>
+<li><p><strong>ValueError</strong> – Input integrand array is given or not of proper shape.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.basegrid.OneDGrid.points">
+<em class="property">property </em><code class="sig-name descname">points</code><a class="headerlink" href="#grid.basegrid.OneDGrid.points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Positions of the grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,) or np.ndarray(N, M)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.basegrid.OneDGrid.size">
+<em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#grid.basegrid.OneDGrid.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>the total number of points on the grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.basegrid.OneDGrid.weights">
+<em class="property">property </em><code class="sig-name descname">weights</code><a class="headerlink" href="#grid.basegrid.OneDGrid.weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>the weights of each grid point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="grid.basegrid.SubGrid">
+<em class="property">class </em><code class="sig-name descname">SubGrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">points</span></em>, <em class="sig-param"><span class="n">weights</span></em>, <em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">indices</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.SubGrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#grid.basegrid.Grid" title="grid.basegrid.Grid"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.basegrid.Grid</span></code></a></p>
+<p>Subset of grid surrounding a center.</p>
+<dl class="py method">
+<dt id="grid.basegrid.SubGrid.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">points</span></em>, <em class="sig-param"><span class="n">weights</span></em>, <em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">indices</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.SubGrid.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize a sub-grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>points</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>) or </em><em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>M</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> grid points in 1D or M-D space.</p></li>
+<li><p><strong>weights</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>)</em>) – Integration weight of <span class="math notranslate nohighlight">\(N\)</span> grid points</p></li>
+<li><p><strong>center</strong> (<em>float</em><em> or </em><em>np.ndarray</em><em>(</em><em>M</em><em>,</em><em>)</em>) – Cartesian coordinates of sub-grid center in 3D space.</p></li>
+<li><p><strong>indices</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em><em>, </em><em>optional</em>) – Indices of <span class="math notranslate nohighlight">\(N\)</span> grid points and weights in the parent grid.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.basegrid.SubGrid.center">
+<em class="property">property </em><code class="sig-name descname">center</code><a class="headerlink" href="#grid.basegrid.SubGrid.center" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cartesian coordinates of sub-grid center.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(3,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.basegrid.SubGrid.get_subgrid">
+<code class="sig-name descname">get_subgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">radius</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.SubGrid.get_subgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a grid from subset of points within the given radius of center.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>center</strong> (<em>float</em><em> or </em><em>np.array</em><em>(</em><em>M</em><em>,</em><em>)</em>) – Cartesian coordinates of subgrid center.</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – Radius of sphere around the center. When equal to np.inf, the
+subgrid coincides with the whole grid, which can be useful for
+debugging.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Instance of SubGrid.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#grid.basegrid.SubGrid" title="grid.basegrid.SubGrid">SubGrid</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.basegrid.SubGrid.indices">
+<em class="property">property </em><code class="sig-name descname">indices</code><a class="headerlink" href="#grid.basegrid.SubGrid.indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Indices of grid points and weights in the parent grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.basegrid.SubGrid.integrate">
+<code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">value_arrays</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.SubGrid.integrate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integrate over the whole grid for given multiple value arrays.</p>
+<p>Product of all value_arrays will be computed element-wise then
+integrated on the grid with its weights.
+.. math:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Integral</span> <span class="o">=</span> \<span class="nb">int</span> <span class="n">w</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> \<span class="n">prod_i</span> <span class="n">f_i</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="n">dx</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>*value_arrays</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>, </em><em>)</em>) – One or multiple value array to integrate.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The calculated integral over given integrand or function</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TypeError</strong> – Input integrand is not of type np.ndarray.</p></li>
+<li><p><strong>ValueError</strong> – Input integrand array is given or not of proper shape.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.basegrid.SubGrid.points">
+<em class="property">property </em><code class="sig-name descname">points</code><a class="headerlink" href="#grid.basegrid.SubGrid.points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Positions of the grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,) or np.ndarray(N, M)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.basegrid.SubGrid.size">
+<em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#grid.basegrid.SubGrid.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>the total number of points on the grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.basegrid.SubGrid.weights">
+<em class="property">property </em><code class="sig-name descname">weights</code><a class="headerlink" href="#grid.basegrid.SubGrid.weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>the weights of each grid point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="grid.becke.html" class="btn btn-neutral float-right" title="grid.becke module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="grid.atomgrid.html" class="btn btn-neutral float-left" title="grid.atomgrid module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2021, QC-Devs
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
