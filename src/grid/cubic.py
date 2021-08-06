@@ -255,26 +255,25 @@ class Tensor1DGrids(_CubicGrid):
     r"""Tensor1DGrids : Tensor product of three one-dimensional grids."""
 
     def __init__(self, oned_x, oned_y, oned_z):
-        r"""Construct Tensor1DGrids: Tensor product of three one-dimensional grids."""
+        r"""Construct Tensor1DGrids by tensor product of three one-dimensional grids.
+
+        Parameters
+        ----------
+        """
         if not isinstance(oned_x, OneDGrid):
             raise TypeError(
-                "Argument 'oned_x' ({0}) should be of type `OneDGrid`.".format(
-                    type(oned_x)
-                )
+                f"Argument oned_x should be an instance of `OneDGrid`, got {type(oned_x)}"
             )
         if not isinstance(oned_y, OneDGrid):
             raise TypeError(
-                "Argument 'oned_y' ({0}) should be of type 'OneDGrid'".format(
-                    type(oned_y)
-                )
+                f"Argument oned_y should be an instance of `OneDGrid`, got {type(oned_y)}"
             )
         if not isinstance(oned_z, OneDGrid):
             raise TypeError(
-                "Argument 'oned_z' ({0}) should be of type 'OneDGrid'".format(
-                    type(oned_z)
-                )
+                f"Argument oned_z should be an instance of `OneDGrid`, got {type(oned_z)}"
             )
 
+        # number of points in x, y, and z direction of the cubic grid
         shape = (oned_x.size, oned_y.size, oned_z.size)
 
         # Construct 3D set of points
@@ -295,7 +294,7 @@ class Tensor1DGrids(_CubicGrid):
 
     @property
     def origin(self):
-        r"""Return the origin of the coordinate system."""
+        r"""Cartesian coordinates of the grid origin."""
         # Bottom, Left-Most, Down-most point of the Cubic Grid in [-1, 1]^3.
         return self.points[0]
 
