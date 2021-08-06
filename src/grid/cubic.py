@@ -31,30 +31,28 @@ from sympy.functions.combinatorial.numbers import bell
 
 class _CubicGrid(Grid):
     def __init__(self, points, weights, shape):
-        r"""
-        Construct the CubicGrid class, i.e. each point is specified by (i, j, k) indices.
+        r"""Construct the CubicGrid class, i.e. each point is specified by (i, j, k) indices.
 
         Parameters
         ----------
-        points : np.ndarray(M, 3)
-            The 3D points of the cubic grid.
-        weights : np.ndarray(M)
-            The weights corresponding to each cubic grid point.  It moves in the following
-            order (z, y, x).
+        points : np.ndarray(N, 3)
+            The 3D Cartesian coordinates of :math:`N` grid points.
+        weights : np.ndarray(N)
+            The integration weights corresponding to each :math:`N` grid point.
         shape : np.ndarray(3)
-            The number of points in each of the three (x, y, z) directions.
+            The number of grid points in the x, y, and z directions.
 
         """
         if len(shape) != 3:
             raise ValueError(
-                "Shape (length {0}) should have length three.".format(len(shape))
+                f"Argument shape should have length three; got length {0}.".format(len(shape))
             )
         self._shape = shape
         super().__init__(points, weights)
 
     @property
     def shape(self):
-        r"""Return number of points in each direction."""
+        r"""Number of grid points in the x, y, and z direction."""
         return self._shape
 
     def interpolate_function(
@@ -66,15 +64,14 @@ class _CubicGrid(Grid):
         nu_y=0,
         nu_z=0,
     ):
-        r"""
-        Interpolate function at a point.
+        r"""Interpolate function value at a given point.
 
         Parameters
         ----------
         real_pt : np.ndarray(3,)
-            Point in :math:`\mathbb{R}^3` that needs to be interpolated.
+            The 3D Cartesian coordinates of point in :math:`\mathbb{R}^3`.
         func_values : np.ndarray(N,)
-            Function values at each point of the grid `points`.
+            Function values at each point of the grid :math:`M` grid points.
         use_log : bool
             If true, then logarithm is applied before interpolating to the function values.
             Can only be used for interpolating derivatives when the derivative is not a
@@ -207,8 +204,7 @@ class _CubicGrid(Grid):
         return interpolated
 
     def coordinates_to_index(self, indices):
-        r"""
-        Convert coordinates to Index, ie (i, j, k) to an integer m corresponding to grid point.
+        r"""Convert (i, j, k) integer coordinates to the grid index m.
 
         Parameters
         ----------
@@ -226,11 +222,12 @@ class _CubicGrid(Grid):
         return index
 
     def index_to_coordinates(self, index):
-        r"""
-        Convert Index to coordinates, ie integer m to (i, j, k) position of the Cubic Grid.
+        r"""Convert index of grid point to its (i, j, k) coordinates in a cubic grid.
 
-        Cubic Grid has shape (N_x, N_y, N_z) where N_x is the number of points
-        in the x-direction, etc.  Then 0 <= i <= N_x - 1, 0 <= j <= N_y - 1, etc.
+        Cubic grid has a shape of :math:`(N_x, N_y, N_z)` denoting the number of points in
+        :math:`x`, :math:`y`, and :math:`z` directions. So, each grid point has a :math:`(i, j, k)`
+        integer coordinate where :math:`0 <= i <= N_x - 1`, :math:`0 <= j <= N_y - 1`,
+        and :math:`0 <= k <= N_z - 1`.
 
         Parameters
         ----------
@@ -240,10 +237,13 @@ class _CubicGrid(Grid):
         Returns
         -------
         indices : (int, int, int)
-            The ith, jth, kth position of the grid point.
+            The corresponding :math:`(i, j, k)` integer coordinates in a cubic grid.
 
         """
-        assert index >= 0, "Index should be positive. %r" % index
+        if not index >= 0:
+            raise ValueError(
+                f"Argument index should be a positive integer, got {index}"
+            )
         n_1d, n_2d = self.shape[2], self.shape[1] * self.shape[2]
         i = index // n_2d
         j = (index - n_2d * i) // n_1d
@@ -528,8 +528,7 @@ class UniformCubicGrid(_CubicGrid):
             )
 
     def closest_point(self, point, which="closest"):
-        r"""
-        Return closest index of the grid point to a point.
+        r"""Identify the index of the closest grid point to a given point.
 
         Imagine a point inside a small sub-cube. If `closest` is selected, it will
         pick the corner in the sub-cube that is closest to that point.
