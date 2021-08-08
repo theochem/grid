@@ -449,14 +449,12 @@ class TestMolGrid(TestCase):
         occupation = mg.integrate(fn)
         assert_almost_equal(occupation, 4.0, decimal=4)
 
-    def test_horton_molgrid(self):
+    def test_from_size(self):
         """Test horton style grid."""
         nums = np.array([1, 1])
         coors = np.array([[0, 0, -0.5], [0, 0, 0.5]])
         becke = BeckeWeights(order=3)
-        mol_grid = MolGrid.horton_molgrid(
-            nums, coors, self.rgrid, 110, becke, rotate=False
-        )
+        mol_grid = MolGrid.from_size(nums, coors, self.rgrid, 110, becke, rotate=False)
         atg1 = AtomGrid.from_pruned(
             self.rgrid,
             0.5,
@@ -575,7 +573,7 @@ class TestMolGrid(TestCase):
         assert_allclose(wholegrid.indices, np.arange(grid.size))
 
         # initialize MolGrid like horton
-        grid = MolGrid.horton_molgrid(
+        grid = MolGrid.from_size(
             nums, coords[np.newaxis, :], self.rgrid, 110, BeckeWeights(), store=True
         )
         fn = np.exp(-4.0 * np.linalg.norm(grid.points, axis=-1))
@@ -591,7 +589,7 @@ class TestMolGrid(TestCase):
         """Test local grid for a molecule with one atom."""
         nums = np.array([1, 3])
         coords = np.array([[0.0, 0.0, -0.5], [0.0, 0.0, 0.5]])
-        grid = MolGrid.horton_molgrid(
+        grid = MolGrid.from_size(
             nums, coords, self.rgrid, 110, BeckeWeights(), store=True, rotate=False
         )
         fn0 = np.exp(-4.0 * np.linalg.norm(grid.points - coords[0], axis=-1))
