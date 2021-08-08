@@ -409,6 +409,8 @@ class UniformCubicGrid(_CubicGrid):
             .. math::
                 w_{ijk} = V \cdot \frac{M_x - 1}{M_x} \frac{M_y - 1}{M_y} \frac{M_z - 1}{M_z}
 
+            Default is "Trapezoid".
+
         """
         if not isinstance(origin, np.ndarray):
             raise TypeError("origin should be a numpy array.")
@@ -441,9 +443,104 @@ class UniformCubicGrid(_CubicGrid):
         super().__init__(points, weights, shape)
 
     @classmethod
-    def from_molecule(cls, atnums, atcoords, spacing=0.2, extension=5.0, rotate=True):
-        r"""Construct a uniform grid given the molecular coordinates."""
-        raise NotImplementedError
+    def from_molecule(cls, pseudo_numbers, atcoords, spacing=0.2, extension=5.0, rotate=True,
+                      weight="Trapezoid"):
+        r"""
+        Construct a uniform grid given the molecular coordinates.
+
+        Parameters
+        ----------
+        pseudo_numbers :  np.ndarray, shape=(M,)
+            Pseudo-number of `M` atoms in the molecule.
+        atcoords :  np.ndarray, shape=(M,3)
+            Cartesian coordinates of `M` atoms in the molecule.
+        spacing : float, optional
+            Increment between grid points along `x`, `y` and `z` direction.
+        extension : float, optional
+            The extension of the cube on each side of the molecule.
+        rotate : bool, optional
+            When True, the molecule is rotated so the axes of the cube file are
+            aligned with the principle axes of rotation of the molecule.
+        weight_type : str, optional
+            The integration weighting scheme. Can be either:
+            Rectangle :
+                The weights are the standard Riemannian weights,
+
+                .. math::
+                    w_{ijk} = \frac{V}{M_x\cdot M_y \cdot M_z}
+                where :math:`V` is the volume of the uniform cubic grid.
+
+            Trapezoid :
+                Equivalent to rectangle rule with the assumption function is zero on the boundaries.
+
+                 .. math::
+                    w_{ijk} = \frac{V}{(M_x + 1) \cdot (M_y + 1) \cdot (M_z + 1)}
+                where :math:`V` is the volume of the uniform cubic grid.
+
+            Fourier1 :
+                Assumes function can be expanded in a Fourier series, and then use Gaussian
+                quadrature. Assumes the function is zero at the boundary of the cube.
+
+                .. math::
+                    w_{ijk} = \frac{8}{(M_x + 1) \cdot (M_y + 1) \cdot (M_z + 1)} \bigg[
+                    \bigg(\sum_{p=1}^{M_x} \frac{\sin(ip \pi/(M_x + 1)) (1 - \cos(p\pi)}{p\pi}
+                         \bigg)
+                         \bigg(\sum_{p=1}^{M_y} \frac{\sin(jp \pi/(M_y + 1)) (1 - \cos(p\pi)}{p\pi}
+                         \bigg)
+                         \bigg(\sum_{p=1}^{M_z} \frac{\sin(kp \pi/(M_z + 1)) (1 - \cos(p\pi)}{p\pi}
+                         \bigg)
+                    \bigg]
+            Fourier2 :
+                Alternative weights based on Fourier series. Assumes the function is zero at the
+                boundary of the cube.
+
+                .. math::
+                    w_{ijk} = V^\prime \cdot w_i w_j w_k,
+                    w_i &= \bigg(\frac{2\sin((j - 0.5)\pi) \sin^2(M_x\pi/2)}{M_x^2 \pi} +
+                     \frac{4}{M_x \pi} \sum_{p=1}^{M_x - 1}
+                     \frac{\sin((2j-1)p\pi /n_x) sin^2(p \pi)\}{\pi}bigg)
+
+            Alternative :
+                This does not assume function is zero at the boundary.
+
+            .. math::
+                w_{ijk} = V \cdot \frac{M_x - 1}{M_x} \frac{M_y - 1}{M_y} \frac{M_z - 1}{M_z}
+
+            Default is "Trapezoid".
+        """
+        # calculate center of mass of the nuclear charges:
+        totz = np.sum(pseudo_numbers)
+        com = np.dot(pseudo_numbers, atcoords) / totz
+        if rotate:
+            # calculate moment of inertia tensor:
+            itensor = np.zeros([3, 3])
+            for i in range(pseudo_numbers.shape[0]):
+                xyz = atcoords[i] - com
+                r = np.linalg.norm(xyz)**2.0
+                tempitens = np.diag([r, r, r])
+                tempitens -= np.outer(xyz.T, xyz)
+                itensor += pseudo_numbers[i] * tempitens
+
+            _, v = np.linalg.eigh(itensor)
+            new_coordinates = np.dot((atcoords - com), v)
+            axes = spacing * v
+
+        else:
+            # Just use the original coordinates
+            new_coordinates = atcoords
+            # Compute the unit vectors of the cubic grid's coordinate system
+            axes = np.diag([spacing, spacing, spacing])
+
+        # maximum and minimum value of x, y and z coordinates
+        max_coordinate = np.amax(new_coordinates, axis=0)
+        min_coordinate = np.amin(new_coordinates, axis=0)
+        # Compute the required number of points along x, y, and z axis
+        shape = (max_coordinate - min_coordinate + 2.0 * extension) / spacing
+        shape = np.ceil(shape)
+        shape = np.array(shape, int)
+        # Compute origin
+        origin = com - np.dot((0.5 * shape), axes)
+        return cls(origin, axes, shape, weight)
 
     @property
     def axes(self):
