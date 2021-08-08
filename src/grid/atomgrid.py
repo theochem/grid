@@ -100,21 +100,21 @@ class AtomGrid(Grid):
         self._size = self._weights.size
 
     @classmethod
-    def from_preset(cls, rgrid, atnum, preset, *_, center=None, rotate=False):
-        """High level to construct prefined atomic grid.
+    def from_preset(cls, rgrid=None, *, atnum, preset, center=None, rotate=False):
+        """High level api to construct an atomic grid with preset arguments.
 
         Examples
         --------
         # construct an atomic grid for H with fine grid setting
-        >>> atgrid = AtomGrid.from_preset(rgrid, 1, "fine")
+        >>> atgrid = AtomGrid.from_preset(rgrid, atnum=1, preset="fine")
 
         Parameters
         ----------
-        rgrid : OneDGrid
+        rgrid : OneDGrid, optional
             The (1-dimensional) radial grid representing the radius of spherical grids.
-        atnum : int
+        atnum : int, keyword-only argument
             The atomic number specifying the predefined grid.
-        preset : str
+        preset : str, keyword-only argument
             The name of predefined grid specifying the radial sectors and their corresponding
             number of Lebedev grid points. Supported preset options include:
             'coarse', 'medium', 'fine', 'veryfine', 'ultrafine', and 'insane'.
@@ -124,6 +124,9 @@ class AtomGrid(Grid):
             Whether to rotate the Lebedev spherical grids at each radial grid point.
             If given an integer, it is used as a seed for generating random rotation matrices.
         """
+        if rgrid is None:
+            # TODO: generate a default rgrid, currently raise an error instead
+            raise ValueError("A default OneDGrid will be generated")
         center = (
             np.zeros(3, dtype=float)
             if center is None

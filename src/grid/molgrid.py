@@ -145,7 +145,7 @@ class MolGrid(Grid):
                     f"Not supported preset type; got preset {preset} with type {type(preset)}"
                 )
             at_grid = AtomGrid.from_preset(
-                rad, atnums[i], gd_type, center=atcoords[i], rotate=rotate
+                rad, atnum=atnums[i], preset=gd_type, center=atcoords[i], rotate=rotate
             )
             atomic_grids.append(at_grid)
         return cls(atnums, atomic_grids, aim_weights, store=store)
