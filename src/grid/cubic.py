@@ -63,6 +63,7 @@ class _CubicGrid(Grid):
         nu_x=0,
         nu_y=0,
         nu_z=0,
+        method="cubic"
     ):
         r"""Interpolate function value at a given point.
 
@@ -88,6 +89,8 @@ class _CubicGrid(Grid):
             If zero, then the function in z-direction is interpolated.
             If greater than zero, then the "nu_z"th-order derivative in the z-direction is
             interpolated.
+        method : str
+            TODO: CUBIC, LINEAR (scipy) , NEAREST (scipy)
 
         Returns
         -------
@@ -95,6 +98,7 @@ class _CubicGrid(Grid):
             Returns the interpolation of a function (or of it's derivatives) at a point.
 
         """
+        #TODO: Add linear and nearest from SCIPY
         if use_log:
             func_values = np.log(func_values)
 
@@ -254,7 +258,7 @@ class _CubicGrid(Grid):
 class Tensor1DGrids(_CubicGrid):
     r"""Tensor1DGrids : Tensor product of three one-dimensional grids."""
 
-    def __init__(self, oned_x, oned_y, oned_z):
+    def __init__(self, oned_x, oned_y, oned_z=None):
         r"""Construct Tensor1DGrids by tensor product of three one-dimensional grids.
 
         Parameters
@@ -268,7 +272,7 @@ class Tensor1DGrids(_CubicGrid):
             raise TypeError(
                 f"Argument oned_y should be an instance of `OneDGrid`, got {type(oned_y)}"
             )
-        if not isinstance(oned_z, OneDGrid):
+        if not isinstance(oned_z, (OneDGrid, None)):
             raise TypeError(
                 f"Argument oned_z should be an instance of `OneDGrid`, got {type(oned_z)}"
             )
@@ -318,6 +322,7 @@ class UniformCubicGrid(_CubicGrid):
                 z_i &= o_z + k \mathbf{a_3},
             \end{align*}
         where :math:`0 \leq i \leq M_x,\quad 0 \leq j \leq M_y, \quad 0 \leq k \leq M_z`.
+        The grid enumerates through the z-axis first, then y-axis then x-axis.
 
 
         Parameters
@@ -558,9 +563,9 @@ class UniformCubicGrid(_CubicGrid):
             )
 
         # Calculate step-size of the cube.
-        step_size_x = np.linalg.norm(self.axes[0] - self.origin)
-        step_size_y = np.linalg.norm(self.axes[1] - self.origin)
-        step_size_z = np.linalg.norm(self.axes[2] - self.origin)
+        step_size_x = np.linalg.norm(self.axes[0])
+        step_size_y = np.linalg.norm(self.axes[1])
+        step_size_z = np.linalg.norm(self.axes[2])
         step_sizes = np.array([step_size_x, step_size_y, step_size_z])
 
         coord = np.array(
