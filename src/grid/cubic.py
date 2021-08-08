@@ -33,6 +33,9 @@ class _CubicGrid(Grid):
     def __init__(self, points, weights, shape):
         r"""Construct the CubicGrid class, i.e. each point is specified by (i, j, k) indices.
 
+        The grid increments in the z-axis first, then y-axis, then x-axis, i.e. it has the
+        lexicographical ordering.
+
         Parameters
         ----------
         points : np.ndarray(N, 3)
@@ -256,13 +259,25 @@ class _CubicGrid(Grid):
 
 
 class Tensor1DGrids(_CubicGrid):
-    r"""Tensor1DGrids : Tensor product of three one-dimensional grids."""
+    r"""
+    Tensor1DGrids : Tensor product of three one-dimensional grids.
+
+    The grid increments in the z-axis first, then y-axis, then x-axis, i.e. lexicographical
+    ordering if in three-dimension and similarly y-axis, then x-axis in two-dimension.
+    """
 
     def __init__(self, oned_x, oned_y, oned_z=None):
-        r"""Construct Tensor1DGrids by tensor product of three one-dimensional grids.
+        r"""Construct Tensor1DGrids by tensor product of two (or three) one-dimensional grids.
 
         Parameters
         ----------
+        oned_x : OneDGrid
+            One-dimensional grid representing the x-axis.
+        oned_y : OneDGrid
+            One-dimensional grid representing the y-axis.
+        oned_z : OneDGrid, optional
+            One-dimensional grid representing the z-axis.
+
         """
         if not isinstance(oned_x, OneDGrid):
             raise TypeError(
@@ -277,23 +292,31 @@ class Tensor1DGrids(_CubicGrid):
                 f"Argument oned_z should be an instance of `OneDGrid`, got {type(oned_z)}"
             )
 
-        # number of points in x, y, and z direction of the cubic grid
-        shape = (oned_x.size, oned_y.size, oned_z.size)
-
-        # Construct 3D set of points
-        points = (
-            np.vstack(
-                np.meshgrid(
-                    oned_x.points,
-                    oned_y.points,
-                    oned_z.points,
-                    indexing="ij",
+        if oned_z is not None:
+            # number of points in x, y, and z direction of the cubic grid
+            shape = (oned_x.size, oned_y.size, oned_z.size)
+            # Construct 3D set of points and weights
+            # Note: points move in z-axis first (x,y-fixed) then y-axis then x-axis,
+            #  i.e., lexicographical ordering
+            points = (
+                np.vstack(
+                    np.meshgrid(
+                        oned_x.points,
+                        oned_y.points,
+                        oned_z.points,
+                        indexing="ij",
+                    )
                 )
+                    .reshape(3, -1)
+                    .T
             )
-            .reshape(3, -1)
-            .T
-        )
-        weights = np.kron(np.kron(oned_x.weights, oned_y.weights), oned_z.weights)
+            weights = np.kron(np.kron(oned_x.weights, oned_y.weights), oned_z.weights)
+        else:
+            # number of points in x, and y direction of the cubic grid
+            shape = (oned_x.size, oned_y.size)
+            # Construct 2D set of points and weights
+            points = np.array(np.meshgrid(oned_x, oned_y)).T.reshape(-1, 2)
+            weights = np.kron(oned_x.weights, oned_y.weights)
         super().__init__(points, weights, shape)
 
     @property
@@ -304,7 +327,12 @@ class Tensor1DGrids(_CubicGrid):
 
 
 class UniformCubicGrid(_CubicGrid):
-    r"""Uniform Cubic Grid, a grid whose points are evenly spaced apart in each axes."""
+    r"""
+    Uniform Cubic Grid, a grid whose points are evenly spaced apart in each axes.
+
+    The grid increments in the z-axis first, then y-axis, then x-axis, i.e. it has the
+    lexicographical ordering.
+    """
 
     def __init__(self, origin, axes, shape, weight_type="Trapezoid"):
         r"""
