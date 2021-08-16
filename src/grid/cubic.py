@@ -335,13 +335,9 @@ class _RegularGrid(Grid):
         j = index - self.shape[1] * i
         return i, j
 
-class Tensor1DGrids(_CubicGrid):
-    r"""
-    Tensor1DGrids : Tensor product of three one-dimensional grids.
 
-    The grid increments in the z-axis first, then y-axis, then x-axis, i.e. lexicographical
-    ordering if in three-dimension and similarly y-axis, then x-axis in two-dimension.
-    """
+class Tensor1DGrids(_RegularGrid):
+    r"""Tensor product of two/three one-dimensional grids."""
 
     def __init__(self, oned_x, oned_y, oned_z=None):
         r"""Construct Tensor1DGrids by tensor product of two (or three) one-dimensional grids.
@@ -364,7 +360,7 @@ class Tensor1DGrids(_CubicGrid):
             raise TypeError(
                 f"Argument oned_y should be an instance of `OneDGrid`, got {type(oned_y)}"
             )
-        if not isinstance(oned_z, (OneDGrid, None)):
+        if not isinstance(oned_z, (OneDGrid, type(None))):
             raise TypeError(
                 f"Argument oned_z should be an instance of `OneDGrid`, got {type(oned_z)}"
             )
@@ -384,15 +380,25 @@ class Tensor1DGrids(_CubicGrid):
                         indexing="ij",
                     )
                 )
-                    .reshape(3, -1)
-                    .T
+                .reshape(3, -1)
+                .T
             )
             weights = np.kron(np.kron(oned_x.weights, oned_y.weights), oned_z.weights)
         else:
-            # number of points in x, and y direction of the cubic grid
+            # number of points in x, and y direction of the two-dimensional grid
             shape = (oned_x.size, oned_y.size)
             # Construct 2D set of points and weights
-            points = np.array(np.meshgrid(oned_x, oned_y)).T.reshape(-1, 2)
+            points = (
+                np.vstack(
+                    np.meshgrid(
+                        oned_x.points,
+                        oned_y.points,
+                        indexing="ij",
+                    )
+                )
+                .reshape(2, -1)
+                .T
+            )
             weights = np.kron(oned_x.weights, oned_y.weights)
         super().__init__(points, weights, shape)
 
