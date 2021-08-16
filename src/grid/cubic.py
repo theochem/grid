@@ -280,12 +280,12 @@ class _RegularGrid(Grid):
         return interpolated
 
     def coordinates_to_index(self, indices):
-        r"""Convert (i, j, k) integer coordinates to the grid index m.
+        r"""Convert (i, j) or (i, j, k) integer coordinates to the grid index m.
 
         Parameters
         ----------
-        indices : (int, int, int)
-            The ith, jth, kth position of the grid point.
+        indices : (int, int, int) or (int, int)
+            The ith, jth, (or kth) position of the grid point.
 
         Returns
         -------
@@ -293,17 +293,21 @@ class _RegularGrid(Grid):
             Index of the grid point.
 
         """
-        n_1d, n_2d = self.shape[2], self.shape[1] * self.shape[2]
-        index = n_2d * indices[0] + n_1d * indices[1] + indices[2]
+        if self.dim == 3:
+            n_1d, n_2d = self.shape[2], self.shape[1] * self.shape[2]
+            index = n_2d * indices[0] + n_1d * indices[1] + indices[2]
+            return index
+        # If two-dimensions
+        index = self.shape[1] * indices[0] + indices[1]
         return index
 
     def index_to_coordinates(self, index):
-        r"""Convert index of grid point to its (i, j, k) coordinates in a cubic grid.
+        r"""Convert index of grid point to its (i, j) or (i, j, k) coordinates in a cubic grid.
 
         Cubic grid has a shape of :math:`(N_x, N_y, N_z)` denoting the number of points in
         :math:`x`, :math:`y`, and :math:`z` directions. So, each grid point has a :math:`(i, j, k)`
         integer coordinate where :math:`0 <= i <= N_x - 1`, :math:`0 <= j <= N_y - 1`,
-        and :math:`0 <= k <= N_z - 1`.
+        and :math:`0 <= k <= N_z - 1`.  Two-dimensional case similarly follows.
 
         Parameters
         ----------
@@ -320,12 +324,16 @@ class _RegularGrid(Grid):
             raise ValueError(
                 f"Argument index should be a positive integer, got {index}"
             )
-        n_1d, n_2d = self.shape[2], self.shape[1] * self.shape[2]
-        i = index // n_2d
-        j = (index - n_2d * i) // n_1d
-        k = index - n_2d * i - n_1d * j
-        return i, j, k
-
+        if self.dim == 3:
+            n_1d, n_2d = self.shape[2], self.shape[1] * self.shape[2]
+            i = index // n_2d
+            j = (index - n_2d * i) // n_1d
+            k = index - n_2d * i - n_1d * j
+            return i, j, k
+        # If two dimensions
+        i = index // self.shape[1]
+        j = index - self.shape[1] * i
+        return i, j
 
 class Tensor1DGrids(_CubicGrid):
     r"""
