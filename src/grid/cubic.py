@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
-r"""Square/Cubic Regular Grid."""
+r"""Hyper Rectangular Grid In Either Two or Three Dimensions."""
 
 from grid.basegrid import Grid, OneDGrid
 
@@ -29,12 +29,12 @@ from sympy import symbols
 from sympy.functions.combinatorial.numbers import bell
 
 
-class _RegularGrid(Grid):
+class _HyperRectangleGrid(Grid):
     def __init__(self, points, weights, shape):
-        r"""Construct the RegularGrid class.
+        r"""Construct the _HyperRectangleGrid class.
 
-        Regular grid is defined to be a grid where point is specified by (i, j) or (i, j, k)
-        indices.
+        Hyper Rectangle grid is restricted to either two-dimensions and three-dimensions and
+        is defined to be a grid where point is specified by (i, j) or (i, j, k) indices.
 
         Parameters
         ----------
@@ -336,7 +336,7 @@ class _RegularGrid(Grid):
         return i, j
 
 
-class Tensor1DGrids(_RegularGrid):
+class Tensor1DGrids(_HyperRectangleGrid):
     r"""Tensor product of two/three one-dimensional grids."""
 
     def __init__(self, oned_x, oned_y, oned_z=None):
@@ -409,7 +409,7 @@ class Tensor1DGrids(_RegularGrid):
         return self.points[0]
 
 
-class UniformCubicGrid(_RegularGrid):
+class UniformCubicGrid(_HyperRectangleGrid):
     r"""
     Uniform Cubic Grid, a grid whose points are evenly spaced apart in each axes.
 
@@ -654,7 +654,7 @@ class UniformCubicGrid(_RegularGrid):
     def _calculate_volume(self, shape):
         r"""Return the volume of the Uniform Cubic Grid."""
         # Shape needs to be an argument, because I need to calculate the weights before
-        #       initializing the _RegularGrid (where shape is set there).
+        #       initializing the _HyperRectangleGrid (where shape is set there).
         # Volume of a parallelepiped spanned by a, b, c is  | (a x b) dot c|.
         volume = np.dot(
             np.cross(shape[0] * self.axes[0], shape[1] * self.axes[1]),
