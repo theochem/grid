@@ -116,8 +116,8 @@ class TestTensor1DGrids(TestCase):
                     assert_allclose(actual_weight, cubic.weights[index])
                     index += 1
 
-    def test_interpolation_of_gaussian(self):
-        r"""Test interpolation of a Gaussian function."""
+    def test_interpolation_of_gaussian_vertorized(self):
+        r"""Test interpolation of a Gaussian function with vectorization."""
         oned = MidPoint(50)
         cubic = Tensor1DGrids(oned, oned, oned)
 
@@ -125,11 +125,48 @@ class TestTensor1DGrids(TestCase):
             return np.exp(-3 * np.linalg.norm(points, axis=1) ** 2.0)
 
         gaussian_pts = gaussian(cubic.points)
+        num_pts = 500
+        random_pts = np.random.uniform(-0.9, 0.9, (num_pts, 3))
+        interpolated = cubic.interpolate_function(
+            random_pts, gaussian_pts, use_log=False
+        )
+        assert_allclose(interpolated, gaussian(random_pts), rtol=1e-5, atol=1e-6)
+
+    def test_interpolation_of_linear_function_using_scipy_linear_method(self):
+        r"""Test interpolation of a linear function using scipy with linear method."""
+        oned = MidPoint(50)
+        cubic = Tensor1DGrids(oned, oned, oned)
+
+        def linear_func(points):
+            return np.dot(np.array([1.0, 2.0, 3.0]), points.T)
+
+        gaussian_pts = linear_func(cubic.points)
+        num_pts = 50
+        random_pts = np.random.uniform(-0.9, 0.9, (num_pts, 3))
+        interpolated = cubic.interpolate_function(
+            random_pts, gaussian_pts, use_log=False, method="linear"
+        )
+        assert_allclose(interpolated, linear_func(random_pts))
+
+    def test_interpolation_of_constant_function_using_scipy_nearest_method(self):
+        r"""Test interpolation of a constant function using scipy with nearest method."""
+        oned = MidPoint(50)
+        cubic = Tensor1DGrids(oned, oned, oned)
+
+        def linear_func(points):
+            return (
+                np.array([1.0] * points.shape[0])
+                + np.random.random((points.shape[0])) * 1.0e-6
+            )
+
+        gaussian_pts = linear_func(cubic.points)
         num_pts = 5
         random_pts = np.random.uniform(-0.9, 0.9, (num_pts, 3))
         for pt in random_pts:
-            interpolated = cubic.interpolate_function(pt, gaussian_pts, use_log=True)
-            assert_allclose(interpolated, gaussian(np.array([pt]))[0])
+            interpolated = cubic.interpolate_function(
+                pt, gaussian_pts, use_log=False, method="nearest"
+            )
+            assert_allclose(interpolated, linear_func(np.array([pt]))[0], rtol=1e-6)
 
     def test_interpolation_of_various_derivative_polynomial(self):
         r"""Test interpolation of the derivative of a quadraticpolynomial function."""
@@ -141,18 +178,18 @@ class TestTensor1DGrids(TestCase):
 
         def derivative_wrt_one_var(point, i_var_deriv):
             if i_var_deriv == 0:
-                return 4 * point[0] ** 3
+                return 4 * point[0, 0] ** 3
             if i_var_deriv == 1:
-                return 4 * point[1] ** 3
+                return 4 * point[0, 1] ** 3
             if i_var_deriv == 2:
-                return 4 * point[2] ** 3
+                return 4 * point[0, 2] ** 3
 
         def derivative_second_x(point):
-            return 4 * 3 * point[0] ** 2
+            return 4 * 3 * point[0, 0] ** 2
 
         # Evaluate function over the grid
         gaussian_pts = quadratic_polynomial(cubic.points)
-        pt = np.random.uniform(-1, 1, (3,))
+        pt = np.random.uniform(-1, 1, (1, 3))
         # Test taking derivative in x-direction
         interpolated = cubic.interpolate_function(
             pt, gaussian_pts, use_log=False, nu_x=1
