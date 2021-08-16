@@ -21,15 +21,15 @@ r"""Cubic Grid Testing."""
 
 from unittest import TestCase
 
-from grid.cubic import Tensor1DGrids, UniformCubicGrid, _RegularGrid
+from grid.cubic import Tensor1DGrids, UniformCubicGrid, _HyperRectangleGrid
 from grid.onedgrid import GaussLaguerre, MidPoint
 
 import numpy as np
 from numpy.testing import assert_allclose
 
 
-class TestRegularGrid(TestCase):
-    r"""Test RegularGrid class."""
+class TestHyperRectangleGrid(TestCase):
+    r"""Test HyperRectangleGrid class."""
 
     def test_get_points_along_axes(self):
         r"""Test getting the points alongside each axis."""
@@ -47,7 +47,7 @@ class TestRegularGrid(TestCase):
             ]
         )
         weights = np.array([1.0] * points.shape[0])
-        grid = _RegularGrid(points, weights, (2, 2, 2))
+        grid = _HyperRectangleGrid(points, weights, (2, 2, 2))
         x, y, z = grid.get_points_along_axes()
         assert_allclose(x, np.array([0, 1]))
         assert_allclose(y, np.array([0, 1]))
@@ -56,32 +56,32 @@ class TestRegularGrid(TestCase):
         # Two Dimensions
         points = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
         weights = np.array([1.0] * points.shape[0])
-        grid = _RegularGrid(points, weights, (2, 2))
+        grid = _HyperRectangleGrid(points, weights, (2, 2))
         x, y = grid.get_points_along_axes()
         assert_allclose(x, np.array([0, 1]))
         assert_allclose(y, np.array([0, 1]))
 
     def test_raises_error_when_constructing_grid(self):
-        r"""Test parameters of constructing regular grid."""
+        r"""Test parameters of constructing a hyper-rectangular grid."""
         points = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
         weights = np.array([1.0] * points.shape[0])
         # Test with shape length greater than 3
         with self.assertRaises(ValueError) as err:
-            _RegularGrid(points, weights, (2, 2, 2, 2))
+            _HyperRectangleGrid(points, weights, (2, 2, 2, 2))
         self.assertEqual(
             "Argument shape should have length two or three; got length 4.",
             str(err.exception),
         )
         # Test with shape with number of points is one.
         with self.assertRaises(ValueError) as err:
-            _RegularGrid(points, weights, (2, 2, 1))
+            _HyperRectangleGrid(points, weights, (2, 2, 1))
         self.assertEqual(
             "Argument shape should be greater than one in all directions (2, 2, 1).",
             str(err.exception),
         )
         # Test the product of shape doesn't equal the number of points
         with self.assertRaises(ValueError) as err:
-            _RegularGrid(points, weights, (2, 3))
+            _HyperRectangleGrid(points, weights, (2, 3))
         self.assertEqual(
             "The product of every element in shape 6 should match the number of points 4.",
             str(err.exception),
@@ -89,7 +89,7 @@ class TestRegularGrid(TestCase):
         # Test the dimension specified by shape doesn't match the number of points.
         points = np.array([[0, 0, 0], [0, 1, 0], [1, 0, 1], [1, 1, 1]])
         with self.assertRaises(ValueError) as err:
-            _RegularGrid(points, weights, (2, 2))
+            _HyperRectangleGrid(points, weights, (2, 2))
         self.assertEqual(
             "The dimension of the shape/grid 2 should match the dimension of the points 3.",
             str(err.exception),
