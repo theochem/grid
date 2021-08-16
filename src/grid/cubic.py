@@ -46,9 +46,25 @@ class _RegularGrid(Grid):
             The number of grid points in the x, y, and z directions.
 
         """
-        if len(shape) != 3:
+        if len(shape) not in [2, 3]:
             raise ValueError(
-                f"Argument shape should have length three; got length {0}.".format(len(shape))
+                "Argument shape should have length two or three; got length %d."
+                % len(shape)
+            )
+        if np.any(np.array(shape) <= 1.0):
+            raise ValueError(
+                "Argument shape should be greater than one in all directions (%d, %d, %d)."
+                % (shape[0], shape[1], shape[2])
+            )
+        if np.prod(shape) != points.shape[0]:
+            raise ValueError(
+                "The product of every element in shape %d should match the number of points %d."
+                % (np.prod(shape), points.shape[0])
+            )
+        if len(shape) != points.shape[1]:
+            raise ValueError(
+                "The dimension of the shape/grid %d should match the dimension of the points %d."
+                % (len(shape), points.shape[1])
             )
         self._shape = shape
         super().__init__(points, weights)
