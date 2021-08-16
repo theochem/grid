@@ -109,22 +109,15 @@ class _RegularGrid(Grid):
         return x, y
 
     def interpolate_function(
-        self,
-        real_pt,
-        func_values,
-        use_log=False,
-        nu_x=0,
-        nu_y=0,
-        nu_z=0,
-        method="cubic"
+        self, points, func_values, use_log=False, nu_x=0, nu_y=0, nu_z=0, method="cubic"
     ):
         r"""Interpolate function value at a given point.
 
         Parameters
         ----------
-        real_pt : np.ndarray(3,)
-            The 3D Cartesian coordinates of point in :math:`\mathbb{R}^3`.
-        func_values : np.ndarray(N,)
+        points : np.ndarray(M, 3)
+            The 3D Cartesian coordinates of `M` points in :math:`\mathbb{R}^3`.
+        func_values : np.ndarray(M,)
             Function values at each point of the grid :math:`M` grid points.
         use_log : bool
             If true, then logarithm is applied before interpolating to the function values.
@@ -143,7 +136,10 @@ class _RegularGrid(Grid):
             If greater than zero, then the "nu_z"th-order derivative in the z-direction is
             interpolated.
         method : str
-            TODO: CUBIC, LINEAR (scipy) , NEAREST (scipy)
+            The method of interpolation, either cubic, or linear
+            (uses SciPy's RegularGridInterpolator) or nearest (uses SciPy's
+            RegularGridInterpolator). The accuracy decreases as you go to the right as well as the
+            computational cost decreases. Default is "cubic".
 
         Returns
         -------
@@ -151,9 +147,27 @@ class _RegularGrid(Grid):
             Returns the interpolation of a function (or of it's derivatives) at a point.
 
         """
-        #TODO: Add linear and nearest from SCIPY
+        if self.dim == 2:
+            raise NotImplementedError("Interpolation only works for three dimension.")
+        if func_values.shape[0] != np.prod(self.shape):
+            raise ValueError(
+                "Number of function values %d does not match number of grid points"
+                % (func_values.shape[0])
+            )
         if use_log:
             func_values = np.log(func_values)
+
+        # Use scipy if linear and nearest is requested and raise error if it's not cubic.
+        if method in ["linear", "nearest"]:
+            x, y, z = self.get_points_along_axes()
+            func_values = func_values.reshape(self.shape)
+            interpolate = RegularGridInterpolator((x, y, z), func_values, method=method)
+            return interpolate(points)
+        elif method != "cubic":
+            raise ValueError(
+                "Method parameter %s should be either linear, nearest or cubic."
+                % method
+            )
 
         # Interpolate the Z-Axis.
         def z_spline(z, x_index, y_index, nu_z=nu_z):
@@ -168,7 +182,6 @@ class _RegularGrid(Grid):
                 self.points[small_index:large_index, 2],
                 func_values[small_index:large_index],
             )(z, nu_z)
-
             return val
 
         # Interpolate the Y-Axis from a list of interpolated points on the z-axis.
@@ -182,8 +195,11 @@ class _RegularGrid(Grid):
                     for y_index in range(1, self.shape[1] - 2)
                 ],
             )(y, nu_y)
-
-            return val
+            # Trying to vectorize over z-axis and y-axis, this computes the interpolation for every
+            #      pair of (y,z) pair when we're only interested in the diagonal. This is faster
+            #      than running a list comprehensive every each point in y, but memory storage
+            #      is larger.
+            return np.diag(val)
 
         # Interpolate the point (x, y, z) from a list of interpolated points on x,y-axis.
         def x_spline(x, y, z, nu_x):
@@ -196,14 +212,17 @@ class _RegularGrid(Grid):
                     for x_index in range(1, self.shape[0] - 2)
                 ],
             )(x, nu_x)
-
-            return val
+            # Trying to vectorize over x-axis, this computes the interpolation for every
+            #      pair of (x, (y, z)) pair when we're only interested in the diagonal. This is
+            #      faster than running a list comprehensive/for loop every each point in y,
+            #      but the memory storage is larger.
+            return np.diag(val)
 
         if use_log:
             # All derivatives require the interpolation of f at (x,y,z)
             interpolated = np.exp(
                 self.interpolate_function(
-                    real_pt, func_values, use_log=False, nu_x=0, nu_y=0, nu_z=0
+                    points, func_values, use_log=False, nu_x=0, nu_y=0, nu_z=0
                 )
             )
             # Only consider taking the derivative in only one direction
@@ -218,7 +237,7 @@ class _RegularGrid(Grid):
                 if nu_x > 0:
                     derivs = [
                         self.interpolate_function(
-                            real_pt, func_values, use_log=False, nu_x=i, nu_y=0, nu_z=0
+                            points, func_values, use_log=False, nu_x=i, nu_y=0, nu_z=0
                         )
                         for i in range(1, nu_x + 1)
                     ]
@@ -226,7 +245,7 @@ class _RegularGrid(Grid):
                 elif nu_y > 0:
                     derivs = [
                         self.interpolate_function(
-                            real_pt, func_values, use_log=False, nu_x=0, nu_y=i, nu_z=0
+                            points, func_values, use_log=False, nu_x=0, nu_y=i, nu_z=0
                         )
                         for i in range(1, nu_y + 1)
                     ]
@@ -234,7 +253,7 @@ class _RegularGrid(Grid):
                 else:
                     derivs = [
                         self.interpolate_function(
-                            real_pt, func_values, use_log=False, nu_x=0, nu_y=0, nu_z=i
+                            points, func_values, use_log=False, nu_x=0, nu_y=0, nu_z=i
                         )
                         for i in range(1, nu_z + 1)
                     ]
@@ -257,7 +276,7 @@ class _RegularGrid(Grid):
                     "Taking mixed derivative while applying the logarithm is not supported."
                 )
         # Normal interpolation without logarithm.
-        interpolated = x_spline(real_pt[0], real_pt[1], real_pt[2], nu_x)
+        interpolated = x_spline(points[:, 0], points[:, 1], points[:, 2], nu_x)
         return interpolated
 
     def coordinates_to_index(self, indices):
