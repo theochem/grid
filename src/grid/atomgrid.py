@@ -29,8 +29,8 @@ from importlib_resources import path
 import numpy as np
 
 from scipy.interpolate import CubicSpline
-from scipy.special import sph_harm
 from scipy.spatial.transform import Rotation as R
+from scipy.special import sph_harm
 
 
 class AtomGrid(Grid):
@@ -295,7 +295,18 @@ class AtomGrid(Grid):
         return convert_cart_to_sph(points, center)
 
     def fit_values(self, value_array):
-        # generate spherical harmonics is not stored
+        """Fit given value arrays into splines that matches atomic grid.
+
+        Parameters
+        ----------
+        value_array : np.ndarray(N,)
+            a one dimentional array evaluated at each radial grid point
+
+        Returns
+        -------
+        list[scipy.PPoly]
+            A list of cubic spline fitted by given value arrays
+        """
         if self._basis is None:
             theta, phi = self.convert_cart_to_sph().T[1:]
             self._basis = self._generate_real_sph_harm(self.l_max // 2, theta, phi)
@@ -314,6 +325,27 @@ class AtomGrid(Grid):
         ]
 
     def interpolate(self, points, splines, deriv=0):
+        """Interpolate values of given points on the provided splines.
+
+        Parameters
+        ----------
+        points : np.ndarray(N, 3)
+            points to be evaluabled on the spline
+            These points are displayed in Cartesian coordinates
+        splines : list[scipy.PPoly]
+            A list of scipy.PPoly instance. Each instance is a cubic spline
+        deriv : int, optional
+            order of derivative to be evaluated on the spline, by default 0
+            0 : the spline value
+            1 : the 1st order deriv of the spline
+            2 : the 2nd order deriv of the spline
+            3 : the 3nd order deriv of the spline, warning: the value is a constant
+
+        Returns
+        -------
+        np.ndarray(N,)
+            the value interpolated at each given points
+        """
         r_pts, theta, phi = self.convert_cart_to_sph(points).T
         r_values = np.array([spline(r_pts, deriv) for spline in splines])
         r_sph_harm = self._generate_real_sph_harm(self.l_max // 2, theta, phi)
@@ -321,25 +353,41 @@ class AtomGrid(Grid):
 
     @staticmethod
     def _generate_real_sph_harm(l_max, theta, phi):
+        """Generate real spherical harmonics.
+
+        Parameters
+        ----------
+        l_max : int
+            largest angular degree
+        theta : np.ndarray(N,)
+            azimuthal angles
+        phi : np.ndarray(N,)
+            polar angles
+
+        Returns
+        -------
+        np.ndarray((l_max + 1)**2, N)
+            value of angular grid in each m, n spherical harmonics
+        """
         if l_max < 0:
             raise ValueError(f"lmax needs to be >=0, got l_amx={l_max}")
         total_sph = np.zeros((0, len(theta)), dtype=float)
         l_list = np.arange(l_max + 1)
-        for l in l_list:
+        for l_val in l_list:
             # generate l=0 real spheric
-            zero_real_sph = sph_harm(0, l, theta, phi).real
+            zero_real_sph = sph_harm(0, l_val, theta, phi).real
 
             # generate l=positive real spheric
-            m_list_p = np.arange(1, l + 1, dtype=float)
+            m_list_p = np.arange(1, l_val + 1, dtype=float)
             pos_real_sph = (
-                sph_harm(m_list_p[:, None], l, theta, phi).real
+                sph_harm(m_list_p[:, None], l_val, theta, phi).real
                 * np.sqrt(2)
                 * (-1) ** m_list_p[:, None]
             )
             # generate l=negative real spheric
-            m_list_n = np.arange(-l, 0, dtype=float)
+            m_list_n = np.arange(-l_val, 0, dtype=float)
             neg_real_sph = (
-                sph_harm(m_list_n[:, None], l, theta, phi).imag
+                sph_harm(m_list_n[:, None], l_val, theta, phi).imag
                 * np.sqrt(2)
                 * (-1) ** m_list_n[:, None]
             )

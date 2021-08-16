@@ -25,8 +25,8 @@ from unittest import TestCase
 from grid.atomgrid import AtomGrid
 from grid.basegrid import Grid, OneDGrid
 from grid.lebedev import AngularGrid, LEBEDEV_DEGREES
-from grid.onedgrid import HortonLinear, GaussLegendre
-from grid.rtransform import IdentityRTransform, PowerRTransform, BeckeTF
+from grid.onedgrid import GaussLegendre, HortonLinear
+from grid.rtransform import BeckeTF, IdentityRTransform, PowerRTransform
 
 import numpy as np
 from numpy.testing import (
@@ -351,10 +351,6 @@ class TestAtomGrid(TestCase):
             assert_almost_equal(ref_int_at, ref_int_rad)
 
     # spherical harmonics and related methods tests
-
-    def setup_grid(self):
-        return AngularGrid(degree=7)
-
     def helper_func_gauss(self, points):
         """Compute gauss function value for test interpolation."""
         x, y, z = points.T
@@ -365,10 +361,7 @@ class TestAtomGrid(TestCase):
         return 2 * points[:, 0] ** 2 + 3 * points[:, 1] ** 2 + 4 * points[:, 2] ** 2
 
     def helper_func_power_deriv(self, points):
-        """Compute function derivative for test derivation.
-
-        Not fully understandd why this work, but gave the same result.
-        """
+        """Compute function derivative for test derivation."""
         r = np.linalg.norm(points, axis=1)
         dxf = 4 * points[:, 0] * points[:, 0] / r
         dyf = 6 * points[:, 1] * points[:, 1] / r
@@ -376,8 +369,8 @@ class TestAtomGrid(TestCase):
         return dxf + dyf + dzf
 
     def test_generate_spherical(self):
-        atgrid = self.setup_grid()
         """Test generated real spherical harmonics values."""
+        atgrid = AngularGrid(degree=7)
         pts = atgrid.points
         wts = atgrid.weights
         r = np.linalg.norm(pts, axis=1)
