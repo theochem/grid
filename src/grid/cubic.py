@@ -71,8 +71,42 @@ class _RegularGrid(Grid):
 
     @property
     def shape(self):
-        r"""Number of grid points in the x, y, and z direction."""
+        r"""Return number of grid points in the x, y, and z direction."""
         return self._shape
+
+    @property
+    def dim(self):
+        r"""Return the dimension of the grid."""
+        return len(self._shape)
+
+    def get_points_along_axes(self):
+        r"""
+        Return the points along each axes.
+
+        Returns
+        -------
+        np.ndarray(M_x,), np.ndarray(M_y,) np.ndarray(M_z) :
+            The points in the x, y, z-axis respectively.
+
+        """
+        # Need to obtain the points in the x,y,z-axis seperately. In order to do so, need to
+        #   assume the points have a specific structure.
+        if self.dim == 3:
+            z = self.points[: self.shape[2], 2]
+            coords_y = [
+                self.coordinates_to_index((0, j, 0)) for j in range(self.shape[1])
+            ]
+            y = self.points[coords_y, 1]
+            coords_x = [
+                self.coordinates_to_index((j, 0, 0)) for j in range(self.shape[0])
+            ]
+            x = self.points[coords_x, 0]
+            return x, y, z
+        # If two dimensions.
+        y = self.points[: self.shape[1], 1]
+        coords_x = [self.coordinates_to_index((j, 0)) for j in range(self.shape[0])]
+        x = self.points[coords_x, 0]
+        return x, y
 
     def interpolate_function(
         self,
