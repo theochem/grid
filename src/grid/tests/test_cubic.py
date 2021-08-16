@@ -284,8 +284,8 @@ class TestTensor1DGrids(TestCase):
         actual = cubic.integrate(gaussian_pts)
         assert_allclose(desired, actual, atol=1e-3)
 
-    def test_moving_coordinates_to_index_and_back(self):
-        r"""Test moving from coordinates and index and back."""
+    def test_moving_coordinates_to_index_and_back_three_dimensions(self):
+        r"""Test moving from coordinates and index and back in three_dimensions."""
         oned = MidPoint(3)
         cubic = Tensor1DGrids(oned, oned, oned)
 
@@ -301,6 +301,27 @@ class TestTensor1DGrids(TestCase):
 
         # Convert back
         index = 9
+        assert_allclose(
+            index, cubic.coordinates_to_index(cubic.index_to_coordinates(index))
+        )
+
+    def test_moving_coordinates_to_index_and_back_two_dimensions(self):
+        r"""Test moving from coordinates and index and back in two dimensions."""
+        oned = MidPoint(3)
+        cubic = Tensor1DGrids(oned, oned)
+
+        # Convert index to coordinate.
+        index = 3
+        coord = (1, 0)
+        assert_allclose(coord, cubic.index_to_coordinates(index))
+
+        # Convert coordinate to index
+        coord = (1, 1)
+        index = 4
+        assert_allclose(index, cubic.coordinates_to_index(coord))
+
+        # Convert back
+        index = 1
         assert_allclose(
             index, cubic.coordinates_to_index(cubic.index_to_coordinates(index))
         )
