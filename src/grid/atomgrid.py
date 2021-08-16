@@ -28,6 +28,8 @@ from importlib_resources import path
 
 import numpy as np
 
+from scipy.interpolate import CubicSpline
+from scipy.special import sph_harm
 from scipy.spatial.transform import Rotation as R
 
 
@@ -98,6 +100,7 @@ class AtomGrid(Grid):
             self._rgrid, self._degs, rotate=self._rot
         )
         self._size = self._weights.size
+        self._basis = None
 
     @classmethod
     def from_preset(cls, rgrid=None, *, atnum, preset, center=None, rotate=False):
@@ -290,6 +293,60 @@ class AtomGrid(Grid):
             points = points.reshape(-1, 3)
         center = self.center if center is None else np.asarray(center)
         return convert_cart_to_sph(points, center)
+
+    def fit_values(self, value_array):
+        # generate spherical harmonics is not stored
+        if self._basis is None:
+            theta, phi = self.convert_cart_to_sph().T[1:]
+            self._basis = self._generate_real_sph_harm(self.l_max // 2, theta, phi)
+        print(self._basis.shape)
+        prod_value = self._basis * value_array * self.weights
+        rad_values = [
+            np.sum(prod_value[:, self.indices[i] : self.indices[i + 1]], axis=-1)
+            for i in range(self.n_shells)
+        ]
+        # rad_values in shape (n_shell, n_sph_harms)
+
+        ml_sph_values = np.array(rad_values).T  # shape(n_sph_harms, n_shell)
+        ml_sph_values /= self.rgrid.points ** 2 * self.rgrid.weights
+        return [
+            CubicSpline(x=self.rgrid.points, y=sph_val) for sph_val in ml_sph_values
+        ]
+
+    def interpolate(self, points, splines, deriv=0):
+        r_pts, theta, phi = self.convert_cart_to_sph(points).T
+        r_values = np.array([spline(r_pts, deriv) for spline in splines])
+        r_sph_harm = self._generate_real_sph_harm(self.l_max // 2, theta, phi)
+        return np.einsum("ij, ij -> j", r_values, r_sph_harm)
+
+    @staticmethod
+    def _generate_real_sph_harm(l_max, theta, phi):
+        if l_max < 0:
+            raise ValueError(f"lmax needs to be >=0, got l_amx={l_max}")
+        total_sph = np.zeros((0, len(theta)), dtype=float)
+        l_list = np.arange(l_max + 1)
+        for l in l_list:
+            # generate l=0 real spheric
+            zero_real_sph = sph_harm(0, l, theta, phi).real
+
+            # generate l=positive real spheric
+            m_list_p = np.arange(1, l + 1, dtype=float)
+            pos_real_sph = (
+                sph_harm(m_list_p[:, None], l, theta, phi).real
+                * np.sqrt(2)
+                * (-1) ** m_list_p[:, None]
+            )
+            # generate l=negative real spheric
+            m_list_n = np.arange(-l, 0, dtype=float)
+            neg_real_sph = (
+                sph_harm(m_list_n[:, None], l, theta, phi).imag
+                * np.sqrt(2)
+                * (-1) ** m_list_n[:, None]
+            )
+            total_sph = np.vstack(
+                (total_sph, zero_real_sph, pos_real_sph, neg_real_sph)
+            )
+        return total_sph
 
     @staticmethod
     def _input_type_check(rgrid, center):
