@@ -25,8 +25,8 @@ from unittest import TestCase
 from grid.atomgrid import AtomGrid
 from grid.basegrid import Grid, OneDGrid
 from grid.lebedev import AngularGrid, LEBEDEV_DEGREES
-from grid.onedgrid import HortonLinear
-from grid.rtransform import PowerRTransform
+from grid.onedgrid import HortonLinear, GaussLegendre
+from grid.rtransform import IdentityRTransform, PowerRTransform, BeckeTF
 
 import numpy as np
 from numpy.testing import (
@@ -307,6 +307,7 @@ class TestAtomGrid(TestCase):
         # polar
         phi = np.arccos(ref_coor[:, 2] / r)
         assert_allclose(np.stack([r, theta, phi]).T, calc_sph)
+        assert_equal(calc_sph.shape, (100, 3))
 
         # test single point
         point = np.random.rand(3)
@@ -321,7 +322,7 @@ class TestAtomGrid(TestCase):
         """Test atomitc grid consistence for spherical integral."""
         num_pts = len(LEBEDEV_DEGREES)
         pts = HortonLinear(num_pts)
-        for i in range(10):
+        for _ in range(10):
             start = np.random.rand() * 1e-5
             end = np.random.rand() * 10 + 10
             tf = PowerRTransform(start, end)
@@ -348,6 +349,178 @@ class TestAtomGrid(TestCase):
             ref_int_at = atgrid.integrate(pt_val)
             ref_int_rad = rad_grid.integrate(4 * np.pi * rad_grid.points ** 2 * values)
             assert_almost_equal(ref_int_at, ref_int_rad)
+
+    # spherical harmonics and related methods tests
+
+    def setup_grid(self):
+        return AngularGrid(degree=7)
+
+    def helper_func_gauss(self, points):
+        """Compute gauss function value for test interpolation."""
+        x, y, z = points.T
+        return np.exp(-(x ** 2)) * np.exp(-(y ** 2)) * np.exp(-(z ** 2))
+
+    def helper_func_power(self, points):
+        """Compute function value for test interpolation."""
+        return 2 * points[:, 0] ** 2 + 3 * points[:, 1] ** 2 + 4 * points[:, 2] ** 2
+
+    def helper_func_power_deriv(self, points):
+        """Compute function derivative for test derivation.
+
+        Not fully understandd why this work, but gave the same result.
+        """
+        r = np.linalg.norm(points, axis=1)
+        dxf = 4 * points[:, 0] * points[:, 0] / r
+        dyf = 6 * points[:, 1] * points[:, 1] / r
+        dzf = 8 * points[:, 2] * points[:, 2] / r
+        return dxf + dyf + dzf
+
+    def test_generate_spherical(self):
+        atgrid = self.setup_grid()
+        """Test generated real spherical harmonics values."""
+        pts = atgrid.points
+        wts = atgrid.weights
+        r = np.linalg.norm(pts, axis=1)
+        # polar
+        phi = np.arccos(pts[:, 2] / r)
+        # azimuthal
+        theta = np.arctan2(pts[:, 1], pts[:, 0])
+        # generate spherical harmonics
+        sph_h = AtomGrid._generate_real_sph_harm(3, theta, phi)  # l_max = 3
+        assert sph_h.shape == (16, 26)
+        for _ in range(100):
+            n1, n2 = np.random.randint(0, 16, 2)
+            re = sum(sph_h[n1] * sph_h[n2] * wts)
+            if n1 != n2:
+                print(n1, n2, re)
+                assert_almost_equal(re, 0)
+            else:
+                print(n1, n2, re)
+                assert_almost_equal(re, 1)
+
+        for i in range(10):
+            sph_h = AtomGrid._generate_real_sph_harm(i, theta, phi)
+            assert sph_h.shape == ((i + 1) ** 2, 26)
+
+    def test_value_fitting(self):
+        """Test spline projection the same as spherical harmonics."""
+        odg = OneDGrid(np.arange(10) + 1, np.ones(10), (0, np.inf))
+        rad = IdentityRTransform().transform_1d_grid(odg)
+        atgrid = AtomGrid.from_pruned(rad, 1, sectors_r=[], sectors_degree=[7])
+        values = self.helper_func_power(atgrid.points)
+        spls = atgrid.fit_values(values)
+        assert len(spls) == 16
+
+        for shell in range(1, 11):
+            sh_grid = atgrid.get_shell_grid(shell - 1, r_sq=False)
+            r = np.linalg.norm(sh_grid._points, axis=1)
+            theta = np.arctan2(sh_grid._points[:, 1], sh_grid._points[:, 0])
+            phi = np.arccos(sh_grid._points[:, 2] / r)
+            l_max = atgrid.l_max // 2
+            r_sph = atgrid._generate_real_sph_harm(l_max, theta, phi)
+            r_sph_proj = np.sum(
+                r_sph * self.helper_func_power(sh_grid.points) * sh_grid.weights,
+                axis=-1,
+            )
+            assert_allclose(r_sph_proj, [spl(shell) for spl in spls], atol=1e-10)
+
+    def test_cubicspline_and_interp_gauss(self):
+        """Test cubicspline interpolation values."""
+        oned = GaussLegendre(30)
+        btf = BeckeTF(0.0001, 1.5)
+        rad = btf.transform_1d_grid(oned)
+        atgrid = AtomGrid.from_pruned(rad, 1, sectors_r=[], sectors_degree=[7])
+        value_array = self.helper_func_gauss(atgrid.points)
+        spls = atgrid.fit_values(value_array)
+        # result = spline_with_atomic_grid(atgrid, value_array)
+        # random test points on gauss function
+        for _ in range(20):
+            r = np.random.rand(1)[0] * 2
+            theta = np.random.rand(10)
+            phi = np.random.rand(10)
+            x = r * np.sin(phi) * np.cos(theta)
+            y = r * np.sin(phi) * np.sin(theta)
+            z = r * np.cos(phi)
+            inters = atgrid.interpolate(np.array((x, y, z)).T, spls)
+            assert_allclose(
+                self.helper_func_gauss(np.array([x, y, z]).T), inters, atol=1e-4
+            )
+
+    def test_cubicspline_and_interp_mol(self):
+        """Test cubicspline interpolation values."""
+        odg = OneDGrid(np.arange(10) + 1, np.ones(10), (0, np.inf))
+        rad = IdentityRTransform().transform_1d_grid(odg)
+        atgrid = AtomGrid.from_pruned(rad, 1, sectors_r=[], sectors_degree=[7])
+        values = self.helper_func_power(atgrid.points)
+        spls = atgrid.fit_values(values)
+        for i in range(10):
+            interp = atgrid.interpolate(
+                atgrid.points[atgrid.indices[i] : atgrid.indices[i + 1]], spls
+            )
+            # same result from points and interpolation
+            assert_allclose(interp, values[atgrid.indices[i] : atgrid.indices[i + 1]])
+
+    def test_cubicspline_and_interp(self):
+        """Test cubicspline interpolation values."""
+        odg = OneDGrid(np.arange(10) + 1, np.ones(10), (0, np.inf))
+        rad_grid = IdentityRTransform().transform_1d_grid(odg)
+        for _ in range(10):
+            degree = np.random.randint(5, 20)
+            atgrid = AtomGrid.from_pruned(
+                rad_grid, 1, sectors_r=[], sectors_degree=[degree]
+            )
+            values = self.helper_func_power(atgrid.points)
+            spls = atgrid.fit_values(values)
+
+            for i in range(10):
+                interp = atgrid.interpolate(
+                    atgrid.points[atgrid.indices[i] : atgrid.indices[i + 1]], spls
+                )
+                # same result from points and interpolation
+                assert_allclose(
+                    interp, values[atgrid.indices[i] : atgrid.indices[i + 1]]
+                )
+
+            # test random x, y, z
+            for _ in range(10):
+                xyz = np.random.rand(10, 3) * np.random.uniform(1, 6)
+                # xyz /= np.linalg.norm(xyz, axis=-1)[:, None]
+                # rad = np.random.normal() * np.random.randint(1, 11)
+                # xyz *= rad
+                ref_value = self.helper_func_power(xyz)
+
+                interp = atgrid.interpolate(xyz, spls)
+                assert_allclose(interp, ref_value)
+
+    def test_cubicspline_and_deriv(self):
+        """Test spline for derivation."""
+        odg = OneDGrid(np.arange(10) + 1, np.ones(10), (0, np.inf))
+        rad = IdentityRTransform().transform_1d_grid(odg)
+        for _ in range(10):
+            degree = np.random.randint(5, 20)
+            atgrid = AtomGrid.from_pruned(rad, 1, sectors_r=[], sectors_degree=[degree])
+            values = self.helper_func_power(atgrid.points)
+            spls = atgrid.fit_values(values)
+
+            for i in range(10):
+                interp = atgrid.interpolate(
+                    atgrid.points[atgrid.indices[i] : atgrid.indices[i + 1]],
+                    spls,
+                    deriv=1,
+                )
+                # same result from points and interpolation
+                ref_deriv = self.helper_func_power_deriv(
+                    atgrid.points[atgrid.indices[i] : atgrid.indices[i + 1]]
+                )
+                assert_allclose(interp, ref_deriv)
+
+            # test random x, y, z with fd
+            for _ in range(10):
+                xyz = np.random.rand(10, 3) * np.random.uniform(1, 6)
+                ref_value = self.helper_func_power_deriv(xyz)
+
+                interp = atgrid.interpolate(xyz, spls, deriv=1)
+                assert_allclose(interp, ref_value)
 
     def test_error_raises(self):
         """Tests for error raises."""
@@ -407,3 +580,6 @@ class TestAtomGrid(TestCase):
         with self.assertRaises(TypeError):
             rgrid = OneDGrid(np.arange(-1, 1, 1), np.ones(2))
             AtomGrid(rgrid, degrees=[2])
+
+        with self.assertRaises(ValueError):
+            AtomGrid._generate_real_sph_harm(-1, np.random.rand(10), np.random.rand(10))
