@@ -409,12 +409,11 @@ class Tensor1DGrids(_RegularGrid):
         return self.points[0]
 
 
-class UniformCubicGrid(_CubicGrid):
+class UniformCubicGrid(_RegularGrid):
     r"""
     Uniform Cubic Grid, a grid whose points are evenly spaced apart in each axes.
 
-    The grid increments in the z-axis first, then y-axis, then x-axis, i.e. it has the
-    lexicographical ordering.
+    Also known as a rectilinear grid.
     """
 
     def __init__(self, origin, axes, shape, weight_type="Trapezoid"):
@@ -507,6 +506,8 @@ class UniformCubicGrid(_CubicGrid):
             raise ValueError(
                 "Axes {0} should be a three by three array.".format(axes.shape)
             )
+        if np.abs(np.linalg.det(axes)) < 1e-10:
+            raise ValueError("The axes row vectors should all be linearly independent.")
         if np.any(shape <= 0):
             raise ValueError("In each coordinate, shape should be positive.")
 
