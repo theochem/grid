@@ -17,24 +17,24 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
-r"""3D Integration Grid."""
+r"""Square/Cubic Regular Grid."""
 
 from grid.basegrid import Grid, OneDGrid
 
 import numpy as np
 
-from scipy.interpolate import CubicSpline
+from scipy.interpolate import CubicSpline, RegularGridInterpolator
 
 from sympy import symbols
 from sympy.functions.combinatorial.numbers import bell
 
 
-class _CubicGrid(Grid):
+class _RegularGrid(Grid):
     def __init__(self, points, weights, shape):
-        r"""Construct the CubicGrid class, i.e. each point is specified by (i, j, k) indices.
+        r"""Construct the RegularGrid class.
 
-        The grid increments in the z-axis first, then y-axis, then x-axis, i.e. it has the
-        lexicographical ordering.
+        Regular grid is defined to be a grid where point is specified by (i, j) or (i, j, k)
+        indices.
 
         Parameters
         ----------
