@@ -518,7 +518,7 @@ class UniformCubicGrid(_HyperRectangleGrid):
     @classmethod
     def from_molecule(
         cls,
-        pseudo_numbers,
+        atcorenums,
         atcoords,
         spacing=0.2,
         extension=5.0,
@@ -529,7 +529,7 @@ class UniformCubicGrid(_HyperRectangleGrid):
 
         Parameters
         ----------
-        pseudo_numbers :  np.ndarray, shape=(M,)
+        atcorenums : np.ndarray, shape=(M,)
             Pseudo-number of :math:`M` atoms in the molecule.
         atcoords : np.ndarray, shape=(M, 3)
             Cartesian coordinates of :math:`M` atoms in the molecule.
@@ -590,18 +590,18 @@ class UniformCubicGrid(_HyperRectangleGrid):
             Default is "Trapezoid".
         """
         # calculate center of mass of the nuclear charges:
-        totz = np.sum(pseudo_numbers)
-        com = np.dot(pseudo_numbers, atcoords) / totz
+        totz = np.sum(atcorenums)
+        com = np.dot(atcorenums, atcoords) / totz
         # Determine best axes and coordinates to calculate the lower and upper bound of grid.
         if rotate:
             # calculate moment of inertia tensor:
             itensor = np.zeros([3, 3])
-            for i in range(pseudo_numbers.shape[0]):
+            for i in range(atcorenums.shape[0]):
                 xyz = atcoords[i] - com
                 r = np.linalg.norm(xyz) ** 2.0
                 tempitens = np.diag([r, r, r])
                 tempitens -= np.outer(xyz.T, xyz)
-                itensor += pseudo_numbers[i] * tempitens
+                itensor += atcorenums[i] * tempitens
             # Eigenvectors define the new axes of the grid with spacing
             _, v = np.linalg.eigh(itensor)
             # Project the coordinates of atoms centered at the center of mass to the eigenvectors
