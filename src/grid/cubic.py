@@ -34,7 +34,7 @@ class _HyperRectangleGrid(Grid):
         r"""Construct the _HyperRectangleGrid class.
 
         Hyper Rectangle grid is restricted to either two-dimensions and three-dimensions and
-        is defined to be a grid where point is specified by (i, j) or (i, j, k) indices.
+        is defined to be a grid where point is specified by (i, j) or (i, j, k) integer indices.
 
         Parameters
         ----------
@@ -69,11 +69,11 @@ class _HyperRectangleGrid(Grid):
 
     @property
     def shape(self):
-        r"""Return number of grid points in the x, y, and z direction."""
+        r"""Return number of grid points in the :math:`(x, y, z)` directions."""
         return self._shape
 
     @property
-    def dim(self):
+    def ndim(self):
         r"""Return the dimension of the grid."""
         return len(self._shape)
 
@@ -86,9 +86,9 @@ class _HyperRectangleGrid(Grid):
             The points in the x, y, z-axis respectively.
 
         """
-        # Need to obtain the points in the x,y,z-axis separately. In order to do so, need to
+        # Need to obtain the points in the x-, y-, z-axis separately. In order to do so, need to
         # assume the points have a specific structure.
-        if self.dim == 3:
+        if self.ndim == 3:
             z = self.points[: self.shape[2], 2]
             coords_y = [
                 self.coordinates_to_index((0, j, 0)) for j in range(self.shape[1])
@@ -99,25 +99,26 @@ class _HyperRectangleGrid(Grid):
             ]
             x = self.points[coords_x, 0]
             return x, y, z
-        # If two dimensions.
+        # Case of two-dimensions
         y = self.points[: self.shape[1], 1]
         coords_x = [self.coordinates_to_index((j, 0)) for j in range(self.shape[0])]
         x = self.points[coords_x, 0]
         return x, y
 
     def interpolate(
-        self, points, func_values, use_log=False, nu_x=0, nu_y=0, nu_z=0, method="cubic"
+        self, points, values, use_log=False, nu_x=0, nu_y=0, nu_z=0, method="cubic"
     ):
         r"""Interpolate function value at a given point.
 
         Parameters
         ----------
         points : np.ndarray, shape (M, 3)
-            The 3D Cartesian coordinates of `M` points in :math:`\mathbb{R}^3`.
-        func_values : np.ndarray, shape (M,)
-            Function values at each point of the grid :math:`M` grid points.
+            The 3D Cartesian coordinates of :math:`M` points in :math:`\mathbb{R}^3` for which
+            the interpolant (i.e., the interpolated function) is evaluated.
+        values : np.ndarray, shape (N,)
+            Function values at each of the :math:`N` grid points.
         use_log : bool, optional
-            If true, then logarithm is applied before interpolating to the function values.
+            If True, the logarithm of the function values are interpolated.
             Can only be used for interpolating derivatives when the derivative is not a
             mixed derivative.
         nu_x : int, optional
@@ -133,37 +134,39 @@ class _HyperRectangleGrid(Grid):
             If greater than zero, then the "nu_z"th-order derivative in the z-direction is
             interpolated.
         method : str, optional
-            The method of interpolation, either cubic, or linear
-            (uses SciPy's RegularGridInterpolator) or nearest (uses SciPy's
-            RegularGridInterpolator). The accuracy decreases as you go to the right as well as the
-            computational cost decreases. Default is "cubic".
+            The method of interpolation to perform. Supported are "cubic" (most accurate but
+            computationally expensive), "linear", or "nearest" (least accurate but cheap
+            computationally). The last two methods use SciPy's RegularGridInterpolator function.
 
         Returns
         -------
         float :
-            Returns the interpolation of a function (or of it's derivatives) at a point.
+            The interpolation of a function (or of it's derivatives) at a :math:`M` point.
 
         """
-        if self.dim == 2:
-            raise NotImplementedError("Interpolation only works for three dimension.")
-        if func_values.shape[0] != np.prod(self.shape):
+        if method not in ["cubic", "linear", "nearest"]:
             raise ValueError(
-                f"Number of function values {func_values.shape[0]} does not match number of "
+                f"Argument method should be either cubic, linear, or nearest , got {method}"
+            )
+        if self.ndim != 3:
+            raise NotImplementedError(
+                f"Interpolation only works for three dimension, got ndim={self.ndim}"
+            )
+        if values.shape[0] != np.prod(self.shape):
+            raise ValueError(
+                f"Number of function values {values.shape[0]} does not match number of "
                 f"grid points {np.prod(self.shape)}."
             )
+
         if use_log:
-            func_values = np.log(func_values)
+            values = np.log(values)
 
         # Use scipy if linear and nearest is requested and raise error if it's not cubic.
         if method in ["linear", "nearest"]:
             x, y, z = self.get_points_along_axes()
-            func_values = func_values.reshape(self.shape)
-            interpolate = RegularGridInterpolator((x, y, z), func_values, method=method)
+            values = values.reshape(self.shape)
+            interpolate = RegularGridInterpolator((x, y, z), values, method=method)
             return interpolate(points)
-        elif method != "cubic":
-            raise ValueError(
-                f"Method parameter {method} should be either linear, nearest or cubic."
-            )
 
         # Interpolate the Z-Axis.
         def z_spline(z, x_index, y_index, nu_z=nu_z):
@@ -176,7 +179,7 @@ class _HyperRectangleGrid(Grid):
             )
             val = CubicSpline(
                 self.points[small_index:large_index, 2],
-                func_values[small_index:large_index],
+                values[small_index:large_index],
             )(z, nu_z)
             return val
 
@@ -217,9 +220,7 @@ class _HyperRectangleGrid(Grid):
         if use_log:
             # All derivatives require the interpolation of f at (x,y,z)
             interpolated = np.exp(
-                self.interpolate(
-                    points, func_values, use_log=False, nu_x=0, nu_y=0, nu_z=0
-                )
+                self.interpolate(points, values, use_log=False, nu_x=0, nu_y=0, nu_z=0)
             )
             # Only consider taking the derivative in only one direction
             one_var_deriv = sum([nu_x == 0, nu_y == 0, nu_z == 0]) == 2
@@ -233,7 +234,7 @@ class _HyperRectangleGrid(Grid):
                 if nu_x > 0:
                     derivs = [
                         self.interpolate(
-                            points, func_values, use_log=False, nu_x=i, nu_y=0, nu_z=0
+                            points, values, use_log=False, nu_x=i, nu_y=0, nu_z=0
                         )
                         for i in range(1, nu_x + 1)
                     ]
@@ -241,7 +242,7 @@ class _HyperRectangleGrid(Grid):
                 elif nu_y > 0:
                     derivs = [
                         self.interpolate(
-                            points, func_values, use_log=False, nu_x=0, nu_y=i, nu_z=0
+                            points, values, use_log=False, nu_x=0, nu_y=i, nu_z=0
                         )
                         for i in range(1, nu_y + 1)
                     ]
@@ -249,7 +250,7 @@ class _HyperRectangleGrid(Grid):
                 else:
                     derivs = [
                         self.interpolate(
-                            points, func_values, use_log=False, nu_x=0, nu_y=0, nu_z=i
+                            points, values, use_log=False, nu_x=0, nu_y=0, nu_z=i
                         )
                         for i in range(1, nu_z + 1)
                     ]
@@ -276,12 +277,12 @@ class _HyperRectangleGrid(Grid):
         return interpolated
 
     def coordinates_to_index(self, indices):
-        r"""Convert (i, j) or (i, j, k) integer coordinates to the grid index m.
+        r"""Convert (i, j) or (i, j, k) integer coordinates to the grid point index.
 
         Parameters
         ----------
-        indices : (int, int, int) or (int, int)
-            The ith, jth, (or kth) position of the grid point.
+        indices : (int, int) or (int, int, int)
+            The :math:`i-th`, :math:`j-th`, (or :math:`k-th`) positions of the grid point.
 
         Returns
         -------
@@ -289,16 +290,16 @@ class _HyperRectangleGrid(Grid):
             Index of the grid point.
 
         """
-        if self.dim == 3:
+        if self.ndim == 3:
             n_1d, n_2d = self.shape[2], self.shape[1] * self.shape[2]
             index = n_2d * indices[0] + n_1d * indices[1] + indices[2]
             return index
-        # If two-dimensions
+        # Case of two-dimensions
         index = self.shape[1] * indices[0] + indices[1]
         return index
 
     def index_to_coordinates(self, index):
-        r"""Convert index of grid point to its (i, j) or (i, j, k) coordinates in a cubic grid.
+        r"""Convert grid point index to its (i, j) or (i, j, k) integer coordinates in cubic grid.
 
         Cubic grid has a shape of :math:`(N_x, N_y, N_z)` denoting the number of points in
         :math:`x`, :math:`y`, and :math:`z` directions. So, each grid point has a :math:`(i, j, k)`
@@ -320,13 +321,13 @@ class _HyperRectangleGrid(Grid):
             raise ValueError(
                 f"Argument index should be a positive integer, got {index}"
             )
-        if self.dim == 3:
+        if self.ndim == 3:
             n_1d, n_2d = self.shape[2], self.shape[1] * self.shape[2]
             i = index // n_2d
             j = (index - n_2d * i) // n_1d
             k = index - n_2d * i - n_1d * j
             return i, j, k
-        # If two dimensions
+        # Case of two-dimensions
         i = index // self.shape[1]
         j = index - self.shape[1] * i
         return i, j
@@ -381,7 +382,7 @@ class Tensor1DGrids(_HyperRectangleGrid):
             )
             weights = np.kron(np.kron(oned_x.weights, oned_y.weights), oned_z.weights)
         else:
-            # number of points in x, and y direction of the two-dimensional grid
+            # number of points in x and y directions of the two-dimensional grid
             shape = (oned_x.size, oned_y.size)
             # Construct 2D set of points and weights
             points = (
@@ -637,7 +638,7 @@ class UniformCubicGrid(_HyperRectangleGrid):
 
     @property
     def origin(self):
-        """Cartesian coordinate of the origin of the cubic grid."""
+        """Return the Cartesian coordinates of the cubic grid origin."""
         return self._origin
 
     def _calculate_volume(self, shape):
@@ -656,19 +657,19 @@ class UniformCubicGrid(_HyperRectangleGrid):
         factor = np.prod((shape - 1) / shape)
         return volume * factor
 
-    def _choose_weight_scheme(self, type, shape):
+    def _choose_weight_scheme(self, weight, shape):
         # Choose different weighting schemes.
-        if type == "Rectangle":
+        if weight == "Rectangle":
             volume = self._calculate_volume(shape)
             numpnt = 1.0 * np.prod(shape)
             weights = np.full(np.prod(shape), volume / numpnt)
             return weights
-        elif type == "Trapezoid":
+        elif weight == "Trapezoid":
             volume = self._calculate_volume(shape)
             numpnt = (shape[0] + 1.0) * (shape[1] + 1.0) * (shape[2] + 1.0)
             weights = np.full(np.prod(shape), volume / numpnt)
             return weights
-        elif type == "Fourier1":
+        elif weight == "Fourier1":
             volume = self._calculate_volume(shape)
             # “Gaussian” quadrature rule for Fourier series.
             numpnt = (shape[0] + 1.0) * (shape[1] + 1.0) * (shape[2] + 1.0)
@@ -696,10 +697,10 @@ class UniformCubicGrid(_HyperRectangleGrid):
             weight = _fourier1(weight, shape, 1)
             weight = _fourier1(weight, shape, 2)
             return np.ravel(weight)  # Ravel it to be in the dictionary order (z, y, x).
-        elif type == "Alternative":
+        elif weight == "Alternative":
             alt_volume = self._calculate_alternative_volume(shape)
             return np.ones(np.prod(shape)) * alt_volume
-        elif type == "Fourier2":
+        elif weight == "Fourier2":
             alt_volume = self._calculate_alternative_volume(shape)
 
             def _fourier2(shape, index):
@@ -737,7 +738,7 @@ class UniformCubicGrid(_HyperRectangleGrid):
             )
             return np.ravel(weight)
         else:
-            raise ValueError(f"The weight type parameter is not known, got {type}")
+            raise ValueError(f"The weight type parameter is not known, got {weight}")
 
     def closest_point(self, point, which="closest"):
         r"""Identify the index of the closest grid point to a given point.

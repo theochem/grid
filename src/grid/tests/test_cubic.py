@@ -464,7 +464,7 @@ class TestUniformCubicGrid(TestCase):
         assert_allclose(uniform.weights, desired_wghts)
 
     def test_calculating_alternative_weights_with_orthogonal_axes(self):
-        r"""Test calcualting alternative weights with orthogonal axes."""
+        r"""Test calculating alternative weights with orthogonal axes."""
         # Set up the grid with easy examples but axes that form a cube.
         origin = np.array([0.0, 0.0, 0.0])
         axes = np.array([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]])
