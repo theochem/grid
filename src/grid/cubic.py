@@ -48,23 +48,21 @@ class _HyperRectangleGrid(Grid):
         """
         if len(shape) not in [2, 3]:
             raise ValueError(
-                "Argument shape should have length two or three; got length %d."
-                % len(shape)
+                f"Argument shape should have length two or three; got length {len(shape)}."
             )
         if np.any(np.array(shape) <= 1.0):
             raise ValueError(
-                "Argument shape should be greater than one in all directions (%d, %d, %d)."
-                % (shape[0], shape[1], shape[2])
+                f"Argument shape should be greater than one in all directions {shape}."
             )
         if np.prod(shape) != points.shape[0]:
             raise ValueError(
-                "The product of every element in shape %d should match the number of points %d."
-                % (np.prod(shape), points.shape[0])
+                f"The product of shape elements {np.prod(shape)} should match the number of grid "
+                f"points {points.shape[0]}."
             )
         if len(shape) != points.shape[1]:
             raise ValueError(
-                "The dimension of the shape/grid %d should match the dimension of the points %d."
-                % (len(shape), points.shape[1])
+                f"The dimension of the shape/grid {len(shape)} should match the dimension of the "
+                f"points {points.shape[1]}"
             )
         self._shape = shape
         super().__init__(points, weights)
@@ -151,8 +149,8 @@ class _HyperRectangleGrid(Grid):
             raise NotImplementedError("Interpolation only works for three dimension.")
         if func_values.shape[0] != np.prod(self.shape):
             raise ValueError(
-                "Number of function values %d does not match number of grid points"
-                % (func_values.shape[0])
+                f"Number of function values {func_values.shape[0]} does not match number of "
+                f"grid points {np.prod(self.shape)}."
             )
         if use_log:
             func_values = np.log(func_values)
@@ -165,8 +163,7 @@ class _HyperRectangleGrid(Grid):
             return interpolate(points)
         elif method != "cubic":
             raise ValueError(
-                "Method parameter %s should be either linear, nearest or cubic."
-                % method
+                f"Method parameter {method} should be either linear, nearest or cubic."
             )
 
         # Interpolate the Z-Axis.
@@ -504,7 +501,7 @@ class UniformCubicGrid(_HyperRectangleGrid):
             raise ValueError("Origin and shape should have size 3.")
         if axes.shape != (3, 3):
             raise ValueError(
-                "Axes {0} should be a three by three array.".format(axes.shape)
+                f"Axes {axes.shape} should be a three by three array."
             )
         if np.abs(np.linalg.det(axes)) < 1e-10:
             raise ValueError("The axes row vectors should all be linearly independent.")
@@ -749,7 +746,7 @@ class UniformCubicGrid(_HyperRectangleGrid):
             return np.ravel(weight)
         else:
             raise ValueError(
-                "The weighting type {0} parameter is not known.".format(type)
+                f"The weighting type {type} parameter is not known."
             )
 
     def closest_point(self, point, which="closest"):
