@@ -40,9 +40,9 @@ class _HyperRectangleGrid(Grid):
         ----------
         points : np.ndarray(N, 3)
             The 3D Cartesian coordinates of :math:`N` grid points.
-        weights : np.ndarray(N)
+        weights : np.ndarray(N,)
             The integration weights corresponding to each :math:`N` grid point.
-        shape : np.ndarray(3)
+        shape : np.ndarray(3,)
             The number of grid points in the x, y, and z directions.
 
         """
@@ -62,7 +62,7 @@ class _HyperRectangleGrid(Grid):
         if len(shape) != points.shape[1]:
             raise ValueError(
                 f"The dimension of the shape/grid {len(shape)} should match the dimension of the "
-                f"points {points.shape[1]}"
+                f"points {points.shape[1]}."
             )
         self._shape = shape
         super().__init__(points, weights)
@@ -78,8 +78,7 @@ class _HyperRectangleGrid(Grid):
         return len(self._shape)
 
     def get_points_along_axes(self):
-        r"""
-        Return the points along each axes.
+        r"""Return the points along each axes.
 
         Returns
         -------
@@ -342,11 +341,11 @@ class Tensor1DGrids(_HyperRectangleGrid):
         Parameters
         ----------
         oned_x : OneDGrid
-            One-dimensional grid representing the x-axis.
+            One-dimensional grid representing the grids along x-axis.
         oned_y : OneDGrid
-            One-dimensional grid representing the y-axis.
+            One-dimensional grid representing the grids along y-axis.
         oned_z : OneDGrid, optional
-            One-dimensional grid representing the z-axis.
+            One-dimensional grid representing the grids along z-axis.
 
         """
         if not isinstance(oned_x, OneDGrid):
@@ -366,8 +365,8 @@ class Tensor1DGrids(_HyperRectangleGrid):
             # number of points in x, y, and z direction of the cubic grid
             shape = (oned_x.size, oned_y.size, oned_z.size)
             # Construct 3D set of points and weights
-            # Note: points move in z-axis first (x,y-fixed) then y-axis then x-axis,
-            #  i.e., lexicographical ordering
+            # Note: points move in z-axis first (x,y-fixed) then y-axis then x-axis
+            # (i.e., lexicographical ordering)
             points = (
                 np.vstack(
                     np.meshgrid(
@@ -407,30 +406,22 @@ class Tensor1DGrids(_HyperRectangleGrid):
 
 
 class UniformCubicGrid(_HyperRectangleGrid):
-    r"""
-    Uniform Cubic Grid, a grid whose points are evenly spaced apart in each axes.
-
-    Also known as a rectilinear grid.
-    """
+    r"""Uniform cubic grid (a.k.a. rectilinear grid) with evenly-spaced points in  each axes."""
 
     def __init__(self, origin, axes, shape, weight_type="Trapezoid"):
-        r"""
-        Construct the UniformCubicGrid object.
+        r"""Construct the UniformCubicGrid object.
 
         Grid whose points in each (x, y, z) direction has a constant step-size/evenly spaced.
         Given a origin :math:`\mathbf{o} = (o_x, o_y, o_z)` and three directions forming the axes
         :math:`\mathbf{a_1}, \mathbf{a_2}, \mathbf{a_3}` with shape :math:`(M_x, M_y, M_z)`,
-        then the (i, j, k)th point of the grid are:
+        then the :math:`(i, j, k)-\text{th}` point of the grid are:
 
         .. math::
-            \begin{align*}
-                x_i &= o_x + i \mathbf{a_1} \\
-                y_i &= o_y + j \mathbf{a_2} \\
-                z_i &= o_z + k \mathbf{a_3},
-            \end{align*}
-        where :math:`0 \leq i \leq M_x,\quad 0 \leq j \leq M_y, \quad 0 \leq k \leq M_z`.
-        The grid enumerates through the z-axis first, then y-axis then x-axis.
+            x_i &= o_x + i \mathbf{a_1} \quad 0 \leq i \leq M_x \\
+            y_i &= o_y + j \mathbf{a_2} \quad 0 \leq j \leq M_y \\
+            z_i &= o_z + k \mathbf{a_3} \quad 0 \leq k \leq M_z
 
+        The grid enumerates through the z-axis first, then y-axis then x-axis.
 
         Parameters
         ----------
@@ -442,7 +433,7 @@ class UniformCubicGrid(_HyperRectangleGrid):
             cubic grid, i.e. the directions of the "(x,y,z)"-axis
             whose norm tells us the distance between points in that direction.
         shape : np.ndarray(3,)
-            Number of grid points along "axes" axis.
+            Number of grid points along each axis.
         weight_type : str
             The integration weighting scheme. Can be either:
             Rectangle :
@@ -488,30 +479,32 @@ class UniformCubicGrid(_HyperRectangleGrid):
             .. math::
                 w_{ijk} = V \cdot \frac{M_x - 1}{M_x} \frac{M_y - 1}{M_y} \frac{M_z - 1}{M_z}
 
-            Default is "Trapezoid".
-
         """
         if not isinstance(origin, np.ndarray):
-            raise TypeError("origin should be a numpy array.")
+            raise TypeError(f"Argument origin should be a numpy array, got {type(origin)}")
         if not isinstance(axes, np.ndarray):
-            raise TypeError("axes should be a numpy array.")
+            raise TypeError(f"Argument axes should be a numpy array, got {type(axes)}")
         if not isinstance(shape, np.ndarray):
-            raise TypeError("shape should be a numpy array.")
-        if origin.size != 3 or shape.size != 3:
-            raise ValueError("Origin and shape should have size 3.")
+            raise TypeError(f"Argument shape should be a numpy array, got {type(shape)}")
+        if origin.size != 3:
+            raise ValueError(f"Arguments origin should have size 3, got {origin.shape}")
+        if shape.size != 3:
+            raise ValueError(f"Arguments shape should have size 3, got {shape.size}")
         if axes.shape != (3, 3):
-            raise ValueError(
-                f"Axes {axes.shape} should be a three by three array."
-            )
+            raise ValueError(f"Argument axes should be a (3, 3) array, got {axes.shape}")
         if np.abs(np.linalg.det(axes)) < 1e-10:
-            raise ValueError("The axes row vectors should all be linearly independent.")
+            raise ValueError(
+                f"The axes are not linearly independent, got det(axes)={np.linalg.det(axes)}"
+            )
         if np.any(shape <= 0):
-            raise ValueError("In each coordinate, shape should be positive.")
+            raise ValueError(
+                f"Number of points in each direction should be positive, got shape={shape}"
+            )
 
         self._axes = axes
         self._origin = origin
         # Make an array to store coordinates of grid points
-        self._points = np.zeros((shape[0] * shape[1] * shape[2], 3))
+        self._points = np.zeros((np.prod(shape), 3))
         coords = np.array(
             np.meshgrid(np.arange(shape[0]), np.arange(shape[1]), np.arange(shape[2]))
         )
@@ -532,20 +525,18 @@ class UniformCubicGrid(_HyperRectangleGrid):
         rotate=True,
         weight="Trapezoid",
     ):
-        r"""
-        Construct a uniform grid given the molecular coordinates.
+        r"""Construct a uniform grid given the molecular coordinates.
 
         Parameters
         ----------
         pseudo_numbers :  np.ndarray, shape=(M,)
-            Pseudo-number of `M` atoms in the molecule.
-        atcoords :  np.ndarray, shape=(M,3)
-            Cartesian coordinates of `M` atoms in the molecule.
+            Pseudo-number of :math:`M` atoms in the molecule.
+        atcoords : np.ndarray, shape=(M, 3)
+            Cartesian coordinates of :math:`M` atoms in the molecule.
         spacing : float, optional
-            Increment between grid points along `x`, `y` and `z` direction. Default is 0.2.
+            Increment between grid points along :math:`x`, :math:`y`, and :math:`z` direction.
         extension : float, optional
             The extension of the length of the cube on each side of the molecule.
-            Default is 5.0.
         rotate : bool, optional
             When True, the molecule is rotated so the axes of the cube file are
             aligned with the principle axes of rotation of the molecule.
@@ -745,9 +736,7 @@ class UniformCubicGrid(_HyperRectangleGrid):
             )
             return np.ravel(weight)
         else:
-            raise ValueError(
-                f"The weighting type {type} parameter is not known."
-            )
+            raise ValueError(f"The weight type parameter is not known, got {type}")
 
     def closest_point(self, point, which="closest"):
         r"""Identify the index of the closest grid point to a given point.
