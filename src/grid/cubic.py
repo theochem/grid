@@ -485,9 +485,7 @@ class UniformCubicGrid(_HyperRectangleGrid):
                 f"Argument origin should be a numpy array, got {type(origin)}"
             )
         if not isinstance(axes, np.ndarray):
-            raise TypeError(
-                f"Argument axes should be a numpy array, got {type(axes)}"
-            )
+            raise TypeError(f"Argument axes should be a numpy array, got {type(axes)}")
         if not isinstance(shape, np.ndarray):
             raise TypeError(
                 f"Argument shape should be a numpy array, got {type(shape)}"
@@ -533,7 +531,7 @@ class UniformCubicGrid(_HyperRectangleGrid):
         rotate=True,
         weight="Trapezoid",
     ):
-        r"""Construct a uniform grid given the molecular coordinates.
+        r"""Construct a uniform grid given the molecular pseudo-numbers and coordinates.
 
         Parameters
         ----------
@@ -551,20 +549,19 @@ class UniformCubicGrid(_HyperRectangleGrid):
             If False, generates axes based on the x,y,z-axis and the spacing parameter, and
             the origin is defined by the maximum/minimum of the atomic coordinates.
         weight : str, optional
-            String indicating weighting function. This can be:
+            String indicating weighting function. Denoting the volume of the uniform cubic grid
+            by :math:`V`, the weighting function can be:
             Rectangle :
                 The weights are the standard Riemannian weights,
 
                 .. math::
                     w_{ijk} = \frac{V}{M_x\cdot M_y \cdot M_z}
-                where :math:`V` is the volume of the uniform cubic grid.
 
             Trapezoid :
                 Equivalent to rectangle rule with the assumption function is zero on the boundaries.
 
                  .. math::
                     w_{ijk} = \frac{V}{(M_x + 1) \cdot (M_y + 1) \cdot (M_z + 1)}
-                where :math:`V` is the volume of the uniform cubic grid.
 
             Fourier1 :
                 Assumes function can be expanded in a Fourier series, and then use Gaussian
@@ -579,6 +576,7 @@ class UniformCubicGrid(_HyperRectangleGrid):
                          \bigg(\sum_{p=1}^{M_z} \frac{\sin(kp \pi/(M_z + 1)) (1 - \cos(p\pi)}{p\pi}
                          \bigg)
                     \bigg]
+
             Fourier2 :
                 Alternative weights based on Fourier series. Assumes the function is zero at the
                 boundary of the cube.
@@ -595,7 +593,6 @@ class UniformCubicGrid(_HyperRectangleGrid):
             .. math::
                 w_{ijk} = V \cdot \frac{M_x - 1}{M_x} \frac{M_y - 1}{M_y} \frac{M_z - 1}{M_z}
 
-            Default is "Trapezoid".
         """
         # calculate center of mass of the nuclear charges:
         totz = np.sum(atcorenums)
