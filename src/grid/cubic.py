@@ -38,11 +38,11 @@ class _HyperRectangleGrid(Grid):
 
         Parameters
         ----------
-        points : np.ndarray(N, 3)
+        points : np.ndarray, shape (N, 3)
             The 3D Cartesian coordinates of :math:`N` grid points.
-        weights : np.ndarray(N,)
+        weights : np.ndarray, shape (N,)
             The integration weights corresponding to each :math:`N` grid point.
-        shape : np.ndarray(3,)
+        shape : np.ndarray, shape (3,)
             The number of grid points in the x, y, and z directions.
 
         """
@@ -86,8 +86,8 @@ class _HyperRectangleGrid(Grid):
             The points in the x, y, z-axis respectively.
 
         """
-        # Need to obtain the points in the x,y,z-axis seperately. In order to do so, need to
-        #   assume the points have a specific structure.
+        # Need to obtain the points in the x,y,z-axis separately. In order to do so, need to
+        # assume the points have a specific structure.
         if self.dim == 3:
             z = self.points[: self.shape[2], 2]
             coords_y = [
@@ -112,27 +112,27 @@ class _HyperRectangleGrid(Grid):
 
         Parameters
         ----------
-        points : np.ndarray(M, 3)
+        points : np.ndarray, shape (M, 3)
             The 3D Cartesian coordinates of `M` points in :math:`\mathbb{R}^3`.
-        func_values : np.ndarray(M,)
+        func_values : np.ndarray, shape (M,)
             Function values at each point of the grid :math:`M` grid points.
-        use_log : bool
+        use_log : bool, optional
             If true, then logarithm is applied before interpolating to the function values.
             Can only be used for interpolating derivatives when the derivative is not a
             mixed derivative.
-        nu_x : int
+        nu_x : int, optional
             If zero, then the function in x-direction is interpolated.
             If greater than zero, then the "nu_x"th-order derivative in the x-direction is
             interpolated.
-        nu_y : int
+        nu_y : int, optional
             If zero, then the function in y-direction is interpolated.
             If greater than zero, then the "nu_y"th-order derivative in the y-direction is
             interpolated.
-        nu_z : int
+        nu_z : int, optional
             If zero, then the function in z-direction is interpolated.
             If greater than zero, then the "nu_z"th-order derivative in the z-direction is
             interpolated.
-        method : str
+        method : str, optional
             The method of interpolation, either cubic, or linear
             (uses SciPy's RegularGridInterpolator) or nearest (uses SciPy's
             RegularGridInterpolator). The accuracy decreases as you go to the right as well as the
@@ -408,7 +408,7 @@ class Tensor1DGrids(_HyperRectangleGrid):
 class UniformCubicGrid(_HyperRectangleGrid):
     r"""Uniform cubic grid (a.k.a. rectilinear grid) with evenly-spaced points in  each axes."""
 
-    def __init__(self, origin, axes, shape, weight_type="Trapezoid"):
+    def __init__(self, origin, axes, shape, weight="Trapezoid"):
         r"""Construct the UniformCubicGrid object.
 
         Grid whose points in each (x, y, z) direction has a constant step-size/evenly spaced.
@@ -425,17 +425,17 @@ class UniformCubicGrid(_HyperRectangleGrid):
 
         Parameters
         ----------
-        origin : np.ndarray(3,)
+        origin : np.ndarray, shape (3,)
             Cartesian coordinates of the cubic grid origin.
-        axes : np.ndarray(3, 3)
+        axes : np.ndarray, shape (3, 3)
             The three vectors, stored as rows of axes array,
             defining the Cartesian coordinate system used to build the
             cubic grid, i.e. the directions of the "(x,y,z)"-axis
             whose norm tells us the distance between points in that direction.
-        shape : np.ndarray(3,)
+        shape : np.ndarray, shape (3,)
             Number of grid points along each axis.
-        weight_type : str
-            The integration weighting scheme. Can be either:
+        weight : str
+            String indicating weighting function. This can be:
             Rectangle :
                 The weights are the standard Riemannian weights,
 
@@ -512,7 +512,7 @@ class UniformCubicGrid(_HyperRectangleGrid):
         coords = coords.reshape(3, -1)
         points = coords.T.dot(self._axes) + origin
         # assign the weights
-        weights = self._choose_weight_scheme(weight_type, shape)
+        weights = self._choose_weight_scheme(weight, shape)
         super().__init__(points, weights, shape)
 
     @classmethod
@@ -529,9 +529,9 @@ class UniformCubicGrid(_HyperRectangleGrid):
 
         Parameters
         ----------
-        atcorenums : np.ndarray, shape=(M,)
+        atcorenums : np.ndarray, shape (M,)
             Pseudo-number of :math:`M` atoms in the molecule.
-        atcoords : np.ndarray, shape=(M, 3)
+        atcoords : np.ndarray, shape (M, 3)
             Cartesian coordinates of :math:`M` atoms in the molecule.
         spacing : float, optional
             Increment between grid points along :math:`x`, :math:`y`, and :math:`z` direction.
@@ -542,8 +542,8 @@ class UniformCubicGrid(_HyperRectangleGrid):
             aligned with the principle axes of rotation of the molecule.
             If False, generates axes based on the x,y,z-axis and the spacing parameter, and
             the origin is defined by the maximum/minimum of the atomic coordinates.
-        weight_type : str, optional
-            The integration weighting scheme. Can be either:
+        weight : str, optional
+            String indicating weighting function. This can be:
             Rectangle :
                 The weights are the standard Riemannian weights,
 
@@ -627,11 +627,7 @@ class UniformCubicGrid(_HyperRectangleGrid):
 
     @property
     def axes(self):
-        """Array with axes of the cube.
-
-        These give the direction of the each of the "(x,y,z") axes
-        of the cubic grid.
-        """
+        """The axes of the cubic grid."""
         return self._axes
 
     @property
@@ -748,7 +744,7 @@ class UniformCubicGrid(_HyperRectangleGrid):
 
         Parameters
         ----------
-        point : np.ndarray(3,)
+        point : np.ndarray, shape (3,)
             Point in :math:`[-1,1]^3`.
         which : str
             If "closest", returns the closest index of the grid point.
