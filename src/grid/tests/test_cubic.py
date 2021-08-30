@@ -83,7 +83,7 @@ class TestHyperRectangleGrid(TestCase):
         with self.assertRaises(ValueError) as err:
             _HyperRectangleGrid(points, weights, (2, 3))
         self.assertEqual(
-            "The product of every element in shape 6 should match the number of points 4.",
+            "The product of shape elements 6 should match the number of grid points 4.",
             str(err.exception),
         )
         # Test the dimension specified by shape doesn't match the number of points.
@@ -127,9 +127,7 @@ class TestTensor1DGrids(TestCase):
         gaussian_pts = gaussian(cubic.points)
         num_pts = 500
         random_pts = np.random.uniform(-0.9, 0.9, (num_pts, 3))
-        interpolated = cubic.interpolate(
-            random_pts, gaussian_pts, use_log=False
-        )
+        interpolated = cubic.interpolate(random_pts, gaussian_pts, use_log=False)
         assert_allclose(interpolated, gaussian(random_pts), rtol=1e-5, atol=1e-6)
 
     def test_interpolation_of_linear_function_using_scipy_linear_method(self):
@@ -250,15 +248,11 @@ class TestTensor1DGrids(TestCase):
 
         pt = np.random.uniform(-0.5, 0.5, (3,))
         # Test taking derivative in x-direction
-        interpolated = cubic.interpolate(
-            pt[np.newaxis, :], gaussian_pts, use_log=True, nu_x=1
-        )
+        interpolated = cubic.interpolate(pt[np.newaxis, :], gaussian_pts, use_log=True, nu_x=1)
         assert_allclose(interpolated, derivative_wrt_one_var(pt, 0), rtol=1e-4)
 
         # Test taking derivative in z-direction
-        interpolated = cubic.interpolate(
-            pt[np.newaxis, :], gaussian_pts, use_log=True, nu_z=1
-        )
+        interpolated = cubic.interpolate(pt[np.newaxis, :], gaussian_pts, use_log=True, nu_z=1)
         assert_allclose(interpolated, derivative_wrt_one_var(pt, 2), rtol=1e-4)
 
         # Test taking second-derivative in x-direction
@@ -269,9 +263,7 @@ class TestTensor1DGrids(TestCase):
 
         # Test raises error
         with self.assertRaises(NotImplementedError):
-            cubic.interpolate(
-                pt[np.newaxis, :], gaussian_pts, use_log=True, nu_x=2, nu_y=2
-            )
+            cubic.interpolate(pt[np.newaxis, :], gaussian_pts, use_log=True, nu_x=2, nu_y=2)
 
     def test_integration_of_gaussian(self):
         r"""Test integration of a rapidly-decreasing Gaussian."""
