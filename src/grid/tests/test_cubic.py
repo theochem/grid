@@ -189,25 +189,19 @@ class TestTensor1DGrids(TestCase):
         gaussian_pts = quadratic_polynomial(cubic.points)
         pt = np.random.uniform(-1, 1, (1, 3))
         # Test taking derivative in x-direction
-        interpolated = cubic.interpolate(
-            pt, gaussian_pts, use_log=False, nu_x=1
-        )
+        interpolated = cubic.interpolate(pt, gaussian_pts, use_log=False, nu_x=1)
         assert_allclose(
             interpolated, derivative_wrt_one_var(pt, 0), rtol=1e-4, atol=1e-4
         )
 
         # Test taking derivative in y-direction
-        interpolated = cubic.interpolate(
-            pt, gaussian_pts, use_log=False, nu_y=1
-        )
+        interpolated = cubic.interpolate(pt, gaussian_pts, use_log=False, nu_y=1)
         assert_allclose(
             interpolated, derivative_wrt_one_var(pt, 1), rtol=1e-4, atol=1e-4
         )
 
         # Test taking derivative in z-direction
-        interpolated = cubic.interpolate(
-            pt, gaussian_pts, use_log=False, nu_z=1
-        )
+        interpolated = cubic.interpolate(pt, gaussian_pts, use_log=False, nu_z=1)
         assert_allclose(
             interpolated, derivative_wrt_one_var(pt, 2), rtol=1e-4, atol=1e-4
         )
@@ -248,11 +242,15 @@ class TestTensor1DGrids(TestCase):
 
         pt = np.random.uniform(-0.5, 0.5, (3,))
         # Test taking derivative in x-direction
-        interpolated = cubic.interpolate(pt[np.newaxis, :], gaussian_pts, use_log=True, nu_x=1)
+        interpolated = cubic.interpolate(
+            pt[np.newaxis, :], gaussian_pts, use_log=True, nu_x=1
+        )
         assert_allclose(interpolated, derivative_wrt_one_var(pt, 0), rtol=1e-4)
 
         # Test taking derivative in z-direction
-        interpolated = cubic.interpolate(pt[np.newaxis, :], gaussian_pts, use_log=True, nu_z=1)
+        interpolated = cubic.interpolate(
+            pt[np.newaxis, :], gaussian_pts, use_log=True, nu_z=1
+        )
         assert_allclose(interpolated, derivative_wrt_one_var(pt, 2), rtol=1e-4)
 
         # Test taking second-derivative in x-direction
@@ -263,7 +261,9 @@ class TestTensor1DGrids(TestCase):
 
         # Test raises error
         with self.assertRaises(NotImplementedError):
-            cubic.interpolate(pt[np.newaxis, :], gaussian_pts, use_log=True, nu_x=2, nu_y=2)
+            cubic.interpolate(
+                pt[np.newaxis, :], gaussian_pts, use_log=True, nu_x=2, nu_y=2
+            )
 
     def test_integration_of_gaussian(self):
         r"""Test integration of a rapidly-decreasing Gaussian."""
