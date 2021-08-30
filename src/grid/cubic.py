@@ -481,17 +481,25 @@ class UniformCubicGrid(_HyperRectangleGrid):
 
         """
         if not isinstance(origin, np.ndarray):
-            raise TypeError(f"Argument origin should be a numpy array, got {type(origin)}")
+            raise TypeError(
+                f"Argument origin should be a numpy array, got {type(origin)}"
+            )
         if not isinstance(axes, np.ndarray):
-            raise TypeError(f"Argument axes should be a numpy array, got {type(axes)}")
+            raise TypeError(
+                f"Argument axes should be a numpy array, got {type(axes)}"
+            )
         if not isinstance(shape, np.ndarray):
-            raise TypeError(f"Argument shape should be a numpy array, got {type(shape)}")
+            raise TypeError(
+                f"Argument shape should be a numpy array, got {type(shape)}"
+            )
         if origin.size != 3:
             raise ValueError(f"Arguments origin should have size 3, got {origin.shape}")
         if shape.size != 3:
             raise ValueError(f"Arguments shape should have size 3, got {shape.size}")
         if axes.shape != (3, 3):
-            raise ValueError(f"Argument axes should be a (3, 3) array, got {axes.shape}")
+            raise ValueError(
+                f"Argument axes should be a (3, 3) array, got {axes.shape}"
+            )
         if np.abs(np.linalg.det(axes)) < 1e-10:
             raise ValueError(
                 f"The axes are not linearly independent, got det(axes)={np.linalg.det(axes)}"
@@ -627,7 +635,7 @@ class UniformCubicGrid(_HyperRectangleGrid):
 
     @property
     def axes(self):
-        """The axes of the cubic grid."""
+        """Return the axes of the cubic grid."""
         return self._axes
 
     @property
