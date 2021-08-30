@@ -127,7 +127,7 @@ class TestTensor1DGrids(TestCase):
         gaussian_pts = gaussian(cubic.points)
         num_pts = 500
         random_pts = np.random.uniform(-0.9, 0.9, (num_pts, 3))
-        interpolated = cubic.interpolate_function(
+        interpolated = cubic.interpolate(
             random_pts, gaussian_pts, use_log=False
         )
         assert_allclose(interpolated, gaussian(random_pts), rtol=1e-5, atol=1e-6)
@@ -143,7 +143,7 @@ class TestTensor1DGrids(TestCase):
         gaussian_pts = linear_func(cubic.points)
         num_pts = 50
         random_pts = np.random.uniform(-0.9, 0.9, (num_pts, 3))
-        interpolated = cubic.interpolate_function(
+        interpolated = cubic.interpolate(
             random_pts, gaussian_pts, use_log=False, method="linear"
         )
         assert_allclose(interpolated, linear_func(random_pts))
@@ -163,7 +163,7 @@ class TestTensor1DGrids(TestCase):
         num_pts = 5
         random_pts = np.random.uniform(-0.9, 0.9, (num_pts, 3))
         for pt in random_pts:
-            interpolated = cubic.interpolate_function(
+            interpolated = cubic.interpolate(
                 pt, gaussian_pts, use_log=False, method="nearest"
             )
             assert_allclose(interpolated, linear_func(np.array([pt]))[0], rtol=1e-6)
@@ -191,7 +191,7 @@ class TestTensor1DGrids(TestCase):
         gaussian_pts = quadratic_polynomial(cubic.points)
         pt = np.random.uniform(-1, 1, (1, 3))
         # Test taking derivative in x-direction
-        interpolated = cubic.interpolate_function(
+        interpolated = cubic.interpolate(
             pt, gaussian_pts, use_log=False, nu_x=1
         )
         assert_allclose(
@@ -199,7 +199,7 @@ class TestTensor1DGrids(TestCase):
         )
 
         # Test taking derivative in y-direction
-        interpolated = cubic.interpolate_function(
+        interpolated = cubic.interpolate(
             pt, gaussian_pts, use_log=False, nu_y=1
         )
         assert_allclose(
@@ -207,7 +207,7 @@ class TestTensor1DGrids(TestCase):
         )
 
         # Test taking derivative in z-direction
-        interpolated = cubic.interpolate_function(
+        interpolated = cubic.interpolate(
             pt, gaussian_pts, use_log=False, nu_z=1
         )
         assert_allclose(
@@ -215,13 +215,13 @@ class TestTensor1DGrids(TestCase):
         )
 
         # Test taking derivative in x,y,z-direction
-        interpolated = cubic.interpolate_function(
+        interpolated = cubic.interpolate(
             pt, gaussian_pts, use_log=False, nu_x=1, nu_y=1, nu_z=1
         )
         assert np.abs(interpolated) < 1e-8
 
         # Test taking second-derivative in x-direction
-        interpolated = cubic.interpolate_function(
+        interpolated = cubic.interpolate(
             pt, gaussian_pts, use_log=False, nu_x=2, nu_y=0, nu_z=0
         )
         assert_allclose(interpolated, derivative_second_x(pt), rtol=1e-3)
@@ -250,26 +250,26 @@ class TestTensor1DGrids(TestCase):
 
         pt = np.random.uniform(-0.5, 0.5, (3,))
         # Test taking derivative in x-direction
-        interpolated = cubic.interpolate_function(
+        interpolated = cubic.interpolate(
             pt[np.newaxis, :], gaussian_pts, use_log=True, nu_x=1
         )
         assert_allclose(interpolated, derivative_wrt_one_var(pt, 0), rtol=1e-4)
 
         # Test taking derivative in z-direction
-        interpolated = cubic.interpolate_function(
+        interpolated = cubic.interpolate(
             pt[np.newaxis, :], gaussian_pts, use_log=True, nu_z=1
         )
         assert_allclose(interpolated, derivative_wrt_one_var(pt, 2), rtol=1e-4)
 
         # Test taking second-derivative in x-direction
-        interpolated = cubic.interpolate_function(
+        interpolated = cubic.interpolate(
             pt[np.newaxis, :], gaussian_pts, use_log=True, nu_x=2, nu_y=0, nu_z=0
         )
         assert_allclose(interpolated, derivative_second_x(pt), rtol=1e-4)
 
         # Test raises error
         with self.assertRaises(NotImplementedError):
-            cubic.interpolate_function(
+            cubic.interpolate(
                 pt[np.newaxis, :], gaussian_pts, use_log=True, nu_x=2, nu_y=2
             )
 

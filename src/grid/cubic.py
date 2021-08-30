@@ -106,7 +106,7 @@ class _HyperRectangleGrid(Grid):
         x = self.points[coords_x, 0]
         return x, y
 
-    def interpolate_function(
+    def interpolate(
         self, points, func_values, use_log=False, nu_x=0, nu_y=0, nu_z=0, method="cubic"
     ):
         r"""Interpolate function value at a given point.
@@ -218,7 +218,7 @@ class _HyperRectangleGrid(Grid):
         if use_log:
             # All derivatives require the interpolation of f at (x,y,z)
             interpolated = np.exp(
-                self.interpolate_function(
+                self.interpolate(
                     points, func_values, use_log=False, nu_x=0, nu_y=0, nu_z=0
                 )
             )
@@ -233,7 +233,7 @@ class _HyperRectangleGrid(Grid):
                 # Interpolate d^k ln(f) d"deriv_var" for all k from 1 to "deriv_var"
                 if nu_x > 0:
                     derivs = [
-                        self.interpolate_function(
+                        self.interpolate(
                             points, func_values, use_log=False, nu_x=i, nu_y=0, nu_z=0
                         )
                         for i in range(1, nu_x + 1)
@@ -241,7 +241,7 @@ class _HyperRectangleGrid(Grid):
                     deriv_var = nu_x
                 elif nu_y > 0:
                     derivs = [
-                        self.interpolate_function(
+                        self.interpolate(
                             points, func_values, use_log=False, nu_x=0, nu_y=i, nu_z=0
                         )
                         for i in range(1, nu_y + 1)
@@ -249,7 +249,7 @@ class _HyperRectangleGrid(Grid):
                     deriv_var = nu_y
                 else:
                     derivs = [
-                        self.interpolate_function(
+                        self.interpolate(
                             points, func_values, use_log=False, nu_x=0, nu_y=0, nu_z=i
                         )
                         for i in range(1, nu_z + 1)
