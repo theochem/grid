@@ -341,7 +341,7 @@ class TestUniformCubicGrid(TestCase):
         volume = (
             5 * 6 * 7
         )  # Volume of cube centered at zero, moves in one step at a time (axes)
-        uniform = UniformCubicGrid(origin, axes, shape=shape, weight_type="Fourier1")
+        uniform = UniformCubicGrid(origin, axes, shape=shape, weight="Fourier1")
 
         index = 0  # Index to iterate through uniform.weights.
         for j in range(1, shape[0] + 1):
@@ -383,7 +383,7 @@ class TestUniformCubicGrid(TestCase):
         volume *= (
             (4.0 / 5.0) * (5.0 / 6) * (6.0 / 7)
         )  # Alternative volume is used here.
-        uniform = UniformCubicGrid(origin, axes, shape=shape, weight_type="Fourier2")
+        uniform = UniformCubicGrid(origin, axes, shape=shape, weight="Fourier2")
         index = 0  # Index to iterate through uniform.weights.
         for j in range(1, shape[0] + 1):
             # Calculate weight in the x-direction
@@ -447,7 +447,7 @@ class TestUniformCubicGrid(TestCase):
         origin = np.array([0.0, 0.0, 0.0])
         axes = np.array([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]])
         shape = np.array([3, 3, 3], dtype=np.int)
-        uniform = UniformCubicGrid(origin, axes, shape, weight_type="Rectangle")
+        uniform = UniformCubicGrid(origin, axes, shape, weight="Rectangle")
         volume = 3 * 3 * 3  # Volume of cube.
         desired_wghts = np.ones(uniform.size) * volume / np.prod(shape)
         assert_allclose(uniform.weights, desired_wghts)
@@ -458,7 +458,7 @@ class TestUniformCubicGrid(TestCase):
         origin = np.array([0.0, 0.0, 0.0])
         axes = np.array([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]])
         shape = np.array([3, 3, 3], dtype=np.int)
-        uniform = UniformCubicGrid(origin, axes, shape, weight_type="Trapezoid")
+        uniform = UniformCubicGrid(origin, axes, shape, weight="Trapezoid")
         volume = 3 * 3 * 3  # Volume of cube.
         desired_wghts = np.ones(uniform.size) * volume / np.prod(shape + 1)
         assert_allclose(uniform.weights, desired_wghts)
@@ -469,7 +469,7 @@ class TestUniformCubicGrid(TestCase):
         origin = np.array([0.0, 0.0, 0.0])
         axes = np.array([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]])
         shape = np.array([3, 3, 3], dtype=np.int)
-        uniform = UniformCubicGrid(origin, axes, shape, weight_type="Alternative")
+        uniform = UniformCubicGrid(origin, axes, shape, weight="Alternative")
         volume = 3 * 3 * 3  # Volume of cube.
         desired_wghts = (
             np.ones(uniform.size) * volume * np.prod(shape - 1) / np.prod(shape)
@@ -486,21 +486,21 @@ class TestUniformCubicGrid(TestCase):
             return np.exp(-5 * np.linalg.norm(points, axis=1) ** 2.0)
 
         # Test with rectangle weights.
-        uniform = UniformCubicGrid(origin, axes, shape, weight_type="Rectangle")
+        uniform = UniformCubicGrid(origin, axes, shape, weight="Rectangle")
         gaussian_pts = gaussian(uniform.points)
         desired = np.sqrt(np.pi / 5) ** 3
         actual = uniform.integrate(gaussian_pts)
         assert_allclose(desired, actual, atol=1e-2)
 
         # Test with Trapezoid weights.
-        uniform = UniformCubicGrid(origin, axes, shape, weight_type="Trapezoid")
+        uniform = UniformCubicGrid(origin, axes, shape, weight="Trapezoid")
         gaussian_pts = gaussian(uniform.points)
         desired = np.sqrt(np.pi / 5) ** 3
         actual = uniform.integrate(gaussian_pts)
         assert_allclose(desired, actual, atol=1e-2)
 
         # Test with Fourier1 weights.
-        uniform = UniformCubicGrid(origin, axes, shape, weight_type="Fourier1")
+        uniform = UniformCubicGrid(origin, axes, shape, weight="Fourier1")
         gaussian_pts = gaussian(uniform.points)
         desired = np.sqrt(np.pi / 5) ** 3
         actual = uniform.integrate(gaussian_pts)
