@@ -251,25 +251,27 @@ class TestTensor1DGrids(TestCase):
         pt = np.random.uniform(-0.5, 0.5, (3,))
         # Test taking derivative in x-direction
         interpolated = cubic.interpolate_function(
-            pt, gaussian_pts, use_log=True, nu_x=1
+            pt[np.newaxis, :], gaussian_pts, use_log=True, nu_x=1
         )
         assert_allclose(interpolated, derivative_wrt_one_var(pt, 0), rtol=1e-4)
 
         # Test taking derivative in z-direction
         interpolated = cubic.interpolate_function(
-            pt, gaussian_pts, use_log=True, nu_z=1
+            pt[np.newaxis, :], gaussian_pts, use_log=True, nu_z=1
         )
         assert_allclose(interpolated, derivative_wrt_one_var(pt, 2), rtol=1e-4)
 
         # Test taking second-derivative in x-direction
         interpolated = cubic.interpolate_function(
-            pt, gaussian_pts, use_log=True, nu_x=2, nu_y=0, nu_z=0
+            pt[np.newaxis, :], gaussian_pts, use_log=True, nu_x=2, nu_y=0, nu_z=0
         )
         assert_allclose(interpolated, derivative_second_x(pt), rtol=1e-4)
 
         # Test raises error
         with self.assertRaises(NotImplementedError):
-            cubic.interpolate_function(pt, gaussian_pts, use_log=True, nu_x=2, nu_y=2)
+            cubic.interpolate_function(
+                pt[np.newaxis, :], gaussian_pts, use_log=True, nu_x=2, nu_y=2
+            )
 
     def test_integration_of_gaussian(self):
         r"""Test integration of a rapidly-decreasing Gaussian."""
