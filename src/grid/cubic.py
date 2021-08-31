@@ -34,7 +34,7 @@ class _HyperRectangleGrid(Grid):
         r"""Construct the _HyperRectangleGrid class.
 
         Hyper Rectangle grid is restricted to either two-dimensions and three-dimensions and
-        is defined to be a grid where point is specified by (i, j) or (i, j, k) integer indices.
+        is defined to be a grid whose point is specified by (i, j) or (i, j, k) integer indices.
 
         Parameters
         ----------
@@ -279,6 +279,10 @@ class _HyperRectangleGrid(Grid):
     def coordinates_to_index(self, indices):
         r"""Convert (i, j) or (i, j, k) integer coordinates to the grid point index.
 
+        Assumes the grid is ordered moving in the last-coordinate (with other coordinates fixed)
+         followed by the next coordinate to the right, continuing to the first coordinate
+         (i.e., lexicographical ordering).
+
         Parameters
         ----------
         indices : (int, int) or (int, int, int)
@@ -299,12 +303,14 @@ class _HyperRectangleGrid(Grid):
         return index
 
     def index_to_coordinates(self, index):
-        r"""Convert grid point index to its (i, j) or (i, j, k) integer coordinates in cubic grid.
+        r"""Convert grid point index to its (i, j) or (i, j, k) integer coordinates in the grid.
 
-        Cubic grid has a shape of :math:`(N_x, N_y, N_z)` denoting the number of points in
+        For 3D grid it has a shape of :math:`(N_x, N_y, N_z)` denoting the number of points in
         :math:`x`, :math:`y`, and :math:`z` directions. So, each grid point has a :math:`(i, j, k)`
         integer coordinate where :math:`0 <= i <= N_x - 1`, :math:`0 <= j <= N_y - 1`,
-        and :math:`0 <= k <= N_z - 1`.  Two-dimensional case similarly follows.
+        and :math:`0 <= k <= N_z - 1`.  Two-dimensional case similarly follows. Assumes
+        the grid enumerates in the last coordinate first (with others fixed), following the
+        next coordinate to the left (i.e., lexicographical ordering).
 
         Parameters
         ----------
@@ -313,8 +319,8 @@ class _HyperRectangleGrid(Grid):
 
         Returns
         -------
-        indices : (int, int, int)
-            The corresponding :math:`(i, j, k)` integer coordinates in a cubic grid.
+        indices : (int, int) or (int, int, int)
+            The corresponding :math:`(i, j)` or :math:`(i, j, k)` integer coordinates in the grid.
 
         """
         if not index >= 0:
@@ -407,7 +413,7 @@ class Tensor1DGrids(_HyperRectangleGrid):
 
 
 class UniformCubicGrid(_HyperRectangleGrid):
-    r"""Uniform cubic grid (a.k.a. rectilinear grid) with evenly-spaced points in  each axes."""
+    r"""Uniform cubic grid (a.k.a. rectilinear grid) with evenly-spaced points in each axes."""
 
     def __init__(self, origin, axes, shape, weight="Trapezoid"):
         r"""Construct the UniformCubicGrid object.
@@ -422,7 +428,8 @@ class UniformCubicGrid(_HyperRectangleGrid):
             y_i &= o_y + j \mathbf{a_2} \quad 0 \leq j \leq M_y \\
             z_i &= o_z + k \mathbf{a_3} \quad 0 \leq k \leq M_z
 
-        The grid enumerates through the z-axis first, then y-axis then x-axis.
+        The grid enumerates through the z-axis first, then y-axis then x-axis (i.e.,
+        lexicographical ordering).
 
         Parameters
         ----------
