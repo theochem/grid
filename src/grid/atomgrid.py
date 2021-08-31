@@ -300,7 +300,7 @@ class AtomGrid(Grid):
         Parameters
         ----------
         value_array : np.ndarray(N,)
-            a one dimentional array evaluated at each radial grid point
+            a 1d-array evaluated at each atomic grid point
 
         Returns
         -------
@@ -319,21 +319,24 @@ class AtomGrid(Grid):
         # rad_values in shape (n_shell, n_sph_harms)
 
         ml_sph_values = np.array(rad_values).T  # shape(n_sph_harms, n_shell)
+        # compute radial value at each radial point
+        # the total value of each shell is sum(r^2 * r_weight * sph_weight * points_value)
+        # where sum(sph_weight) = 4 * Pi
         ml_sph_values /= self.rgrid.points ** 2 * self.rgrid.weights
         return [
             CubicSpline(x=self.rgrid.points, y=sph_val) for sph_val in ml_sph_values
         ]
 
-    def interpolate(self, points, splines, deriv=0):
-        """Interpolate values of given points on the provided splines.
+    def interpolate(self, points, values, deriv=0):
+        """Interpolate values at given points on the splines fitted by provided values.
 
         Parameters
         ----------
         points : np.ndarray(N, 3)
-            points to be evaluabled on the spline
-            These points are displayed in Cartesian coordinates
-        splines : list[scipy.PPoly]
-            A list of scipy.PPoly instance. Each instance is a cubic spline
+            N points to be interpolated on the splines fitted by given values
+            These points are required to be in Cartesian coordinates
+        values : np.ndarray(M,)
+            a 1d-array evaluabled at each atomic grid point
         deriv : int, optional
             order of derivative to be evaluated on the spline, by default 0
             0 : the spline value
@@ -347,6 +350,8 @@ class AtomGrid(Grid):
             the value interpolated at each given points
         """
         r_pts, theta, phi = self.convert_cart_to_sph(points).T
+        # compute splines for given value_array on grid points
+        splines = self.fit_values(values)
         r_values = np.array([spline(r_pts, deriv) for spline in splines])
         r_sph_harm = self._generate_real_sph_harm(self.l_max // 2, theta, phi)
         return np.einsum("ij, ij -> j", r_values, r_sph_harm)
