@@ -424,8 +424,6 @@ class TestAtomGrid(TestCase):
         rad = btf.transform_1d_grid(oned)
         atgrid = AtomGrid.from_pruned(rad, 1, sectors_r=[], sectors_degree=[7])
         value_array = self.helper_func_gauss(atgrid.points)
-        spls = atgrid.fit_values(value_array)
-        # result = spline_with_atomic_grid(atgrid, value_array)
         # random test points on gauss function
         for _ in range(20):
             r = np.random.rand(1)[0] * 2
@@ -434,7 +432,7 @@ class TestAtomGrid(TestCase):
             x = r * np.sin(phi) * np.cos(theta)
             y = r * np.sin(phi) * np.sin(theta)
             z = r * np.cos(phi)
-            inters = atgrid.interpolate(np.array((x, y, z)).T, spls)
+            inters = atgrid.interpolate(np.array((x, y, z)).T, value_array)
             assert_allclose(
                 self.helper_func_gauss(np.array([x, y, z]).T), inters, atol=1e-4
             )
@@ -445,10 +443,10 @@ class TestAtomGrid(TestCase):
         rad = IdentityRTransform().transform_1d_grid(odg)
         atgrid = AtomGrid.from_pruned(rad, 1, sectors_r=[], sectors_degree=[7])
         values = self.helper_func_power(atgrid.points)
-        spls = atgrid.fit_values(values)
+        # spls = atgrid.fit_values(values)
         for i in range(10):
             interp = atgrid.interpolate(
-                atgrid.points[atgrid.indices[i] : atgrid.indices[i + 1]], spls
+                atgrid.points[atgrid.indices[i] : atgrid.indices[i + 1]], values
             )
             # same result from points and interpolation
             assert_allclose(interp, values[atgrid.indices[i] : atgrid.indices[i + 1]])
@@ -463,11 +461,11 @@ class TestAtomGrid(TestCase):
                 rad_grid, 1, sectors_r=[], sectors_degree=[degree]
             )
             values = self.helper_func_power(atgrid.points)
-            spls = atgrid.fit_values(values)
+            # spls = atgrid.fit_values(values)
 
             for i in range(10):
                 interp = atgrid.interpolate(
-                    atgrid.points[atgrid.indices[i] : atgrid.indices[i + 1]], spls
+                    atgrid.points[atgrid.indices[i] : atgrid.indices[i + 1]], values
                 )
                 # same result from points and interpolation
                 assert_allclose(
@@ -482,7 +480,7 @@ class TestAtomGrid(TestCase):
                 # xyz *= rad
                 ref_value = self.helper_func_power(xyz)
 
-                interp = atgrid.interpolate(xyz, spls)
+                interp = atgrid.interpolate(xyz, values)
                 assert_allclose(interp, ref_value)
 
     def test_cubicspline_and_deriv(self):
@@ -493,12 +491,12 @@ class TestAtomGrid(TestCase):
             degree = np.random.randint(5, 20)
             atgrid = AtomGrid.from_pruned(rad, 1, sectors_r=[], sectors_degree=[degree])
             values = self.helper_func_power(atgrid.points)
-            spls = atgrid.fit_values(values)
+            # spls = atgrid.fit_values(values)
 
             for i in range(10):
                 interp = atgrid.interpolate(
                     atgrid.points[atgrid.indices[i] : atgrid.indices[i + 1]],
-                    spls,
+                    values,
                     deriv=1,
                 )
                 # same result from points and interpolation
@@ -511,8 +509,7 @@ class TestAtomGrid(TestCase):
             for _ in range(10):
                 xyz = np.random.rand(10, 3) * np.random.uniform(1, 6)
                 ref_value = self.helper_func_power_deriv(xyz)
-
-                interp = atgrid.interpolate(xyz, spls, deriv=1)
+                interp = atgrid.interpolate(xyz, values, deriv=1)
                 assert_allclose(interp, ref_value)
 
     def test_error_raises(self):
