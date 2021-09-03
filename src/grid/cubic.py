@@ -526,7 +526,9 @@ class UniformGrid(_HyperRectangleGrid):
                 f"Argument shape should be a numpy array, got {type(shape)}"
             )
         if origin.size != 3 and origin.size != 2:
-            raise ValueError(f"Arguments origin should have size 2 or 3, got {origin.shape}")
+            raise ValueError(
+                f"Arguments origin should have size 2 or 3, got {origin.shape}"
+            )
         if shape.size != origin.size:
             raise ValueError(
                 f"Shape {shape.size} should be the same size {origin.size}."
@@ -536,7 +538,9 @@ class UniformGrid(_HyperRectangleGrid):
                 f"Axes {axes.shape} should be the same shape {origin.size}, {origin.size}."
             )
         if shape.size != 3 and shape.size != 2:
-            raise ValueError(f"Arguments shape should have size 2 or 3, got {shape.size}")
+            raise ValueError(
+                f"Arguments shape should have size 2 or 3, got {shape.size}"
+            )
         if axes.shape != (3, 3) and axes.shape != (2, 2):
             raise ValueError(
                 f"Argument axes should be a (2, 2) or (3, 3) array, got {axes.shape}"
@@ -557,14 +561,14 @@ class UniformGrid(_HyperRectangleGrid):
         self._points = np.zeros((np.prod(shape), dim))
         if dim == 3:
             coords = np.array(
-                np.meshgrid(np.arange(shape[0]), np.arange(shape[1]), np.arange(shape[2]))
+                np.meshgrid(
+                    np.arange(shape[0]), np.arange(shape[1]), np.arange(shape[2])
+                )
             )
             coords = np.swapaxes(coords, 1, 2)
             coords = coords.reshape(3, -1)
         else:
-            coords = np.array(
-                np.meshgrid(np.arange(shape[0]), np.arange(shape[1]))
-            )
+            coords = np.array(np.meshgrid(np.arange(shape[0]), np.arange(shape[1])))
             coords = coords.reshape(2, -1, order="F")
         points = coords.T.dot(self._axes) + origin
         # assign the weights
@@ -696,7 +700,7 @@ class UniformGrid(_HyperRectangleGrid):
         # Shape needs to be an argument, because I need to calculate the weights before
         #       initializing the _HyperRectangleGrid (where shape is set there).
         # Volume of a parallelepiped spanned by a, b, c is  | (a x b) dot c|.
-        if self.ndim == 3:
+        if len(shape) == 3:
             volume = np.dot(
                 np.cross(shape[0] * self.axes[0], shape[1] * self.axes[1]),
                 shape[2] * self.axes[2],
@@ -704,10 +708,7 @@ class UniformGrid(_HyperRectangleGrid):
         else:
             # Volume of a parallelogram is the absolute value of the determinant |a x b|
             volume = np.linalg.det(
-                np.array([
-                    shape[0] * self.axes[0],
-                    shape[1] * self.axes[1]
-                ])
+                np.array([shape[0] * self.axes[0], shape[1] * self.axes[1]])
             )
         return np.abs(volume)
 
@@ -729,10 +730,11 @@ class UniformGrid(_HyperRectangleGrid):
             weights = np.full(np.prod(shape), volume / numpnt)
             return weights
         elif weight == "Fourier1":
+            dim = len(shape)  # Dimension of the grid.
             volume = self._calculate_volume(shape)
             # “Gaussian” quadrature rule for Fourier series.
             numpnt = np.prod(shape + 1.0)
-            weight = np.ones(shape) * (2**self.ndim * volume / numpnt)
+            weight = np.ones(shape) * (2 ** dim * volume / numpnt)
 
             def _fourier1(weight, shape, index, dim):
                 # Return the fourier1 weights in the "index"-direction.
@@ -758,13 +760,13 @@ class UniformGrid(_HyperRectangleGrid):
                         return np.einsum("ij,j->ij", weight, weight_dir)
 
             # Calculate the weights in the x-direction, y-direction and z-direction, respectively.
-            if self.ndim == 3:
-                weight = _fourier1(weight, shape, 0, self.ndim)
-                weight = _fourier1(weight, shape, 1, self.ndim)
-                weight = _fourier1(weight, shape, 2, self.ndim)
+            if dim == 3:
+                weight = _fourier1(weight, shape, 0, dim)
+                weight = _fourier1(weight, shape, 1, dim)
+                weight = _fourier1(weight, shape, 2, dim)
             else:
-                weight = _fourier1(weight, shape, 0, self.ndim)
-                weight = _fourier1(weight, shape, 1, self.ndim)
+                weight = _fourier1(weight, shape, 0, dim)
+                weight = _fourier1(weight, shape, 1, dim)
             return np.ravel(weight)  # Ravel it to be in the dictionary order (z, y, x).
         elif weight == "Alternative":
             alt_volume = self._calculate_alternative_volume(shape)
@@ -839,9 +841,7 @@ class UniformGrid(_HyperRectangleGrid):
             )
 
         # Calculate step-size of the cube.
-        step_sizes = np.array([
-            np.linalg.norm(axis) for axis in self.axes
-        ])
+        step_sizes = np.array([np.linalg.norm(axis) for axis in self.axes])
         coord = np.array(
             [(point[i] - self.origin[i]) / step_sizes[i] for i in range(self.ndim)]
         )

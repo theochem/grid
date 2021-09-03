@@ -219,7 +219,7 @@ class TestTensor1DGrids(TestCase):
         assert_allclose(interpolated, derivative_second_x(pt), rtol=1e-3, atol=1e-3)
 
     def test_interpolation_of_various_derivative_gaussian_using_logarithm(self):
-        r"""Test interpolation of the derivatives of a Gaussian function."""
+        r"""Test interpolation of the thederivatives of a Gaussian function."""
         oned = MidPoint(150)
         cubic = Tensor1DGrids(oned, oned, oned)
 
@@ -323,60 +323,54 @@ class TestTensor1DGrids(TestCase):
 
 class TestUniformGrid(TestCase):
     r"""Test Uniform Grid Class."""
+
     def test_constructing_uniform_grid_in_three_dimensions(self):
         r"""Test the construction of a uniform grid is correct in three dimensions."""
-        origin = np.array([1., 1., 1.])
+        origin = np.array([1.0, 1.0, 1.0])
         axes = np.diag([1, 2, 3])
         shape = np.array([2, 2, 2])
         uniform = UniformGrid(origin, axes, shape)
         actual = np.array(
             [
-                [1., 1., 1.],
-                [1., 1., 4.],
-                [1., 3., 1.],
-                [1., 3., 4.],
-                [2., 1., 1.],
-                [2., 1., 4.],
-                [2., 3., 1.],
-                [2., 3., 4.],
+                [1.0, 1.0, 1.0],
+                [1.0, 1.0, 4.0],
+                [1.0, 3.0, 1.0],
+                [1.0, 3.0, 4.0],
+                [2.0, 1.0, 1.0],
+                [2.0, 1.0, 4.0],
+                [2.0, 3.0, 1.0],
+                [2.0, 3.0, 4.0],
             ]
         )
         assert_allclose(actual, uniform.points)
 
     def test_constructing_uniform_grid_in_two_dimensions(self):
         r"""Test the construction of a uniform grid is correct in two dimensions."""
-        origin = np.array([1., 1.])
+        origin = np.array([1.0, 1.0])
         axes = np.diag([1, 2])
         shape = np.array([2, 2])
         uniform = UniformGrid(origin, axes, shape, "Rectangle")
-        actual = np.array(
-            [
-                [1., 1.],
-                [1., 3.],
-                [2., 1.],
-                [2., 3.]
-            ]
-        )
+        actual = np.array([[1.0, 1.0], [1.0, 3.0], [2.0, 1.0], [2.0, 3.0]])
         assert_allclose(actual, uniform.points)
 
     def test_raises_constructing_uniform_grid(self):
         r"""Test various error raises when constructing Uniform Grid."""
-        proper_origin = np.array([1., 1., 1.])
+        proper_origin = np.array([1.0, 1.0, 1.0])
         proper_axes = np.eye(3)
         proper_shape = np.array([5, 6, 7])
         # Testing everything should be numpy arrays
         with self.assertRaises(TypeError):
-            UniformGrid([0., 0., 0.], proper_axes, proper_shape)
-            UniformGrid(proper_origin, [[1., 1., 2.]], proper_shape)
+            UniformGrid([0.0, 0.0, 0.0], proper_axes, proper_shape)
+            UniformGrid(proper_origin, [[1.0, 1.0, 2.0]], proper_shape)
             UniformGrid(proper_origin, proper_axes, (5, 6, 7))
         # Testing that the dimension are either two or three.
         with self.assertRaises(ValueError):
-            UniformGrid(np.array([0., 0., 0., 0.]), proper_axes, proper_shape)
+            UniformGrid(np.array([0.0, 0.0, 0.0, 0.0]), proper_axes, proper_shape)
             UniformGrid(proper_origin, np.array(4), proper_shape)
             UniformGrid(proper_origin, proper_axes, np.array([5, 6, 7, 8]))
         # Testing that dimensions of all attributes should match.
         with self.assertRaises(ValueError):
-            UniformGrid(np.array([0., 0.]), proper_axes, proper_shape)
+            UniformGrid(np.array([0.0, 0.0]), proper_axes, proper_shape)
             UniformGrid(proper_origin, np.eye(2), proper_shape)
             UniformGrid(proper_origin, proper_axes, np.array([5, 6]))
 
@@ -390,7 +384,7 @@ class TestUniformGrid(TestCase):
         assert_allclose(volume, uniform._calculate_volume(shape))
 
     def test_area_generalized_volume_of_rectangle_with_orthogonal_axes(self):
-        r"""Test area of a rectangle is the same as multiplying the length of axes"""
+        r"""Test area of a rectangle is the same as multiplying the length of axes."""
         origin = np.array([0.0, 0.0])
         axes = np.eye(2)
         shape = np.array([5, 6], dtype=np.int)
@@ -537,7 +531,7 @@ class TestUniformGrid(TestCase):
         uniform = UniformGrid(origin, axes, shape, weight="Alternative")
         volume = 3 * 3 * 3  # Volume of cube.
         desired_wghts = (
-            np.ones(uniform.size) * volume * np.prod(shape - 1) / np.prod(shape)**2.0
+            np.ones(uniform.size) * volume * np.prod(shape - 1) / np.prod(shape) ** 2.0
         )
         assert_allclose(uniform.weights, desired_wghts)
 
