@@ -369,7 +369,7 @@ class Tensor1DGrids(_HyperRectangleGrid):
             )
 
         if oned_z is not None:
-            # number of points in x, y, and z direction of the cubic grid
+            # number of points in x, y, and z direction of the tensor product grid
             shape = (oned_x.size, oned_y.size, oned_z.size)
             # Construct 3D set of points and weights
             # Note: points move in z-axis first (x,y-fixed) then y-axis then x-axis
@@ -408,20 +408,21 @@ class Tensor1DGrids(_HyperRectangleGrid):
     @property
     def origin(self):
         r"""Cartesian coordinates of the grid origin."""
-        # Bottom, Left-Most, Down-most point of the Cubic Grid in [-1, 1]^3.
+        # Bottom, Left-Most, Down-most point of the hyper-rectangular grid.
         return self.points[0]
 
 
-class UniformCubicGrid(_HyperRectangleGrid):
-    r"""Uniform cubic grid (a.k.a. rectilinear grid) with evenly-spaced points in each axes."""
+class UniformGrid(_HyperRectangleGrid):
+    r"""Uniform grid (a.k.a. rectilinear grid) with evenly-spaced points in each axes."""
 
     def __init__(self, origin, axes, shape, weight="Trapezoid"):
-        r"""Construct the UniformCubicGrid object.
+        r"""Construct the UniformGrid object in either two or three dimensions.
 
-        Grid whose points in each (x, y, z) direction has a constant step-size/evenly spaced.
-        Given a origin :math:`\mathbf{o} = (o_x, o_y, o_z)` and three directions forming the axes
-        :math:`\mathbf{a_1}, \mathbf{a_2}, \mathbf{a_3}` with shape :math:`(M_x, M_y, M_z)`,
-        then the :math:`(i, j, k)-\text{th}` point of the grid are:
+        Three dimensions is presented below, but similarly will work in two-dimensions.
+        Grid whose points in each (x, y, z) direction has a constant step-size/evenly
+        spaced. Given a origin :math:`\mathbf{o} = (o_x, o_y, o_z)` and three directions forming
+        the axes :math:`\mathbf{a_1}, \mathbf{a_2}, \mathbf{a_3}` with shape
+        :math:`(M_x, M_y, M_z)`, then the :math:`(i, j, k)-\text{th}` point of the grid are:
 
         .. math::
             x_i &= o_x + i \mathbf{a_1} \quad 0 \leq i \leq M_x \\
@@ -433,14 +434,14 @@ class UniformCubicGrid(_HyperRectangleGrid):
 
         Parameters
         ----------
-        origin : np.ndarray, shape (3,)
-            Cartesian coordinates of the cubic grid origin.
-        axes : np.ndarray, shape (3, 3)
-            The three vectors, stored as rows of axes array,
+        origin : np.ndarray, shape (D,)
+            Cartesian coordinates of the grid origin in either two or three dimensions :math:`D`.
+        axes : np.ndarray, shape (D, D)
+            The :math:`D` vectors, stored as rows of axes array,
             defining the Cartesian coordinate system used to build the
-            cubic grid, i.e. the directions of the "(x,y,z)"-axis
+            cubic grid, i.e. the directions of the "(x,y)\(x,y,z)"-axis
             whose norm tells us the distance between points in that direction.
-        shape : np.ndarray, shape (3,)
+        shape : np.ndarray, shape (D,)
             Number of grid points along each axis.
         weight : str
             String indicating weighting function. This can be:
@@ -448,22 +449,32 @@ class UniformCubicGrid(_HyperRectangleGrid):
                 The weights are the standard Riemannian weights,
 
                 .. math::
-                    w_{ijk} = \frac{V}{M_x\cdot M_y \cdot M_z}
-                where :math:`V` is the volume of the uniform cubic grid.
+                    \begin{align*}
+                        w_{ij} &= \frac{V}{M_x \cdot M_y} \tag{Two-Dimensions} \\
+                         w_{ijk} &= \frac{V}{M_x\cdot M_y \cdot M_z}  \tag{Three-Dimensions}
+                    \end{align*}
+
+                where :math:`V` is the volume or area of the uniform grid.
 
             Trapezoid :
                 Equivalent to rectangle rule with the assumption function is zero on the boundaries.
 
                  .. math::
-                    w_{ijk} = \frac{V}{(M_x + 1) \cdot (M_y + 1) \cdot (M_z + 1)}
-                where :math:`V` is the volume of the uniform cubic grid.
+                    \begin{align*}
+
+                        w_{ij} &= \frac{V}{(M_x + 1) \cdot (M_y + 1)}  \tag{Two-Dimensions} \\
+                        w_{ijk} &= \frac{V}{(M_x + 1) \cdot (M_y + 1) \cdot (M_z + 1)}
+                        \tag{Three-Dimensions}
+                    \end{align*}
+                where :math:`V` is the volume or area of the uniform grid.
 
             Fourier1 :
                 Assumes function can be expanded in a Fourier series, and then use Gaussian
                 quadrature. Assumes the function is zero at the boundary of the cube.
+                In three-dimensions it is
 
                 .. math::
-                    w_{ijk} = \frac{8}{(M_x + 1) \cdot (M_y + 1) \cdot (M_z + 1)} \bigg[
+                    w_{ijk} = \frac{2^3}{(M_x + 1) \cdot (M_y + 1) \cdot (M_z + 1)} \bigg[
                     \bigg(\sum_{p=1}^{M_x} \frac{\sin(ip \pi/(M_x + 1)) (1 - \cos(p\pi)}{p\pi}
                          \bigg)
                          \bigg(\sum_{p=1}^{M_y} \frac{\sin(jp \pi/(M_y + 1)) (1 - \cos(p\pi)}{p\pi}
@@ -471,6 +482,17 @@ class UniformCubicGrid(_HyperRectangleGrid):
                          \bigg(\sum_{p=1}^{M_z} \frac{\sin(kp \pi/(M_z + 1)) (1 - \cos(p\pi)}{p\pi}
                          \bigg)
                     \bigg]
+
+                whereas in two-dimensions it is
+
+                .. math::
+                    w_{ij} = \frac{2^3}{(M_x + 1) \cdot (M_y + 1)} \bigg[
+                    \bigg(\sum_{p=1}^{M_x} \frac{\sin(ip \pi/(M_x + 1)) (1 - \cos(p\pi)}{p\pi}
+                         \bigg)
+                         \bigg(\sum_{p=1}^{M_y} \frac{\sin(jp \pi/(M_y + 1)) (1 - \cos(p\pi)}{p\pi}
+                         \bigg)
+                    \bigg]
+
             Fourier2 :
                 Alternative weights based on Fourier series. Assumes the function is zero at the
                 boundary of the cube.
@@ -485,7 +507,12 @@ class UniformCubicGrid(_HyperRectangleGrid):
                 This does not assume function is zero at the boundary.
 
             .. math::
-                w_{ijk} = V \cdot \frac{M_x - 1}{M_x} \frac{M_y - 1}{M_y} \frac{M_z - 1}{M_z}
+                \begin{align*}
+                    w_{ij} &= V \cdot \frac{M_x - 1}{M_x} \frac{M_y - 1}{M_y}
+                    \tag{Two-Dimensions}\\
+                    w_{ijk} &= V \cdot \frac{M_x - 1}{M_x} \frac{M_y - 1}{M_y} \frac{M_z - 1}{M_z}
+                    \tag{Three-Dimensions}
+                \end{align*}
 
         """
         if not isinstance(origin, np.ndarray):
@@ -554,7 +581,8 @@ class UniformCubicGrid(_HyperRectangleGrid):
         rotate=True,
         weight="Trapezoid",
     ):
-        r"""Construct a uniform grid given the molecular pseudo-numbers and coordinates.
+        r"""
+        Construct a uniform grid given the molecular pseudo-numbers and coordinates.
 
         Parameters
         ----------
@@ -572,7 +600,7 @@ class UniformCubicGrid(_HyperRectangleGrid):
             If False, generates axes based on the x,y,z-axis and the spacing parameter, and
             the origin is defined by the maximum/minimum of the atomic coordinates.
         weight : str, optional
-            String indicating weighting function. Denoting the volume of the uniform cubic grid
+            String indicating weighting function. Denoting the volume/area of the uniform grid
             by :math:`V`, the weighting function can be:
             Rectangle :
                 The weights are the standard Riemannian weights,
@@ -655,12 +683,12 @@ class UniformCubicGrid(_HyperRectangleGrid):
 
     @property
     def axes(self):
-        """Return the axes of the cubic grid."""
+        """Return the axes of the uniform grid."""
         return self._axes
 
     @property
     def origin(self):
-        """Return the Cartesian coordinates of the cubic grid origin."""
+        """Return the Cartesian coordinates of the uniform grid origin."""
         return self._origin
 
     def _calculate_volume(self, shape):
