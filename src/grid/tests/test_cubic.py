@@ -167,7 +167,7 @@ class TestTensor1DGrids(TestCase):
             assert_allclose(interpolated, linear_func(np.array([pt]))[0], rtol=1e-6)
 
     def test_interpolation_of_various_derivative_polynomial(self):
-        r"""Test interpolation of the derivative of a quadraticpolynomial function."""
+        r"""Test interpolation of the derivative of a quadratic polynomial function."""
         oned = MidPoint(200)
         cubic = Tensor1DGrids(oned, oned, oned)
 
@@ -216,7 +216,7 @@ class TestTensor1DGrids(TestCase):
         interpolated = cubic.interpolate(
             pt, gaussian_pts, use_log=False, nu_x=2, nu_y=0, nu_z=0
         )
-        assert_allclose(interpolated, derivative_second_x(pt), rtol=1e-3)
+        assert_allclose(interpolated, derivative_second_x(pt), rtol=1e-3, atol=1e-3)
 
     def test_interpolation_of_various_derivative_gaussian_using_logarithm(self):
         r"""Test interpolation of the derivatives of a Gaussian function."""
@@ -323,6 +323,62 @@ class TestTensor1DGrids(TestCase):
 
 class TestUniformCubicGrid(TestCase):
     r"""Test Uniform Cubic Grid Class."""
+    def test_constructing_uniform_grid_in_three_dimensions(self):
+        r"""Test the construction of a uniform grid is correct in three dimensions."""
+        origin = np.array([1., 1., 1.])
+        axes = np.diag([1, 2, 3])
+        shape = np.array([2, 2, 2])
+        uniform = UniformCubicGrid(origin, axes, shape)
+        actual = np.array(
+            [
+                [1., 1., 1.],
+                [1., 1., 4.],
+                [1., 3., 1.],
+                [1., 3., 4.],
+                [2., 1., 1.],
+                [2., 1., 4.],
+                [2., 3., 1.],
+                [2., 3., 4.],
+            ]
+        )
+        assert_allclose(actual, uniform.points)
+
+    def test_constructing_uniform_grid_in_two_dimensions(self):
+        r"""Test the construction of a uniform grid is correct in two dimensions."""
+        origin = np.array([1., 1.])
+        axes = np.diag([1, 2])
+        shape = np.array([2, 2])
+        uniform = UniformCubicGrid(origin, axes, shape, "Rectangle")
+        actual = np.array(
+            [
+                [1., 1.],
+                [1., 3.],
+                [2., 1.],
+                [2., 3.]
+            ]
+        )
+        assert_allclose(actual, uniform.points)
+
+    def test_raises_constructing_uniform_grid(self):
+        r"""Test various error raises when constructing Uniform Grid."""
+        proper_origin = np.array([1., 1., 1.])
+        proper_axes = np.eye(3)
+        proper_shape = np.array([5, 6, 7])
+        # Testing everything should be numpy arrays
+        with self.assertRaises(TypeError):
+            UniformCubicGrid([0., 0., 0.], proper_axes, proper_shape)
+            UniformCubicGrid(proper_origin, [[1., 1., 2.]], proper_shape)
+            UniformCubicGrid(proper_origin, proper_axes, (5, 6, 7))
+        # Testing that the dimension are either two or three.
+        with self.assertRaises(ValueError):
+            UniformCubicGrid(np.array([0., 0., 0., 0.]), proper_axes, proper_shape)
+            UniformCubicGrid(proper_origin, np.array(4), proper_shape)
+            UniformCubicGrid(proper_origin, proper_axes, np.array([5, 6, 7, 8]))
+        # Testing that dimensions of all attributes should match.
+        with self.assertRaises(ValueError):
+            UniformCubicGrid(np.array([0., 0.]), proper_axes, proper_shape)
+            UniformCubicGrid(proper_origin, np.eye(2), proper_shape)
+            UniformCubicGrid(proper_origin, proper_axes, np.array([5, 6]))
 
     def test_volume_generalizes_volume_of_cube_with_orthogonal_axes(self):
         r"""Test volume of a cube is the same as multiplying by length of axes."""
@@ -331,6 +387,15 @@ class TestUniformCubicGrid(TestCase):
         shape = np.array([5, 6, 7], dtype=np.int)
         uniform = UniformCubicGrid(origin, axes, shape=shape)
         volume = 5 * 6 * 7
+        assert_allclose(volume, uniform._calculate_volume(shape))
+
+    def test_area_generalized_volume_of_rectangle_with_orthogonal_axes(self):
+        r"""Test area of a rectangle is the same as multiplying the length of axes"""
+        origin = np.array([0.0, 0.0])
+        axes = np.eye(2)
+        shape = np.array([5, 6], dtype=np.int)
+        uniform = UniformCubicGrid(origin, axes, shape=shape)
+        volume = 5 * 6
         assert_allclose(volume, uniform._calculate_volume(shape))
 
     def test_fourier1_weights_are_correct(self):
@@ -472,12 +537,12 @@ class TestUniformCubicGrid(TestCase):
         uniform = UniformCubicGrid(origin, axes, shape, weight="Alternative")
         volume = 3 * 3 * 3  # Volume of cube.
         desired_wghts = (
-            np.ones(uniform.size) * volume * np.prod(shape - 1) / np.prod(shape)
+            np.ones(uniform.size) * volume * np.prod(shape - 1) / np.prod(shape)**2.0
         )
         assert_allclose(uniform.weights, desired_wghts)
 
-    def test_integration_with_gaussian(self):
-        r"""Test integration against a Gaussian."""
+    def test_integration_with_gaussian_with_cubic_grid(self):
+        r"""Test integration against a Gaussian with a cubic grid."""
         origin = np.array([-1.0, -1.0, -1.0])
         axes = np.eye(3) * 0.01
         shape = np.array([250, 250, 250], dtype=np.int)
@@ -503,6 +568,43 @@ class TestUniformCubicGrid(TestCase):
         uniform = UniformCubicGrid(origin, axes, shape, weight="Fourier1")
         gaussian_pts = gaussian(uniform.points)
         desired = np.sqrt(np.pi / 5) ** 3
+        actual = uniform.integrate(gaussian_pts)
+        assert_allclose(desired, actual, atol=1e-2)
+
+    def test_integration_with_gaussian_with_square_grid(self):
+        r"""Test integration against a Gaussian with a square grid."""
+        origin = np.array([-1.0, -1.0])
+        axes = np.eye(2) * 0.005
+        shape = np.array([500, 500], dtype=np.int)
+
+        def gaussian(points):
+            return np.exp(-5 * np.linalg.norm(points, axis=1) ** 2.0)
+
+        # Test with rectangle weights.
+        uniform = UniformCubicGrid(origin, axes, shape, weight="Rectangle")
+        gaussian_pts = gaussian(uniform.points)
+        desired = np.pi / 5
+        actual = uniform.integrate(gaussian_pts)
+        assert_allclose(desired, actual, atol=1e-2)
+
+        # Test with Trapezoid weights.
+        uniform = UniformCubicGrid(origin, axes, shape, weight="Trapezoid")
+        gaussian_pts = gaussian(uniform.points)
+        desired = np.pi / 5
+        actual = uniform.integrate(gaussian_pts)
+        assert_allclose(desired, actual, atol=1e-2)
+
+        # Test with Fourier1 weights.
+        uniform = UniformCubicGrid(origin, axes, shape, weight="Fourier1")
+        gaussian_pts = gaussian(uniform.points)
+        desired = np.pi / 5
+        actual = uniform.integrate(gaussian_pts)
+        assert_allclose(desired, actual, atol=1e-2)
+
+        # Test with Fourier1 weights.
+        uniform = UniformCubicGrid(origin, axes, shape, weight="Alternative")
+        gaussian_pts = gaussian(uniform.points)
+        desired = np.pi / 5
         actual = uniform.integrate(gaussian_pts)
         assert_allclose(desired, actual, atol=1e-2)
 
@@ -538,6 +640,29 @@ class TestUniformCubicGrid(TestCase):
             axes = np.array([[1.0, 1.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]])
             shape = np.array([3, 3, 3], dtype=np.int)
             UniformCubicGrid(origin, axes, shape)
+
+    def test_finding_closest_point_to_square_grid(self):
+        r"""Test finding the closest point to a square grid."""
+        # Set up the grid with easy examples but axes that form a cube.
+        origin = np.array([0.0, 0.0])
+        axes = np.eye(2)
+        shape = np.array([3, 3], dtype=np.int)
+        uniform = UniformCubicGrid(origin, axes, shape)
+
+        print(uniform.points)
+        # Create point close to the origin
+        pt = np.array([0.1, 0.1])
+        index = uniform.closest_point(pt, "origin")
+        assert index == 0
+        index = uniform.closest_point(pt, "closest")
+        assert index == 0
+
+        # Create point close to the point with coordinates (1, 1, 1) but whose origin is zero.
+        pt = np.array([1.75, 1.75, 1.75])
+        index = uniform.closest_point(pt, "origin")
+        assert index == 4
+        index = uniform.closest_point(pt, "closest")
+        assert index == 8
 
     def test_uniformgrid_points_h2o(self):
         r"""Test creating uniform cubic grid from molecule against h2o example."""
