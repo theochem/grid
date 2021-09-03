@@ -573,3 +573,9 @@ class TestAtomGrid(TestCase):
 
         with self.assertRaises(ValueError):
             AtomGrid._generate_real_sph_harm(-1, np.random.rand(10), np.random.rand(10))
+        with self.assertRaises(ValueError):
+            oned = GaussLegendre(30)
+            btf = BeckeTF(0.0001, 1.5)
+            rad = btf.transform_1d_grid(oned)
+            atgrid = AtomGrid.from_preset(rad, atnum=1, preset="fine")
+            atgrid.fit_values(np.random.rand(100))
