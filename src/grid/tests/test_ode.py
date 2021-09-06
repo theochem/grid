@@ -91,7 +91,7 @@ class TestODE(TestCase):
             return 1 if isinstance(x, Number) else np.ones(x.size)
 
         def func(x, y):
-            dy_dx = ODE._rearrange_ode(x, y, coeff_b, fx(x))
+            dy_dx = ODE._rearrange_ode(y, coeff_b, fx(x))
             return np.vstack((*y[1:], dy_dx))
 
         def bc(ya, yb):
@@ -113,7 +113,7 @@ class TestODE(TestCase):
             return -6 * x ** 2 - x + 10
 
         def func2(x, y):
-            dy_dx = ODE._rearrange_ode(x, y, coeff_b_2, fx2(x))
+            dy_dx = ODE._rearrange_ode(y, coeff_b_2, fx2(x))
             return np.vstack((*y[1:], dy_dx))
 
         def bc2(ya, yb):
@@ -214,7 +214,7 @@ class TestODE(TestCase):
         ref_y = np.zeros((2, r.size))
 
         def func_ref(x, y):
-            dy_dx = ODE._rearrange_ode(x, y, coeff, fx(x))
+            dy_dx = ODE._rearrange_ode(y, coeff, fx(x))
             return np.vstack((*y[1:], dy_dx))
 
         res_ref = solve_bvp(func_ref, bc, r, ref_y)
@@ -246,7 +246,7 @@ class TestODE(TestCase):
         print(res.sol(x)[0])
 
         def func_ref(x, y):
-            dy_dx = ODE._rearrange_ode(x, y, coeff, fx(x))
+            dy_dx = ODE._rearrange_ode(y, coeff, fx(x))
             return np.vstack((*y[1:], dy_dx))
 
         res_ref = solve_bvp(func_ref, bc, r, y)
@@ -280,7 +280,7 @@ class TestODE(TestCase):
         # print(res.sol(x)[0])
 
         def func_ref(x, y):
-            dy_dx = ODE._rearrange_ode(x, y, coeff, fx(x))
+            dy_dx = ODE._rearrange_ode(y, coeff, fx(x))
             return np.vstack((*y[1:], dy_dx))
 
         res_ref = solve_bvp(func_ref, bc, r, y)
@@ -310,7 +310,7 @@ class TestODE(TestCase):
         res = solve_bvp(func, bc, x, y)
 
         def func_ref(x, y):
-            dy_dx = ODE._rearrange_ode(x, y, coeff, fx(x))
+            dy_dx = ODE._rearrange_ode(y, coeff, fx(x))
             return np.vstack((*y[1:], dy_dx))
 
         res_ref = solve_bvp(func_ref, bc, r, y)

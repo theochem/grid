@@ -63,7 +63,6 @@ class TestPoisson(TestCase):
 
     def test_poisson_solve(self):
         """Test the poisson solve function."""
-        oned = GaussChebyshev(30)
         oned = GaussChebyshev(50)
         btf = BeckeTF(1e-7, 1.5)
         rad = btf.transform_1d_grid(oned)

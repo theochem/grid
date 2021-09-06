@@ -50,6 +50,15 @@ class ODE:
             Coefficients of each differential term
         bd_cond : iterable
             Boundary condition for specific solution
+            bd_cond is taking in the form (int: index, int: deriv, float: value)
+            where:
+                `index`: 0 specify left boundary, while 1 specify right boundary
+                `deriv`: specify the n(th) order derivative
+                `value`: the value of the chosen boundary condition
+            example:
+                (0, 1, 3.14): the boundary value of the 1st order derivate of
+                the left end is 3.14
+                (1, 0, -1.): the boundary value of the right end is -1
         transform : BaseTransform, optional
             Transformation instance r -> x
 
@@ -75,11 +84,12 @@ class ODE:
                 dy_dx = ODE._rearrange_trans_ode(x, y, coeffs, transform, fx)
             else:
                 coeffs_mt = ODE._construct_coeff_array(x, coeffs)
-                dy_dx = ODE._rearrange_ode(x, y, coeffs_mt, fx(x))
+                dy_dx = ODE._rearrange_ode(y, coeffs_mt, fx(x))
             return np.vstack((*y[1:], dy_dx))
 
         # define boundary condition
         def bc(ya, yb):
+            # ya, yb the two bounds of xs. a: left end, b: right end
             bonds = [ya, yb]
             conds = []
             for i, deriv, value in bd_cond:
@@ -192,7 +202,7 @@ class ODE:
             proper expr for the right side of the transformed ODE equation
         """
         coeff_b = ODE._transformed_coeff_ode(coeff_a, tf, x)
-        result = ODE._rearrange_ode(x, y, coeff_b, fx_func(tf.inverse(x)))
+        result = ODE._rearrange_ode(y, coeff_b, fx_func(tf.inverse(x)))
         return result
 
     @staticmethod
@@ -220,19 +230,22 @@ class ODE:
         return coeff_mtr
 
     @staticmethod
-    def _rearrange_ode(x, y, coeff_b, fx):
+    def _rearrange_ode(y, coeff_b, fx):
         """Rearrange coefficients for scipy solver.
 
         Parameters
         ----------
-        x : np.ndarray(N,)
-            Points from desired domain
         y : np.ndarray(order, N)
             Initial guess for the function values and its derivatives
         coeff_b : list[number] or np.ndarray(Order + 1)
-            Coefficients for each differential part on ODE
+            Coefficients for each differential part on ODE, in ascending order
         fx : np.ndarray(N,)
             Non-homogeneous term at given x
+
+        Given 2nd ODE: a_2 y^{\prime\prime} + a_1 y^{\prime} + a_0 y = C
+            `coeff_b` = [a_0, a_1, a_2]
+            `fx` = C
+            The return is frac{C - a_0 y[0] - a_1 y[1]} {a_2}
 
         Returns
         -------
