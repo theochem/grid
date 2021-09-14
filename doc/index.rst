@@ -26,7 +26,7 @@ One dimensional grid choices are:
 
 
 .. csv-table:: One-Dimensional Quadrature Grids
-   :file: ./table_index.csv
+   :file: ./table_onedgrids.csv
    :widths: 70, 31
    :header-rows: 1
    :align: center
