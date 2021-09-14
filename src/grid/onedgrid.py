@@ -304,7 +304,7 @@ class RectangleRuleSineEndPoints(OneDGrid):
         r"""Generate 1-D grid on [-1, 1] interval using Rectangle Rule for Sine Series (with endpoints).
 
         .. math::
-        \int_{0}^{1} f(x) dx \approx& \sum_{i=1}^n w_i f(x_i) \\
+        \int_{-1}^{1} f(x) dx \approx& \sum_{i=1}^n w_i f(x_i) \\
         x_i =& \frac{i}{n+1} \\
         w_i =& \frac{2}{n+1} \sum_{m=1}^n \frac{\sin(m \pi x_i)(1-\cos(m \pi))}{m \pi}
 
@@ -355,7 +355,7 @@ class RectangleRuleSine(OneDGrid):
         r"""Generate 1-D grid on [-1, 1] interval using Interior Rectangle Rule for Sines.
 
         .. math::
-        \int_{0}^{1} f(x) dx \approx& \sum_{i=1}^n w_i f(x_i) \\
+        \int_{-1}^{1} f(x) dx \approx& \sum_{i=1}^n w_i f(x_i) \\
         x_i =& \frac{2 i - 1}{2 n} \\
         w_i =& \frac{2}{n^2 \pi} \sin(n\pi x_i) \sin^2(n\pi /2) +
                 \frac{4}{n \pi} \sum_{m=1}^{n-1} \frac{\sin(m \pi x_i)\sin^2(m\pi /2)}{m}
@@ -453,7 +453,7 @@ class Simpson(OneDGrid):
     """Simpson integral quadrature class."""
 
     def __init__(self, npoints):
-        r"""Generate 1D grid on [-1:1] interval based on Simpson rule.
+        r"""Generate 1D grid on [-1,1] interval based on Simpson rule.
 
         The fundamental definition of this rule is:
 
