@@ -95,9 +95,70 @@ class TestHyperRectangleGrid(TestCase):
             str(err.exception),
         )
 
+    def test_raise_error_when_using_interpolation(self):
+        r"""Test the raising of error when using interpolation function."""
+        points = np.array([[0, 0, 0], [0, 0, 1], [0, 1, 0], [0, 1, 1],
+                           [1, 0, 0], [1, 0, 1], [1, 1, 0], [1, 1, 1]])
+        weights = np.array([1.0] * points.shape[0])
+        values = np.array([1.0, 2.0, 3.0, 4.0])
+        # Test raises error if method string isn't correct
+        with self.assertRaises(ValueError) as err:
+            _HyperRectangleGrid(points, weights, (2, 2, 2)).interpolate(points, values, method="not cubic")
+        self.assertEqual(
+            "Argument method should be either cubic, linear, or nearest , got not cubic",
+            str(err.exception),
+        )
+        # Test raises error if dimension is two.
+        with self.assertRaises(NotImplementedError) as err:
+            points2 = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
+            weights2 = np.array([1.0] * points2.shape[0])
+            _HyperRectangleGrid(points2, weights2, (2, 2)).interpolate(points, values)
+        self.assertEqual(
+            "Interpolation only works for three dimension, got ndim=2",
+            str(err.exception),
+        )
+        # Test when number of function values isn't the same as the number of grid points
+        with self.assertRaises(ValueError) as err:
+            values = np.array([1., 2.])
+            _HyperRectangleGrid(points, weights, (2, 2, 2)).interpolate(points, values)
+        self.assertEqual(
+            "Number of function values 2 does not match number of grid points 8.",
+            str(err.exception),
+        )
+
 
 class TestTensor1DGrids(TestCase):
     r"""Test Tensor Product of 1D Grids."""
+
+    def test_raise_error_when_constructing_grid(self):
+        r"""Test raising of error when constructing Tensor1DGrids."""
+        oned = GaussLaguerre(10)
+        # Test raises error
+        with self.assertRaises(TypeError) as err:
+            Tensor1DGrids(5, oned, oned)
+        self.assertEqual(
+            "Argument oned_x should be an instance of `OneDGrid`, got <class 'int'>",
+            str(err.exception),
+        )
+        with self.assertRaises(TypeError) as err:
+            Tensor1DGrids(oned, 5, oned)
+        self.assertEqual(
+            "Argument oned_y should be an instance of `OneDGrid`, got <class 'int'>",
+            str(err.exception),
+        )
+        with self.assertRaises(TypeError) as err:
+            Tensor1DGrids(oned, oned, 5)
+        self.assertEqual(
+            "Argument oned_z should be an instance of `OneDGrid`, got <class 'int'>",
+            str(err.exception),
+        )
+
+    def test_origin_of_tensor1d_grids(self):
+        r"""Test that the origin is the first point."""
+        oned = GaussLaguerre(10)
+        oned2 = GaussLaguerre(20)
+        grid = Tensor1DGrids(oned, oned2)
+        assert_allclose(np.array([oned.points[0], oned2.points[0]]), grid.origin)
 
     def test_point_and_weights_are_correct(self):
         r"""Test that the points and weights are correctly computed."""
@@ -128,6 +189,9 @@ class TestTensor1DGrids(TestCase):
         num_pts = 500
         random_pts = np.random.uniform(-0.9, 0.9, (num_pts, 3))
         interpolated = cubic.interpolate(random_pts, gaussian_pts, use_log=False)
+        assert_allclose(interpolated, gaussian(random_pts), rtol=1e-5, atol=1e-6)
+
+        interpolated = cubic.interpolate(random_pts, gaussian_pts, use_log=True)
         assert_allclose(interpolated, gaussian(random_pts), rtol=1e-5, atol=1e-6)
 
     def test_interpolation_of_linear_function_using_scipy_linear_method(self):
@@ -247,6 +311,12 @@ class TestTensor1DGrids(TestCase):
         )
         assert_allclose(interpolated, derivative_wrt_one_var(pt, 0), rtol=1e-4)
 
+        # Test taking derivative in y-direction
+        interpolated = cubic.interpolate(
+            pt[np.newaxis, :], gaussian_pts, use_log=True, nu_y=1
+        )
+        assert_allclose(interpolated, derivative_wrt_one_var(pt, 1), rtol=1e-4)
+
         # Test taking derivative in z-direction
         interpolated = cubic.interpolate(
             pt[np.newaxis, :], gaussian_pts, use_log=True, nu_z=1
@@ -299,6 +369,10 @@ class TestTensor1DGrids(TestCase):
             index, cubic.coordinates_to_index(cubic.index_to_coordinates(index))
         )
 
+        # Test raises error when index isn't positive
+        with self.assertRaises(ValueError):
+            cubic.index_to_coordinates(-1)
+
     def test_moving_coordinates_to_index_and_back_two_dimensions(self):
         r"""Test moving from coordinates and index and back in two dimensions."""
         oned = MidPoint(3)
@@ -323,6 +397,75 @@ class TestTensor1DGrids(TestCase):
 
 class TestUniformGrid(TestCase):
     r"""Test Uniform Grid Class."""
+
+    def test_raises_error_correctly_when_constructing_uniform_grid(self):
+        r"""Test raises error when constructing uniform grid."""
+        proper_origin = np.array([0., 0., 0.])
+        proper_axes = np.eye(3)
+        proper_shape = np.array([5, 5, 5])
+        # Test origin
+        with self.assertRaises(TypeError) as err:
+            UniformGrid((0, 0, 0), proper_axes, proper_shape)
+        self.assertEqual(
+            "Argument origin should be a numpy array, got <class 'tuple'>",
+            str(err.exception),
+        )
+        # Test axes
+        with self.assertRaises(TypeError) as err:
+            UniformGrid(proper_origin, [[1, 0, 0], [0, 1, 0], [0, 0, 1]], proper_shape)
+        self.assertEqual(
+            "Argument axes should be a numpy array, got <class 'list'>",
+            str(err.exception),
+        )
+        # Test shape
+        with self.assertRaises(TypeError) as err:
+            UniformGrid(proper_origin, proper_axes, (5, 5, 5))
+        self.assertEqual(
+            "Argument shape should be a numpy array, got <class 'tuple'>",
+            str(err.exception),
+        )
+        # Test origin has correct shape
+        with self.assertRaises(ValueError) as err:
+            UniformGrid(np.array([0, 0, 0, 0]), proper_axes, proper_shape)
+        self.assertEqual(
+            "Arguments origin should have size 2 or 3, got (4,)",
+            str(err.exception),
+        )
+        # Test that origin and shape should have the same size
+        with self.assertRaises(ValueError) as err:
+            UniformGrid(proper_origin, proper_axes, np.array([5, 5, 5, 5]))
+        self.assertEqual(
+            "Shape 4 should be the same size 3.",
+            str(err.exception),
+        )
+        # Test that axes has the same dimensions as the origin
+        with self.assertRaises(ValueError) as err:
+            UniformGrid(proper_origin, np.array([[5, 5], [5, 5]]), proper_shape)
+        self.assertEqual(
+            "Axes (2, 2) should be the same shape 3, 3.",
+            str(err.exception),
+        )
+        # Test that axes is linearly independent
+        with self.assertRaises(ValueError) as err:
+            UniformGrid(proper_origin, np.array([[5, 5, 5], [5, 5, 5], [0, 0, 1]]), proper_shape)
+        self.assertEqual(
+            "The axes are not linearly independent, got det(axes)=0.0",
+            str(err.exception),
+        )
+        # Test shape is always positive
+        with self.assertRaises(ValueError) as err:
+            UniformGrid(proper_origin, proper_axes, np.array([5, -1, 2]))
+        self.assertEqual(
+            "Number of points in each direction should be positive, got shape=[5, -1, 2]",
+            str(err.exception),
+        )
+        # Test the weights are correct
+        with self.assertRaises(ValueError) as err:
+            UniformGrid(proper_origin, proper_axes, proper_shape, weight="not trapezoid")
+        self.assertEqual(
+            "The weight type parameter is not known, got not trapezoid",
+            str(err.exception),
+        )
 
     def test_constructing_uniform_grid_in_three_dimensions(self):
         r"""Test the construction of a uniform grid is correct in three dimensions."""
@@ -352,27 +495,6 @@ class TestUniformGrid(TestCase):
         uniform = UniformGrid(origin, axes, shape, "Rectangle")
         actual = np.array([[1.0, 1.0], [1.0, 3.0], [2.0, 1.0], [2.0, 3.0]])
         assert_allclose(actual, uniform.points)
-
-    def test_raises_constructing_uniform_grid(self):
-        r"""Test various error raises when constructing Uniform Grid."""
-        proper_origin = np.array([1.0, 1.0, 1.0])
-        proper_axes = np.eye(3)
-        proper_shape = np.array([5, 6, 7])
-        # Testing everything should be numpy arrays
-        with self.assertRaises(TypeError):
-            UniformGrid([0.0, 0.0, 0.0], proper_axes, proper_shape)
-            UniformGrid(proper_origin, [[1.0, 1.0, 2.0]], proper_shape)
-            UniformGrid(proper_origin, proper_axes, (5, 6, 7))
-        # Testing that the dimension are either two or three.
-        with self.assertRaises(ValueError):
-            UniformGrid(np.array([0.0, 0.0, 0.0, 0.0]), proper_axes, proper_shape)
-            UniformGrid(proper_origin, np.array(4), proper_shape)
-            UniformGrid(proper_origin, proper_axes, np.array([5, 6, 7, 8]))
-        # Testing that dimensions of all attributes should match.
-        with self.assertRaises(ValueError):
-            UniformGrid(np.array([0.0, 0.0]), proper_axes, proper_shape)
-            UniformGrid(proper_origin, np.eye(2), proper_shape)
-            UniformGrid(proper_origin, proper_axes, np.array([5, 6]))
 
     def test_volume_generalizes_volume_of_cube_with_orthogonal_axes(self):
         r"""Test volume of a cube is the same as multiplying by length of axes."""
@@ -629,11 +751,16 @@ class TestUniformGrid(TestCase):
             # Test wrong attribute.
             uniform.closest_point(pt, "not origin or closest")
 
-            # Test axes that are not orthogonal.
-            origin = np.array([0.0, 0.0, 0.0])
-            axes = np.array([[1.0, 1.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]])
-            shape = np.array([3, 3, 3], dtype=np.int)
-            UniformGrid(origin, axes, shape)
+        # Test raises error with orthogonal axes.
+        axes = np.array([[1., 0., 0.], [1., 1., 1.], [0., 0., 1.]])
+        uniform = UniformGrid(origin, axes, shape)
+        with self.assertRaises(ValueError) as err:
+            # Test wrong attribute.
+            uniform.closest_point(pt, "origin")
+        self.assertEqual(
+            "Finding closest point only works when the 'axes' attribute is a diagonal matrix.",
+            str(err.exception),
+        )
 
     def test_finding_closest_point_to_square_grid(self):
         r"""Test finding the closest point to a square grid."""
@@ -643,7 +770,6 @@ class TestUniformGrid(TestCase):
         shape = np.array([3, 3], dtype=np.int)
         uniform = UniformGrid(origin, axes, shape)
 
-        print(uniform.points)
         # Create point close to the origin
         pt = np.array([0.1, 0.1])
         index = uniform.closest_point(pt, "origin")
@@ -693,6 +819,42 @@ class TestUniformGrid(TestCase):
                 [-1.83375375e00, -4.99999997e-09, -2.15345007e00],
                 [1.59848155e-01, -2.00000000e00, -1.99360191e00],
                 [1.59848155e-01, -4.99999997e-09, -1.99360191e00],
+            ]
+        )
+        assert_allclose(grid.points, expected, rtol=1.0e-7, atol=1.0e-7)
+
+    def test_uniformgrid_points_without_rotate(self):
+        r"""Test creating uniform cubic grid from simple constructed molecule."""
+        # replace this test with a better one later
+        pseudo_numbers = np.array([1.0, 1.0])
+        coordinates = np.array(
+            [
+                [1.0, 0.0, 0.0],
+                [-1.0, 0.0, 0.0]
+            ]
+        )
+        grid = UniformGrid.from_molecule(
+            pseudo_numbers, coordinates, spacing=1.0, extension=1.0, rotate=False
+        )
+        # Shape should be (4, 2, 2)
+        expected = np.array(
+            [
+                [-2, -1, -1],
+                [-2, -1, 0],
+                [-2, 0, -1],
+                [-2, 0, 0],
+                [-1, -1, -1],
+                [-1, -1, 0],
+                [-1, 0, -1],
+                [-1, 0, 0],
+                [0, -1, -1],
+                [0, -1, 0],
+                [0, 0, -1],
+                [0, 0, 0],
+                [1, -1, -1],
+                [1, -1, 0],
+                [1, 0, -1],
+                [1, 0, 0],
             ]
         )
         assert_allclose(grid.points, expected, rtol=1.0e-7, atol=1.0e-7)
