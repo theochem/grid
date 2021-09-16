@@ -38,12 +38,13 @@ class _HyperRectangleGrid(Grid):
 
         Parameters
         ----------
-        points : np.ndarray, shape (N, 3)
-            The 3D Cartesian coordinates of :math:`N` grid points.
+        points : np.ndarray, shape (N, D)
+            The :math:`D` Cartesian coordinates of :math:`N` grid points, where :math:`D`
+            is either two or three.
         weights : np.ndarray, shape (N,)
             The integration weights corresponding to each :math:`N` grid point.
-        shape : np.ndarray, shape (3,)
-            The number of grid points in the x, y, and z directions.
+        shape : np.ndarray, shape (D,)
+            The number of grid points in the each of the :math:`D` directions.
 
         """
         if len(shape) not in [2, 3]:
@@ -69,7 +70,7 @@ class _HyperRectangleGrid(Grid):
 
     @property
     def shape(self):
-        r"""Return number of grid points in the :math:`(x, y, z)` directions."""
+        r"""Return number of grid points in the :math:`(x, y)` or :math:`(x, y, z)` directions."""
         return self._shape
 
     @property
@@ -83,7 +84,8 @@ class _HyperRectangleGrid(Grid):
         Returns
         -------
         np.ndarray(M_x,), np.ndarray(M_y,) np.ndarray(M_z) :
-            The points in the x, y, z-axis respectively.
+            The points in the x, y, if in three dimensions, z axes respectively,
+            where :math:`M_i` is the number of points in the ith-direction.
 
         """
         # Need to obtain the points in the x-, y-, z-axis separately. In order to do so, need to
@@ -109,6 +111,8 @@ class _HyperRectangleGrid(Grid):
         self, points, values, use_log=False, nu_x=0, nu_y=0, nu_z=0, method="cubic"
     ):
         r"""Interpolate function value at a given point.
+
+        Only implemented in three-dimensions.
 
         Parameters
         ----------
@@ -279,9 +283,9 @@ class _HyperRectangleGrid(Grid):
     def coordinates_to_index(self, indices):
         r"""Convert (i, j) or (i, j, k) integer coordinates to the grid point index.
 
-        Assumes the grid is ordered moving in the last-coordinate (with other coordinates fixed)
-         followed by the next coordinate to the right, continuing to the first coordinate
-         (i.e., lexicographical ordering).
+        Assumes the grid is ordered moving in the last-coordinate (with other coordinates fixed,
+        e.g. k) followed by the next coordinate to the left (e.g. j), continuing to the first
+        coordinate (e.g. i) (i.e., lexicographical ordering).
 
         Parameters
         ----------
@@ -437,8 +441,8 @@ class UniformGrid(_HyperRectangleGrid):
         origin : np.ndarray, shape (D,)
             Cartesian coordinates of the grid origin in either two or three dimensions :math:`D`.
         axes : np.ndarray, shape (D, D)
-            The :math:`D` vectors, stored as rows of axes array,
-            defining the Cartesian coordinate system used to build the
+            The :math:`D` vectors, stored as rows of axes array, whose rows
+            define the Cartesian coordinate system used to build the
             cubic grid, i.e. the directions of the "(x,y)\(x,y,z)"-axis
             whose norm tells us the distance between points in that direction.
         shape : np.ndarray, shape (D,)
@@ -537,21 +541,13 @@ class UniformGrid(_HyperRectangleGrid):
             raise ValueError(
                 f"Axes {axes.shape} should be the same shape {origin.size}, {origin.size}."
             )
-        if shape.size != 3 and shape.size != 2:
-            raise ValueError(
-                f"Arguments shape should have size 2 or 3, got {shape.size}"
-            )
-        if axes.shape != (3, 3) and axes.shape != (2, 2):
-            raise ValueError(
-                f"Argument axes should be a (2, 2) or (3, 3) array, got {axes.shape}"
-            )
         if np.abs(np.linalg.det(axes)) < 1e-10:
             raise ValueError(
                 f"The axes are not linearly independent, got det(axes)={np.linalg.det(axes)}"
             )
         if np.any(shape <= 0):
             raise ValueError(
-                f"Number of points in each direction should be positive, got shape={shape}"
+                f"Number of points in each direction should be positive, got shape={list(shape)}"
             )
 
         self._axes = axes
@@ -678,6 +674,7 @@ class UniformGrid(_HyperRectangleGrid):
         min_coordinate = np.amin(new_coordinates, axis=0)
         # Compute the required number of points along x, y, and z axis
         shape = (max_coordinate - min_coordinate + 2.0 * extension) / spacing
+        # Add one to include the upper-bound as well.
         shape = np.ceil(shape)
         shape = np.array(shape, int)
         # Compute origin by taking the center of mass then subtracting the half of the number
@@ -699,20 +696,21 @@ class UniformGrid(_HyperRectangleGrid):
         r"""Return the volume of the Uniform Grid."""
         # Shape needs to be an argument, because I need to calculate the weights before
         #       initializing the _HyperRectangleGrid (where shape is set there).
-        # Volume of a parallelepiped spanned by a, b, c is  | (a x b) dot c|.
+        # Three-Dims: Volume of a parallelepiped spanned by a, b, c is  | (a x b) dot c|.
         if len(shape) == 3:
             volume = np.dot(
                 np.cross(shape[0] * self.axes[0], shape[1] * self.axes[1]),
                 shape[2] * self.axes[2],
             )
         else:
-            # Volume of a parallelogram is the absolute value of the determinant |a x b|
+            # Two-Dims: Volume of a parallelogram is the absolute value of the determinant |a x b|
             volume = np.linalg.det(
                 np.array([shape[0] * self.axes[0], shape[1] * self.axes[1]])
             )
         return np.abs(volume)
 
     def _calculate_alternative_volume(self, shape):
+        # Used for calculating different integration weights.
         volume = self._calculate_volume(shape)
         factor = np.prod((shape - 1) / shape)
         return volume * factor
