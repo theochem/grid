@@ -230,61 +230,9 @@ class TestTensor1DGrids(TestCase):
             )
             assert_allclose(interpolated, linear_func(np.array([pt]))[0], rtol=1e-6)
 
-    def test_interpolation_of_various_derivative_polynomial(self):
-        r"""Test interpolation of the derivative of a quadratic polynomial function."""
-        oned = MidPoint(200)
-        cubic = Tensor1DGrids(oned, oned, oned)
-
-        def quadratic_polynomial(points):
-            return np.sum(points ** 4, axis=1)
-
-        def derivative_wrt_one_var(point, i_var_deriv):
-            if i_var_deriv == 0:
-                return 4 * point[0, 0] ** 3
-            if i_var_deriv == 1:
-                return 4 * point[0, 1] ** 3
-            if i_var_deriv == 2:
-                return 4 * point[0, 2] ** 3
-
-        def derivative_second_x(point):
-            return 4 * 3 * point[0, 0] ** 2
-
-        # Evaluate function over the grid
-        gaussian_pts = quadratic_polynomial(cubic.points)
-        pt = np.random.uniform(-1, 1, (1, 3))
-        # Test taking derivative in x-direction
-        interpolated = cubic.interpolate(pt, gaussian_pts, use_log=False, nu_x=1)
-        assert_allclose(
-            interpolated, derivative_wrt_one_var(pt, 0), rtol=1e-4, atol=1e-4
-        )
-
-        # Test taking derivative in y-direction
-        interpolated = cubic.interpolate(pt, gaussian_pts, use_log=False, nu_y=1)
-        assert_allclose(
-            interpolated, derivative_wrt_one_var(pt, 1), rtol=1e-4, atol=1e-4
-        )
-
-        # Test taking derivative in z-direction
-        interpolated = cubic.interpolate(pt, gaussian_pts, use_log=False, nu_z=1)
-        assert_allclose(
-            interpolated, derivative_wrt_one_var(pt, 2), rtol=1e-4, atol=1e-4
-        )
-
-        # Test taking derivative in x,y,z-direction
-        interpolated = cubic.interpolate(
-            pt, gaussian_pts, use_log=False, nu_x=1, nu_y=1, nu_z=1
-        )
-        assert np.abs(interpolated) < 1e-8
-
-        # Test taking second-derivative in x-direction
-        interpolated = cubic.interpolate(
-            pt, gaussian_pts, use_log=False, nu_x=2, nu_y=0, nu_z=0
-        )
-        assert_allclose(interpolated, derivative_second_x(pt), rtol=1e-3, atol=1e-3)
-
     def test_interpolation_of_various_derivative_gaussian_using_logarithm(self):
         r"""Test interpolation of the thederivatives of a Gaussian function."""
-        oned = MidPoint(150)
+        oned = MidPoint(100)
         cubic = Tensor1DGrids(oned, oned, oned)
 
         def gaussian(points):
