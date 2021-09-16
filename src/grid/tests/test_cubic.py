@@ -97,13 +97,25 @@ class TestHyperRectangleGrid(TestCase):
 
     def test_raise_error_when_using_interpolation(self):
         r"""Test the raising of error when using interpolation function."""
-        points = np.array([[0, 0, 0], [0, 0, 1], [0, 1, 0], [0, 1, 1],
-                           [1, 0, 0], [1, 0, 1], [1, 1, 0], [1, 1, 1]])
+        points = np.array(
+            [
+                [0, 0, 0],
+                [0, 0, 1],
+                [0, 1, 0],
+                [0, 1, 1],
+                [1, 0, 0],
+                [1, 0, 1],
+                [1, 1, 0],
+                [1, 1, 1],
+            ]
+        )
         weights = np.array([1.0] * points.shape[0])
         values = np.array([1.0, 2.0, 3.0, 4.0])
         # Test raises error if method string isn't correct
         with self.assertRaises(ValueError) as err:
-            _HyperRectangleGrid(points, weights, (2, 2, 2)).interpolate(points, values, method="not cubic")
+            _HyperRectangleGrid(points, weights, (2, 2, 2)).interpolate(
+                points, values, method="not cubic"
+            )
         self.assertEqual(
             "Argument method should be either cubic, linear, or nearest , got not cubic",
             str(err.exception),
@@ -119,7 +131,7 @@ class TestHyperRectangleGrid(TestCase):
         )
         # Test when number of function values isn't the same as the number of grid points
         with self.assertRaises(ValueError) as err:
-            values = np.array([1., 2.])
+            values = np.array([1.0, 2.0])
             _HyperRectangleGrid(points, weights, (2, 2, 2)).interpolate(points, values)
         self.assertEqual(
             "Number of function values 2 does not match number of grid points 8.",
@@ -348,7 +360,7 @@ class TestUniformGrid(TestCase):
 
     def test_raises_error_correctly_when_constructing_uniform_grid(self):
         r"""Test raises error when constructing uniform grid."""
-        proper_origin = np.array([0., 0., 0.])
+        proper_origin = np.array([0.0, 0.0, 0.0])
         proper_axes = np.eye(3)
         proper_shape = np.array([5, 5, 5])
         # Test origin
@@ -395,7 +407,9 @@ class TestUniformGrid(TestCase):
         )
         # Test that axes is linearly independent
         with self.assertRaises(ValueError) as err:
-            UniformGrid(proper_origin, np.array([[5, 5, 5], [5, 5, 5], [0, 0, 1]]), proper_shape)
+            UniformGrid(
+                proper_origin, np.array([[5, 5, 5], [5, 5, 5], [0, 0, 1]]), proper_shape
+            )
         self.assertEqual(
             "The axes are not linearly independent, got det(axes)=0.0",
             str(err.exception),
@@ -409,7 +423,9 @@ class TestUniformGrid(TestCase):
         )
         # Test the weights are correct
         with self.assertRaises(ValueError) as err:
-            UniformGrid(proper_origin, proper_axes, proper_shape, weight="not trapezoid")
+            UniformGrid(
+                proper_origin, proper_axes, proper_shape, weight="not trapezoid"
+            )
         self.assertEqual(
             "The weight type parameter is not known, got not trapezoid",
             str(err.exception),
@@ -700,7 +716,7 @@ class TestUniformGrid(TestCase):
             uniform.closest_point(pt, "not origin or closest")
 
         # Test raises error with orthogonal axes.
-        axes = np.array([[1., 0., 0.], [1., 1., 1.], [0., 0., 1.]])
+        axes = np.array([[1.0, 0.0, 0.0], [1.0, 1.0, 1.0], [0.0, 0.0, 1.0]])
         uniform = UniformGrid(origin, axes, shape)
         with self.assertRaises(ValueError) as err:
             # Test wrong attribute.
@@ -775,12 +791,7 @@ class TestUniformGrid(TestCase):
         r"""Test creating uniform cubic grid from simple constructed molecule."""
         # replace this test with a better one later
         pseudo_numbers = np.array([1.0, 1.0])
-        coordinates = np.array(
-            [
-                [1.0, 0.0, 0.0],
-                [-1.0, 0.0, 0.0]
-            ]
-        )
+        coordinates = np.array([[1.0, 0.0, 0.0], [-1.0, 0.0, 0.0]])
         grid = UniformGrid.from_molecule(
             pseudo_numbers, coordinates, spacing=1.0, extension=1.0, rotate=False
         )
