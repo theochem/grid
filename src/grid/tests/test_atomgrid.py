@@ -25,8 +25,8 @@ from unittest import TestCase
 from grid.atomgrid import AtomGrid
 from grid.basegrid import Grid, OneDGrid
 from grid.lebedev import AngularGrid, LEBEDEV_DEGREES
-from grid.onedgrid import GaussLegendre, HortonLinear
-from grid.rtransform import BeckeTF, IdentityRTransform, PowerRTransform
+from grid.onedgrid import GaussChebyshev, GaussLegendre, HortonLinear
+from grid.rtransform import BeckeTF, IdentityRTransform, InverseTF, PowerRTransform
 
 import numpy as np
 from numpy.testing import (
@@ -368,6 +368,11 @@ class TestAtomGrid(TestCase):
         dzf = 8 * points[:, 2] * points[:, 2] / r
         return dxf + dyf + dzf
 
+    def test_generate_ml(self):
+        for i in range(1, 10):
+            res = AtomGrid._generate_ml_for_sph(i ** 2)
+            assert_equal(len(res), i ** 2)
+
     def test_generate_spherical(self):
         """Test generated real spherical harmonics values."""
         atgrid = AngularGrid(degree=7)
@@ -511,6 +516,55 @@ class TestAtomGrid(TestCase):
                 ref_value = self.helper_func_power_deriv(xyz)
                 interp = atgrid.interpolate(xyz, values, deriv=1)
                 assert_allclose(interp, ref_value)
+
+    def test_poisson_solver(self):
+        """Test solve poisson equation and interpolate the result."""
+        oned = GaussChebyshev(50)
+        btf = BeckeTF(1e-7, 1.5)
+        rad = btf.transform_1d_grid(oned)
+        l_max = 7
+        atgrid = AtomGrid(rad, degrees=[l_max])
+        value_array = self.helper_func_gauss(atgrid.points)
+        p_0 = atgrid.integrate(value_array)
+
+        # test density sum up to np.pi**(3 / 2)
+        assert_allclose(p_0, np.pi ** 1.5, atol=1e-4)
+        linsp = np.linspace(-1, 0.99, 50)
+        ibtf = InverseTF(btf)
+        bound = p_0 * np.sqrt(4 * np.pi)
+        pois_mtr = atgrid.solve_poisson(value_array, linsp, bound, tfm=ibtf)
+        assert_equal(len(pois_mtr), 16)
+        near_rg_pts = np.array([1e-2, 0.1, 0.2, 0.3, 0.5, 0.7, 1.0, 1.2])
+        long_rg_pts = np.array([2, 3, 4, 5, 6, 7, 8, 9, 10])
+        near_tf_pts = ibtf.transform(near_rg_pts)
+        long_tf_pts = ibtf.transform(long_rg_pts)
+        short_res = pois_mtr[0](near_tf_pts)[0] / near_rg_pts / (2 * np.sqrt(np.pi))
+        long_res = pois_mtr[0](long_tf_pts)[0] / long_rg_pts / (2 * np.sqrt(np.pi))
+
+        ref_short_res = [
+            6.28286,  # 0.01
+            6.26219,  # 0.1
+            6.20029,  # 0.2
+            6.09956,  # 0.3
+            5.79652,  # 0.5
+            5.3916,  # 0.7
+            4.69236,  # 1.0
+            4.22403,  # 1.2
+        ]
+        ref_long_res = [
+            2.77108,  # 2
+            1.85601,  # 3
+            1.39203,  # 4
+            1.11362,  # 5
+            0.92802,  # 6
+            0.79544,  # 7
+            0.69601,  # 8
+            0.61867,  # 9
+            0.55680,  # 10
+        ]
+
+        assert_allclose(short_res, ref_short_res, atol=5e-4)
+        assert_allclose(long_res, ref_long_res, atol=5e-4)
 
     def test_error_raises(self):
         """Tests for error raises."""
