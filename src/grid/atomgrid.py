@@ -295,29 +295,29 @@ class AtomGrid(Grid):
         center = self.center if center is None else np.asarray(center)
         return convert_cart_to_sph(points, center)
 
-    def fit_values(self, value_array):
+    def fit(self, values):
         """Fit given value arrays into splines that matches atomic grid.
 
         Parameters
         ----------
-        value_array : np.ndarray(N,)
-            a 1d-array evaluated at each atomic grid point
+        values : np.ndarray(N,)
+            a 1D-array evaluated at each atomic grid point.
 
         Returns
         -------
         list[scipy.PPoly]
-            A list of cubic spline fitted by given value arrays
+            A list of cubic spline fitted by given value arrays.
         """
-        if value_array.size != self.size:
+        if values.size != self.size:
             raise ValueError(
                 "The size of values does not match with the size of grid\n"
-                f"The size of value array: {value_array.size}\n"
+                f"The size of value array: {values.size}\n"
                 f"The size of grid: {self.size}"
             )
         if self._basis is None:
             theta, phi = self.convert_cart_to_sph().T[1:]
             self._basis = self._generate_real_sph_harm(self.l_max // 2, theta, phi)
-        prod_value = self._basis * value_array * self.weights
+        prod_value = self._basis * values * self.weights
         rad_values = [
             np.sum(prod_value[:, self.indices[i] : self.indices[i + 1]], axis=-1)
             for i in range(self.n_shells)
@@ -357,7 +357,7 @@ class AtomGrid(Grid):
         """
         r_pts, theta, phi = self.convert_cart_to_sph(points).T
         # compute splines for given value_array on grid points
-        splines = self.fit_values(value_array)
+        splines = self.fit(value_array)
         r_values = np.array([spline(r_pts, deriv) for spline in splines])
         r_sph_harm = self._generate_real_sph_harm(self.l_max // 2, theta, phi)
         return np.einsum("ij, ij -> j", r_values, r_sph_harm)
@@ -381,7 +381,7 @@ class AtomGrid(Grid):
         list[scipy.PPoly]
             a list of solved PDE qubic spline objects.
         """
-        splines = self.fit_values(value_array)
+        splines = self.fit(value_array)
         ml_pairs = self._generate_ml_for_sph(len(splines))
         result = []
         for index, spl in enumerate(splines):

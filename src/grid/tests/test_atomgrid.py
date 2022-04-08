@@ -406,7 +406,7 @@ class TestAtomGrid(TestCase):
         rad = IdentityRTransform().transform_1d_grid(odg)
         atgrid = AtomGrid.from_pruned(rad, 1, sectors_r=[], sectors_degree=[7])
         values = self.helper_func_power(atgrid.points)
-        spls = atgrid.fit_values(values)
+        spls = atgrid.fit(values)
         assert len(spls) == 16
 
         for shell in range(1, 11):
@@ -632,4 +632,4 @@ class TestAtomGrid(TestCase):
             btf = BeckeTF(0.0001, 1.5)
             rad = btf.transform_1d_grid(oned)
             atgrid = AtomGrid.from_preset(rad, atnum=1, preset="fine")
-            atgrid.fit_values(np.random.rand(100))
+            atgrid.fit(np.random.rand(100))
