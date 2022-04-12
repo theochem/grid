@@ -93,7 +93,9 @@ class BaseTransform(ABC):
         new_weights = self.deriv(oned_grid.points) * oned_grid.weights
         new_domain = oned_grid.domain
         if new_domain is not None:
-            new_domain = self.transform(np.array(oned_grid.domain))
+            # Some transformation (Issue #125) reverses the order of points i.e.
+            #    [-1, 1] maps to [infinity, 0].  This sort here fixes the problem here.
+            new_domain = tuple(np.sort(self.transform(np.array(oned_grid.domain))))
         return OneDGrid(new_points, new_weights, new_domain)
 
     def _convert_inf(self, array, replace_inf=1e16):
