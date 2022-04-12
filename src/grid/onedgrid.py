@@ -438,7 +438,7 @@ class TanhSinh(OneDGrid):
         Returns
         -------
         OneDGrid
-            A 1-D grid instance containing points and weights.
+            One-dimensional grid instance containing points and weights.
 
         """
         if npoints <= 1:
@@ -491,7 +491,7 @@ class Simpson(OneDGrid):
         Returns
         -------
         OneDGrid
-            A 1D grid instance.
+            One-dimensional grid instance.
 
         """
         if npoints <= 1:
@@ -555,7 +555,7 @@ class ClenshawCurtis(OneDGrid):
         .. math::
         \theta_i &= \pi (i - 1) / (n - 1) \\
         x_i &= \cos (\theta_i) \\
-        w_i &= \frac{c_k}{n} \bigg(1 - \sum_{j=1}^{n/2} \frac{b_j}{4j^2 - 1} \cos(2j\theta_i) \bigg)
+        w_i &= \frac{c_k}{n} \bigg(1 - \sum_{j=1}^{\lfloor n/2 \rfloor} \frac{b_j}{4j^2 - 1} \cos(2j\theta_i) \bigg)
         b_j = \begin{cases}
             1 & \text{if } j = n/2 \\
             2 & \text{if } j < n/2
@@ -578,7 +578,7 @@ class ClenshawCurtis(OneDGrid):
         Returns
         -------
         OneDGrid
-            A 1D grid instance.
+            One-dimensional grid instance.
 
         """
         if npoints <= 1:
@@ -616,7 +616,7 @@ class FejerFirst(OneDGrid):
         .. math::
         \theta_i &= \frac{(2i - 1)\pi}{2n},
         x_i &= \cos(\theta_i),
-        w_i &= \frac{2}{n}\bigg(1 - 2 \sum_{j=1}^{n/2} \frac{\cos(2j \theta_j)}{4 j^2 - 1} \bigg),
+        w_i &= \frac{2}{n}\bigg(1 - 2 \sum_{j=1}^{\lfloor n/2 \rfloor} \frac{\cos(2j \theta_j)}{4 j^2 - 1} \bigg),
 
         where :math:`k=1,\cdots, n`. It uses the zeros of the Chebyshev polynomial.
         If discontinuous, it is recommended to break the intervals at the discontinuities
@@ -630,7 +630,7 @@ class FejerFirst(OneDGrid):
         Returns
         -------
         OneDGrid
-            A 1D grid instance.
+            One-dimensional grid instance.
 
         """
         if npoints <= 1:
@@ -664,7 +664,7 @@ class FejerSecond(OneDGrid):
         .. math::
         theta_i &= k \pi / n \\
         x_i &= \cos(\theta_i) \\
-        w_i &= \frac{4 \sin(\theta_i)}{n} \sum_{j=1}^{n/2} \frac{\sin(2j - 1)\theta_i}{2j - 1}\\
+        w_i &= \frac{4 \sin(\theta_i)}{n} \sum_{j=1}^{\lfloor n/2 \rfloor} \frac{\sin(2j - 1)\theta_i}{2j - 1}\\
 
         where :math:`k=1, \cdots n - 1` and :math:`n` is the number of points. This
         method is considered more practical than the first method.  If discontinuous, it is
@@ -678,7 +678,7 @@ class FejerSecond(OneDGrid):
         Returns
         -------
         OneDGrid
-            A 1D grid instance.
+            One-dimensional grid instance.
         """
         if npoints <= 1:
             raise ValueError("npoints must be greater that one, given {npoints}")
