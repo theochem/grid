@@ -310,7 +310,8 @@ class RectangleRuleSineEndPoints(OneDGrid):
     """Rectangle-Rule Sine EndPoints integral quadrature class."""
 
     def __init__(self, npoints: int):
-        r"""Generate 1-D grid on [-1, 1] interval using Rectangle Rule for Sine Series (with endpoints).
+        r"""
+        Generate 1-D grid on [-1, 1] using rectangle rule for Sine Series (with endpoints).
 
         .. math::
         \int_{-1}^{1} f(x) dx \approx& \sum_{i=1}^n w_i f(x_i) \\
@@ -555,7 +556,8 @@ class ClenshawCurtis(OneDGrid):
         .. math::
         \theta_i &= \pi (i - 1) / (n - 1) \\
         x_i &= \cos (\theta_i) \\
-        w_i &= \frac{c_k}{n} \bigg(1 - \sum_{j=1}^{\lfloor n/2 \rfloor} \frac{b_j}{4j^2 - 1} \cos(2j\theta_i) \bigg)
+        w_i &= \frac{c_k}{n} \bigg(1 - \sum_{j=1}^{\lfloor n/2 \rfloor}
+            \frac{b_j}{4j^2 - 1} \cos(2j\theta_i) \bigg)
         b_j = \begin{cases}
             1 & \text{if } j = n/2 \\
             2 & \text{if } j < n/2
@@ -616,7 +618,8 @@ class FejerFirst(OneDGrid):
         .. math::
         \theta_i &= \frac{(2i - 1)\pi}{2n},
         x_i &= \cos(\theta_i),
-        w_i &= \frac{2}{n}\bigg(1 - 2 \sum_{j=1}^{\lfloor n/2 \rfloor} \frac{\cos(2j \theta_j)}{4 j^2 - 1} \bigg),
+        w_i &= \frac{2}{n}\bigg(1 - 2 \sum_{j=1}^{\lfloor n/2 \rfloor}
+            \frac{\cos(2j \theta_j)}{4 j^2 - 1} \bigg),
 
         where :math:`k=1,\cdots, n`. It uses the zeros of the Chebyshev polynomial.
         If discontinuous, it is recommended to break the intervals at the discontinuities
@@ -664,7 +667,8 @@ class FejerSecond(OneDGrid):
         .. math::
         theta_i &= k \pi / n \\
         x_i &= \cos(\theta_i) \\
-        w_i &= \frac{4 \sin(\theta_i)}{n} \sum_{j=1}^{\lfloor n/2 \rfloor} \frac{\sin(2j - 1)\theta_i}{2j - 1}\\
+        w_i &= \frac{4 \sin(\theta_i)}{n} \sum_{j=1}^{\lfloor n/2 \rfloor}
+            \frac{\sin(2j - 1)\theta_i}{2j - 1}\\
 
         where :math:`k=1, \cdots n - 1` and :math:`n` is the number of points. This
         method is considered more practical than the first method.  If discontinuous, it is
@@ -701,7 +705,7 @@ class FejerSecond(OneDGrid):
         super().__init__(points, weights, (-1, 1))
 
 
-# Auxiliar functions for Trefethen "sausage" transformation
+# Auxiliary functions for Trefethen "sausage" transformation
 # g2 is the function and derg2 is the first derivative.
 # g3 is other function with the same boundary conditions of g2 and
 # derg3 is the first derivative.
@@ -731,94 +735,135 @@ def _derg3(x):
 
 
 class TrefethenCC(OneDGrid):
-    """Trefethen CC integral quadrature class."""
+    """
+    Trefethen polynomial transformation of Clenshaw-Curtis integral quadrature class.
 
-    def __init__(self, npoints: int, d: int =3):
-        r"""Generate 1D grid on [-1,1] interval based on Trefethen-Clenshaw-Curtis.
+    References
+    ----------
+    .. [1] Hale, Nicholas, and Lloyd N. Trefethen. "New quadrature formulas from conformal maps."
+       SIAM Journal on Numerical Analysis 46.2 (2008): 930-948.
+    """
+
+    def __init__(self, npoints: int, d: int = 9):
+        r"""Generate 1D grid on :math:`[-1,1]` interval based on Trefethen-Clenshaw-Curtis.
 
         Parameters
         ----------
         npoints : int
             Number of points in the grid.
+        d :
+            Odd degree of the Taylor series polynomial of :math:`\sin^{-1}`.
+            Only d=1,5,9 are supported.
 
         Returns
         -------
         OneDGrid
-            A 1D grid instance.
+            One-dimensional grid instance.
         """
         grid = ClenshawCurtis(npoints)
 
-        if d == 2:
+        if d == 1:
+            points = grid.points
+            weights = grid.weights
+        elif d == 5:
             points = _g2(grid.points)
             weights = _derg2(grid.points) * grid.weights
-        elif d == 3:
+        elif d == 9:
             points = _g3(grid.points)
             weights = _derg3(grid.points) * grid.weights
         else:
-            points = grid.points
-            weights = grid.weights
+            raise ValueError(f"Degree {d} should be either 1, 5, 9.")
 
         super().__init__(points, weights, (-1, 1))
 
 
 class TrefethenGC2(OneDGrid):
-    """Trefethen GC2 integral quadrature class."""
+    """
+    Trefethen polynomial transformation of Gauss-Chebyshev of the second kind quadrature.
 
-    def __init__(self, npoints: int, d: int=3):
+    References
+    ----------
+    .. [1] Hale, Nicholas, and Lloyd N. Trefethen. "New quadrature formulas from conformal maps."
+       SIAM Journal on Numerical Analysis 46.2 (2008): 930-948.
+    """
+
+    def __init__(self, npoints: int, d: int = 9):
         r"""Generate 1D grid on [-1,1] interval based on Trefethen-Gauss-Chebyshev.
 
         Parameters
         ----------
         npoints : int
             Number of points in the grid.
+        d : int
+            Odd degree of the Taylor series polynomial of :math:`\sin^{-1}`.
+            Only d=1,5,9 are supported.
 
         Returns
         -------
         OneDGrid
-            A 1D grid instance.
+            One-dimensional grid instance.
         """
         grid = GaussChebyshevType2(npoints)
 
-        if d == 2:
+        if d == 1:
+            points = grid.points
+            weights = grid.weights
+        elif d == 5:
             points = _g2(grid.points)
             weights = _derg2(grid.points) * grid.weights
-        elif d == 3:
+        elif d == 9:
             points = _g3(grid.points)
             weights = _derg3(grid.points) * grid.weights
         else:
-            points = grid.points
-            weights = grid.weights
+            raise ValueError(f"Degree {d} should be either 1, 5, 9.")
 
         super().__init__(points, weights, (-1, 1))
 
 
 class TrefethenGeneral(OneDGrid):
-    """Trefethen General integral quadrature class."""
+    """
+    Trefethen polynomial transformation of a general integral quadrature class.
 
-    def __init__(self, npoints: int, quadrature, d=3):
-        r"""Generate 1D grid on [-1,1] interval based on Trefethen-General.
+    References
+    ----------
+    .. [1] Hale, Nicholas, and Lloyd N. Trefethen. "New quadrature formulas from conformal maps."
+       SIAM Journal on Numerical Analysis 46.2 (2008): 930-948.
+    """
+
+    def __init__(self, npoints: int, quadrature: OneDGrid, d=9):
+        r"""Generate 1D grid on :math:`[-1,1]` interval based on Trefethen-General.
 
         Parameters
         ----------
         npoints : int
             Number of points in the grid.
+        quadrature : OneDGrid
+            General one-dimensional grid.
+        d :
+            Odd degree of the Taylor series polynomial of :math:`\sin^{-1}`.
+            Only d=1,5,9 are supported.
 
         Returns
         -------
         OneDGrid
-            A 1D grid instance.
+            One-dimensional grid instance.
         """
+        if not issubclass(quadrature, OneDGrid):
+            raise TypeError(f"Quadrature {type(OneDGrid)} should be of type OneDgrid.")
+
         grid = quadrature(npoints)
 
-        if d == 2:
+        if d == 1:
+            points = grid.points
+            weights = grid.weights
+        elif d == 5:
             points = _g2(grid.points)
             weights = _derg2(grid.points) * grid.weights
-        elif d == 3:
+        elif d == 9:
             points = _g3(grid.points)
             weights = _derg3(grid.points) * grid.weights
         else:
-            points = grid.points
-            weights = grid.weights
+            raise ValueError(f"Degree {d} should be either 1, 5, 9.")
 
         super().__init__(points, weights, (-1, 1))
 
@@ -869,7 +914,13 @@ def _dergstrip(rho, s):
 
 
 class TrefethenStripCC(OneDGrid):
-    """Trefethen Strip CC integral quadrature class."""
+    """Trefethen strip transformation of Clenshaw-Curtis quadrature.
+
+     References
+    ----------
+    .. [1] Hale, Nicholas, and Lloyd N. Trefethen. "New quadrature formulas from conformal maps."
+       SIAM Journal on Numerical Analysis 46.2 (2008): 930-948.
+    """
 
     def __init__(self, npoints: int, rho=1.1):
         r"""Generate 1D grid on :math:`[-1,1]` interval based on Trefethen-Clenshaw-Curtis.
@@ -882,7 +933,7 @@ class TrefethenStripCC(OneDGrid):
         Returns
         -------
         OneDGrid
-            A 1D grid instance.
+            One-dimensional grid instance.
         """
         grid = ClenshawCurtis(npoints)
         points = _gstrip(rho, grid.points)
@@ -892,7 +943,13 @@ class TrefethenStripCC(OneDGrid):
 
 
 class TrefethenStripGC2(OneDGrid):
-    """Trefethen Strip GC2 integral quadrature class."""
+    """Trefethen strip transformation of the Gauss-Chebyshev of the second kind quadrature.
+
+     References
+    ----------
+    .. [1] Hale, Nicholas, and Lloyd N. Trefethen. "New quadrature formulas from conformal maps."
+       SIAM Journal on Numerical Analysis 46.2 (2008): 930-948.
+    """
 
     def __init__(self, npoints: int, rho=1.1):
         r"""Generate 1D grid on :math:`[-1,1]` interval based on Trefethen-Gauss-Chebyshev.
@@ -905,7 +962,7 @@ class TrefethenStripGC2(OneDGrid):
         Returns
         -------
         OneDGrid
-            A 1D grid instance.
+            One-dimensional grid instance.
 
         """
         grid = GaussChebyshevType2(npoints)
@@ -916,7 +973,13 @@ class TrefethenStripGC2(OneDGrid):
 
 
 class TrefethenStripGeneral(OneDGrid):
-    """Trefethen Strip General integral quadrature class."""
+    """Trefethen Strip General integral quadrature class.
+
+     References
+    ----------
+    .. [1] Hale, Nicholas, and Lloyd N. Trefethen. "New quadrature formulas from conformal maps."
+       SIAM Journal on Numerical Analysis 46.2 (2008): 930-948.
+    """
 
     def __init__(self, npoints: int, quadrature, rho=1.1):
         r"""Generate 1D grid on :math:`[-1,1]` interval based on Trefethen-General.
@@ -929,7 +992,7 @@ class TrefethenStripGeneral(OneDGrid):
         Returns
         -------
         OneDGrid
-            A 1D grid instance.
+            One-dimensional grid instance.
 
         """
         grid = quadrature(npoints)

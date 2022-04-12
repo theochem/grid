@@ -435,8 +435,8 @@ class TestOneDGrid(TestCase):
         assert_allclose(d3ref, newd3)
 
     def test_TrefethenCC_d2(self):
-        """Test for Trefethen - Sausage Clenshaw Curtis and parameter d=2."""
-        grid = TrefethenCC(10, 2)
+        """Test for Trefethen - Sausage Clenshaw Curtis and parameter d=5."""
+        grid = TrefethenCC(10, 5)
 
         tmp = ClenshawCurtis(10)
 
@@ -447,8 +447,8 @@ class TestOneDGrid(TestCase):
         assert_allclose(grid.weights, new_weights)
 
     def test_TrefethenCC_d3(self):
-        """Test for Trefethen - Sausage Clenshaw Curtis and parameter d=3."""
-        grid = TrefethenCC(10, 3)
+        """Test for Trefethen - Sausage Clenshaw Curtis and parameter d=9."""
+        grid = TrefethenCC(10, 9)
 
         tmp = ClenshawCurtis(10)
 
@@ -459,8 +459,8 @@ class TestOneDGrid(TestCase):
         assert_allclose(grid.weights, new_weights)
 
     def test_TrefethenCC_d0(self):
-        """Test for Trefethen - Sausage Clenshaw Curtis and parameter d=0."""
-        grid = TrefethenCC(10, 0)
+        """Test for Trefethen - Sausage Clenshaw Curtis and parameter d=1."""
+        grid = TrefethenCC(10, 1)
 
         tmp = ClenshawCurtis(10)
 
@@ -468,8 +468,8 @@ class TestOneDGrid(TestCase):
         assert_allclose(grid.weights, tmp.weights)
 
     def test_TrefethenGC2_d2(self):
-        """Test for Trefethen - Sausage GaussChebyshev2 and parameter d=2."""
-        grid = TrefethenGC2(10, 2)
+        """Test for Trefethen - Sausage GaussChebyshev2 and parameter d=5."""
+        grid = TrefethenGC2(10, 5)
 
         tmp = GaussChebyshevType2(10)
 
@@ -480,8 +480,8 @@ class TestOneDGrid(TestCase):
         assert_allclose(grid.weights, new_weights)
 
     def test_TrefethenGC2_d3(self):
-        """Test for Trefethen - Sausage GaussChebyshev2 and parameter d=3."""
-        grid = TrefethenGC2(10, 3)
+        """Test for Trefethen - Sausage GaussChebyshev2 and parameter d=9."""
+        grid = TrefethenGC2(10, 9)
 
         tmp = GaussChebyshevType2(10)
 
@@ -492,8 +492,8 @@ class TestOneDGrid(TestCase):
         assert_allclose(grid.weights, new_weights)
 
     def test_TrefethenGC2_d0(self):
-        """Test for Trefethen - Sausage GaussChebyshev2 and parameter d=0."""
-        grid = TrefethenGC2(10, 0)
+        """Test for Trefethen - Sausage GaussChebyshev2 and parameter d=1."""
+        grid = TrefethenGC2(10, 1)
 
         tmp = GaussChebyshevType2(10)
 
@@ -501,25 +501,25 @@ class TestOneDGrid(TestCase):
         assert_allclose(grid.weights, tmp.weights)
 
     def test_TrefethenGeneral_d2(self):
-        """Test for Trefethen - Sausage General and parameter d=2."""
-        grid = TrefethenGeneral(10, ClenshawCurtis, 2)
-        new = TrefethenCC(10, 2)
+        """Test for Trefethen - Sausage General and parameter d=5."""
+        grid = TrefethenGeneral(10, ClenshawCurtis, 5)
+        new = TrefethenCC(10, 5)
 
         assert_allclose(grid.points, new.points)
         assert_allclose(grid.weights, new.weights)
 
     def test_TrefethenGeneral_d3(self):
-        """Test for Trefethen - Sausage General and parameter d=2."""
-        grid = TrefethenGeneral(10, ClenshawCurtis, 3)
-        new = TrefethenCC(10, 3)
+        """Test for Trefethen - Sausage General and parameter d=9."""
+        grid = TrefethenGeneral(10, ClenshawCurtis, 9)
+        new = TrefethenCC(10, 9)
 
         assert_allclose(grid.points, new.points)
         assert_allclose(grid.weights, new.weights)
 
     def test_TrefethenGeneral_d0(self):
-        """Test for Trefethen - Sausage General and parameter d=0."""
-        grid = TrefethenGeneral(10, ClenshawCurtis, 0)
-        new = TrefethenCC(10, 0)
+        """Test for Trefethen - Sausage General and parameter d=1."""
+        grid = TrefethenGeneral(10, ClenshawCurtis, 1)
+        new = TrefethenCC(10, 1)
 
         assert_allclose(grid.points, new.points)
         assert_allclose(grid.weights, new.weights)
@@ -537,7 +537,6 @@ class TestOneDGrid(TestCase):
     def test_TrefethenStripCC(self):
         """Test for Trefethen - Strip Clenshaw Curtis."""
         grid = TrefethenStripCC(10, 1.1)
-
         tmp = ClenshawCurtis(10)
 
         new_points = _gstrip(1.1, tmp.points)
