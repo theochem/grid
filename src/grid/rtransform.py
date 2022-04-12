@@ -118,7 +118,7 @@ class BeckeRTransform(BaseTransform):
     """Becke Transformation."""
 
     def __init__(self, rmin: float, R: float, trim_inf: bool = True):
-        """Construct Becke transform, :math:`[-1, 1]` to :math`[r_0, \inf)`.
+        r"""Construct Becke transform, :math:`[-1, 1]` to :math`[r_0, \inf)`.
 
         Parameters
         ----------
@@ -160,7 +160,7 @@ class BeckeRTransform(BaseTransform):
 
     @staticmethod
     def find_parameter(array: np.ndarray, rmin: float, radius: float):
-        """Compute R such that half of the points in :math:`[r_0, \inf)` are within radius.
+        r"""Compute R such that half of the points in :math:`[r_0, \inf)` are within radius.
 
         Parameters
         ----------
@@ -304,7 +304,7 @@ class LinearFiniteTF(BaseTransform):
         self._codomain = (rmin, rmax)
 
     def transform(self, x: np.ndarray):
-        r"""Transform from interval :math:`[-1, 1]` to :math:`[r_{min}, r_{max}]`
+        r"""Transform from interval :math:`[-1, 1]` to :math:`[r_{min}, r_{max}]`.
 
         .. math::
             r_i = \frac{r_{max} - r_{min}}{2} (1 + x_i) + r_{min}.
@@ -558,7 +558,7 @@ class IdentityRTransform(BaseTransform):
         self._codomain = (0, np.inf)
 
     def transform(self, x: np.ndarray):
-        """
+        r"""
         Perform given array into itself.
 
         .. math::
@@ -578,7 +578,7 @@ class IdentityRTransform(BaseTransform):
         return x
 
     def deriv(self, x: np.ndarray):
-        """
+        r"""
         Compute the first derivative of identity transform.
 
         Parameters
@@ -595,7 +595,7 @@ class IdentityRTransform(BaseTransform):
         return 1 if isinstance(x, Number) else np.ones(x.size)
 
     def deriv2(self, x: np.ndarray):
-        """
+        r"""
         Compute the second derivative of identity transform.
 
         Parameters
@@ -612,7 +612,7 @@ class IdentityRTransform(BaseTransform):
         return 0 if isinstance(x, Number) else np.zeros(x.size)
 
     def deriv3(self, x: np.ndarray):
-        """
+        r"""
         Compute the third derivative of identity transform.
 
         Parameters
@@ -629,7 +629,7 @@ class IdentityRTransform(BaseTransform):
         return 0 if isinstance(x, Number) else np.zeros(x.size)
 
     def inverse(self, r: np.ndarray):
-        """
+        r"""
         Compute the inverse of identity transform.
 
         Parameters
@@ -647,12 +647,10 @@ class IdentityRTransform(BaseTransform):
 
 
 class LinearInfiniteRTransform(BaseTransform):
-    """
-    Linear transform from large interval :math:`[0, \infty)` to :math:`[r_{min}, r_{max})`.
-    """
+    r"""Linear transform from large interval :math:`[0, \infty)` to :math:`[r_{min}, r_{max})`."""
 
     def __init__(self, rmin: float, rmax: float):
-        """Initialize linear transform class.
+        r"""Initialize linear transform class.
 
         Parameters
         ----------
@@ -673,16 +671,16 @@ class LinearInfiniteRTransform(BaseTransform):
 
     @property
     def rmin(self):
-        """float: rmin value of the tf."""
+        r"""float: rmin value of the tf."""
         return self._rmin
 
     @property
     def rmax(self):
-        """float: rmax value of the tf."""
+        r"""float: rmax value of the tf."""
         return self._rmax
 
     def transform(self, x: np.ndarray):
-        """Transform from interval :math:`[0, \infty)` to :math:`[r_{min}, r_{max}]`.
+        r"""Transform from interval :math:`[0, \infty)` to :math:`[r_{min}, r_{max}]`.
 
         .. math::
             r_i = \frac{(r_{max} - r_{min})}{N - 1} x + r_{min},
@@ -705,7 +703,7 @@ class LinearInfiniteRTransform(BaseTransform):
         return alpha * x + self._rmin
 
     def deriv(self, x: np.ndarray):
-        """
+        r"""
         Compute the first derivative of linear transformation.
 
         Parameters
@@ -723,7 +721,7 @@ class LinearInfiniteRTransform(BaseTransform):
         return np.ones(x.size) * alpha
 
     def deriv2(self, x: np.ndarray):
-        """Compute the second derivative of linear transformation.
+        r"""Compute the second derivative of linear transformation.
 
         Parameters
         ----------
@@ -739,7 +737,7 @@ class LinearInfiniteRTransform(BaseTransform):
         return np.zeros(x.size)
 
     def deriv3(self, x: np.ndarray):
-        """Compute the third derivative of linear transformation.
+        r"""Compute the third derivative of linear transformation.
 
         Parameters
         ----------
@@ -755,7 +753,7 @@ class LinearInfiniteRTransform(BaseTransform):
         return np.zeros(x.size)
 
     def inverse(self, r: np.ndarray):
-        """Compute the inverse of linear transformation.
+        r"""Compute the inverse of linear transformation.
 
         .. math::
             x_i = (r - r_{min}) \frac{N - 1}{r_{max} - r_{min}}
@@ -776,10 +774,10 @@ class LinearInfiniteRTransform(BaseTransform):
 
 
 class ExpRTransform(BaseTransform):
-    """Exponential transform from :math:`[0, \infty)` to :math:`[r_{min}, r_{max}]`."""
+    r"""Exponential transform from :math:`[0, \infty)` to :math:`[r_{min}, r_{max}]`."""
 
     def __init__(self, rmin: float, rmax: float):
-        """Initialize exp transform instance.
+        r"""Initialize exp transform instance.
 
         Parameters
         ----------
@@ -804,16 +802,16 @@ class ExpRTransform(BaseTransform):
 
     @property
     def rmin(self):
-        """float: the value of rmin."""
+        r"""float: the value of rmin."""
         return self._rmin
 
     @property
     def rmax(self):
-        """float: the value of rmax."""
+        r"""float: the value of rmax."""
         return self._rmax
 
     def transform(self, x: np.ndarray):
-        """
+        r"""
         Perform exponential transform.
 
         .. math::
@@ -836,7 +834,7 @@ class ExpRTransform(BaseTransform):
         return self._rmin * np.exp(x * alpha)
 
     def deriv(self, x: np.ndarray):
-        """
+        r"""
         Compute the first derivative of exponential transform.
 
         Parameters
@@ -854,7 +852,7 @@ class ExpRTransform(BaseTransform):
         return self.transform(x) * alpha
 
     def deriv2(self, x: np.ndarray):
-        """
+        r"""
         Compute the second derivative of exponential transform.
 
         Parameters
@@ -872,7 +870,7 @@ class ExpRTransform(BaseTransform):
         return self.deriv(x) * alpha
 
     def deriv3(self, x: np.ndarray):
-        """
+        r"""
         Compute the third derivative of exponential transform.
 
         Parameters
@@ -890,7 +888,7 @@ class ExpRTransform(BaseTransform):
         return self.deriv2(x) * alpha
 
     def inverse(self, r: np.ndarray):
-        """
+        r"""
         Compute the inverse of exponential transform.
 
         Parameters
@@ -909,10 +907,10 @@ class ExpRTransform(BaseTransform):
 
 
 class PowerRTransform(BaseTransform):
-    """Power transform class from :math:`[0, \infty)` to :math:`[r_{min}, r_{max}]`."""
+    r"""Power transform class from :math:`[0, \infty)` to :math:`[r_{min}, r_{max}]`."""
 
     def __init__(self, rmin: float, rmax: float):
-        """Initialize power transform instance.
+        r"""Initialize power transform instance.
 
         Parameters
         ----------
@@ -933,16 +931,16 @@ class PowerRTransform(BaseTransform):
 
     @property
     def rmin(self):
-        """float: the value of rmin."""
+        r"""float: the value of rmin."""
         return self._rmin
 
     @property
     def rmax(self):
-        """float: the value of rmax."""
+        r"""float: the value of rmax."""
         return self._rmax
 
     def transform(self, x: np.ndarray):
-        """
+        r"""
         Perform power transform.
 
         .. math::
@@ -969,7 +967,7 @@ class PowerRTransform(BaseTransform):
         return self._rmin * np.power(x + 1, power)
 
     def deriv(self, x: np.ndarray):
-        """
+        r"""
         Compute first derivative of power transform.
 
         Parameters
@@ -987,7 +985,7 @@ class PowerRTransform(BaseTransform):
         return power * self._rmin * np.power(x + 1, power - 1)
 
     def deriv2(self, x: np.ndarray):
-        """
+        r"""
         Compute second derivative of power transform.
 
         Parameters
@@ -1005,7 +1003,7 @@ class PowerRTransform(BaseTransform):
         return power * (power - 1) * self._rmin * np.power(x + 1, power - 2)
 
     def deriv3(self, x: np.ndarray):
-        """
+        r"""
         Compute third derivative of power transform.
 
         Parameters
@@ -1025,7 +1023,7 @@ class PowerRTransform(BaseTransform):
         )
 
     def inverse(self, r: np.ndarray):
-        """
+        r"""
         Compute the inverse of power transform.
 
         Parameters
@@ -1044,10 +1042,10 @@ class PowerRTransform(BaseTransform):
 
 
 class HyperbolicRTransform(BaseTransform):
-    """Hyperbolic transform from :math`[0, \infty)` to :math:`[0, \infty)`."""
+    r"""Hyperbolic transform from :math`[0, \infty)` to :math:`[0, \infty)`."""
 
     def __init__(self, a: float, b: float):
-        """Hyperbolic transform class.
+        r"""Hyperbolic transform class.
 
         Parameters
         ----------
@@ -1068,16 +1066,16 @@ class HyperbolicRTransform(BaseTransform):
 
     @property
     def a(self):
-        """float: value of parameter a."""
+        r"""float: value of parameter a."""
         return self._a
 
     @property
     def b(self):
-        """float: value of parameter b."""
+        r"""float: value of parameter b."""
         return self._b
 
     def transform(self, x: np.ndarray):
-        """Perform hyperbolic transformation.
+        r"""Perform hyperbolic transformation.
 
         .. math::
             r_i = \frac{a x}{(1 - bx)},
@@ -1095,13 +1093,12 @@ class HyperbolicRTransform(BaseTransform):
             The transformation of x to the co-domain of the transformation.
 
         """
-
         if self._b * (x.size - 1) >= 1.0:
             raise ValueError("b*(npoint-1) must be smaller than one.")
         return self._a * x / (1 - self._b * x)
 
     def deriv(self, x: np.ndarray):
-        """
+        r"""
         Compute the first derivative of hyperbolic transformation.
 
         Parameters
@@ -1121,7 +1118,7 @@ class HyperbolicRTransform(BaseTransform):
         return self._a * x * x
 
     def deriv2(self, x: np.ndarray):
-        """
+        r"""
         Compute the second derivative of hyperbolic transformation.
 
         Parameters
@@ -1138,10 +1135,10 @@ class HyperbolicRTransform(BaseTransform):
         if self._b * (x.size - 1) >= 1.0:
             raise ValueError("b*(npoint-1) must be smaller than one.")
         x = 1.0 / (1 - self._b * x)
-        return 2.0 * self._a * self._b * x ** 3
+        return 2.0 * self._a * self._b * x**3
 
     def deriv3(self, x: np.ndarray):
-        """
+        r"""
         Compute the third derivative of hyperbolic transformation.
 
         Parameters
@@ -1158,10 +1155,10 @@ class HyperbolicRTransform(BaseTransform):
         if self._b * (x.size - 1) >= 1.0:
             raise ValueError("b*(npoint-1) must be smaller than one.")
         x = 1.0 / (1 - self._b * x)
-        return 6.0 * self._a * self._b * self._b * x ** 4
+        return 6.0 * self._a * self._b * self._b * x**4
 
     def inverse(self, r: np.ndarray):
-        """
+        r"""
         Compute the inverse of hyperbolic transformation.
 
         Parameters
@@ -1181,7 +1178,7 @@ class HyperbolicRTransform(BaseTransform):
 
 
 class MultiExpRTransform(BaseTransform):
-    """
+    r"""
     MultiExp Transformation class.
 
     References
@@ -1192,7 +1189,7 @@ class MultiExpRTransform(BaseTransform):
     """
 
     def __init__(self, rmin: float, R: float, trim_inf=True):
-        """Construct MultiExp transform from :math:`[-1,1]` to :math:`[r_{min}, \infty)`.
+        r"""Construct MultiExp transform from :math:`[-1,1]` to :math:`[r_{min}, \infty)`.
 
         Parameters
         ----------
@@ -1213,12 +1210,12 @@ class MultiExpRTransform(BaseTransform):
 
     @property
     def rmin(self):
-        """float: The minimum value for the transformed radial array."""
+        r"""float: The minimum value for the transformed radial array."""
         return self._rmin
 
     @property
     def R(self):
-        """float: The scale factor for the transformed radial array."""
+        r"""float: The scale factor for the transformed radial array."""
         return self._R
 
     def transform(self, x: np.ndarray):
@@ -1322,10 +1319,10 @@ class MultiExpRTransform(BaseTransform):
 
 
 class KnowlesRTransform(BaseTransform):
-    """Knowles Transformation from :math:`[-1, 1]` to :math:`[r_{min}, \infty)`."""
+    r"""Knowles Transformation from :math:`[-1, 1]` to :math:`[r_{min}, \infty)`."""
 
     def __init__(self, rmin: float, R: float, k: int, trim_inf=True):
-        """Construct Knowles transformation class.
+        r"""Construct Knowles transformation class.
 
         Parameters
         ----------
@@ -1352,17 +1349,17 @@ class KnowlesRTransform(BaseTransform):
 
     @property
     def rmin(self):
-        """float: The minimum value for the transformed radial array."""
+        r"""float: The minimum value for the transformed radial array."""
         return self._rmin
 
     @property
     def R(self):
-        """float: The scale factor for the transformed radial array."""
+        r"""float: The scale factor for the transformed radial array."""
         return self._R
 
     @property
     def k(self):
-        """float: Free and extra parameter, k must be > 0."""
+        r"""float: Free and extra parameter, k must be > 0."""
         return self._k
 
     def transform(self, x: np.ndarray):
@@ -1383,7 +1380,7 @@ class KnowlesRTransform(BaseTransform):
 
         """
         rf_array = (
-            -self._R * np.log(1 - (2 ** -self._k) * (x + 1) ** self._k) + self._rmin
+            -self._R * np.log(1 - (2**-self._k) * (x + 1) ** self._k) + self._rmin
         )
         if self.trim_inf:
             rf_array = self._convert_inf(rf_array)
@@ -1427,7 +1424,7 @@ class KnowlesRTransform(BaseTransform):
         """
         qi = 1 + x
         return (
-            self._R * self._k * (qi ** (self._k - 1)) / (2 ** self._k - qi ** self._k)
+            self._R * self._k * (qi ** (self._k - 1)) / (2**self._k - qi**self._k)
         )
 
     def deriv2(self, x: np.ndarray):
@@ -1453,8 +1450,8 @@ class KnowlesRTransform(BaseTransform):
             self._R
             * self._k
             * (qi ** (self._k - 2))
-            * (2 ** self._k * (self._k - 1) + qi ** self._k)
-            / (2 ** self._k - qi ** self._k) ** 2
+            * (2**self._k * (self._k - 1) + qi**self._k)
+            / (2**self._k - qi**self._k) ** 2
         )
 
     def deriv3(self, x: np.ndarray):
@@ -1483,19 +1480,19 @@ class KnowlesRTransform(BaseTransform):
             * self._k
             * (qi ** (self._k - 3))
             * (
-                4 ** self._k * (self._k - 2) * (self._k - 1)
-                + 2 ** self._k * (self._k - 1) * (self._k + 4) * (qi ** self._k)
+                4**self._k * (self._k - 2) * (self._k - 1)
+                + 2**self._k * (self._k - 1) * (self._k + 4) * (qi**self._k)
                 + 2 * qi ** (2 * self._k)
             )
-            / (2 ** self._k - qi ** self._k) ** 3
+            / (2**self._k - qi**self._k) ** 3
         )
 
 
 class HandyRTransform(BaseTransform):
-    """Handy Transformation class from :math:`[-1, 1]` to :math:`[r_{min}, \infty)`."""
+    r"""Handy Transformation class from :math:`[-1, 1]` to :math:`[r_{min}, \infty)`."""
 
     def __init__(self, rmin: float, R: float, m: int, trim_inf=True):
-        """Construct Handy transformation.
+        r"""Construct Handy transformation.
 
         Parameters
         ----------
@@ -1522,17 +1519,17 @@ class HandyRTransform(BaseTransform):
 
     @property
     def rmin(self):
-        """float: The minimum value for the transformed radial array."""
+        r"""float: The minimum value for the transformed radial array."""
         return self._rmin
 
     @property
     def R(self):
-        """float: The scale factor for the transformed radial array."""
+        r"""float: The scale factor for the transformed radial array."""
         return self._R
 
     @property
     def m(self):
-        """integer: Free and extra parameter, m must be > 0."""
+        r"""integer: Free and extra parameter, m must be > 0."""
         return self._m
 
     def transform(self, x: np.ndarray):
@@ -1651,7 +1648,7 @@ class HandyRTransform(BaseTransform):
             4
             * self._m
             * self._R
-            * (1 + 6 * self._m * x + 2 * self._m ** 2 + 3 * x ** 2)
+            * (1 + 6 * self._m * x + 2 * self._m**2 + 3 * x**2)
             * (1 + x) ** (self._m - 3)
             / (1 - x) ** (self._m + 3)
         )
@@ -1662,10 +1659,10 @@ class HandyRTransform(BaseTransform):
 
 
 class HandyModRTransform(BaseTransform):
-    """Modified Handy Transformation class."""
+    r"""Modified Handy Transformation class."""
 
     def __init__(self, rmin: float, rmax: float, m: int, trim_inf=True):
-        """Construct a modified Handy transform [-1,1] -> [rmin,rmax].
+        r"""Construct a modified Handy transform [-1,1] -> [rmin,rmax].
 
         Parameters
         ----------
@@ -1696,17 +1693,17 @@ class HandyModRTransform(BaseTransform):
 
     @property
     def rmin(self):
-        """float: The minimum value for the transformed radial array."""
+        r"""float: The minimum value for the transformed radial array."""
         return self._rmin
 
     @property
     def rmax(self):
-        """float: The maximum value for the transformed radial array."""
+        r"""float: The maximum value for the transformed radial array."""
         return self._rmax
 
     @property
     def m(self):
-        """integer: Free and extra parameter, m must be > 0."""
+        r"""integer: Free and extra parameter, m must be > 0."""
         return self._m
 
     def transform(self, x: np.ndarray):
@@ -1728,7 +1725,7 @@ class HandyModRTransform(BaseTransform):
             One dimensional array in :math:`[r_{min},r_{max}]`.
 
         """
-        two_m = 2 ** self._m
+        two_m = 2**self._m
         size_r = self._rmax - self._rmin
         qi = (1 + x) ** self._m
 
@@ -1759,7 +1756,7 @@ class HandyModRTransform(BaseTransform):
             The original one dimensional array in :math:`[-1,1]`.
 
         """
-        two_m = 2 ** self._m
+        two_m = 2**self._m
         size_r = self._rmax - self._rmin
 
         tmp_r = (
@@ -1790,7 +1787,7 @@ class HandyModRTransform(BaseTransform):
             The first derivative of Handy transformation at each point.
 
         """
-        two_m = 2 ** self._m
+        two_m = 2**self._m
         size_r = self._rmax - self._rmin
         return (
             -(
@@ -1817,7 +1814,7 @@ class HandyModRTransform(BaseTransform):
         ndarrray(N,)
             The second derivative of Handy transformation at each point.
         """
-        two_m = 2 ** self._m
+        two_m = 2**self._m
         size_r = self._rmax - self._rmin
         return (
             -(
@@ -1848,7 +1845,7 @@ class HandyModRTransform(BaseTransform):
         ndarrray(N,)
             The third derivative of Handy transformation at each point.
         """
-        two_m = 2 ** self._m
+        two_m = 2**self._m
         size_r = self._rmax - self._rmin
         return (
             -(
