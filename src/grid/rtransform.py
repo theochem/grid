@@ -285,8 +285,8 @@ class BeckeRTransform(BaseTransform):
         return 12 * self._R / (1 - x) ** 4
 
 
-class LinearTF(BaseTransform):
-    """Linear transformation class."""
+class LinearFiniteTF(BaseTransform):
+    """Linear transformation from :math:`[-1, 1]` to :math:`[r_{min}, r_{max}]`."""
 
     def __init__(self, rmin: float, rmax: float):
         """Construct linear transformation instance.
@@ -399,8 +399,8 @@ class LinearTF(BaseTransform):
         return (2 * r - (self._rmax + self._rmin)) / (self._rmax - self._rmin)
 
 
-class InverseTF(BaseTransform):
-    """Inverse transformation class, [rmin, rmax] or [rmin, inf) -> [-1, 1]."""
+class InverseRTransform(BaseTransform):
+    """Inverse transformation class for any general transformation."""
 
     def __init__(self, transform: BaseTransform):
         """Construct InverseRTransform instance.
@@ -646,8 +646,10 @@ class IdentityRTransform(BaseTransform):
         return r
 
 
-class LinearRTransform(BaseTransform):
-    """Linear transform class."""
+class LinearInfiniteRTransform(BaseTransform):
+    """
+    Linear transform from large interval :math:`[0, \infty)` to :math:`[r_{min}, r_{max})`.
+    """
 
     def __init__(self, rmin: float, rmax: float):
         """Initialize linear transform class.
