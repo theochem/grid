@@ -31,7 +31,7 @@ from grid.onedgrid import (
     GaussChebyshevType2,
     GaussLaguerre,
     GaussLegendre,
-    HortonLinear,
+    UniformInteger,
     MidPoint,
     RectangleRuleSine,
     RectangleRuleSineEndPoints,
@@ -90,7 +90,7 @@ class TestOneDGrid(TestCase):
 
     def test_horton_linear(self):
         """Test horton linear grids."""
-        grid = HortonLinear(10)
+        grid = UniformInteger(10)
         assert_allclose(grid.points, np.arange(10))
         assert_allclose(grid.weights, np.ones(10))
 
@@ -221,7 +221,7 @@ class TestOneDGrid(TestCase):
         with self.assertRaises(ValueError):
             GaussChebyshev(-10)
         with self.assertRaises(ValueError):
-            HortonLinear(-10)
+            UniformInteger(-10)
         with self.assertRaises(ValueError):
             TanhSinh(10, 1)
         with self.assertRaises(ValueError):

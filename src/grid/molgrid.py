@@ -165,7 +165,7 @@ class MolGrid(Grid):
 
         Example
         -------
-        >>> onedg = HortonLinear(100) # number of points, oned grid before TF.
+        >>> onedg = UniformInteger(100) # number of points, oned grid before TF.
         >>> rgrid = ExpRTransform(1e-5, 2e1).generate_radial(onedg) # radial grid
         >>> becke = BeckeWeights(order=3)
         >>> molgrid = MolGrid.from_size(atnums, atcoords, rgrid, 110, becke)

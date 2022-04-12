@@ -20,7 +20,7 @@
 """Radial grid test."""
 
 from grid.basegrid import OneDGrid
-from grid.onedgrid import HortonLinear
+from grid.onedgrid import UniformInteger
 from grid.rtransform import ExpRTransform, PowerRTransform
 
 import numpy as np
@@ -29,7 +29,7 @@ from numpy.testing import assert_almost_equal
 
 def test_basics1():
     """Test basic radial grid transform properties."""
-    oned = HortonLinear(4)
+    oned = UniformInteger(4)
     rtf = ExpRTransform(0.1, 1e1)
     grid = rtf.transform_1d_grid(oned)
     assert isinstance(grid, OneDGrid)
@@ -44,7 +44,7 @@ def test_basics1():
 
 def test_basics2():
     """Test basic radial grid transform properties for bigger grid."""
-    oned = HortonLinear(100)
+    oned = UniformInteger(100)
     rtf = ExpRTransform(1e-3, 1e1)
     grid = rtf.transform_1d_grid(oned)
     assert isinstance(grid, OneDGrid)
@@ -59,7 +59,7 @@ def test_basics2():
 
 def test_integrate_gauss():
     """Test radial grid integral."""
-    oned = HortonLinear(100)
+    oned = UniformInteger(100)
     rtf = PowerRTransform(0.0005, 1e1)
     grid = rtf.transform_1d_grid(oned)
     assert isinstance(grid, OneDGrid)

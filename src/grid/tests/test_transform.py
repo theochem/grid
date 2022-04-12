@@ -22,15 +22,15 @@
 
 from unittest import TestCase
 
-from grid.onedgrid import GaussChebyshev, GaussLegendre, HortonLinear
+from grid.onedgrid import GaussChebyshev, GaussLegendre, UniformInteger
 from grid.rtransform import (
-    BeckeTF,
-    HandyModTF,
-    HandyTF,
-    InverseTF,
-    KnowlesTF,
-    LinearTF,
-    MultiExpTF,
+    BeckeRTransform,
+    HandyModRTransform,
+    HandyRTransform,
+    InverseRTransform,
+    KnowlesRTransform,
+    LinearFiniteTF,
+    MultiExpRTransform,
 )
 
 import numpy as np
@@ -100,27 +100,27 @@ class TestTransform(TestCase):
 
     def test_becke_tf(self):
         """Test Becke initializaiton."""
-        btf = BeckeTF(0.1, 1.2)
+        btf = BeckeRTransform(0.1, 1.2)
         assert btf.R == 1.2
         assert btf.rmin == 0.1
 
     def test_becke_parameter_calc(self):
         """Test parameter function."""
-        R = BeckeTF.find_parameter(self.array, 0.1, 1.2)
+        R = BeckeRTransform.find_parameter(self.array, 0.1, 1.2)
         # R = 1.1
         assert np.isclose(R, 1.1)
-        btf = BeckeTF(0.1, R)
+        btf = BeckeRTransform(0.1, R)
         tf_array = btf.transform(self.array)
         assert tf_array[9] == 1.2
         # for even number of grid
-        R = BeckeTF.find_parameter(self.array_2, 0.2, 1.3)
-        btf_2 = BeckeTF(0.2, R)
+        R = BeckeRTransform.find_parameter(self.array_2, 0.2, 1.3)
+        btf_2 = BeckeRTransform(0.2, R)
         tf_elemt = btf_2.transform(np.array([(self.array_2[4] + self.array_2[5]) / 2]))
         assert_allclose(tf_elemt, 1.3)
 
     def test_becke_transform(self):
         """Test becke transformation."""
-        btf = BeckeTF(0.1, 1.1)
+        btf = BeckeRTransform(0.1, 1.1)
         tf_array = btf.transform(self.array)
         single_v = btf.transform(self.num)
         single_v2 = btf.transform(self.num_2)
@@ -134,8 +134,8 @@ class TestTransform(TestCase):
     def test_becke_infinite(self):
         """Test becke transformation when inf generated."""
         inf_array = np.linspace(-1, 1, 21)
-        R = BeckeTF.find_parameter(inf_array, 0.1, 1.2)
-        btf = BeckeTF(0.1, R, trim_inf=True)
+        R = BeckeRTransform.find_parameter(inf_array, 0.1, 1.2)
+        btf = BeckeRTransform(0.1, R, trim_inf=True)
         tf_array = btf.transform(inf_array)
         inv_array = btf.inverse(tf_array)
         assert_allclose(inv_array, inf_array)
@@ -156,34 +156,34 @@ class TestTransform(TestCase):
 
     def test_becke_deriv(self):
         """Test becke transform derivatives with finite diff."""
-        btf = BeckeTF(0.1, 1.1)
+        btf = BeckeRTransform(0.1, 1.1)
         # call finite diff test function with given arrays
         self._deriv_finite_diff(-1, 0.90, btf)
 
     def test_becke_inverse(self):
         """Test inverse transform basic function."""
-        btf = BeckeTF(0.1, 1.1)
-        inv = InverseTF(btf)
+        btf = BeckeRTransform(0.1, 1.1)
+        inv = InverseRTransform(btf)
         new_array = inv.transform(btf.transform(self.array))
         assert_allclose(new_array, self.array)
 
     def test_becke_inverse_deriv(self):
         """Test inverse transformation derivatives with finite diff."""
-        btf = BeckeTF(0.1, 1.1)
-        inv = InverseTF(btf)
+        btf = BeckeRTransform(0.1, 1.1)
+        inv = InverseRTransform(btf)
         self._deriv_finite_diff(0, 20, inv)
 
     def test_becke_inverse_inverse(self):
         """Test inverse of inverse of Becke transformation."""
-        btf = BeckeTF(0.1, 1.1)
-        inv = InverseTF(btf)
+        btf = BeckeRTransform(0.1, 1.1)
+        inv = InverseRTransform(btf)
         inv_inv = inv.inverse(inv.transform(self.array))
         assert_allclose(inv_inv, self.array, atol=1e-7)
 
     def test_becke_integral(self):
         """Test transform integral."""
         oned = GaussLegendre(20)
-        btf = BeckeTF(0.00001, 1.0)
+        btf = BeckeRTransform(0.00001, 1.0)
         rad = btf.transform_1d_grid(oned)
 
         def gauss(x):
@@ -200,18 +200,18 @@ class TestTransform(TestCase):
 
     def test_linear_transform(self):
         """Test linear transformation."""
-        ltf = LinearTF(0.1, 10)
+        ltf = LinearFiniteTF(0.1, 10)
         self._transform_and_inverse(-1, 1, ltf)
 
     def test_linear_finite_diff(self):
         """Test finite diff for linear derivs."""
-        ltf = LinearTF(0.1, 10)
+        ltf = LinearFiniteTF(0.1, 10)
         self._deriv_finite_diff(-1, 1, ltf)
 
     def test_linear_inverse(self):
         """Test inverse transform and derivs function."""
-        ltf = LinearTF(0.1, 10)
-        iltf = InverseTF(ltf)
+        ltf = LinearFiniteTF(0.1, 10)
+        iltf = InverseRTransform(ltf)
         # transform & inverse
         self._transform_and_inverse(0, 20, iltf)
         # finite diff for derivs
@@ -221,36 +221,36 @@ class TestTransform(TestCase):
         """Test errors raise."""
         # parameter error
         with self.assertRaises(ValueError):
-            BeckeTF.find_parameter(np.arange(5), 0.5, 0.1)
+            BeckeRTransform.find_parameter(np.arange(5), 0.5, 0.1)
         # transform non array type
         with self.assertRaises(TypeError):
-            btf = BeckeTF(0.1, 1.1)
+            btf = BeckeRTransform(0.1, 1.1)
             btf.transform("dafasdf")
         # inverse init error
         with self.assertRaises(TypeError):
-            InverseTF(0.5)
+            InverseRTransform(0.5)
         # type error for transform_1d_grid
         with self.assertRaises(TypeError):
-            btf = BeckeTF(0.1, 1.1)
+            btf = BeckeRTransform(0.1, 1.1)
             btf.transform_1d_grid(np.arange(3))
         with self.assertRaises(ZeroDivisionError):
-            btf = BeckeTF(0.1, 0)
-            itf = InverseTF(btf)
+            btf = BeckeRTransform(0.1, 0)
+            itf = InverseRTransform(btf)
             itf._d1(0.5)
         with self.assertRaises(ZeroDivisionError):
-            btf = BeckeTF(0.1, 0)
-            itf = InverseTF(btf)
+            btf = BeckeRTransform(0.1, 0)
+            itf = InverseRTransform(btf)
             itf._d1(np.array([0.1, 0.2, 0.3]))
 
     def test_multiexp_tf(self):
         """Test MultiExp initializaiton."""
-        btf = MultiExpTF(0.1, 1.2)
+        btf = MultiExpRTransform(0.1, 1.2)
         assert btf.R == 1.2
         assert btf.rmin == 0.1
 
     def test_multiexp_transform(self):
         """Test MultiExp transformation."""
-        btf = MultiExpTF(0.1, 1.1)
+        btf = MultiExpRTransform(0.1, 1.1)
         tf_array = btf.transform(self.array)
         single_v = btf.transform(self.num)
         single_v2 = btf.transform(self.num_2)
@@ -263,27 +263,27 @@ class TestTransform(TestCase):
 
     def test_multiexp_deriv(self):
         """Test MultiExp transform derivatives with finite diff."""
-        btf = MultiExpTF(0.1, 1.1)
+        btf = MultiExpRTransform(0.1, 1.1)
         # call finite diff test function with given arrays
         self._deriv_finite_diff(-0.9, 0.90, btf)
 
     def test_multiexp_inverse(self):
         """Test inverse transform basic function."""
-        btf = MultiExpTF(0.1, 1.1)
-        inv = InverseTF(btf)
+        btf = MultiExpRTransform(0.1, 1.1)
+        inv = InverseRTransform(btf)
         new_array = inv.transform(btf.transform(self.array))
         assert_allclose(new_array, self.array)
 
     def test_knowles_tf(self):
         """Test Knowles initializaiton."""
-        btf = KnowlesTF(0.1, 1.2, 2)
+        btf = KnowlesRTransform(0.1, 1.2, 2)
         assert btf.R == 1.2
         assert btf.rmin == 0.1
         assert btf.k == 2
 
     def test_knowles_transform(self):
         """Test knowles transformation."""
-        btf = KnowlesTF(0.1, 1.1, 2)
+        btf = KnowlesRTransform(0.1, 1.1, 2)
         tf_array = btf.transform(self.array)
         single_v = btf.transform(self.num)
         single_v2 = btf.transform(self.num_2)
@@ -296,27 +296,27 @@ class TestTransform(TestCase):
 
     def test_knowles_deriv(self):
         """Test Knowles transform derivatives with finite diff."""
-        btf = KnowlesTF(0.1, 1.1, 2)
+        btf = KnowlesRTransform(0.1, 1.1, 2)
         # call finite diff test function with given arrays
         self._deriv_finite_diff(-0.9, 0.90, btf)
 
     def test_knowles_inverse(self):
         """Test inverse transform basic function."""
-        btf = KnowlesTF(0.1, 1.1, 2)
-        inv = InverseTF(btf)
+        btf = KnowlesRTransform(0.1, 1.1, 2)
+        inv = InverseRTransform(btf)
         new_array = inv.transform(btf.transform(self.array))
         assert_allclose(new_array, self.array)
 
     def test_handy_tf(self):
         """Test Handy initializaiton."""
-        btf = HandyTF(0.1, 1.2, 2)
+        btf = HandyRTransform(0.1, 1.2, 2)
         assert btf.R == 1.2
         assert btf.m == 2
         assert btf.rmin == 0.1
 
     def test_handy_transform(self):
         """Test Handy transformation."""
-        btf = HandyTF(0.1, 1.1, 2)
+        btf = HandyRTransform(0.1, 1.1, 2)
         tf_array = btf.transform(self.array)
         single_v = btf.transform(self.num)
         single_v2 = btf.transform(self.num_2)
@@ -329,27 +329,27 @@ class TestTransform(TestCase):
 
     def test_handy_deriv(self):
         """Test Handy transform derivatives with finite diff."""
-        btf = HandyTF(0.1, 1.2, 2)
+        btf = HandyRTransform(0.1, 1.2, 2)
         # call finite diff test function with given arrays
         self._deriv_finite_diff(-0.8, 0.8, btf)
 
     def test_handy_inverse(self):
         """Test inverse transform basic function."""
-        btf = HandyTF(0.1, 1.1, 2)
-        inv = InverseTF(btf)
+        btf = HandyRTransform(0.1, 1.1, 2)
+        inv = InverseRTransform(btf)
         new_array = inv.transform(btf.transform(self.array))
         assert_allclose(new_array, self.array)
 
     def test_handymod_tf(self):
         """Test Handy Mod initializaiton."""
-        btf = HandyModTF(0.1, 10.0, 2)
+        btf = HandyModRTransform(0.1, 10.0, 2)
         assert btf.m == 2
         assert btf.rmin == 0.1
         assert btf.rmax == 10.0
 
     def test_handymod_transform(self):
         """Test Handy Mod transformation."""
-        btf = HandyModTF(0.1, 10.0, 2)
+        btf = HandyModRTransform(0.1, 10.0, 2)
         tf_array = btf.transform(self.array)
         new_array = btf.inverse(tf_array)
         assert_allclose(new_array, self.array)
@@ -358,43 +358,43 @@ class TestTransform(TestCase):
 
     def test_handymod_deriv(self):
         """Test Handy Mod transform derivatives with finite diff."""
-        btf = HandyModTF(0.1, 10.0, 2)
+        btf = HandyModRTransform(0.1, 10.0, 2)
         # call finite diff test function with given arrays
         self._deriv_finite_diff(-0.9, 0.90, btf)
 
     def test_handymod_inverse(self):
         """Test inverse transform basic function."""
-        btf = HandyModTF(0.1, 10.0, 2)
-        inv = InverseTF(btf)
+        btf = HandyModRTransform(0.1, 10.0, 2)
+        inv = InverseRTransform(btf)
         new_array = inv.transform(btf.transform(self.array))
         assert_allclose(new_array, self.array)
 
     def test_errors_raises(self):
         """Test errors raise."""
         with self.assertRaises(ValueError):
-            KnowlesTF(0.1, 10.0, 0)
+            KnowlesRTransform(0.1, 10.0, 0)
         with self.assertRaises(ValueError):
-            HandyTF(0.1, 10.0, 0)
+            HandyRTransform(0.1, 10.0, 0)
         with self.assertRaises(ValueError):
-            HandyModTF(0.1, 10.0, 0)
+            HandyModRTransform(0.1, 10.0, 0)
         with self.assertRaises(ValueError):
-            HandyModTF(10.0, 1.0, 2)
+            HandyModRTransform(10.0, 1.0, 2)
 
     def test_domain(self):
         """Test domain errors."""
-        rad = HortonLinear(10)
+        rad = UniformInteger(10)
         with self.assertRaises(ValueError):
-            tf = BeckeTF(0.1, 1.2)
+            tf = BeckeRTransform(0.1, 1.2)
             tf.transform_1d_grid(rad)
         with self.assertRaises(ValueError):
-            tf = HandyModTF(0.1, 10.0, 2)
+            tf = HandyModRTransform(0.1, 10.0, 2)
             tf.transform_1d_grid(rad)
         with self.assertRaises(ValueError):
-            tf = KnowlesTF(0.1, 1.2, 2)
+            tf = KnowlesRTransform(0.1, 1.2, 2)
             tf.transform_1d_grid(rad)
         with self.assertRaises(ValueError):
-            tf = LinearTF(0.1, 10)
+            tf = LinearFiniteTF(0.1, 10)
             tf.transform_1d_grid(rad)
         with self.assertRaises(ValueError):
-            tf = MultiExpTF(0.1, 1.2)
+            tf = MultiExpRTransform(0.1, 1.2)
             tf.transform_1d_grid(rad)

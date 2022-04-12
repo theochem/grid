@@ -25,7 +25,7 @@ from grid.basegrid import LocalGrid
 from grid.becke import BeckeWeights
 from grid.hirshfeld import HirshfeldWeights
 from grid.molgrid import MolGrid
-from grid.onedgrid import GaussLaguerre, HortonLinear
+from grid.onedgrid import GaussLaguerre, UniformInteger
 from grid.rtransform import ExpRTransform
 
 # from importlib_resources import path
@@ -38,7 +38,7 @@ class TestMolGrid(TestCase):
 
     def setUp(self):
         """Set up radial grid for integral tests."""
-        pts = HortonLinear(100)
+        pts = UniformInteger(100)
         tf = ExpRTransform(1e-5, 2e1)
         self.rgrid = tf.transform_1d_grid(pts)
 
@@ -46,7 +46,7 @@ class TestMolGrid(TestCase):
         """Test molecular integral in H atom."""
         # numbers = np.array([1], int)
         coordinates = np.array([0.0, 0.0, -0.5], float)
-        # rgrid = BeckeTF.transform_grid(oned, 0.001, 0.5)[0]
+        # rgrid = BeckeRTransform.transform_grid(oned, 0.001, 0.5)[0]
         # rtf = ExpRTransform(1e-3, 1e1, 100)
         # rgrid = RadialGrid(rtf)
         atg1 = AtomGrid.from_pruned(
@@ -66,7 +66,7 @@ class TestMolGrid(TestCase):
 
     def test_make_grid_integral(self):
         """Test molecular make_grid works as designed."""
-        pts = HortonLinear(70)
+        pts = UniformInteger(70)
         tf = ExpRTransform(1e-5, 2e1)
         rgrid = tf.transform_1d_grid(pts)
         numbers = np.array([1, 1])
@@ -507,7 +507,7 @@ class TestMolGrid(TestCase):
             molg.get_atomic_grid(-5)
 
         # test make_grid error
-        pts = HortonLinear(70)
+        pts = UniformInteger(70)
         tf = ExpRTransform(1e-5, 2e1)
         rgrid = tf.transform_1d_grid(pts)
         numbers = np.array([1, 1])
@@ -616,7 +616,7 @@ class TestMolGrid(TestCase):
 
     def test_integrate_hirshfeld_weights_single_1s(self):
         """Test molecular integral in H atom with Hirshfeld weights."""
-        pts = HortonLinear(100)
+        pts = UniformInteger(100)
         tf = ExpRTransform(1e-5, 2e1)
         rgrid = tf.transform_1d_grid(pts)
         coordinates = np.array([0.0, 0.0, -0.5])

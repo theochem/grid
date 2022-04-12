@@ -25,8 +25,8 @@ from unittest import TestCase
 from grid.atomgrid import AtomGrid
 from grid.basegrid import Grid, OneDGrid
 from grid.lebedev import AngularGrid, LEBEDEV_DEGREES
-from grid.onedgrid import GaussLegendre, HortonLinear
-from grid.rtransform import BeckeTF, IdentityRTransform, PowerRTransform
+from grid.onedgrid import GaussLegendre, UniformInteger
+from grid.rtransform import BeckeRTransform, IdentityRTransform, PowerRTransform
 
 import numpy as np
 from numpy.testing import (
@@ -78,7 +78,7 @@ class TestAtomGrid(TestCase):
     def test_from_predefined(self):
         """Test grid construction with predefined grid."""
         # test coarse grid
-        pts = HortonLinear(20)
+        pts = UniformInteger(20)
         tf = PowerRTransform(7.0879993828935345e-06, 16.05937640019924)
         rad_grid = tf.transform_1d_grid(pts)
         atgrid = AtomGrid.from_preset(rad_grid, atnum=1, preset="coarse")
@@ -90,7 +90,7 @@ class TestAtomGrid(TestCase):
         )
 
         # test medium grid
-        pts = HortonLinear(24)
+        pts = UniformInteger(24)
         tf = PowerRTransform(3.69705074304963e-06, 19.279558946793685)
         rad_grid = tf.transform_1d_grid(pts)
         atgrid = AtomGrid.from_preset(rad_grid, atnum=1, preset="medium")
@@ -101,7 +101,7 @@ class TestAtomGrid(TestCase):
             5.56834559,
         )
         # test fine grid
-        pts = HortonLinear(34)
+        pts = UniformInteger(34)
         tf = PowerRTransform(2.577533167224667e-07, 16.276983371222354)
         rad_grid = tf.transform_1d_grid(pts)
         atgrid = AtomGrid.from_preset(rad_grid, atnum=1, preset="fine")
@@ -112,7 +112,7 @@ class TestAtomGrid(TestCase):
             5.56832800,
         )
         # test veryfine grid
-        pts = HortonLinear(41)
+        pts = UniformInteger(41)
         tf = PowerRTransform(1.1774580743206259e-07, 20.140888089596444)
         rad_grid = tf.transform_1d_grid(pts)
         atgrid = AtomGrid.from_preset(rad_grid, atnum=1, preset="veryfine")
@@ -123,7 +123,7 @@ class TestAtomGrid(TestCase):
             5.56832800,
         )
         # test ultrafine grid
-        pts = HortonLinear(49)
+        pts = UniformInteger(49)
         tf = PowerRTransform(4.883104847991021e-08, 21.05456999309752)
         rad_grid = tf.transform_1d_grid(pts)
         atgrid = AtomGrid.from_preset(rad_grid, atnum=1, preset="ultrafine")
@@ -134,7 +134,7 @@ class TestAtomGrid(TestCase):
             5.56832800,
         )
         # test insane grid
-        pts = HortonLinear(59)
+        pts = UniformInteger(59)
         tf = PowerRTransform(1.9221827244049134e-08, 21.413278983919113)
         rad_grid = tf.transform_1d_grid(pts)
         atgrid = AtomGrid.from_preset(rad_grid, atnum=1, preset="insane")
@@ -321,7 +321,7 @@ class TestAtomGrid(TestCase):
     def test_spherical_complete(self):
         """Test atomitc grid consistence for spherical integral."""
         num_pts = len(LEBEDEV_DEGREES)
-        pts = HortonLinear(num_pts)
+        pts = UniformInteger(num_pts)
         for _ in range(10):
             start = np.random.rand() * 1e-5
             end = np.random.rand() * 10 + 10
@@ -420,7 +420,7 @@ class TestAtomGrid(TestCase):
     def test_cubicspline_and_interp_gauss(self):
         """Test cubicspline interpolation values."""
         oned = GaussLegendre(30)
-        btf = BeckeTF(0.0001, 1.5)
+        btf = BeckeRTransform(0.0001, 1.5)
         rad = btf.transform_1d_grid(oned)
         atgrid = AtomGrid.from_pruned(rad, 1, sectors_r=[], sectors_degree=[7])
         value_array = self.helper_func_gauss(atgrid.points)
@@ -575,7 +575,7 @@ class TestAtomGrid(TestCase):
             AtomGrid._generate_real_sph_harm(-1, np.random.rand(10), np.random.rand(10))
         with self.assertRaises(ValueError):
             oned = GaussLegendre(30)
-            btf = BeckeTF(0.0001, 1.5)
+            btf = BeckeRTransform(0.0001, 1.5)
             rad = btf.transform_1d_grid(oned)
             atgrid = AtomGrid.from_preset(rad, atnum=1, preset="fine")
             atgrid.fit_values(np.random.rand(100))
