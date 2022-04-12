@@ -70,7 +70,7 @@ class GaussLaguerre(OneDGrid):
 
 
 class GaussLegendre(OneDGrid):
-    """Gauss Legendre integral quadrature class."""
+    """Gauss-Legendre integral quadrature class."""
 
     def __init__(self, npoints: int):
         r"""Generate 1-D grid on [-1, 1] interval based on Gauss-Legendre quadrature.
@@ -93,12 +93,18 @@ class GaussLegendre(OneDGrid):
         OneDGrid
             A 1-D grid instance containing points and weights.
 
+        Notes
+        -----
+        - Only known to be accurate up to `npoints`=100 and may cause problems after
+        that amount.
+
         """
         if npoints <= 1:
             raise ValueError(
                 f"Argument npoints must be an integer > 1, given {npoints}"
             )
         # compute points and weights for Gauss-Legendre quadrature
+        # according to numpy's leggauss, the accuracy is only known up to `npoints=100`.
         points, weights = np.polynomial.legendre.leggauss(npoints)
         super().__init__(points, weights, (-1, 1))
 
@@ -419,6 +425,9 @@ class TanhSinh(OneDGrid):
         x_i =& \tanh\left( \frac{\pi}{2} \sinh(i\delta) \right) \\
         w_i =& \frac{\frac{\pi}{2}\delta \cosh(i\delta)}{\cosh^2(\frac{\pi}{2}\sinh(i\delta))}
 
+        This quadrature is useful when singularities or infinite derivatives exist on the
+        endpoints of :math:`[-1, 1]`.
+
         Parameters
         ----------
         npoints : int
@@ -461,12 +470,17 @@ class Simpson(OneDGrid):
         The fundamental definition of this rule is:
 
         .. math::
-            \int_{-1}^{1} f(x) dx \approx \sum_{i=1}^n w_i f(x_i)
+            \int_{-1}^{1} f(x) dx \approx \sum_{i=1}^n w_i f(x_i),
 
-        Where
+        where
 
         .. math::
-            x_i = -1 + 2 \left(\frac{i-1}{n-1}\right)
+            x_i &= -1 + 2 \left(\frac{i-1}{n-1}\right),
+            w_i &= \begin{cases}
+                2 / (3(N - 1)) & i = 0 \\
+                8 / (3(N - 1)) & i \geq 1 \text{and is odd}, \\
+                4 / (3(N - 1)) & i \geq 2 \text{and is even}.
+            \end{cases}
 
 
         Parameters
@@ -539,9 +553,22 @@ class ClenshawCurtis(OneDGrid):
         The fundamental definition is:
 
         .. math::
-            \int_{-1}^{1} f(x) dx \approx
-            \sum_{i=1}^n w_i f(x_i)
+        \theta_i &= \pi (i - 1) / (n - 1) \\
+        x_i &= \cos (\theta_i) \\
+        w_i &= \frac{c_k}{n} \bigg(1 - \sum_{j=1}^{n/2} \frac{b_j}{4j^2 - 1} \cos(2j\theta_i) \bigg)
+        b_j = \begin{cases}
+            1 & \text{if } j = n/2 \\
+            2 & \text{if } j < n/2
+        \end{cases} \\
+        c_j = \begin{cases}
+            1 & \text{if } k = 0, n\\
+            2 & else
+        \end{cases}
 
+        where :math:k`=0,\cdots,n.
+
+        If discontinuous, it is recommended to break the intervals at the discontinuities
+        and handled separately.
 
         Parameters
         ----------
@@ -579,7 +606,7 @@ class ClenshawCurtis(OneDGrid):
 
 
 class FejerFirst(OneDGrid):
-    """Fejer Fisrt integral quadrature class."""
+    """Fejer first integral quadrature class."""
 
     def __init__(self, npoints: int):
         r"""Generate 1D grid on (-1,1) interval based on Fejer's first rule.
@@ -587,9 +614,13 @@ class FejerFirst(OneDGrid):
         The fundamental definition is:
 
         .. math::
-            \int_{-1}^{1} f(x) dx \approx
-            \sum_{i=1}^n w_i f(x_i)
+        \theta_i &= \frac{(2i - 1)\pi}{2n},
+        x_i &= \cos(\theta_i),
+        w_i &= \frac{2}{n}\bigg(1 - 2 \sum_{j=1}^{n/2} \frac{\cos(2j \theta_j)}{4 j^2 - 1} \bigg),
 
+        where :math:`k=1,\cdots, n`. It uses the zeros of the Chebyshev polynomial.
+        If discontinuous, it is recommended to break the intervals at the discontinuities
+        and handled separately.
 
         Parameters
         ----------
@@ -631,9 +662,13 @@ class FejerSecond(OneDGrid):
         The fundamental definition is:
 
         .. math::
-            \int_{-1}^{1} f(x) dx \approx
-            \sum_{i=1}^n w_i f(x_i)
+        theta_i &= k \pi / n \\
+        x_i &= \cos(\theta_i) \\
+        w_i &= \frac{4 \sin(\theta_i)}{n} \sum_{j=1}^{n/2} \frac{\sin(2j - 1)\theta_i}{2j - 1}\\
 
+        where :math:`k=1, \cdots n - 1` and :math:`n` is the number of points. This
+        method is considered more practical than the first method.  If discontinuous, it is
+        recommended to break the intervals at the discontinuities and handled separately.
 
         Parameters
         ----------
@@ -729,7 +764,7 @@ class TrefethenCC(OneDGrid):
 class TrefethenGC2(OneDGrid):
     """Trefethen GC2 integral quadrature class."""
 
-    def __init__(self, npoints, d=3):
+    def __init__(self, npoints: int, d: int=3):
         r"""Generate 1D grid on [-1,1] interval based on Trefethen-Gauss-Chebyshev.
 
         Parameters
