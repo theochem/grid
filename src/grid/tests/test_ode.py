@@ -26,10 +26,10 @@ from grid.ode import ODE
 from grid.onedgrid import GaussLaguerre
 from grid.rtransform import (
     BaseTransform,
-    BeckeTF,
+    BeckeRTransform,
     IdentityRTransform,
-    InverseTF,
-    LinearTF,
+    InverseRTransform,
+    LinearFiniteTF,
 )
 
 import numpy as np
@@ -44,8 +44,8 @@ class TestODE(TestCase):
     def test_transform_coeff_with_x_and_r(self):
         """Test coefficient transform between x and r."""
         coeff = np.array([2, 3, 4])
-        ltf = LinearTF(1, 10)  # (-1, 1) -> (r0, rmax)
-        inv_tf = InverseTF(ltf)  # (r0, rmax) -> (-1, 1)
+        ltf = LinearFiniteTF(1, 10)  # (-1, 1) -> (r0, rmax)
+        inv_tf = InverseRTransform(ltf)  # (r0, rmax) -> (-1, 1)
         x = np.linspace(-1, 1, 20)
         r = ltf.transform(x)
         assert r[0] == 1
@@ -59,7 +59,7 @@ class TestODE(TestCase):
         """Test coefficient transform with r."""
         # d^2y / dx^2 = 1
         itf = IdentityRTransform()
-        inv_tf = InverseTF(itf)
+        inv_tf = InverseRTransform(itf)
         derivs_fun = [inv_tf.deriv, inv_tf.deriv2, inv_tf.deriv3]
         coeff = np.array([0, 0, 1])
         x = np.linspace(0, 1, 10)
@@ -71,8 +71,8 @@ class TestODE(TestCase):
     def test_linear_transform_coeff(self):
         """Test coefficient with linear transformation."""
         x = GaussLaguerre(10).points
-        ltf = LinearTF(1, 10)
-        inv_ltf = InverseTF(ltf)
+        ltf = LinearFiniteTF(1, 10)
+        inv_ltf = InverseRTransform(ltf)
         derivs_fun = [inv_ltf.deriv, inv_ltf.deriv2, inv_ltf.deriv3]
         coeff = np.array([2, 3, 4])
         coeff_b = ODE._transformed_coeff_ode_with_r(coeff, derivs_fun, x)
@@ -222,8 +222,8 @@ class TestODE(TestCase):
 
     def test_becke_transform_2nd_order_ode(self):
         """Test same result for 2nd order ode with becke tf."""
-        btf = BeckeTF(0.1, 2)
-        ibtf = InverseTF(btf)
+        btf = BeckeRTransform(0.1, 2)
+        ibtf = InverseRTransform(btf)
         coeff = np.array([0, 1, 1])
         # transform
         # r = np.linspace(1, 2, 10)  # r
@@ -256,8 +256,8 @@ class TestODE(TestCase):
 
     def test_becke_transform_3nd_order_ode(self):
         """Test same result for 3rd order ode with becke tf."""
-        btf = BeckeTF(0.1, 10)
-        ibtf = InverseTF(btf)
+        btf = BeckeRTransform(0.1, 10)
+        ibtf = InverseRTransform(btf)
         coeff = np.array([0, 2, 3, 3])
         # transform
         # r = np.linspace(1, 2, 10)  # r
@@ -289,10 +289,10 @@ class TestODE(TestCase):
 
     def test_becke_transform_f0_ode(self):
         """Test same result for 3rd order ode with becke tf and fx term."""
-        btf = BeckeTF(0.1, 10)
+        btf = BeckeRTransform(0.1, 10)
         x = np.linspace(-0.9, 0.9, 20)
-        btf = BeckeTF(0.1, 5)
-        ibtf = InverseTF(btf)
+        btf = BeckeRTransform(0.1, 5)
+        ibtf = InverseRTransform(btf)
         r = btf.transform(x)
         y = np.random.rand(2, x.size)
         coeff = [-1, -1, 2]
@@ -338,9 +338,9 @@ class TestODE(TestCase):
     def test_solver_ode_bvp_with_tf(self):
         """Test result for high level api solve_ode with fx term."""
         x = np.linspace(-0.999, 0.999, 20)
-        btf = BeckeTF(0.1, 5)
+        btf = BeckeRTransform(0.1, 5)
         r = btf.transform(x)
-        ibtf = InverseTF(btf)
+        ibtf = InverseRTransform(btf)
 
         def fx(x):
             return 1 / x ** 2
@@ -372,9 +372,9 @@ class TestODE(TestCase):
     def test_solver_ode_coeff_a_f_x_with_tf(self):
         """Test ode with a(x) and f(x) involved."""
         x = np.linspace(-0.999, 0.999, 20)
-        btf = BeckeTF(0.1, 5)
+        btf = BeckeRTransform(0.1, 5)
         r = btf.transform(x)
-        ibtf = InverseTF(btf)
+        ibtf = InverseRTransform(btf)
 
         def fx(x):
             return 0 * x
@@ -405,7 +405,7 @@ class TestODE(TestCase):
             ODE.solve_ode(x, fx, test_coeff, bd_cond)
         with self.assertRaises(ValueError):
             test_coeff = [1, 2, 3, 3]
-            tf = BeckeTF(0.1, 1)
+            tf = BeckeRTransform(0.1, 1)
 
             def fx(x):
                 return x

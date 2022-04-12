@@ -5,7 +5,7 @@ from grid.atomgrid import AtomGrid
 from grid.interpolate import interpolate, spline_with_atomic_grid
 from grid.onedgrid import GaussChebyshev
 from grid.poisson import Poisson
-from grid.rtransform import BeckeTF, InverseTF
+from grid.rtransform import BeckeRTransform, InverseRTransform
 
 import numpy as np
 from numpy.testing import assert_allclose, assert_almost_equal
@@ -23,7 +23,7 @@ class TestPoisson(TestCase):
     def test_poisson_proj(self):
         """Test the project function."""
         oned = GaussChebyshev(30)
-        btf = BeckeTF(0.0001, 1.5)
+        btf = BeckeRTransform(0.0001, 1.5)
         rad = btf.transform_1d_grid(oned)
         l_max = 7
         atgrid = AtomGrid(rad, degrees=[l_max])
@@ -65,7 +65,7 @@ class TestPoisson(TestCase):
         """Test the poisson solve function."""
         oned = GaussChebyshev(30)
         oned = GaussChebyshev(50)
-        btf = BeckeTF(1e-7, 1.5)
+        btf = BeckeRTransform(1e-7, 1.5)
         rad = btf.transform_1d_grid(oned)
         l_max = 7
         atgrid = AtomGrid(rad, degrees=[l_max])
@@ -96,7 +96,7 @@ class TestPoisson(TestCase):
             ref_v = gauss(r) * np.sqrt(4 * np.pi)
             # 0.28209479 is the value in spherical harmonic Z_0_0
             assert_allclose(interp_v, ref_v, atol=1e-3)
-        ibtf = InverseTF(btf)
+        ibtf = InverseRTransform(btf)
         linsp = np.linspace(-1, 0.99, 50)
         bound = p_0 * np.sqrt(4 * np.pi)
         res_bv = Poisson.solve_poisson_bv(spls_mt[0, 0], linsp, bound, tfm=ibtf)
@@ -143,7 +143,7 @@ class TestPoisson(TestCase):
     def test_poisson_solve_mtr_cmpl(self):
         """Test solve poisson equation and interpolate the result."""
         oned = GaussChebyshev(50)
-        btf = BeckeTF(1e-7, 1.5)
+        btf = BeckeRTransform(1e-7, 1.5)
         rad = btf.transform_1d_grid(oned)
         l_max = 7
         atgrid = AtomGrid(rad, degrees=[l_max])
@@ -161,7 +161,7 @@ class TestPoisson(TestCase):
             atgrid.weights,
             atgrid.indices,
         )
-        ibtf = InverseTF(btf)
+        ibtf = InverseRTransform(btf)
         linsp = np.linspace(-1, 0.99, 50)
         bound = p_0 * np.sqrt(4 * np.pi)
         pois_mtr = Poisson.solve_poisson(spls_mt, linsp, bound, tfm=ibtf)
@@ -201,7 +201,7 @@ class TestPoisson(TestCase):
     def test_raises_errors(self):
         """Test proper error raises."""
         oned = GaussChebyshev(50)
-        btf = BeckeTF(1e-7, 1.5)
+        btf = BeckeRTransform(1e-7, 1.5)
         rad = btf.transform_1d_grid(oned)
         l_max = 7
         atgrid = AtomGrid(rad, degrees=[l_max])

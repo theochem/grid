@@ -33,7 +33,7 @@ from grid.interpolate import (
 )
 from grid.lebedev import AngularGrid
 from grid.onedgrid import GaussLegendre
-from grid.rtransform import BeckeTF, IdentityRTransform
+from grid.rtransform import BeckeRTransform, IdentityRTransform
 
 import numpy as np
 from numpy.testing import assert_allclose, assert_almost_equal, assert_array_equal
@@ -156,7 +156,7 @@ class TestInterpolate(TestCase):
     def test_cubicspline_and_interp_gauss(self):
         """Test cubicspline interpolation values."""
         oned = GaussLegendre(30)
-        btf = BeckeTF(0.0001, 1.5)
+        btf = BeckeRTransform(0.0001, 1.5)
         rad = btf.transform_1d_grid(oned)
         atgrid = AtomGrid.from_pruned(rad, 1, sectors_r=[], sectors_degree=[7])
         value_array = self.helper_func_gauss(atgrid.points)

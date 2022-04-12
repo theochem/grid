@@ -20,7 +20,7 @@
 """Generic ode solver module."""
 # from numbers import Number
 
-# from grid.rtransform import InverseTF
+# from grid.rtransform import InverseRTransform
 from numbers import Number
 
 import numpy as np
