@@ -151,8 +151,8 @@ class GaussChebyshev(OneDGrid):
         super().__init__(points[::-1], weights, (-1, 1))
 
 
-class HortonLinear(OneDGrid):
-    """HORTON2 integral quadrature class."""
+class UniformInteger(OneDGrid):
+    """HORTON2 integral quadrature (HortonLinear) class."""
 
     def __init__(self, npoints: int):
         r"""Generate 1-D grid on [0, npoints] interval using equally spaced uniform distribution.
