@@ -307,7 +307,13 @@ class Trapezoidal(OneDGrid):
 
 
 class RectangleRuleSineEndPoints(OneDGrid):
-    """Rectangle-Rule Sine EndPoints integral quadrature class."""
+    """
+    Rectangle-Rule Sine EndPoints integral quadrature class.
+
+    References
+    ----------
+    .. [1] Boyd, John P. Chebyshev and Fourier spectral methods. Courier Corporation, 2001.
+    """
 
     def __init__(self, npoints: int):
         r"""
@@ -359,7 +365,13 @@ class RectangleRuleSineEndPoints(OneDGrid):
 
 
 class RectangleRuleSine(OneDGrid):
-    """Rectangle-Rule Sine integral quadrature class."""
+    """
+    Rectangle-Rule Sine integral quadrature class.
+
+    References
+    ----------
+    .. [1] Boyd, John P. Chebyshev and Fourier spectral methods. Courier Corporation, 2001.
+    """
 
     def __init__(self, npoints: int):
         r"""Generate 1-D grid on [-1, 1] interval using Interior Rectangle Rule for Sines.
