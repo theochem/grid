@@ -648,7 +648,7 @@ class IdentityRTransform(BaseTransform):
 
 
 class LinearInfiniteRTransform(BaseTransform):
-    r"""Linear transform from large interval :math:`[0, \infty)` to :math:`[r_{min}, r_{max})`."""
+    r"""Linear transform from interval :math:`[0, \infty)` to :math:`[r_{min}, r_{max})`."""
 
     def __init__(self, rmin: float, rmax: float):
         r"""Initialize linear transform class.
