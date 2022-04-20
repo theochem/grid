@@ -118,12 +118,13 @@ class BeckeRTransform(BaseTransform):
     """Becke Transformation."""
 
     def __init__(self, rmin: float, R: float, trim_inf: bool = True):
-        r"""Construct Becke transform, :math:`[-1, 1]` to :math`[r_0, \inf)`.
+        r"""Construct Becke transform, :math:`[-1, 1]` to :math`[r_{min}, \inf)`.
 
         Parameters
         ----------
         rmin : float
-            The minimum coordinate :math:`r_0` in the transformed interval :math:`[r_0, \inf)`.
+            The minimum coordinate :math:`r_{min}` in the transformed interval
+            :math:`[r_{min}, \inf)`.
         R : float
             The scale factor used in the transformation.
         trim_inf : bool, optional
@@ -160,7 +161,7 @@ class BeckeRTransform(BaseTransform):
 
     @staticmethod
     def find_parameter(array: np.ndarray, rmin: float, radius: float):
-        r"""Compute R such that half of the points in :math:`[r_0, \inf)` are within radius.
+        r"""Compute R such that half of the points in :math:`[r_{min}, \inf)` are within radius.
 
         Parameters
         ----------
@@ -189,20 +190,20 @@ class BeckeRTransform(BaseTransform):
         return (radius - rmin) * (1 - mid_value) / (1 + mid_value)
 
     def transform(self, x: np.ndarray):
-        r"""Transform from :math:`[-1, 1]` to :math:`[r_0, \inf)`.
+        r"""Transform from :math:`[-1, 1]` to :math:`[r_{min}, \inf)`.
 
         .. math::
-            r_i = R \frac{1 + x_i}{1 - x_i} + r_{0}
+            r_i = R \frac{1 + x_i}{1 - x_i} + r_{min}
 
         Parameters
         ----------
         x : np.ndarray(N,)
-            One-dimensional array located between [-1, 1].
+            One-dimensional array in the domain :math:`[-1, 1]`.
 
         Returns
         -------
         np.ndarray(N,)
-            Transformed array located between :math:`[r_0, \inf)`.
+            Transformed array located between :math:`[r_min, \inf)`.
 
         """
         with warnings.catch_warnings():
@@ -213,25 +214,25 @@ class BeckeRTransform(BaseTransform):
         return rf_array
 
     def inverse(self, r: np.ndarray):
-        r"""Transform :math:`[r_0, \inf)` back to original :math:`[-1, 1]`.
+        r"""Transform :math:`[r_{mi}n, \inf)` back to original :math:`[-1, 1]`.
 
         .. math::
-            x_i = \frac{r_i - r_{0} - R} {r_i - r_{0} + R}
+            x_i = \frac{r_i - r_{min} - R} {r_i - r_{min} + R}
 
         Parameters
         ----------
         r : np.ndarray(N,)
-            Sorted one dimension array located between :math:`[r_0, \inf)`.
+            One-dimensional array in the codomain :math:`[r_{min}, \inf)`.
 
         Returns
         -------
         np.ndarray(N,)
-            The original one dimension array located between [-1, 1].
+            One dimensional array in :math:`[-1, 1]`.
         """
         return (r - self._rmin - self._R) / (r - self._rmin + self._R)
 
     def deriv(self, x: np.ndarray):
-        r"""Compute the 1st derivative of Becke transformation.
+        r"""Compute the first derivative of Becke transformation.
 
         .. math::
             \frac{dr_i}{dx_i} = 2R \frac{1}{(1-x)^2}
@@ -239,12 +240,12 @@ class BeckeRTransform(BaseTransform):
         Parameters
         ----------
         x : np.array(N,)
-            One dimension numpy array located between [-1, 1]
+            One-dimensional array in the domain :math:`[-1, 1]`.
 
         Returns
         -------
         np.ndarray(N,)
-            1st derivative of Becke transformation at each points
+            First derivative of Becke transformation at each point.
         """
         return 2 * self._R / ((1 - x) ** 2)
 
@@ -257,12 +258,12 @@ class BeckeRTransform(BaseTransform):
         Parameters
         ----------
         x : np.array(N,)
-            One dimension numpy array located between [-1, 1]
+            One-dimensional array in the domain :math:`[-1, 1]`.
 
         Returns
         -------
         np.ndarray(N,)
-            Second derivative of Becke transformation at each points
+            Second derivative of Becke transformation at each point.
         """
         return 4 * self._R / (1 - x) ** 3
 
@@ -275,12 +276,12 @@ class BeckeRTransform(BaseTransform):
         Parameters
         ----------
         x : np.array(N,)
-            One dimension numpy array located between [-1, 1]
+            One-dimensional array in the domain :math:`[-1, 1]`.
 
         Returns
         -------
         np.ndarray(N,)
-            Third derivative of Becke transformation at each points
+            Third derivative of Becke transformation at each point.
         """
         return 12 * self._R / (1 - x) ** 4
 
