@@ -29,7 +29,7 @@ from grid.rtransform import (
     BeckeRTransform,
     IdentityRTransform,
     InverseRTransform,
-    LinearFiniteTF,
+    LinearFiniteRTransform,
 )
 
 import numpy as np
@@ -44,7 +44,7 @@ class TestODE(TestCase):
     def test_transform_coeff_with_x_and_r(self):
         """Test coefficient transform between x and r."""
         coeff = np.array([2, 3, 4])
-        ltf = LinearFiniteTF(1, 10)  # (-1, 1) -> (r0, rmax)
+        ltf = LinearFiniteRTransform(1, 10)  # (-1, 1) -> (r0, rmax)
         inv_tf = InverseRTransform(ltf)  # (r0, rmax) -> (-1, 1)
         x = np.linspace(-1, 1, 20)
         r = ltf.transform(x)
@@ -71,7 +71,7 @@ class TestODE(TestCase):
     def test_linear_transform_coeff(self):
         """Test coefficient with linear transformation."""
         x = GaussLaguerre(10).points
-        ltf = LinearFiniteTF(1, 10)
+        ltf = LinearFiniteRTransform(1, 10)
         inv_ltf = InverseRTransform(ltf)
         derivs_fun = [inv_ltf.deriv, inv_ltf.deriv2, inv_ltf.deriv3]
         coeff = np.array([2, 3, 4])
