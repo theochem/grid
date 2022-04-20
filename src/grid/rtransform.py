@@ -117,7 +117,26 @@ class BaseTransform(ABC):
 
 
 class BeckeRTransform(BaseTransform):
-    """Becke Transformation."""
+    """
+    Becke Transformation.
+
+    The Becke transformation transforms from :math:`[-1, 1]` to :math:`[r_{min}, \infty)`
+    according to
+
+    .. math::
+        r(x) = R \frac{1 + x}{1 - x} + r_{min}.
+
+    The inverse transformation is given by
+
+    .. math::
+        x(r) = \frac{r - r_{min} - R} {r - r_{min} + R}.
+
+    References
+    ----------
+    .. [1] Becke, Axel D. "A multicenter numerical integration scheme for polyatomic molecules."
+       The Journal of chemical physics 88.4 (1988): 2547-2553.
+
+    """
 
     def __init__(self, rmin: float, R: float, trim_inf: bool = True):
         r"""Construct Becke transform, :math:`[-1, 1]` to :math`[r_{min}, \infty)`.
@@ -163,7 +182,8 @@ class BeckeRTransform(BaseTransform):
 
     @staticmethod
     def find_parameter(array: np.ndarray, rmin: float, radius: float):
-        r"""Compute R such that half of the points in :math:`[r_{min}, \infty)` are within radius.
+        r"""
+        Compute R such that half of the points in :math:`[r_{min}, \infty)` are within radius.
 
         Parameters
         ----------
@@ -289,7 +309,21 @@ class BeckeRTransform(BaseTransform):
 
 
 class LinearFiniteRTransform(BaseTransform):
-    """Linear transformation from :math:`[-1, 1]` to :math:`[r_{min}, r_{max}]`."""
+    """
+    Linear finite transformation from :math:`[-1, 1]` to :math:`[r_{min}, r_{max}]`.
+
+    The Linear transformation from finite interval :math:`[-1, 1]` to finite interval
+    :math:`[r_{min}, r_{max}]` is given by
+
+    .. math::
+        r(x) = \frac{r_{max} - r_{min}}{2} (1 + x) + r_{min}.
+
+    The inverse transformation is given by
+
+    .. math::
+        x(r) = \frac{2 r - (r_{max} + r_{min})}{r_{max} - r_{min}}
+
+    """
 
     def __init__(self, rmin: float, rmax: float):
         """Construct linear transformation instance.
@@ -554,7 +588,21 @@ class InverseRTransform(BaseTransform):
 
 
 class IdentityRTransform(BaseTransform):
-    """Identity Transform class."""
+    """
+    Identity Transform class.
+
+    The identity transform class trivially transforms from :math:`[0, \infty)` to
+    :math:`[0, \infty)` given by
+
+    .. math::
+        r(x) = x.
+
+    The inverse transformation is given by
+
+    .. math::
+        x(r) = r.
+
+    """
 
     def __init__(self):
         self._domain = (0, np.inf)
@@ -650,7 +698,21 @@ class IdentityRTransform(BaseTransform):
 
 
 class LinearInfiniteRTransform(BaseTransform):
-    r"""Linear transform from interval :math:`[0, \infty)` to :math:`[r_{min}, r_{max})`."""
+    r"""
+    Linear transform from interval :math:`[0, \infty)` to :math:`[r_{min}, r_{max})`.
+
+    This transformation linearly maps the infinite interval :math:`[0, \infty)` to a finite
+    interval :math:`[r_{min}, r_{max}]` given by
+
+    .. math::
+        r(x) = \frac{(r_{max} - r_{min})}{N - 1} x + r_{min},
+
+    The inverse is given by
+
+    .. math::
+        x(r) = (r - r_{min}) \frac{N - 1}{r_{max} - r_{min}}
+
+    """
 
     def __init__(self, rmin: float, rmax: float):
         r"""Initialize linear transform class.
@@ -686,7 +748,7 @@ class LinearInfiniteRTransform(BaseTransform):
         r"""Transform from interval :math:`[0, \infty)` to :math:`[r_{min}, r_{max}]`.
 
         .. math::
-            r_i = \frac{(r_{max} - r_{min})}{N - 1} x + r_{min},
+            r_i = \frac{(r_{max} - r_{min})}{N - 1} x_i + r_{min},
 
         where :math:`N` is the number of points. The goal is to transform
         equally-spaced integers from 0 to N-1, to :math:`[r_{min}, r_{max}]`.
@@ -777,7 +839,19 @@ class LinearInfiniteRTransform(BaseTransform):
 
 
 class ExpRTransform(BaseTransform):
-    r"""Exponential transform from :math:`[0, \infty)` to :math:`[r_{min}, r_{max}]`."""
+    r"""
+    Exponential transform from :math:`[0, \infty)` to :math:`[r_{min}, r_{max}]`.
+
+    This transformation is given by
+
+    .. math::
+        r(x) = r_{min} e^{x \log\bigg(\frac{r_{max}}{r_{min} / (N - 1)}  \bigg)}.
+
+    The inverse transformation is given by
+
+    .. math::
+        x(r) = \frac{\log\big(\frac{r}{r_{min}} \big) (N - 1)}{\log(\frac{r_{max}}{r_{min}})}
+    """
 
     def __init__(self, rmin: float, rmax: float):
         r"""Initialize exp transform instance.
@@ -894,6 +968,9 @@ class ExpRTransform(BaseTransform):
         r"""
         Compute the inverse of exponential transform.
 
+        .. math::
+            x(r_i) = \frac{\log\big(\frac{r}{r_{min}} \big) (N - 1)}{\log(\frac{r_{max}}{r_{min}})}
+
         Parameters
         ----------
         r : ndarray(N,)
@@ -910,7 +987,20 @@ class ExpRTransform(BaseTransform):
 
 
 class PowerRTransform(BaseTransform):
-    r"""Power transform class from :math:`[0, \infty)` to :math:`[r_{min}, r_{max}]`."""
+    r"""
+    Power transform class from :math:`[0, \infty)` to :math:`[r_{min}, r_{max}]`.
+
+    This transformations is given by
+
+    .. math::
+        r(x) = r_{min}  (x + 1)^{\frac{\log(r_{max} - \log(r_{min}}{N}}.
+
+    The inverse of the transformation is given by
+
+    .. math::
+         x(r) = \frac{r}{r_{min}}^{\frac{\log(N)}{\log(r_{max}) - \log(r_{min})}} - 1.
+
+    """
 
     def __init__(self, rmin: float, rmax: float):
         r"""Initialize power transform instance.
@@ -1029,6 +1119,9 @@ class PowerRTransform(BaseTransform):
         r"""
         Compute the inverse of power transform.
 
+        .. math::
+            x(r) = \frac{r}{r_{min}}^{\frac{\log(N)}{\log(r_{max}) - \log(r_{min})}} - 1
+
         Parameters
         ----------
         r : ndarray(N,)
@@ -1045,7 +1138,22 @@ class PowerRTransform(BaseTransform):
 
 
 class HyperbolicRTransform(BaseTransform):
-    r"""Hyperbolic transform from :math`[0, \infty)` to :math:`[0, \infty)`."""
+    r"""
+    Hyperbolic transform from :math`[0, \infty)` to :math:`[0, \infty)`.
+
+    The transformation is given by
+
+    .. math::
+        r(x) = \frac{a x}{(1 - bx)},
+
+    where :math:`b ( N - 1) \geq 1`, and :math:`N` is the number of points in x.
+
+    The inverse transformation is given by
+
+    .. math::
+        x(r) = \frac{r}{a + br}
+
+    """
 
     def __init__(self, a: float, b: float):
         r"""Hyperbolic transform class.
@@ -1081,7 +1189,7 @@ class HyperbolicRTransform(BaseTransform):
         r"""Perform hyperbolic transformation.
 
         .. math::
-            r_i = \frac{a x}{(1 - bx)},
+            r_i = \frac{a x_i}{(1 - bx_i)},
 
         where :math:`b ( N - 1) \geq 1`, and :math:`N` is the number of points in x.
 
@@ -1164,6 +1272,9 @@ class HyperbolicRTransform(BaseTransform):
         r"""
         Compute the inverse of hyperbolic transformation.
 
+        .. math::
+            x(r) = \frac{r}{a + br}
+
         Parameters
         ----------
         r : ndarray(N,)
@@ -1182,7 +1293,17 @@ class HyperbolicRTransform(BaseTransform):
 
 class MultiExpRTransform(BaseTransform):
     r"""
-    MultiExp Transformation class.
+    MultiExp Transformation class from :math:`[-1,1]` to :math:`[r_{min}, \infty)`.
+
+    The transformation is given by
+
+    .. math::
+        r(x) = -R \log \left( \frac{x + 1}{2} \right) + r_{min}
+
+    The inverse of this transformation is given by
+
+    .. math::
+        x(r) = 2 \exp \left( \frac{-(r - r_{min})}{R} \right) - 1
 
     References
     ----------
@@ -1322,7 +1443,22 @@ class MultiExpRTransform(BaseTransform):
 
 
 class KnowlesRTransform(BaseTransform):
-    r"""Knowles Transformation from :math:`[-1, 1]` to :math:`[r_{min}, \infty)`."""
+    r"""
+    Knowles Transformation from :math:`[-1, 1]` to :math:`[r_{min}, \infty)`.
+
+    The transformation is given by
+
+    .. math::
+       r(x) = r_{min} - R \log \left( 1 - 2^{-k} (x + 1)^k \right),
+
+    where :math:`k > 0` and :math:`R` is the scaling parameter.
+
+    The inverse transformation is given by
+
+    .. math::
+        x(r) = 2 \sqrt[k]{1-\exp \left( -\frac{r-r_{min}}{R}\right)}-1
+
+    """
 
     def __init__(self, rmin: float, R: float, k: int, trim_inf=True):
         r"""Construct Knowles transformation class.
@@ -1492,7 +1628,20 @@ class KnowlesRTransform(BaseTransform):
 
 
 class HandyRTransform(BaseTransform):
-    r"""Handy Transformation class from :math:`[-1, 1]` to :math:`[r_{min}, \infty)`."""
+    r"""
+    Handy Transformation class from :math:`[-1, 1]` to :math:`[r_{min}, \infty)`.
+
+    This transformation is given by
+
+    .. math::
+        r(x) = R \left( \frac{1+x}{1-x} \right)^m + r_{min}.
+
+    The inverse transformations is given by
+
+    .. math::
+        x(r) = \frac{\sqrt[m]{r-r_{min}} - \sqrt[m]{R}} {\sqrt[m]{r-r_{min}} + \sqrt[m]{R}}.
+
+    """
 
     def __init__(self, rmin: float, R: float, m: int, trim_inf=True):
         r"""Construct Handy transformation.
@@ -1662,10 +1811,29 @@ class HandyRTransform(BaseTransform):
 
 
 class HandyModRTransform(BaseTransform):
-    r"""Modified Handy Transformation class."""
+    r"""Modified Handy Transformation class from :math:`[-1, 1]` to :math:`[r_{min}, r_{max}]`.
+
+    This transformation is given by
+
+    .. math::
+        r(x) = \frac{(1+x)^m (r_{max} - r_{min})}
+                { 2^m (1 - 2^m + r_{max} - r_{min})
+                  - (1 + x)^m (r_{max} - r_{min} - 2^m )} + r_{min},
+
+    where :math:`m > 0`.
+
+    The inverse transformation is given by
+
+    .. math::
+        x(r) =  2 \sqrt[m]{
+                \frac{(r - r_{min})(r_{max} - r_{min} - 2^m + 1)}
+                {(r - r_{min})(r_{max} - r_{min} - 2^m) + r_{max} - r_{min}}
+                } - 1.
+
+    """
 
     def __init__(self, rmin: float, rmax: float, m: int, trim_inf=True):
-        r"""Construct a modified Handy transform [-1,1] -> [rmin,rmax].
+        r"""Construct a modified Handy transform from :math:`[-1, 1]` to :math:`[r_{min}, r_{max}]`.
 
         Parameters
         ----------
@@ -1710,7 +1878,7 @@ class HandyModRTransform(BaseTransform):
         return self._m
 
     def transform(self, x: np.ndarray):
-        r"""Transform given array [-1,1] to radial array [rmin,rmax].
+        r"""Transform given array :math:`[-1,1]` to radial array :math:`[r_{min},r_{max}]`.
 
         .. math::
             r_i = \frac{(1+x_i)^m (r_{max} - r_{min})}
