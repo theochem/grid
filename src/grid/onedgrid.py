@@ -28,21 +28,26 @@ from scipy.special import roots_chebyu, roots_genlaguerre
 
 
 class GaussLaguerre(OneDGrid):
-    """Gauss Laguerre integral quadrature class."""
+    r"""
+    Gauss Laguerre integral quadrature class.
 
-    def __init__(self, npoints: int, alpha: float = 0):
-        r"""Generate 1-D grid on [0, inf) interval based on Generalized Gauss-Laguerre quadrature.
+    The definition of generalized Gauss-Laguerre quadrature is:
 
-        The fundamental definition of Generalized Gauss-Laguerre quadrature is:
+    .. math::
+        \int_{0}^{\infty} x^\alpha e^{-x} f(x) dx \approx \sum_{i=1}^n w_i f(x_i),
 
-        .. math::
-        \int_{0}^{\infty} x^\alpha e^{-x} f(x) dx \approx \sum_{i=1}^n w_i f(x_i)
+    where :math:`\alpha > -1`.
 
-        However, to integrate function :math:`g(x)` over [0, inf), this is re-written as:
+    However, to integrate function :math:`g(x)` over :math:`[0, \infty)`, this is re-written as:
 
-        .. math::
+    .. math::
         \int_{0}^{\infty} g(x)dx \approx
         \sum_{i=1}^n \left(\frac{w_i}{x_i^\alpha e^{-x_i}}\right) g(x_i) = \sum_{i=1}^n w_i' g(x_i)
+
+    """
+
+    def __init__(self, npoints: int, alpha: float = 0):
+        r"""Generate grid on :math:`[0, \infty)` based on generalized Gauss-Laguerre quadrature.
 
         Parameters
         ----------
@@ -70,18 +75,21 @@ class GaussLaguerre(OneDGrid):
 
 
 class GaussLegendre(OneDGrid):
-    """Gauss-Legendre integral quadrature class."""
+    r"""
+    Gauss-Legendre integral quadrature class.
 
-    def __init__(self, npoints: int):
-        r"""Generate 1-D grid on [-1, 1] interval based on Gauss-Legendre quadrature.
+    The definition of Gauss-Legendre quadrature is:
 
-        The fundamental definition of Gauss-Legendre quadrature is:
-
-        .. math::
+    .. math::
         \int_{-1}^{1} f(x) dx \approx \sum_{i=1}^n w_i f(x_i),
 
-        where :math:`w_i` are the quadrature weights and :math:`x_i` are the
-        roots of the nth Legendre polynomial.
+    where :math:`w_i` are the quadrature weights and :math:`x_i` are the
+    roots of the nth Legendre polynomial.
+
+    """
+
+    def __init__(self, npoints: int):
+        r"""Generate grid on :math:`[-1, 1]` interval based on Gauss-Legendre quadrature.
 
         Parameters
         ----------
@@ -110,23 +118,26 @@ class GaussLegendre(OneDGrid):
 
 
 class GaussChebyshev(OneDGrid):
-    """Gauss Chesbyshev integral quadrature class."""
+    r"""
+    Gauss-Chebyshev integral quadrature class.
 
-    def __init__(self, npoints: int):
-        r"""Generate 1-D grid on [-1, 1] interval based on Gauss-Chebyshev quadrature.
+    The fundamental definition of Gauss-Chebyshev quadrature is:
 
-        The fundamental definition of Gauss-Chebyshev quadrature is:
-
-        .. math::
+    .. math::
         \int_{-1}^{1} \frac{f(x)}{\sqrt{1-x^2}} dx \approx& \sum_{i=1}^n w_i f(x_i) \\
         x_i =& \cos\left( \frac{2i-1}{2n}\pi \right) \\
         w_i =& \frac{\pi}{n}
 
-        However, to integrate a given function :math:`g(x)` over [-1, 1], this is re-written as:
+    However, to integrate a given function :math:`g(x)` over :math:`[-1, 1]`, this is re-written as:
 
-        .. math::
+    .. math::
         \int_{-1}^{1}g(x)dx \approx \sum_{i=1}^n \left(w_i\sqrt{1-x_i^2}\right)g(x_i) =
         \sum_{i=1}^n w_i'g(x_i)
+
+    """
+
+    def __init__(self, npoints: int):
+        r"""Generate grid on :math:`[-1, 1]` interval based on Gauss-Chebyshev quadrature.
 
         Parameters
         ----------
@@ -152,15 +163,17 @@ class GaussChebyshev(OneDGrid):
 
 
 class UniformInteger(OneDGrid):
-    """HORTON2 integral quadrature (HortonLinear) class."""
+    r"""
+    HORTON2 integral quadrature (HortonLinear) class.
 
-    def __init__(self, npoints: int):
-        r"""Generate 1-D grid on [0, npoints] interval using equally spaced uniform distribution.
-
-        .. math::
+    .. math::
         \int_{0}^{n} f(x) dx \approx& \sum_{i=1}^n w_i f(x_i) \\
         x_i =& i - 1 \\
         w_i =& 1.0
+
+    """
+    def __init__(self, npoints: int):
+        r"""Generate grid on [0, npoints] interval using equally spaced uniform distribution.
 
         Parameters
         ----------
@@ -170,7 +183,7 @@ class UniformInteger(OneDGrid):
         Returns
         -------
         OneDGrid
-            A 1-D grid instance containing points and weights.
+            One-dimensional grid instance containing points and weights.
 
         """
         if npoints <= 1:
@@ -183,23 +196,26 @@ class UniformInteger(OneDGrid):
 
 
 class GaussChebyshevType2(OneDGrid):
-    """Gauss Chebyshev Type2 integral quadrature class."""
+    r"""
+    Gauss Chebyshev Type2 integral quadrature class.
 
-    def __init__(self, npoints: int):
-        r"""Generate 1-D grid on [-1, 1] interval based on Gauss-Chebyshev Type 2.
+    The definition of the Gauss-Chebyshev of the second kind quadrature is:
 
-        The fundamental definition of Gauss-Chebyshev Type 2 quadrature is:
-
-        .. math::
+    .. math::
         \int_{-1}^{1} f(x) \sqrt{1-x^2} dx \approx& \sum_{i=1}^n w_i f(x_i) \\
         x_i =& \cos\left( \frac{i}{n+1} \pi \right) \\
         w_i =& \frac{\pi}{n+1} \sin^2 \left( \frac{i}{n+1} \pi \right)
 
-        However, to integrate a given function :math:`g(x)` over [-1, 1], this is re-written as:
+    However, to integrate a given function :math:`g(x)` over :math:`[-1, 1]`, this is re-written as:
 
-        .. math::
+    .. math::
         \int_{-1}^{1} g(x) dx \approx \sum_{i=1}^n \left(\frac{w_i}{\sqrt{1-x_i^2}}\right) g(x_i) =
         \sum_{i=1}^n w_i' g(x_i)
+
+    """
+
+    def __init__(self, npoints: int):
+        r"""Generate grid on :math:`[-1, 1]` interval based on Gauss-Chebyshev Type 2.
 
         Parameters
         ----------
@@ -223,24 +239,26 @@ class GaussChebyshevType2(OneDGrid):
 
 
 class GaussChebyshevLobatto(OneDGrid):
-    """Gauss Chebyshev Lobatto integral quadrature class."""
+    r"""
+    Gauss Chebyshev Lobatto integral quadrature class.
 
-    def __init__(self, npoints: int):
-        r"""Generate 1-D grid on [-1, 1] interval based on Gauss-Chebyshev-Lobatto quadrature.
+    The definition of Gauss-Chebyshev-Lobato quadrature is:
 
-        The definition of Gauss-Chebyshev-Lobato quadrature is:
-
-        .. math::
+    .. math::
         \int_{-1}^{1} \frac{f(x)}{\sqrt{1-x^2}} dx \approx& \sum_{i=1}^n w_i f(x_i) \\
         x_i =& \cos\left( \frac{(i-1)}{n-1}\pi \right) \\
         w_{1} = w_{n} =& \frac{\pi}{2(n-1)} \\
         w_{i\neq 1,n} =& \frac{\pi}{n-1}
 
-        However, to integrate a given function :math:`g(x)` over [-1, 1], this is re-written as:
+    However, to integrate a given function :math:`g(x)` over :math:`[-1, 1]`, this is re-written as:
 
-        .. math::
+    .. math::
         \int_{-1}^{1}g(x) dx \approx \sum_{i=1}^n \left(w_i \sqrt{1-x_i^2}\right) g(x_i) =
         \sum_{i=1}^n w_i' g(x_i)
+    """
+
+    def __init__(self, npoints: int):
+        r"""Generate grid on :math:`[-1, 1]` interval based on Gauss-Chebyshev-Lobatto quadrature.
 
         Parameters
         ----------
@@ -269,18 +287,21 @@ class GaussChebyshevLobatto(OneDGrid):
 
 
 class Trapezoidal(OneDGrid):
-    """Trapezoidal Lobatto integral quadrature class."""
+    r"""
+    Trapezoidal Lobatto integral quadrature class.
 
-    def __init__(self, npoints: int):
-        r"""Generate 1-D grid on [-1, 1] interval based on Trapezoidal (Euler-Maclaurin) rule.
+    The fundamental definition of Trapezoidal rule is:
 
-        The fundamental definition of Trapezoidal rule is:
-
-        .. math::
+    .. math::
         \int_{-1}^{1} f(x) dx \approx& \sum_{i=1}^n w_i f(x_i) \\
         x_i =& -1 + 2 \left(\frac{i-1}{n-1}\right) \\
         w_1 = w_n =& \frac{1}{n} \\
         w_{i\neq 1,n} =& \frac{2}{n}
+
+    """
+
+    def __init__(self, npoints: int):
+        r"""Generate grid on [-1, 1] interval based on Trapezoidal (Euler-Maclaurin) rule.
 
         Parameters
         ----------
@@ -290,7 +311,7 @@ class Trapezoidal(OneDGrid):
         Returns
         -------
         OneDGrid
-            A 1-D grid instance containing points and weights.
+            One-dimensional grid instance containing points and weights.
 
         """
         if npoints <= 1:
@@ -308,7 +329,18 @@ class Trapezoidal(OneDGrid):
 
 class RectangleRuleSineEndPoints(OneDGrid):
     """
-    Rectangle-Rule Sine EndPoints integral quadrature class.
+    Rectangle-Rule Sine end points integral quadrature class.
+
+     .. math::
+        \int_{-1}^{1} f(x) dx \approx& \sum_{i=1}^n w_i f(x_i) \\
+        x_i =& \frac{i}{n+1} \\
+        w_i =& \frac{2}{n+1} \sum_{m=1}^n \frac{\sin(m \pi x_i)(1-\cos(m \pi))}{m \pi}
+
+    For consistency with other 1-D grids, the integration range is modified
+    by :math:`q=2x-1` to the interval :math:`[-1, 1]`, so that
+
+    .. math::
+        2 \int_{0}^{1} f(x) dx = \int_{-1}^{1} f(q) dq
 
     References
     ----------
@@ -317,18 +349,7 @@ class RectangleRuleSineEndPoints(OneDGrid):
 
     def __init__(self, npoints: int):
         r"""
-        Generate 1-D grid on [-1, 1] using rectangle rule for Sine Series (with endpoints).
-
-        .. math::
-        \int_{-1}^{1} f(x) dx \approx& \sum_{i=1}^n w_i f(x_i) \\
-        x_i =& \frac{i}{n+1} \\
-        w_i =& \frac{2}{n+1} \sum_{m=1}^n \frac{\sin(m \pi x_i)(1-\cos(m \pi))}{m \pi}
-
-        For consistency with other 1-D grids, the integration range is modified
-        by :math:`q=2x-1`, and
-
-        .. math::
-        2 \int_{0}^{1} f(x) dx = \int_{-1}^{1} f(q) dq
+        Generate grid on :math:`[-1, 1]` using rectangle rule for Sine Series (with endpoints).
 
         Parameters
         ----------
@@ -338,7 +359,7 @@ class RectangleRuleSineEndPoints(OneDGrid):
         Returns
         -------
         OneDGrid
-            A 1-D grid instance containing points and weights.
+            One-dimensional grid instance containing points and weights.
 
         """
         if npoints <= 1:
@@ -365,28 +386,29 @@ class RectangleRuleSineEndPoints(OneDGrid):
 
 
 class RectangleRuleSine(OneDGrid):
-    """
+    r"""
     Rectangle-Rule Sine integral quadrature class.
 
-    References
-    ----------
-    .. [1] Boyd, John P. Chebyshev and Fourier spectral methods. Courier Corporation, 2001.
-    """
-
-    def __init__(self, npoints: int):
-        r"""Generate 1-D grid on [-1, 1] interval using Interior Rectangle Rule for Sines.
-
-        .. math::
+    .. math::
         \int_{-1}^{1} f(x) dx \approx& \sum_{i=1}^n w_i f(x_i) \\
         x_i =& \frac{2 i - 1}{2 n} \\
         w_i =& \frac{2}{n^2 \pi} \sin(n\pi x_i) \sin^2(n\pi /2) +
                 \frac{4}{n \pi} \sum_{m=1}^{n-1} \frac{\sin(m \pi x_i)\sin^2(m\pi /2)}{m}
 
-        For consistency with other 1-D grids, the integration range is modified
-        by :math:`q=2x-1`, and
+    For consistency with other 1-D grids, the integration range is modified
+    by :math:`q=2x-1` to the interval :math:`[-1, 1]`, such that
 
-        .. math::
+    .. math::
         2 \int_{0}^{1} f(x) dx = \int_{-1}^{1} f(q) dq
+
+    References
+    ----------
+    .. [1] Boyd, John P. Chebyshev and Fourier spectral methods. Courier Corporation, 2001.
+
+    """
+
+    def __init__(self, npoints: int):
+        r"""Generate grid on :math:`[-1, 1]` interval using Interior Rectangle Rule for Sines.
 
         Parameters
         ----------
@@ -396,7 +418,7 @@ class RectangleRuleSine(OneDGrid):
         Returns
         -------
         OneDGrid
-            A 1-D grid instance containing points and weights.
+            One-dimensional grid instance containing points and weights.
 
         """
         if npoints <= 1:
@@ -426,20 +448,23 @@ class RectangleRuleSine(OneDGrid):
 
 
 class TanhSinh(OneDGrid):
-    """Tanh Sinh integral quadrature class."""
+    r"""
+    Tanh Sinh integral quadrature class.
 
-    def __init__(self, npoints: int, delta: float = 0.1):
-        r"""Generate 1-D grid on :math:`[-1, 1]` interval based on Tanh-Sinh rule.
+    The definition of the quadrature is:
 
-        The fundamental definition is:
-
-        .. math::
+    .. math::
         \int_{-1}^{1} f(x) dx \approx& \sum_{i=-\frac{1}{2}(n-1)}^{\frac{1}{2}(n-1)} w_i f(x_i) \\
         x_i =& \tanh\left( \frac{\pi}{2} \sinh(i\delta) \right) \\
         w_i =& \frac{\frac{\pi}{2}\delta \cosh(i\delta)}{\cosh^2(\frac{\pi}{2}\sinh(i\delta))}
 
-        This quadrature is useful when singularities or infinite derivatives exist on the
-        endpoints of :math:`[-1, 1]`.
+    This quadrature is useful when singularities or infinite derivatives exist on the
+    endpoints of :math:`[-1, 1]`.
+
+    """
+
+    def __init__(self, npoints: int, delta: float = 0.1):
+        r"""Generate grid on :math:`[-1, 1]` interval based on Tanh-Sinh rule.
 
         Parameters
         ----------
@@ -475,26 +500,27 @@ class TanhSinh(OneDGrid):
 
 
 class Simpson(OneDGrid):
-    """Simpson integral quadrature class."""
+    r"""Simpson integral quadrature class.
+
+    The definition of this quadrature is:
+
+    .. math::
+        \int_{-1}^{1} f(x) dx \approx \sum_{i=1}^n w_i f(x_i),
+
+    where
+
+    .. math::
+        x_i &= -1 + 2 \left(\frac{i-1}{n-1}\right),
+        w_i &= \begin{cases}
+            2 / (3(N - 1)) & i = 0 \\
+            8 / (3(N - 1)) & i \geq 1 \text{and is odd}, \\
+            4 / (3(N - 1)) & i \geq 2 \text{and is even}.
+        \end{cases}
+
+    """
 
     def __init__(self, npoints: int):
-        r"""Generate 1D grid on [-1,1] interval based on Simpson rule.
-
-        The fundamental definition of this rule is:
-
-        .. math::
-            \int_{-1}^{1} f(x) dx \approx \sum_{i=1}^n w_i f(x_i),
-
-        where
-
-        .. math::
-            x_i &= -1 + 2 \left(\frac{i-1}{n-1}\right),
-            w_i &= \begin{cases}
-                2 / (3(N - 1)) & i = 0 \\
-                8 / (3(N - 1)) & i \geq 1 \text{and is odd}, \\
-                4 / (3(N - 1)) & i \geq 2 \text{and is even}.
-            \end{cases}
-
+        r"""Generate grid on :math:`[-1,1]` interval based on Simpson rule.
 
         Parameters
         ----------
@@ -523,17 +549,19 @@ class Simpson(OneDGrid):
 
 
 class MidPoint(OneDGrid):
-    """MidPoint integral quadrature class."""
+    r"""MidPoint integral quadrature class.
 
-    def __init__(self, npoints: int):
-        r"""Generate 1-D grid on [-1, 1] interval based on Mid-Point rule.
+    The definition of this quadrature is:
 
-        The fundamental definition is:
-
-        .. math::
+    .. math::
         \int_{-1}^{1} f(x) dx \approx& \sum_{i=1}^n w_i f(x_i) \\
         x_i =& -1 + \frac{2i + 1}{n} \\
         w_i =& \frac{2}{n}
+
+    """
+
+    def __init__(self, npoints: int):
+        r"""Generate grid on :math:`[-1, 1]` interval based on Mid-Point rule.
 
         Parameters
         ----------
@@ -543,7 +571,7 @@ class MidPoint(OneDGrid):
         Returns
         -------
         OneDGrid
-            A 1-D grid instance containing points and weights.
+            One-dimensional grid instance containing points and weights.
 
         """
         if npoints <= 1:
@@ -558,14 +586,11 @@ class MidPoint(OneDGrid):
 
 
 class ClenshawCurtis(OneDGrid):
-    """Clenshow Curtis integral quadrature class."""
+    """Clenshow Curtis integral quadrature class.
 
-    def __init__(self, npoints: int):
-        r"""Generate 1D grid on [-1,1] interval based on Clenshaw-Curtis method.
+    The definition of this quadrature is:
 
-        The fundamental definition is:
-
-        .. math::
+    .. math::
         \theta_i &= \pi (i - 1) / (n - 1) \\
         x_i &= \cos (\theta_i) \\
         w_i &= \frac{c_k}{n} \bigg(1 - \sum_{j=1}^{\lfloor n/2 \rfloor}
@@ -579,10 +604,15 @@ class ClenshawCurtis(OneDGrid):
             2 & else
         \end{cases}
 
-        where :math:k`=0,\cdots,n.
+    where :math:k`=0,\cdots,n.
 
-        If discontinuous, it is recommended to break the intervals at the discontinuities
-        and handled separately.
+    If discontinuous, it is recommended to break the intervals at the discontinuities
+    and handled separately.
+
+    """
+
+    def __init__(self, npoints: int):
+        r"""Generate grid on :math:`[-1,1]` interval based on Clenshaw-Curtis method.
 
         Parameters
         ----------
@@ -620,22 +650,25 @@ class ClenshawCurtis(OneDGrid):
 
 
 class FejerFirst(OneDGrid):
-    """Fejer first integral quadrature class."""
+    r"""
+    Fejer first integral quadrature class.
 
-    def __init__(self, npoints: int):
-        r"""Generate 1D grid on (-1,1) interval based on Fejer's first rule.
+    The definition of this quadrature is:
 
-        The fundamental definition is:
-
-        .. math::
+    .. math::
         \theta_i &= \frac{(2i - 1)\pi}{2n},
         x_i &= \cos(\theta_i),
         w_i &= \frac{2}{n}\bigg(1 - 2 \sum_{j=1}^{\lfloor n/2 \rfloor}
             \frac{\cos(2j \theta_j)}{4 j^2 - 1} \bigg),
 
-        where :math:`k=1,\cdots, n`. It uses the zeros of the Chebyshev polynomial.
-        If discontinuous, it is recommended to break the intervals at the discontinuities
-        and handled separately.
+    where :math:`k=1,\cdots, n`. It uses the zeros of the Chebyshev polynomial.
+    If discontinuous, it is recommended to break the intervals at the discontinuities
+    and handled separately.
+
+    """
+
+    def __init__(self, npoints: int):
+        r"""Generate 1D grid on :math:`(-1,1)` interval based on Fejer's first rule.
 
         Parameters
         ----------
@@ -669,22 +702,25 @@ class FejerFirst(OneDGrid):
 
 
 class FejerSecond(OneDGrid):
-    """Fejer Second integral quadrature class."""
+    r"""
+    Fejer Second integral quadrature class.
 
-    def __init__(self, npoints: int):
-        r"""Generate 1D grid on (-1,1) interval based on Fejer's second rule.
+    The definition of this quadrature is:
 
-        The fundamental definition is:
-
-        .. math::
+    .. math::
         theta_i &= k \pi / n \\
         x_i &= \cos(\theta_i) \\
         w_i &= \frac{4 \sin(\theta_i)}{n} \sum_{j=1}^{\lfloor n/2 \rfloor}
             \frac{\sin(2j - 1)\theta_i}{2j - 1}\\
 
-        where :math:`k=1, \cdots n - 1` and :math:`n` is the number of points. This
-        method is considered more practical than the first method.  If discontinuous, it is
-        recommended to break the intervals at the discontinuities and handled separately.
+    where :math:`k=1, \cdots n - 1` and :math:`n` is the number of points. This
+    method is considered more practical than the first method.  If discontinuous, it is
+    recommended to break the intervals at the discontinuities and handled separately.
+
+    """
+
+    def __init__(self, npoints: int):
+        r"""Generate grid on :math:`(-1,1)` interval based on Fejer's second rule.
 
         Parameters
         ----------
@@ -935,7 +971,7 @@ class TrefethenStripCC(OneDGrid):
     """
 
     def __init__(self, npoints: int, rho=1.1):
-        r"""Generate 1D grid on :math:`[-1,1]` interval based on Trefethen-Clenshaw-Curtis.
+        r"""Generate grid on :math:`[-1,1]` interval based on Trefethen-Clenshaw-Curtis.
 
         Parameters
         ----------
@@ -964,7 +1000,7 @@ class TrefethenStripGC2(OneDGrid):
     """
 
     def __init__(self, npoints: int, rho=1.1):
-        r"""Generate 1D grid on :math:`[-1,1]` interval based on Trefethen-Gauss-Chebyshev.
+        r"""Generate grid on :math:`[-1,1]` interval based on Trefethen-Gauss-Chebyshev.
 
         Parameters
         ----------
@@ -994,7 +1030,7 @@ class TrefethenStripGeneral(OneDGrid):
     """
 
     def __init__(self, npoints: int, quadrature, rho=1.1):
-        r"""Generate 1D grid on :math:`[-1,1]` interval based on Trefethen-General.
+        r"""Generate grid on :math:`[-1,1]` interval based on Trefethen-General.
 
         Parameters
         ----------
