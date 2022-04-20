@@ -285,7 +285,7 @@ class BeckeRTransform(BaseTransform):
         return 12 * self._R / (1 - x) ** 4
 
 
-class LinearFiniteTF(BaseTransform):
+class LinearFiniteRTransform(BaseTransform):
     """Linear transformation from :math:`[-1, 1]` to :math:`[r_{min}, r_{max}]`."""
 
     def __init__(self, rmin: float, rmax: float):

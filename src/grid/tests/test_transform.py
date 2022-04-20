@@ -29,7 +29,7 @@ from grid.rtransform import (
     HandyRTransform,
     InverseRTransform,
     KnowlesRTransform,
-    LinearFiniteTF,
+    LinearFiniteRTransform,
     MultiExpRTransform,
 )
 
@@ -200,17 +200,17 @@ class TestTransform(TestCase):
 
     def test_linear_transform(self):
         """Test linear transformation."""
-        ltf = LinearFiniteTF(0.1, 10)
+        ltf = LinearFiniteRTransform(0.1, 10)
         self._transform_and_inverse(-1, 1, ltf)
 
     def test_linear_finite_diff(self):
         """Test finite diff for linear derivs."""
-        ltf = LinearFiniteTF(0.1, 10)
+        ltf = LinearFiniteRTransform(0.1, 10)
         self._deriv_finite_diff(-1, 1, ltf)
 
     def test_linear_inverse(self):
         """Test inverse transform and derivs function."""
-        ltf = LinearFiniteTF(0.1, 10)
+        ltf = LinearFiniteRTransform(0.1, 10)
         iltf = InverseRTransform(ltf)
         # transform & inverse
         self._transform_and_inverse(0, 20, iltf)
@@ -393,7 +393,7 @@ class TestTransform(TestCase):
             tf = KnowlesRTransform(0.1, 1.2, 2)
             tf.transform_1d_grid(rad)
         with self.assertRaises(ValueError):
-            tf = LinearFiniteTF(0.1, 10)
+            tf = LinearFiniteRTransform(0.1, 10)
             tf.transform_1d_grid(rad)
         with self.assertRaises(ValueError):
             tf = MultiExpRTransform(0.1, 1.2)
