@@ -63,22 +63,24 @@ class BaseTransform(ABC):
         return self._codomain
 
     def transform_1d_grid(self, oned_grid):
-        r"""Generate a new integral grid by transforming given the OneDGrid.
+        r"""Generate a new integral grid by transforming the provided grid.
 
         .. math::
-            \int^{\inf}_0 g(r) d r &= \int^b_a g(r(x)) \frac{dr}{dx} dx \\
-                                   &= \int^b_a f(x) \frac{dr}{dx} dx \\
-            w^r_n = w^x_n \cdot \frac{dr}{dx} \vert_{x_n}
+            \int^{\inf}_0 g(r) d r &= \int^{r(\infty)}_{r(0)} g(r(x)) \frac{dr}{dx} dx \\
+                                   &= \int^{r(\infty)}_{r(0)} g(r(x)) \frac{dr}{dx} dx \\
+                                   &\approx \sum_{i=1}^N g(r(x_i)) \frac{dr}{dx}(x_i) w_i  \\
+                                   &\approx \sum_{i=1}^N g(r(x_i)) \frac{dr}{dx}(x_i) w^r_n \\
+            w^r_n &= w^x_n \cdot \frac{dr}{dx}
 
         Parameters
         ----------
         oned_grid : OneDGrid
-            An instance of 1D grid.
+            An instance of one-dimensional grid.
 
         Returns
         -------
         OneDGrid
-            Transformed 1D grid spanning a different domain.
+            Transformed one-dimensional grid spanning a different domain.
 
         """
         if not isinstance(oned_grid, OneDGrid):
