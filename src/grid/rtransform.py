@@ -118,13 +118,13 @@ class BeckeRTransform(BaseTransform):
     """Becke Transformation."""
 
     def __init__(self, rmin: float, R: float, trim_inf: bool = True):
-        r"""Construct Becke transform, :math:`[-1, 1]` to :math`[r_{min}, \inf)`.
+        r"""Construct Becke transform, :math:`[-1, 1]` to :math`[r_{min}, \infty)`.
 
         Parameters
         ----------
         rmin : float
             The minimum coordinate :math:`r_{min}` in the transformed interval
-            :math:`[r_{min}, \inf)`.
+            :math:`[r_{min}, \infty)`.
         R : float
             The scale factor used in the transformation.
         trim_inf : bool, optional
@@ -161,7 +161,7 @@ class BeckeRTransform(BaseTransform):
 
     @staticmethod
     def find_parameter(array: np.ndarray, rmin: float, radius: float):
-        r"""Compute R such that half of the points in :math:`[r_{min}, \inf)` are within radius.
+        r"""Compute R such that half of the points in :math:`[r_{min}, \infty)` are within radius.
 
         Parameters
         ----------
@@ -190,7 +190,7 @@ class BeckeRTransform(BaseTransform):
         return (radius - rmin) * (1 - mid_value) / (1 + mid_value)
 
     def transform(self, x: np.ndarray):
-        r"""Transform from :math:`[-1, 1]` to :math:`[r_{min}, \inf)`.
+        r"""Transform from :math:`[-1, 1]` to :math:`[r_{min}, \infty)`.
 
         .. math::
             r_i = R \frac{1 + x_i}{1 - x_i} + r_{min}
@@ -203,7 +203,7 @@ class BeckeRTransform(BaseTransform):
         Returns
         -------
         np.ndarray(N,)
-            Transformed array located between :math:`[r_min, \inf)`.
+            Transformed array located between :math:`[r_min, \infty)`.
 
         """
         with warnings.catch_warnings():
@@ -214,7 +214,7 @@ class BeckeRTransform(BaseTransform):
         return rf_array
 
     def inverse(self, r: np.ndarray):
-        r"""Transform :math:`[r_{mi}n, \inf)` back to original :math:`[-1, 1]`.
+        r"""Transform :math:`[r_{mi}n, \infty)` back to original :math:`[-1, 1]`.
 
         .. math::
             x_i = \frac{r_i - r_{min} - R} {r_i - r_{min} + R}
@@ -222,7 +222,7 @@ class BeckeRTransform(BaseTransform):
         Parameters
         ----------
         r : np.ndarray(N,)
-            One-dimensional array in the codomain :math:`[r_{min}, \inf)`.
+            One-dimensional array in the codomain :math:`[r_{min}, \infty)`.
 
         Returns
         -------
