@@ -140,31 +140,63 @@ def _convert_ylm_to_zlm(sp_harm_arrs):
     return s_h_r
 
 
-def spline_with_sph_harms(sph_harm, value_arrays, weights, indices, radial):
-    """Compute spline with real spherical harmonics.
+def spline_with_sph_harms(
+    sph_harm: np.ndarray,
+    value_arrays: np.ndarray,
+    weights: np.ndarray,
+    indices: list,
+    radial: OneDGrid,
+):
+    r"""
+    Return spline to interpolate radial components wrt to expansion in real spherical harmonics.
+
+    For fixed r, a function :math:`f(r, \theta, \phi)` is projected onto the spherical
+    harmonic expansion
+
+    .. math::
+        f(r, \theta, \phi) = \sum_{l=0}^\infty \sum_{m=-l}^l \rho^{lm}(r) Y^m_l(\theta, \phi)
+
+    The coefficients :math:`\rho^{lm}(r)` are interpolated using a cubic spline for each
+    consequent :math:`r` values, where one can evaluate :math:`f` on any set of points.
 
     Parameters
     ----------
-    sph_harm : np.ndarray(M, L, N)
-        spherical harmonics values of m, l, n_points
-    value_arrays : np.ndarray(N,)
-        fuction values on each point
-    weights : np.ndarray(N,)
-        weights of each point on the grid
+    sph_harm : ndarray(M, L, N)
+        Spherical harmonic of order :math:`m`, degree :math:`l` evaluated on :math:`N` points,
+        where order :math:`m` is ordered as follows
+        :math:`[0, 1, \cdots, L, -L, \cdots, -1]`.
+    value_arrays : ndarray(N,)
+        Function values on each point
+    weights : ndarray(N,)
+        Weights of each point on the grid
     indices : list[int]
-        indices of each chank for each radial angular partsption
-    radial : RadialGrid
-        radial grid instance with coordinates and weights
+        Specify the indices of size :math:`K + 1` to calculate each chunk of the
+        :math:`N` points. For example, indices=[0, 5, 10], will sum from index 0 to 4,
+        and from index 5 to 9, separately. Each pair of indices should
+        correspond to one radial point with different spherical angles,
+        i.e. index 0 to 4 is summation for a fixed :math:`r` point with 4 spherical
+        angles :math:`(\theta, \phi)`, etc.
+    radial : OneDGrid
+        Radial (one-dimensional) grid with :math:`K` points that includes points and weights.
 
     Returns
     -------
     scipy.CubicSpline
-        CubicSpline object for interpolating values
+        CubicSpline object for interpolating the coefficients :math:`\rho^{lm}(r)`
+        on the radial coordinate :math:`r` based on the spherical harmonic expansion
+        (for a fixed :math:`r`). The input of spline is array of :math:`N` points on
+        :math:`[0, \infty)` and the output is (N, M, L) matrix with (i, m, l) matrix
+        entries :math:`\rho^{lm}(r_i)`.
+
     """
-    ml_sph_value = compute_spline_point_value(sph_harm, value_arrays, weights, indices)
+    # Has shape (K, M, L), K is number of radial points, M is order of spherical harmonics
+    #       L is the angular degree.
+    ml_sph_value = project_function_onto_spherical_expansion(
+        sph_harm, value_arrays, weights, indices
+    )
     # sin \theta d \theta d \phi = d{S_r} / (r^2)
     ml_sph_value_with_r = (
-        ml_sph_value / (radial.points ** 2 * radial.weights)[:, None, None]
+        ml_sph_value / (radial.points**2 * radial.weights)[:, None, None]
     )
     return CubicSpline(x=radial.points, y=ml_sph_value_with_r)
 
