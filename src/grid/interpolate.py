@@ -243,31 +243,59 @@ def spline_with_atomic_grid(atgrid: AtomGrid, func_vals: np.ndarray):
     )
 
 
-def compute_spline_point_value(sph_harm, value_arrays, weights, indices):
-    """Compute each note value for interpotation.
+def project_function_onto_spherical_expansion(
+    sph_harm: np.ndarray, value_arrays: np.ndarray, weights: np.ndarray, indices: list
+):
+    r"""Project function for a fixed r to spherical harmonic expansion.
+
+    Given a function :math:`f(r, \theta, \phi)` acting on the spherical
+    coordinates, for a fixed :math:`r`, the projection onto the
+    spherical harmonic expansion is given by
+
+    .. math::
+        f(r, \theta, \phi) &= \sum_{l=0}^\infty \sum_{m=-l}^l \rho^{lm}(r) Y^m_l(\theta, \phi),
+
+    where :math:`\rho^{lm}(r)` are the coefficients corresponding to the linear expansion which
+    are given by
+
+    .. math::
+        \rho^{lm}(r) = \int_0^{2\pi} \int_0^\pi f(r, \theta, \phi) Y^m_l (\theta, \phi)d\theta
+        d\phi.
+
+    The integral of the coefficients is done numerically, specified by the weights and
+    indices.
 
     Parameters
     ----------
-    sph_harm : np.ndarray(M, L, N)
-        spherical harmonics values of m, l, n_points
-    value_arrays : np.ndarray(N,)
-        fuction values on each point
-    weights : np.ndarray(N,)
-        weights of each point on the grid
+    sph_harm : ndarray(M, L, N)
+        Spherical harmonic of order :math:`m`, degree :math:`l` evaluated on
+        :math:`N` points, where order :math:`m` is ordered as follows
+        :math:`[0, 1, \cdots, L, -L, \cdots, -1]`.
+    value_arrays : ndarray(N,)
+        Function values on each :math:`N` points.
+    weights : ndarray(N,)
+        Weights of each point on the grid.
     indices : list[int]
-        indices of each chank for each radial angular partsption
+        Specify the indices of size :math:`K + 1` to calculate each chunk of the
+        :math:`N` points. For example, indices=[0, 5, 10], will sum from index 0 to 4,
+        and from index 5 to 9, separately. Each pair of indices should
+        correspond to one radial point with different spherical angles,
+        i.e. index 0 to 4 is summation for a fixed :math:`r` point with 4 spherical
+        angles :math:`(\theta, \phi)`, etc.
 
     Returns
     -------
-    np.ndarray(K, M, L)
-        values on each note of K radial points
+    ndarray(K, M, L)
+        Coefficients :math:`\rho^{lm}(r)`of the expansion on each of the :math:`K` radial points
+        :math:`r` up to :math:`L` angular degrees and for all :math:`M` orders.
+
     """
     prod_value = sph_harm * value_arrays * weights
-    total = len(indices) - 1
     axis_value = []
-    for i in range(total):
+    for i in range(len(indices) - 1):
         sum_i = np.sum(prod_value[:, :, indices[i] : indices[i + 1]], axis=-1)
         axis_value.append(sum_i)
+    # Stack K list `axis_value` of arrays of size (M, L) to (K, M, L) array.
     ml_sph_value = np.nan_to_num(np.stack(axis_value))
     return ml_sph_value
 
