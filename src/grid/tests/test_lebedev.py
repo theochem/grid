@@ -22,6 +22,7 @@
 
 from unittest import TestCase
 
+from grid.interpolate import generate_real_sph_harms
 from grid.lebedev import (
     AngularGrid,
     LEBEDEV_CACHE,
@@ -30,7 +31,12 @@ from grid.lebedev import (
 )
 
 import numpy as np
-from numpy.testing import assert_allclose, assert_array_equal, assert_equal
+from numpy.testing import (
+    assert_allclose,
+    assert_almost_equal,
+    assert_array_equal,
+    assert_equal,
+)
 
 
 class TestLebedev(TestCase):
@@ -50,7 +56,7 @@ class TestLebedev(TestCase):
             )
 
     def test_lebedev_laikov_sphere(self):
-        """Levedev grid tests from old grid."""
+        """Test the integration of sphere and its points and weights."""
         previous_npoint = 0
         for i in range(1, 132):
             npoint = AngularGrid._get_lebedev_size_and_degree(degree=i)[1]
@@ -71,6 +77,61 @@ class TestLebedev(TestCase):
                 assert_allclose(grid.points[:, 1] @ grid.weights, 0, atol=1e-10)
                 assert_allclose(grid.points[:, 2] @ grid.weights, 0, atol=1e-10)
             previous_npoint = npoint
+
+    def test_orthogonality_of_spherical_harmonic_up_to_degree_three(self):
+        r"""Test orthogonality of spherical harmonic up to degree 3 is accurate."""
+        degree = 3
+        grid = AngularGrid(degree=10)
+        # Concert to spherical coordinates from Cartesian.
+        r = np.linalg.norm(grid.points, axis=1)
+        phi = np.arccos(grid.points[:, 2] / r)
+        theta = np.arctan2(grid.points[:, 1], grid.points[:, 0])
+        # Generate All Spherical Harmonics Up To Degree = 3
+        #   Returns a three dimensional array where [order m, degree l, points]
+        sph_harm = generate_real_sph_harms(degree, theta, phi)
+        for l_deg in range(0, 4):
+            for m_ord in range(-l_deg, l_deg + 1):
+                for l2 in range(0, 4):
+                    for m2 in range(-l_deg, l_deg + 1):
+                        integral = grid.integrate(
+                            sph_harm[m_ord, l_deg, :] * sph_harm[m2, l2, :]
+                        )
+                        if l2 != l_deg or m2 != m_ord:
+                            assert np.abs(integral) < 1e-8
+                        else:
+                            assert np.abs(integral - 1.0) < 1e-8
+
+    def test_integration_of_spherical_harmonic_up_to_degree_three(self):
+        r"""Test integration of spherical harmonic up to degree three is accurate."""
+        degree = 3
+        grid = AngularGrid(degree=100)
+        # Concert to spherical coordinates from Cartesian.
+        r = np.linalg.norm(grid.points, axis=1)
+        phi = np.arccos(grid.points[:, 2] / r)
+        theta = np.arctan2(grid.points[:, 1], grid.points[:, 0])
+        # Generate All Spherical Harmonics Up To Degree = 3
+        #   Returns a three dimensional array where [order m, degree l, points]
+        sph_harm = generate_real_sph_harms(degree, theta, phi)
+        for l_deg in range(0, 4):
+            for m_ord in range(-l_deg, l_deg):
+                if l_deg == 0 and m_ord == 0:
+                    actual = np.sqrt(4.0 * np.pi)
+                    assert_equal(actual, grid.integrate(sph_harm[m_ord, l_deg, :]))
+                else:
+                    assert_almost_equal(0.0, grid.integrate(sph_harm[m_ord, l_deg, :]))
+
+    def test_integration_of_spherical_harmonic_not_accurate_beyond_degree(self):
+        r"""Test integration of spherical harmonic of degree higher than grid is not accurate."""
+        grid = AngularGrid(degree=3)
+        r = np.linalg.norm(grid.points, axis=1)
+        phi = np.arccos(grid.points[:, 2] / r)
+        theta = np.arctan2(grid.points[:, 1], grid.points[:, 0])
+
+        sph_harm = generate_real_sph_harms(l_max=6, theta=theta, phi=phi)
+        # Check that l=4,m=0 gives inaccurate results
+        assert np.abs(grid.integrate(sph_harm[0, 4, :])) > 1e-8
+        # Check that l=6,m=0 gives inaccurate results
+        assert np.abs(grid.integrate(sph_harm[0, 6, :])) > 1e-8
 
     def test_lebedev_cache(self):
         """Test cache behavior of spherical grid."""
