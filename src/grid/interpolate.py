@@ -17,9 +17,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
-"""Interpolation module for evaluating function value at any point."""
+"""Interpolating real-valued functions wrt radial coordinate in spherical coordinates."""
 
 import warnings
+
+from grid.atomgrid import AtomGrid
+from grid.basegrid import OneDGrid
 
 import numpy as np
 
@@ -27,23 +30,42 @@ from scipy.interpolate import CubicSpline
 from scipy.special import sph_harm
 
 
-def generate_real_sph_harms(l_max, theta, phi):
-    """Generate real spherical harmonics.
+def generate_real_sph_harms(l_max: int, theta: np.ndarray, phi: np.ndarray):
+    r"""Generate real spherical harmonics up to degree :math:`l` and for all orders :math:`m`.
+
+    The real spherical harmonics are defined as a function
+    :math:`Y_{lm} : L^2(S^2) \rightarrow \mathbb{R}` such that
+
+    .. math::
+        Y_{lm} = \begin{cases}
+            \frac{i}{\sqrt{2}} (Y^m_l - (-1)^m Y_l^{-m} & \text{if } < m < 0 \\
+            Y_l^0 & \text{if } m = 0 \\
+            \frac{1}{\sqrt{2}} (Y^{-|m|}_{l} + (-1)^m Y_l^m) & \text{if } m > 0
+        \end{cases},
+
+    where :math:`l \in \mathbb{Z}`, :math:`m \in \{-l_{max}, \cdots, l_{max} \}` and
+    :math:`Y^m_l` is the complex spherical harmonic.
 
     Parameters
     ----------
     l_max : int
-        largest angular degree
-    theta : np.ndarray(N,)
-        Azimuthal angles
-    phi : np.ndarray(N,)
-        Polar angles
+        Largest angular degree of the spherical harmonics.
+    theta : ndarray(N,)
+        Azimuthal angles that are being evaluated on.
+    phi : ndarray(N,)
+        Polar angles that are being evaluated on.
 
     Returns
     -------
-    np.ndarray(l_max * 2 + 1, l_max + 1, N)
-        value of angular grid in each m, n spherical harmonics
+    ndarray(l_max * 2 + 1, l_max + 1, N)
+        Value of real spherical harmonics of all orders :math:`m`,and degree
+        :math:`l` spherical harmonics. First coordinate is the order :math:`m`, the second is
+        the degree :math:`l`, and the third coordinate specifies which point on the unit sphere.
+        The order :math:`m` is ordered according to the following:
+        :math:`[0, 1, \cdots, l_max, -l_max, \cdots, -1]`.
+
     """
+    # The "order" in the order m was chosen so that sph_h[m, l, :] works when -l <= m <= l.
     sph_h = generate_sph_harms(l_max, theta, phi)
     return np.nan_to_num(_convert_ylm_to_zlm(sph_h))
 
