@@ -300,40 +300,73 @@ def project_function_onto_spherical_expansion(
     return ml_sph_value
 
 
-def interpolate(spline, r_points, theta, phi, deriv=0):
-    """Interpolate angular points on given r value.
+def interpolate_given_splines(
+    spline: CubicSpline,
+    r_points: list,
+    theta: np.ndarray,
+    phi: np.ndarray,
+    deriv: bool = 0,
+):
+    r"""
+    Interpolate function and its derivatives in spherical coordinates given radial splines.
+
+    Any real-valued function :math:`f(r, \theta, \phi)` can be decomposed as
+
+    .. math::
+        f(r, \theta, \phi) = \sum_l \sum_{m=-l}^l \sum_i \rho_{ilm}(r) Y_{lm}(\theta, \phi)
+
+    The spline interpolate the radial functions :math:`\sum_i \rho_{ilm}(r)` for a given
+    series of :math:`r_i \in [0, \infty)` values.  This is then multipled by the
+    corresponding spherical harmonics at all :math:`(\theta_j, \phi_j)` angles
+    and summed to obtain the approximation to :math:`f(r_i, \theta_j, \phi_j)` for
+    all combinations of :math:`r_i` and :math:`(\theta_j, \phi_j)`,
+    where :math:`i=1, \cdots, N` and :math:`j=1\cdots, K`.
 
     Parameters
     ----------
     spline : scipy.CubicSpline
-        CubicSpline object for interpolating function value
-    r_points : float or list[float]
-        Radial value to interpolate function values
-    theta : np.ndarray(N,)
-        Azimuthal angle of angular grid
-    phi : np.ndarray(N,)
-        Polar angle of angular grid
-    deriv : int, default to 0
-        0 for interpolation, 1, 2, 3 for 1st, 2nd and 3rd derivatives
+        CubicSpline object for interpolating the radial component :math:`\rho_{ilm}`.
+        The input of spline is the radial points r and the output is (N, M, L) array
+        with (i, m, l) matrix entry :math:`\rho^{lm}(r_i)` used to expand in the spherical
+        harmonic basis.
+    r_points : float or ndarray(K,)
+        Radial value to interpolate the function at. If scalar, then only interpolated
+        at :math:`(r, \theta_j, \phi_j)` for all j.
+    theta : ndarray(N,)
+        Azimuthal angle to interpolate the function at.
+    phi : ndarray(N,)
+        Polar angle of angular grid to interpolate the function at.
+    deriv : int, optional
+        Specify whether interpolation (d=0), or :math:`d`th derivative to
+        compute.  Only up to third derivative is allowed.
 
     Returns
     -------
-    np.ndarry(N,) or np.ndarray(n, N)
-        Interpolated function value at spherical grid
+    ndarray(N, K)
+        Matrix with (i, j) entries of the interpolated function :math:`f(r_i, \theta_j, \phi_j`
+        or its derivative  :math:`\frac{f(r_i, \theta_j, \phi_j)}{r_i}` wrt to radial component
+        :math:`r` at :math:`KN` points :math:`(r_i, \theta_j, \phi_j)`, where
+        :math:`i=0,\cdots, N-1`, and :math:`j=0, \cdots K-1`.
+
     """
+    if len(theta) != len(phi):
+        raise ValueError(f"Shape of theta {len(theta)} should equal shape of phi {len(phi)}.")
+
     if deriv == 0:
         r_value = spline(r_points)
     elif 1 <= deriv <= 3:
         r_value = spline(r_points, deriv)
     else:
-        raise ValueError(f"deriv should be between [0, 3], got {deriv}")
+        raise ValueError(f"deriv should be between [0, 3], got {deriv}.")
     l_max = r_value.shape[-1] - 1
+    # Return (M, L, N)
     r_sph_harm = generate_real_sph_harms(l_max, theta, phi)
-    # single value interpolation
+    # single value interpolation, m=number of orders, l=maximum degree,
+    #    n= number of radial points to interpolate,
+    #    k= number of angular points to interpolate to,
+    # Interpolate for (r, theta_j, \phi_j)
     if np.isscalar(r_points):
-        return np.sum(r_sph_harm * r_value[..., None], axis=(0, 1))
-    # intepolate for multiple values
+        return np.einsum("mlk,ml->k", r_sph_harm, r_value)
+    # Interpolate for multiple values (r_i, theta_j, \phi_j)
     else:
-        # convert to np.array if list
-        r_points = np.array(r_points)
-        return np.sum(r_sph_harm * r_value[..., None], axis=(-3, -2))
+        return np.einsum("mlk,nml->nk", r_sph_harm, r_value)
