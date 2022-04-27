@@ -70,39 +70,49 @@ def generate_real_sph_harms(l_max: int, theta: np.ndarray, phi: np.ndarray):
     return np.nan_to_num(_convert_ylm_to_zlm(sph_h))
 
 
-def generate_sph_harms(l_max, theta, phi):
-    """Generate complex spherical harmonics.
+def generate_sph_harms(l_max: int, theta: np.ndarray, phi: np.ndarray):
+    r"""Generate complex spherical harmonics up to degree :math:`l` and for all orders :math:`m`.
 
     Parameters
     ----------
     l_max : int
-        largest angular degree
-    theta : np.ndarray(N,)
-        Azimuthal angles
-    phi : np.ndarray(N,)
-        Polar angles
+        Largest angular degree of the spherical harmonics.
+    theta : ndarray(N,)
+        Azimuthal angles.
+    phi : ndarray(N,)
+        Polar angles.
 
     Returns
     -------
-    np.ndarray(l_max * 2 + 1, l_max + 1, N)
-        value of angular grid in each m, n spherical harmonics
+    ndarray(l_max * 2 + 1, l_max + 1, N)
+        Value of complex spherical harmonics of all orders :math:`m`,and degree
+        :math:`l` spherical harmonics. First coordinate is the order :math:`m`, the second is
+        the degree :math:`l`, and the third coordinate specifies which point on the unit sphere.
+        The order :math:`m` is ordered according to the following:
+        :math:`[0, 1, \cdots, l_max, -l_max, \cdots, -1]`.
+
     """
+    # The "order" in the order m was chosen so output[m, l, :] works when -l <= m <= l.
     # theta azimuthal, phi polar
     l, m = _generate_sph_paras(l_max)
     return sph_harm(m[:, None, None], l[None, :, None], theta, phi)
 
 
-def _generate_sph_paras(l_max):
-    """Generate proper l and m list for l.
+def _generate_sph_paras(l_max: int):
+    r"""Return all degrees up to l_max and list of all orders m for l_max.
 
     Parameters
     ----------
     l_max : int
+        Largest angular degree of the spherical harmonics.
 
     Returns
     -------
-    list
-        l = [0, 1, 2.., l_max], m = [0, 1, ... l_max, -l_max, ..., -1]
+    (list, list)
+        Returns two list, the first is the all the orders from l=0 to l_max.
+        The second is the order :math:`m` when `l=l_{max}`, ordered as follows
+        :math:`[0, 1, \cdots, l_max, -l_max, \cdots, -1]`.
+
     """
     l_list = np.arange(l_max + 1)
     m_list_p = np.arange(l_max + 1)
@@ -112,7 +122,7 @@ def _generate_sph_paras(l_max):
 
 
 def _convert_ylm_to_zlm(sp_harm_arrs):
-    """Converge complex spherical into real spherical harmonics."""
+    """Convert complex spherical into real spherical harmonics."""
     ms, ls, arrs = sp_harm_arrs.shape  # got list of Ls, and Ms
     # ls = l_max + 1
     # ms = 2 * l_max + 1
