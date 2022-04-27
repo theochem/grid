@@ -201,26 +201,45 @@ def spline_with_sph_harms(
     return CubicSpline(x=radial.points, y=ml_sph_value_with_r)
 
 
-def spline_with_atomic_grid(atgrid, value_array):
-    """Compute spline with real spherical hormonics for given atomic grid.
+def spline_with_atomic_grid(atgrid: AtomGrid, func_vals: np.ndarray):
+    r"""
+    Return spline to interpolate radial components wrt to expansion in real spherical harmonics.
+
+    For fixed r, a function :math:`f(r, \theta, \phi)` is projected onto the spherical
+    harmonic expansion
+
+    .. math::
+        f(r, \theta, \phi) = \sum_{l=0}^\infty \sum_{m=-l}^l \rho^{lm}(r) Y^m_l(\theta, \phi)
+
+    The coefficients :math:`\rho^{lm}(r)` are interpolated on the radial component using a cubic
+    spline for each consequent :math:`r` values, where one can evaluate :math:`f` on any set
+    of points.
 
     Parameters
     ----------
-    atgrid : AtomicGrid
-        atomic grid for interpolation
-    value_array : np.narray(N,)
-        function value of each point on the atomic grid
+    atgrid : AtomGrid
+        Atomic grid which contains a radial grid for integrating on radial axis and
+        angular grid for integrating on spherical angles (the unit sphere).
+    func_vals : ndarray(N,)
+        Function values on each point on the atomic grid.
 
     Returns
     -------
     scipy.CubicSpline
-        CubicSpline object for interpolating values
+        CubicSpline object for interpolating the coefficients :math:`\rho^{lm}(r)`
+        on the radial coordinate :math:`r` based on the spherical harmonic expansion
+        (for a fixed :math:`r`). The input of spline is array of :math:`N` points in
+        :math:`[0, \infty)` and the output is (N, M, L) matrix with (i, m, l) matrix
+        entries :math:`\rho^{lm}(r_i)`.
+
     """
     l_max = atgrid.l_max // 2
+    # Convert grid points from Cartesian to Spherical coordinates
     sph_coor = atgrid.convert_cart_to_sph()
+    # Construct all real spherical harmonics up to degree l_max on the grid points
     r_sph = generate_real_sph_harms(l_max, sph_coor[:, 1], sph_coor[:, 2])
     return spline_with_sph_harms(
-        r_sph, value_array, atgrid.weights, atgrid.indices, atgrid.rgrid
+        r_sph, func_vals, atgrid.weights, atgrid.indices, atgrid.rgrid
     )
 
 
