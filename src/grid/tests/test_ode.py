@@ -50,42 +50,81 @@ class TestODE(TestCase):
         r = ltf.transform(x)
         assert r[0] == 1
         assert r[-1] == 10
-        coeff_b = ODE._transformed_coeff_ode(coeff, inv_tf, x)
+        # Transform ODE from [1, 10) to (-1, 1)
+        coeff_transform = ODE._transform_ode_from_rtransform(coeff, inv_tf, x)
         derivs_fun = [inv_tf.deriv, inv_tf.deriv2, inv_tf.deriv3]
-        coeff_b_ref = ODE._transformed_coeff_ode_with_r(coeff, derivs_fun, r)
-        assert_allclose(coeff_b, coeff_b_ref)
+        coeff_transform_all_pts = ODE._transform_ode_from_derivs(coeff, derivs_fun, r)
+        assert_allclose(coeff_transform, coeff_transform_all_pts)
 
-    def test_transform_coeff(self):
-        """Test coefficient transform with r."""
-        # d^2y / dx^2 = 1
+    def test_transformation_of_ode_with_identity_transform(self):
+        """Test transformation of ODE with identity transform."""
+        # Checks that the identity transform x -> x results in the same answer.
+        # Obtain identity trasnform and derivatives.
         itf = IdentityRTransform()
         inv_tf = InverseRTransform(itf)
         derivs_fun = [inv_tf.deriv, inv_tf.deriv2, inv_tf.deriv3]
+        # d^2y / dx^2 = 1
         coeff = np.array([0, 0, 1])
         x = np.linspace(0, 1, 10)
-        coeff_b = ODE._transformed_coeff_ode_with_r(coeff, derivs_fun, x)
         # compute transformed coeffs
-        assert_allclose(coeff_b, np.zeros((3, 10), dtype=float) + coeff[:, None])
+        coeff_b = ODE._transform_ode_from_derivs(coeff, derivs_fun, x)
         # f_x = 0 * x + 1  # 1 for every
+        assert_allclose(coeff_b, np.zeros((3, 10), dtype=float) + coeff[:, None])
 
-    def test_linear_transform_coeff(self):
-        """Test coefficient with linear transformation."""
+    def test_transformation_of_ode_with_linear_transform(self):
+        """Test transformation of ODE with linear transformation."""
         x = GaussLaguerre(10).points
+        # Obtain linear transformation with rmin = 1 and rmax = 10.
         ltf = LinearFiniteRTransform(1, 10)
+        # The inverse is x_i = \frac{r_i - r_{min} - R} {r_i - r_{min} + R}
         inv_ltf = InverseRTransform(ltf)
         derivs_fun = [inv_ltf.deriv, inv_ltf.deriv2, inv_ltf.deriv3]
+        # Test with 2y + 3y` + 4y``
         coeff = np.array([2, 3, 4])
-        coeff_b = ODE._transformed_coeff_ode_with_r(coeff, derivs_fun, x)
+        coeff_b = ODE._transform_ode_from_derivs(coeff, derivs_fun, x)
         # assert values
         assert_allclose(coeff_b[0], np.ones(len(x)) * coeff[0])
         assert_allclose(coeff_b[1], 1 / 4.5 * coeff[1])
         assert_allclose(coeff_b[2], (1 / 4.5) ** 2 * coeff[2])
 
+    def test_high_order_transformations_gives_itself(self):
+        r"""Test transforming then transforming back gives back the same result."""
+        # Consider the following transformation x^4 and its derivatives
+        def transf(x):
+            return x**4.0
+
+        derivs = [
+            lambda x: 4.0 * x**3.0,
+            lambda x: 4.0 * 3.0 * x**2.0,
+            lambda x: 4.0 * 3.0 * 2.0 * x,
+            lambda x: 4.0 * 3.0 * 2.0 * np.array([1.0] * len(x)),
+        ]
+
+        # Consider ODE 2y + 3y` + 4y`` + 5y``` + 6dy^4/dx^4 and transform it
+        coeffs = np.array([2, 3, 4, 5, 6])
+        x = np.arange(1.0, 2.0, 0.01)
+        coeffs_transf = ODE._transform_ode_from_derivs(coeffs, derivs, x)
+        # Transform it back using the derivative of the inverse transformation x^4
+        derivs_invs = [
+            lambda r: 1.0 / (4.0 * r ** (3.0 / 4.0)),
+            lambda r: -3.0 / (16.0 * r ** (7.0 / 4.0)),
+            lambda r: 21.0 / (64.0 * r ** (11.0 / 4.0)),
+            lambda r: -231.0 / (256.0 * r ** (15.0 / 4.0)),
+        ]
+        x_transformed = transf(x)
+        # Go Through Each Points and grab the new coefficients and transform it back
+        for i in range(0, len(x)):
+            coeffs_original = ODE._transform_ode_from_derivs(
+                np.ravel(coeffs_transf[:, i]), derivs_invs, x_transformed[i : i + 1]
+            )
+            # Check that it is the same as hte original transformation.
+            assert_almost_equal(coeffs, np.ravel(coeffs_original))
+
     def test_rearange_ode_coeff(self):
         """Test rearange ode coeff and solver result."""
         coeff_b = [0, 0, 1]
         x = np.linspace(0, 2, 20)
-        y = np.zeros((2, x.size))
+        y = np.zeros((2, x.size))  # Initial Guess
 
         def fx(x):
             return 1 if isinstance(x, Number) else np.ones(x.size)
