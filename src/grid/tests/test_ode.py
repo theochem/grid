@@ -130,10 +130,11 @@ class TestODE(TestCase):
             return 1 if isinstance(x, Number) else np.ones(x.size)
 
         def func(x, y):
-            dy_dx = ODE._rearrange_ode(x, y, coeff_b, fx(x))
+            dy_dx = ODE._rearrange_to_explicit_ode(y, coeff_b, fx(x))
             return np.vstack((*y[1:], dy_dx))
 
         def bc(ya, yb):
+            # Boundary conditions: zero at endpoints of y
             return np.array([ya[0], yb[0]])
 
         res = solve_bvp(func, bc, x, y)
@@ -262,6 +263,8 @@ class TestODE(TestCase):
         res_ref = solve_bvp(func_ref, bc, r, initial_guess)
         # Test initial gfunctions are similar
         assert_allclose(res.sol(x)[0], res_ref.sol(r)[0], atol=1e-4)
+        # Test first derivatives are similar
+        assert_allclose(res.sol(x)[1], res_ref.sol(r)[1] / stf.deriv(r), atol=1e-4)
 
     def test_becke_transform_2nd_order_ode(self):
         """Test same result for 2nd order ode with becke tf."""
@@ -323,9 +326,17 @@ class TestODE(TestCase):
             dy_dx = ODE._rearrange_to_explicit_ode(y, coeff, fx(x))
             return np.vstack((*y[1:], dy_dx))
 
-        res_ref = solve_bvp(func_ref, bc, r, y)
-        # print(res_ref.sol(r)[0])
-        assert_allclose(res.sol(x)[0], res_ref.sol(r)[0], atol=1e-4)
+        res_ref = solve_bvp(func_ref, bc, r, initial_guess, tol=1e-12)
+        # Test the original, derivative and second order derivative give the same solution.
+        assert_allclose(res.sol(x)[0], res_ref.sol(r)[0], atol=1e-6)
+        assert_allclose(0.0, res_ref.sol(r)[1][0])  # Test upper-bound.
+        assert_allclose(res.sol(x)[1], res_ref.sol(r)[1] * btf.deriv(x), atol=1e-6)
+        assert_allclose(
+            res.sol(x)[2],
+            res_ref.sol(r)[2] / ibtf.deriv(r) ** 2.0
+            + res_ref.sol(r)[1] * -ibtf.deriv2(r) / ibtf.deriv(r) ** 3.0,
+            atol=1e-6,
+        )
 
     def test_becke_transform_f0_ode(self):
 <<<<<<< HEAD
@@ -363,11 +374,21 @@ class TestODE(TestCase):
             dy_dx = ODE._rearrange_to_explicit_ode(y, coeff, fx(x))
             return np.vstack((*y[1:], dy_dx))
 
-        res_ref = solve_bvp(func_ref, bc, r, y)
-        assert_allclose(res.sol(x)[0], res_ref.sol(r)[0], atol=1e-4)
+        res_ref = solve_bvp(
+            func_ref, bc, r, res.sol(x), tol=1e-12, bc_tol=1e-12, max_nodes=10000
+        )
+        # Test the original, derivative give the same solution and boundary condition.
+        assert_allclose(res.sol(x)[0], res_ref.sol(r)[0], atol=1e-6)
+        assert_allclose(
+            res.sol(x)[0][0], 0.0, atol=1e-6
+        )  # Test lower boundary condition
+        assert_allclose(
+            res.sol(x)[0][-1], 0.0, atol=1e-6
+        )  # Test upper boundary condition
+        assert_allclose(res.sol(x)[1], res_ref.sol(r)[1] / ibtf.deriv(r), atol=1e-6)
 
-    def test_solve_ode_bvp(self):
-        """Test result for high level api solve_ode."""
+    def test_solve_ode_bvp_against_analytic_example(self):
+        """Test solve_ode against analytic solution."""
         x = np.linspace(0, 2, 10)
 
         def fx(x):
@@ -404,26 +425,14 @@ class TestODE(TestCase):
         coeffs = [-1, 1, 1]
         bd_cond = [(0, 0, 3), (1, 0, 3)]  # Test y(a) = y(b) = 3
         # calculate diff equation wt/w tf.
-        res = ODE.solve_ode(x, fx, coeffs, bd_cond, ibtf)
-        res_ref = ODE.solve_ode(r, fx, coeffs, bd_cond)
-        assert_allclose(res(x)[0], res_ref(r)[0], atol=1e-4)
-
-    def test_construct_coeffs(self):
-        """Test construct coefficients."""
-        # first test
-        x = np.linspace(-0.9, 0.9, 20)
-        coeff = [2, 1.5, lambda x: x ** 2]
-        coeff_a = ODE._construct_coeff_array(x, coeff)
-        assert_allclose(coeff_a[0], np.ones(20) * 2)
-        assert_allclose(coeff_a[1], np.ones(20) * 1.5)
-        assert_allclose(coeff_a[2], x ** 2)
-        # second test
-        coeff = [lambda x: 1 / x, 2, lambda x: x ** 3, lambda x: np.exp(x)]
-        coeff_a = ODE._construct_coeff_array(x, coeff)
-        assert_allclose(coeff_a[0], 1 / x)
-        assert_allclose(coeff_a[1], np.ones(20) * 2)
-        assert_allclose(coeff_a[2], x ** 3)
-        assert_allclose(coeff_a[3], np.exp(x))
+        res = ODE.solve_ode(x, fx, coeffs, bd_cond, ibtf, tol=1e-7, max_nodes=20000)
+        res_ref = ODE.solve_ode(
+            r, fx, coeffs, bd_cond, tol=1e-7, max_nodes=20000, initial_guess_y=res(x)
+        )
+        assert_allclose(res(x)[0], res_ref(r)[0], atol=1e-5)
+        assert_allclose(res(x)[0][0], 3.0, atol=1e-5)  # Test lower boundary condition
+        assert_allclose(res(x)[0][-1], 3.0, atol=1e-5)  # Test upper boundary condition
+        assert_allclose(res(x)[1], res_ref(r)[1] / ibtf.deriv(r), atol=1e-4)
 
     def test_solver_ode_coeff_a_f_x_with_tf(self):
         """Test ode with a(x) and f(x) involved."""
@@ -435,12 +444,32 @@ class TestODE(TestCase):
         def fx(x):
             return 0 * x
 
-        coeffs = [lambda x: x ** 2, lambda x: 1 / x ** 2, 0.5]
-        bd_cond = [(0, 0, 0), (1, 0, 0)]
+        coeffs = [lambda x: x**2, lambda x: 1 / x**2, 0.5]
+        bd_cond = [(0, 1, 0.0), (1, 1, 0.0)]
         # calculate diff equation wt/w tf.
-        res = ODE.solve_ode(x, fx, coeffs, bd_cond, ibtf)
+        res = ODE.solve_ode(x, fx, coeffs, bd_cond, ibtf, tol=1e-7, max_nodes=20000)
         res_ref = ODE.solve_ode(r, fx, coeffs, bd_cond)
         assert_allclose(res(x)[0], res_ref(r)[0], atol=1e-4)
+        assert_allclose(res(x)[1][0], 0.0, atol=1e-5)  # Test lower boundary condition
+        assert_allclose(res(x)[1][-1], 0.0, atol=1e-5)  # Test upper boundary condition
+        assert_allclose(res(x)[1], res_ref(r)[1] / ibtf.deriv(r), atol=1e-4)
+
+    def test_construct_coeffs_of_ode_over_mesh(self):
+        """Test construct coefficients over a mesh."""
+        # first test
+        x = np.linspace(-0.9, 0.9, 20)
+        coeff = [2, 1.5, lambda x: x**2]
+        coeff_a = ODE._evaluate_coeffs_on_points(x, coeff)
+        assert_allclose(coeff_a[0], np.ones(20) * 2)
+        assert_allclose(coeff_a[1], np.ones(20) * 1.5)
+        assert_allclose(coeff_a[2], x**2)
+        # second test
+        coeff = [lambda x: 1 / x, 2, lambda x: x**3, lambda x: np.exp(x)]
+        coeff_a = ODE._evaluate_coeffs_on_points(x, coeff)
+        assert_allclose(coeff_a[0], 1 / x)
+        assert_allclose(coeff_a[1], np.ones(20) * 2)
+        assert_allclose(coeff_a[2], x**3)
+        assert_allclose(coeff_a[3], np.exp(x))
 
     def test_error_raises(self):
         """Test proper error raises."""
