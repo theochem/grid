@@ -182,19 +182,15 @@ class ODE:
             Coefficients :math:`b_j(x)` of the new ODE with respect to variable :math:`x`.
 
         """
-        derivs = np.array([dev(r) for dev in deriv_func_list])
-        total = len(coeff_a)
-        # coeff_a = np.zeros((total, r.size), dtype=float)
-        # # construct coeff matrix
-        # for i, val in enumerate(coeff_a_ori):
-        #     if isinstance(val, Number):
-        #         coeff_a[i] += val
-        #     else:
-        #         coeff_a[i] += val(r)
-        coeff_a_mtr = ODE._construct_coeff_array(r, coeff_a)
+        # `derivs` has shape (K, N), calculate d^j g/ dr^j
+        derivs = np.array([dev(r) for dev in deriv_transformation], dtype=np.float64)
+        total = len(coeffs)  # Should be K+1, K is the order of the ODE
+        # coeff_a_mtr has shape (K+1, N)
+        coeff_a_mtr = ODE._evaluate_coeffs_on_points(r, coeffs)
         coeff_b = np.zeros((total, r.size), dtype=float)
-        # constrcut 1 - 3 directly
+        # The first term doesn't contain a derivative so no transformation is required:
         coeff_b[0] += coeff_a_mtr[0]
+        # construct 1 - 3 directly with vectorization (faster)
         if total > 1:
             coeff_b[1] += coeff_a_mtr[1] * derivs[0]
         if total > 2:
@@ -205,15 +201,19 @@ class ODE:
             coeff_b[2] += coeff_a_mtr[3] * 3 * derivs[0] * derivs[1]
             coeff_b[3] += coeff_a_mtr[3] * derivs[0] ** 3
 
-        # construct 4th order and onwards
-        # if total >= 4:
-        #     for i, j in enumerate(r):
-        #         for coeff_index in range(4, total):
-        #             for dev_order in range(coeff_index, total):  # efficiency
-        #                 coeff_b[coeff_index, i] += (
-        #                     float(bell(dev_order, coeff_index, derivs[:, i]))
-        #                     * coeff_a[dev_order]
-        #                 )
+        # construct 4th order and onwards without vectorization (slower)
+        # formula is: d^k f / dr^k = \sum_{j=1}^{k} Bell_{k, j}(...)  (d^jf / dx^j)
+        if total > 4:
+            # Go Through each Pt
+            for i_pt in range(len(r)):
+                # Go through each order from 4 to K + 1
+                for j in range(4, total):
+                    # Go through the sum to calculate Bell's polynomial
+                    for k in range(j, total):
+                        all_derivs_at_pt = derivs[:, i_pt]
+                        coeff_b[j, i_pt] += (
+                            float(bell(k, j, all_derivs_at_pt)) * coeff_a_mtr[k, i_pt]
+                        )
         return coeff_b
 
     @staticmethod
