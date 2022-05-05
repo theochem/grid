@@ -293,20 +293,29 @@ class ODE:
         return result
 
     @staticmethod
-    def _construct_coeff_array(x, coeff):
-        """Construct coefficient matrix for given points.
+    def _evaluate_coeffs_on_points(x: np.ndarray, coeff: Union[list, np.ndarray]):
+        r"""Construct coefficients of the ODE evaluated on all points.
+
+        Explicitly, constructs a matrix with :math:`(n, k)`-th entry
+        :math:`c_{nk} = a_k(x_n)`,
+
+        where :math:`k`-th coefficient :math:`a_k` from the derivative
+        :math:`\frac{d^k y}{d x^k}` evaluated on the :math:`n`-th term :math:`x_n`.
 
         Parameters
         ----------
-        x : np.ndarray(K,)
-            Points on the mesh grid
-        coeff : list[number or callable] or np.ndarray, length N
-            Coefficient for each derivatives in the ode
+        x : ndarray(N,)
+            Points of the independent variable/domain.
+        coeffs : list[callable or float] or ndarray(K + 1,)
+            Coefficients :math:`a_k` of each term :math:`\frac{d^k y(x)}{d x^k}`
+            ordered from 0 to K.  Each coefficient can either be a callable function
+            :math:`a_k(x)` or a constant number :math:`a_k`.
 
         Returns
         -------
-        np.ndarray(N, K)
-            Numerical coefficient value for ODE
+        np.ndarray(K + 1, N)
+            Coefficients :math:`a_k(x_n)` from the ODE.
+
         """
         coeff_mtr = np.zeros((len(coeff), x.size), dtype=float)
         for i, val in enumerate(coeff):
