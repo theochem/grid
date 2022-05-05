@@ -104,31 +104,39 @@ class ODE:
         order = len(coeffs) - 1
         if len(bd_cond) != order:
             raise NotImplementedError(
-                "# of boundary condition need to be the same as ODE order."
+                "Number of boundary condition need to be the same as ODE order."
                 f"Expect: {order}, got: {len(bd_cond)}."
             )
         if order > 3:
             raise NotImplementedError("Only support 3rd order ODE or less.")
 
-        # define 1st order ODE for solver
+        # define first order ODE for solver, needs to be in explicit form for scipy solver.
         def func(x, y):
+            # x has shape (N,) and y has shape (K+1, N), output has shape (K+1, N)
             if transform:
-                dy_dx = ODE._rearrange_trans_ode(x, y, coeffs, transform, fx)
+                dy_dx = ODE._transform_and_rearrange_to_explicit_ode(
+                    x, y, coeffs, transform, fx
+                )
             else:
-                coeffs_mt = ODE._construct_coeff_array(x, coeffs)
-                dy_dx = ODE._rearrange_ode(x, y, coeffs_mt, fx(x))
-            return np.vstack((*y[1:], dy_dx))
+                coeffs_mt = ODE._evaluate_coeffs_on_points(x, coeffs)
+                dy_dx = ODE._rearrange_to_explicit_ode(y, coeffs_mt, fx(x))
+            # (*y[1:, :],) returns a tuple of all rows excluding the first row.
+            #    This is due to conversion to first-order ODE form.
+            return np.vstack((*y[1:, :], dy_dx))
 
         # define boundary condition
         def bc(ya, yb):
+            # a denotes the lower bound, b denotes the upper bound
+            # Input of ya, yb should have shape (K+1,) , output should be shape (K+1,)
             bonds = [ya, yb]
             conds = []
             for i, deriv, value in bd_cond:
                 conds.append(bonds[i][deriv] - value)
             return np.array(conds)
 
-        y = np.random.rand(order, x.size)
-        res = solve_bvp(func, bc, x, y, tol=1e-4)
+        if initial_guess_y is None:
+            initial_guess_y = np.random.rand(order, x.size)
+        res = solve_bvp(func, bc, x, y=initial_guess_y, tol=tol, max_nodes=max_nodes)
         # raise error if didn't converge
         if res.status != 0:
             raise ValueError(
