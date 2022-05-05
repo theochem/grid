@@ -21,6 +21,7 @@
 
 from numbers import Number
 from typing import Union
+import warnings
 
 from grid.rtransform import BaseTransform
 
@@ -340,6 +341,8 @@ class ODE:
 
         of the :math:`n`-th point :math:`x` such that :math:`a_K \neq 0`.
         This arises from re-arranging the ODE of :math:`K`-th order into explicit form.
+        It is possible that :math:`a_K(x_n) = 0`, it is recommended to split the points
+        into separate intervals and solve them separately.
 
         Parameters
         ----------
@@ -360,9 +363,14 @@ class ODE:
             to explicit form evaluated on N-th points.
 
         """
+        if np.any(np.abs(coeff_b[-1]) < 1e-10):
+            warnings.warn("The coefficient of the leading Kth term is zero at some point."
+                          "It is recommended to split into intervals and solve separately.")
+
         result = fx
         # Go through all rows except the last-element.
         for i, b in enumerate(coeff_b[:-1]):
             # array of size N: a_k(x_n) * (d^k y(x_n) / d x^k)
             result -= b * y[i]
+
         return result / coeff_b[-1]
