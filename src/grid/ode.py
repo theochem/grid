@@ -18,16 +18,17 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
 """Generic ode solver module."""
-# from numbers import Number
 
-# from grid.rtransform import InverseRTransform
 from numbers import Number
+from typing import Union
+
+from grid.rtransform import BaseTransform
 
 import numpy as np
 
 from scipy.integrate import solve_bvp
 
-# from sympy import bell
+from sympy import bell
 
 
 class ODE:
