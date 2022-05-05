@@ -22,7 +22,14 @@
 from numbers import Number
 from unittest import TestCase
 
-from grid.ode import ODE
+from grid.ode import (
+    solve_ode,
+    _evaluate_coeffs_on_points,
+    _rearrange_to_explicit_ode,
+    _transform_and_rearrange_to_explicit_ode,
+    _transform_ode_from_derivs,
+    _transform_ode_from_rtransform,
+)
 from grid.onedgrid import GaussLaguerre
 from grid.rtransform import (
     BaseTransform,
@@ -42,7 +49,11 @@ class TestODE(TestCase):
     """ODE solver test class."""
 
     def test_transform_coeff_with_x_and_r(self):
-        """Test coefficient transform between x and r."""
+        """
+        Test coefficient transform between x and r.
+
+        TODO: Delete this test, it's pretty useless.
+        """
         coeff = np.array([2, 3, 4])
         ltf = LinearFiniteRTransform(1, 10)  # (-1, 1) -> (r0, rmax)
         inv_tf = InverseRTransform(ltf)  # (r0, rmax) -> (-1, 1)
@@ -51,9 +62,9 @@ class TestODE(TestCase):
         assert r[0] == 1
         assert r[-1] == 10
         # Transform ODE from [1, 10) to (-1, 1)
-        coeff_transform = ODE._transform_ode_from_rtransform(coeff, inv_tf, x)
+        coeff_transform = _transform_ode_from_rtransform(coeff, inv_tf, x)
         derivs_fun = [inv_tf.deriv, inv_tf.deriv2, inv_tf.deriv3]
-        coeff_transform_all_pts = ODE._transform_ode_from_derivs(coeff, derivs_fun, r)
+        coeff_transform_all_pts = _transform_ode_from_derivs(coeff, derivs_fun, r)
         assert_allclose(coeff_transform, coeff_transform_all_pts)
 
     def test_transformation_of_ode_with_identity_transform(self):
@@ -67,7 +78,7 @@ class TestODE(TestCase):
         coeff = np.array([0, 0, 1])
         x = np.linspace(0, 1, 10)
         # compute transformed coeffs
-        coeff_b = ODE._transform_ode_from_derivs(coeff, derivs_fun, x)
+        coeff_b = _transform_ode_from_derivs(coeff, derivs_fun, x)
         # f_x = 0 * x + 1  # 1 for every
         assert_allclose(coeff_b, np.zeros((3, 10), dtype=float) + coeff[:, None])
 
@@ -81,7 +92,7 @@ class TestODE(TestCase):
         derivs_fun = [inv_ltf.deriv, inv_ltf.deriv2, inv_ltf.deriv3]
         # Test with 2y + 3y` + 4y``
         coeff = np.array([2, 3, 4])
-        coeff_b = ODE._transform_ode_from_derivs(coeff, derivs_fun, x)
+        coeff_b = _transform_ode_from_derivs(coeff, derivs_fun, x)
         # assert values
         assert_allclose(coeff_b[0], np.ones(len(x)) * coeff[0])
         assert_allclose(coeff_b[1], 1 / 4.5 * coeff[1])
@@ -103,7 +114,7 @@ class TestODE(TestCase):
         # Consider ODE 2y + 3y` + 4y`` + 5y``` + 6dy^4/dx^4 and transform it
         coeffs = np.array([2, 3, 4, 5, 6])
         x = np.arange(1.0, 2.0, 0.01)
-        coeffs_transf = ODE._transform_ode_from_derivs(coeffs, derivs, x)
+        coeffs_transf = _transform_ode_from_derivs(coeffs, derivs, x)
         # Transform it back using the derivative of the inverse transformation x^4
         derivs_invs = [
             lambda r: 1.0 / (4.0 * r ** (3.0 / 4.0)),
@@ -114,7 +125,7 @@ class TestODE(TestCase):
         x_transformed = transf(x)
         # Go Through Each Points and grab the new coefficients and transform it back
         for i in range(0, len(x)):
-            coeffs_original = ODE._transform_ode_from_derivs(
+            coeffs_original = _transform_ode_from_derivs(
                 np.ravel(coeffs_transf[:, i]), derivs_invs, x_transformed[i : i + 1]
             )
             # Check that it is the same as hte original transformation.
@@ -130,7 +141,7 @@ class TestODE(TestCase):
             return 1 if isinstance(x, Number) else np.ones(x.size)
 
         def func(x, y):
-            dy_dx = ODE._rearrange_to_explicit_ode(y, coeff_b, fx(x))
+            dy_dx = _rearrange_to_explicit_ode(y, coeff_b, fx(x))
             return np.vstack((*y[1:], dy_dx))
 
         def bc(ya, yb):
@@ -153,7 +164,7 @@ class TestODE(TestCase):
             return -6 * x**2 - x + 10
 
         def func2(x, y):
-            dy_dx = ODE._rearrange_to_explicit_ode(y, coeff_b_2, fx2(x))
+            dy_dx = _rearrange_to_explicit_ode(y, coeff_b_2, fx2(x))
             return np.vstack((*y[1:], dy_dx))
 
         def bc2(ya, yb):
@@ -183,7 +194,7 @@ class TestODE(TestCase):
 
         # Run with transformation
         def func(x, y):
-            dy_dx = ODE._transform_and_rearrange_to_explicit_ode(x, y, coeff, stf, fx)
+            dy_dx = _transform_and_rearrange_to_explicit_ode(x, y, coeff, stf, fx)
             return np.vstack((*y[1:], dy_dx))
 
         def bc(ya, yb):
@@ -217,7 +228,7 @@ class TestODE(TestCase):
             return 1 / x**3 + 3 * x**2 + x
 
         def func(x, y):
-            dy_dx = ODE._transform_and_rearrange_to_explicit_ode(x, y, coeff, stf, fx)
+            dy_dx = _transform_and_rearrange_to_explicit_ode(x, y, coeff, stf, fx)
             return np.vstack((*y[1:], dy_dx))
 
         def bc(ya, yb):
@@ -248,7 +259,7 @@ class TestODE(TestCase):
             return x**2 + 3 * x - 5
 
         def func(x, y):
-            dy_dx = ODE._transform_and_rearrange_to_explicit_ode(x, y, coeff, stf, fx)
+            dy_dx = _transform_and_rearrange_to_explicit_ode(x, y, coeff, stf, fx)
             return np.vstack((*y[1:], dy_dx))
 
         def bc(ya, yb):
@@ -257,7 +268,7 @@ class TestODE(TestCase):
         res = solve_bvp(func, bc, x, initial_guess)
 
         def func_ref(x, y):
-            dy_dx = ODE._rearrange_to_explicit_ode(y, coeff, fx(x))
+            dy_dx = _rearrange_to_explicit_ode(y, coeff, fx(x))
             return np.vstack((*y[1:], dy_dx))
 
         res_ref = solve_bvp(func_ref, bc, r, initial_guess)
@@ -282,7 +293,7 @@ class TestODE(TestCase):
             return 1 / x**2
 
         def func(x, y):
-            dy_dx = ODE._transform_and_rearrange_to_explicit_ode(x, y, coeff, ibtf, fx)
+            dy_dx = _transform_and_rearrange_to_explicit_ode(x, y, coeff, ibtf, fx)
             return np.vstack((*y[1:], dy_dx))
 
         def bc(ya, yb):
@@ -291,7 +302,7 @@ class TestODE(TestCase):
         res = solve_bvp(func, bc, x, y)
 
         def func_ref(x, y):
-            dy_dx = ODE._rearrange_to_explicit_ode(y, coeff, fx(x))
+            dy_dx = _rearrange_to_explicit_ode(y, coeff, fx(x))
             return np.vstack((*y[1:], dy_dx))
 
         res_ref = solve_bvp(func_ref, bc, r, y)
@@ -314,7 +325,7 @@ class TestODE(TestCase):
             return 1 / x**4
 
         def func(x, y):
-            dy_dx = ODE._transform_and_rearrange_to_explicit_ode(x, y, coeff, ibtf, fx)
+            dy_dx = _transform_and_rearrange_to_explicit_ode(x, y, coeff, ibtf, fx)
             return np.vstack((*y[1:], dy_dx))
 
         def bc(ya, yb):
@@ -323,7 +334,7 @@ class TestODE(TestCase):
         res = solve_bvp(func, bc, x, initial_guess, tol=1e-12)
 
         def func_ref(x, y):
-            dy_dx = ODE._rearrange_to_explicit_ode(y, coeff, fx(x))
+            dy_dx = _rearrange_to_explicit_ode(y, coeff, fx(x))
             return np.vstack((*y[1:], dy_dx))
 
         res_ref = solve_bvp(func_ref, bc, r, initial_guess, tol=1e-12)
@@ -360,7 +371,7 @@ class TestODE(TestCase):
             return -1 / x**2
 
         def func(x, y):
-            dy_dx = ODE._transform_and_rearrange_to_explicit_ode(x, y, coeff, ibtf, fx)
+            dy_dx = _transform_and_rearrange_to_explicit_ode(x, y, coeff, ibtf, fx)
             return np.vstack((*y[1:], dy_dx))
 
         def bc(ya, yb):
@@ -371,7 +382,7 @@ class TestODE(TestCase):
         )
 
         def func_ref(x, y):
-            dy_dx = ODE._rearrange_to_explicit_ode(y, coeff, fx(x))
+            dy_dx = _rearrange_to_explicit_ode(y, coeff, fx(x))
             return np.vstack((*y[1:], dy_dx))
 
         res_ref = solve_bvp(
@@ -399,7 +410,7 @@ class TestODE(TestCase):
         # lower and upper bound of y is equal to zero.
         bd_cond = [[0, 0, 0], [1, 0, 0]]
 
-        res = ODE.solve_ode(x, fx, coeffs, bd_cond)
+        res = solve_ode(x, fx, coeffs, bd_cond)
 
         def solution(x):
             return x**2.0 / 2.0 - x
@@ -425,8 +436,8 @@ class TestODE(TestCase):
         coeffs = [-1, 1, 1]
         bd_cond = [(0, 0, 3), (1, 0, 3)]  # Test y(a) = y(b) = 3
         # calculate diff equation wt/w tf.
-        res = ODE.solve_ode(x, fx, coeffs, bd_cond, ibtf, tol=1e-7, max_nodes=20000)
-        res_ref = ODE.solve_ode(
+        res = solve_ode(x, fx, coeffs, bd_cond, ibtf, tol=1e-7, max_nodes=20000)
+        res_ref = solve_ode(
             r, fx, coeffs, bd_cond, tol=1e-7, max_nodes=20000, initial_guess_y=res(x)
         )
         assert_allclose(res(x)[0], res_ref(r)[0], atol=1e-5)
@@ -447,8 +458,8 @@ class TestODE(TestCase):
         coeffs = [lambda x: x**2, lambda x: 1 / x**2, 0.5]
         bd_cond = [(0, 1, 0.0), (1, 1, 0.0)]
         # calculate diff equation wt/w tf.
-        res = ODE.solve_ode(x, fx, coeffs, bd_cond, ibtf, tol=1e-7, max_nodes=20000)
-        res_ref = ODE.solve_ode(r, fx, coeffs, bd_cond)
+        res = solve_ode(x, fx, coeffs, bd_cond, ibtf, tol=1e-7, max_nodes=20000)
+        res_ref = solve_ode(r, fx, coeffs, bd_cond)
         assert_allclose(res(x)[0], res_ref(r)[0], atol=1e-4)
         assert_allclose(res(x)[1][0], 0.0, atol=1e-5)  # Test lower boundary condition
         assert_allclose(res(x)[1][-1], 0.0, atol=1e-5)  # Test upper boundary condition
@@ -459,13 +470,13 @@ class TestODE(TestCase):
         # first test
         x = np.linspace(-0.9, 0.9, 20)
         coeff = [2, 1.5, lambda x: x**2]
-        coeff_a = ODE._evaluate_coeffs_on_points(x, coeff)
+        coeff_a = _evaluate_coeffs_on_points(x, coeff)
         assert_allclose(coeff_a[0], np.ones(20) * 2)
         assert_allclose(coeff_a[1], np.ones(20) * 1.5)
         assert_allclose(coeff_a[2], x**2)
         # second test
         coeff = [lambda x: 1 / x, 2, lambda x: x**3, lambda x: np.exp(x)]
-        coeff_a = ODE._evaluate_coeffs_on_points(x, coeff)
+        coeff_a = _evaluate_coeffs_on_points(x, coeff)
         assert_allclose(coeff_a[0], 1 / x)
         assert_allclose(coeff_a[1], np.ones(20) * 2)
         assert_allclose(coeff_a[2], x**3)
@@ -482,12 +493,12 @@ class TestODE(TestCase):
         coeffs = [-1, -2, 1]
         bd_cond = [(0, 0, 0), (1, 0, 0), (0, 1, 0), (1, 1, 0)]
         with self.assertRaises(NotImplementedError):
-            ODE.solve_ode(x, fx, coeffs, bd_cond[3:])
+            solve_ode(x, fx, coeffs, bd_cond[3:])
         with self.assertRaises(NotImplementedError):
-            ODE.solve_ode(x, fx, coeffs, bd_cond)
+            solve_ode(x, fx, coeffs, bd_cond)
         with self.assertRaises(NotImplementedError):
             test_coeff = [1, 2, 3, 4, 5]
-            ODE.solve_ode(x, fx, test_coeff, bd_cond)
+            solve_ode(x, fx, test_coeff, bd_cond)
         with self.assertRaises(ValueError):
             test_coeff = [1, 2, 3, 3]
             tf = BeckeRTransform(0.1, 1)
@@ -495,7 +506,7 @@ class TestODE(TestCase):
             def fx(x):
                 return x
 
-            ODE.solve_ode(x, fx, test_coeff, bd_cond[:3], tf)
+            solve_ode(x, fx, test_coeff, bd_cond[:3], tf)
 
 
 class SqTF(BaseTransform):

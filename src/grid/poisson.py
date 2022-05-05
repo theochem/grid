@@ -1,7 +1,7 @@
 """Poisson solver module."""
 
 from grid.interpolate import compute_spline_point_value, generate_real_sph_harms
-from grid.ode import ODE
+from grid.ode import solve_ode
 
 import numpy as np
 
