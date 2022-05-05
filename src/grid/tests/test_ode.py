@@ -149,10 +149,10 @@ class TestODE(TestCase):
         coeff_b_2 = [-3, 2, 1]
 
         def fx2(x):
-            return -6 * x ** 2 - x + 10
+            return -6 * x**2 - x + 10
 
         def func2(x, y):
-            dy_dx = ODE._rearrange_ode(x, y, coeff_b_2, fx2(x))
+            dy_dx = ODE._rearrange_to_explicit_ode(y, coeff_b_2, fx2(x))
             return np.vstack((*y[1:], dy_dx))
 
         def bc2(ya, yb):
@@ -167,38 +167,43 @@ class TestODE(TestCase):
         assert_almost_equal(res2.sol(1)[1], 7)
         assert_almost_equal(res2.sol(2)[1], 11)
 
-    def test_second_order_ode(self):
-        """Test same result for 2nd order ode."""
+    def test_second_order_ode_with_transformation(self):
+        """Test transforming and re-arranging ODE is equivalent without transforming."""
         stf = SqTF()
         coeff = np.array([0, 0, 1])
         # transform
         r = np.linspace(1, 2, 10)  # r
         y = np.zeros((2, r.size))
         x = stf.transform(r)  # transformed x
-        assert_almost_equal(x, r ** 2)
+        assert_almost_equal(x, r**2)
 
         def fx(x):
             return 1 if isinstance(x, Number) else np.ones(x.size)
 
+        # Run with transformation
         def func(x, y):
-            dy_dx = ODE._rearrange_trans_ode(x, y, coeff, stf, fx)
+            dy_dx = ODE._transform_and_rearrange_to_explicit_ode(x, y, coeff, stf, fx)
             return np.vstack((*y[1:], dy_dx))
 
         def bc(ya, yb):
+            # Boundary of y is zero on endpoints
             return np.array([ya[0], yb[0]])
 
         res = solve_bvp(func, bc, x, y)
-        # print(res.sol(x))
-        ref_y = np.zeros((2, r.size))
+
+        # Run without transformation
+        ref_y = np.zeros((2, r.size))  # Initial Guess
 
         def func_ref(x, y):
             return np.vstack((y[1:], np.ones(y[0].size)))
 
+        # Run without transformation
         res_ref = solve_bvp(func_ref, bc, r, ref_y)
+        # Check if they're equal
         assert_allclose(res.sol(x)[0], res_ref.sol(r)[0], atol=1e-4)
 
     def test_second_order_ode_with_diff_coeff(self):
-        """Test same result for 2nd order with diff TF and Coeffs."""
+        """Test transforming and re-arranging ODE with non-constant function."""
         stf = SqTF()
         stf = SqTF(3, 1)
         coeff = np.array([2, 3, 2])
@@ -206,20 +211,18 @@ class TestODE(TestCase):
         r = np.linspace(1, 2, 10)  # r
         y = np.zeros((2, r.size))
         x = stf.transform(r)  # transformed x
-        # assert_almost_equal(x, r ** 2)
 
         def fx(x):
-            return 1 / x ** 3 + 3 * x ** 2 + x
+            return 1 / x**3 + 3 * x**2 + x
 
         def func(x, y):
-            dy_dx = ODE._rearrange_trans_ode(x, y, coeff, stf, fx)
+            dy_dx = ODE._transform_and_rearrange_to_explicit_ode(x, y, coeff, stf, fx)
             return np.vstack((*y[1:], dy_dx))
 
         def bc(ya, yb):
             return np.array([ya[0], yb[0]])
 
         res = solve_bvp(func, bc, x, y)
-        # print(res.sol(x))
         ref_y = np.zeros((2, r.size))
 
         def func_ref(x, y):
@@ -229,34 +232,35 @@ class TestODE(TestCase):
         assert_allclose(res.sol(x)[0], res_ref.sol(r)[0], atol=1e-4)
 
     def test_second_order_ode_with_fx(self):
-        """Test same result for 2nd order with non-homo term."""
+        """Test ODE with and without transformation with a non-constant term."""
         stf = SqTF()
+        # Test ode 2y + 2y` + 3y``
         coeff = np.array([2, 2, 3])
         # transform
         r = np.linspace(1, 2, 10)  # r
-        y = np.zeros((2, r.size))
+        initial_guess = np.zeros((2, r.size))
         x = stf.transform(r)  # transformed x
-        assert_almost_equal(x, r ** 2)
+        assert_almost_equal(x, r**2)
 
+        # Non-constant term.
         def fx(x):
-            return x ** 2 + 3 * x - 5
+            return x**2 + 3 * x - 5
 
         def func(x, y):
-            dy_dx = ODE._rearrange_trans_ode(x, y, coeff, stf, fx)
+            dy_dx = ODE._transform_and_rearrange_to_explicit_ode(x, y, coeff, stf, fx)
             return np.vstack((*y[1:], dy_dx))
 
         def bc(ya, yb):
             return np.array([ya[0], yb[0]])
 
-        res = solve_bvp(func, bc, x, y)
-        # print(res.sol(x))
-        ref_y = np.zeros((2, r.size))
+        res = solve_bvp(func, bc, x, initial_guess)
 
         def func_ref(x, y):
-            dy_dx = ODE._rearrange_ode(x, y, coeff, fx(x))
+            dy_dx = ODE._rearrange_to_explicit_ode(y, coeff, fx(x))
             return np.vstack((*y[1:], dy_dx))
 
-        res_ref = solve_bvp(func_ref, bc, r, ref_y)
+        res_ref = solve_bvp(func_ref, bc, r, initial_guess)
+        # Test initial gfunctions are similar
         assert_allclose(res.sol(x)[0], res_ref.sol(r)[0], atol=1e-4)
 
     def test_becke_transform_2nd_order_ode(self):
@@ -272,20 +276,19 @@ class TestODE(TestCase):
         y = np.zeros((2, r.size))
 
         def fx(x):
-            return 1 / x ** 2
+            return 1 / x**2
 
         def func(x, y):
-            dy_dx = ODE._rearrange_trans_ode(x, y, coeff, ibtf, fx)
+            dy_dx = ODE._transform_and_rearrange_to_explicit_ode(x, y, coeff, ibtf, fx)
             return np.vstack((*y[1:], dy_dx))
 
         def bc(ya, yb):
             return np.array([ya[0], yb[0]])
 
         res = solve_bvp(func, bc, x, y)
-        print(res.sol(x)[0])
 
         def func_ref(x, y):
-            dy_dx = ODE._rearrange_ode(x, y, coeff, fx(x))
+            dy_dx = ODE._rearrange_to_explicit_ode(y, coeff, fx(x))
             return np.vstack((*y[1:], dy_dx))
 
         res_ref = solve_bvp(func_ref, bc, r, y)
@@ -294,32 +297,30 @@ class TestODE(TestCase):
         assert_allclose(res.sol(x)[0], res_ref.sol(r)[0], atol=5e-3)
 
     def test_becke_transform_3nd_order_ode(self):
-        """Test same result for 3rd order ode with becke tf."""
+        """Test third order ode with Becke transformation against without transformation."""
         btf = BeckeRTransform(0.1, 10)
         ibtf = InverseRTransform(btf)
+        # Consider ODE 2y^` + 3y^`` + 3 * dy^3/dx^3 = 1/x^4
         coeff = np.array([0, 2, 3, 3])
         # transform
-        # r = np.linspace(1, 2, 10)  # r
-        # x = ibtf.transform(r)  # transformed x
         x = np.linspace(-0.9, 0.9, 20)
-        r = ibtf.inverse(x)
-        y = np.random.rand(3, r.size)
+        r = btf.transform(x)
+        initial_guess = np.random.rand(3, r.size)
 
         def fx(x):
-            return 1 / x ** 4
+            return 1 / x**4
 
         def func(x, y):
-            dy_dx = ODE._rearrange_trans_ode(x, y, coeff, ibtf, fx)
+            dy_dx = ODE._transform_and_rearrange_to_explicit_ode(x, y, coeff, ibtf, fx)
             return np.vstack((*y[1:], dy_dx))
 
         def bc(ya, yb):
             return np.array([ya[0], yb[0], ya[1]])
 
-        res = solve_bvp(func, bc, x, y)
-        # print(res.sol(x)[0])
+        res = solve_bvp(func, bc, x, initial_guess, tol=1e-12)
 
         def func_ref(x, y):
-            dy_dx = ODE._rearrange_ode(x, y, coeff, fx(x))
+            dy_dx = ODE._rearrange_to_explicit_ode(y, coeff, fx(x))
             return np.vstack((*y[1:], dy_dx))
 
         res_ref = solve_bvp(func_ref, bc, r, y)
@@ -327,29 +328,39 @@ class TestODE(TestCase):
         assert_allclose(res.sol(x)[0], res_ref.sol(r)[0], atol=1e-4)
 
     def test_becke_transform_f0_ode(self):
+<<<<<<< HEAD
         """Test same result for 3rd order ode with becke tf and fx term."""
         btf = BeckeRTransform(0.1, 10)
         x = np.linspace(-0.9, 0.9, 20)
         btf = BeckeRTransform(0.1, 5)
         ibtf = InverseRTransform(btf)
+=======
+        """Test second order ode with (without) Becke transformation and non-constant term."""
+        x = np.linspace(-0.9, 0.9, 10)
+        btf = BeckeTF(0.1, 5)
+        ibtf = InverseTF(btf)
+>>>>>>> Change test names and add documentation in ode
         r = btf.transform(x)
-        y = np.random.rand(2, x.size)
+        initial_guess = np.random.rand(2, x.size)
+        # ODE is -y - y` + 2y`` = -1/x^2
         coeff = [-1, -1, 2]
 
         def fx(x):
-            return -1 / x ** 2
+            return -1 / x**2
 
         def func(x, y):
-            dy_dx = ODE._rearrange_trans_ode(x, y, coeff, ibtf, fx)
+            dy_dx = ODE._transform_and_rearrange_to_explicit_ode(x, y, coeff, ibtf, fx)
             return np.vstack((*y[1:], dy_dx))
 
         def bc(ya, yb):
             return np.array([ya[0], yb[0]])
 
-        res = solve_bvp(func, bc, x, y)
+        res = solve_bvp(
+            func, bc, x, initial_guess, tol=1e-12, bc_tol=1e-12, max_nodes=10000
+        )
 
         def func_ref(x, y):
-            dy_dx = ODE._rearrange_ode(x, y, coeff, fx(x))
+            dy_dx = ODE._rearrange_to_explicit_ode(y, coeff, fx(x))
             return np.vstack((*y[1:], dy_dx))
 
         res_ref = solve_bvp(func_ref, bc, r, y)
@@ -362,30 +373,36 @@ class TestODE(TestCase):
         def fx(x):
             return 1 if isinstance(x, Number) else np.ones(x.size)
 
+        # test ode  y^`` = 1
         coeffs = [0, 0, 1]
+        # lower and upper bound of y is equal to zero.
         bd_cond = [[0, 0, 0], [1, 0, 0]]
 
         res = ODE.solve_ode(x, fx, coeffs, bd_cond)
 
-        assert_almost_equal(res(0)[0], 0)
-        assert_almost_equal(res(1)[0], -0.5)
-        assert_almost_equal(res(2)[0], 0)
-        assert_almost_equal(res(0)[1], -1)
-        assert_almost_equal(res(1)[1], 0)
-        assert_almost_equal(res(2)[1], 1)
+        def solution(x):
+            return x**2.0 / 2.0 - x
+
+        def deriv(x):
+            return x - 1.0
+
+        rand_pts = np.random.uniform(0.0, 2.0, size=10)
+        assert_almost_equal(res(rand_pts)[0], solution(rand_pts))
+        assert_almost_equal(res(rand_pts)[1], deriv(rand_pts))
 
     def test_solver_ode_bvp_with_tf(self):
-        """Test result for high level api solve_ode with fx term."""
+        """Test solve_ode with transformation and without transformation."""
         x = np.linspace(-0.999, 0.999, 20)
         btf = BeckeRTransform(0.1, 5)
         r = btf.transform(x)
         ibtf = InverseRTransform(btf)
 
         def fx(x):
-            return 1 / x ** 2
+            return 1 / x**2
 
+        # Test with ode -y + y` + y``=1/x^2
         coeffs = [-1, 1, 1]
-        bd_cond = [(0, 0, 0), (1, 0, 0)]
+        bd_cond = [(0, 0, 3), (1, 0, 3)]  # Test y(a) = y(b) = 3
         # calculate diff equation wt/w tf.
         res = ODE.solve_ode(x, fx, coeffs, bd_cond, ibtf)
         res_ref = ODE.solve_ode(r, fx, coeffs, bd_cond)
@@ -431,7 +448,7 @@ class TestODE(TestCase):
         # r = btf.transform(x)
 
         def fx(x):
-            return 1 / x ** 2
+            return 1 / x**2
 
         coeffs = [-1, -2, 1]
         bd_cond = [(0, 0, 0), (1, 0, 0), (0, 1, 0), (1, 1, 0)]
@@ -462,7 +479,7 @@ class SqTF(BaseTransform):
 
     def transform(self, x):
         """Transform given array."""
-        return x ** self._exp + self._extra
+        return x**self._exp + self._extra
 
     def inverse(self, r):
         """Inverse transformed array."""
