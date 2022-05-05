@@ -288,8 +288,8 @@ class ODE:
             to explicit form evaluated on all N points.
 
         """
-        coeff_b = ODE._transformed_coeff_ode(coeff_a, tf, x)
-        result = ODE._rearrange_ode(x, y, coeff_b, fx_func(tf.inverse(x)))
+        coeff_b = ODE._transform_ode_from_rtransform(coeff_a, tf, x)
+        result = ODE._rearrange_to_explicit_ode(y, coeff_b, fx_func(tf.inverse(x)))
         return result
 
     @staticmethod
@@ -312,8 +312,12 @@ class ODE:
         for i, val in enumerate(coeff):
             if isinstance(val, Number):
                 coeff_mtr[i] += val
-            else:
+            elif callable(val):
                 coeff_mtr[i] += val(x)
+            else:
+                raise TypeError(
+                    f"Coefficient value {type(val)} is either a number or a function."
+                )
         return coeff_mtr
 
     @staticmethod
