@@ -58,6 +58,7 @@ def solve_ode(
     tol: float = 1e-4,
     max_nodes: int = 5000,
     initial_guess_y: np.ndarray = None,
+    no_derivatives : bool = True,
 ):
     r"""Solve a linear ODE with boundary conditions.
 
@@ -117,9 +118,9 @@ def solve_ode(
     def func(x, y):
         # x has shape (N,) and y has shape (K+1, N), output has shape (K+1, N)
         if transform:
-            dy_dx = _transform_and_rearrange_to_explicit_ode(
-                x, y, coeffs, transform, fx
-            )
+            # Transform the points back to the original domain.
+            orig_dom = transform.inverse(x)
+            dy_dx = _transform_and_rearrange_to_explicit_ode(orig_dom, y, coeffs, transform, fx)
         else:
             coeffs_mt = _evaluate_coeffs_on_points(x, coeffs)
             dy_dx = _rearrange_to_explicit_ode(y, coeffs_mt, fx(x))
@@ -137,14 +138,42 @@ def solve_ode(
             conds.append(bonds[i][deriv] - value)
         return np.array(conds)
 
+    # Generate random initial guess if not provided.
     if initial_guess_y is None:
         initial_guess_y = np.random.rand(order, x.size)
-    res = solve_bvp(func, bc, x, y=initial_guess_y, tol=tol, max_nodes=max_nodes)
+
+    # Solve the ODE
+    if transform:
+        pts_tf = transform.transform(x)
+        res = solve_bvp(func, bc, pts_tf, y=initial_guess_y, tol=tol, max_nodes=max_nodes)
+    else:
+        res = solve_bvp(func, bc, x, y=initial_guess_y, tol=tol, max_nodes=max_nodes)
+
     # raise error if didn't converge
     if res.status != 0:
         raise ValueError(
             f"The ode solver didn't converge, got status: {res.status}"
         )
+
+    if transform is not None:
+        # Transform the function so that it's input is the original variable and
+        #   derivative is with respect to the original variable as well.
+        def interpolate_wrt_original_var(pt):
+            transf_pts = transform.transform(pt)
+            interpolated = res.sol(transf_pts)  # Row is which func/deriv and Col is points.
+            # If derivatives are not wanted then only return y(x).
+            if no_derivatives:
+                return interpolated[0, :]
+            deriv_funcs = [transform.deriv, transform.deriv2, transform.deriv3]
+            new_interpolate = np.zeros(interpolated.shape)
+            new_interpolate[0, :] = interpolated[0, :]
+            for i in range(interpolated.shape[1]):
+                deriv = _derivative_transformation_matrix(deriv_funcs, pt[i], order - 1)
+                new_interpolate[1:, i] = deriv.dot(interpolated[1:, i])
+            return new_interpolate
+
+        return interpolate_wrt_original_var
+
     return res.sol
 
 
@@ -291,8 +320,57 @@ def _transform_and_rearrange_to_explicit_ode(
 
     """
     coeff_b = _transform_ode_from_rtransform(coeff_a, tf, x)
-    result = _rearrange_to_explicit_ode(y, coeff_b, fx_func(tf.inverse(x)))
+    result = _rearrange_to_explicit_ode(y, coeff_b, fx_func(x))
     return result
+
+
+def _derivative_transformation_matrix(deriv_func_list: list, point: float, order: int):
+    r"""Compute transformation from one variable to another.
+
+    Suppose there is a function :math:`f(x)` and a :math:`N`-th differentiable
+    transformation :math:`g(x) = r` from variable :math:`x` to variable :math:`r`.
+    This function returns a matrix that converts the derivatives
+    :math:`[\frac{df}{dx}, \cdots, \frac{d^N f}{dx^N}]^T` by matrix multiplication
+    to the derivatives of the new transformation
+    :math:`[\frac{df}{dr}, \cdots, \frac{d^Nf}{dr^N}]^T`.
+
+    It is a matrix with (i,j)-th entries:
+
+    .. math::
+        m_{i, j} = \begin{cases}
+           B_{i,j}\bigg(\frac{dg}{dx}, \cdots, \frac{d^{k-j+1} g}{dx^{k-j+1}} \bigg) &
+           i \leq j \\
+           0 & \text{else}
+        \end{cases}
+
+    Parameters
+    ----------
+    deriv_func_list : list[K]
+        List of size :math:`K` callable functions representing the derivatives of
+        :math:`g(x)`, i.e. :math:`[\frac{dg}{dx}, \cdots, \frac{d^K g}{dx^K}]`.
+    point : float
+        The point in :math:`r`, in which the derivatives are being calculated at.
+    order : int
+        The number of derivatives from 1 to `order` that are going to be transformed.
+
+    Returns
+    -------
+    ndarray((order, order))
+        Returns the matrix that converts derivatives of one domain to another.
+
+    """
+    numb_derivs = len(deriv_func_list)
+    if order > numb_derivs:
+        raise ValueError("TODO")
+    # Calculate derivatives of transformation evaluated at the point
+    derivs_at_pt = np.array(
+        [dev(point) for dev in deriv_func_list], dtype=np.float64
+    )
+    deriv_transf = np.zeros((order, order))
+    for i in range(0, order):
+        for j in range(0, i + 1):
+            deriv_transf[i, j] = float(bell(i + 1, j + 1, derivs_at_pt))
+    return deriv_transf
 
 
 def _evaluate_coeffs_on_points(x: np.ndarray, coeff: Union[list, np.ndarray]):
