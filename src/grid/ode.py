@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
-"""Linear ordinary differential equation solver with boundary conditions.
+r"""Linear ordinary differential equation solver with boundary conditions.
 
 Solves a linear ordinary differential equation of order :math:`K` of the form
 
@@ -33,9 +33,9 @@ to another domain :math:`g(x)` for some :math:`K`-th differentiable transformati
 :math:`[0, \infty)`, to a finite interval. module.
 """
 
+import warnings
 from numbers import Number
 from typing import Union
-import warnings
 
 from grid.rtransform import BaseTransform
 
@@ -57,7 +57,7 @@ def solve_ode(
     tol: float = 1e-4,
     max_nodes: int = 5000,
     initial_guess_y: np.ndarray = None,
-    no_derivatives : bool = True,
+    no_derivatives: bool = True,
 ):
     r"""Solve a linear ODE with boundary conditions.
 
@@ -111,7 +111,9 @@ def solve_ode(
             f"Expect: {order}, got: {len(bd_cond)}."
         )
     if transform is not None and order > 3:
-        raise NotImplementedError("Only support 3rd order ODE or less when using `transform`.")
+        raise NotImplementedError(
+            "Only support 3rd order ODE or less when using `transform`."
+        )
 
     # define first order ODE for solver, needs to be in explicit form for scipy solver.
     def func(x, y):
@@ -119,7 +121,9 @@ def solve_ode(
         if transform:
             # Transform the points back to the original domain.
             orig_dom = transform.inverse(x)
-            dy_dx = _transform_and_rearrange_to_explicit_ode(orig_dom, y, coeffs, transform, fx)
+            dy_dx = _transform_and_rearrange_to_explicit_ode(
+                orig_dom, y, coeffs, transform, fx
+            )
         else:
             coeffs_mt = _evaluate_coeffs_on_points(x, coeffs)
             dy_dx = _rearrange_to_explicit_ode(y, coeffs_mt, fx(x))
@@ -144,22 +148,23 @@ def solve_ode(
     # Solve the ODE
     if transform:
         pts_tf = transform.transform(x)
-        res = solve_bvp(func, bc, pts_tf, y=initial_guess_y, tol=tol, max_nodes=max_nodes)
+        res = solve_bvp(
+            func, bc, pts_tf, y=initial_guess_y, tol=tol, max_nodes=max_nodes
+        )
     else:
         res = solve_bvp(func, bc, x, y=initial_guess_y, tol=tol, max_nodes=max_nodes)
 
     # raise error if didn't converge
     if res.status != 0:
-        raise ValueError(
-            f"The ode solver didn't converge, got status: {res.status}"
-        )
+        raise ValueError(f"The ode solver didn't converge, got status: {res.status}")
 
     if transform is not None:
         # Transform the function so that it's input is the original variable and
         #   derivative is with respect to the original variable as well.
         def interpolate_wrt_original_var(pt):
             transf_pts = transform.transform(pt)
-            interpolated = res.sol(transf_pts)  # Row is which func/deriv and Col is points.
+            # Row is which func/deriv and Col is points.
+            interpolated = res.sol(transf_pts)
             # If derivatives are not wanted then only return y(x).
             if no_derivatives:
                 if interpolated.ndim == 1:
@@ -364,9 +369,7 @@ def _derivative_transformation_matrix(deriv_func_list: list, point: float, order
     if order > numb_derivs:
         raise ValueError("TODO")
     # Calculate derivatives of transformation evaluated at the point
-    derivs_at_pt = np.array(
-        [dev(point) for dev in deriv_func_list], dtype=np.float64
-    )
+    derivs_at_pt = np.array([dev(point) for dev in deriv_func_list], dtype=np.float64)
     deriv_transf = np.zeros((order, order))
     for i in range(0, order):
         for j in range(0, i + 1):
@@ -444,8 +447,10 @@ def _rearrange_to_explicit_ode(y: np.ndarray, coeff_b: np.ndarray, fx: np.ndarra
 
     """
     if np.any(np.abs(coeff_b[-1]) < 1e-10):
-        warnings.warn("The coefficient of the leading Kth term is zero at some point."
-                      "It is recommended to split into intervals and solve separately.")
+        warnings.warn(
+            "The coefficient of the leading Kth term is zero at some point."
+            "It is recommended to split into intervals and solve separately."
+        )
 
     result = fx
     # Go through all rows except the last-element.
