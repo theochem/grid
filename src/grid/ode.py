@@ -107,12 +107,12 @@ def solve_ode(
     """
     order = len(coeffs) - 1
     if len(bd_cond) != order:
-        raise NotImplementedError(
+        raise ValueError(
             "Number of boundary condition need to be the same as ODE order."
             f"Expect: {order}, got: {len(bd_cond)}."
         )
-    if order > 3:
-        raise NotImplementedError("Only support 3rd order ODE or less.")
+    if transform is not None and order > 3:
+        raise NotImplementedError("Only support 3rd order ODE or less when using `transform`.")
 
     # define first order ODE for solver, needs to be in explicit form for scipy solver.
     def func(x, y):
@@ -178,48 +178,48 @@ def solve_ode(
 
 
 def _transform_ode_from_derivs(
-    coeffs: Union[list, np.ndarray], deriv_transformation: list, r: np.ndarray
+    coeffs: Union[list, np.ndarray], deriv_transformation: list, x: np.ndarray
 ):
     r"""
     Transform the coefficients of ODE from one variable to another evaluated on mesh points.
 
-    Given a :math:`K`-th differentiable transformation function :math:`g(r)`
-    and a linear ODE of :math:`K`-th order on independent variable :math:`r`
+    Given a :math:`K`-th differentiable transformation function :math:`g(x)`
+    and a linear ODE of :math:`K`-th order on independent variable :math:`x`
 
     .. math::
-        \sum_{k=1}^{K} a_k(r) \frac{d^k y}{d r^k}.
+        \sum_{k=1}^{K} a_k(x) \frac{d^k y(x)}{d x^k}.
 
-    This transforms it into a new coordinate system :math:`g(r) =: x`
+    This transforms it into a new coordinate system :math:`g(x) =: r`
 
     .. math::
-        \sum_{j=1}^K b_j(x) \frac{d^j y}{d x^j},
+        \sum_{j=1}^K b_j(r) \frac{d^j y(r)}{d r^j},
 
-    where :math:`b_j(x) = \sum_{k=1}^K a_k(x) B_{k, j}(g(r), g^\prime(r), \cdots,
-    g^{k - j + 1}(r))`.
+    where :math:`b_j(r) = \sum_{k=1}^K a_k(g^{-1}(r)) B_{k, j}({g^{-1}}^\prime(g^{-1}(r)),
+    \cdots, {g^{-1}}^{k - j + 1}(g^{-1}(r)))`.
 
     Parameters
     ----------
     coeffs : list[callable or number] or ndarray
-        Coefficients :math:`a_k` of each term :math:`\frac{d^k y(x)}{d r^k}`
-        ordered from 0 to K. Either a list of callable functions :math:`a_k(r)` that depends
-        on :math:`r` or array of constants :math:`\{a_k\}_{k=0}^{K}`.
+        Coefficients :math:`a_k` of each term :math:`\frac{d^k y(x}{d x^k}`
+        ordered from 0 to K. Either a list of callable functions :math:`a_k(x)` that depends
+        on :math:`x` or array of constants :math:`\{a_k\}_{k=0}^{K}`.
     deriv_transformation : list[callable]
         List of functions for compute transformation derivatives from 1 to :math:`K`.
-    r : ndarray
+    x : ndarray
         Points from the original domain that is to be transformed.
 
     Returns
     -------
     ndarray((K+1, N))
-        Coefficients :math:`b_j(x)` of the new ODE with respect to variable :math:`x`.
+        Coefficients :math:`b_j(r)` of the new ODE with respect to transformed variable :math:`r`.
 
     """
     # `derivs` has shape (K, N), calculate d^j g/ dr^j
-    derivs = np.array([dev(r) for dev in deriv_transformation], dtype=np.float64)
+    derivs = np.array([dev(x) for dev in deriv_transformation], dtype=np.float64)
     total = len(coeffs)  # Should be K+1, K is the order of the ODE
     # coeff_a_mtr has shape (K+1, N)
-    coeff_a_mtr = _evaluate_coeffs_on_points(r, coeffs)
-    coeff_b = np.zeros((total, r.size), dtype=float)
+    coeff_a_mtr = _evaluate_coeffs_on_points(x, coeffs)  # a_k(x)
+    coeff_b = np.zeros((total, x.size), dtype=float)
     # The first term doesn't contain a derivative so no transformation is required:
     coeff_b[0] += coeff_a_mtr[0]
     # construct 1 - 3 directly with vectorization (faster)
@@ -237,7 +237,7 @@ def _transform_ode_from_derivs(
     # formula is: d^k f / dr^k = \sum_{j=1}^{k} Bell_{k, j}(...)  (d^jf / dx^j)
     if total > 4:
         # Go Through each Pt
-        for i_pt in range(len(r)):
+        for i_pt in range(len(x)):
             # Go through each order from 4 to K + 1
             for j in range(4, total):
                 # Go through the sum to calculate Bell's polynomial
