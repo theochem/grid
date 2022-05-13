@@ -64,7 +64,8 @@ def solve_ode(
     Parameters
     ----------
     x : np.ndarray(N,)
-        Points of the independent variable/domain.
+        Points of the independent variable/domain.  If `transform` is provided, then
+        these are the points that are to be transformed.
     fx : callable
         Right-hand function :math:`f(x)`.
     coeffs : list[callable or float] or ndarray(K + 1,)
@@ -72,11 +73,12 @@ def solve_ode(
         ordered from 0 to K. Either a list of callable functions :math:`a_k(x)` that depends
         on :math:`x` or array of constants :math:`\{a_k\}_{k=0}^{K}`.
     bd_cond : list[list[int, int, float]]
-        Boundary condition specified by list of three entries [i, j, C], where
-        :math:`i \in \{0, 1\}` determines whether the lower or upper bound is being
+        Boundary condition specified by list of size :math:`K` of three entries [i, j, C],
+        where :math:`i \in \{0, 1\}` determines whether the lower or upper bound is being
         constrained, :math:`j \in \{0, \cdots, K\}` determines which derivative
         :math:`\frac{d^j y}{dx^j}` is being constrained, and :math:`C`
         determines the boundary constraint value, i.e. :math:`\frac{d^j y}{dx^j} = C`.
+        Size needs to be the same as the order :math:`K` of the ODE.
         If `transform` is given, then the constraint of the derivatives is assumed
         to be with respect to the new coordinate i.e. :math:`\frac{d^j y}{dr^j} = C`.
     transform : BaseTransform, optional
@@ -87,15 +89,19 @@ def solve_ode(
     max_nodes : int, optional
         The maximum number of mesh nodes that determine termination.
         See `scipy.integrate.solve_bvp` function for more info.
-    initial_guess_y : ndarray, optional
-        Initial guess for :math:`y(x)` at the points `x`. If not provided, then
-        random set of points from 0 to 1 is used.
+    initial_guess_y : ndarray(K, N), optional
+        Initial guess for :math:`y(x), \cdots, \frac{d^{K} y}{d x^{K}}` at the points `x`.
+        If not provided, then random set of points from 0 to 1..
+    no_derivatives : bool, optional
+        If true, when transform is used then it only returns the solution :math:`y(x)` rather
+        than its derivative. If false, it includes the derivatives up to :math:`P-1`.
 
     Returns
     -------
-    PPoly
-        scipy.interpolate.PPoly instance for interpolating new values
-        and its derivative
+    callable :
+        Interpolate function (scipy.interpolate.PPoly) instance whose input is the
+        original domain :math:`x` and output is an array of the function :math:`y(x)` evaluated
+        on the points and its derivatives wrt to :math:`x` up to :math:`K - 1`.
 
     """
     order = len(coeffs) - 1
@@ -220,19 +226,19 @@ def _transform_ode_from_rtransform(
     r"""
     Transform the coefficients of ODE from one variable to another based on Transform object.
 
-    Given a :math:`K`-th differentiable transformation function :math:`g(r)`
+    Given a :math:`K`-th differentiable transformation function :math:`g(x)`
     and a linear ODE of :math:`K`-th order
 
     .. math::
-        \sum_{k=1}^{K} a_k(r) \frac{d^k y}{d r^k}.
+        \sum_{k=1}^{K} a_k(x) \frac{d^k y(x)}{d x^k} = f(x).
 
-    This transforms it into a new coordinate system with variable :math:`g(r) =: x` via
+    This transforms it into a new coordinate system with variable :math:`g(x) =: r` via
 
     .. math::
-        \sum_{j=1}^K b_j(x) \frac{d^j y}{d x^j},
+        \sum_{j=1}^K b_j(r) \frac{d^j y(r)}{d r^j} = f(r),
 
-    where :math:`b_j(x) = \sum_{k=1}^K a_k(x) B_{k, j}(g(r), g^\prime(r), \cdots,
-    g^{k - j + 1}(r))`.
+    where :math:`b_j(r) = \sum_{k=1}^K a_k(g^{-1}(r)) B_{k, j}(g^\prime(g^{-1}(r)),
+    \cdots, g^{k - j + 1}(g^{-1}(r)))`.
 
     Parameters
     ----------
@@ -246,12 +252,11 @@ def _transform_ode_from_rtransform(
     Returns
     -------
     ndarray((K+1, N))
-        Coefficients :math:`b_j(x)` of the new ODE with respect to variable :math:`x`.
+        Coefficients :math:`b_j(r)` of the new ODE with respect to transformed variable :math:`r`.
 
     """
     deriv_func = [tf.deriv, tf.deriv2, tf.deriv3]
-    r = tf.inverse(x)
-    return _transform_ode_from_derivs(coeff_a, deriv_func, r)
+    return _transform_ode_from_derivs(coeff_a, deriv_func, x)
 
 
 def _transform_and_rearrange_to_explicit_ode(
