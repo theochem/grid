@@ -172,6 +172,7 @@ def test_transform_and_rearrange_to_explicit_ode_with_simple_boundary(transform,
     ],
 )
 def test_solve_ode_with_and_without_transormation(transform, fx, coeffs, bd_cond):
+    r"""Test solve_ode with and without transformation with different bd conditions."""
     x = np.linspace(0.01, 0.999, 20)
     transf_pts = transform.transform(x)
     sol_with_transform = solve_ode(
@@ -261,11 +262,7 @@ def test_construct_coeffs_of_ode_over_mesh():
 
 
 def test_transform_coeff_with_x_and_r():
-    """
-    Test coefficient transform between x and r.
-
-    TODO: Delete this test, it's pretty useless.
-    """
+    """Test coefficient transform between x and r."""
     coeff = np.array([2, 3, 4])
     ltf = LinearTF(1, 10)  # (-1, 1) -> (r0, rmax)
     inv_tf = InverseTF(ltf)  # (r0, rmax) -> (-1, 1)
