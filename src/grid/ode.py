@@ -163,6 +163,8 @@ def solve_ode(
             interpolated = res.sol(transf_pts)  # Row is which func/deriv and Col is points.
             # If derivatives are not wanted then only return y(x).
             if no_derivatives:
+                if interpolated.ndim == 1:
+                    return interpolated
                 return interpolated[0, :]
             deriv_funcs = [transform.deriv, transform.deriv2, transform.deriv3]
             new_interpolate = np.zeros(interpolated.shape)
