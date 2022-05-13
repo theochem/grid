@@ -36,8 +36,8 @@ from grid.onedgrid import GaussLaguerre
 from grid.rtransform import (
     BaseTransform,
     BeckeRTransform,
-    MultiExpTF,
-    KnowlesTF,
+    MultiExpRTransform,
+    KnowlesRTransform,
     IdentityRTransform,
     InverseRTransform,
     LinearFiniteRTransform,
@@ -103,8 +103,8 @@ class SqTF(BaseTransform):
     [
         [IdentityRTransform(), fx_ones, [-1, 1, 1]],
         [SqTF(), fx_ones, np.random.uniform(-100, 100, (3,))],
-        [KnowlesTF(0.01, 1, 5), fx_ones, np.random.uniform(-10, 10, (3,))],
-        [BeckeTF(0.1, 100.), fx_ones, np.random.uniform(0, 100, (3,))],
+        [KnowlesRTransform(0.01, 1, 5), fx_ones, np.random.uniform(-10, 10, (3,))],
+        [BeckeRTransform(0.1, 100.), fx_ones, np.random.uniform(0, 100, (3,))],
         [SqTF(1, 3), fx_complicated_example, np.random.uniform(0, 100, (3,))],
         [SqTF(3, 1), fx_complicated_example, [2, 3, 2]],
         [SqTF(), fx_quadratic, np.random.uniform(-100, 100, (3,))],
@@ -161,9 +161,13 @@ def test_transform_and_rearrange_to_explicit_ode_with_simple_boundary(transform,
     "transform, fx, coeffs, bd_cond",
     [
         # Test with ode -y + y` + y``=1/x^2
-        [BeckeTF(1.0, 5.), fx_complicated_example3, [-1, 1, 1], [(0, 0, 3), (1, 0, 3)]],
-        [InverseTF(BeckeTF(1.0, 5.)), fx_complicated_example3, [-1, 1, 1], [(0, 0, 3), (1, 0, 3)]],
-        [BeckeTF(1.0, 5.), fx_complicated_example3, [-1, 1, 1], [(0, 0, 3), (1, 0, 3)]],
+        [BeckeRTransform(1.0, 5.), fx_complicated_example3, [-1, 1, 1], [(0, 0, 3), (1, 0, 3)]],
+        [
+            InverseRTransform(BeckeRTransform(1.0, 5.)),
+            fx_complicated_example3,
+            [-1, 1, 1], [(0, 0, 3), (1, 0, 3)]
+        ],
+        [BeckeRTransform(1.0, 5.), fx_complicated_example3, [-1, 1, 1], [(0, 0, 3), (1, 0, 3)]],
         # Test one with boundary conditions on the derivatives
         [
             SqTF(1, 3), fx_complicated_example, np.random.uniform(-100, 100, (4,)),
@@ -239,7 +243,7 @@ def test_error_raises():
     assert_raises(ValueError, solve_ode, x, fx, test_coeff, bd_cond)
 
     test_coeff = [1, 2, 3, 3]
-    tf = BeckeTF(0.1, 1)
+    tf = BeckeRTransform(0.1, 1)
     assert_raises(ValueError, solve_ode, x, fx, test_coeff, bd_cond[:3], tf)
 
 
@@ -264,8 +268,8 @@ def test_construct_coeffs_of_ode_over_mesh():
 def test_transform_coeff_with_x_and_r():
     """Test coefficient transform between x and r."""
     coeff = np.array([2, 3, 4])
-    ltf = LinearTF(1, 10)  # (-1, 1) -> (r0, rmax)
-    inv_tf = InverseTF(ltf)  # (r0, rmax) -> (-1, 1)
+    ltf = LinearFiniteRTransform(1, 10)  # (-1, 1) -> (r0, rmax)
+    inv_tf = InverseRTransform(ltf)  # (r0, rmax) -> (-1, 1)
     x = np.linspace(-1, 1, 20)
     r = ltf.transform(x)
     assert r[0] == 1
@@ -282,7 +286,7 @@ def test_transformation_of_ode_with_identity_transform():
     # Checks that the identity transform x -> x results in the same answer.
     # Obtain identity trasnform and derivatives.
     itf = IdentityRTransform()
-    inv_tf = InverseTF(itf)
+    inv_tf = InverseRTransform(itf)
     derivs_fun = [inv_tf.deriv, inv_tf.deriv2, inv_tf.deriv3]
     # d^2y / dx^2 = 1
     coeff = np.array([0, 0, 1])
@@ -297,9 +301,9 @@ def test_transformation_of_ode_with_linear_transform():
     """Test transformation of ODE with linear transformation."""
     x = GaussLaguerre(10).points
     # Obtain linear transformation with rmin = 1 and rmax = 10.
-    ltf = LinearTF(1, 10)
+    ltf = LinearFiniteRTransform(1, 10)
     # The inverse is x_i = \frac{r_i - r_{min} - R} {r_i - r_{min} + R}
-    inv_ltf = InverseTF(ltf)
+    inv_ltf = InverseRTransform(ltf)
     derivs_fun = [inv_ltf.deriv, inv_ltf.deriv2, inv_ltf.deriv3]
     # Test with 2y + 3y` + 4y``
     coeff = np.array([2, 3, 4])
