@@ -20,53 +20,58 @@
 # --
 """ODE test module."""
 from numbers import Number
-from unittest import TestCase
 
-import pytest
 
 from grid.ode import (
-    solve_ode,
     _evaluate_coeffs_on_points,
     _rearrange_to_explicit_ode,
     _transform_and_rearrange_to_explicit_ode,
     _transform_ode_from_derivs,
     _transform_ode_from_rtransform,
+    solve_ode,
 )
 from grid.onedgrid import GaussLaguerre
 from grid.rtransform import (
     BaseTransform,
     BeckeRTransform,
-    MultiExpRTransform,
-    KnowlesRTransform,
     IdentityRTransform,
     InverseRTransform,
+    KnowlesRTransform,
     LinearFiniteRTransform,
 )
 
 import numpy as np
 from numpy.testing import assert_allclose, assert_almost_equal, assert_raises
 
+import pytest
+
 from scipy.integrate import solve_bvp
+
 
 # List of constant right-hand side terms
 def fx_ones(x):
+    """Constant all ones."""
     return 1 if isinstance(x, Number) else np.ones(x.size)
 
 
 def fx_complicated_example(x):
-    return 1 / x ** 3 + 3 * x ** 2 + x
+    """Reciprocal of x cube with polynomial terms."""
+    return 1 / x**3 + 3 * x**2 + x
 
 
 def fx_complicated_example2(x):
-    return 1 / x ** 4
+    """Reciprocal of x to the power of four."""
+    return 1 / x**4
 
 
 def fx_complicated_example3(x):
-    return 1 / x ** 2
+    """Reciprocal of x to the power of two."""
+    return 1 / x**2
 
 
 def fx_quadratic(x):
-    return x ** 2 + 3 * x - 5
+    """Quadratic polynomial example."""
+    return x**2 + 3 * x - 5
 
 
 class SqTF(BaseTransform):
@@ -104,15 +109,17 @@ class SqTF(BaseTransform):
         [IdentityRTransform(), fx_ones, [-1, 1, 1]],
         [SqTF(), fx_ones, np.random.uniform(-100, 100, (3,))],
         [KnowlesRTransform(0.01, 1, 5), fx_ones, np.random.uniform(-10, 10, (3,))],
-        [BeckeRTransform(0.1, 100.), fx_ones, np.random.uniform(0, 100, (3,))],
+        [BeckeRTransform(0.1, 100.0), fx_ones, np.random.uniform(0, 100, (3,))],
         [SqTF(1, 3), fx_complicated_example, np.random.uniform(0, 100, (3,))],
         [SqTF(3, 1), fx_complicated_example, [2, 3, 2]],
         [SqTF(), fx_quadratic, np.random.uniform(-100, 100, (3,))],
         [SqTF(1, 4), fx_complicated_example, np.random.uniform(-10, 10, (3,))],
-        [SqTF(1, 4), fx_complicated_example2, [1, -1, 1]]
+        [SqTF(1, 4), fx_complicated_example2, [1, -1, 1]],
     ],
 )
-def test_transform_and_rearrange_to_explicit_ode_with_simple_boundary(transform, fx, coeffs):
+def test_transform_and_rearrange_to_explicit_ode_with_simple_boundary(
+    transform, fx, coeffs
+):
     r"""Test transforming second-order ode with simple boundary conditions."""
     x = np.arange(0.1, 0.99, 0.01)
     transform_pts = transform.transform(x)
@@ -126,13 +133,15 @@ def test_transform_and_rearrange_to_explicit_ode_with_simple_boundary(transform,
         # Transform back to original domain x
         original = transform.inverse(r)
         # Apply the ode transfomration
-        dy_dx = _transform_and_rearrange_to_explicit_ode(original, y, coeffs, transform, fx)
+        dy_dx = _transform_and_rearrange_to_explicit_ode(
+            original, y, coeffs, transform, fx
+        )
         return np.vstack((*y[1:], dy_dx))
 
     init_guess = np.zeros((2, x.size))
-    solution_with_transf = solve_bvp(func_with_transform, bc, transform_pts, init_guess,
-                                     tol=1e-6, max_nodes=10000, verbose=1)
-
+    solution_with_transf = solve_bvp(
+        func_with_transform, bc, transform_pts, init_guess, tol=1e-6, max_nodes=10000
+    )
 
     # Run without transformation
     def func_without_transform(original_pts, y):
@@ -141,46 +150,79 @@ def test_transform_and_rearrange_to_explicit_ode_with_simple_boundary(transform,
         return np.vstack((y[1:], dy_dx))
 
     # Run without transformation
-    solution_without_transf = solve_bvp(func_without_transform, bc, x,
-                                        solution_with_transf.sol(transform_pts), tol=1e-6,
-                                        max_nodes=100000, verbose=1)
+    solution_without_transf = solve_bvp(
+        func_without_transform,
+        bc,
+        x,
+        solution_with_transf.sol(transform_pts),
+        tol=1e-6,
+        max_nodes=100000,
+    )
     # Check if the solution at x is the same as the solution (with transform) at r=g(x)
-    assert_allclose(solution_with_transf.sol(transform_pts)[0],
-                    solution_without_transf.sol(x)[0], atol=1e-4)
+    assert_allclose(
+        solution_with_transf.sol(transform_pts)[0],
+        solution_without_transf.sol(x)[0],
+        atol=1e-4,
+    )
     # Check if they're similar at random points on interval with lower accuracy tolerance
     random_pts = np.random.uniform(np.min(x), np.max(x), transform_pts.shape)
     transf_pts = transform.transform(random_pts)
-    assert_allclose(solution_with_transf.sol(transf_pts)[0],
-                    solution_without_transf.sol(random_pts)[0], atol=1e-4)
+    assert_allclose(
+        solution_with_transf.sol(transf_pts)[0],
+        solution_without_transf.sol(random_pts)[0],
+        atol=1e-4,
+    )
     # Test the derivative
-    assert_allclose(solution_with_transf.sol(transform_pts)[1],
-                    solution_without_transf.sol(x)[1] / transform.deriv(x), atol=1e-4)
+    assert_allclose(
+        solution_with_transf.sol(transform_pts)[1],
+        solution_without_transf.sol(x)[1] / transform.deriv(x),
+        atol=1e-4,
+    )
 
 
 @pytest.mark.parametrize(
     "transform, fx, coeffs, bd_cond",
     [
         # Test with ode -y + y` + y``=1/x^2
-        [BeckeRTransform(1.0, 5.), fx_complicated_example3, [-1, 1, 1], [(0, 0, 3), (1, 0, 3)]],
         [
-            InverseRTransform(BeckeRTransform(1.0, 5.)),
+            BeckeRTransform(1.0, 5.0),
             fx_complicated_example3,
-            [-1, 1, 1], [(0, 0, 3), (1, 0, 3)]
+            [-1, 1, 1],
+            [(0, 0, 3), (1, 0, 3)],
         ],
-        [BeckeRTransform(1.0, 5.), fx_complicated_example3, [-1, 1, 1], [(0, 0, 3), (1, 0, 3)]],
+        [
+            InverseRTransform(BeckeRTransform(1.0, 5.0)),
+            fx_complicated_example3,
+            [-1, 1, 1],
+            [(0, 0, 3), (1, 0, 3)],
+        ],
+        [
+            BeckeRTransform(1.0, 5.0),
+            fx_complicated_example3,
+            [-1, 1, 1],
+            [(0, 0, 3), (1, 0, 3)],
+        ],
         # Test one with boundary conditions on the derivatives
         [
-            SqTF(1, 3), fx_complicated_example, np.random.uniform(-100, 100, (4,)),
-            [(0, 0, 0), (0, 1, 3), (1, 1, 3)]
+            SqTF(1, 3),
+            fx_complicated_example,
+            np.random.uniform(-100, 100, (4,)),
+            [(0, 0, 0), (0, 1, 3), (1, 1, 3)],
         ],
     ],
 )
 def test_solve_ode_with_and_without_transormation(transform, fx, coeffs, bd_cond):
     r"""Test solve_ode with and without transformation with different bd conditions."""
     x = np.linspace(0.01, 0.999, 20)
-    transf_pts = transform.transform(x)
     sol_with_transform = solve_ode(
-        x, fx, coeffs, bd_cond, transform, tol=1e-8, max_nodes=20000, no_derivatives=False
+        x,
+        fx,
+        coeffs,
+        bd_cond,
+        transform,
+        tol=1e-8,
+        max_nodes=20000,
+        no_derivatives=False,
     )
     init_guess = sol_with_transform(x)
 
