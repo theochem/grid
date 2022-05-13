@@ -2,7 +2,7 @@
 from unittest import TestCase
 
 from grid.atomgrid import AtomGrid
-from grid.interpolate import interpolate, spline_with_atomic_grid
+from grid.interpolate import interpolate_given_splines, spline_with_atomic_grid
 from grid.onedgrid import GaussChebyshev
 from grid.poisson import Poisson
 from grid.rtransform import BeckeRTransform, InverseRTransform
