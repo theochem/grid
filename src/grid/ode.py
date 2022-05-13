@@ -25,8 +25,7 @@ Solves a linear ordinary differential equation of order :math:`K` of the form
     \sum_{k=0}^{K} a_k(x) \frac{d^k y(x)}{dx^k} = f(x)
 
 with boundary conditions on the two end-points for some unknown function
-:math:`y(x)` with independent variable :math:`x`. Currently only supports :math:`K`-th
-order less than or equal to three.
+:math:`y(x)` with independent variable :math:`x`.
 
 It also supports the ability to transform the independent variable :math:`x`
 to another domain :math:`g(x)` for some :math:`K`-th differentiable transformation
