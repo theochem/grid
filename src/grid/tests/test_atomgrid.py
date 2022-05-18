@@ -432,9 +432,10 @@ class TestAtomGrid(TestCase):
             x = r * np.sin(phi) * np.cos(theta)
             y = r * np.sin(phi) * np.sin(theta)
             z = r * np.cos(phi)
-            inters = atgrid.interpolate(np.array((x, y, z)).T, value_array)
+            input_points = np.array((x, y, z)).T
+            interfunc = atgrid.interpolate(value_array)
             assert_allclose(
-                self.helper_func_gauss(np.array([x, y, z]).T), inters, atol=1e-4
+                self.helper_func_gauss(input_points), interfunc(input_points), atol=1e-4
             )
 
     def test_cubicspline_and_interp_mol(self):
@@ -445,11 +446,12 @@ class TestAtomGrid(TestCase):
         values = self.helper_func_power(atgrid.points)
         # spls = atgrid.fit_values(values)
         for i in range(10):
-            interp = atgrid.interpolate(
-                atgrid.points[atgrid.indices[i] : atgrid.indices[i + 1]], values
-            )
+            inter_func = atgrid.interpolate(values)
             # same result from points and interpolation
-            assert_allclose(interp, values[atgrid.indices[i] : atgrid.indices[i + 1]])
+            assert_allclose(
+                inter_func(atgrid.points[atgrid.indices[i] : atgrid.indices[i + 1]]),
+                values[atgrid.indices[i] : atgrid.indices[i + 1]]
+                )
 
     def test_cubicspline_and_interp(self):
         """Test cubicspline interpolation values."""
@@ -464,9 +466,8 @@ class TestAtomGrid(TestCase):
             # spls = atgrid.fit_values(values)
 
             for i in range(10):
-                interp = atgrid.interpolate(
-                    atgrid.points[atgrid.indices[i] : atgrid.indices[i + 1]], values
-                )
+                inter_func = atgrid.interpolate(values)
+                interp = inter_func(atgrid.points[atgrid.indices[i] : atgrid.indices[i + 1]])
                 # same result from points and interpolation
                 assert_allclose(
                     interp, values[atgrid.indices[i] : atgrid.indices[i + 1]]
@@ -480,8 +481,8 @@ class TestAtomGrid(TestCase):
                 # xyz *= rad
                 ref_value = self.helper_func_power(xyz)
 
-                interp = atgrid.interpolate(xyz, values)
-                assert_allclose(interp, ref_value)
+                interp_func = atgrid.interpolate(values)
+                assert_allclose(interp_func(xyz), ref_value)
 
     def test_cubicspline_and_deriv(self):
         """Test spline for derivation."""
@@ -494,22 +495,21 @@ class TestAtomGrid(TestCase):
             # spls = atgrid.fit_values(values)
 
             for i in range(10):
-                interp = atgrid.interpolate(
-                    atgrid.points[atgrid.indices[i] : atgrid.indices[i + 1]],
+                points = atgrid.points[atgrid.indices[i] : atgrid.indices[i + 1]]
+                interp_func = atgrid.interpolate(
                     values,
                     deriv=1,
                 )
                 # same result from points and interpolation
-                ref_deriv = self.helper_func_power_deriv(
-                    atgrid.points[atgrid.indices[i] : atgrid.indices[i + 1]]
-                )
-                assert_allclose(interp, ref_deriv)
+                ref_deriv = self.helper_func_power_deriv(points)
+                assert_allclose(interp_func(points), ref_deriv)
 
             # test random x, y, z with fd
             for _ in range(10):
                 xyz = np.random.rand(10, 3) * np.random.uniform(1, 6)
                 ref_value = self.helper_func_power_deriv(xyz)
-                interp = atgrid.interpolate(xyz, values, deriv=1)
+                interp_func = atgrid.interpolate(values, deriv=1)
+                interp = interp_func(xyz)
                 assert_allclose(interp, ref_value)
 
     def test_error_raises(self):
