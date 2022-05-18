@@ -332,7 +332,7 @@ class AtomGrid(Grid):
             CubicSpline(x=self.rgrid.points, y=sph_val) for sph_val in ml_sph_values
         ]
 
-    def interpolate(self, value_array, deriv=0):
+    def interpolate(self, value_array):
         """Interpolate values at given points on the splines fitted by provided value_array.
 
         Parameters
@@ -351,12 +351,12 @@ class AtomGrid(Grid):
 
         Returns
         -------
-        np.ndarray(N,)
-            the value interpolated at each given points
+        Callable[[np.ndarray(N, 3), int] -> np.ndarray(N)]
+            a callable function can be evalabled given 3D points
         """
         # compute splines for given value_array on grid points
         splines = self.fit_values(value_array)
-        def interpolate_low(points):
+        def interpolate_low(points, deriv=0):
             r_pts, theta, phi = self.convert_cart_to_sph(points).T
             r_values = np.array([spline(r_pts, deriv) for spline in splines])
             r_sph_harm = self._generate_real_sph_harm(self.l_max // 2, theta, phi)
