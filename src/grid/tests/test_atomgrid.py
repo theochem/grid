@@ -496,20 +496,17 @@ class TestAtomGrid(TestCase):
 
             for i in range(10):
                 points = atgrid.points[atgrid.indices[i] : atgrid.indices[i + 1]]
-                interp_func = atgrid.interpolate(
-                    values,
-                    deriv=1,
-                )
+                interp_func = atgrid.interpolate(values)
                 # same result from points and interpolation
                 ref_deriv = self.helper_func_power_deriv(points)
-                assert_allclose(interp_func(points), ref_deriv)
+                assert_allclose(interp_func(points, deriv=1), ref_deriv)
 
             # test random x, y, z with fd
             for _ in range(10):
                 xyz = np.random.rand(10, 3) * np.random.uniform(1, 6)
                 ref_value = self.helper_func_power_deriv(xyz)
-                interp_func = atgrid.interpolate(values, deriv=1)
-                interp = interp_func(xyz)
+                interp_func = atgrid.interpolate(values)
+                interp = interp_func(xyz, deriv=1)
                 assert_allclose(interp, ref_value)
 
     def test_error_raises(self):
