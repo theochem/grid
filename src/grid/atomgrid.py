@@ -324,6 +324,15 @@ class AtomGrid(Grid):
         # rad_values in shape (n_shell, n_sph_harms)
 
         ml_sph_values = np.array(rad_values).T  # shape(n_sph_harms, n_shell)
+
+        # each shell can only integrate upto shell_degree // 2, so if shell_degree < l_max,
+        # the f_{lm} should be set to zero for l > shell_degree // 2. Instead, one could set
+        # truncate the basis of a given shell.
+        for i in range(self.n_shells):
+            if self._degs[i] != self.l_max:
+                num_nonzero_sph = (self._degs[i] // 2 + 1) ** 2
+                ml_sph_values[num_nonzero_sph:, i] = 0.0
+
         # compute radial value at each radial point
         # the total value of each shell is sum(r^2 * r_weight * sph_weight * points_value)
         # where sum(sph_weight) = 4 * Pi
