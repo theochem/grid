@@ -294,12 +294,12 @@ class AtomGrid(Grid):
         center = self.center if center is None else np.asarray(center)
         return convert_cart_to_sph(points, center)
 
-    def fit_values(self, value_array):
+    def fit(self, values):
         """Fit given value arrays into splines that matches atomic grid.
 
         Parameters
         ----------
-        value_array : np.ndarray(N,)
+        values : np.ndarray(N,)
             a 1d-array evaluated at each atomic grid point
 
         Returns
@@ -307,16 +307,16 @@ class AtomGrid(Grid):
         list[scipy.PPoly]
             A list of cubic spline fitted by given value arrays
         """
-        if value_array.size != self.size:
+        if values.size != self.size:
             raise ValueError(
                 "The size of values does not match with the size of grid\n"
-                f"The size of value array: {value_array.size}\n"
+                f"The size of value array: {values.size}\n"
                 f"The size of grid: {self.size}"
             )
         if self._basis is None:
             theta, phi = self.convert_cart_to_sph().T[1:]
             self._basis = self._generate_real_sph_harm(self.l_max // 2, theta, phi)
-        prod_value = self._basis * value_array * self.weights
+        prod_value = self._basis * values * self.weights
         rad_values = [
             np.sum(prod_value[:, self.indices[i] : self.indices[i + 1]], axis=-1)
             for i in range(self.n_shells)
@@ -361,7 +361,7 @@ class AtomGrid(Grid):
             a callable function can be evalabled given 3D points
         """
         # compute splines for given value_array on grid points
-        splines = self.fit_values(value_array)
+        splines = self.fit(value_array)
 
         def interpolate_low(points, deriv=0):
             r_pts, theta, phi = self.convert_cart_to_sph(points).T
