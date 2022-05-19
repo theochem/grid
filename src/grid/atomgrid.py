@@ -341,19 +341,13 @@ class AtomGrid(Grid):
             CubicSpline(x=self.rgrid.points, y=sph_val) for sph_val in ml_sph_values
         ]
 
-    def interpolate(self, values, deriv=0):
+    def interpolate(self, values):
         """Interpolate values at given points on the splines fitted by provided value_array.
 
         Parameters
         ----------
         values : np.ndarray(M,)
             a 1d-array evaluabled at each atomic grid point
-        deriv : int, optional
-            order of derivative to be evaluated on the spline, by default 0
-            0 : the spline value
-            1 : the 1st order deriv of the spline
-            2 : the 2nd order deriv of the spline
-            3 : the 3nd order deriv of the spline, warning: the value is a constant
 
         Returns
         -------
@@ -364,6 +358,18 @@ class AtomGrid(Grid):
         splines = self.fit(values)
 
         def interpolate_low(points, deriv=0):
+            """
+            Parameters
+            ----------
+            points : ndarray(N, 3)
+                Cartesian coordinates of :math:`N` points to evaluate the splines on.
+            deriv : int, optional
+                order of derivative to be evaluated on the spline, by default 0
+                0 : the spline value
+                1 : the 1st order deriv of the spline
+                2 : the 2nd order deriv of the spline
+                3 : the 3nd order deriv of the spline, warning: the value is a constant
+            """
             r_pts, theta, phi = self.convert_cart_to_sph(points).T
             r_values = np.array([spline(r_pts, deriv) for spline in splines])
             r_sph_harm = self._generate_real_sph_harm(self.l_max // 2, theta, phi)
