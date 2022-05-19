@@ -450,8 +450,8 @@ class TestAtomGrid(TestCase):
             # same result from points and interpolation
             assert_allclose(
                 inter_func(atgrid.points[atgrid.indices[i] : atgrid.indices[i + 1]]),
-                values[atgrid.indices[i] : atgrid.indices[i + 1]]
-                )
+                values[atgrid.indices[i] : atgrid.indices[i + 1]],
+            )
 
     def test_cubicspline_and_interp(self):
         """Test cubicspline interpolation values."""
@@ -467,7 +467,9 @@ class TestAtomGrid(TestCase):
 
             for i in range(10):
                 inter_func = atgrid.interpolate(values)
-                interp = inter_func(atgrid.points[atgrid.indices[i] : atgrid.indices[i + 1]])
+                interp = inter_func(
+                    atgrid.points[atgrid.indices[i] : atgrid.indices[i + 1]]
+                )
                 # same result from points and interpolation
                 assert_allclose(
                     interp, values[atgrid.indices[i] : atgrid.indices[i + 1]]
