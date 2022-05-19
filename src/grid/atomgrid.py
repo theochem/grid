@@ -337,9 +337,6 @@ class AtomGrid(Grid):
 
         Parameters
         ----------
-        points : np.ndarray(N, 3)
-            N points to be interpolated on the splines fitted by given values
-            These points are required to be in Cartesian coordinates
         value_array : np.ndarray(M,)
             a 1d-array evaluabled at each atomic grid point
         deriv : int, optional
