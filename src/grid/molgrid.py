@@ -275,12 +275,17 @@ class MolGrid(Grid):
         at_grids = []
         for idx_1, at_num in enumerate(atnums):
             # load predefined_radial sectors and num of points in each sector
+            if type_pruned == 'sg_1':
+                n_rad = data['r_points']
             rad = data[f"{at_num}_rad"]
             npt = data[f"{at_num}_npt"]
             try:
                 # Initialize oned grid with predefined number of radial points
                 onedg_type = importlib.import_module("grid.onedgrid").__getattribute__(rgrid_type)
-                onedg = onedg_type(sum(rad))
+                if type_pruned == 'sg_1':
+                    onedg = onedg_type(n_rad)
+                else:
+                    onedg = onedg_type(sum(rad))
             except AttributeError:
                 raise ValueError('This one dimensional grid is not implemented in Grid package')
             try:
@@ -298,10 +303,19 @@ class MolGrid(Grid):
             # points included in that radial sector
             if type_pruned == 'sg_1':
                 # Sectors obtained with alpha parameter
-                data = get_cov_radii(np.arange(1, 87, 1), "bragg")
-                bragg_radii = dict([(i + 1, radius) for i, radius in enumerate(data)])
+                data_radii = get_cov_radii(np.arange(1, 87, 1), "bragg")
+                bragg_radii = dict([(i + 1, radius) for i, radius in enumerate(data_radii)])
                 sphere_radii = [bragg_radii[at_num] * r for r in rad]
-                points_sector = [rgrid.points[rgrid.points <= r] for r in sphere_radii]
+                sphere_radii.insert(0, 0)
+                points_sector = []
+                for idx, r in enumerate(sphere_radii):
+                    if idx == len(sphere_radii)-1:
+                        raw_points_sector = rgrid.points[rgrid.points > r]
+                    else:
+                        raw_points_sector = rgrid.points[rgrid.points > r]
+                        raw_points_sector = raw_points_sector[
+                                                    raw_points_sector <= sphere_radii[idx + 1]]
+                    points_sector.append(raw_points_sector)
                 sizes = []
                 for idx_2 in range(len(points_sector)):
                     sector_sizes = [npt[idx_2] for r_p in range(len(points_sector[idx_2]))]
