@@ -270,7 +270,7 @@ class AtomGrid(Grid):
         return AngularGrid(pts, new_wts)
 
     def convert_cart_to_sph(self, points=None, center=None):
-        """Convert a set of points from cartesian to spherical coordinates.
+        """Convert a set of points from Cartesian to spherical coordinates.
 
         Parameters
         ----------
@@ -285,7 +285,7 @@ class AtomGrid(Grid):
         -------
         np.ndarray(N, 3)
             Spherical coordinates of atoms respect to the center
-            [radius, azumuthal, polar]
+            (radius :math:`r`, azumuthal :math:`\phi`, polar :math:`\theta`).
         """
         if points is None:
             points = self.points
@@ -293,6 +293,56 @@ class AtomGrid(Grid):
             points = points.reshape(-1, 3)
         center = self.center if center is None else np.asarray(center)
         return convert_cart_to_sph(points, center)
+
+    def spherical_average(self, func_vals):
+        r"""
+        Return spline of the spherical average of a function.
+
+        This function takes a function :math:`f` evaluated on the atomic grid points and returns
+        the spherical average of it defined as:
+
+        .. math::
+            f_{avg}(r) := \frac{\int \int f(r, \theta, \phi) \sin(\theta) d\theta d\phi}{4 \pi}.
+
+        The definition is chosen such that :math:`\int f_{avg}(r) 4\pi r^2 dr`
+        matches the full integral :math:`\int \int \int f(x,y,z)dxdydz`.
+
+        Parameters
+        ----------
+        func_vals : ndarray(N,)
+            The function values evaluated on all :math:`N` points on the atomic grid.
+
+        Returns
+        -------
+        CubicSpline:
+            Cubic spline with input r in the positive real axis and output :math:`f_{avg}(r)`.
+
+        Examples
+        --------
+        # Consider a Gaussian function that takes Cartesian points
+        >>> def func(cart_pts):
+        >>>     return np.exp(-np.linalg.norm(cart_pts, axis=1)**2.0)
+        #
+        >>> radial_grid = GaussLaguerre(alpha=1.0)
+        >>> atgrid = AtomGrid(radial_grid, degrees=[10])
+        >>> func_vals = func(argrid.points)   # Atomic grid points are stored in Cartesian
+        >>> spherical_avg = atgrid.spherical_average(funv_vals)
+        # Evaluate the spherical avg on a set of points in [0, \infty)
+        >>> points = np.arange(0.0, 10.0)
+        >>> evals = spherical_avg(points)  # Should be: e^(-r^2)
+
+        """
+        # Integrate f(r, \theta, \phi) sin(\theta) d\theta d\phi by multiplying against its weights
+        prod_value = func_vals * self.weights
+        radial_coefficients = np.array([
+            np.sum(prod_value[self.indices[i]: self.indices[i + 1]]) for i in range(self.n_shells)
+        ])
+        # Remove the radial weights and r^2 values that are in self.weights
+        radial_coefficients /= (self.rgrid.points**2 * self.rgrid.weights)
+        radial_coefficients[self.rgrid.points < 1e-8] = 0.0
+        # Construct spline of f_{avg}(r)
+        spline = CubicSpline(x=self.rgrid.points, y=radial_coefficients / (4.0 * np.pi))
+        return spline
 
     def fit(self, values):
         """Fit given value arrays into splines that matches atomic grid.
