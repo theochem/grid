@@ -322,7 +322,7 @@ class AtomGrid(Grid):
         # Consider a Gaussian function that takes Cartesian points
         >>> def func(cart_pts):
         >>>     return np.exp(-np.linalg.norm(cart_pts, axis=1)**2.0)
-        #
+        # Construct atomic grid with degree 10 on a radial grid on [0, \infty)
         >>> radial_grid = GaussLaguerre(alpha=1.0)
         >>> atgrid = AtomGrid(radial_grid, degrees=[10])
         >>> func_vals = func(argrid.points)   # Atomic grid points are stored in Cartesian
