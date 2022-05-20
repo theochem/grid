@@ -656,3 +656,37 @@ class TestMolGrid(TestCase):
         fn = np.exp(-2 * dist0) / np.pi + 1.5 * np.exp(-2 * dist1) / np.pi
         occupation = mg.integrate(fn)
         assert_almost_equal(occupation, 2.5, decimal=5)
+
+    def test_pruned_molgrid(self):
+        """Test pruned grid."""
+        nums = np.array([1, 1])
+        coors = np.array([[0, 0, -0.5], [0, 0, 0.5]])
+        becke = BeckeWeights(order=3)
+        # Create radial grid with same points as the pruned for atnum = 1 and sg_0
+        pts = UniformInteger(23)
+        tf = ExpRTransform(1e-5, 2e1)
+        rgrid = tf.transform_1d_grid(pts)
+        mol_grid = MolGrid.pruned_grid(nums, coors,
+                                       'UniformInteger',
+                                       'ExpRTransform,1e-5, 2e1',
+                                       'sg_0',
+                                       becke, rotate=False, store=True)
+        atg1 = AtomGrid(
+            rgrid,
+            sizes=[6, 6, 6, 6, 6, 6, 18, 18, 18,
+                   26, 38, 74, 110, 146, 146, 146,
+                   146, 146, 146, 86, 50, 38, 18],
+            center=coors[0]
+        )
+        atg2 = AtomGrid(
+            rgrid,
+            sizes=[6, 6, 6, 6, 6, 6, 18, 18, 18,
+                   26, 38, 74, 110, 146, 146, 146,
+                   146, 146, 146, 86, 50, 38, 18],
+            center=coors[1]
+        )
+        ref_grid = MolGrid(nums, [atg1, atg2], becke, store=True)
+        print(ref_grid.points)
+        print(mol_grid.points)
+        assert_allclose(ref_grid.points, mol_grid.points)
+        assert_allclose(ref_grid.weights, mol_grid.weights)
