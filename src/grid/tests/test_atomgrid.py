@@ -486,6 +486,59 @@ class TestAtomGrid(TestCase):
                 interp_func = atgrid.interpolate(values)
                 assert_allclose(interp_func(xyz), ref_value)
 
+    def test_spherical_average_of_gaussian(self):
+        r"""Test spherical average of a Gaussian (radial) function is itself and its integral."""
+        def func(sph_points):
+            return np.exp(-sph_points[:, 0]**2.0)
+
+        # Construct Radial Grid and atomic grid with spherical harmonics of degree 10
+        #   for all points.
+        oned_grid = np.arange(0.0, 5.0, 0.001)
+        rad = OneDGrid(oned_grid, np.ones(len(oned_grid)), (0, np.inf))
+        atgrid = AtomGrid(rad, degrees=[5])
+        spherical_pts = atgrid.convert_cart_to_sph(atgrid.points)
+        func_values = func(spherical_pts)
+
+        spherical_avg = atgrid.spherical_average(func_values)
+
+        # Test that the spherical average of a Gaussian is itself
+        numb_pts = 1000
+        random_rad_pts = np.random.uniform(0.02, 1.5, size=(numb_pts,3))
+        spherical_avg2 = spherical_avg(random_rad_pts[:, 0])
+        func_vals = func(random_rad_pts)
+        assert_allclose(spherical_avg2, func_vals, atol=1e-4)
+
+        # Test the integral of spherical average is the integral of Gaussian e^(-x^2)e^(-y^2)...
+        #   from -infinity to infinity which is equal to pi^(3/2)
+        integral = 4.0 * np.pi * np.trapz(y=spherical_avg(oned_grid) * oned_grid**2.0, x=oned_grid)
+        actual_integral = np.sqrt(np.pi)**3.0
+        assert_allclose(actual_integral, integral)
+
+    def test_spherical_average_of_spherical_harmonic(self):
+        r"""Test spherical average of spherical harmonic is zero."""
+        def func(sph_points):
+            # Spherical harmonic of order 6 and magnetic 0
+            r, phi, theta = sph_points.T
+            return np.sqrt(13) / (np.sqrt(np.pi) * 32) * (
+                231 * np.cos(theta)**6.0 - 315 * np.cos(theta)**4.0 + 105 * np.cos(theta)**2.0 - 5.0
+            )
+
+        # Construct Radial Grid and atomic grid with spherical harmonics of degree 10
+        #   for all points.
+        oned_grid = np.arange(0.0, 5.0, 0.001)
+        rad = OneDGrid(oned_grid, np.ones(len(oned_grid)), (0, np.inf))
+        atgrid = AtomGrid(rad, degrees=[10])
+        spherical_pts = atgrid.convert_cart_to_sph(atgrid.points)
+        func_values = func(spherical_pts)
+
+        spherical_avg = atgrid.spherical_average(func_values)
+
+        # Test that the spherical average of a spherical harmonic is zero.
+        numb_pts = 1000
+        random_rad_pts = np.random.uniform(0.02, np.pi, size=(numb_pts, 3))
+        spherical_avg2 = spherical_avg(random_rad_pts[:, 0])
+        assert_allclose(spherical_avg2, 0.0, atol=1e-4)
+
     def test_cubicspline_and_deriv(self):
         """Test spline for derivation."""
         odg = OneDGrid(np.arange(10) + 1, np.ones(10), (0, np.inf))
