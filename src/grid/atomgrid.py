@@ -338,10 +338,17 @@ class AtomGrid(Grid):
             np.sum(prod_value[self.indices[i]: self.indices[i + 1]]) for i in range(self.n_shells)
         ])
         # Remove the radial weights and r^2 values that are in self.weights
-        radial_coefficients /= (self.rgrid.points**2 * self.rgrid.weights)
-        radial_coefficients[self.rgrid.points < 1e-8] = 0.0
+        radial_coefficients /= (self.rgrid.points**2 * self.rgrid.weights * 4 * np.pi)
+        # technically, we should compute a weighted sum using the Angular grid weights, but because
+        # angular grids for each shell are not stored (due to their size), and considering the fact
+        # that the weights values are very similar (and they sum to one), this amounts to computing
+        # the mean of the function on a shell.
+        if np.any(self.rgrid.points < 1e-8):
+           r_index = np.where(self.rgrid.points < 1e-8)[0]
+           for i in r_index:
+               radial_coefficients[i] = np.mean(func_vals[self.indices[i]: self.indices[i + 1]])
         # Construct spline of f_{avg}(r)
-        spline = CubicSpline(x=self.rgrid.points, y=radial_coefficients / (4.0 * np.pi))
+        spline = CubicSpline(x=self.rgrid.points, y=radial_coefficients)
         return spline
 
     def fit(self, values):

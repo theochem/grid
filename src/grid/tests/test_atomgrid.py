@@ -503,7 +503,7 @@ class TestAtomGrid(TestCase):
 
         # Test that the spherical average of a Gaussian is itself
         numb_pts = 1000
-        random_rad_pts = np.random.uniform(0.02, 1.5, size=(numb_pts,3))
+        random_rad_pts = np.random.uniform(0.0, 1.5, size=(numb_pts,3))
         spherical_avg2 = spherical_avg(random_rad_pts[:, 0])
         func_vals = func(random_rad_pts)
         assert_allclose(spherical_avg2, func_vals, atol=1e-4)
