@@ -92,6 +92,23 @@ class TestUtils(TestCase):
             y = xy * np.sin(sph_coor[:, 1])
             assert_allclose(y, pts[:, 1])
 
+    def test_convert_cart_to_sph_origin(self):
+        """Test convert_cart_sph at origin."""
+        # point at origin
+        pts = np.array([[0.0, 0.0, 0.0]])
+        sph_coor = convert_cart_to_sph(pts, center=None)
+        assert_allclose(sph_coor, 0.0)
+        # point very close to origin
+        pts = np.array([[1.0e-15, 1.0e-15, 1.0e-15]])
+        sph_coor = convert_cart_to_sph(pts, center=None)
+        assert sph_coor[0, 0] < 1.0e-12
+        assert np.all(sph_coor[0, 1:] < 1.0)
+        # point very very close to origin
+        pts = np.array([[1.0e-100, 1.0e-100, 1.0e-100]])
+        sph_coor = convert_cart_to_sph(pts, center=None)
+        assert sph_coor[0, 0] < 1.0e-12
+        assert np.all(sph_coor[0, 1:] < 1.0)
+
     def test_raise_errors(self):
         """Test raise proper errors."""
         with self.assertRaises(ValueError):

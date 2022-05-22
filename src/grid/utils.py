@@ -267,6 +267,8 @@ def convert_cart_to_sph(points, center=None):
     r = np.linalg.norm(relat_pts, axis=-1)
     # polar angle: arccos(z / r)
     phi = np.arccos(relat_pts[:, 2] / r)
+    # fix nan generated when point is [0.0, 0.0, 0.0]
+    phi[r == 0.0] = 0.0
     # azimuthal angle arctan2(y / x)
     theta = np.arctan2(relat_pts[:, 1], relat_pts[:, 0])
     return np.vstack([r, theta, phi]).T
