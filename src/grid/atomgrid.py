@@ -341,14 +341,17 @@ class AtomGrid(Grid):
         ])
         # Remove the radial weights and r^2 values that are in self.weights
         radial_coefficients /= (self.rgrid.points**2 * self.rgrid.weights * 4 * np.pi)
-        # technically, we should compute a weighted sum using the Angular grid weights, but because
-        # angular grids for each shell are not stored (due to their size), and considering the fact
-        # that the weights values are very similar (and they sum to one), this amounts to computing
-        # the mean of the function on a shell.
+        # For radius smaller than 1.0e-8, the spherical average is computed directly by a weighted
+        # sum using Angular grid weights. As an approximate, and to void generating/storing the
+        # Angular grid, one could use the mean of the function value on the shell, because the
+        # weight values are very similar (and they add up to one).
         if np.any(self.rgrid.points < 1e-8):
            r_index = np.where(self.rgrid.points < 1e-8)[0]
            for i in r_index:
-               radial_coefficients[i] = np.mean(func_vals[self.indices[i]: self.indices[i + 1]])
+               # build angular grid for i-th shell
+               agrid = AngularGrid(degree=self._degs[i])
+               values = func_vals[self.indices[i]: self.indices[i + 1]] * agrid.weights
+               radial_coefficients[i] = np.sum(values) / (4.0 * np.pi)
         # Construct spline of f_{avg}(r)
         spline = CubicSpline(x=self.rgrid.points, y=radial_coefficients)
         return spline
