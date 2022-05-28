@@ -19,6 +19,8 @@
 # --
 """Utils function module."""
 import numpy as np
+from scipy.special import sph_harm
+
 
 _bragg = np.array(
     [
@@ -240,6 +242,77 @@ def get_cov_radii(atnums, type="bragg"):
         raise ValueError(f"Not supported radii type, got {type}")
 
 
+def generate_real_spherical_harmonics(l_max, theta, phi):
+    r"""Generate real spherical harmonics up to degree :math:`l` and for all orders :math:`m`.
+
+    The real spherical harmonics are defined as a function
+    :math:`Y_{lm} : L^2(S^2) \rightarrow \mathbb{R}` such that
+
+    .. math::
+        Y_{lm} = \begin{cases}
+            \frac{i}{\sqrt{2}} (Y^m_l - (-1)^m Y_l^{-m} & \text{if } < m < 0 \\
+            Y_l^0 & \text{if } m = 0 \\
+            \frac{1}{\sqrt{2}} (Y^{-|m|}_{l} + (-1)^m Y_l^m) & \text{if } m > 0
+        \end{cases},
+
+    where :math:`l \in \mathbb{N}`, :math:`m \in \{-l_{max}, \cdots, l_{max} \}` and
+    :math:`Y^m_l` is the complex spherical harmonic.
+
+    Parameters
+    ----------
+    l_max : int
+        Largest angular degree of the spherical harmonics.
+    theta : np.ndarray(N,)
+        Azimuthal angle :math:`\theta \in [0, 2\pi]` that are being evaluated on.
+        If this angle is outside of bounds, then periodicity is used.
+    phi : np.ndarray(N,)
+        Polar angle :math:`\phi \in [0, \pi]` that are being evaluated on.
+        If this angle is outside of bounds, then periodicity is used.
+
+    Returns
+    -------
+    ndarray((l_max + 1)**2, N)
+        Value of real spherical harmonics of all orders :math:`m`,and degree
+        :math:`l` spherical harmonics. For each degree, the zeroth order
+        is stored, followed by positive orders then negative.
+
+    Examples
+    --------
+    To obtain the l-th degree for all orders
+    >>> spherical_harmonic = generate_real_spherical_harmonics(5, theta, phi)
+    >>> desired_degree = 2
+    >>> spherical_harmonic[(desired_degree)**2: (desired_degree + 1)**2, :]
+
+    """
+    if l_max < 0:
+        raise ValueError(f"lmax needs to be >=0, got l_amx={l_max}")
+
+    total_sph = np.zeros((0, len(theta)), dtype=float)
+    l_list = np.arange(l_max + 1)
+    for l_val in l_list:
+        # generate m=0 real spheric
+        zero_real_sph = sph_harm(0, l_val, theta, phi).real
+
+        # generate order m=positive real spheric
+        m_list_p = np.arange(1, l_val + 1, dtype=float)
+        pos_real_sph = (
+            sph_harm(m_list_p[:, None], l_val, theta, phi).real
+            * np.sqrt(2)
+            * (-1) ** m_list_p[:, None]
+        )
+        # generate order m=negative real spherical harmonic
+        m_list_n = np.arange(-l_val, 0, dtype=float)
+        neg_real_sph = (
+            sph_harm(m_list_n[:, None], l_val, theta, phi).imag
+            * np.sqrt(2)
+            * (-1) ** m_list_n[:, None]
+        )
+        total_sph = np.vstack(
+            (total_sph, zero_real_sph, pos_real_sph, neg_real_sph)
+        )
+    return total_sph
+
+
 def convert_cart_to_sph(points, center=None):
     """Convert a set of points from cartesian to spherical coordinates.
 
@@ -255,7 +328,7 @@ def convert_cart_to_sph(points, center=None):
     -------
     np.ndarray(N, 3)
         Spherical coordinates of atoms respect to the center
-        [radius, azumuthal, polar]
+        [radius :math:`r`, azumuthal :math:`\theta`, polar :math:`\phi`]
     """
     if points.ndim != 2 or points.shape[1] != 3:
         raise ValueError(f"points array requires shape (N, 3), got: {points.ndim}")
