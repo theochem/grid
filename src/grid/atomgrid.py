@@ -22,7 +22,7 @@
 
 from grid.basegrid import Grid, OneDGrid
 from grid.lebedev import AngularGrid
-from grid.utils import convert_cart_to_sph
+from grid.utils import convert_cart_to_sph, generate_real_spherical_harmonics
 
 from importlib_resources import path
 
@@ -438,51 +438,6 @@ class AtomGrid(Grid):
             return np.einsum("ij, ij -> j", r_values, r_sph_harm)
 
         return interpolate_low
-
-    @staticmethod
-    def _generate_real_sph_harm(l_max, theta, phi):
-        """Generate real spherical harmonics.
-
-        Parameters
-        ----------
-        l_max : int
-            largest angular degree
-        theta : np.ndarray(N,)
-            azimuthal angles
-        phi : np.ndarray(N,)
-            polar angles
-
-        Returns
-        -------
-        np.ndarray((l_max + 1)**2, N)
-            value of angular grid in each m, n spherical harmonics
-        """
-        if l_max < 0:
-            raise ValueError(f"lmax needs to be >=0, got l_amx={l_max}")
-        total_sph = np.zeros((0, len(theta)), dtype=float)
-        l_list = np.arange(l_max + 1)
-        for l_val in l_list:
-            # generate l=0 real spheric
-            zero_real_sph = sph_harm(0, l_val, theta, phi).real
-
-            # generate l=positive real spheric
-            m_list_p = np.arange(1, l_val + 1, dtype=float)
-            pos_real_sph = (
-                sph_harm(m_list_p[:, None], l_val, theta, phi).real
-                * np.sqrt(2)
-                * (-1) ** m_list_p[:, None]
-            )
-            # generate l=negative real spheric
-            m_list_n = np.arange(-l_val, 0, dtype=float)
-            neg_real_sph = (
-                sph_harm(m_list_n[:, None], l_val, theta, phi).imag
-                * np.sqrt(2)
-                * (-1) ** m_list_n[:, None]
-            )
-            total_sph = np.vstack(
-                (total_sph, zero_real_sph, pos_real_sph, neg_real_sph)
-            )
-        return total_sph
 
     @staticmethod
     def _input_type_check(rgrid, center):
