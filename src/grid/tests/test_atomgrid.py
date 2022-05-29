@@ -27,6 +27,7 @@ from grid.basegrid import Grid, OneDGrid
 from grid.lebedev import AngularGrid, LEBEDEV_DEGREES
 from grid.onedgrid import GaussLegendre, UniformInteger
 from grid.rtransform import BeckeRTransform, IdentityRTransform, PowerRTransform
+from grid.utils import generate_real_spherical_harmonics
 
 import numpy as np
 from numpy.testing import (
@@ -297,7 +298,7 @@ class TestAtomGrid(TestCase):
         center = np.random.rand(3)
         atgrid = AtomGrid(rad_grid, degrees=[7], center=center)
         points = np.random.rand(100, 3)
-        calc_sph = atgrid.convert_cart_to_sph(points)
+        calc_sph = atgrid.convert_cartesian_to_spherical(points)
         # compute ref result
         ref_coor = points - center
         # radius
@@ -311,7 +312,7 @@ class TestAtomGrid(TestCase):
 
         # test single point
         point = np.random.rand(3)
-        calc_sph = atgrid.convert_cart_to_sph(point)
+        calc_sph = atgrid.convert_cartesian_to_spherical(point)
         ref_coor = point - center
         r = np.linalg.norm(ref_coor)
         theta = np.arctan2(ref_coor[1], ref_coor[0])
@@ -368,36 +369,37 @@ class TestAtomGrid(TestCase):
         dzf = 8 * points[:, 2] * points[:, 2] / r
         return dxf + dyf + dzf
 
-    def test_generate_spherical(self):
-        """Test generated real spherical harmonics values."""
-        atgrid = AngularGrid(degree=7)
-        pts = atgrid.points
-        wts = atgrid.weights
-        r = np.linalg.norm(pts, axis=1)
-        # polar
-        phi = np.arccos(pts[:, 2] / r)
-        # azimuthal
-        theta = np.arctan2(pts[:, 1], pts[:, 0])
-        # generate spherical harmonics
-        sph_h = AtomGrid._generate_real_sph_harm(3, theta, phi)  # l_max = 3
-        assert sph_h.shape == (16, 26)
-        for _ in range(100):
-            n1, n2 = np.random.randint(0, 16, 2)
-            re = sum(sph_h[n1] * sph_h[n2] * wts)
-            if n1 != n2:
-                print(n1, n2, re)
-                assert_almost_equal(re, 0)
-            else:
-                print(n1, n2, re)
-                assert_almost_equal(re, 1)
+    def test_integrating_angular_components(self):
+        # Test radial points that contain zero
+        odg = OneDGrid(np.array([0.0, 1e-16, 1e-8, 1e-4, 1e-2]), np.ones(5), (0, np.inf))
+        atom_grid = AtomGrid(odg, degrees=[3])
+        spherical = atom_grid.convert_cartesian_to_spherical()
+        # Evaluate all spherical harmonics on the atomic grid points (r_i, theta_j, phi_j).
+        spherical_harmonics = generate_real_spherical_harmonics(
+            3, spherical[:, 1], spherical[:, 2]  # theta, phi points
+        )
+        # Convert to three-dimensional array (Degrees, Order, Points)
+        spherical_array = np.zeros((3, 2 * 3 + 1, len(atom_grid.points)))
+        spherical_array[0, 0, :] = spherical_harmonics[0, :] # (l,m) = (0,0)
+        spherical_array[1, 0, :] = spherical_harmonics[1, :] # = (1, 0)
+        spherical_array[1, 1, :] = spherical_harmonics[2, :] # = (1, 1)
+        spherical_array[1, 2, :] = spherical_harmonics[3, :] # = (1, -1)
+        spherical_array[2, 0, :] = spherical_harmonics[4, :] # = (2, 0)
+        spherical_array[2, 1, :] = spherical_harmonics[5, :] # = (2, 2)
+        spherical_array[2, 2, :] = spherical_harmonics[6, :] # = (2, 1)
+        spherical_array[2, 3, :] = spherical_harmonics[7, :] # = (2, -2)
+        spherical_array[2, 4, :] = spherical_harmonics[8, :] # = (2, -1)
 
-        for i in range(10):
-            sph_h = AtomGrid._generate_real_sph_harm(i, theta, phi)
-            assert sph_h.shape == ((i + 1) ** 2, 26)
+        integral = atom_grid.integrate_angular_coordinates(spherical_array)
+        assert integral.shape == (3, 2 * 3 + 1, 5)
+        # Assert that all spherical harmonics except when l=0,m=0 are all zero.
+        assert_almost_equal(integral[0, 0, :], np.sqrt(4.0 * np.pi))
+        assert_almost_equal(integral[0, 1:, :], 0.0)
+        assert_almost_equal(integral[1:, :, :], 0.0)
 
     def test_value_fitting(self):
         """Test spline projection the same as spherical harmonics."""
-        odg = OneDGrid(np.arange(10) + 1, np.ones(10), (0, np.inf))
+        odg = OneDGrid(np.arange(10), np.ones(10), (0, np.inf))
         rad = IdentityRTransform().transform_1d_grid(odg)
         atgrid = AtomGrid.from_pruned(rad, 1, sectors_r=[], sectors_degree=[7])
         values = self.helper_func_power(atgrid.points)
@@ -405,12 +407,12 @@ class TestAtomGrid(TestCase):
         assert len(spls) == 16
 
         for shell in range(1, 11):
-            sh_grid = atgrid.get_shell_grid(shell - 1, r_sq=False)
-            r = np.linalg.norm(sh_grid._points, axis=1)
-            theta = np.arctan2(sh_grid._points[:, 1], sh_grid._points[:, 0])
-            phi = np.arccos(sh_grid._points[:, 2] / r)
+            # sh_grid = atgrid.get_shell_grid(shell - 1, r_sq=False)
+            sh_grid = AngularGrid(degree=int(shell - 1))
+            spherical_pts = atgrid.convert_cartesian_to_spherical(sh_grid.points)
+            _, theta, phi = spherical_pts.T
             l_max = atgrid.l_max // 2
-            r_sph = atgrid._generate_real_sph_harm(l_max, theta, phi)
+            r_sph = generate_real_spherical_harmonics(l_max, theta, phi)
             r_sph_proj = np.sum(
                 r_sph * self.helper_func_power(sh_grid.points) * sh_grid.weights,
                 axis=-1,
@@ -496,7 +498,7 @@ class TestAtomGrid(TestCase):
         oned_grid = np.arange(0.0, 5.0, 0.001)
         rad = OneDGrid(oned_grid, np.ones(len(oned_grid)), (0, np.inf))
         atgrid = AtomGrid(rad, degrees=[5])
-        spherical_pts = atgrid.convert_cart_to_sph(atgrid.points)
+        spherical_pts = atgrid.convert_cartesian_to_spherical(atgrid.points)
         func_values = func(spherical_pts)
 
         spherical_avg = atgrid.spherical_average(func_values)
@@ -528,7 +530,7 @@ class TestAtomGrid(TestCase):
         oned_grid = np.arange(0.0, 5.0, 0.001)
         rad = OneDGrid(oned_grid, np.ones(len(oned_grid)), (0, np.inf))
         atgrid = AtomGrid(rad, degrees=[10])
-        spherical_pts = atgrid.convert_cart_to_sph(atgrid.points)
+        spherical_pts = atgrid.convert_cartesian_to_spherical(atgrid.points)
         func_values = func(spherical_pts)
 
         spherical_avg = atgrid.spherical_average(func_values)
@@ -623,8 +625,6 @@ class TestAtomGrid(TestCase):
             rgrid = OneDGrid(np.arange(-1, 1, 1), np.ones(2))
             AtomGrid(rgrid, degrees=[2])
 
-        with self.assertRaises(ValueError):
-            AtomGrid._generate_real_sph_harm(-1, np.random.rand(10), np.random.rand(10))
         with self.assertRaises(ValueError):
             oned = GaussLegendre(30)
             btf = BeckeRTransform(0.0001, 1.5)

@@ -269,8 +269,23 @@ class AtomGrid(Grid):
             new_wts = wts
         return AngularGrid(pts, new_wts)
 
-    def convert_cart_to_sph(self, points=None, center=None):
+    def convert_cartesian_to_spherical(self, points=None, center=None):
         """Convert a set of points from Cartesian to spherical coordinates.
+
+        The conversion is defined as
+
+        .. math::
+            \begin{align}
+                r &= \sqrt{x^2 + y^2 + z^2}\\
+                \theta &= arc\tan (\frac{y}{x})\\
+                \phi &= arc\cos(\frac{z}{r})
+            \end{align}
+
+        with the canonical choice :math:`r=0`, then :math:`\theta,\phi = 0`.
+        If the points is not specified, then atomic grid points are used
+        and the canonical choice when :math:`r=0`, is the points
+        :math:`(r=0, \theta_j, \phi_j)` where :math:`(\theta_j, \phi_j)` come
+        from the Angular/Lebedev grid with the degree at :math:`r=0`.
 
         Parameters
         ----------
@@ -285,14 +300,31 @@ class AtomGrid(Grid):
         -------
         np.ndarray(N, 3)
             Spherical coordinates of atoms respect to the center
-            (radius :math:`r`, azumuthal :math:`\phi`, polar :math:`\theta`).
+            (radius :math:`r`, azimuthal :math:`\theta`, polar :math:`\phi`).
+
         """
+        is_atomic = False
         if points is None:
             points = self.points
+            is_atomic = True
         if points.ndim == 1:
             points = points.reshape(-1, 3)
         center = self.center if center is None else np.asarray(center)
-        return convert_cart_to_sph(points, center)
+        spherical_points = convert_cart_to_sph(points, center)
+        # If atomic grid points are being converted, then choose canonical angles (when r=0)
+        # to be from the degree specified of that point.  The reasoning is to insure that
+        # the integration of spherical harmonic when l=l, m=0, is zero even when r=0.
+        if is_atomic:
+            r_index = np.where(self.rgrid.points == 0.0)[0]
+            for i in r_index:
+                # build angular grid for the degree at r=0
+                agrid = AngularGrid(degree=self._degs[i])
+                start_index = self._indices[i]
+                final_index = self._indices[i + 1]
+                spherical_points[start_index:final_index, 1:] = \
+                    convert_cart_to_sph(agrid.points)[:, 1:]
+        return spherical_points
+
 
     def integrate_angular_coordinates(self, func_vals):
         r"""Integrate the angular coordinates of sequence of functions.
@@ -417,7 +449,7 @@ class AtomGrid(Grid):
                 f"The size of grid: {self.size}"
             )
         if self._basis is None:
-            theta, phi = self.convert_cart_to_sph().T[1:]
+            theta, phi = self.convert_cartesian_to_spherical().T[1:]
             # Going up to `self.l_max // 2` is explained below.
             self._basis = generate_real_spherical_harmonics(self.l_max // 2, theta, phi)
         # Multiply spherical harmonic basis with the function values to project.
@@ -465,7 +497,7 @@ class AtomGrid(Grid):
                 2 : the 2nd order deriv of the spline
                 3 : the 3nd order deriv of the spline, warning: the value is a constant
             """
-            r_pts, theta, phi = self.convert_cart_to_sph(points).T
+            r_pts, theta, phi = self.convert_cartesian_to_spherical(points).T
             r_values = np.array([spline(r_pts, deriv) for spline in splines])
             r_sph_harm = generate_real_spherical_harmonics(self.l_max // 2, theta, phi)
             return np.einsum("ij, ij -> j", r_values, r_sph_harm)
