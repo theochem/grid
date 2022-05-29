@@ -201,8 +201,8 @@ class TestAtomGrid(TestCase):
         rad_pts = np.array([0.1, 0.5, 1])
         rad_wts = np.array([0.3, 0.4, 0.3])
         rad_grid = OneDGrid(rad_pts, rad_wts)
-        degs = np.array([3, 5, 7])
-        pts, wts, ind = AtomGrid._generate_atomic_grid(rad_grid, degs)
+        degs = np.array([2, 5, 7])
+        pts, wts, ind, degrees = AtomGrid._generate_atomic_grid(rad_grid, degs)
         assert len(pts) == 46
         assert_equal(ind, [0, 6, 20, 46])
         # set tests for slicing grid from atomic grid
@@ -222,11 +222,11 @@ class TestAtomGrid(TestCase):
         rad_pts = np.array([0.1, 0.5, 1])
         rad_wts = np.array([0.3, 0.4, 0.3])
         rad_grid = OneDGrid(rad_pts, rad_wts)
-        degs = np.array([3, 5, 7])
+        degs = np.array([2, 5, 7])
         # origin center
         # randome center
-        pts, wts, ind = AtomGrid._generate_atomic_grid(rad_grid, degs)
-        ref_pts, ref_wts, ref_ind = AtomGrid._generate_atomic_grid(rad_grid, degs)
+        pts, wts, ind, _ = AtomGrid._generate_atomic_grid(rad_grid, degs)
+        ref_pts, ref_wts, ref_ind, _ = AtomGrid._generate_atomic_grid(rad_grid, degs)
         # diff grid points diff by center and same weights
         assert_allclose(pts, ref_pts)
         assert_allclose(wts, ref_wts)

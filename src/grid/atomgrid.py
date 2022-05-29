@@ -95,9 +95,8 @@ class AtomGrid(Grid):
             )
         if len(degrees) == 1:
             degrees = np.ones(rgrid.size, dtype=int) * degrees
-        self._degs = degrees
-        self._points, self._weights, self._indices = self._generate_atomic_grid(
-            self._rgrid, self._degs, rotate=self._rot
+        self._points, self._weights, self._indices, self._degs = self._generate_atomic_grid(
+            self._rgrid, degrees, rotate=self._rot
         )
         self._size = self._weights.size
         self._basis = None
@@ -217,19 +216,24 @@ class AtomGrid(Grid):
         return self._rgrid
 
     @property
+    def degrees(self):
+        r"""ndarray(N,): Return the degree of each angular/Lebedev grid at each radial point."""
+        return self._degs
+
+    @property
     def points(self):
-        """np.npdarray(N, 3): Cartesian coordinates of the grid points."""
+        """ndarray(N, 3): Cartesian coordinates of the grid points."""
         return self._points + self._center
 
     @property
     def indices(self):
-        """np.ndarray(M+1,): Indices saved for each spherical shell."""
+        """ndarray(M+1,): Indices saved for each spherical shell."""
         # M is the number of points on radial grid.
         return self._indices
 
     @property
     def center(self):
-        """np.ndarray(3,): Cartesian coordinates of the grid center."""
+        """ndarray(3,): Cartesian coordinates of the grid center."""
         return self._center
 
     @property
@@ -459,8 +463,8 @@ class AtomGrid(Grid):
         # the f_{lm} should be set to zero for l > shell_degree // 2. Instead, one could set
         # truncate the basis of a given shell.
         for i in range(self.n_shells):
-            if self._degs[i] != self.l_max:
-                num_nonzero_sph = (self._degs[i] // 2 + 1) ** 2
+            if self.degrees[i] != self.l_max:
+                num_nonzero_sph = (self.degrees[i] // 2 + 1) ** 2
                 ml_sph_values[num_nonzero_sph:, i] = 0.0
 
         # Return a spline for each spherical harmonic with maximum degree `self.l_max // 2`.
@@ -593,7 +597,7 @@ class AtomGrid(Grid):
 
     @staticmethod
     def _generate_atomic_grid(rgrid, degrees, rotate=False):
-        """Generate atomic grid for each radial point with angular degree L.
+        """Generate atomic grid for each radial point with angular degree.
 
         Parameters
         ----------
@@ -609,16 +613,18 @@ class AtomGrid(Grid):
 
         Returns
         -------
-        tuple(np.ndarray(M,), np.ndarray(M,), np.ndarray(N,)),
-            grid points, grid weights, and indices for each shell.
+        tuple(np.ndarray(M,), np.ndarray(M,), ndarray(N + 1,), ndarray(N,)),
+            Atomic grid points, atomic grid weights, indices and degrees for each shell.
         """
         if len(degrees) != rgrid.size:
             raise ValueError("The shape of radial grid does not match given degs.")
         all_points, all_weights = [], []
 
         shell_pt_indices = np.zeros(len(degrees) + 1, dtype=int)  # set index to int
+        actual_degrees = []  # The actual degree used to construct the Angular/lebedev grid.
         for i, deg_i in enumerate(degrees):  # TODO: proper tests
             sphere_grid = AngularGrid(degree=deg_i)
+            actual_degrees.append(sphere_grid.degree)
             if rotate is False:
                 pass
             # if rotate is True, rotate each shell
@@ -644,4 +650,4 @@ class AtomGrid(Grid):
         indices = shell_pt_indices
         points = np.vstack(all_points)
         weights = np.hstack(all_weights)
-        return points, weights, indices
+        return points, weights, indices, actual_degrees
