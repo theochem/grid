@@ -257,7 +257,7 @@ class AngularGrid(Grid):
                 "Both degree and size arguments are given, so only degree is used!",
                 RuntimeWarning,
             )
-        if degree:
+        if degree is not None:
             leb_degs = list(LEBEDEV_DEGREES.keys())
             max_degree = max(leb_degs)
             if degree < 0 or degree > max_degree:
