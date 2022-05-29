@@ -294,6 +294,51 @@ class AtomGrid(Grid):
         center = self.center if center is None else np.asarray(center)
         return convert_cart_to_sph(points, center)
 
+    def integrate_angular_coordinates(self, func_vals):
+        r"""Integrate the angular coordinates of sequence of functions.
+
+        Given a series of functions :math:`f_k \in L^2(\mathbb{R}^3)`, this returns the values
+        
+        .. math::
+            f_k(r_i) = \int \int f(r_i, \theta, \phi) sin(\theta) d\theta d\phi
+
+        on each radial point :math:`r_i` in the atomic grid.
+
+        Parameters
+        ----------
+        func_vals : ndarray(..., N)
+            The function values evaluated on all :math:`N` points on the atomic grid
+            for many types of functions.  This can also be one-dimensional.
+
+        Returns
+        -------
+        ndarray(..., M) :
+            The function :math:`f_{...}(r_i)` on each :math:`M` radial points.
+
+        """
+        # Integrate f(r, \theta, \phi) sin(\theta) d\theta d\phi by multiplying against its weights
+        prod_value = func_vals * self.weights  # Multiply weights to the last axis.
+        # [..., indices] means only take the last axis, this is due func_vals being
+        #  multi-dimensional, take a sum over the last axis only and transpose so that it
+        #  has shape (..., M) where ... is the number of functions and M is the number of
+        #  radial points.
+        radial_coefficients = np.array([
+            np.sum(prod_value[..., self.indices[i]: self.indices[i + 1]],axis=-1) for
+            i in range(self.n_shells)
+        ]).T
+        # Remove the radial weights and r^2 values that are in self.weights
+        radial_coefficients /= (self.rgrid.points ** 2 * self.rgrid.weights)
+        # For radius smaller than 1.0e-8, due to division by zero, we regenerate
+        # the angular grid and calculat ethe integral at those points.
+        if np.any(self.rgrid.points < 1e-8):
+            r_index = np.where(self.rgrid.points < 1e-8)[0]
+            for i in r_index:
+                # build angular grid for i-th shell
+                agrid = AngularGrid(degree=self._degs[i])
+                values = func_vals[..., self.indices[i]: self.indices[i + 1]] * agrid.weights
+                radial_coefficients[..., i] = np.sum(values, axis=-1)
+        return radial_coefficients
+
     def spherical_average(self, func_vals):
         r"""
         Return spline of the spherical average of a function.
@@ -334,58 +379,49 @@ class AtomGrid(Grid):
         >>> assert np.all(abs(evals - np.exp(- points ** 2)) < 1.0e-3)
 
         """
-        # Integrate f(r, \theta, \phi) sin(\theta) d\theta d\phi by multiplying against its weights
-        prod_value = func_vals * self.weights
-        radial_coefficients = np.array([
-            np.sum(prod_value[self.indices[i]: self.indices[i + 1]]) for i in range(self.n_shells)
-        ])
-        # Remove the radial weights and r^2 values that are in self.weights
-        radial_coefficients /= (self.rgrid.points**2 * self.rgrid.weights * 4 * np.pi)
-        # For radius smaller than 1.0e-8, the spherical average is computed directly by a weighted
-        # sum using Angular grid weights. As an approximate, and to void generating/storing the
-        # Angular grid, one could use the mean of the function value on the shell, because the
-        # weight values are very similar (and they add up to one).
-        if np.any(self.rgrid.points < 1e-8):
-           r_index = np.where(self.rgrid.points < 1e-8)[0]
-           for i in r_index:
-               # build angular grid for i-th shell
-               agrid = AngularGrid(degree=self._degs[i])
-               values = func_vals[self.indices[i]: self.indices[i + 1]] * agrid.weights
-               radial_coefficients[i] = np.sum(values) / (4.0 * np.pi)
+        # Integrate f(r, theta, phi) sin(theta) d\theta d\phi
+        f_radial = self.integrate_angular_coordinates(func_vals)
+        f_radial /= (4.0 * np.pi)
         # Construct spline of f_{avg}(r)
-        spline = CubicSpline(x=self.rgrid.points, y=radial_coefficients)
+        spline = CubicSpline(x=self.rgrid.points, y=f_radial)
         return spline
 
-    def fit(self, values):
-        """Fit given value arrays into splines that matches atomic grid.
+    def fit(self, func_vals):
+        """
+        Return spline to interpolate radial components wrt to expansion in real spherical harmonics.
+
+        For fixed r, a function :math:`f(r, \theta, \phi)` is projected onto the spherical
+        harmonic expansion
+
+        .. math::
+            f(r, \theta, \phi) = \sum_{l=0}^\infty \sum_{m=-l}^l \rho^{lm}(r) Y^m_l(\theta, \phi)
+
+        The coefficients :math:`\rho^{lm}(r)` are interpolated using a cubic spline for each
+        consequent :math:`r` values, where one can evaluate :math:`f` on any set of points.
 
         Parameters
         ----------
-        values : np.ndarray(N,)
-            a 1d-array evaluated at each atomic grid point
+        func_vals : ndarray(N,)
+            The function values evaluated on all :math:`N` points on the atomic grid.
 
         Returns
         -------
         list[scipy.PPoly]
             A list of cubic spline fitted by given value arrays
+
         """
-        if values.size != self.size:
+        if func_vals.size != self.size:
             raise ValueError(
                 "The size of values does not match with the size of grid\n"
-                f"The size of value array: {values.size}\n"
+                f"The size of value array: {func_vals.size}\n"
                 f"The size of grid: {self.size}"
             )
         if self._basis is None:
             theta, phi = self.convert_cart_to_sph().T[1:]
-            self._basis = self._generate_real_sph_harm(self.l_max // 2, theta, phi)
-        prod_value = self._basis * values * self.weights
-        rad_values = [
-            np.sum(prod_value[:, self.indices[i] : self.indices[i + 1]], axis=-1)
-            for i in range(self.n_shells)
-        ]
-        # rad_values in shape (n_shell, n_sph_harms)
-
-        ml_sph_values = np.array(rad_values).T  # shape(n_sph_harms, n_shell)
+            # Going up to `self.l_max // 2` is explained below.
+            self._basis = generate_real_spherical_harmonics(self.l_max // 2, theta, phi)
+        # Multiply spherical harmonic basis with the function values to project.
+        ml_sph_values = self.integrate_angular_coordinates(self._basis * func_vals)
 
         # each shell can only integrate upto shell_degree // 2, so if shell_degree < l_max,
         # the f_{lm} should be set to zero for l > shell_degree // 2. Instead, one could set
@@ -395,10 +431,7 @@ class AtomGrid(Grid):
                 num_nonzero_sph = (self._degs[i] // 2 + 1) ** 2
                 ml_sph_values[num_nonzero_sph:, i] = 0.0
 
-        # compute radial value at each radial point
-        # the total value of each shell is sum(r^2 * r_weight * sph_weight * points_value)
-        # where sum(sph_weight) = 4 * Pi
-        ml_sph_values /= self.rgrid.points ** 2 * self.rgrid.weights
+        # Return a spline for each spherical harmonic with maximum degree `self.l_max // 2`.
         return [
             CubicSpline(x=self.rgrid.points, y=sph_val) for sph_val in ml_sph_values
         ]
@@ -434,7 +467,7 @@ class AtomGrid(Grid):
             """
             r_pts, theta, phi = self.convert_cart_to_sph(points).T
             r_values = np.array([spline(r_pts, deriv) for spline in splines])
-            r_sph_harm = self._generate_real_sph_harm(self.l_max // 2, theta, phi)
+            r_sph_harm = generate_real_spherical_harmonics(self.l_max // 2, theta, phi)
             return np.einsum("ij, ij -> j", r_values, r_sph_harm)
 
         return interpolate_low
