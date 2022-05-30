@@ -202,7 +202,13 @@ class AngularGrid(Grid):
                 LEBEDEV_CACHE[degree] = points, weights
         else:
             points, weights = LEBEDEV_CACHE[degree]
+        self._degree = degree
         super().__init__(points, weights * 4 * np.pi)
+
+    @property
+    def degree(self):
+        r"""The degree of spherical harmonics that this angular grid can integrate exactly."""
+        return self._degree
 
     @staticmethod
     def convert_lebedev_sizes_to_degrees(sizes: np.ndarray):
