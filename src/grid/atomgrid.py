@@ -329,7 +329,6 @@ class AtomGrid(Grid):
                     convert_cart_to_sph(agrid.points)[:, 1:]
         return spherical_points
 
-
     def integrate_angular_coordinates(self, func_vals):
         r"""Integrate the angular coordinates of sequence of functions.
 
@@ -433,8 +432,13 @@ class AtomGrid(Grid):
         .. math::
             f(r, \theta, \phi) = \sum_{l=0}^\infty \sum_{m=-l}^l \rho^{lm}(r) Y^m_l(\theta, \phi)
 
-        The coefficients :math:`\rho^{lm}(r)` are interpolated using a cubic spline for each
-        consequent :math:`r` values, where one can evaluate :math:`f` on any set of points.
+        where :math:`Y^m_l` is the real Spherical harmonic of order :math:`l` and degree :math:`m`.
+        The radial components :math:`\rho^{lm}(r)` are interpolated using a cubic spline and
+        are calculated via integration:
+
+        .. math::
+            \rho^{lm}(r) = \int \int f(r, \theta, \phi) Y^m_l(\theta, \phi) \sin(\theta)
+             d\theta d\phi.
 
         Parameters
         ----------
@@ -444,7 +448,11 @@ class AtomGrid(Grid):
         Returns
         -------
         list[scipy.PPoly]
-            A list of cubic spline fitted by given value arrays
+            A list of size :math:`(l_{max}//2 + 1)**2` of  CubicSpline object for interpolating the
+            coefficients :math:`\rho^{lm}(r)`. The input of spline is array
+            of :math:`N` points on :math:`[0, \infty)` and the output is :\{math:`\rho^{lm}(r_i)\}`.
+            The list starts with degrees :math:`l=0,\cdots l_{max}`, and the for each degree,
+            the zeroth order spline is first, followed by positive orders then negative.
 
         """
         if func_vals.size != self.size:
@@ -458,19 +466,19 @@ class AtomGrid(Grid):
             # Going up to `self.l_max // 2` is explained below.
             self._basis = generate_real_spherical_harmonics(self.l_max // 2, theta, phi)
         # Multiply spherical harmonic basis with the function values to project.
-        ml_sph_values = self.integrate_angular_coordinates(self._basis * func_vals)
-
+        values = np.einsum("ln,n->ln",self._basis, func_vals)
+        radial_components = self.integrate_angular_coordinates(values)
         # each shell can only integrate upto shell_degree // 2, so if shell_degree < l_max,
         # the f_{lm} should be set to zero for l > shell_degree // 2. Instead, one could set
         # truncate the basis of a given shell.
         for i in range(self.n_shells):
             if self.degrees[i] != self.l_max:
                 num_nonzero_sph = (self.degrees[i] // 2 + 1) ** 2
-                ml_sph_values[num_nonzero_sph:, i] = 0.0
+                radial_components[num_nonzero_sph:, i] = 0.0
 
         # Return a spline for each spherical harmonic with maximum degree `self.l_max // 2`.
         return [
-            CubicSpline(x=self.rgrid.points, y=sph_val) for sph_val in ml_sph_values
+            CubicSpline(x=self.rgrid.points, y=sph_val) for sph_val in radial_components
         ]
 
     def interpolate(self, values):
