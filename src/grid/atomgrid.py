@@ -422,7 +422,7 @@ class AtomGrid(Grid):
         spline = CubicSpline(x=self.rgrid.points, y=f_radial)
         return spline
 
-    def fit(self, func_vals):
+    def radial_component_splines(self, func_vals):
         """
         Return spline to interpolate radial components wrt to expansion in real spherical harmonics.
 
@@ -495,7 +495,7 @@ class AtomGrid(Grid):
             a callable function can be evalabled given 3D points
         """
         # compute splines for given value_array on grid points
-        splines = self.fit(values)
+        splines = self.radial_component_splines(values)
 
         def interpolate_low(points, deriv=0):
             """

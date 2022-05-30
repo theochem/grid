@@ -415,7 +415,7 @@ class TestAtomGrid(TestCase):
         for l in range(0, max_degree // 2):
             for m in [0] + [x for x in range(1, l + 1)] + [x for x in range(-l, 0)]:
                 spherical_harm = spherical_harmonics[i, :]
-                radial_components = atom_grid.fit(spherical_harm)
+                radial_components = atom_grid.radial_component_splines(spherical_harm)
                 assert len(radial_components) == (atom_grid.l_max // 2 + 1)**2.0
 
                 radial_pts = np.arange(0.0, 1.0, 0.01)
@@ -443,7 +443,7 @@ class TestAtomGrid(TestCase):
         # Test on the function r^2 * Y^1_3
         func_vals = spherical[:, 0]**2.0 * spherical_harmonic[(3 + 1) ** 2 + 1, :]
         # Fit radial components
-        fit = atom_grid.fit(func_vals)
+        fit = atom_grid.radial_component_splines(func_vals)
         radial_pts = np.arange(0.0, 1.0, 0.01)
         i = 0
         for l in range(0, max_degree // 2):
@@ -462,7 +462,7 @@ class TestAtomGrid(TestCase):
         rad = IdentityRTransform().transform_1d_grid(odg)
         atgrid = AtomGrid.from_pruned(rad, 1, sectors_r=[], sectors_degree=[7])
         values = self.helper_func_power(atgrid.points)
-        spls = atgrid.fit(values)
+        spls = atgrid.radial_component_splines(values)
         assert len(spls) == 16
 
         for shell in range(1, 11):
@@ -689,4 +689,4 @@ class TestAtomGrid(TestCase):
             btf = BeckeRTransform(0.0001, 1.5)
             rad = btf.transform_1d_grid(oned)
             atgrid = AtomGrid.from_preset(rad, atnum=1, preset="fine")
-            atgrid.fit(np.random.rand(100))
+            atgrid.radial_component_splines(np.random.rand(100))
