@@ -320,7 +320,7 @@ class TestAtomGrid(TestCase):
         assert_allclose(np.array([r, theta, phi]).reshape(-1, 3), calc_sph)
 
     def test_spherical_complete(self):
-        """Test atomitc grid consistence for spherical integral."""
+        """Test atomic grid consistence for spherical integral."""
         num_pts = len(LEBEDEV_DEGREES)
         pts = UniformInteger(num_pts)
         for _ in range(10):
@@ -396,6 +396,65 @@ class TestAtomGrid(TestCase):
         assert_almost_equal(integral[0, 0, :], np.sqrt(4.0 * np.pi))
         assert_almost_equal(integral[0, 1:, :], 0.0)
         assert_almost_equal(integral[1:, :, :], 0.0)
+
+    def test_fitting_spherical_harmonics(self):
+        r"""Test fitting the radial components of spherical harmonics is just a one, rest zeros."""
+        max_degree = 10  # Maximum degree
+        rad = OneDGrid(np.linspace(0.0, 1.0, num=10), np.ones(10), (0, np.inf))
+        atom_grid = AtomGrid(rad, degrees=[max_degree])
+        max_degree = atom_grid.l_max
+        spherical = atom_grid.convert_cartesian_to_spherical()
+        # Evaluate all spherical harmonics on the atomic grid points (r_i, theta_j, phi_j).
+        spherical_harmonics = generate_real_spherical_harmonics(
+            max_degree, spherical[:, 1], spherical[:, 2]  # theta, phi points
+        )
+
+        i = 0
+        # Go through each spherical harmonic up to max_degree // 2 and check if projection
+        # for its radial component is one and the rest are all zeros.
+        for l in range(0, max_degree // 2):
+            for m in [0] + [x for x in range(1, l + 1)] + [x for x in range(-l, 0)]:
+                spherical_harm = spherical_harmonics[i, :]
+                radial_components = atom_grid.fit(spherical_harm)
+                assert len(radial_components) == (atom_grid.l_max // 2 + 1)**2.0
+
+                radial_pts = np.arange(0.0, 1.0, 0.01)
+                # Go Through each (l, m)
+                for j, radial_comp in enumerate(radial_components):
+                    # If the current index is j, then projection of spherical harmonic
+                    # onto itself should be all ones, else they are all zero.
+                    if i == j:
+                        assert_almost_equal(radial_comp(radial_pts), 1.0)
+                    else:
+                        assert_almost_equal(radial_comp(radial_pts), 0.0, decimal=8)
+                i += 1
+
+    def test_fitting_product_of_spherical_harmonic(self):
+        r"""Test fitting the radial components of r**2 times spherical harmonic."""
+        max_degree = 7  # Maximum degree
+        rad = OneDGrid(np.linspace(0.0, 1.0, num=10), np.ones(10), (0, np.inf))
+        atom_grid = AtomGrid(rad, degrees=[max_degree])
+        max_degree = atom_grid.l_max
+        spherical = atom_grid.convert_cartesian_to_spherical()
+
+        spherical_harmonic = generate_real_spherical_harmonics(
+            4, spherical[:, 1], spherical[:, 2]  # theta, phi points
+        )
+        # Test on the function r^2 * Y^1_3
+        func_vals = spherical[:, 0]**2.0 * spherical_harmonic[(3 + 1) ** 2 + 1, :]
+        # Fit radial components
+        fit = atom_grid.fit(func_vals)
+        radial_pts = np.arange(0.0, 1.0, 0.01)
+        i = 0
+        for l in range(0, max_degree // 2):
+            for m in [0] + [x for x in range(1, l + 1)] + [x for x in range(-l, 0)]:
+                if i != (3 + 1) ** 2 + 1:
+                    assert_almost_equal(fit[i](radial_pts), 0.0, decimal=8)
+                else:
+                    # Test that on the right spherical harmonic the function r* Y^1_3 projects
+                    # to \rho^{1,3}(r) = r
+                    assert_almost_equal(fit[i](radial_pts), radial_pts**2.0)
+                i += 1
 
     def test_value_fitting(self):
         """Test spline projection the same as spherical harmonics."""
