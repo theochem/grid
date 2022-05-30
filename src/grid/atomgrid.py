@@ -355,24 +355,25 @@ class AtomGrid(Grid):
         # Integrate f(r, \theta, \phi) sin(\theta) d\theta d\phi by multiplying against its weights
         prod_value = func_vals * self.weights  # Multiply weights to the last axis.
         # [..., indices] means only take the last axis, this is due func_vals being
-        #  multi-dimensional, take a sum over the last axis only and transpose so that it
+        #  multi-dimensional, take a sum over the last axis only and swap axes so that it
         #  has shape (..., M) where ... is the number of functions and M is the number of
         #  radial points.
         radial_coefficients = np.array([
             np.sum(prod_value[..., self.indices[i]: self.indices[i + 1]],axis=-1) for
             i in range(self.n_shells)
-        ]).T
+        ])
+        radial_coefficients = np.moveaxis(radial_coefficients, 0, -1) # swap points axes to last
+
         # Remove the radial weights and r^2 values that are in self.weights
         radial_coefficients /= (self.rgrid.points ** 2 * self.rgrid.weights)
         # For radius smaller than 1.0e-8, due to division by zero, we regenerate
         # the angular grid and calculat ethe integral at those points.
-        if np.any(self.rgrid.points < 1e-8):
-            r_index = np.where(self.rgrid.points < 1e-8)[0]
-            for i in r_index:
-                # build angular grid for i-th shell
-                agrid = AngularGrid(degree=self._degs[i])
-                values = func_vals[..., self.indices[i]: self.indices[i + 1]] * agrid.weights
-                radial_coefficients[..., i] = np.sum(values, axis=-1)
+        r_index = np.where(self.rgrid.points < 1e-8)[0]
+        for i in r_index:  # if r_index = [], then for loop doesn't occur.
+            # build angular grid for i-th shell
+            agrid = AngularGrid(degree=self._degs[i])
+            values = func_vals[..., self.indices[i]: self.indices[i + 1]] * agrid.weights
+            radial_coefficients[..., i] = np.sum(values, axis=-1)
         return radial_coefficients
 
     def spherical_average(self, func_vals):
