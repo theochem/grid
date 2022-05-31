@@ -335,7 +335,7 @@ class AtomGrid(Grid):
         return spherical_points
 
     def integrate_angular_coordinates(self, func_vals):
-        r"""Integrate the angular coordinates of sequence of functions.
+        r"""Integrate the angular coordinates of a sequence of functions.
 
         Given a series of functions :math:`f_k \in L^2(\mathbb{R}^3)`, this returns the values
         
@@ -593,7 +593,6 @@ class AtomGrid(Grid):
                 radial_components = np.array([spline(r_pts, 0) for spline in splines])
                 deriv_sph_harm = \
                     generate_derivative_real_spherical_harmonics(self.l_max // 2, theta, phi)
-                print(np.any(np.isnan(deriv_sph_harm)))
                 deriv_r = np.einsum("ij, ij -> j", r_values, r_sph_harm)
                 deriv_theta = np.einsum("ij,ij->j", radial_components, deriv_sph_harm[0, :, :])
                 deriv_phi = np.einsum("ij,ij->j", radial_components, deriv_sph_harm[1, :, :])
