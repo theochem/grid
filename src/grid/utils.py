@@ -316,7 +316,10 @@ def generate_real_spherical_harmonics(l_max, theta, phi):
 
 def generate_derivative_real_spherical_harmonics(l_max, theta, phi):
     r"""
-    Generate derivatives of real spherical harmonics
+    Generate derivatives of real spherical harmonics.
+
+    If :math:`\phi` is zero, then the first component of the derivative wrt to
+    :math:`phi` is set to zero.
 
     Parameters
     ----------
@@ -355,7 +358,10 @@ def generate_derivative_real_spherical_harmonics(l_max, theta, phi):
 
             # Take derivative wrt to phi:
             # for complex spherical  harmonic it is
-            cot_tangent = 1.0 / np.tan(phi)
+            with np.errstate(divide='ignore', invalid='ignore'):
+                cot_tangent = 1.0 / np.tan(phi)
+            cot_tangent[np.abs(np.tan(phi)) < 1e-10] = 0.0
+
             fac = np.sqrt((l_val - m) * (l_val + m + 1))
 
             if m == 0:

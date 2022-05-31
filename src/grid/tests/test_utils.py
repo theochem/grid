@@ -217,8 +217,10 @@ class TestUtils(TestCase):
     ]
 )
 def test_derivative_of_spherical_harmonics_with_finite_difference(numb_pts, max_degree):
-    theta = np.random.uniform(0.0, 2.0 * np.pi, size=(numb_pts,))
-    phi = np.random.uniform(0.0, np.pi, size=(numb_pts,))
+    theta = np.array([1e-5])
+    theta = np.hstack((theta, np.random.uniform(0.0, 2.0 * np.pi, size=(numb_pts,))))
+    phi = np.array([1e-5])
+    phi = np.hstack((phi, np.random.uniform(0.0, np.pi, size=(numb_pts,))))
     eps = 1e-7
     l_max = max_degree
     value = generate_real_spherical_harmonics(l_max, theta, phi)
