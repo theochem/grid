@@ -274,7 +274,8 @@ def generate_real_spherical_harmonics(l_max, theta, phi):
     ndarray((l_max + 1)**2, N)
         Value of real spherical harmonics of all orders :math:`m`,and degree
         :math:`l` spherical harmonics. For each degree, the zeroth order
-        is stored, followed by positive orders then negative.
+        is stored, followed by positive orders then negative orders,ordered as:
+        :math:`(-l, -l + 1, \cdots -1)`.
 
     Examples
     --------
@@ -311,6 +312,84 @@ def generate_real_spherical_harmonics(l_max, theta, phi):
             (total_sph, zero_real_sph, pos_real_sph, neg_real_sph)
         )
     return total_sph
+
+
+def generate_derivative_real_spherical_harmonics(l_max, theta, phi):
+    num_pts = len(theta)
+    output = np.zeros((2, int((l_max + 1)**2), num_pts))
+
+    l_list = np.arange(l_max + 1)
+    sph_harm_vals = generate_real_spherical_harmonics(l_max, theta, phi)
+    i = 0
+    for l_val in l_list:
+        for m in [0] + [x for x in range(1, l_val + 1)] + [x for x in range(-l_val, 0)]:
+            # Take all spherical harmonics at degree l_val
+            sph_harm_degree = sph_harm_vals[(l_val)**2:(l_val + 1)**2, :]
+
+            # Take derivative wrt to theta :
+            # for complex spherical harmonic it is   i m Y^m_l
+            # Not entirely certain why (-1)^m comes from
+            output[1, i, :] = (-1)**(m) * m * sph_harm_degree[-m, :]
+
+            # Take derivative wrt to phi:
+            # for complex spherical  harmonic it is
+            cot_tangent = 1.0 / np.tan(phi)
+            fac = np.sqrt((l_val - m) * (l_val + m + 1))
+
+            if m == 0:
+                if m + 1 <= l_val:
+                    # generate order m=positive real spheric
+                    m_list_p = np.arange(1, l_val + 1, dtype=float)
+                    pos_real_sph = (
+                            sph_harm(m_list_p[:, None], l_val, theta, phi)
+                            * np.sqrt(2)
+                            * (-1) ** m_list_p[:, None]
+                    )
+
+                    # Not certain why the division by sqrt(2.0) is necessary here.
+                    output[0, i, :] -= fac * np.real(
+                        np.exp(- theta * 1.j) * pos_real_sph[0]
+                    ) / np.sqrt(2.0)
+
+            if m > 0:
+                # generate order m=positive real spheric
+                m_list_p = np.arange(1, l_val + 1, dtype=float)
+                pos_real_sph = (
+                        sph_harm(m_list_p[:, None], l_val, theta, phi)
+                        * np.sqrt(2)
+                        * (-1) ** m_list_p[:, None]
+                ) # l=2, [1, 2],, so if m =2
+
+                output[0, i, :] = m * cot_tangent * sph_harm_degree[m, :]
+                # When m == l_val, then fac = 0
+                if m < l_val:
+                    output[0, i, :] -= fac * np.real(
+                        np.exp(- theta * 1.j) * pos_real_sph[m]
+                    ) #/ np.sqrt(2.0)
+
+            elif m < 0:
+                # generate order m=negative real spherical harmonic
+                m_list_n = np.arange(-l_val, 0, dtype=float)
+                neg_real_sph = (
+                        sph_harm(m_list_n[:, None], l_val, theta, phi)
+                        * np.sqrt(2)
+                         * (-1) ** m_list_n[:, None]
+                )
+
+                output[0, i, :] = m * cot_tangent * sph_harm_degree[m, :]
+
+                if -l_val <= m:
+                    # No Idea why you multiply by sqrt(2.0)
+                    if m == -1:
+                        output[0, i, :] -= fac * np.imag(
+                            np.exp(- theta * 1.j) * sph_harm(0, l_val, theta, phi)
+                        ) * np.sqrt(2.0)
+                    else:
+                        output[0, i, :] -= fac * np.imag(
+                            np.exp(- theta * 1.j) * neg_real_sph[m + 1]
+                        )
+            i += 1
+    return output
 
 
 def convert_cart_to_sph(points, center=None):
