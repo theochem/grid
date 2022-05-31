@@ -1,6 +1,6 @@
 """Poisson solver module."""
 
-from grid.interpolate import project_function_onto_spherical_expansion, generate_real_sph_harms
+from grid.utils import generate_real_spherical_harmonics
 from grid.ode import solve_ode
 
 import numpy as np

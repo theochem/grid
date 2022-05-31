@@ -281,6 +281,7 @@ def generate_real_spherical_harmonics(l_max, theta, phi):
     --------
     To obtain the l-th degree for all orders
     >>> spherical_harmonic = generate_real_spherical_harmonics(5, theta, phi)
+    To obtain specific degrees, e.g. l=2
     >>> desired_degree = 2
     >>> spherical_harmonic[(desired_degree)**2: (desired_degree + 1)**2, :]
 

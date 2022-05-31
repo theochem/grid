@@ -2,7 +2,6 @@
 from unittest import TestCase
 
 from grid.atomgrid import AtomGrid
-from grid.interpolate import interpolate_given_splines, spline_with_atomic_grid
 from grid.onedgrid import GaussChebyshev
 from grid.poisson import Poisson
 from grid.rtransform import BeckeRTransform, InverseRTransform
@@ -42,7 +41,7 @@ class TestPoisson(TestCase):
             # assert similar value less than 1e-4 discrepancy
             assert_allclose(result, result_ref, atol=1e-4)
 
-        sph_coor = atgrid.convert_cart_to_sph()[:, 1:3]
+        sph_coor = atgrid.convert_cartesian_to_spherical()[:, 1:3]
         spls_mt = Poisson._proj_sph_value(
             atgrid.rgrid,
             sph_coor,
@@ -74,7 +73,7 @@ class TestPoisson(TestCase):
 
         # test density sum up to np.pi**(3 / 2)
         assert_allclose(p_0, np.pi ** 1.5, atol=1e-4)
-        sph_coor = atgrid.convert_cart_to_sph()[:, 1:3]
+        sph_coor = atgrid.convert_cartesian_to_spherical()[:, 1:3]
         spls_mt = Poisson._proj_sph_value(
             atgrid.rgrid,
             sph_coor,
@@ -152,7 +151,7 @@ class TestPoisson(TestCase):
 
         # test density sum up to np.pi**(3 / 2)
         assert_allclose(p_0, np.pi ** 1.5, atol=1e-4)
-        sph_coor = atgrid.convert_cart_to_sph()[:, 1:3]
+        sph_coor = atgrid.convert_cartesian_to_spherical()[:, 1:3]
         spls_mt = Poisson._proj_sph_value(
             atgrid.rgrid,
             sph_coor,
@@ -210,7 +209,7 @@ class TestPoisson(TestCase):
 
         # test density sum up to np.pi**(3 / 2)
         assert_allclose(p_0, np.pi ** 1.5, atol=1e-4)
-        sph_coor = atgrid.convert_cart_to_sph()
+        sph_coor = atgrid.convert_cartesian_to_spherical()
         with self.assertRaises(ValueError):
             Poisson._proj_sph_value(
                 atgrid.rgrid,

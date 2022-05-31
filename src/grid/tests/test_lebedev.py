@@ -22,13 +22,13 @@
 
 from unittest import TestCase
 
-from grid.interpolate import generate_real_sph_harms
 from grid.lebedev import (
     AngularGrid,
     LEBEDEV_CACHE,
     LEBEDEV_DEGREES,
     LEBEDEV_NPOINTS,
 )
+from grid.utils import generate_real_spherical_harmonics
 
 import numpy as np
 from numpy.testing import (
@@ -88,13 +88,15 @@ class TestLebedev(TestCase):
         theta = np.arctan2(grid.points[:, 1], grid.points[:, 0])
         # Generate All Spherical Harmonics Up To Degree = 3
         #   Returns a three dimensional array where [order m, degree l, points]
-        sph_harm = generate_real_sph_harms(degree, theta, phi)
+        sph_harm = generate_real_spherical_harmonics(degree, theta, phi)
         for l_deg in range(0, 4):
             for m_ord in range(-l_deg, l_deg + 1):
                 for l2 in range(0, 4):
-                    for m2 in range(-l_deg, l_deg + 1):
+                    for m2 in range(-l2, l2 + 1):
+                        sph_harm_one = sph_harm[l_deg**2:(l_deg + 1)**2, :]
+                        sph_harm_two = sph_harm[l2**2:(l2 + 1)**2, :]
                         integral = grid.integrate(
-                            sph_harm[m_ord, l_deg, :] * sph_harm[m2, l2, :]
+                            sph_harm_one[m_ord, :] * sph_harm_two[m2, :]
                         )
                         if l2 != l_deg or m2 != m_ord:
                             assert np.abs(integral) < 1e-8
@@ -111,14 +113,15 @@ class TestLebedev(TestCase):
         theta = np.arctan2(grid.points[:, 1], grid.points[:, 0])
         # Generate All Spherical Harmonics Up To Degree = 3
         #   Returns a three dimensional array where [order m, degree l, points]
-        sph_harm = generate_real_sph_harms(degree, theta, phi)
+        sph_harm = generate_real_spherical_harmonics(degree, theta, phi)
         for l_deg in range(0, 4):
             for m_ord in range(-l_deg, l_deg):
+                sph_harm_one = sph_harm[l_deg ** 2:(l_deg + 1) ** 2, :]
                 if l_deg == 0 and m_ord == 0:
                     actual = np.sqrt(4.0 * np.pi)
-                    assert_equal(actual, grid.integrate(sph_harm[m_ord, l_deg, :]))
+                    assert_equal(actual, grid.integrate(sph_harm_one[m_ord, :]))
                 else:
-                    assert_almost_equal(0.0, grid.integrate(sph_harm[m_ord, l_deg, :]))
+                    assert_almost_equal(0.0, grid.integrate(sph_harm_one[m_ord, :]))
 
     def test_integration_of_spherical_harmonic_not_accurate_beyond_degree(self):
         r"""Test integration of spherical harmonic of degree higher than grid is not accurate."""
@@ -127,11 +130,11 @@ class TestLebedev(TestCase):
         phi = np.arccos(grid.points[:, 2] / r)
         theta = np.arctan2(grid.points[:, 1], grid.points[:, 0])
 
-        sph_harm = generate_real_sph_harms(l_max=6, theta=theta, phi=phi)
+        sph_harm = generate_real_spherical_harmonics(l_max=6, theta=theta, phi=phi)
         # Check that l=4,m=0 gives inaccurate results
-        assert np.abs(grid.integrate(sph_harm[0, 4, :])) > 1e-8
+        assert np.abs(grid.integrate(sph_harm[(4)**2, :])) > 1e-8
         # Check that l=6,m=0 gives inaccurate results
-        assert np.abs(grid.integrate(sph_harm[0, 6, :])) > 1e-8
+        assert np.abs(grid.integrate(sph_harm[(6)**2, :])) > 1e-8
 
     def test_lebedev_cache(self):
         """Test cache behavior of spherical grid."""

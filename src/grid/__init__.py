@@ -26,7 +26,6 @@ from grid.atomgrid import *
 from grid.basegrid import *
 from grid.becke import *
 from grid.hirshfeld import *
-from grid.interpolate import *
 from grid.lebedev import *
 from grid.molgrid import *
 from grid.ode import *
