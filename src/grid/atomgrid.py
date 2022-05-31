@@ -18,11 +18,16 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
 """Module for generating AtomGrid."""
-
+import warnings
 
 from grid.basegrid import Grid, OneDGrid
 from grid.lebedev import AngularGrid
-from grid.utils import convert_cart_to_sph, generate_real_spherical_harmonics
+from grid.utils import (
+    convert_cart_to_sph,
+    convert_derivative_from_spherical_to_cartesian,
+    generate_derivative_real_spherical_harmonics,
+    generate_real_spherical_harmonics,
+)
 
 from importlib_resources import path
 
@@ -481,38 +486,135 @@ class AtomGrid(Grid):
             CubicSpline(x=self.rgrid.points, y=sph_val) for sph_val in radial_components
         ]
 
-    def interpolate(self, values):
-        """Interpolate values at given points on the splines fitted by provided value_array.
+    def interpolate(self, func_vals):
+        r"""
+        Return function that interpolates (and its derivatives) from function values.
+
+        Any real-valued function :math:`f(r, \theta, \phi)` can be decomposed as
+
+        .. math::
+            f(r, \theta, \phi) = \sum_l \sum_{m=-l}^l \sum_i \rho_{ilm}(r) Y_{lm}(\theta, \phi)
+
+        A cubic spline is used to interpolate the radial functions :math:`\sum_i \rho_{ilm}(r)`.
+        This is then multipled by the corresponding spherical harmonics at all
+        :math:`(\theta_j, \phi_j)` angles and summed to obtain the equation above.
 
         Parameters
         ----------
-        values : np.ndarray(M,)
-            a 1d-array evaluabled at each atomic grid point
+        func_vals : np.ndarray(N,)
+            The function values evaluated on all :math:`N` points on the atomic grid.
 
         Returns
         -------
-        Callable[[np.ndarray(N, 3), int] -> np.ndarray(N)]
-            a callable function can be evalabled given 3D points
+        Callable[[np.ndarray(M, 3), int] -> np.ndarray(M)]
+            Callable function that interpolates the function and its derivative provided.
+            The function takes the following attributes:
+                points : ndarray(N, 3)
+                Cartesian coordinates of :math:`N` points to evaluate the splines on.
+                deriv : int, optional
+                    If deriv is zero, then only returns function values. If it is one, then
+                    returns the first derivative of the interpolated function with respect to either
+                    Cartesian or spherical coordinates. Only higher-order derivatives
+                    (`deriv`=2,3) are supported for the derivatives wrt to radial components.
+                deriv_spherical : bool
+                    If True, then returns the derivatives with respect to spherical coordinates
+                    :math:`(r, \theta, \phi)`. Default False.
+                only_radial_derivs : bool
+                    If true, then the derivative wrt to radius :math:`r` is returned.
+            and returns:
+                ndarray(M,...) :
+                    The interpolated function values or its derivatives with respect to Cartesian
+                    :math:`(x,y,z)` or if `deriv_spherical` then :math:`(r, \theta, \phi)` or
+                    if `only_radial_derivs` then derivative wrt to :math:`r` is only returned.
+
+        Examples
+        --------
+        # First generate a atomic grid with raidal points that have all degree 10.
+        >>> from grid.basegrid import OneDGrid
+        >>> radial_grid = OneDGrid(np.linspace(0.01, 10, num=100), np.ones(100), (0, np.inf))
+        >>> atom_grid = AtomGrid(radial_grid, degrees=[10])
+        # Consider the function (3x^2 + 4y^2 + 5z^2)
+        >>> def polynomial_func(pts) :
+        >>>     return 3.0 * points[:, 0]**2.0 + 4.0 * points[:, 1]**2.0 + 5.0 * points[:, 2]**2.0
+        # Evaluate function values and interpolate them
+        >>> func_vals = polynomial_func(atom_grid.points)
+        >>> interpolate_func = atom_grid.interpolate(func_vals)
+        # To interpolate at new points.
+        >>> new_pts = np.array([[1.0, 1.0, 1.0], [0.0, 0.0, 0.0]])
+        >>> interpolate_vals = interpolate_func(new_pts)
+        # Can calculate first derivative wrt to Cartesian or spherical
+        >>> interpolate_derivs = interpolate_func(new_pts, deriv=1)
+        >>> interpolate_derivs_sph = interpolate_func(new_pts, deriv=1, deriv_spherical=True)
+        # Only higher-order derivatives are supported for the radius coordinate r.
+        >>> interpolated_derivs_radial = interpolate_func(new_pts, deriv=2, only_radial_derivs=True)
+
         """
         # compute splines for given value_array on grid points
-        splines = self.radial_component_splines(values)
+        splines = self.radial_component_splines(func_vals)
 
-        def interpolate_low(points, deriv=0):
+        def interpolate_low(points, deriv=0, deriv_spherical=False, only_radial_derivs=False):
             """
             Parameters
             ----------
             points : ndarray(N, 3)
                 Cartesian coordinates of :math:`N` points to evaluate the splines on.
             deriv : int, optional
-                order of derivative to be evaluated on the spline, by default 0
-                0 : the spline value
-                1 : the 1st order deriv of the spline
-                2 : the 2nd order deriv of the spline
-                3 : the 3nd order deriv of the spline, warning: the value is a constant
+                If deriv is zero, then only returns function values. If it is one, then returns
+                the first derivative of the interpolated function with respect to either Cartesian
+                or spherical coordinates. Only higher-order derivatives (`deriv` =2,3) are supported
+                for the derivatives wrt to radial components. `deriv=3` only returns a constant.
+            deriv_spherical : bool
+                If True, then returns the derivatives with respect to spherical coordinates
+                :math:`(r, \theta, \phi)`. Default False.
+            only_radial_derivs : bool
+                If true, then the derivative wrt to radius :math:`r` is returned.
+
+            Returns
+            -------
+            ndarray(M,...) :
+                The interpolated function values or its derivatives with respect to Cartesian
+                :math:`(x,y,z)` or if `deriv_spherical` then :math:`(r, \theta, \phi)` or
+                if `only_radial_derivs` then derivative wrt to :math:`r` is only returned.
+
             """
+            if deriv_spherical and only_radial_derivs:
+                warnings.warn(
+                    "Since `only_radial_derivs` is true, then only the derivative wrt to"
+                    "radius is returned and `deriv_spherical` value is ignored."
+                )
             r_pts, theta, phi = self.convert_cartesian_to_spherical(points).T
             r_values = np.array([spline(r_pts, deriv) for spline in splines])
             r_sph_harm = generate_real_spherical_harmonics(self.l_max // 2, theta, phi)
+
+            # If theta, phi derivaitves are wanted and the derivative is first-order.
+            if not only_radial_derivs and deriv == 1:
+                # Calculate derivative of f with respect to radial, theta, phi
+                # Get derivative of spherical harmonics first.
+                radial_components = np.array([spline(r_pts, 0) for spline in splines])
+                deriv_sph_harm = \
+                    generate_derivative_real_spherical_harmonics(self.l_max // 2, theta, phi)
+                print(np.any(np.isnan(deriv_sph_harm)))
+                deriv_r = np.einsum("ij, ij -> j", r_values, r_sph_harm)
+                deriv_theta = np.einsum("ij,ij->j", radial_components, deriv_sph_harm[0, :, :])
+                deriv_phi = np.einsum("ij,ij->j", radial_components, deriv_sph_harm[1, :, :])
+
+                # If deriv spherical is wanted, then return that.
+                if deriv_spherical:
+                    return np.hstack((deriv_r, deriv_theta, deriv_phi))
+
+                # Convert derivative from spherical to Cartesian:
+                derivs = np.zeros((len(r_pts), 3))
+                # TODO: this could be vectorized properly with memory management.
+                for i_pt in range(0, len(r_pts)):
+                    radial_i, theta_i, phi_i = r_pts[i_pt], theta[i_pt], phi[i_pt]
+                    derivs[i_pt] = convert_derivative_from_spherical_to_cartesian(
+                        deriv_r[i_pt], deriv_theta[i_pt], deriv_phi[i_pt], radial_i, theta_i, phi_i
+                    )
+                return derivs
+            elif not only_radial_derivs and deriv != 0:
+                raise ValueError(f"Higher order derivatives are only supported for derivatives"
+                                 f"with respect to the radius. Deriv is {deriv}.")
+
             return np.einsum("ij, ij -> j", r_values, r_sph_harm)
 
         return interpolate_low
