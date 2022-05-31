@@ -21,10 +21,15 @@
 from unittest import TestCase
 
 from grid.lebedev import AngularGrid
-from grid.utils import convert_cart_to_sph, generate_real_spherical_harmonics, get_cov_radii
+from grid.utils import (
+    convert_cart_to_sph, generate_real_spherical_harmonics,
+    generate_derivative_real_spherical_harmonics,
+    get_cov_radii,
+)
 
 import numpy as np
 from numpy.testing import assert_allclose, assert_almost_equal, assert_equal
+import pytest
 
 
 class TestUtils(TestCase):
@@ -201,3 +206,31 @@ class TestUtils(TestCase):
         with self.assertRaises(ValueError):
             pts = np.random.rand(10, 3)
             convert_cart_to_sph(pts, np.zeros(2))
+
+@pytest.mark.parametrize(
+    "numb_pts, max_degree",
+    [
+        [1000, 10],
+        [5000, 2],
+        [100, 15],
+        [10, 20]
+    ]
+)
+def test_derivative_of_spherical_harmonics_with_finite_difference(numb_pts, max_degree):
+    theta = np.random.uniform(0.0, 2.0 * np.pi, size=(numb_pts,))
+    phi = np.random.uniform(0.0, np.pi, size=(numb_pts,))
+    eps = 1e-7
+    l_max = max_degree
+    value = generate_real_spherical_harmonics(l_max, theta, phi)
+    value_at_eps_theta = generate_real_spherical_harmonics(
+        l_max, theta + eps, phi
+    )
+    value_at_eps_phi = generate_real_spherical_harmonics(
+        l_max, theta, phi + eps
+    )
+    actual_answer = generate_derivative_real_spherical_harmonics(l_max, theta, phi)
+    deriv_theta = (value_at_eps_theta - value) / eps
+    deriv_phi = (value_at_eps_phi - value) / eps
+
+    assert_almost_equal(actual_answer[1, :], deriv_theta, decimal=3)
+    assert_almost_equal(actual_answer[0, :], deriv_phi, decimal=3)
