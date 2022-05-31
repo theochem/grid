@@ -357,8 +357,14 @@ class TestAtomGrid(TestCase):
         x, y, z = points.T
         return np.exp(-(x ** 2)) * np.exp(-(y ** 2)) * np.exp(-(z ** 2))
 
-    def helper_func_power(self, points):
+    def helper_func_power(self, points, deriv=False):
         """Compute function value for test interpolation."""
+        if deriv:
+            deriv = np.zeros((points.shape[0], 3))
+            deriv[:, 0] = 4.0 * points[:, 0]
+            deriv[:, 1] = 6.0 * points[:, 1]
+            deriv[:, 2] = 8.0 * points[:, 2]
+            return deriv
         return 2 * points[:, 0] ** 2 + 3 * points[:, 1] ** 2 + 4 * points[:, 2] ** 2
 
     def helper_func_power_deriv(self, points):
@@ -600,9 +606,9 @@ class TestAtomGrid(TestCase):
         spherical_avg2 = spherical_avg(random_rad_pts[:, 0])
         assert_allclose(spherical_avg2, 0.0, atol=1e-4)
 
-    def test_cubicspline_and_deriv(self):
-        """Test spline for derivation."""
-        odg = OneDGrid(np.arange(10) + 1, np.ones(10), (0, np.inf))
+    def test_interpolate_and_its_derivatives(self):
+        """Test interpolation of derivative of polynomial function."""
+        odg = OneDGrid(np.linspace(0.01, 10, num=50), np.ones(50), (0, np.inf))
         rad = IdentityRTransform().transform_1d_grid(odg)
         for _ in range(10):
             degree = np.random.randint(5, 20)
@@ -614,16 +620,28 @@ class TestAtomGrid(TestCase):
                 points = atgrid.points[atgrid.indices[i] : atgrid.indices[i + 1]]
                 interp_func = atgrid.interpolate(values)
                 # same result from points and interpolation
-                ref_deriv = self.helper_func_power_deriv(points)
-                assert_allclose(interp_func(points, deriv=1), ref_deriv)
+                ref_deriv = self.helper_func_power(points, deriv=1)
+                assert_almost_equal(interp_func(points, deriv=1), ref_deriv)
+
+            # test random x, y, z with fd
+            for _ in range(10):
+                xyz = np.random.rand(10, 3) * np.random.uniform(1, 6)
+                ref_value = self.helper_func_power(xyz, deriv=1)
+                interp_func = atgrid.interpolate(values)
+                interp = interp_func(xyz, deriv=1)
+                assert_allclose(interp, ref_value)
 
             # test random x, y, z with fd
             for _ in range(10):
                 xyz = np.random.rand(10, 3) * np.random.uniform(1, 6)
                 ref_value = self.helper_func_power_deriv(xyz)
                 interp_func = atgrid.interpolate(values)
-                interp = interp_func(xyz, deriv=1)
+                interp = interp_func(xyz, deriv=1, only_radial_derivs=True)
                 assert_allclose(interp, ref_value)
+
+            with self.assertRaises(ValueError):
+                # Raise error since it can't do derivative beyond one.
+                interp_func(xyz, deriv=3)
 
     def test_error_raises(self):
         """Tests for error raises."""
