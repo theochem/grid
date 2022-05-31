@@ -315,6 +315,28 @@ def generate_real_spherical_harmonics(l_max, theta, phi):
 
 
 def generate_derivative_real_spherical_harmonics(l_max, theta, phi):
+    r"""
+    Generate derivatives of real spherical harmonics
+
+    Parameters
+    ----------
+    l_max : int
+        Largest angular degree of the spherical harmonics.
+    theta : np.ndarray(N,)
+        Azimuthal angle :math:`\theta \in [0, 2\pi]` that are being evaluated on.
+        If this angle is outside of bounds, then periodicity is used.
+    phi : np.ndarray(N,)
+        Polar angle :math:`\phi \in [0, \pi]` that are being evaluated on.
+        If this angle is outside of bounds, then periodicity is used.
+
+    Returns
+    -------
+    ndarray(2, (l_max^2 + 1)^2, M)
+        Derivative of spherical harmonics, (theta first, then phi) of all degrees up to
+        :math:`l_{max}` and orders :math:`m`, ordered as
+        :math:`(0, 1, ..., l_{max}, -l_{max}, ..., -1).`
+
+    """
     num_pts = len(theta)
     output = np.zeros((2, int((l_max + 1)**2), num_pts))
 
@@ -329,7 +351,7 @@ def generate_derivative_real_spherical_harmonics(l_max, theta, phi):
             # Take derivative wrt to theta :
             # for complex spherical harmonic it is   i m Y^m_l
             # Not entirely certain why (-1)^m comes from
-            output[1, i, :] = (-1)**(m) * m * sph_harm_degree[-m, :]
+            output[0, i, :] = (-1)**(m) * m * sph_harm_degree[-m, :]
 
             # Take derivative wrt to phi:
             # for complex spherical  harmonic it is
@@ -347,7 +369,7 @@ def generate_derivative_real_spherical_harmonics(l_max, theta, phi):
                     )
 
                     # Not certain why the division by sqrt(2.0) is necessary here.
-                    output[0, i, :] -= fac * np.real(
+                    output[1, i, :] -= fac * np.real(
                         np.exp(- theta * 1.j) * pos_real_sph[0]
                     ) / np.sqrt(2.0)
 
@@ -360,10 +382,10 @@ def generate_derivative_real_spherical_harmonics(l_max, theta, phi):
                         * (-1) ** m_list_p[:, None]
                 ) # l=2, [1, 2],, so if m =2
 
-                output[0, i, :] = m * cot_tangent * sph_harm_degree[m, :]
+                output[1, i, :] = m * cot_tangent * sph_harm_degree[m, :]
                 # When m == l_val, then fac = 0
                 if m < l_val:
-                    output[0, i, :] -= fac * np.real(
+                    output[1, i, :] -= fac * np.real(
                         np.exp(- theta * 1.j) * pos_real_sph[m]
                     ) #/ np.sqrt(2.0)
 
@@ -376,16 +398,16 @@ def generate_derivative_real_spherical_harmonics(l_max, theta, phi):
                          * (-1) ** m_list_n[:, None]
                 )
 
-                output[0, i, :] = m * cot_tangent * sph_harm_degree[m, :]
+                output[1, i, :] = m * cot_tangent * sph_harm_degree[m, :]
 
                 if -l_val <= m:
                     # No Idea why you multiply by sqrt(2.0)
                     if m == -1:
-                        output[0, i, :] -= fac * np.imag(
+                        output[1, i, :] -= fac * np.imag(
                             np.exp(- theta * 1.j) * sph_harm(0, l_val, theta, phi)
                         ) * np.sqrt(2.0)
                     else:
-                        output[0, i, :] -= fac * np.imag(
+                        output[1, i, :] -= fac * np.imag(
                             np.exp(- theta * 1.j) * neg_real_sph[m + 1]
                         )
             i += 1

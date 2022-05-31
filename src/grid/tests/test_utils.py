@@ -232,5 +232,5 @@ def test_derivative_of_spherical_harmonics_with_finite_difference(numb_pts, max_
     deriv_theta = (value_at_eps_theta - value) / eps
     deriv_phi = (value_at_eps_phi - value) / eps
 
-    assert_almost_equal(actual_answer[1, :], deriv_theta, decimal=3)
-    assert_almost_equal(actual_answer[0, :], deriv_phi, decimal=3)
+    assert_almost_equal(actual_answer[0, :], deriv_theta, decimal=3)
+    assert_almost_equal(actual_answer[1, :], deriv_phi, decimal=3)
