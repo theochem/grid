@@ -192,18 +192,18 @@ class AngularGrid(Grid):
                     "because points and weights are provided",
                     RuntimeWarning,
                 )
-            return
-        # map degree and size to the supported (i.e., pre-computed) degree and size
-        degree, size = self._get_lebedev_size_and_degree(degree=degree, size=size)
-        # load pre-computed Lebedev points & weights and make angular grid
-        if degree not in LEBEDEV_CACHE:
-            points, weights = self._load_lebedev_grid(degree, size)
-            if cache:
-                LEBEDEV_CACHE[degree] = points, weights
         else:
-            points, weights = LEBEDEV_CACHE[degree]
-        self._degree = degree
-        super().__init__(points, weights * 4 * np.pi)
+            # map degree and size to the supported (i.e., pre-computed) degree and size
+            degree, size = self._get_lebedev_size_and_degree(degree=degree, size=size)
+            # load pre-computed Lebedev points & weights and make angular grid
+            if degree not in LEBEDEV_CACHE:
+                points, weights = self._load_lebedev_grid(degree, size)
+                if cache:
+                    LEBEDEV_CACHE[degree] = points, weights
+            else:
+                points, weights = LEBEDEV_CACHE[degree]
+            self._degree = degree
+            super().__init__(points, weights * 4 * np.pi)
 
     @property
     def degree(self):
