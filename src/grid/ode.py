@@ -30,7 +30,7 @@ with boundary conditions on the two end-points for some unknown function
 It also supports the ability to transform the independent variable :math:`x`
 to another domain :math:`g(x)` for some :math:`K`-th differentiable transformation
 :math:`g(x)`.  This is particularly useful to convert infinite domains, e.g.
-:math:`[0, \infty)`, to a finite interval. module.
+:math:`[0, \infty)`, to a finite interval.
 """
 
 import warnings
