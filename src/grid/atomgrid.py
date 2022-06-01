@@ -309,19 +309,29 @@ class AtomGrid(Grid):
             AngularGrid at given radial index position and weights.
 
         """
-        ind_start = self._indices[index]
-        ind_end = self._indices[index + 1]
-        pts = self._points[ind_start:ind_end]
-        wts = self._weights[ind_start:ind_end]
-        # try not to modify wts incase some weird situation.
-        if r_sq is False:
-            new_wts = wts / (self._rgrid.points[index] ** 2)
-        else:
-            new_wts = wts
-        return AngularGrid(pts, new_wts)
+        if not (0 <= index < len(self.degrees)):
+            raise ValueError(
+                f"Index {index} should be between 0 and less than number of "
+                f"radial points {len(self.degrees)}."
+            )
+        degree = self.degrees[index]
+        sphere_grid = AngularGrid(degree=degree)
 
-    def convert_cartesian_to_spherical(self, points=None, center=None):
-        """Convert a set of points from Cartesian to spherical coordinates.
+        pts = sphere_grid.points.copy()
+        wts = sphere_grid.weights.copy()
+        # Rotate the points
+        if self.rotate != 0:
+            rot_mt = R.random(random_state=self.rotate + index).as_matrix()
+            pts = pts.dot(rot_mt)
+
+        pts = pts * self.rgrid[index].points
+        wts = wts * self.rgrid[index].weights
+        if r_sq is True:
+            wts = wts * self.rgrid[index].points ** 2
+        return AngularGrid(pts, wts)
+
+    def convert_cartesian_to_spherical(self, points: np.ndarray = None, center: np.ndarray = None):
+        r"""Convert a set of points from Cartesian to spherical coordinates.
 
         The conversion is defined as
 
