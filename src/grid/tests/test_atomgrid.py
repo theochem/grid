@@ -181,20 +181,6 @@ class TestAtomGrid(TestCase):
         )
         assert_equal(atomic_grid_degree, [3, 3, 5, 5, 7, 7, 7, 7, 3, 3])
 
-    # def test_preload_unit_sphere_grid(self):
-    #     """Test for private method to preload spherical grids."""
-    #     degs = [3, 3, 5, 5, 7, 7]
-    #     unit_sphere = AtomGrid._preload_unit_sphere_grid(degs)
-    #     assert len(unit_sphere) == 3
-    #     degs = [3, 4, 5, 6, 7]
-    #     unit_sphere2 = AtomGrid._preload_unit_sphere_grid(degs)
-    #     assert len(unit_sphere2) == 5
-    #     assert_allclose(unit_sphere2[4].points, unit_sphere2[5].points)
-    #     assert_allclose(unit_sphere2[6].points, unit_sphere2[7].points)
-    #     assert not np.allclose(
-    #         unit_sphere2[4].points.shape, unit_sphere2[6].points.shape
-    #     )
-
     def test_generate_atomic_grid(self):
         """Test for generating atomic grid."""
         # setup testing class
@@ -238,9 +224,9 @@ class TestAtomGrid(TestCase):
         rad_wts = np.array([0.3, 0.4, 0.3])
         rad_grid = OneDGrid(rad_pts, rad_wts)
         degs = [3, 5, 7]
-        atgrid = AtomGrid(rad_grid, degrees=degs)
+        atgrid = AtomGrid(rad_grid, degrees=degs, rotate=0)
         # make sure True and 1 is not the same result
-        atgrid1 = AtomGrid(rad_grid, degrees=degs, rotate=True)
+        atgrid1 = AtomGrid(rad_grid, degrees=degs, rotate=10)
         atgrid2 = AtomGrid(rad_grid, degrees=degs, rotate=1)
         # test diff points, same weights
         assert not np.allclose(atgrid.points, atgrid1.points)
@@ -259,10 +245,11 @@ class TestAtomGrid(TestCase):
         assert_almost_equal(res, res1)
         assert_almost_equal(res1, res2)
         # test rotated shells
-        for i in range(len(degs)):
+        for i in range(0, len(degs)):
             non_rot_shell = atgrid.get_shell_grid(i).points
             rot_shell = atgrid2.get_shell_grid(i).points
-            rot_mt = R.random(random_state=1 + i).as_matrix()
+
+            rot_mt = R.random(random_state=atgrid2.rotate + i).as_matrix()
             assert_allclose(rot_shell, non_rot_shell @ rot_mt)
 
     def test_get_shell_grid(self):
@@ -472,8 +459,7 @@ class TestAtomGrid(TestCase):
         assert len(spls) == 16
 
         for shell in range(1, 11):
-            # sh_grid = atgrid.get_shell_grid(shell - 1, r_sq=False)
-            sh_grid = AngularGrid(degree=int(shell - 1))
+            sh_grid = atgrid.get_shell_grid(shell - 1, r_sq=False)
             spherical_pts = atgrid.convert_cartesian_to_spherical(sh_grid.points)
             _, theta, phi = spherical_pts.T
             l_max = atgrid.l_max // 2
@@ -645,7 +631,7 @@ class TestAtomGrid(TestCase):
 
     def test_interpolation_of_laplacian_with_spherical_harmonic(self):
         r"""Test the interpolation of Laplacian of spherical harmonic is eigenvector."""
-        odg = OneDGrid(np.linspace(0.0, 10, num=1000), np.ones(1000), (0, np.inf))
+        odg = OneDGrid(np.linspace(0.0, 10, num=2000), np.ones(2000), (0, np.inf))
         rad = IdentityRTransform().transform_1d_grid(odg)
         degree = 6 * 2 + 2
         atgrid = AtomGrid.from_pruned(rad, 1, sectors_r=[], sectors_degree=[degree])
@@ -664,7 +650,7 @@ class TestAtomGrid(TestCase):
         laplacian = atgrid.interpolate_laplacian(func_values)
 
         # Test on the same points used for interpolation and random points.
-        for grid in [atgrid.points, np.random.uniform(-1.0, 1.0, (250, 3))]:
+        for grid in [atgrid.points, np.random.uniform(-0.75, 0.75, (250, 3))]:
             actual = laplacian(grid)
             spherical_pts = atgrid.convert_cartesian_to_spherical(grid)
             # Eigenvector spherical harmonic times l(l + 1) / r^2
