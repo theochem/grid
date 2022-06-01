@@ -451,7 +451,7 @@ class TestAtomGrid(TestCase):
 
     def test_value_fitting(self):
         """Test spline projection the same as spherical harmonics."""
-        odg = OneDGrid(np.arange(10), np.ones(10), (0, np.inf))
+        odg = OneDGrid(np.arange(10) + 1, np.ones(10), (0, np.inf))
         rad = IdentityRTransform().transform_1d_grid(odg)
         atgrid = AtomGrid.from_pruned(rad, 1, sectors_r=[], sectors_degree=[7])
         values = self.helper_func_power(atgrid.points)
