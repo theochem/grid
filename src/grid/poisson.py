@@ -1,5 +1,6 @@
 """Poisson solver module."""
 
+from grid.atomgrid import AtomGrid
 from grid.utils import generate_real_spherical_harmonics
 from grid.ode import solve_ode
 
@@ -158,3 +159,69 @@ class Poisson:
     #     coeffs = [coeff_0, coeff_1, 1]
     #     bd_cond = [(1, 0, 0), (1, 1, 0)]
     #     return ODE.solve_ode(x_range, f_x, coeffs, bd_cond, transform=tfm)
+
+
+def interpolate_laplacian(atomgrid: AtomGrid, func_vals: np.ndarray):
+    r"""
+    Return a function that interpolates the Laplacian of a function.
+
+    .. math::
+        \Deltaf = \frac{1}{r}\frac{\partial^2 rf}{\partial r^2} - \frac{\hat{L}}{r^2},
+
+    such that the angular momentum operator satisfies :math:`\hat{L}(Y_l^m) = l (l + 1) Y_l^m`.
+    Expanding f in terms of spherical harmonic expansion, we get that
+
+    .. math::
+        \Deltaf = \sum \sum \bigg[\frac{\rho_{lm}^{rf}}{r} -
+        \frac{l(l+1) \rho_{lm}^f}{r^2} \bigg] Y_l^m,
+
+    where :math:`\rho_{lm}^f` is the lth, mth radial component of function f.
+
+    Parameters
+    ----------
+    func_vals : ndarray(N,)
+        The function values evaluated on all :math:`N` points on the atomic grid.
+
+    Returns
+    -------
+    callable[ndarray(M,3) -> ndarray(M,)] :
+        Function that interpolates the Laplacian of a function whose input is
+        Cartesian points.
+
+    """
+    radial, theta, phi = atomgrid.convert_cartesian_to_spherical().T
+    # Multiply f by r to get rf
+    func_vals_radial = radial * func_vals
+
+    # compute spline for the radial components for rf and f
+    radial_comps_rf = atomgrid.radial_component_splines(func_vals_radial)
+    radial_comps_f = atomgrid.radial_component_splines(func_vals)
+
+    def interpolate_laplacian(points):
+        r_pts, theta, phi = atomgrid.convert_cartesian_to_spherical(points).T
+
+        # Evaluate the radial components for function f
+        r_values_f = np.array([spline(r_pts) for spline in radial_comps_f])
+        # Evaluate the second derivatives of splines of radial component of function rf
+        r_values_rf = np.array([spline(r_pts, 2) for spline in radial_comps_rf])
+
+        r_sph_harm = generate_real_spherical_harmonics(atomgrid.l_max // 2, theta, phi)
+
+        # Divide \rho_{lm}^{rf} by r  and \rho_{lm}^{rf} by r^2
+        # l means the angular (l,m) variables and n represents points.
+        with np.errstate(divide='ignore', invalid='ignore'):
+            r_values_rf /= r_pts
+            r_values_rf[:, r_pts < 1e-10] = 0.0
+            r_values_f /= r_pts**2.0
+            r_values_f[:, r_pts**2.0 < 1e-10] = 0.0
+
+        # Multiply \rho_{lm}^f by l(l+1), note 2l+1 orders for each degree l
+        degrees = np.hstack([[x * (x + 1)] * (2 * x + 1) for x in
+                             np.arange(0, atomgrid.l_max // 2 + 1)])
+        second_component = np.einsum("ln,l->ln", r_values_f, degrees)
+        # Compute \rho_{lm}^{rf}/r - \rho_{lm}^f l(l + 1) / r^2
+        component = r_values_rf - second_component
+        # Multiply by spherical harmonics and take the sum
+        return np.einsum("ln, ln -> n", component, r_sph_harm)
+
+    return interpolate_laplacian
