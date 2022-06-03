@@ -19,50 +19,8 @@ class TestPoisson(TestCase):
         a, b, c = alphas
         return a * np.exp(-(x ** 2)) * b * np.exp(-(y ** 2)) * c * np.exp(-(z ** 2))
 
-    def test_poisson_proj(self):
-        """Test the project function."""
-        oned = GaussChebyshev(30)
-        btf = BeckeRTransform(0.0001, 1.5)
-        rad = btf.transform_1d_grid(oned)
-        l_max = 7
-        atgrid = AtomGrid(rad, degrees=[l_max])
-        value_array = self.helper_func_gauss(atgrid.points)
-        spl_res = spline_with_atomic_grid(atgrid, value_array)
-        # test for random, r, theta, phi
-        for _ in range(20):
-            r = np.random.rand(1)[0] * 2
-            theta = np.random.rand(10) * 3.14
-            phi = np.random.rand(10) * 3.14
-            result = interpolate(spl_res, r, theta, phi)
-            x = r * np.sin(phi) * np.cos(theta)
-            y = r * np.sin(phi) * np.sin(theta)
-            z = r * np.cos(phi)
-            result_ref = self.helper_func_gauss(np.array([x, y, z]).T)
-            # assert similar value less than 1e-4 discrepancy
-            assert_allclose(result, result_ref, atol=1e-4)
-
-        sph_coor = atgrid.convert_cartesian_to_spherical()[:, 1:3]
-        spls_mt = Poisson._proj_sph_value(
-            atgrid.rgrid,
-            sph_coor,
-            l_max // 2,
-            value_array,
-            atgrid.weights,
-            atgrid.indices,
-        )
-        # test each point is the same
-        for _ in range(20):
-            r = np.random.rand(1)[0] * 2
-            # random spherical point
-            int_res = np.zeros((l_max, l_max // 2 + 1), dtype=float)
-            for j in range(l_max // 2 + 1):
-                for i in range(-j, j + 1):
-                    int_res[i, j] += spls_mt[i, j](r)
-            assert_allclose(spl_res(r), int_res)
-
     def test_poisson_solve(self):
         """Test the poisson solve function."""
-        oned = GaussChebyshev(30)
         oned = GaussChebyshev(50)
         btf = BeckeRTransform(1e-7, 1.5)
         rad = btf.transform_1d_grid(oned)
@@ -74,14 +32,7 @@ class TestPoisson(TestCase):
         # test density sum up to np.pi**(3 / 2)
         assert_allclose(p_0, np.pi ** 1.5, atol=1e-4)
         sph_coor = atgrid.convert_cartesian_to_spherical()[:, 1:3]
-        spls_mt = Poisson._proj_sph_value(
-            atgrid.rgrid,
-            sph_coor,
-            l_max // 2,
-            value_array,
-            atgrid.weights,
-            atgrid.indices,
-        )
+        spls_mt = atgrid.radial_component_splines(value_array)
         # test splines project fit gauss function well
 
         def gauss(r):
@@ -152,14 +103,7 @@ class TestPoisson(TestCase):
         # test density sum up to np.pi**(3 / 2)
         assert_allclose(p_0, np.pi ** 1.5, atol=1e-4)
         sph_coor = atgrid.convert_cartesian_to_spherical()[:, 1:3]
-        spls_mt = Poisson._proj_sph_value(
-            atgrid.rgrid,
-            sph_coor,
-            l_max // 2,
-            value_array,
-            atgrid.weights,
-            atgrid.indices,
-        )
+        spls_mt = atgrid.radial_component_splines(value_array)
         ibtf = InverseRTransform(btf)
         linsp = np.linspace(-1, 0.99, 50)
         bound = p_0 * np.sqrt(4 * np.pi)
@@ -210,12 +154,3 @@ class TestPoisson(TestCase):
         # test density sum up to np.pi**(3 / 2)
         assert_allclose(p_0, np.pi ** 1.5, atol=1e-4)
         sph_coor = atgrid.convert_cartesian_to_spherical()
-        with self.assertRaises(ValueError):
-            Poisson._proj_sph_value(
-                atgrid.rgrid,
-                sph_coor,
-                l_max // 2,
-                value_array,
-                atgrid.weights,
-                atgrid.indices,
-            )

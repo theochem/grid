@@ -12,53 +12,6 @@ class Poisson:
     """Poisson ODE solver class."""
 
     @staticmethod
-    def _proj_sph_value(radial, atcoords, l_max, value_array, weights, indices):
-        """Compute the spline for target function on each spherical harmonics.
-
-        Parameters
-        ----------
-        radial : RadialGrid
-            Radial grids for compute coeffs on each Real Spherical Harmonics.
-        atcoords : numpy.ndarray(N, 2)
-            Spherical coordinates for comput coeff. [azimuthal, polar]
-        l_max : int, >= 0
-            The maximum value l in generated real spherical harmonics
-        value_array : np.ndarray(N)
-            Function value need to be projected onto real spherical harmonics
-        weights : np.ndarray
-            Weight of each point on the integration grid
-        indices : np.ndarray
-            Array of indices indicate the beginning and ending of each
-            radial point
-
-        Returns
-        -------
-        np.ndarray[scipy.PPoly], shape(2L - 1, L + 1)
-            scipy cubic spline instance of each harmonic shell
-        """
-        if atcoords.shape[1] > 2:
-            raise ValueError(
-                f"Input coordinates contains too many columns\n"
-                f"Only 2 columns needed, got coors shape:{atcoords.shape}"
-            )
-        theta, phi = atcoords[:, 0], atcoords[:, 1]
-        real_sph = generate_real_sph_harms(l_max, theta, phi)
-        # real_sph shape: (m, l, n)
-        ms, ls = real_sph.shape[:-1]
-        # store spline for each p^{lm}
-        spls_mtr = np.zeros((ms, ls), dtype=object)
-        ml_sph_value = project_function_onto_spherical_expansion(
-            real_sph, value_array, weights, indices
-        )
-        ml_sph_value /= (radial.points ** 2 * radial.weights)[:, None, None]
-        for l_value in range(ls):
-            for m_value in range(-l_value, l_value + 1):
-                spls_mtr[m_value, l_value] = CubicSpline(
-                    x=radial.points, y=ml_sph_value[:, m_value, l_value]
-                )
-        return spls_mtr
-
-    @staticmethod
     def solve_poisson(spls_mtr, x_range, boundary, tfm=None):
         """Solve poisson equation for each spherical harmonics.
 
