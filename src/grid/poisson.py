@@ -1,3 +1,22 @@
+# GRID is a numerical integration module for quantum chemistry.
+#
+# Copyright (C) 2011-2019 The GRID Development Team
+#
+# This file is part of GRID.
+#
+# GRID is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 3
+# of the License, or (at your option) any later version.
+#
+# GRID is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, see <http://www.gnu.org/licenses/>
+# --
 """Poisson solver module."""
 
 from grid.atomgrid import AtomGrid
@@ -179,6 +198,8 @@ def interpolate_laplacian(atomgrid: AtomGrid, func_vals: np.ndarray):
 
     Parameters
     ----------
+    atomgrid : AtomGrid
+        Atomic grid that can integrate spherical functions and interpolate radial components.
     func_vals : ndarray(N,)
         The function values evaluated on all :math:`N` points on the atomic grid.
 
