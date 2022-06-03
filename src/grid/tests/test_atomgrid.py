@@ -716,7 +716,6 @@ class TestAtomGrid:
                 # Raise error since it can't do derivative beyond one.
                 interp_func(xyz, deriv=3)
 
-
     def test_cartesian_moment_integral_with_gaussian_upto_order_1(self):
         r"""Test Cartesian moment integral of Gaussian up to order 1."""
         # The moment integral is computed analytically with wolframalpha in one-dimension.
