@@ -142,10 +142,16 @@ class AtomGrid(Grid):
             # load predefined_radial sectors and num_of_points in each sectors
             rad = data[f"{atnum}_rad"]
             npt = data[f"{atnum}_npt"]
-
-        degs = AngularGrid.convert_lebedev_sizes_to_degrees(npt)
-        rad_degs = AtomGrid._find_l_for_rad_list(rgrid.points, rad, degs)
-        return cls(rgrid, degrees=rad_degs, center=center, rotate=rotate)
+        if preset in ['sg_0', 'sg_2', 'sg_3', 'g1', 'g2', 'g3', 'g4', 'g5', 'g6', 'g7']:
+            sector_sizes = [npt[idx] for idx in range(len(rad)) for r_p in range(rad[idx])]
+            return cls(rgrid, sizes=sector_sizes, center=center, rotate=rotate)
+        elif preset == 'sg_1' and atnum > 19:
+            sector_sizes = [npt[idx] for idx in range(len(rad)) for r_p in range(rad[idx])]
+            return cls(rgrid, sizes=sector_sizes, center=center, rotate=rotate)
+        else:
+            degs = AngularGrid.convert_lebedev_sizes_to_degrees(npt)
+            rad_degs = AtomGrid._find_l_for_rad_list(rgrid.points, rad, degs)
+            return cls(rgrid, degrees=rad_degs, center=center, rotate=rotate)
 
     @classmethod
     def from_pruned(
