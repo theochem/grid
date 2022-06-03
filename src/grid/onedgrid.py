@@ -70,6 +70,11 @@ class GaussLaguerre(OneDGrid):
             raise ValueError(f"Argument alpha must be larger than -1, given {alpha}")
         # compute points and weights for Generalized Gauss-Laguerre quadrature
         points, weights = roots_genlaguerre(npoints, alpha)
+        if np.any(np.isnan(weights)):
+            raise RuntimeError(
+                "Generation of the weights for Gauss-generalized Laguerre quadrature contains"
+                "nans. This issue is related to SciPy."
+            )
         weights *= np.exp(points) * np.power(points, -alpha)
         super().__init__(points, weights, (0, np.inf))
 
