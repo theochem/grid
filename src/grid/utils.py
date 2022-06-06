@@ -462,16 +462,17 @@ def convert_derivative_from_spherical_to_cartesian(
         np.array([deriv_r, deriv_theta, deriv_phi])
     )
 
+
 def convert_cart_to_sph(points, center=None):
     """Convert a set of points from cartesian to spherical coordinates.
 
     Parameters
     ----------
     points : np.ndarray(n, 3)
-        3 dimentional numpy array for points
+        The (3-dimensional) Cartesian coordinates of points.
     center : np.ndarray(3,), list, optional
-        center of the spherical coordinates
-        [0., 0., 0.] will be used if `center` is not given
+        Cartesian coordinates of the center of spherical coordinate system.
+        If `None`, origin is used.
 
     Returns
     -------

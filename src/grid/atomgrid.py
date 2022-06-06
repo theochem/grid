@@ -34,7 +34,6 @@ import numpy as np
 
 from scipy.interpolate import CubicSpline
 from scipy.spatial.transform import Rotation as R
-from scipy.special import sph_harm
 
 from typing import Union
 import warnings
@@ -102,7 +101,7 @@ class AtomGrid(Grid):
                 f"rotate is not within [0, 2^32 - len(rgrid)], got {rotate}"
             )
         self._rot = rotate
-        # check degs and size
+        # check degrees and size
         if degrees is None:
             if not isinstance(sizes, (np.ndarray, list)):
                 raise TypeError(
@@ -179,7 +178,7 @@ class AtomGrid(Grid):
         sectors_degree: np.ndarray = None,
         sectors_size: np.ndarray = None,
         center: np.ndarray = None,
-        rotate:int = 0,
+        rotate: int = 0,
     ):
         r"""
         Initialize AtomGrid class that splits radial sections into sectors which specified degrees.
@@ -390,7 +389,7 @@ class AtomGrid(Grid):
         r"""Integrate the angular coordinates of a sequence of functions.
 
         Given a series of functions :math:`f_k \in L^2(\mathbb{R}^3)`, this returns the values
-        
+
         .. math::
             f_k(r_i) = \int \int f(r_i, \theta, \phi) sin(\theta) d\theta d\phi
 
@@ -423,7 +422,7 @@ class AtomGrid(Grid):
         # Remove the radial weights and r^2 values that are in self.weights
         radial_coefficients /= (self.rgrid.points ** 2 * self.rgrid.weights)
         # For radius smaller than 1.0e-8, due to division by zero, we regenerate
-        # the angular grid and calculat ethe integral at those points.
+        # the angular grid and calculate the integral at those points.
         r_index = np.where(self.rgrid.points < 1e-8)[0]
         for i in r_index:  # if r_index = [], then for loop doesn't occur.
             # build angular grid for i-th shell
@@ -523,7 +522,7 @@ class AtomGrid(Grid):
             # Going up to `self.l_max // 2` is explained below.
             self._basis = generate_real_spherical_harmonics(self.l_max // 2, theta, phi)
         # Multiply spherical harmonic basis with the function values to project.
-        values = np.einsum("ln,n->ln",self._basis, func_vals)
+        values = np.einsum("ln,n->ln", self._basis, func_vals)
         radial_components = self.integrate_angular_coordinates(values)
         # each shell can only integrate upto shell_degree // 2, so if shell_degree < l_max,
         # the f_{lm} should be set to zero for l > shell_degree // 2. Instead, one could set
