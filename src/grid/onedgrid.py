@@ -430,7 +430,7 @@ class RectangleRuleSine(OneDGrid):
         points = (2 * np.arange(1, npoints + 1, 1) - 1) / (2 * npoints)
 
         weights = (
-            (2 / (npoints * np.pi ** 2))
+            (2 / (npoints * np.pi**2))
             * np.sin(npoints * np.pi * points)
             * np.sin(npoints * np.pi / 2) ** 2
         )
@@ -691,7 +691,7 @@ class FejerFirst(OneDGrid):
         nsum = npoints // 2
         j = np.arange(nsum - 1) + 1
 
-        bj = 2.0 * np.ones(nsum - 1) / (4 * j ** 2 - 1)
+        bj = 2.0 * np.ones(nsum - 1) / (4 * j**2 - 1)
         cij = np.cos(np.outer(2 * j, theta))
         di = bj @ cij
         weights = 1 - di
@@ -761,25 +761,25 @@ class FejerSecond(OneDGrid):
 # this functions work for TrefethenCC, TrefethenGC2, and TrefethenGeneral
 def _g2(x):
     r"""Return an auxiliary function g2(x) for Trefethen transformation."""
-    return (1 / 149) * (120 * x + 20 * x ** 3 + 9 * x ** 5)
+    return (1 / 149) * (120 * x + 20 * x**3 + 9 * x**5)
 
 
 def _derg2(x):
     r"""Return the derivative function g2(x) for Trefethen transformation."""
-    return (1 / 149) * (120 + 60 * x ** 2 + 45 * x ** 4)
+    return (1 / 149) * (120 + 60 * x**2 + 45 * x**4)
 
 
 def _g3(x):
     r"""Return an auxiliary function g3(x) for Trefethen transformation."""
     return (1 / 53089) * (
-        40320 * x + 6720 * x ** 3 + 3024 * x ** 5 + 1800 * x ** 7 + 1225 * x ** 9
+        40320 * x + 6720 * x**3 + 3024 * x**5 + 1800 * x**7 + 1225 * x**9
     )
 
 
 def _derg3(x):
     r"""Return the derivative function g3(x) for Trefethen transformation."""
     return (1 / 53089) * (
-        40320 + 20160 * x ** 2 + 15120 * x ** 4 + 12600 * x ** 6 + 11025 * x ** 8
+        40320 + 20160 * x**2 + 15120 * x**4 + 12600 * x**6 + 11025 * x**8
     )
 
 
@@ -952,7 +952,7 @@ def _dergstrip(rho, s):
     # get false label
     mask_false = mask_true == 0
     u = np.arcsin(s)
-    gp[mask_true] = cn * tau ** 2 / 4 * np.tanh(tau * np.pi / 2) ** 2
+    gp[mask_true] = cn * tau**2 / 4 * np.tanh(tau * np.pi / 2) ** 2
     gp[mask_false] = (
         1 / (np.exp(tau * (np.pi / 2 + u[mask_false])) + 1)
         + 1 / (np.exp(tau * (np.pi / 2 - u[mask_false])) + 1)
