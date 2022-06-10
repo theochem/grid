@@ -363,7 +363,7 @@ class TestAtomGrid(TestCase):
         return dxf + dyf + dzf
 
     def test_integrating_angular_components(self):
-        # Test radial points that contain zero
+        """Test radial points that contain zero."""
         odg = OneDGrid(
             np.array([0.0, 1e-16, 1e-8, 1e-4, 1e-2]), np.ones(5), (0, np.inf)
         )
@@ -407,8 +407,12 @@ class TestAtomGrid(TestCase):
         i = 0
         # Go through each spherical harmonic up to max_degree // 2 and check if projection
         # for its radial component is one and the rest are all zeros.
-        for l in range(0, max_degree // 2):
-            for m in [0] + [x for x in range(1, l + 1)] + [x for x in range(-l, 0)]:
+        for l_value in range(0, max_degree // 2):
+            for m in (
+                [0]
+                + [x for x in range(1, l_value + 1)]
+                + [x for x in range(-l_value, 0)]
+            ):
                 spherical_harm = spherical_harmonics[i, :]
                 radial_components = atom_grid.radial_component_splines(spherical_harm)
                 assert len(radial_components) == (atom_grid.l_max // 2 + 1) ** 2.0
@@ -441,8 +445,12 @@ class TestAtomGrid(TestCase):
         fit = atom_grid.radial_component_splines(func_vals)
         radial_pts = np.arange(0.0, 1.0, 0.01)
         i = 0
-        for l in range(0, max_degree // 2):
-            for m in [0] + [x for x in range(1, l + 1)] + [x for x in range(-l, 0)]:
+        for l_value in range(0, max_degree // 2):
+            for m in (
+                [0]
+                + [x for x in range(1, l_value + 1)]
+                + [x for x in range(-l_value, 0)]
+            ):
                 if i != (3 + 1) ** 2 + 1:
                     assert_almost_equal(fit[i](radial_pts), 0.0, decimal=8)
                 else:
