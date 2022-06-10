@@ -1,7 +1,7 @@
 """Poisson solver module."""
 
-from grid.utils import generate_real_spherical_harmonics
 from grid.ode import solve_ode
+from grid.utils import generate_real_spherical_harmonics, project_function_onto_spherical_expansion
 
 import numpy as np
 
@@ -42,7 +42,7 @@ class Poisson:
                 f"Only 2 columns needed, got coors shape:{atcoords.shape}"
             )
         theta, phi = atcoords[:, 0], atcoords[:, 1]
-        real_sph = generate_real_sph_harms(l_max, theta, phi)
+        real_sph = generate_real_spherical_harmonics(l_max, theta, phi)
         # real_sph shape: (m, l, n)
         ms, ls = real_sph.shape[:-1]
         # store spline for each p^{lm}
@@ -184,7 +184,7 @@ class Poisson:
         """
         ms, ls = spls_mtr.shape
         # (M, L, N)
-        sph_harm = generate_real_sph_harms(ls - 1, theta, phi)
+        sph_harm = generate_real_spherical_harmonics(ls - 1, theta, phi)
         r_value = Poisson.interpolate_radial(spls_mtr, rad, deriv)
         return np.sum(r_value[..., None] * sph_harm, axis=(0, 1))
 
