@@ -18,6 +18,8 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
 """Module for generating AtomGrid."""
+import warnings
+from typing import Union
 
 from grid.basegrid import Grid, OneDGrid
 from grid.lebedev import AngularGrid
@@ -34,9 +36,6 @@ import numpy as np
 
 from scipy.interpolate import CubicSpline
 from scipy.spatial.transform import Rotation as R
-
-from typing import Union
-import warnings
 
 
 class AtomGrid(Grid):
@@ -629,7 +628,8 @@ class AtomGrid(Grid):
         def interpolate_low(
             points, deriv=0, deriv_spherical=False, only_radial_derivs=False
         ):
-            r"""
+            r"""Construct a spline like callable for intepolation.
+
             Parameters
             ----------
             points : ndarray(N, 3)
