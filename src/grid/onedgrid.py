@@ -329,7 +329,7 @@ class Trapezoidal(OneDGrid):
 
 
 class RectangleRuleSineEndPoints(OneDGrid):
-    """
+    r"""
     Rectangle-Rule Sine end points integral quadrature class.
 
      .. math::
@@ -587,7 +587,7 @@ class MidPoint(OneDGrid):
 
 
 class ClenshawCurtis(OneDGrid):
-    """Clenshow Curtis integral quadrature class.
+    r"""Clenshow Curtis integral quadrature class.
 
     The definition of this quadrature is:
 

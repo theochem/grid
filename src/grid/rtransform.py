@@ -117,7 +117,7 @@ class BaseTransform(ABC):
 
 
 class BeckeRTransform(BaseTransform):
-    """
+    r"""
     Becke Transformation.
 
     The Becke transformation transforms from :math:`[-1, 1]` to :math:`[r_{min}, \infty)`
@@ -309,7 +309,7 @@ class BeckeRTransform(BaseTransform):
 
 
 class LinearFiniteRTransform(BaseTransform):
-    """
+    r"""
     Linear finite transformation from :math:`[-1, 1]` to :math:`[r_{min}, r_{max}]`.
 
     The Linear transformation from finite interval :math:`[-1, 1]` to finite interval
@@ -588,7 +588,7 @@ class InverseRTransform(BaseTransform):
 
 
 class IdentityRTransform(BaseTransform):
-    """
+    r"""
     Identity Transform class.
 
     The identity transform class trivially transforms from :math:`[0, \infty)` to

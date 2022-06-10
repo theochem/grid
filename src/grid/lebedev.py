@@ -207,7 +207,7 @@ class AngularGrid(Grid):
 
     @property
     def degree(self):
-        r"""The degree of spherical harmonics that this angular grid can integrate exactly."""
+        r"""int: The degree of spherical harmonics that this angular grid can integrate exactly."""
         return self._degree
 
     @staticmethod

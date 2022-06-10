@@ -19,6 +19,7 @@
 # --
 """Utils function module."""
 import numpy as np
+
 from scipy.special import sph_harm
 
 
@@ -428,8 +429,7 @@ def generate_derivative_real_spherical_harmonics(l_max, theta, phi):
 def convert_derivative_from_spherical_to_cartesian(
     deriv_r, deriv_theta, deriv_phi, r, theta, phi
 ):
-    r"""
-    Converts the derivative form spherical coordinates to Cartesian.
+    r"""Convert the derivative form spherical coordinates to Cartesian.
 
     If :math:`r` is zero, then the derivative wrt to theta and phi are set to zero.
     If :math:`\phi` is zero, then the derivative wrt to theta is set to zero.
@@ -474,7 +474,7 @@ def convert_derivative_from_spherical_to_cartesian(
 
 
 def convert_cart_to_sph(points, center=None):
-    """Convert a set of points from cartesian to spherical coordinates.
+    r"""Convert a set of points from cartesian to spherical coordinates.
 
     Parameters
     ----------
