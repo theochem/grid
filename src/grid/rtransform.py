@@ -1246,7 +1246,7 @@ class HyperbolicRTransform(BaseTransform):
         if self._b * (x.size - 1) >= 1.0:
             raise ValueError("b*(npoint-1) must be smaller than one.")
         x = 1.0 / (1 - self._b * x)
-        return 2.0 * self._a * self._b * x**3
+        return 2.0 * self._a * self._b * x ** 3
 
     def deriv3(self, x: np.ndarray):
         r"""
@@ -1266,7 +1266,7 @@ class HyperbolicRTransform(BaseTransform):
         if self._b * (x.size - 1) >= 1.0:
             raise ValueError("b*(npoint-1) must be smaller than one.")
         x = 1.0 / (1 - self._b * x)
-        return 6.0 * self._a * self._b * self._b * x**4
+        return 6.0 * self._a * self._b * self._b * x ** 4
 
     def inverse(self, r: np.ndarray):
         r"""
@@ -1519,7 +1519,7 @@ class KnowlesRTransform(BaseTransform):
 
         """
         rf_array = (
-            -self._R * np.log(1 - (2**-self._k) * (x + 1) ** self._k) + self._rmin
+            -self._R * np.log(1 - (2 ** -self._k) * (x + 1) ** self._k) + self._rmin
         )
         if self.trim_inf:
             rf_array = self._convert_inf(rf_array)
@@ -1563,7 +1563,7 @@ class KnowlesRTransform(BaseTransform):
         """
         qi = 1 + x
         return (
-            self._R * self._k * (qi ** (self._k - 1)) / (2**self._k - qi**self._k)
+            self._R * self._k * (qi ** (self._k - 1)) / (2 ** self._k - qi ** self._k)
         )
 
     def deriv2(self, x: np.ndarray):
@@ -1589,8 +1589,8 @@ class KnowlesRTransform(BaseTransform):
             self._R
             * self._k
             * (qi ** (self._k - 2))
-            * (2**self._k * (self._k - 1) + qi**self._k)
-            / (2**self._k - qi**self._k) ** 2
+            * (2 ** self._k * (self._k - 1) + qi ** self._k)
+            / (2 ** self._k - qi ** self._k) ** 2
         )
 
     def deriv3(self, x: np.ndarray):
@@ -1619,11 +1619,11 @@ class KnowlesRTransform(BaseTransform):
             * self._k
             * (qi ** (self._k - 3))
             * (
-                4**self._k * (self._k - 2) * (self._k - 1)
-                + 2**self._k * (self._k - 1) * (self._k + 4) * (qi**self._k)
+                4 ** self._k * (self._k - 2) * (self._k - 1)
+                + 2 ** self._k * (self._k - 1) * (self._k + 4) * (qi ** self._k)
                 + 2 * qi ** (2 * self._k)
             )
-            / (2**self._k - qi**self._k) ** 3
+            / (2 ** self._k - qi ** self._k) ** 3
         )
 
 
@@ -1800,7 +1800,7 @@ class HandyRTransform(BaseTransform):
             4
             * self._m
             * self._R
-            * (1 + 6 * self._m * x + 2 * self._m**2 + 3 * x**2)
+            * (1 + 6 * self._m * x + 2 * self._m ** 2 + 3 * x ** 2)
             * (1 + x) ** (self._m - 3)
             / (1 - x) ** (self._m + 3)
         )
@@ -1896,7 +1896,7 @@ class HandyModRTransform(BaseTransform):
             One dimensional array in :math:`[r_{min},r_{max}]`.
 
         """
-        two_m = 2**self._m
+        two_m = 2 ** self._m
         size_r = self._rmax - self._rmin
         qi = (1 + x) ** self._m
 
@@ -1927,7 +1927,7 @@ class HandyModRTransform(BaseTransform):
             The original one dimensional array in :math:`[-1,1]`.
 
         """
-        two_m = 2**self._m
+        two_m = 2 ** self._m
         size_r = self._rmax - self._rmin
 
         tmp_r = (
@@ -1958,7 +1958,7 @@ class HandyModRTransform(BaseTransform):
             The first derivative of Handy transformation at each point.
 
         """
-        two_m = 2**self._m
+        two_m = 2 ** self._m
         size_r = self._rmax - self._rmin
         return (
             -(
@@ -1985,7 +1985,7 @@ class HandyModRTransform(BaseTransform):
         ndarrray(N,)
             The second derivative of Handy transformation at each point.
         """
-        two_m = 2**self._m
+        two_m = 2 ** self._m
         size_r = self._rmax - self._rmin
         return (
             -(
@@ -2016,7 +2016,7 @@ class HandyModRTransform(BaseTransform):
         ndarrray(N,)
             The third derivative of Handy transformation at each point.
         """
-        two_m = 2**self._m
+        two_m = 2 ** self._m
         size_r = self._rmax - self._rmin
         return (
             -(

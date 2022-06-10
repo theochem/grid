@@ -56,22 +56,22 @@ def fx_ones(x):
 
 def fx_complicated_example(x):
     """Reciprocal of x cube with polynomial terms."""
-    return 1 / x**3 + 3 * x**2 + x
+    return 1 / x ** 3 + 3 * x ** 2 + x
 
 
 def fx_complicated_example2(x):
     """Reciprocal of x to the power of four."""
-    return 1 / x**4
+    return 1 / x ** 4
 
 
 def fx_complicated_example3(x):
     """Reciprocal of x to the power of two."""
-    return 1 / x**2
+    return 1 / x ** 2
 
 
 def fx_quadratic(x):
     """Quadratic polynomial example."""
-    return x**2 + 3 * x - 5
+    return x ** 2 + 3 * x - 5
 
 
 class SqTF(BaseTransform):
@@ -84,7 +84,7 @@ class SqTF(BaseTransform):
 
     def transform(self, x):
         """Transform given array."""
-        return x**self._exp + self._extra
+        return x ** self._exp + self._extra
 
     def inverse(self, r):
         """Inverse transformed array."""
@@ -257,7 +257,7 @@ def test_solve_ode_bvp_against_analytic_example():
     res = solve_ode(x, fx, coeffs, bd_cond)
 
     def solution(x):
-        return x**2.0 / 2.0 - x
+        return x ** 2.0 / 2.0 - x
 
     def deriv(x):
         return x - 1.0
@@ -274,7 +274,7 @@ def test_error_raises():
     # r = btf.transform(x)
 
     def fx(x):
-        return 1 / x**2
+        return 1 / x ** 2
 
     coeffs = [-1, -2, 1]
     bd_cond = [(0, 0, 0), (1, 0, 0), (0, 1, 0), (1, 1, 0)]
@@ -293,17 +293,17 @@ def test_construct_coeffs_of_ode_over_mesh():
     """Test construct coefficients over a mesh."""
     # first test
     x = np.linspace(-0.9, 0.9, 20)
-    coeff = [2, 1.5, lambda x: x**2]
+    coeff = [2, 1.5, lambda x: x ** 2]
     coeff_a = _evaluate_coeffs_on_points(x, coeff)
     assert_allclose(coeff_a[0], np.ones(20) * 2)
     assert_allclose(coeff_a[1], np.ones(20) * 1.5)
-    assert_allclose(coeff_a[2], x**2)
+    assert_allclose(coeff_a[2], x ** 2)
     # second test
-    coeff = [lambda x: 1 / x, 2, lambda x: x**3, lambda x: np.exp(x)]
+    coeff = [lambda x: 1 / x, 2, lambda x: x ** 3, lambda x: np.exp(x)]
     coeff_a = _evaluate_coeffs_on_points(x, coeff)
     assert_allclose(coeff_a[0], 1 / x)
     assert_allclose(coeff_a[1], np.ones(20) * 2)
-    assert_allclose(coeff_a[2], x**3)
+    assert_allclose(coeff_a[2], x ** 3)
     assert_allclose(coeff_a[3], np.exp(x))
 
 
@@ -360,11 +360,11 @@ def test_high_order_transformations_gives_itself():
     r"""Test transforming then transforming back gives back the same result."""
     # Consider the following transformation x^4 and its derivatives
     def transf(x):
-        return x**4.0
+        return x ** 4.0
 
     derivs = [
-        lambda x: 4.0 * x**3.0,
-        lambda x: 4.0 * 3.0 * x**2.0,
+        lambda x: 4.0 * x ** 3.0,
+        lambda x: 4.0 * 3.0 * x ** 2.0,
         lambda x: 4.0 * 3.0 * 2.0 * x,
         lambda x: 4.0 * 3.0 * 2.0 * np.array([1.0] * len(x)),
     ]
@@ -420,7 +420,7 @@ def test_rearange_ode_coeff():
     coeff_b_2 = [-3, 2, 1]
 
     def fx2(x):
-        return -6 * x**2 - x + 10
+        return -6 * x ** 2 - x + 10
 
     def func2(x, y):
         dy_dx = _rearrange_to_explicit_ode(y, coeff_b_2, fx2(x))

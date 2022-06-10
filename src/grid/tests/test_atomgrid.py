@@ -364,7 +364,9 @@ class TestAtomGrid(TestCase):
 
     def test_integrating_angular_components(self):
         # Test radial points that contain zero
-        odg = OneDGrid(np.array([0.0, 1e-16, 1e-8, 1e-4, 1e-2]), np.ones(5), (0, np.inf))
+        odg = OneDGrid(
+            np.array([0.0, 1e-16, 1e-8, 1e-4, 1e-2]), np.ones(5), (0, np.inf)
+        )
         atom_grid = AtomGrid(odg, degrees=[3])
         spherical = atom_grid.convert_cartesian_to_spherical()
         # Evaluate all spherical harmonics on the atomic grid points (r_i, theta_j, phi_j).
@@ -373,15 +375,15 @@ class TestAtomGrid(TestCase):
         )
         # Convert to three-dimensional array (Degrees, Order, Points)
         spherical_array = np.zeros((3, 2 * 3 + 1, len(atom_grid.points)))
-        spherical_array[0, 0, :] = spherical_harmonics[0, :] # (l,m) = (0,0)
-        spherical_array[1, 0, :] = spherical_harmonics[1, :] # = (1, 0)
-        spherical_array[1, 1, :] = spherical_harmonics[2, :] # = (1, 1)
-        spherical_array[1, 2, :] = spherical_harmonics[3, :] # = (1, -1)
-        spherical_array[2, 0, :] = spherical_harmonics[4, :] # = (2, 0)
-        spherical_array[2, 1, :] = spherical_harmonics[5, :] # = (2, 2)
-        spherical_array[2, 2, :] = spherical_harmonics[6, :] # = (2, 1)
-        spherical_array[2, 3, :] = spherical_harmonics[7, :] # = (2, -2)
-        spherical_array[2, 4, :] = spherical_harmonics[8, :] # = (2, -1)
+        spherical_array[0, 0, :] = spherical_harmonics[0, :]  # (l,m) = (0,0)
+        spherical_array[1, 0, :] = spherical_harmonics[1, :]  # = (1, 0)
+        spherical_array[1, 1, :] = spherical_harmonics[2, :]  # = (1, 1)
+        spherical_array[1, 2, :] = spherical_harmonics[3, :]  # = (1, -1)
+        spherical_array[2, 0, :] = spherical_harmonics[4, :]  # = (2, 0)
+        spherical_array[2, 1, :] = spherical_harmonics[5, :]  # = (2, 2)
+        spherical_array[2, 2, :] = spherical_harmonics[6, :]  # = (2, 1)
+        spherical_array[2, 3, :] = spherical_harmonics[7, :]  # = (2, -2)
+        spherical_array[2, 4, :] = spherical_harmonics[8, :]  # = (2, -1)
 
         integral = atom_grid.integrate_angular_coordinates(spherical_array)
         assert integral.shape == (3, 2 * 3 + 1, 5)
@@ -409,7 +411,7 @@ class TestAtomGrid(TestCase):
             for m in [0] + [x for x in range(1, l + 1)] + [x for x in range(-l, 0)]:
                 spherical_harm = spherical_harmonics[i, :]
                 radial_components = atom_grid.radial_component_splines(spherical_harm)
-                assert len(radial_components) == (atom_grid.l_max // 2 + 1)**2.0
+                assert len(radial_components) == (atom_grid.l_max // 2 + 1) ** 2.0
 
                 radial_pts = np.arange(0.0, 1.0, 0.01)
                 # Go Through each (l, m)
@@ -434,7 +436,7 @@ class TestAtomGrid(TestCase):
             4, spherical[:, 1], spherical[:, 2]  # theta, phi points
         )
         # Test on the function r^2 * Y^1_3
-        func_vals = spherical[:, 0]**2.0 * spherical_harmonic[(3 + 1) ** 2 + 1, :]
+        func_vals = spherical[:, 0] ** 2.0 * spherical_harmonic[(3 + 1) ** 2 + 1, :]
         # Fit radial components
         fit = atom_grid.radial_component_splines(func_vals)
         radial_pts = np.arange(0.0, 1.0, 0.01)
@@ -446,7 +448,7 @@ class TestAtomGrid(TestCase):
                 else:
                     # Test that on the right spherical harmonic the function r* Y^1_3 projects
                     # to \rho^{1,3}(r) = r
-                    assert_almost_equal(fit[i](radial_pts), radial_pts**2.0)
+                    assert_almost_equal(fit[i](radial_pts), radial_pts ** 2.0)
                 i += 1
 
     def test_value_fitting(self):
@@ -541,8 +543,9 @@ class TestAtomGrid(TestCase):
 
     def test_spherical_average_of_gaussian(self):
         r"""Test spherical average of a Gaussian (radial) function is itself and its integral."""
+
         def func(sph_points):
-            return np.exp(-sph_points[:, 0]**2.0)
+            return np.exp(-sph_points[:, 0] ** 2.0)
 
         # Construct Radial Grid and atomic grid with spherical harmonics of degree 10
         #   for all points.
@@ -556,24 +559,36 @@ class TestAtomGrid(TestCase):
 
         # Test that the spherical average of a Gaussian is itself
         numb_pts = 1000
-        random_rad_pts = np.random.uniform(0.0, 1.5, size=(numb_pts,3))
+        random_rad_pts = np.random.uniform(0.0, 1.5, size=(numb_pts, 3))
         spherical_avg2 = spherical_avg(random_rad_pts[:, 0])
         func_vals = func(random_rad_pts)
         assert_allclose(spherical_avg2, func_vals, atol=1e-4)
 
         # Test the integral of spherical average is the integral of Gaussian e^(-x^2)e^(-y^2)...
         #   from -infinity to infinity which is equal to pi^(3/2)
-        integral = 4.0 * np.pi * np.trapz(y=spherical_avg(oned_grid) * oned_grid**2.0, x=oned_grid)
-        actual_integral = np.sqrt(np.pi)**3.0
+        integral = (
+            4.0
+            * np.pi
+            * np.trapz(y=spherical_avg(oned_grid) * oned_grid ** 2.0, x=oned_grid)
+        )
+        actual_integral = np.sqrt(np.pi) ** 3.0
         assert_allclose(actual_integral, integral)
 
     def test_spherical_average_of_spherical_harmonic(self):
         r"""Test spherical average of spherical harmonic is zero."""
+
         def func(sph_points):
             # Spherical harmonic of order 6 and magnetic 0
             r, phi, theta = sph_points.T
-            return np.sqrt(13) / (np.sqrt(np.pi) * 32) * (
-                231 * np.cos(theta)**6.0 - 315 * np.cos(theta)**4.0 + 105 * np.cos(theta)**2.0 - 5.0
+            return (
+                np.sqrt(13)
+                / (np.sqrt(np.pi) * 32)
+                * (
+                    231 * np.cos(theta) ** 6.0
+                    - 315 * np.cos(theta) ** 4.0
+                    + 105 * np.cos(theta) ** 2.0
+                    - 5.0
+                )
             )
 
         # Construct Radial Grid and atomic grid with spherical harmonics of degree 10
@@ -639,10 +654,18 @@ class TestAtomGrid(TestCase):
         def func(sph_points):
             # Spherical harmonic of order 6 and magnetic 0
             r, phi, theta = sph_points.T
-            return np.sqrt(2.0) * np.sqrt(13) / (np.sqrt(np.pi) * 32) * (
-                    231 * np.cos(theta) ** 6.0 - 315 * np.cos(theta) ** 4.0 + 105 * np.cos(
-                theta) ** 2.0 - 5.0
+            return (
+                np.sqrt(2.0)
+                * np.sqrt(13)
+                / (np.sqrt(np.pi) * 32)
+                * (
+                    231 * np.cos(theta) ** 6.0
+                    - 315 * np.cos(theta) ** 4.0
+                    + 105 * np.cos(theta) ** 2.0
+                    - 5.0
+                )
             )
+
         # Get spherical points from atomic grid
         spherical_pts = atgrid.convert_cartesian_to_spherical(atgrid.points)
         func_values = func(spherical_pts)
@@ -654,9 +677,11 @@ class TestAtomGrid(TestCase):
             actual = laplacian(grid)
             spherical_pts = atgrid.convert_cartesian_to_spherical(grid)
             # Eigenvector spherical harmonic times l(l + 1) / r^2
-            with np.errstate(divide='ignore', invalid='ignore'):
-                desired = -func(spherical_pts) * 6 * (6 + 1) / spherical_pts[:, 0]**2.0
-            desired[spherical_pts[:, 0]**2.0 < 1e-10] = 0.0
+            with np.errstate(divide="ignore", invalid="ignore"):
+                desired = (
+                    -func(spherical_pts) * 6 * (6 + 1) / spherical_pts[:, 0] ** 2.0
+                )
+            desired[spherical_pts[:, 0] ** 2.0 < 1e-10] = 0.0
             assert_almost_equal(actual, desired, decimal=3)
 
     def test_interpolation_of_laplacian_of_exponential(self):
@@ -678,8 +703,11 @@ class TestAtomGrid(TestCase):
             actual = laplacian(grid)
             spherical_pts = atgrid.convert_cartesian_to_spherical(grid)
             # Laplacian of exponential is e^-x (x - 2) / x
-            desired = np.exp(-spherical_pts[:, 0]) * (spherical_pts[:, 0] - 2.0) /\
-                      spherical_pts[:, 0]
+            desired = (
+                np.exp(-spherical_pts[:, 0])
+                * (spherical_pts[:, 0] - 2.0)
+                / spherical_pts[:, 0]
+            )
             assert_almost_equal(actual, desired, decimal=3)
 
     def test_error_raises(self):
