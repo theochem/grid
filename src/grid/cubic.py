@@ -732,7 +732,7 @@ class UniformGrid(_HyperRectangleGrid):
             volume = self._calculate_volume(shape)
             # “Gaussian” quadrature rule for Fourier series.
             numpnt = np.prod(shape + 1.0)
-            weight = np.ones(shape) * (2 ** dim * volume / numpnt)
+            weight = np.ones(shape) * (2**dim * volume / numpnt)
 
             def _fourier1(weight, shape, index, dim):
                 # Return the fourier1 weights in the "index"-direction.

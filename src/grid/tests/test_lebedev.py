@@ -93,8 +93,8 @@ class TestLebedev(TestCase):
             for m_ord in range(-l_deg, l_deg + 1):
                 for l2 in range(0, 4):
                     for m2 in range(-l2, l2 + 1):
-                        sph_harm_one = sph_harm[l_deg ** 2 : (l_deg + 1) ** 2, :]
-                        sph_harm_two = sph_harm[l2 ** 2 : (l2 + 1) ** 2, :]
+                        sph_harm_one = sph_harm[l_deg**2 : (l_deg + 1) ** 2, :]
+                        sph_harm_two = sph_harm[l2**2 : (l2 + 1) ** 2, :]
                         integral = grid.integrate(
                             sph_harm_one[m_ord, :] * sph_harm_two[m2, :]
                         )
@@ -116,7 +116,7 @@ class TestLebedev(TestCase):
         sph_harm = generate_real_spherical_harmonics(degree, theta, phi)
         for l_deg in range(0, 4):
             for m_ord in range(-l_deg, l_deg):
-                sph_harm_one = sph_harm[l_deg ** 2 : (l_deg + 1) ** 2, :]
+                sph_harm_one = sph_harm[l_deg**2 : (l_deg + 1) ** 2, :]
                 if l_deg == 0 and m_ord == 0:
                     actual = np.sqrt(4.0 * np.pi)
                     assert_equal(actual, grid.integrate(sph_harm_one[m_ord, :]))

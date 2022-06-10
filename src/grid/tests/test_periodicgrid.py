@@ -164,12 +164,12 @@ def test_tutorial_local_integral_1(delta_p, delta_c):
     dists = np.linalg.norm(localgrid.points - center, axis=1)
     assert (dists <= cutoff).all()
     localfn = (dists - cutoff) ** 2
-    assert_allclose(localgrid.integrate(localfn), cutoff ** 4 * np.pi / 6)
+    assert_allclose(localgrid.integrate(localfn), cutoff**4 * np.pi / 6)
     # D) Construct a periodic repetition of the local integrand and perform the
     # same check on the integral
     periodicfn = np.zeros(grid.size)
     np.add.at(periodicfn, localgrid.indices, localfn)
-    assert_allclose(grid.integrate(periodicfn), cutoff ** 4 * np.pi / 6)
+    assert_allclose(grid.integrate(periodicfn), cutoff**4 * np.pi / 6)
 
 
 @pytest.mark.parametrize("delta_p", DELTAS_2D, ids=format_nd)
@@ -193,7 +193,7 @@ def test_tutorial_local_integral_2(delta_p, delta_c):
     center1 = np.array([0.3, 0.7]) - delta_c
     localgrid1 = grid.get_localgrid(center1, cutoff)
     dists1 = np.linalg.norm(localgrid1.points - center1, axis=1)
-    localfn1 = np.exp(-0.5 * dists1 ** 2)
+    localfn1 = np.exp(-0.5 * dists1**2)
     periodicfn = np.zeros(grid.size)
     np.add.at(periodicfn, localgrid1.indices, localfn1)
     # Check some obvious integrals:
@@ -211,7 +211,7 @@ def test_tutorial_local_integral_2(delta_p, delta_c):
     center2 = np.array([-3.3, -0.7])
     localgrid2 = grid.get_localgrid(center2, cutoff)
     dists2 = np.linalg.norm(localgrid2.points - center2, axis=1)
-    localfn2 = np.exp(-0.5 * dists2 ** 2)
+    localfn2 = np.exp(-0.5 * dists2**2)
     # Compute the overlap integral of the periodic and the second local Gaussian
     oint_a = localgrid2.integrate(localfn2, periodicfn[localgrid2.indices])
     # Compute this overlap integral as a lattice sum of overlap integrals between
@@ -230,7 +230,7 @@ def test_tutorial_local_integral_2(delta_p, delta_c):
             delta_01 = delta_mic + grid.realvecs[0] * i0 + grid.realvecs[1] * i1
             dist_01 = np.linalg.norm(delta_01)
             # Compute the overlap integral derived with Gaussian-Product theorem
-            overlap_01 = np.pi * np.exp(-0.25 * dist_01 ** 2)
+            overlap_01 = np.pi * np.exp(-0.25 * dist_01**2)
             oint_b += overlap_01
     assert_allclose(oint_a, oint_b)
 
@@ -599,7 +599,7 @@ class TestPeriodicGrid3D2CV(PeriodicGridTester):
         self._ref_weights = np.linspace(0.1, 0.2, 21)
         self._ref_realvecs = np.array([[0.7, 0.1, -0.2], [-0.3, 0.2, 0.6]])
         self._ref_recivecs = np.linalg.pinv(self._ref_realvecs).T
-        self._ref_spacings = 1 / np.sqrt((self._ref_recivecs ** 2).sum(axis=1))
+        self._ref_spacings = 1 / np.sqrt((self._ref_recivecs**2).sum(axis=1))
         frac_edges = np.dot(self._ref_points[[0, -1]], self._ref_recivecs.T)
         self._ref_frac_intvls = np.array(
             [frac_edges.min(axis=0), frac_edges.max(axis=0)]

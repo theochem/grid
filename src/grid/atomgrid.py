@@ -98,7 +98,7 @@ class AtomGrid(Grid):
         # check rotate
         if not isinstance(rotate, (int, np.integer)):
             raise TypeError(f"Rotate needs to be an integer, got {type(rotate)}")
-        if (rotate is not False) and (not 0 <= rotate < 2 ** 32 - len(rgrid.points)):
+        if (rotate is not False) and (not 0 <= rotate < 2**32 - len(rgrid.points)):
             raise ValueError(
                 f"rotate need to be an integer [0, 2^32 - len(rgrid)]\n"
                 f"rotate is not within [0, 2^32 - len(rgrid)], got {rotate}"
@@ -440,7 +440,7 @@ class AtomGrid(Grid):
         )  # swap points axes to last
 
         # Remove the radial weights and r^2 values that are in self.weights
-        radial_coefficients /= self.rgrid.points ** 2 * self.rgrid.weights
+        radial_coefficients /= self.rgrid.points**2 * self.rgrid.weights
         # For radius smaller than 1.0e-8, due to division by zero, we regenerate
         # the angular grid and calculate the integral at those points.
         r_index = np.where(self.rgrid.points < 1e-8)[0]
@@ -757,8 +757,8 @@ class AtomGrid(Grid):
             with np.errstate(divide="ignore", invalid="ignore"):
                 r_values_rf /= r_pts
                 r_values_rf[:, r_pts < 1e-10] = 0.0
-                r_values_f /= r_pts ** 2.0
-                r_values_f[:, r_pts ** 2.0 < 1e-10] = 0.0
+                r_values_f /= r_pts**2.0
+                r_values_f[:, r_pts**2.0 < 1e-10] = 0.0
 
             # Multiply \rho_{lm}^f by l(l+1), note 2l+1 orders for each degree l
             degrees = np.hstack(

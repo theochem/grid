@@ -86,7 +86,7 @@ class TestAtomGrid(TestCase):
         # 604 points for coarse H atom
         assert_equal(atgrid.size, 604)
         assert_almost_equal(
-            np.sum(np.exp(-np.sum(atgrid.points ** 2, axis=1)) * atgrid.weights),
+            np.sum(np.exp(-np.sum(atgrid.points**2, axis=1)) * atgrid.weights),
             5.56840953,
         )
 
@@ -98,7 +98,7 @@ class TestAtomGrid(TestCase):
         # 928 points for coarse H atom
         assert_equal(atgrid.size, 928)
         assert_almost_equal(
-            np.sum(np.exp(-np.sum(atgrid.points ** 2, axis=1)) * atgrid.weights),
+            np.sum(np.exp(-np.sum(atgrid.points**2, axis=1)) * atgrid.weights),
             5.56834559,
         )
         # test fine grid
@@ -109,7 +109,7 @@ class TestAtomGrid(TestCase):
         # 1984 points for coarse H atom
         assert_equal(atgrid.size, 1984)
         assert_almost_equal(
-            np.sum(np.exp(-np.sum(atgrid.points ** 2, axis=1)) * atgrid.weights),
+            np.sum(np.exp(-np.sum(atgrid.points**2, axis=1)) * atgrid.weights),
             5.56832800,
         )
         # test veryfine grid
@@ -120,7 +120,7 @@ class TestAtomGrid(TestCase):
         # 3154 points for coarse H atom
         assert_equal(atgrid.size, 3154)
         assert_almost_equal(
-            np.sum(np.exp(-np.sum(atgrid.points ** 2, axis=1)) * atgrid.weights),
+            np.sum(np.exp(-np.sum(atgrid.points**2, axis=1)) * atgrid.weights),
             5.56832800,
         )
         # test ultrafine grid
@@ -131,7 +131,7 @@ class TestAtomGrid(TestCase):
         # 4546 points for coarse H atom
         assert_equal(atgrid.size, 4546)
         assert_almost_equal(
-            np.sum(np.exp(-np.sum(atgrid.points ** 2, axis=1)) * atgrid.weights),
+            np.sum(np.exp(-np.sum(atgrid.points**2, axis=1)) * atgrid.weights),
             5.56832800,
         )
         # test insane grid
@@ -142,7 +142,7 @@ class TestAtomGrid(TestCase):
         # 6622 points for coarse H atom
         assert_equal(atgrid.size, 6622)
         assert_almost_equal(
-            np.sum(np.exp(-np.sum(atgrid.points ** 2, axis=1)) * atgrid.weights),
+            np.sum(np.exp(-np.sum(atgrid.points**2, axis=1)) * atgrid.weights),
             5.56832800,
         )
 
@@ -236,9 +236,9 @@ class TestAtomGrid(TestCase):
         assert_allclose(atgrid.weights, atgrid2.weights)
         assert_allclose(atgrid1.weights, atgrid2.weights)
         # test same integral
-        value = np.prod(atgrid.points ** 2, axis=-1)
-        value1 = np.prod(atgrid.points ** 2, axis=-1)
-        value2 = np.prod(atgrid.points ** 2, axis=-1)
+        value = np.prod(atgrid.points**2, axis=-1)
+        value1 = np.prod(atgrid.points**2, axis=-1)
+        value2 = np.prod(atgrid.points**2, axis=-1)
         res = atgrid.integrate(value)
         res1 = atgrid1.integrate(value1)
         res2 = atgrid2.integrate(value2)
@@ -335,14 +335,14 @@ class TestAtomGrid(TestCase):
                 )
                 assert_almost_equal(rad_int_val, atgrid_int_val)
             ref_int_at = atgrid.integrate(pt_val)
-            ref_int_rad = rad_grid.integrate(4 * np.pi * rad_grid.points ** 2 * values)
+            ref_int_rad = rad_grid.integrate(4 * np.pi * rad_grid.points**2 * values)
             assert_almost_equal(ref_int_at, ref_int_rad)
 
     # spherical harmonics and related methods tests
     def helper_func_gauss(self, points):
         """Compute gauss function value for test interpolation."""
         x, y, z = points.T
-        return np.exp(-(x ** 2)) * np.exp(-(y ** 2)) * np.exp(-(z ** 2))
+        return np.exp(-(x**2)) * np.exp(-(y**2)) * np.exp(-(z**2))
 
     def helper_func_power(self, points, deriv=False):
         """Compute function value for test interpolation."""
@@ -456,7 +456,7 @@ class TestAtomGrid(TestCase):
                 else:
                     # Test that on the right spherical harmonic the function r* Y^1_3 projects
                     # to \rho^{1,3}(r) = r
-                    assert_almost_equal(fit[i](radial_pts), radial_pts ** 2.0)
+                    assert_almost_equal(fit[i](radial_pts), radial_pts**2.0)
                 i += 1
 
     def test_value_fitting(self):
@@ -551,7 +551,7 @@ class TestAtomGrid(TestCase):
 
     def test_spherical_average_of_gaussian(self):
         r"""Test spherical average of a Gaussian (radial) function is itself and its integral."""
-
+        # construct helper function
         def func(sph_points):
             return np.exp(-sph_points[:, 0] ** 2.0)
 
@@ -577,14 +577,14 @@ class TestAtomGrid(TestCase):
         integral = (
             4.0
             * np.pi
-            * np.trapz(y=spherical_avg(oned_grid) * oned_grid ** 2.0, x=oned_grid)
+            * np.trapz(y=spherical_avg(oned_grid) * oned_grid**2.0, x=oned_grid)
         )
         actual_integral = np.sqrt(np.pi) ** 3.0
         assert_allclose(actual_integral, integral)
 
     def test_spherical_average_of_spherical_harmonic(self):
         r"""Test spherical average of spherical harmonic is zero."""
-
+        # construct helper function
         def func(sph_points):
             # Spherical harmonic of order 6 and magnetic 0
             r, phi, theta = sph_points.T
