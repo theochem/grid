@@ -23,13 +23,14 @@ from unittest import TestCase
 from grid.lebedev import AngularGrid
 from grid.utils import (
     convert_cart_to_sph,
-    generate_real_spherical_harmonics,
     generate_derivative_real_spherical_harmonics,
+    generate_real_spherical_harmonics,
     get_cov_radii,
 )
 
 import numpy as np
 from numpy.testing import assert_allclose, assert_almost_equal, assert_equal
+
 import pytest
 
 
@@ -124,11 +125,15 @@ class TestUtils(TestCase):
         # Test the shape matches (order, degree, number of points)
         assert sph_h.shape == (1 + 3 + 5 + 7, 26)
         counter = 0
-        for l in range(0, lmax + 1):
-            for m in [0] + [x for x in range(1, l + 1)] + [-x for x in range(1, l + 1)]:
-                print(l, m)
+        for l_value in range(0, lmax + 1):
+            for m in (
+                [0]
+                + [x for x in range(1, l_value + 1)]
+                + [-x for x in range(1, l_value + 1)]
+            ):
+                # print(l_value, m)
                 re = sum(sph_h[counter, :] * wts)
-                if l == 0:
+                if l_value == 0:
                     assert_almost_equal(re, np.sqrt(4.0 * np.pi))
                 else:
                     assert_almost_equal(re, 0)
@@ -213,6 +218,7 @@ class TestUtils(TestCase):
     "numb_pts, max_degree", [[1000, 10], [5000, 2], [100, 15], [10, 20]]
 )
 def test_derivative_of_spherical_harmonics_with_finite_difference(numb_pts, max_degree):
+    """Test the derivative value from spherical harmonics with finite difference."""
     theta = np.array([1e-5])
     theta = np.hstack((theta, np.random.uniform(0.0, 2.0 * np.pi, size=(numb_pts,))))
     phi = np.array([1e-5])
