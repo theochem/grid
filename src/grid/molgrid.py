@@ -22,12 +22,8 @@
 
 from grid.atomgrid import AtomGrid
 from grid.basegrid import Grid, LocalGrid, OneDGrid
-from grid.utils import get_cov_radii
 
 import numpy as np
-
-import importlib as importlib
-from importlib_resources import path
 
 
 class MolGrid(Grid):
