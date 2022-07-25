@@ -279,26 +279,35 @@ def solve_ode_bvp(
     if transform is not None:
         # Transform the function so that it's input is the original variable and
         #   derivative is with respect to the original variable as well.
-        def interpolate_wrt_original_var(pt):
-            transf_pts = transform.transform(pt)
-            # Row is which func/deriv and Col is points.
-            interpolated = res.sol(transf_pts)
-            # If derivatives are not wanted then only return y(x).
-            if no_derivatives:
-                if interpolated.ndim == 1:
-                    return interpolated
-                return interpolated[0, :]
-            deriv_funcs = [transform.deriv, transform.deriv2, transform.deriv3]
-            new_interpolate = np.zeros(interpolated.shape)
-            new_interpolate[0, :] = interpolated[0, :]
-            for i in range(interpolated.shape[1]):
-                deriv = _derivative_transformation_matrix(deriv_funcs, pt[i], order - 1)
-                new_interpolate[1:, i] = deriv.dot(interpolated[1:, i])
-            return new_interpolate
-
-        return interpolate_wrt_original_var
+        return _transform_solution_to_original_domain(
+            res, transform, no_derivatives, order
+        )
 
     return res.sol
+
+
+def _transform_solution_to_original_domain(result, tf, no_derivs, order):
+    r"""Transform interpolate solution to the original domains and its derivatives."""
+    # Note this is it's own function becuase it is used twice for solve_ode_ivp and bv.
+    def interpolate_wrt_original_var(pt):
+        transf_pts = tf.transform(pt)
+        # Row is which func/deriv and Col is points.
+        interpolated = result.sol(transf_pts)
+        # If derivatives are not wanted then only return y(x).
+        if no_derivs:
+            if interpolated.ndim == 1:
+                return interpolated
+            return interpolated[0, :]
+        deriv_funcs = [tf.deriv, tf.deriv2, tf.deriv3]
+        new_interpolate = np.zeros(interpolated.shape)
+        new_interpolate[0, :] = interpolated[0, :]
+        for i in range(interpolated.shape[1]):
+            # Calculate the jacobian dr/dx of the original domain.
+            deriv = _derivative_transformation_matrix(deriv_funcs, pt[i], order - 1)
+            new_interpolate[1:, i] = deriv.dot(interpolated[1:, i])
+        return new_interpolate
+
+    return interpolate_wrt_original_var
 
 
 def _transform_ode_from_derivs(
