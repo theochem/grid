@@ -62,6 +62,7 @@ def solve_ode_ivp(
     atol: float = 1e-6,
 ):
     r"""
+    Solve a linear ODE as an initial value problem.
 
     Parameters
     ----------
