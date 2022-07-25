@@ -72,7 +72,7 @@ class GaussLaguerre(OneDGrid):
         points, weights = roots_genlaguerre(npoints, alpha)
         if np.any(np.isnan(weights)):
             raise RuntimeError(
-                "Generation of the weights for Gauss-generalized Laguerre quadrature contains"
+                "Generation of the weights for Gauss-generalized Laguerre quadrature contains "
                 "nans. This issue is related to SciPy."
             )
         weights *= np.exp(points) * np.power(points, -alpha)
@@ -330,7 +330,6 @@ class Trapezoidal(OneDGrid):
         weights[npoints - 1] /= 2
 
         super().__init__(points, weights, (-1, 1))
-
 
 class RectangleRuleSineEndPoints(OneDGrid):
     """
