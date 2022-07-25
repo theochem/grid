@@ -20,164 +20,301 @@
 """Poisson solver module."""
 
 from grid.atomgrid import AtomGrid
-from grid.utils import generate_real_spherical_harmonics
-from grid.ode import solve_ode
+from grid.ode import solve_ode_bvp, solve_ode_ivp
+from grid.rtransform import BaseTransform
+from grid.utils import generate_real_spherical_harmonics, convert_cart_to_sph
 
 import numpy as np
 
-from scipy.interpolate import CubicSpline
+from scipy.interpolate import CubicSpline, interp1d
+
+import warnings
+from typing import Union
+
+__all__ = ["solve_poisson_bvp", "solve_poisson_ivp"]
 
 
-class Poisson:
-    """Poisson ODE solver class."""
+def solve_poisson_ivp(
+        atomgrid : AtomGrid,
+        func_vals : np.ndarray,
+        transform : BaseTransform,
+        r_interval : tuple = (1000, 1e-5),
+        ode_params : Union[dict, type(None)] = None
+):
+    r"""
+    Return interpolation of the solution to the Poisson equation solved as an initial value problem.
 
-    @staticmethod
-    def solve_poisson(spls_mtr, x_range, boundary, tfm=None):
-        """Solve poisson equation for each spherical harmonics.
+    The Poisson equation solves for function :math:`g` of the following:
 
-        Parameters
-        ----------
-        spls_mtr : np.ndarray(M, L), M = 2l + 1, L = l + 1
-            An array of callable or spline of each shell of harmonics
-        x_range : np.ndarray(K,)
-            An array with points for numerically solve the ODE
-            The boundary point should be within radial points range
-        boundary : float
-            Boundary value when x to go infinite
-        tfm : None, optional
-            Transformation for given x variable
+    .. math::
+        \Delta g = (-4\pi) f,
 
-        Returns
-        -------
-        np.ndarray(M, L)
-            Solved spline for each spherical harnomics
-        """
-        # store V^{lm}
-        ms, ls = spls_mtr.shape
-        res_mtr = np.zeros((ms, ls), dtype=object)  # result_matrix
-        for l_v in range(ls):  # l_v: value of L
-            for m_v in range(-l_v, l_v + 1):  # m_v: value of M
-                res = Poisson.solve_poisson_bv(
-                    spls_mtr[m_v, l_v], x_range, boundary, (m_v, l_v), tfm=tfm
-                )
-                res_mtr[m_v, l_v] = res
-        return res_mtr
+    for a fixed function :math:`f`, where :math:`\Delta` is the Laplacian.  This
+    is transformed to an set of ODE problems as a initial value problem.
 
-    @staticmethod
-    def solve_poisson_bv(fx, x_range, boundary, m_l=(0, 0), tfm=None):
-        """Solve poisson equation for given function.
+    Ihe initial value problem is chosen so that the boundary of :math:`g` for large r is set to
+    :math:`\int \int \int f(r, \theta, \phi) / r`.  Depending on :math:`f`, this function has
+    difficulty in capturing the origin :math:`r=0` region, and is recommended to keep the
+    final interval :math:`a` close to zero.
 
-        .. math::
+    Parameters
+    ----------
+    atomgrid : AtomGrid
+        Atomic grid that is used for integration and expanding func into real spherical
+        harmonic basis.
+    func_vals : ndarray(N,)
+        The function values evaluated on all :math:`N` points on the atomic grid.
+    transform : BaseTransform, optional
+        Transformation from infinite domain :math:`r` (:math:`[0, \infty)` to another
+        domain that is a finite.
+    r_interval : tuple, optional
+        The interval :math:`(b, a)` of :math:`r` for which the ODE solver will start from and end,
+        where :math:`b>a`. The value :math:`b` should be large as it determines the asymptotic
+        region of :math:`g` and value :math:`a` is recommended to be small but not zero depending
+        on :math:`f`.
+    ode_params : dict, optional
+        The parameters for the ode solver. See `grid.ode.solve_ode_ivp` for all options.
 
-        Parameters
-        ----------
-        fx : Callable
-            Callable function on the right hand side of equation
-        x_range : np.narray(K,)
-            An array with points for numerically solve the ODE
-            The boundary point should be within radial points range
-        boundary : float
-            Boundary value when x to go infinite
-        m_l : tuple, optional
-            m and l value of given spherical harmonics
-        tfm : None, optional
-            Transformation for given x variable
+    Returns
+    -------
+    callable(ndarray(N, 3) -> float) :
+        The solution to Poisson equaiton/potential :math:`g : \mathbb{R}^3 \rightarrow \mathbb{R}`.
 
-        Returns
-        -------
-        scipy.PPline
-            A callable spline for result.
-        """
-        m_value, l_value = m_l
+    Examples
+    --------
+    Set up of the radial grid
+    >>> oned_grid = Trapezoidal(10000)
+    >>> tf = LinearFiniteRTransform(0.0, 1000)
+    >>> radial_grid = tf.transform_1d_grid(oned)
+    Set up the atomic grid with degree 10 at each radial point.
+    >>> atomic_grid = AtomGrid(radial_grid, degrees=[10])
+    Set the charge distribution to be unit-charge density and evaluate on atomic grid points.
+    >>> def charge_distribution(x, alpha=0.1):
+    >>>    r = np.linalg.norm(x, axis=1)
+    >>>    return (alpha / np.pi)**(3.0 / 2.0) * np.exp(-alpha * r**2.0)
+    >>> func_vals = charge_distribution(atomic_grid.points)
+    Solve for the potential as an initial value problem and evaluate it over the atomic grid.
+    >>> potential = solve_poisson_ivp(
+    >>>      atgrid, func_vals, InverseRTransform(tf), r_interval=(1000, 1e-3),
+    >>>      ode_params={"method" : "DOP853", "atol": 1e-8},
+    >>> )
+    >>> potential_values = potential(atgrid.points)
 
-        def f_x(r):
-            return fx(r) * -4 * np.pi * r
+    """
+    if r_interval[0] < r_interval[1]:
+        raise ValueError(
+            f"Initial Radial interval {r_interval[0]} should be greater than "
+            f"second entry {r_interval[1]}."
+        )
 
-        def coeff_0(r):
-            return -l_value * (l_value + 1) / r ** 2
+    # Get the radial components from expanding func into real spherical harmonics.
+    radial_components = atomgrid.radial_component_splines(func_vals)
 
-        coeffs = [coeff_0, 0, 1]
-        if l_value == 0 and m_value == 0:
-            bd_cond = [(0, 0, 0), (1, 0, boundary)]
-        else:
-            bd_cond = [(0, 0, 0), (1, 0, 0)]
-        return solve_ode(x_range, f_x, coeffs, bd_cond, transform=tfm)
+    # Following takes the integral of f(x), to generate the bounds at very large r.
+    # The calculation of the bounds is explained below.
+    sph_o_l = generate_real_spherical_harmonics(0, np.array([0.1]), np.array([0.1]))
+    r_max = r_interval[0]
+    boundary = atomgrid.integrate(func_vals) / sph_o_l[0, 0]
 
-    @staticmethod
-    def interpolate_radial(spls_mtr, rad, deriv=0, sumup=False):
-        """Interpolate radial value for given set of splines.
+    # Set up default ode parameters if it isn't set up already.
+    if ode_params is None:
+        ode_params = dict({})
+    ode_params.setdefault("method", "DOP853")
+    ode_params.setdefault("rtol", 1e-8)
+    ode_params.setdefault("atol", 1e-6)
 
-        Parameters
-        ----------
-        spls_mtr : np.ndadrray(M, L)
-            An array of solved spline for poisson ODE
-        rad : float
-            Radial value to be interpolated
-        deriv : int, optional
-            0 for function value, 1 for its first order deriv
-        sumup : bool, optional
-            False: return an array(M, L) contains the coeff for each shell
-            True: sum the coeff of each shell
-        Returns
-        -------
-        np.ndarray(M, L) or float
-            an array of coeffs of each shell or the sum of all the coeffs
-        """
-        ms, ls = spls_mtr.shape
-        inter_mtr = np.zeros((ms, ls))
-        for l_v in range(ls):
-            for m_v in range(-l_v, l_v + 1):
-                inter_mtr[m_v, l_v] = spls_mtr[m_v, l_v](rad)[deriv]
-        if sumup:
-            return np.sum(inter_mtr)
-        else:
-            return inter_mtr
+    splines = []
+    i_spline = 0
+    for l in range(0, atomgrid.l_max // 2 + 1):
+        for m in [x for x in range(0, l + 1)] + [-x for x in range(-l, 0)]:
+            def f_x(r):
+                return radial_components[i_spline](r) * -4 * np.pi
 
-    @staticmethod
-    def interpolate(spls_mtr, rad, theta, phi, deriv=0):
-        """Inperpolate points on any 3d space.
+            def coeff_0(r):
+                a = -l * (l + 1) / r ** 2
+                return a
 
-        Parameters
-        ----------
-        spls_mtr : np.ndadrray(M, L)
-            An array of solved spline for poisson ODE
-        rad : float
-            Radial value to be interpolated
-        theta : np.ndarray(N,)
-            An array of azimuthal angles
-        phi : np.ndarray(N,)
-            An array of polar angles
-        deriv : int, optional
-            0 for function value, 1 for its first order deriv
+            def coeff_1(r):
+                # with np.errstate(divide='ignore', invalid='ignore'):
+                return 2.0 / r
 
-        Returns
-        -------
-        np.ndarray(N,)
-            Interpolated value on each point
-        """
-        ms, ls = spls_mtr.shape
-        # (M, L, N)
-        sph_harm = generate_real_sph_harms(ls - 1, theta, phi)
-        r_value = Poisson.interpolate_radial(spls_mtr, rad, deriv)
-        return np.sum(r_value[..., None] * sph_harm, axis=(0, 1))
+            # Set up coefficients of the ode
+            coeffs = [coeff_0, coeff_1, 1]
+            # initial values.
+            if l == 0 and m == 0:
+                # Solution to Poisson is electrostatic potential g(r) = \int f(x) /|x - r| dx,
+                # for large r, we have r >> x, so |x-r| \approx |r| so that we have the following
+                # bound g(large r) = \int f(x) dx / |r|,  this gives the first ivp, then
+                # taking the derivative wrt to r gives the bound for the derivative at large r.
+                ivp = [boundary / r_max, -boundary / r_max**2.0]
+            else:
+                ivp = [0.0, 0.0]
+            # Solve ode
+            u_lm = solve_ode_ivp(
+                r_interval, f_x, coeffs, ivp, transform, no_derivatives=True, **ode_params
+            )
 
-    # Doesn't give the right answer. Commented out for now.
-    # @staticmethod
-    # def solve_poisson_iv(fx, x_range, m_l=(0, 0), tfm=None):
-    #     m_value, l_value = m_l
+            i_spline += 1
+            splines.append(u_lm)
 
-    #     def f_x(r):
-    #         return -4 * np.pi * fx(r)
 
-    #     def coeff_1(r):
-    #         return 2 / r
+    def interpolate(points):
+        r_pts, theta, phi = convert_cart_to_sph(points).T
+        r_values = np.array([spline(r_pts) for spline in splines])
+        r_sph_harm = generate_real_spherical_harmonics(atomgrid.l_max // 2, theta, phi)
+        return np.einsum("ij, ij -> j", r_values, r_sph_harm)
 
-    #     def coeff_0(r):
-    #         return -l_value * (l_value + 1) / r ** 2
+    return interpolate
 
-    #     coeffs = [coeff_0, coeff_1, 1]
-    #     bd_cond = [(1, 0, 0), (1, 1, 0)]
-    #     return ODE.solve_ode(x_range, f_x, coeffs, bd_cond, transform=tfm)
+
+def solve_poisson_bvp(atomgrid, func_vals, transform, boundary=None, include_origin=True,
+                      remove_large_pts=1e6, ode_params=None):
+    r"""
+    Return interpolation of the solution to the Poisson equation solved as a boundary value problem.
+
+    The Poisson equation solves for function :math:`g` of the following:
+
+    .. math::
+        \Delta g = (-4\pi) f,
+
+    for a fixed function :math:`f`, where :math:`\Delta` is the Laplacian.  This
+    is transformed to an set of ODE problems as a boundary value problem.
+
+    If boundary is not provided, then the boundary of :math:`g` for large r is set to
+    :math:`\int \int \int f(r, \theta, \phi) / r`.
+
+    Parameters
+    ----------
+    atomgrid : AtomGrid
+        Atomic grid that is used for integration and expanding func into real spherical
+        harmonic basis.
+    func_vals : ndarray(N,)
+        The function values evaluated on all :math:`N` points on the atomic grid.
+    transform : BaseTransform, optional
+        Transformation from infinite domain :math:`r` (:math:`[0, \infty)` to another
+        domain that is a finite.
+    boundary : float, optional
+        The boundary value of :math:`g` in the limit of r to infinity.
+    include_origin : bool, optional
+        If true, will add r=0 point when solving for the ode only. If false, it is recommended
+        to have many radial points near the origin.
+    remove_large_pts : float, optional
+        If true, will remove any points larger than `remove_large_pts` when solving for the ode
+        only.
+    ode_params : dict, optional
+        The parameters for the ode solver. See `grid.ode.solve_ode_bvp` for all options.
+
+    Returns
+    -------
+    callable(ndarray(N, 3) -> float) :
+        The solution to Poisson equaiton/potential :math:`g : \mathbb{R}^3 \rightarrow \mathbb{R}`.
+
+    Examples
+    --------
+    Set up of the radial grid
+    >>> radial_grid = Trapezoidal(10000)
+    Set up the atomic grid with degree 10 at each radial point.
+    >>> degree = 10
+    >>> atomic_grid = AtomGrid(radial, degrees=[degree])
+    Set the charge distribution to be unit-charge density and evaluate on atomic grid points.
+    >>> def charge_distribution(x, alpha=0.1):
+    >>>    r = np.linalg.norm(x, axis=1)
+    >>>    return (alpha / np.pi)**(3.0 / 2.0) * np.exp(-alpha * r**2.0)
+    >>> func_vals = charge_distribution(atomic_grid.points)
+    Solve the Poisson equation with Becke transformation
+    >>> transform = BeckeRTransform(1e-6, 1.5, trim_inf=True)
+    >>> potential = solve_poisson_bvp(
+    >>>      atgrid, func_vals, InverseRTransform(tf), include_origin=True,
+    >>>      remove_large_pts=1e6, ode_params={"tol" : 1e-6, "max_nodes": 20000},
+    >>> )
+    >>> actual = potential(atgrid.points)
+
+    References
+    ----------
+    .. [1] Becke, A. D., & Dickson, R. M. (1988). Numerical solution of Poisson’s equation in
+           polyatomic molecules. The Journal of chemical physics, 89(5), 2993-2997.
+
+    """
+    if not isinstance(boundary, (float, type(None))):
+        raise TypeError(f"`boundary` {type(boundary)} should be either float or None.")
+    if not isinstance(include_origin, bool):
+        raise TypeError(f"`include_origin` {type(include_origin)} should be boolean.")
+    if not isinstance(remove_large_pts, (float, type(None))):
+        raise TypeError(f"`remove_large_pts` {type(remove_large_pts)} should be either "
+                        f"float or None.")
+
+    # If boundary is None: then bnd sets to \integral of func_vals / Spherical Harmonic at (0, 0)
+    if boundary is None:
+        # Since spherical harmonic at (0, 0) is a constant, then pick a random point.
+        sph_o_l = generate_real_spherical_harmonics(0, np.array([0.1]), np.array([0.1]))
+        boundary = atomgrid.integrate(func_vals) / sph_o_l[0, 0]
+
+    # Check if the domain of transform is in [0, \infty)
+    domain = transform.domain
+    if domain[0] < 0.0:
+        raise ValueError(f"The domain of the transform {domain} should be in [0, infinity).")
+
+    # Get the radial components from expanding func into real spherical harmonics.
+    radial_components = atomgrid.radial_component_splines(func_vals)
+
+    # Include the origin r=0 point if it isn't included, this is due to potential
+    # expanded with 1/r factor and so to be finite at r=0, the numerator should be zero.
+    points = atomgrid.rgrid.points.copy()
+    if include_origin:
+        if np.all(atomgrid.rgrid.points > 0.0):
+            points = np.hstack((np.array([0.0]), points))
+
+    # Get indices where the points are large and remove them for ill-conditioning of ode-solver.
+    if remove_large_pts is not None:
+        indices = np.where(points > remove_large_pts)[0]
+        points = np.delete(points, indices)
+
+    # Set up default ode parameters if it isn't set up already.
+    if ode_params is None:
+        ode_params = dict({})
+    ode_params.setdefault("tol", 1e-6)
+    ode_params.setdefault("max_nodes", 50000)
+    ode_params.setdefault("no_derivatives", True)
+
+    splines = []
+    i_spline = 0
+    for l in range(0, atomgrid.l_max // 2 + 1):
+        for m in [x for x in range(0, l + 1)] + [-x for x in range(-l, 0)]:
+            def f_x(r):
+                return radial_components[i_spline](r) * -4 * np.pi * r
+
+            def coeff_0(r):
+                with np.errstate(divide='ignore', invalid='ignore'):
+                    a = -l * (l + 1) / r ** 2
+                # Note that this assumes the boundary condition that y(0) = 0.
+                a[np.abs(r) == 0.0] = 0.0
+                return a
+
+            # Set up coefficients of the ode
+            coeffs = [coeff_0, 0, 1]
+
+            # Set up boundary conditions
+            if l == 0 and m == 0:
+                bd_cond = [(0, 0, 0), (1, 0, boundary)]
+            else:
+                bd_cond = [(0, 0, 0), (1, 0, 0)]
+
+            # Solve ode
+            u_lm = solve_ode_bvp(
+                points, f_x, coeffs, bd_cond, transform, **ode_params
+            )
+            i_spline += 1
+            splines.append(u_lm)
+
+    def interpolate(points):
+        r_pts, theta, phi = convert_cart_to_sph(points).T
+        r_values = np.array([spline(r_pts) / r_pts for spline in splines])
+        # Since splin(r=0) = 0, then set points to zero there.
+        r_values[:, np.abs(r_pts) < 1e-300] = 0.0
+        r_sph_harm = generate_real_spherical_harmonics(atomgrid.l_max // 2, theta, phi)
+        return np.einsum("ij, ij -> j", r_values, r_sph_harm)
+
+    return interpolate
 
 
 def interpolate_laplacian(atomgrid: AtomGrid, func_vals: np.ndarray):
