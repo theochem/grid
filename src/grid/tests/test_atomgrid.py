@@ -422,6 +422,7 @@ class TestAtomGrid(TestCase):
                         assert_almost_equal(radial_comp(radial_pts), 0.0, decimal=8)
                 i += 1
 
+
     def test_fitting_product_of_spherical_harmonic(self):
         r"""Test fitting the radial components of r**2 times spherical harmonic."""
         max_degree = 7  # Maximum degree
@@ -448,6 +449,42 @@ class TestAtomGrid(TestCase):
                     # to \rho^{1,3}(r) = r
                     assert_almost_equal(fit[i](radial_pts), radial_pts**2.0)
                 i += 1
+
+    def test_radial_component_spherical_harmonic_degree_6(self):
+        r"""Test fitting the radial components of spherical harmonic of l=6,m=0."""
+        max_degree = 6 * 2 + 2  # Maximum degree
+        rad = OneDGrid(np.linspace(0.0, 1.0, num=10), np.ones(10), (0, np.inf))
+        atom_grid = AtomGrid.from_pruned(rad, 1, sectors_r=[], sectors_degree=[max_degree])
+        max_degree = atom_grid.l_max
+        spherical = atom_grid.convert_cartesian_to_spherical()
+
+        def func(sph_points):
+            # Spherical harmonic of degree 6 and order 0
+            r, phi, theta = sph_points.T
+            return np.sqrt(2.0) * np.sqrt(13) / (np.sqrt(np.pi) * 32) * (
+                    231 * np.cos(theta) ** 6.0 - 315 * np.cos(theta) ** 4.0 + 105 * np.cos(
+                theta) ** 2.0 - 5.0
+            )
+
+        # Test on the function Y^0_6
+        func_vals = func(spherical)
+        # Fit radial components
+        fit = atom_grid.radial_component_splines(func_vals)
+        radial_pts = np.arange(0.0, 1.0, 0.01)
+        counter = 0
+        for l in range(0, max_degree // 2):
+            for m in [0] + [x for x in range(1, l + 1)] + [x for x in range(-l, 0)]:
+                if counter == 36:
+                    # Test that on the right spherical harmonic the function r* Y^1_3 projects
+                    # to \rho^{1,3}(r) = r
+                    assert_almost_equal(fit[counter](radial_pts), np.sqrt(2.0))
+                else:
+                    assert_almost_equal(fit[counter](radial_pts), 0.0, decimal=8)
+
+                # Test the derivatives are all zero
+                assert_almost_equal(fit[counter](radial_pts, 1), 0.0)
+                assert_almost_equal(fit[counter](radial_pts, 2), 0.0)
+                counter += 1
 
     def test_value_fitting(self):
         """Test spline projection the same as spherical harmonics."""
