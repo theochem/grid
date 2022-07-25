@@ -241,6 +241,75 @@ def test_solve_ode_bvp_with_and_without_transormation(transform, fx, coeffs, bd_
     for bd in bd_cond:
         bnd, deriv, val = bd
         assert_allclose(sol_with_transform(x)[deriv][-bnd], val, atol=1e-5)
+
+
+    if len(coeffs) >= 3:
+        # Test the first derivative of y.
+        assert_allclose(sol_with_transform(x)[1], sol_normal(x)[1], atol=1e-3)
+        if len(coeffs) >= 4:
+            assert_allclose(sol_with_transform(x)[2], sol_normal(x)[2], atol=1e-3)
+
+
+@pytest.mark.parametrize(
+    "transform, fx, coeffs, ivp",
+    [
+        # Test with ode -y + y` + y`` =1/x^2
+        [
+            BeckeRTransform(0.01, 5.0),
+            fx_complicated_example3,
+            [-1, 1, 1],
+            [3.0, 0.0],
+        ],
+        [
+            BeckeRTransform(0.01, 5.0),
+            fx_complicated_example3,
+            [-1, 1, 1],
+            [3.0, 6.0],
+        ],
+        [
+            BeckeRTransform(0.01, 5.0),
+            fx_complicated_example3,
+            [-1, 1, 1],
+            [0.0, 0.0],
+        ],
+        # Test one with boundary conditions on the derivatives
+        [
+            SqTF(1, 3),
+            fx_complicated_example,
+            np.random.uniform(-100, 100, (4,)),
+            [0.0, 3.0, 6.0],
+        ],
+        [
+            KnowlesRTransform(0.01, 1.5, 3),
+            fx_complicated_example,
+            np.random.uniform(-100, 100, (4,)),
+            [0.0, 3.0, 6.0],
+        ],
+    ],
+)
+def test_solve_ode_ivp_with_and_without_transformation(transform, fx, coeffs, ivp):
+    r"""Test solve_ode_ivp with and without transformation with different initial guesses."""
+    sol_with_transform = solve_ode_ivp(
+        (0.01, 0.999),
+        fx,
+        coeffs,
+        ivp,
+        transform,
+    )
+
+    sol_normal = solve_ode_ivp(
+        (0.01, 0.999), fx, coeffs, ivp
+    )
+
+    # Test the initial value problem
+    for i, ivp_val in enumerate(ivp):
+        assert_allclose(sol_normal(np.array([0.01]))[i], ivp_val, atol=1e-5)
+        assert_allclose(sol_with_transform(np.array([0.01]))[i], ivp_val, atol=1e-5)
+
+
+    # Test the function values
+    x = np.arange(0.01, 0.999, 0.1)
+    assert_allclose(sol_with_transform(x)[0], sol_normal(x)[0], atol=1e-5)
     if len(coeffs) >= 3:
         # Test the first derivative of y.
         assert_allclose(sol_with_transform(x)[1], sol_normal(x)[1], atol=1e-3)
@@ -274,10 +343,46 @@ def test_solve_ode_bvp_against_analytic_example():
     assert_almost_equal(res(rand_pts)[1], deriv(rand_pts))
 
 
-def test_error_raises():
-    """Test proper error raises."""
+@pytest.mark.parametrize(
+    "fx, coeffs, ivp, solutions",
+    [
+        # Test ode  y^`` = 1 with y(0) = 0, y`(0) = -1
+        [
+            lambda x: 1 if isinstance(x, Number) else np.ones(x.size),
+            [0, 0, 1],
+            [0.0, -1.0],
+            lambda x: (x**2.0 / 2.0 - x,  x - 1.0),
+        ],
+        # Test ode y′+ y cos(t) =0,
+        [
+            lambda x: 0 if isinstance(x, Number) else np.zeros(x.size),
+            [lambda x: np.cos(x), 1],
+            [0.5],
+            lambda x: np.array([np.exp(-np.sin(x)) / 2.0]),
+        ],
+        # Test ode y`` - y` = 2 sin(x) with y(0) = 1 and y`(0)=-1
+        [
+            lambda x: 2.0 * np.sin(x),
+            [0, -1, 1],
+            [1.0, -1.0],
+            lambda x: (np.cos(x) - np.sin(x), -np.sin(x) - np.cos(x)),
+        ]
+
+    ],
+)
+def test_solve_ode_ivp_against_analytic_example(fx, coeffs, ivp, solutions):
+    """Test solve_ode_ivp against analytic solution."""
+    res = solve_ode_ivp((0, 2), fx, coeffs, ivp)
+
+    # Test on random points.
+    # rand_pts = np.random.uniform(0.0, 2.0, size=100)
+    rand_pts = np.arange(0, 2, 0.5)
+    assert_allclose(res(rand_pts), solutions(rand_pts), atol=1e-5)
+
+
+def test_error_raises_for_solve_ode_bvp():
+    """Test proper error raises for solve_ode_bvp."""
     x = np.linspace(-0.999, 0.999, 20)
-    # r = btf.transform(x)
 
     def fx(x):
         return 1 / x**2
