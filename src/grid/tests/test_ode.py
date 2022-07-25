@@ -23,12 +23,14 @@ from numbers import Number
 
 
 from grid.ode import (
+    _derivative_transformation_matrix,
     _evaluate_coeffs_on_points,
     _rearrange_to_explicit_ode,
     _transform_and_rearrange_to_explicit_ode,
     _transform_ode_from_derivs,
     _transform_ode_from_rtransform,
-    solve_ode,
+    solve_ode_bvp,
+    solve_ode_ivp,
 )
 from grid.onedgrid import GaussLaguerre
 from grid.rtransform import (
@@ -81,6 +83,10 @@ class SqTF(BaseTransform):
         """Initialize power transform instance."""
         self._exp = exp
         self._extra = extra
+
+    @property
+    def domain(self):
+        return (-1.0, 1.0)
 
     def transform(self, x):
         """Transform given array."""
@@ -211,10 +217,10 @@ def test_transform_and_rearrange_to_explicit_ode_with_simple_boundary(
         ],
     ],
 )
-def test_solve_ode_with_and_without_transormation(transform, fx, coeffs, bd_cond):
+def test_solve_ode_bvp_with_and_without_transormation(transform, fx, coeffs, bd_cond):
     r"""Test solve_ode with and without transformation with different bd conditions."""
     x = np.linspace(0.01, 0.999, 20)
-    sol_with_transform = solve_ode(
+    sol_with_transform = solve_ode_bvp(
         x,
         fx,
         coeffs,
@@ -226,7 +232,7 @@ def test_solve_ode_with_and_without_transormation(transform, fx, coeffs, bd_cond
     )
     init_guess = sol_with_transform(x)
 
-    sol_normal = solve_ode(
+    sol_normal = solve_ode_bvp(
         x, fx, coeffs, bd_cond, tol=1e-8, max_nodes=20000, initial_guess_y=init_guess
     )
     # Test the function values
@@ -243,7 +249,7 @@ def test_solve_ode_with_and_without_transormation(transform, fx, coeffs, bd_cond
 
 
 def test_solve_ode_bvp_against_analytic_example():
-    """Test solve_ode against analytic solution."""
+    """Test solve_ode_bvp against analytic solution."""
     x = np.linspace(0, 2, 10)
 
     def fx(x):
@@ -254,7 +260,7 @@ def test_solve_ode_bvp_against_analytic_example():
     # lower and upper bound of y is equal to zero.
     bd_cond = [[0, 0, 0], [1, 0, 0]]
 
-    res = solve_ode(x, fx, coeffs, bd_cond)
+    res = solve_ode_bvp(x, fx, coeffs, bd_cond)
 
     def solution(x):
         return x**2.0 / 2.0 - x
@@ -279,14 +285,14 @@ def test_error_raises():
     coeffs = [-1, -2, 1]
     bd_cond = [(0, 0, 0), (1, 0, 0), (0, 1, 0), (1, 1, 0)]
     # Test the error that the number of boundary conditions should be equal to order.
-    assert_raises(ValueError, solve_ode, x, fx, coeffs, bd_cond[3:])
-    assert_raises(ValueError, solve_ode, x, fx, coeffs, bd_cond)
+    assert_raises(ValueError, solve_ode_bvp, x, fx, coeffs, bd_cond[3:])
+    assert_raises(ValueError, solve_ode_bvp, x, fx, coeffs, bd_cond)
     test_coeff = [1, 2, 3, 4, 5]
-    assert_raises(ValueError, solve_ode, x, fx, test_coeff, bd_cond)
+    assert_raises(ValueError, solve_ode_bvp, x, fx, test_coeff, bd_cond)
 
     test_coeff = [1, 2, 3, 3]
     tf = BeckeRTransform(0.1, 1)
-    assert_raises(ValueError, solve_ode, x, fx, test_coeff, bd_cond[:3], tf)
+    assert_raises(ValueError, solve_ode_bvp, x, fx, test_coeff, bd_cond[:3], tf)
 
 
 def test_construct_coeffs_of_ode_over_mesh():
