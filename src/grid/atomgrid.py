@@ -421,9 +421,10 @@ class AtomGrid(Grid):
         radial_coefficients = np.moveaxis(radial_coefficients, 0, -1) # swap points axes to last
 
         # Remove the radial weights and r^2 values that are in self.weights
-        radial_coefficients /= (self.rgrid.points ** 2 * self.rgrid.weights)
+        with np.errstate(divide='ignore', invalid='ignore'):
+            radial_coefficients /= (self.rgrid.points ** 2 * self.rgrid.weights)
         # For radius smaller than 1.0e-8, due to division by zero, we regenerate
-        # the angular grid and calculat ethe integral at those points.
+        # the angular grid and calculate the integral at those points.
         r_index = np.where(self.rgrid.points < 1e-8)[0]
         for i in r_index:  # if r_index = [], then for loop doesn't occur.
             # build angular grid for i-th shell
@@ -525,11 +526,12 @@ class AtomGrid(Grid):
         # Multiply spherical harmonic basis with the function values to project.
         values = np.einsum("ln,n->ln",self._basis, func_vals)
         radial_components = self.integrate_angular_coordinates(values)
-        # each shell can only integrate upto shell_degree // 2, so if shell_degree < l_max,
-        # the f_{lm} should be set to zero for l > shell_degree // 2. Instead, one could set
-        # truncate the basis of a given shell.
+        # each shell can only integrate two spherical harmonics upto shell_degree // 2,
+        # so if shell_degree < l_max, the f_{lm} should be set to zero for l > shell_degree // 2.
+        # Instead, one could set truncate the basis of a given shell.
         for i in range(self.n_shells):
-            if self.degrees[i] != self.l_max:
+            # if self.degrees[i] != self.l_max:
+            if self.degrees[i] > self.l_max // 2:
                 num_nonzero_sph = (self.degrees[i] // 2 + 1) ** 2
                 radial_components[num_nonzero_sph:, i] = 0.0
 
