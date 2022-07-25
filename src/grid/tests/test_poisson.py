@@ -58,15 +58,18 @@ def test_interpolation_of_laplacian_with_spherical_harmonic():
         # Eigenvector spherical harmonic times l(l + 1) / r^2
         with np.errstate(divide='ignore', invalid='ignore'):
             desired = -func(spherical_pts) * 6 * (6 + 1) / spherical_pts[:, 0]**2.0
-        desired[spherical_pts[:, 0]**2.0 < 1e-10] = 0.0
-        assert_almost_equal(actual, desired, decimal=3)
+        # desired[spherical_pts[:, 0]**2.0 < 1e-10] = -np.inf
+        np.set_printoptions(threshold=np.inf)
+        assert_allclose(actual, desired)
 
 
-def test_interpolation_of_laplacian_of_exponential(self):
+def test_interpolation_of_laplacian_of_exponential():
     r"""Test the interpolation of Laplacian of exponential."""
-    odg = OneDGrid(np.linspace(0.01, 1, num=1000), np.ones(1000), (0, np.inf))
+    oned = Trapezoidal(5000)
+    btf = BeckeRTransform(0.0, 1.5)
+    radial = btf.transform_1d_grid(oned)
     degree = 10
-    atgrid = AtomGrid.from_pruned(odg, 1, sectors_r=[], sectors_degree=[degree])
+    atgrid = AtomGrid.from_pruned(radial, 1, sectors_r=[], sectors_degree=[degree])
 
     def func(cart_pts):
         radius = np.linalg.norm(cart_pts, axis=1)
@@ -80,6 +83,7 @@ def test_interpolation_of_laplacian_of_exponential(self):
     for grid in [atgrid.points, np.random.uniform(-0.5, 0.5, (250, 3))]:
         actual = laplacian(grid)
         spherical_pts = atgrid.convert_cartesian_to_spherical(grid)
+        spherical_pts[:, 0][spherical_pts[:, 0] < 1e-6] = 1e-6
         # Laplacian of exponential is e^-x (x - 2) / x
         desired = np.exp(-spherical_pts[:, 0]) * (spherical_pts[:, 0] - 2.0) /\
                   spherical_pts[:, 0]
