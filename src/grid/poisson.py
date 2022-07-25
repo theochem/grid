@@ -342,44 +342,51 @@ def interpolate_laplacian(atomgrid: AtomGrid, func_vals: np.ndarray):
 
     Returns
     -------
-    callable[ndarray(M,3) -> ndarray(M,)] :
+    callable[ndarray(M,3), float -> ndarray(M,)] :
         Function that interpolates the Laplacian of a function whose input is
-        Cartesian points.
+        Cartesian points. The float value is the cutoff where radial points
+        smaller than the cutoff are replaced with the cutoff. Computing the Laplacian at r=0 can
+        cause problems depending on the function provided.
+
+    Warnings
+    --------
+    - Since :math:`\rho_{lm}` and its derivatives are being interpolated and due to division by
+      powers of :math:`r`, it is recommend to be very careful of having values near zero.
 
     """
-    radial, theta, phi = atomgrid.convert_cartesian_to_spherical().T
-    # Multiply f by r to get rf
-    func_vals_radial = radial * func_vals
-
-    # compute spline for the radial components for rf and f
-    radial_comps_rf = atomgrid.radial_component_splines(func_vals_radial)
+    # compute spline for the radial components for f
     radial_comps_f = atomgrid.radial_component_splines(func_vals)
 
-    def interpolate_laplacian(points):
+    def interpolate_laplacian(points: np.ndarray,  cutoff: float = 1e-6):
         r_pts, theta, phi = atomgrid.convert_cartesian_to_spherical(points).T
 
-        # Evaluate the radial components for function f
+        if np.any(r_pts < cutoff):
+            r_pts[r_pts < cutoff] = cutoff
+
+        # Evaluate the radial components, its derivative and second deriv for function f
         r_values_f = np.array([spline(r_pts) for spline in radial_comps_f])
-        # Evaluate the second derivatives of splines of radial component of function rf
-        r_values_rf = np.array([spline(r_pts, 2) for spline in radial_comps_rf])
+        dr_values = np.array([spline(r_pts, 1) for spline in radial_comps_f])
+        d2r_values = np.array([spline(r_pts, 2) for spline in radial_comps_f])
 
         r_sph_harm = generate_real_spherical_harmonics(atomgrid.l_max // 2, theta, phi)
 
-        # Divide \rho_{lm}^{rf} by r  and \rho_{lm}^{rf} by r^2
+        # Take the sum of each component with the spherical harmonics
         # l means the angular (l,m) variables and n represents points.
-        with np.errstate(divide='ignore', invalid='ignore'):
-            r_values_rf /= r_pts
-            r_values_rf[:, r_pts < 1e-10] = 0.0
-            r_values_f /= r_pts**2.0
-            r_values_f[:, r_pts**2.0 < 1e-10] = 0.0
+        # Note this was computed on seperate due to the difficulty in handing 0/inf, 0/0, 0*inf.
+        first_component = np.einsum("ln, ln -> n", d2r_values, r_sph_harm)
+        second_component = np.einsum("ln, ln -> n", dr_values, r_sph_harm)
 
-        # Multiply \rho_{lm}^f by l(l+1), note 2l+1 orders for each degree l
+        # Compute 2 \sum \sum dr_values Y_l^m / r,
+        with np.errstate(divide='ignore', invalid='ignore'):
+            second_component *= 2.0 / r_pts
+
+        # Compute l(l+1) \sum \sum r_values Y_l^m / r^2
         degrees = np.hstack([[x * (x + 1)] * (2 * x + 1) for x in
                              np.arange(0, atomgrid.l_max // 2 + 1)])
-        second_component = np.einsum("ln,l->ln", r_values_f, degrees)
-        # Compute \rho_{lm}^{rf}/r - \rho_{lm}^f l(l + 1) / r^2
-        component = r_values_rf - second_component
-        # Multiply by spherical harmonics and take the sum
-        return np.einsum("ln, ln -> n", component, r_sph_harm)
+        third_component = np.einsum("ln,l,ln -> n", r_values_f, degrees, r_sph_harm)
+        with np.errstate(divide='ignore', invalid='ignore'):
+            third_component /= r_pts**2.0
+
+        return first_component + second_component - third_component
 
     return interpolate_laplacian
