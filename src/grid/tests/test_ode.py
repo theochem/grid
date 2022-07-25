@@ -548,3 +548,34 @@ def test_rearange_ode_coeff():
     assert_almost_equal(res2.sol(0)[1], 3)
     assert_almost_equal(res2.sol(1)[1], 7)
     assert_almost_equal(res2.sol(2)[1], 11)
+
+
+def test_first_and_second_derivative_transformation_with_Becke_transform():
+    r"""Test derivative transformation of cubic function with Becke transform."""
+    transform = BeckeRTransform(0.0, 5.0)
+    func = lambda x: x**3.0
+    origin_domain = np.arange(0.0, 10, 0.1)         # r \in [0, \infty)
+    new_domain = transform.inverse(origin_domain)   # x \in [-1, 1]
+
+    # dr/dx,  d^2 r/ dx^2,
+    deriv_tranfs = [transform.deriv, transform.deriv2, transform.deriv3]
+
+    # derivative g(r) := r^3 wrt to r in [0, \infty)
+    deriv_func_old = lambda x: 3.0 * x**2.0
+    sec_deriv_func_old = lambda x: 6.0 * x
+
+    # derivative g(r(x)) wrt to x in [-1, 1]
+    desired_deriv_new = lambda x: 6 * 5.0 ** 3.0 * (1 + x) ** 2.0 / (1 - x) ** 4.0
+    desired_sec_deriv_new = lambda x: -12 * 5.0**3.0 * (1 + x) * (x + 3) / (x - 1.0)**5.0
+
+    # Go through each pt, calculate the jacobian, calculate the derivative g(r(x)) and compare
+    for i, pt_x in enumerate(new_domain):
+        pt_r = origin_domain[i]
+        # derivative r^3 wrt to r in [0, \infty)
+        actual_deriv_origin = np.array([deriv_func_old(pt_r), sec_deriv_func_old(pt_r)])
+
+        # transform derivative to get  g(r(x)) wrt to x in [-1, 1]
+        jacobian = _derivative_transformation_matrix(deriv_tranfs, pt_x, 2)
+        actual_deriv_new = jacobian.dot(actual_deriv_origin)
+
+        assert_allclose(actual_deriv_new, [desired_deriv_new(pt_x), desired_sec_deriv_new(pt_x)])
