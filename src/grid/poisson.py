@@ -17,7 +17,19 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
-"""Poisson solver module."""
+"""
+Poisson solver module.
+
+This module solves the following Poisson equations:
+
+.. math::
+    \nabla^2 V(r) = -4\pi \rho(r),
+
+for some Coulomb potential :math:`V(r)` and charge density :math:`\rho(r)`
+over a centered atomic grid. It is recommended to use the boundary value problem
+for handing singularities near the origin of the atomic grid.
+
+"""
 
 from grid.atomgrid import AtomGrid
 from grid.ode import solve_ode_bvp, solve_ode_ivp
@@ -322,14 +334,15 @@ def interpolate_laplacian(atomgrid: AtomGrid, func_vals: np.ndarray):
     Return a function that interpolates the Laplacian of a function.
 
     .. math::
-        \Deltaf = \frac{1}{r}\frac{\partial^2 rf}{\partial r^2} - \frac{\hat{L}}{r^2},
+        \Delta f = \frac{1}{r}\frac{\partial^2 rf}{\partial r^2} - \frac{\hat{L}}{r^2},
 
     such that the angular momentum operator satisfies :math:`\hat{L}(Y_l^m) = l (l + 1) Y_l^m`.
     Expanding f in terms of spherical harmonic expansion, we get that
 
     .. math::
-        \Deltaf = \sum \sum \bigg[\frac{\rho_{lm}^{rf}}{r} -
-        \frac{l(l+1) \rho_{lm}^f}{r^2} \bigg] Y_l^m,
+        \Delta f = \sum_l \sum_m \bigg[ \frac{\partial^2 \rho_{lm}(r)}{\partial r^2}
+        + \frac{2}{r} \frac{\partial \rho_{lm}(r)}{\partial r} - \frac{l(l+1)}{r^2}\rho_{lm}(r)
+         \bigg] Y_l^m,
 
     where :math:`\rho_{lm}^f` is the lth, mth radial component of function f.
 
