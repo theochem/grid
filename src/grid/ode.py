@@ -17,15 +17,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
-r"""Linear ordinary differential equation solver with boundary conditions.
+r"""Linear ordinary differential equation solver.
 
 Solves a linear ordinary differential equation of order :math:`K` of the form
 
 .. math::
     \sum_{k=0}^{K} a_k(x) \frac{d^k y(x)}{dx^k} = f(x)
 
-with boundary conditions on the two end-points for some unknown function
-:math:`y(x)` with independent variable :math:`x`.
+with either boundary conditions on the two end-points for some unknown function
+:math:`y(x)` with independent variable :math:`x` or as an initial value
+problem on a interval.
 
 It also supports the ability to transform the independent variable :math:`x`
 to another domain :math:`g(x)` for some :math:`K`-th differentiable transformation
@@ -209,7 +210,7 @@ def solve_ode_bvp(
         See `scipy.integrate.solve_bvp` function for more info.
     initial_guess_y : ndarray(K, N), optional
         Initial guess for :math:`y(x), \cdots, \frac{d^{K} y}{d x^{K}}` at the points `x`.
-        If not provided, then random set of points from 0 to 1..
+        If not provided, then random set of points from 0 to 1.
     no_derivatives : bool, optional
         If true, when transform is used then it only returns the solution :math:`y(x)` rather
         than its derivative. If false, it includes the derivatives up to :math:`P-1`.
@@ -463,9 +464,9 @@ def _derivative_transformation_matrix(deriv_func_list: list, point: float, order
     Suppose there is a function :math:`f(x)` and a :math:`N`-th differentiable
     transformation :math:`g(x) = r` from variable :math:`x` to variable :math:`r`.
     This function returns a matrix that converts the derivatives
-    :math:`[\frac{df}{dx}, \cdots, \frac{d^N f}{dx^N}]^T` by matrix multiplication
-    to the derivatives of the new transformation
-    :math:`[\frac{df}{dr}, \cdots, \frac{d^Nf}{dr^N}]^T`.
+    :math:`[\frac{df}{dr}, \cdots, \frac{d^N f}{dr^N}]^T` by matrix multiplication
+    to the derivatives of the old domain
+    :math:`[\frac{df}{dx}, \cdots, \frac{d^Nf}{dx^N}]^T`.
 
     It is a matrix with (i,j)-th entries:
 
@@ -492,9 +493,12 @@ def _derivative_transformation_matrix(deriv_func_list: list, point: float, order
         Returns the matrix that converts derivatives of one domain to another.
 
     """
+    if not isinstance(point, (Real, np.float)):
+        raise TypeError(f"Point {type(point)} should be of type float.")
     numb_derivs = len(deriv_func_list)
     if order > numb_derivs:
-        raise ValueError("TODO")
+        raise ValueError(f"Order {order} should not be greater than number of derivatives"
+                         f"functions {len(deriv_func_list)} provided.")
     # Calculate derivatives of transformation evaluated at the point
     derivs_at_pt = np.array([dev(point) for dev in deriv_func_list], dtype=np.float64)
     deriv_transf = np.zeros((order, order))
