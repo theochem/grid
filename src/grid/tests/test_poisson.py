@@ -18,178 +18,35 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
 """Poisson test module."""
-from unittest import TestCase
-
 from grid.atomgrid import AtomGrid
-from grid.onedgrid import OneDGrid, GaussChebyshev
-from grid.poisson import interpolate_laplacian, Poisson
-from grid.rtransform import BeckeRTransform, InverseRTransform
+from grid.onedgrid import OneDGrid, GaussChebyshev, GaussLaguerre, Trapezoidal
+from grid.poisson import interpolate_laplacian, solve_poisson_bvp, solve_poisson_ivp
+from grid.rtransform import (
+    BeckeRTransform, IdentityRTransform, InverseRTransform, KnowlesRTransform,
+    LinearFiniteRTransform
+)
 
 import numpy as np
-from numpy.testing import assert_allclose, assert_almost_equal
+from numpy.testing import assert_allclose
+import pytest
+from scipy.special import erf
 
 
-class TestPoisson(TestCase):
-    """Test poisson class."""
-
-    def helper_func_gauss(self, coors, center=[0, 0, 0], alphas=[1, 1, 1]):
-        """Compute gauss function at given center."""
-        x, y, z = (coors - center).T
-        a, b, c = alphas
-        return a * np.exp(-(x ** 2)) * b * np.exp(-(y ** 2)) * c * np.exp(-(z ** 2))
-
-    def test_poisson_solve(self):
-        """Test the poisson solve function."""
-        oned = GaussChebyshev(50)
-        btf = BeckeRTransform(1e-7, 1.5)
-        rad = btf.transform_1d_grid(oned)
-        l_max = 7
-        atgrid = AtomGrid(rad, degrees=[l_max])
-        value_array = self.helper_func_gauss(atgrid.points)
-        p_0 = atgrid.integrate(value_array)
-
-        # test density sum up to np.pi**(3 / 2)
-        assert_allclose(p_0, np.pi ** 1.5, atol=1e-4)
-        sph_coor = atgrid.convert_cartesian_to_spherical()[:, 1:3]
-        spls_mt = atgrid.radial_component_splines(value_array)
-        # test splines project fit gauss function well
-
-        def gauss(r):
-            return np.exp(-(r ** 2))
-
-        for _ in range(20):
-            coors = np.random.rand(10, 3)
-            r = np.linalg.norm(coors, axis=-1)
-            spl_0_0 = spls_mt[0, 0]
-            interp_v = spl_0_0(r)
-            ref_v = gauss(r) * np.sqrt(4 * np.pi)
-            # 0.28209479 is the value in spherical harmonic Z_0_0
-            assert_allclose(interp_v, ref_v, atol=1e-3)
-        ibtf = InverseRTransform(btf)
-        linsp = np.linspace(-1, 0.99, 50)
-        bound = p_0 * np.sqrt(4 * np.pi)
-        res_bv = Poisson.solve_poisson_bv(spls_mt[0, 0], linsp, bound, tfm=ibtf)
-
-        near_rg_pts = np.array([1e-2, 0.1, 0.2, 0.3, 0.5, 0.7, 1.0, 1.2])
-        near_tf_pts = ibtf.transform(near_rg_pts)
-        long_rg_pts = np.array([2, 3, 4, 5, 6, 7, 8, 9, 10])
-        long_tf_pts = ibtf.transform(long_rg_pts)
-        short_res = res_bv(near_tf_pts)[0] / near_rg_pts / (2 * np.sqrt(np.pi))
-        long_res = res_bv(long_tf_pts)[0] / long_rg_pts / (2 * np.sqrt(np.pi))
-        # ref are calculated with mathemetical
-        # integrate[exp[-x^2 - y^2 - z^2] / sqrt[(x - a)^2 + y^2 +z^2], range]
-        ref_short_res = [
-            6.28286,  # 0.01
-            6.26219,  # 0.1
-            6.20029,  # 0.2
-            6.09956,  # 0.3
-            5.79652,  # 0.5
-            5.3916,  # 0.7
-            4.69236,  # 1.0
-            4.22403,  # 1.2
-        ]
-        ref_long_res = [
-            2.77108,  # 2
-            1.85601,  # 3
-            1.39203,  # 4
-            1.11362,  # 5
-            0.92802,  # 6
-            0.79544,  # 7
-            0.69601,  # 8
-            0.61867,  # 9
-            0.55680,  # 10
-        ]
-        assert_allclose(short_res, ref_short_res, atol=5e-4)
-        assert_allclose(long_res, ref_long_res, atol=5e-4)
-        # solve same poisson equation with gauss directly
-        gauss_pts = btf.transform(linsp)
-        res_gs = Poisson.solve_poisson_bv(gauss, gauss_pts, p_0)
-        gs_int_short = res_gs(near_rg_pts)[0] / near_rg_pts
-        gs_int_long = res_gs(long_rg_pts)[0] / long_rg_pts
-        assert_allclose(gs_int_short, ref_short_res, 5e-4)
-        assert_allclose(gs_int_long, ref_long_res, 5e-4)
-
-    def test_poisson_solve_mtr_cmpl(self):
-        """Test solve poisson equation and interpolate the result."""
-        oned = GaussChebyshev(50)
-        btf = BeckeRTransform(1e-7, 1.5)
-        rad = btf.transform_1d_grid(oned)
-        l_max = 7
-        atgrid = AtomGrid(rad, degrees=[l_max])
-        value_array = self.helper_func_gauss(atgrid.points)
-        p_0 = atgrid.integrate(value_array)
-
-        # test density sum up to np.pi**(3 / 2)
-        assert_allclose(p_0, np.pi ** 1.5, atol=1e-4)
-        sph_coor = atgrid.convert_cartesian_to_spherical()[:, 1:3]
-        spls_mt = atgrid.radial_component_splines(value_array)
-        ibtf = InverseRTransform(btf)
-        linsp = np.linspace(-1, 0.99, 50)
-        bound = p_0 * np.sqrt(4 * np.pi)
-        pois_mtr = Poisson.solve_poisson(spls_mt, linsp, bound, tfm=ibtf)
-        assert pois_mtr.shape == (7, 4)
-        near_rg_pts = np.array([1e-2, 0.1, 0.2, 0.3, 0.5, 0.7, 1.0, 1.2])
-        near_tf_pts = ibtf.transform(near_rg_pts)
-        ref_short_res = [
-            6.28286,  # 0.01
-            6.26219,  # 0.1
-            6.20029,  # 0.2
-            6.09956,  # 0.3
-            5.79652,  # 0.5
-            5.3916,  # 0.7
-            4.69236,  # 1.0
-            4.22403,  # 1.2
-        ]
-        for i, j in enumerate(near_tf_pts):
-            assert_almost_equal(
-                Poisson.interpolate_radial(pois_mtr, j, 0, True) / near_rg_pts[i],
-                ref_short_res[i] * np.sqrt(4 * np.pi),
-                decimal=3,
-            )
-            matrix_result = Poisson.interpolate_radial(pois_mtr, j)
-            assert_almost_equal(
-                matrix_result[0, 0] / near_rg_pts[i],
-                ref_short_res[i] * np.sqrt(4 * np.pi),
-                decimal=3,
-            )
-            # test interpolate with sph
-            result = Poisson.interpolate(
-                pois_mtr, j, np.random.rand(5), np.random.rand(5)
-            )
-            assert_allclose(
-                result / near_rg_pts[i] - ref_short_res[i], np.zeros(5), atol=1e-3
-            )
-
-    def test_raises_errors(self):
-        """Test proper error raises."""
-        oned = GaussChebyshev(50)
-        btf = BeckeRTransform(1e-7, 1.5)
-        rad = btf.transform_1d_grid(oned)
-        l_max = 7
-        atgrid = AtomGrid(rad, degrees=[l_max])
-        value_array = self.helper_func_gauss(atgrid.points)
-        p_0 = atgrid.integrate(value_array)
-
-        # test density sum up to np.pi**(3 / 2)
-        assert_allclose(p_0, np.pi ** 1.5, atol=1e-4)
-        sph_coor = atgrid.convert_cartesian_to_spherical()
-
-
-def test_interpolation_of_laplacian_with_spherical_harmonic(self):
+def test_interpolation_of_laplacian_with_spherical_harmonic():
     r"""Test the interpolation of Laplacian of spherical harmonic is eigenvector."""
-    odg = OneDGrid(np.linspace(0.0, 10, num=2000), np.ones(2000), (0, np.inf))
+    odg = OneDGrid(np.linspace(1e-5, 1, num=20), np.ones(20), (0, np.inf))
     degree = 6 * 2 + 2
     atgrid = AtomGrid.from_pruned(odg, 1, sectors_r=[], sectors_degree=[degree])
 
     def func(sph_points):
-        # Spherical harmonic of order 6 and magnetic 0
+        # Spherical harmonic of degree 6 and order 0
         r, phi, theta = sph_points.T
         return np.sqrt(2.0) * np.sqrt(13) / (np.sqrt(np.pi) * 32) * (
                 231 * np.cos(theta) ** 6.0 - 315 * np.cos(theta) ** 4.0 + 105 * np.cos(
             theta) ** 2.0 - 5.0
         )
     # Get spherical points from atomic grid
-    spherical_pts = atgrid.convert_cartesian_to_spherical(atgrid.points)
+    spherical_pts = atgrid.convert_cartesian_to_spherical()
     func_values = func(spherical_pts)
 
     laplacian = interpolate_laplacian(atgrid, func_values)
