@@ -436,7 +436,6 @@ class TestAtomGrid:
                         assert_almost_equal(radial_comp(radial_pts), 0.0, decimal=8)
                 i += 1
 
-
     @pytest.mark.parametrize("use_spherical", [False, True])
     def test_fitting_product_of_spherical_harmonic(self, use_spherical):
         r"""Test fitting the radial components of r**2 times spherical harmonic."""
