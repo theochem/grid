@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
-"""
+r"""
 Poisson solver module.
 
 This module solves the following Poisson equations:
@@ -34,24 +34,22 @@ for handing singularities near the origin of the atomic grid.
 from grid.atomgrid import AtomGrid
 from grid.ode import solve_ode_bvp, solve_ode_ivp
 from grid.rtransform import BaseTransform
-from grid.utils import generate_real_spherical_harmonics, convert_cart_to_sph
+from grid.utils import convert_cart_to_sph, generate_real_spherical_harmonics
+
+from typing import Union
 
 import numpy as np
 
-from scipy.interpolate import CubicSpline, interp1d
-
-import warnings
-from typing import Union
 
 __all__ = ["solve_poisson_bvp", "solve_poisson_ivp"]
 
 
 def solve_poisson_ivp(
-        atomgrid : AtomGrid,
-        func_vals : np.ndarray,
-        transform : BaseTransform,
-        r_interval : tuple = (1000, 1e-5),
-        ode_params : Union[dict, type(None)] = None
+    atomgrid: AtomGrid,
+    func_vals: np.ndarray,
+    transform: BaseTransform,
+    r_interval: tuple = (1000, 1e-5),
+    ode_params: Union[dict, type(None)] = None,
 ):
     r"""
     Return interpolation of the solution to the Poisson equation solved as an initial value problem.
@@ -137,13 +135,14 @@ def solve_poisson_ivp(
 
     splines = []
     i_spline = 0
-    for l in range(0, atomgrid.l_max // 2 + 1):
-        for m in [x for x in range(0, l + 1)] + [-x for x in range(-l, 0)]:
+    for l_deg in range(0, atomgrid.l_max // 2 + 1):
+        for m_ord in [x for x in range(0, l_deg + 1)] + [-x for x in range(-l_deg, 0)]:
+
             def f_x(r):
                 return radial_components[i_spline](r) * -4 * np.pi
 
             def coeff_0(r):
-                a = -l * (l + 1) / r ** 2
+                a = -l_deg * (l_deg + 1) / r**2
                 return a
 
             def coeff_1(r):
@@ -153,7 +152,7 @@ def solve_poisson_ivp(
             # Set up coefficients of the ode
             coeffs = [coeff_0, coeff_1, 1]
             # initial values.
-            if l == 0 and m == 0:
+            if l_deg == 0 and m_ord == 0:
                 # Solution to Poisson is electrostatic potential g(r) = \int f(x) /|x - r| dx,
                 # for large r, we have r >> x, so |x-r| \approx |r| so that we have the following
                 # bound g(large r) = \int f(x) dx / |r|,  this gives the first ivp, then
@@ -163,12 +162,17 @@ def solve_poisson_ivp(
                 ivp = [0.0, 0.0]
             # Solve ode
             u_lm = solve_ode_ivp(
-                r_interval, f_x, coeffs, ivp, transform, no_derivatives=True, **ode_params
+                r_interval,
+                f_x,
+                coeffs,
+                ivp,
+                transform,
+                no_derivatives=True,
+                **ode_params,
             )
 
             i_spline += 1
             splines.append(u_lm)
-
 
     def interpolate(points):
         r_pts, theta, phi = convert_cart_to_sph(points).T
@@ -179,8 +183,15 @@ def solve_poisson_ivp(
     return interpolate
 
 
-def solve_poisson_bvp(atomgrid, func_vals, transform, boundary=None, include_origin=True,
-                      remove_large_pts=1e6, ode_params=None):
+def solve_poisson_bvp(
+    atomgrid: AtomGrid,
+    func_vals: np.ndarray,
+    transform: BaseTransform,
+    boundary: Union(float, type(None)) = None,
+    include_origin: bool = True,
+    remove_large_pts: float = 1e6,
+    ode_params: Union(dict, type(None)) = None,
+):
     r"""
     Return interpolation of the solution to the Poisson equation solved as a boundary value problem.
 
@@ -252,8 +263,9 @@ def solve_poisson_bvp(atomgrid, func_vals, transform, boundary=None, include_ori
     if not isinstance(include_origin, bool):
         raise TypeError(f"`include_origin` {type(include_origin)} should be boolean.")
     if not isinstance(remove_large_pts, (float, type(None))):
-        raise TypeError(f"`remove_large_pts` {type(remove_large_pts)} should be either "
-                        f"float or None.")
+        raise TypeError(
+            f"`remove_large_pts` {type(remove_large_pts)} should be either float or None."
+        )
 
     # If boundary is None: then bnd sets to \integral of func_vals / Spherical Harmonic at (0, 0)
     if boundary is None:
@@ -264,7 +276,9 @@ def solve_poisson_bvp(atomgrid, func_vals, transform, boundary=None, include_ori
     # Check if the domain of transform is in [0, \infty)
     domain = transform.domain
     if domain[0] < 0.0:
-        raise ValueError(f"The domain of the transform {domain} should be in [0, infinity).")
+        raise ValueError(
+            f"The domain of the transform {domain} should be in [0, infinity)."
+        )
 
     # Get the radial components from expanding func into real spherical harmonics.
     radial_components = atomgrid.radial_component_splines(func_vals)
@@ -290,14 +304,15 @@ def solve_poisson_bvp(atomgrid, func_vals, transform, boundary=None, include_ori
 
     splines = []
     i_spline = 0
-    for l in range(0, atomgrid.l_max // 2 + 1):
-        for m in [x for x in range(0, l + 1)] + [-x for x in range(-l, 0)]:
+    for l_deg in range(0, atomgrid.l_max // 2 + 1):
+        for m_ord in [x for x in range(0, l_deg + 1)] + [-x for x in range(-l_deg, 0)]:
+
             def f_x(r):
                 return radial_components[i_spline](r) * -4 * np.pi * r
 
             def coeff_0(r):
-                with np.errstate(divide='ignore', invalid='ignore'):
-                    a = -l * (l + 1) / r ** 2
+                with np.errstate(divide="ignore", invalid="ignore"):
+                    a = -l_deg * (l_deg + 1) / r**2
                 # Note that this assumes the boundary condition that y(0) = 0.
                 a[np.abs(r) == 0.0] = 0.0
                 return a
@@ -306,15 +321,13 @@ def solve_poisson_bvp(atomgrid, func_vals, transform, boundary=None, include_ori
             coeffs = [coeff_0, 0, 1]
 
             # Set up boundary conditions
-            if l == 0 and m == 0:
+            if l_deg == 0 and m_ord == 0:
                 bd_cond = [(0, 0, 0), (1, 0, boundary)]
             else:
                 bd_cond = [(0, 0, 0), (1, 0, 0)]
 
             # Solve ode
-            u_lm = solve_ode_bvp(
-                points, f_x, coeffs, bd_cond, transform, **ode_params
-            )
+            u_lm = solve_ode_bvp(points, f_x, coeffs, bd_cond, transform, **ode_params)
             i_spline += 1
             splines.append(u_lm)
 
@@ -370,7 +383,7 @@ def interpolate_laplacian(atomgrid: AtomGrid, func_vals: np.ndarray):
     # compute spline for the radial components for f
     radial_comps_f = atomgrid.radial_component_splines(func_vals)
 
-    def interpolate_laplacian(points: np.ndarray,  cutoff: float = 1e-6):
+    def interpolate_laplacian(points: np.ndarray, cutoff: float = 1e-6):
         r_pts, theta, phi = atomgrid.convert_cartesian_to_spherical(points).T
 
         if np.any(r_pts < cutoff):
@@ -390,14 +403,15 @@ def interpolate_laplacian(atomgrid: AtomGrid, func_vals: np.ndarray):
         second_component = np.einsum("ln, ln -> n", dr_values, r_sph_harm)
 
         # Compute 2 \sum \sum dr_values Y_l^m / r,
-        with np.errstate(divide='ignore', invalid='ignore'):
+        with np.errstate(divide="ignore", invalid="ignore"):
             second_component *= 2.0 / r_pts
 
         # Compute l(l+1) \sum \sum r_values Y_l^m / r^2
-        degrees = np.hstack([[x * (x + 1)] * (2 * x + 1) for x in
-                             np.arange(0, atomgrid.l_max // 2 + 1)])
+        degrees = np.hstack(
+            [[x * (x + 1)] * (2 * x + 1) for x in np.arange(0, atomgrid.l_max // 2 + 1)]
+        )
         third_component = np.einsum("ln,l,ln -> n", r_values_f, degrees, r_sph_harm)
-        with np.errstate(divide='ignore', invalid='ignore'):
+        with np.errstate(divide="ignore", invalid="ignore"):
             third_component /= r_pts**2.0
 
         return first_component + second_component - third_component

@@ -242,7 +242,6 @@ def test_solve_ode_bvp_with_and_without_transormation(transform, fx, coeffs, bd_
         bnd, deriv, val = bd
         assert_allclose(sol_with_transform(x)[deriv][-bnd], val, atol=1e-5)
 
-
     if len(coeffs) >= 3:
         # Test the first derivative of y.
         assert_allclose(sol_with_transform(x)[1], sol_normal(x)[1], atol=1e-3)
@@ -297,15 +296,12 @@ def test_solve_ode_ivp_with_and_without_transformation(transform, fx, coeffs, iv
         transform,
     )
 
-    sol_normal = solve_ode_ivp(
-        (0.01, 0.999), fx, coeffs, ivp
-    )
+    sol_normal = solve_ode_ivp((0.01, 0.999), fx, coeffs, ivp)
 
     # Test the initial value problem
     for i, ivp_val in enumerate(ivp):
         assert_allclose(sol_normal(np.array([0.01]))[i], ivp_val, atol=1e-5)
         assert_allclose(sol_with_transform(np.array([0.01]))[i], ivp_val, atol=1e-5)
-
 
     # Test the function values
     x = np.arange(0.01, 0.999, 0.1)
@@ -351,7 +347,7 @@ def test_solve_ode_bvp_against_analytic_example():
             lambda x: 1 if isinstance(x, Number) else np.ones(x.size),
             [0, 0, 1],
             [0.0, -1.0],
-            lambda x: (x**2.0 / 2.0 - x,  x - 1.0),
+            lambda x: (x**2.0 / 2.0 - x, x - 1.0),
         ],
         # Test ode y′+ y cos(t) =0,
         [
@@ -366,8 +362,7 @@ def test_solve_ode_bvp_against_analytic_example():
             [0, -1, 1],
             [1.0, -1.0],
             lambda x: (np.cos(x) - np.sin(x), -np.sin(x) - np.cos(x)),
-        ]
-
+        ],
     ],
 )
 def test_solve_ode_ivp_against_analytic_example(fx, coeffs, ivp, solutions):
@@ -554,8 +549,8 @@ def test_first_and_second_derivative_transformation_with_Becke_transform():
     r"""Test derivative transformation of cubic function with Becke transform."""
     transform = BeckeRTransform(0.0, 5.0)
     func = lambda x: x**3.0
-    origin_domain = np.arange(0.0, 10, 0.1)         # r \in [0, \infty)
-    new_domain = transform.inverse(origin_domain)   # x \in [-1, 1]
+    origin_domain = np.arange(0.0, 10, 0.1)  # r \in [0, \infty)
+    new_domain = transform.inverse(origin_domain)  # x \in [-1, 1]
 
     # dr/dx,  d^2 r/ dx^2,
     deriv_tranfs = [transform.deriv, transform.deriv2, transform.deriv3]
@@ -565,8 +560,10 @@ def test_first_and_second_derivative_transformation_with_Becke_transform():
     sec_deriv_func_old = lambda x: 6.0 * x
 
     # derivative g(r(x)) wrt to x in [-1, 1]
-    desired_deriv_new = lambda x: 6 * 5.0 ** 3.0 * (1 + x) ** 2.0 / (1 - x) ** 4.0
-    desired_sec_deriv_new = lambda x: -12 * 5.0**3.0 * (1 + x) * (x + 3) / (x - 1.0)**5.0
+    desired_deriv_new = lambda x: 6 * 5.0**3.0 * (1 + x) ** 2.0 / (1 - x) ** 4.0
+    desired_sec_deriv_new = (
+        lambda x: -12 * 5.0**3.0 * (1 + x) * (x + 3) / (x - 1.0) ** 5.0
+    )
 
     # Go through each pt, calculate the jacobian, calculate the derivative g(r(x)) and compare
     for i, pt_x in enumerate(new_domain):
@@ -578,4 +575,6 @@ def test_first_and_second_derivative_transformation_with_Becke_transform():
         jacobian = _derivative_transformation_matrix(deriv_tranfs, pt_x, 2)
         actual_deriv_new = jacobian.dot(actual_deriv_origin)
 
-        assert_allclose(actual_deriv_new, [desired_deriv_new(pt_x), desired_sec_deriv_new(pt_x)])
+        assert_allclose(
+            actual_deriv_new, [desired_deriv_new(pt_x), desired_sec_deriv_new(pt_x)]
+        )

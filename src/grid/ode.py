@@ -54,13 +54,12 @@ def solve_ode_ivp(
     x_span: tuple,
     fx: callable,
     coeffs: Union[list, np.ndarray],
-    y0 : Union[list, np.ndarray],
+    y0: Union[list, np.ndarray],
     transform: BaseTransform = None,
-    method : str ="DOP853",
-    no_derivatives : bool = False,
+    method: str = "DOP853",
+    no_derivatives: bool = False,
     rtol: float = 1e-8,
-    atol : float = 1e-6,
-    disp : bool = False,
+    atol: float = 1e-6,
 ):
     r"""
 
@@ -102,6 +101,7 @@ def solve_ode_ivp(
             "Number of boundary condition need to be the same as ODE order."
             f"Expect: {order}, got: {len(y0)}."
         )
+
     if transform is not None and order > 3:
         raise NotImplementedError(
             "Only support 3rd order ODE or less when using `transform`."
@@ -123,7 +123,6 @@ def solve_ode_ivp(
         #    This is due to conversion to system of first-order ODE form.
         return np.vstack((*y[1:, :], dy_dx))
 
-
     if transform:
         # first check if the bounds are in the domain
         if min(x_span) < transform.domain[0] or max(x_span) > transform.domain[1]:
@@ -136,21 +135,29 @@ def solve_ode_ivp(
         deriv = _derivative_transformation_matrix(
             [transform.deriv, transform.deriv2, transform.deriv3],
             x_span[0],
-            order - 1  # Only need derivatives up to K-1.
+            order - 1,  # Only need derivatives up to K-1.
         )
         # If transform is used, then transform (x_0, x_1) that it integrates up to.
         x_span = transform.transform(np.array(list(x_span)))
-        if np.any(deriv < 1e-10):
-            warnings.warn(f"Derivative value {deriv} is very close to zero.")
         # Solve for derivatives in original domain by solving A(original derivs) = new derivs
         y_derivs = solve(deriv, np.array(y0[1:]))
         if np.any(np.isinf(y_derivs)):
-            raise ValueError(f"The initial value of the derivative {y_derivs} "
-                             f"when using transform is infinity.")
+            raise ValueError(
+                f"The initial value of the derivative {y_derivs} "
+                f"when using transform is infinity."
+            )
         y0 = np.hstack(([y0[0]], y_derivs))
 
-    res = solve_ivp(func, x_span, y0=y0, dense_output=True, vectorized=True,
-                    rtol=rtol, atol=atol, method=method)
+    res = solve_ivp(
+        func,
+        x_span,
+        y0=y0,
+        dense_output=True,
+        vectorized=True,
+        rtol=rtol,
+        atol=atol,
+        method=method,
+    )
 
     # raise error if didn't converge
     if res.status != 0:
@@ -164,7 +171,6 @@ def solve_ode_ivp(
         )
 
     return res.sol
-
 
 
 def solve_ode_bvp(
@@ -497,8 +503,10 @@ def _derivative_transformation_matrix(deriv_func_list: list, point: float, order
         raise TypeError(f"Point {type(point)} should be of type float.")
     numb_derivs = len(deriv_func_list)
     if order > numb_derivs:
-        raise ValueError(f"Order {order} should not be greater than number of derivatives"
-                         f"functions {len(deriv_func_list)} provided.")
+        raise ValueError(
+            f"Order {order} should not be greater than number of derivatives"
+            f"functions {len(deriv_func_list)} provided."
+        )
     # Calculate derivatives of transformation evaluated at the point
     derivs_at_pt = np.array([dev(point) for dev in deriv_func_list], dtype=np.float64)
     deriv_transf = np.zeros((order, order))
