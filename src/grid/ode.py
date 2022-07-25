@@ -34,21 +34,139 @@ to another domain :math:`g(x)` for some :math:`K`-th differentiable transformati
 """
 
 import warnings
-from numbers import Number
+from numbers import Number, Real
 from typing import Union
 
 from grid.rtransform import BaseTransform
 
 import numpy as np
 
-from scipy.integrate import solve_bvp
+from scipy.integrate import solve_bvp, solve_ivp
+from scipy.linalg import solve
 
 from sympy import bell
 
-__all__ = ["solve_ode"]
+__all__ = ["solve_ode_bvp", "solve_ode_ivp"]
 
 
-def solve_ode(
+def solve_ode_ivp(
+    x_span: tuple,
+    fx: callable,
+    coeffs: Union[list, np.ndarray],
+    y0 : Union[list, np.ndarray],
+    transform: BaseTransform = None,
+    method : str ="DOP853",
+    no_derivatives : bool = False,
+    rtol: float = 1e-8,
+    atol : float = 1e-6,
+    disp : bool = False,
+):
+    r"""
+
+    Parameters
+    ----------
+    x_span : (int, int)
+        The interval of integration :math:`(t_0, t_1)` from the first point to the second point.
+    fx : callable
+        Right-hand function :math:`f(x)`.
+    coeffs : list[callable or float] or ndarray(K + 1,)
+        Coefficients :math:`a_k` of each term :math:`\frac{d^k y(x)}{d x^k}`
+        ordered from 0 to K. Either a list of callable functions :math:`a_k(x)` that depends
+        on :math:`x` or array of constants :math:`\{a_k\}_{k=0}^{K}`.
+    y0 : list[K] or ndarray(K)
+        The initial value conditions :math:`\frac{d^k y(t_0)}{d x^k} = c_k` at the initial point
+        :math:`t_0` from :math:`k=0,\cdots,K-1`.
+    transform : BaseTransform, optional
+        Transformation from one domain :math:`x` to another :math:`r := g(x)`.
+    method : str
+        The method used to solve the ode by scipy.
+        See `scipy.integrate.solve_ivp` function for more info.
+    no_derivatives : bool, optional
+        If true, when transform is used then it only returns the solution :math:`y(x)` rather
+        than its derivative. If false, it includes the derivatives up to :math:`P-1`.
+    rtol, atol : (float, float), optional
+        The relative and absolute tolerance. See `scipy.integrate.solve_ivp` for more info.
+
+    Returns
+    -------
+    callable :
+        Interpolate function (scipy.interpolate.PPoly) instance whose input is the
+        original domain :math:`x` and output is an array of the function :math:`y(x)` evaluated
+        on the points and its derivatives wrt to :math:`x` up to :math:`K - 1`.
+
+    """
+    order = len(coeffs) - 1
+    if len(y0) != order:
+        raise ValueError(
+            "Number of boundary condition need to be the same as ODE order."
+            f"Expect: {order}, got: {len(y0)}."
+        )
+    if transform is not None and order > 3:
+        raise NotImplementedError(
+            "Only support 3rd order ODE or less when using `transform`."
+        )
+
+    def func(x, y):
+        # x has shape (1,) and y has shape (K+1,1), output has shape (K+1,1)
+        x = np.array([x])
+        if transform:
+            # Transform the points back to the original domain.
+            orig_dom = transform.inverse(x)
+            dy_dx = _transform_and_rearrange_to_explicit_ode(
+                orig_dom, y, coeffs, transform, fx
+            )
+        else:
+            coeffs_mt = _evaluate_coeffs_on_points(x, coeffs)
+            dy_dx = _rearrange_to_explicit_ode(y, coeffs_mt, fx(x))
+        # (*y[1:, :],) returns a tuple of all rows excluding the first row.
+        #    This is due to conversion to system of first-order ODE form.
+        return np.vstack((*y[1:, :], dy_dx))
+
+
+    if transform:
+        # first check if the bounds are in the domain
+        if min(x_span) < transform.domain[0] or max(x_span) > transform.domain[1]:
+            raise ValueError(
+                f"The x_span {min(x_span), max(x_span)} is not within the transform "
+                f"domain {transform.domain}."
+            )
+        # Convert the initial value problem to the new derivative space, only transform up to K-1
+        # e.g. the first derivative dV/dx = dV/dr * dr/dx = dV/dr / (dx/dr)
+        deriv = _derivative_transformation_matrix(
+            [transform.deriv, transform.deriv2, transform.deriv3],
+            x_span[0],
+            order - 1  # Only need derivatives up to K-1.
+        )
+        # If transform is used, then transform (x_0, x_1) that it integrates up to.
+        x_span = transform.transform(np.array(list(x_span)))
+        if np.any(deriv < 1e-10):
+            warnings.warn(f"Derivative value {deriv} is very close to zero.")
+        # Solve for derivatives in original domain by solving A(original derivs) = new derivs
+        y_derivs = solve(deriv, np.array(y0[1:]))
+        if np.any(np.isinf(y_derivs)):
+            raise ValueError(f"The initial value of the derivative {y_derivs} "
+                             f"when using transform is infinity.")
+        y0 = np.hstack(([y0[0]], y_derivs))
+
+    res = solve_ivp(func, x_span, y0=y0, dense_output=True, vectorized=True,
+                    rtol=rtol, atol=atol, method=method)
+
+    # raise error if didn't converge
+    if res.status != 0:
+        raise ValueError(f"The ode solver didn't converge, got status: {res.status}")
+
+    if transform is not None:
+        # Transform the function so that it's input is the original variable and
+        #   derivative is with respect to the original variable as well.
+        return _transform_solution_to_original_domain(
+            res, transform, no_derivatives, order
+        )
+
+    return res.sol
+
+
+
+def solve_ode_bvp(
     x: np.ndarray,
     fx: callable,
     coeffs: Union[list, np.ndarray],
