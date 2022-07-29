@@ -177,6 +177,7 @@ class UniformInteger(OneDGrid):
         w_i =& 1.0
 
     """
+
     def __init__(self, npoints: int):
         r"""Generate grid on [0, npoints] interval using equally spaced uniform distribution.
 
@@ -332,7 +333,7 @@ class Trapezoidal(OneDGrid):
         super().__init__(points, weights, (-1, 1))
 
 class RectangleRuleSineEndPoints(OneDGrid):
-    """
+    r"""
     Rectangle-Rule Sine end points integral quadrature class.
 
      .. math::
@@ -590,7 +591,7 @@ class MidPoint(OneDGrid):
 
 
 class ClenshawCurtis(OneDGrid):
-    """Clenshow Curtis integral quadrature class.
+    r"""Clenshow Curtis integral quadrature class.
 
     The definition of this quadrature is:
 

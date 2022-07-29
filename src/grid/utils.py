@@ -19,6 +19,7 @@
 # --
 """Utils function module."""
 import numpy as np
+
 from scipy.special import sph_harm
 
 
@@ -309,9 +310,7 @@ def generate_real_spherical_harmonics(l_max, theta, phi):
             * np.sqrt(2)
             * (-1) ** m_list_n[:, None]
         )
-        total_sph = np.vstack(
-            (total_sph, zero_real_sph, pos_real_sph, neg_real_sph)
-        )
+        total_sph = np.vstack((total_sph, zero_real_sph, pos_real_sph, neg_real_sph))
     return total_sph
 
 
@@ -342,7 +341,7 @@ def generate_derivative_real_spherical_harmonics(l_max, theta, phi):
 
     """
     num_pts = len(theta)
-    output = np.zeros((2, int((l_max + 1)**2), num_pts))
+    output = np.zeros((2, int((l_max + 1) ** 2), num_pts))
 
     l_list = np.arange(l_max + 1)
     sph_harm_vals = generate_real_spherical_harmonics(l_max, theta, phi)
@@ -350,16 +349,16 @@ def generate_derivative_real_spherical_harmonics(l_max, theta, phi):
     for l_val in l_list:
         for m in [0] + [x for x in range(1, l_val + 1)] + [x for x in range(-l_val, 0)]:
             # Take all spherical harmonics at degree l_val
-            sph_harm_degree = sph_harm_vals[(l_val)**2:(l_val + 1)**2, :]
+            sph_harm_degree = sph_harm_vals[(l_val) ** 2 : (l_val + 1) ** 2, :]
 
             # Take derivative wrt to theta :
             # for complex spherical harmonic it is   i m Y^m_l
             # Not entirely certain why (-1)^m comes from
-            output[0, i, :] = (-1)**(m) * m * sph_harm_degree[-m, :]
+            output[0, i, :] = (-1) ** (m) * m * sph_harm_degree[-m, :]
 
             # Take derivative wrt to phi:
             # for complex spherical  harmonic it is
-            with np.errstate(divide='ignore', invalid='ignore'):
+            with np.errstate(divide="ignore", invalid="ignore"):
                 cot_tangent = 1.0 / np.tan(phi)
             cot_tangent[np.abs(np.tan(phi)) < 1e-10] = 0.0
 
@@ -370,39 +369,41 @@ def generate_derivative_real_spherical_harmonics(l_max, theta, phi):
                     # generate order m=positive real spheric
                     m_list_p = np.arange(1, l_val + 1, dtype=float)
                     pos_real_sph = (
-                            sph_harm(m_list_p[:, None], l_val, theta, phi)
-                            * np.sqrt(2)
-                            * (-1) ** m_list_p[:, None]
+                        sph_harm(m_list_p[:, None], l_val, theta, phi)
+                        * np.sqrt(2)
+                        * (-1) ** m_list_p[:, None]
                     )
 
                     # Not certain why the division by sqrt(2.0) is necessary here.
-                    output[1, i, :] -= fac * np.real(
-                        np.exp(- theta * 1.j) * pos_real_sph[0]
-                    ) / np.sqrt(2.0)
+                    output[1, i, :] -= (
+                        fac
+                        * np.real(np.exp(-theta * 1.0j) * pos_real_sph[0])
+                        / np.sqrt(2.0)
+                    )
 
             if m > 0:
                 # generate order m=positive real spheric
                 m_list_p = np.arange(1, l_val + 1, dtype=float)
                 pos_real_sph = (
-                        sph_harm(m_list_p[:, None], l_val, theta, phi)
-                        * np.sqrt(2)
-                        * (-1) ** m_list_p[:, None]
-                ) # l=2, [1, 2],, so if m =2
+                    sph_harm(m_list_p[:, None], l_val, theta, phi)
+                    * np.sqrt(2)
+                    * (-1) ** m_list_p[:, None]
+                )  # l=2, [1, 2],, so if m =2
 
                 output[1, i, :] = m * cot_tangent * sph_harm_degree[m, :]
                 # When m == l_val, then fac = 0
                 if m < l_val:
                     output[1, i, :] -= fac * np.real(
-                        np.exp(- theta * 1.j) * pos_real_sph[m]
-                    ) #/ np.sqrt(2.0)
+                        np.exp(-theta * 1.0j) * pos_real_sph[m]
+                    )  # / np.sqrt(2.0)
 
             elif m < 0:
                 # generate order m=negative real spherical harmonic
                 m_list_n = np.arange(-l_val, 0, dtype=float)
                 neg_real_sph = (
-                        sph_harm(m_list_n[:, None], l_val, theta, phi)
-                        * np.sqrt(2)
-                         * (-1) ** m_list_n[:, None]
+                    sph_harm(m_list_n[:, None], l_val, theta, phi)
+                    * np.sqrt(2)
+                    * (-1) ** m_list_n[:, None]
                 )
 
                 output[1, i, :] = m * cot_tangent * sph_harm_degree[m, :]
@@ -410,22 +411,25 @@ def generate_derivative_real_spherical_harmonics(l_max, theta, phi):
                 if -l_val <= m:
                     # No Idea why you multiply by sqrt(2.0)
                     if m == -1:
-                        output[1, i, :] -= fac * np.imag(
-                            np.exp(- theta * 1.j) * sph_harm(0, l_val, theta, phi)
-                        ) * np.sqrt(2.0)
+                        output[1, i, :] -= (
+                            fac
+                            * np.imag(
+                                np.exp(-theta * 1.0j) * sph_harm(0, l_val, theta, phi)
+                            )
+                            * np.sqrt(2.0)
+                        )
                     else:
                         output[1, i, :] -= fac * np.imag(
-                            np.exp(- theta * 1.j) * neg_real_sph[m + 1]
+                            np.exp(-theta * 1.0j) * neg_real_sph[m + 1]
                         )
             i += 1
     return output
 
 
 def convert_derivative_from_spherical_to_cartesian(
-        deriv_r, deriv_theta, deriv_phi, r, theta, phi
+    deriv_r, deriv_theta, deriv_phi, r, theta, phi
 ):
-    r"""
-    Converts the derivative form spherical coordinates to Cartesian.
+    r"""Convert the derivative form spherical coordinates to Cartesian.
 
     If :math:`r` is zero, then the derivative wrt to theta and phi are set to zero.
     If :math:`\phi` is zero, then the derivative wrt to theta is set to zero.
@@ -443,14 +447,22 @@ def convert_derivative_from_spherical_to_cartesian(
         The derivative wrt to (x, y, z) Cartesian coordinates.
 
     """
-    with np.errstate(divide='ignore', invalid='ignore'):
-        jacobian = np.array([
-            [np.cos(theta) * np.sin(phi), -np.sin(theta) / (r * np.sin(phi)),
-             np.cos(theta) * np.cos(phi) / r],
-            [np.sin(theta) * np.sin(phi), np.cos(theta) / (r * np.sin(phi)),
-             np.sin(theta) * np.cos(phi) / r],
-            [np.cos(phi), 0.0, -np.sin(phi) / r]
-        ])
+    with np.errstate(divide="ignore", invalid="ignore"):
+        jacobian = np.array(
+            [
+                [
+                    np.cos(theta) * np.sin(phi),
+                    -np.sin(theta) / (r * np.sin(phi)),
+                    np.cos(theta) * np.cos(phi) / r,
+                ],
+                [
+                    np.sin(theta) * np.sin(phi),
+                    np.cos(theta) / (r * np.sin(phi)),
+                    np.sin(theta) * np.cos(phi) / r,
+                ],
+                [np.cos(phi), 0.0, -np.sin(phi) / r],
+            ]
+        )
     # If the radial component is zero, then put all zeros on the derivs of theta and phi
     if np.abs(r) < 1e-10:
         jacobian[:, 1] = 0.0
@@ -458,20 +470,19 @@ def convert_derivative_from_spherical_to_cartesian(
     # If phi angle is zero, then set the derivative wrt to theta to zero
     if np.abs(phi) < 1e-10:
         jacobian[:, 1] = 0.0
-    return jacobian.dot(
-        np.array([deriv_r, deriv_theta, deriv_phi])
-    )
+    return jacobian.dot(np.array([deriv_r, deriv_theta, deriv_phi]))
+
 
 def convert_cart_to_sph(points, center=None):
-    """Convert a set of points from cartesian to spherical coordinates.
+    r"""Convert a set of points from cartesian to spherical coordinates.
 
     Parameters
     ----------
     points : np.ndarray(n, 3)
-        3 dimentional numpy array for points
+        The (3-dimensional) Cartesian coordinates of points.
     center : np.ndarray(3,), list, optional
-        center of the spherical coordinates
-        [0., 0., 0.] will be used if `center` is not given
+        Cartesian coordinates of the center of spherical coordinate system.
+        If `None`, origin is used.
 
     Returns
     -------
@@ -488,7 +499,7 @@ def convert_cart_to_sph(points, center=None):
     # compute r
     r = np.linalg.norm(relat_pts, axis=-1)
     # polar angle: arccos(z / r)
-    with np.errstate(divide='ignore', invalid='ignore'):
+    with np.errstate(divide="ignore", invalid="ignore"):
         phi = np.arccos(relat_pts[:, 2] / r)
     # fix nan generated when point is [0.0, 0.0, 0.0]
     phi[r == 0.0] = 0.0

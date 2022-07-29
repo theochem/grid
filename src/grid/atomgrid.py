@@ -18,6 +18,8 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
 """Module for generating AtomGrid."""
+import warnings
+from typing import Union
 
 from grid.basegrid import Grid, OneDGrid
 from grid.lebedev import AngularGrid
@@ -34,10 +36,6 @@ import numpy as np
 
 from scipy.interpolate import CubicSpline
 from scipy.spatial.transform import Rotation as R
-from scipy.special import sph_harm
-
-from typing import Union
-import warnings
 
 
 class AtomGrid(Grid):
@@ -52,9 +50,15 @@ class AtomGrid(Grid):
 
     """
 
-    def __init__(self, rgrid: OneDGrid, *, degrees: Union[np.ndarray, list] = None,
-                 sizes: Union[np.ndarray, list] = None, center: np.ndarray = None,
-                 rotate: int = 0):
+    def __init__(
+        self,
+        rgrid: OneDGrid,
+        *,
+        degrees: Union[np.ndarray, list] = None,
+        sizes: Union[np.ndarray, list] = None,
+        center: np.ndarray = None,
+        rotate: int = 0,
+    ):
         """
         Construct atomic grid for given arguments.
 
@@ -93,16 +97,14 @@ class AtomGrid(Grid):
         self._rgrid = rgrid
         # check rotate
         if not isinstance(rotate, (int, np.integer)):
-            raise TypeError(
-                f"Rotate needs to be an integer, got {type(rotate)}"
-            )
-        if (rotate is not False) and (not 0 <= rotate < 2 ** 32 - len(rgrid.points)):
+            raise TypeError(f"Rotate needs to be an integer, got {type(rotate)}")
+        if (rotate is not False) and (not 0 <= rotate < 2**32 - len(rgrid.points)):
             raise ValueError(
                 f"rotate need to be an integer [0, 2^32 - len(rgrid)]\n"
                 f"rotate is not within [0, 2^32 - len(rgrid)], got {rotate}"
             )
         self._rot = rotate
-        # check degs and size
+        # check degrees and size
         if degrees is None:
             if not isinstance(sizes, (np.ndarray, list)):
                 raise TypeError(
@@ -115,15 +117,25 @@ class AtomGrid(Grid):
             )
         if len(degrees) == 1:
             degrees = np.ones(rgrid.size, dtype=int) * degrees
-        self._points, self._weights, self._indices, self._degs = self._generate_atomic_grid(
-            self._rgrid, degrees, rotate=self._rot
-        )
+        (
+            self._points,
+            self._weights,
+            self._indices,
+            self._degs,
+        ) = self._generate_atomic_grid(self._rgrid, degrees, rotate=self._rot)
         self._size = self._weights.size
         self._basis = None
 
     @classmethod
-    def from_preset(cls, rgrid: OneDGrid = None, *, atnum: int, preset: str,
-                    center: np.ndarray = None, rotate: int = 0):
+    def from_preset(
+        cls,
+        rgrid: OneDGrid = None,
+        *,
+        atnum: int,
+        preset: str,
+        center: np.ndarray = None,
+        rotate: int = 0,
+    ):
         """High level api to construct an atomic grid with preset arguments.
 
         Examples
@@ -179,7 +191,7 @@ class AtomGrid(Grid):
         sectors_degree: np.ndarray = None,
         sectors_size: np.ndarray = None,
         center: np.ndarray = None,
-        rotate:int = 0,
+        rotate: int = 0,
     ):
         r"""
         Initialize AtomGrid class that splits radial sections into sectors which specified degrees.
@@ -330,7 +342,9 @@ class AtomGrid(Grid):
             wts = wts * self.rgrid[index].points ** 2
         return AngularGrid(pts, wts)
 
-    def convert_cartesian_to_spherical(self, points: np.ndarray = None, center: np.ndarray = None):
+    def convert_cartesian_to_spherical(
+        self, points: np.ndarray = None, center: np.ndarray = None
+    ):
         r"""Convert a set of points from Cartesian to spherical coordinates.
 
         The conversion is defined as
@@ -382,15 +396,16 @@ class AtomGrid(Grid):
                 start_index = self._indices[i]
                 final_index = self._indices[i + 1]
 
-                spherical_points[start_index:final_index, 1:] = \
-                    convert_cart_to_sph(agrid.points)[:, 1:]
+                spherical_points[start_index:final_index, 1:] = convert_cart_to_sph(
+                    agrid.points
+                )[:, 1:]
         return spherical_points
 
     def integrate_angular_coordinates(self, func_vals: np.ndarray):
         r"""Integrate the angular coordinates of a sequence of functions.
 
         Given a series of functions :math:`f_k \in L^2(\mathbb{R}^3)`, this returns the values
-        
+
         .. math::
             f_k(r_i) = \int \int f(r_i, \theta, \phi) sin(\theta) d\theta d\phi
 
@@ -414,11 +429,15 @@ class AtomGrid(Grid):
         #  multi-dimensional, take a sum over the last axis only and swap axes so that it
         #  has shape (..., M) where ... is the number of functions and M is the number of
         #  radial points.
-        radial_coefficients = np.array([
-            np.sum(prod_value[..., self.indices[i]: self.indices[i + 1]],axis=-1) for
-            i in range(self.n_shells)
-        ])
-        radial_coefficients = np.moveaxis(radial_coefficients, 0, -1) # swap points axes to last
+        radial_coefficients = np.array(
+            [
+                np.sum(prod_value[..., self.indices[i] : self.indices[i + 1]], axis=-1)
+                for i in range(self.n_shells)
+            ]
+        )
+        radial_coefficients = np.moveaxis(
+            radial_coefficients, 0, -1
+        )  # swap points axes to last
 
         # Remove the radial weights and r^2 values that are in self.weights
         with np.errstate(divide='ignore', invalid='ignore'):
@@ -429,7 +448,9 @@ class AtomGrid(Grid):
         for i in r_index:  # if r_index = [], then for loop doesn't occur.
             # build angular grid for i-th shell
             agrid = AngularGrid(degree=self._degs[i])
-            values = func_vals[..., self.indices[i]: self.indices[i + 1]] * agrid.weights
+            values = (
+                func_vals[..., self.indices[i] : self.indices[i + 1]] * agrid.weights
+            )
             radial_coefficients[..., i] = np.sum(values, axis=-1)
         return radial_coefficients
 
@@ -475,7 +496,7 @@ class AtomGrid(Grid):
         """
         # Integrate f(r, theta, phi) sin(theta) d\theta d\phi
         f_radial = self.integrate_angular_coordinates(func_vals)
-        f_radial /= (4.0 * np.pi)
+        f_radial /= 4.0 * np.pi
         # Construct spline of f_{avg}(r)
         spline = CubicSpline(x=self.rgrid.points, y=f_radial)
         return spline
@@ -528,7 +549,7 @@ class AtomGrid(Grid):
             # Going up to `self.l_max // 2` is explained below.
             self._basis = generate_real_spherical_harmonics(self.l_max // 2, theta, phi)
         # Multiply spherical harmonic basis with the function values to project.
-        values = np.einsum("ln,n->ln",self._basis, func_vals)
+        values = np.einsum("ln,n->ln", self._basis, func_vals)
         radial_components = self.integrate_angular_coordinates(values)
         # each shell can only integratespherical harmonics up to the shell_degree,
         # so if shell_degree < l_max, the f_{lm} should be set to zero for l > shell_degree // 2.
@@ -609,8 +630,11 @@ class AtomGrid(Grid):
         # compute splines for given value_array on grid points
         splines = self.radial_component_splines(func_vals)
 
-        def interpolate_low(points, deriv=0, deriv_spherical=False, only_radial_derivs=False):
-            r"""
+        def interpolate_low(
+            points, deriv=0, deriv_spherical=False, only_radial_derivs=False
+        ):
+            r"""Construct a spline like callable for intepolation.
+
             Parameters
             ----------
             points : ndarray(N, 3)
@@ -648,11 +672,16 @@ class AtomGrid(Grid):
                 # Calculate derivative of f with respect to radial, theta, phi
                 # Get derivative of spherical harmonics first.
                 radial_components = np.array([spline(r_pts, 0) for spline in splines])
-                deriv_sph_harm = \
-                    generate_derivative_real_spherical_harmonics(self.l_max // 2, theta, phi)
+                deriv_sph_harm = generate_derivative_real_spherical_harmonics(
+                    self.l_max // 2, theta, phi
+                )
                 deriv_r = np.einsum("ij, ij -> j", r_values, r_sph_harm)
-                deriv_theta = np.einsum("ij,ij->j", radial_components, deriv_sph_harm[0, :, :])
-                deriv_phi = np.einsum("ij,ij->j", radial_components, deriv_sph_harm[1, :, :])
+                deriv_theta = np.einsum(
+                    "ij,ij->j", radial_components, deriv_sph_harm[0, :, :]
+                )
+                deriv_phi = np.einsum(
+                    "ij,ij->j", radial_components, deriv_sph_harm[1, :, :]
+                )
 
                 # If deriv spherical is wanted, then return that.
                 if deriv_spherical:
@@ -664,16 +693,24 @@ class AtomGrid(Grid):
                 for i_pt in range(0, len(r_pts)):
                     radial_i, theta_i, phi_i = r_pts[i_pt], theta[i_pt], phi[i_pt]
                     derivs[i_pt] = convert_derivative_from_spherical_to_cartesian(
-                        deriv_r[i_pt], deriv_theta[i_pt], deriv_phi[i_pt], radial_i, theta_i, phi_i
+                        deriv_r[i_pt],
+                        deriv_theta[i_pt],
+                        deriv_phi[i_pt],
+                        radial_i,
+                        theta_i,
+                        phi_i,
                     )
                 return derivs
             elif not only_radial_derivs and deriv != 0:
-                raise ValueError(f"Higher order derivatives are only supported for derivatives"
-                                 f"with respect to the radius. Deriv is {deriv}.")
+                raise ValueError(
+                    f"Higher order derivatives are only supported for derivatives"
+                    f"with respect to the radius. Deriv is {deriv}."
+                )
 
             return np.einsum("ij, ij -> j", r_values, r_sph_harm)
 
         return interpolate_low
+
 
     @staticmethod
     def _input_type_check(rgrid: OneDGrid, center: np.ndarray):
@@ -708,7 +745,7 @@ class AtomGrid(Grid):
         rgrid: OneDGrid,
         radius: float,
         r_sectors: Union[list, np.ndarray],
-        deg_sectors: Union[list, np.ndarray]
+        deg_sectors: Union[list, np.ndarray],
     ):
         """
         Get all degrees for every radial point inside the radial grid based on the sectors.
@@ -747,9 +784,7 @@ class AtomGrid(Grid):
 
     @staticmethod
     def _find_l_for_rad_list(
-        radial_arrays: np.ndarray,
-        radius_sectors: np.ndarray,
-        deg_sectors: np.ndarray
+        radial_arrays: np.ndarray, radius_sectors: np.ndarray, deg_sectors: np.ndarray
     ):
         r"""
         Get all degrees L for all radial points from radius sectors and degree sectors.
@@ -802,7 +837,9 @@ class AtomGrid(Grid):
         all_points, all_weights = [], []
 
         shell_pt_indices = np.zeros(len(degrees) + 1, dtype=int)  # set index to int
-        actual_degrees = []  # The actual degree used to construct the Angular/lebedev grid.
+        actual_degrees = (
+            []
+        )  # The actual degree used to construct the Angular/lebedev grid.
         for i, deg_i in enumerate(degrees):  # TODO: proper tests
             # Generate Angular grid with the correct degree at the ith radial point.
             sphere_grid = AngularGrid(degree=deg_i)

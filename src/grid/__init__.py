@@ -31,5 +31,4 @@ from grid.molgrid import *
 from grid.ode import *
 from grid.onedgrid import *
 from grid.periodicgrid import *
-from grid.poisson import *
 from grid.rtransform import *

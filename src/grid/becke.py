@@ -78,7 +78,7 @@ class BeckeWeights:
             alpha value for each pair of atoms
         """
         u_ab = (radii[:, None] - radii) / (radii[:, None] + radii)
-        alpha = u_ab / (u_ab ** 2 - 1)
+        alpha = u_ab / (u_ab**2 - 1)
         alpha[alpha > cutoff] = cutoff
         alpha[alpha < -cutoff] = -cutoff
         return alpha
@@ -104,7 +104,7 @@ class BeckeWeights:
             result of switching function
         """
         for i in range(order):
-            x = 1.5 * x - 0.5 * x ** 3
+            x = 1.5 * x - 0.5 * x**3
         return x
 
     def generate_weights(self, points, atcoords, atnums, *, select=None, pt_ind=None):
@@ -169,7 +169,7 @@ class BeckeWeights:
             ]
         )
         alpha = BeckeWeights._calculate_alpha(radii)
-        v_pp = mu_p_n_n + alpha * (1 - mu_p_n_n ** 2)
+        v_pp = mu_p_n_n + alpha * (1 - mu_p_n_n**2)
         del mu_p_n_n
         s_ab = 0.5 * (1 - BeckeWeights._switch_func(v_pp, order=self._order))
         del v_pp
@@ -235,7 +235,7 @@ class BeckeWeights:
             ]
         )
         alpha = BeckeWeights._calculate_alpha(radii)
-        v_pp = mu_p_n_n + alpha * (1 - mu_p_n_n ** 2)
+        v_pp = mu_p_n_n + alpha * (1 - mu_p_n_n**2)
         del mu_p_n_n
         s_ab = 0.5 * (1 - BeckeWeights._switch_func(v_pp, order=self._order))
         del v_pp
