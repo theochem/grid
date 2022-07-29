@@ -484,19 +484,23 @@ class AtomGrid(Grid):
         r"""
         Return spline to interpolate radial components wrt to expansion in real spherical harmonics.
 
-        For fixed r, a function :math:`f(r, \theta, \phi)` is projected onto the spherical
-        harmonic expansion
+        For each pt :math:`r_i` of the atomic grid with associated angular degree :math:`l_i`,
+        the function :math:`f(r_i, \theta, \phi)` is projected onto the spherical
+        harmonic expansion:
 
         .. math::
-            f(r, \theta, \phi) = \sum_{l=0}^\infty \sum_{m=-l}^l \rho^{lm}(r) Y^m_l(\theta, \phi)
+            f(r_i, \theta, \phi) \approx \sum_{l=0}^{l_i} \sum_{m=-l}^l \rho^{lm}(r_i)
+            Y^m_l(\theta, \phi)
 
-        where :math:`Y^m_l` is the real Spherical harmonic of order :math:`l` and degree :math:`m`.
-        The radial components :math:`\rho^{lm}(r)` are interpolated using a cubic spline and
-        are calculated via integration:
+        where :math:`Y^m_l` is the real Spherical harmonic of degree :math:`l` and order :math:`m`.
+        The radial components :math:`\rho^{lm}(r_i)` are calculated via integration on
+        the :math:`i`th Lebedev/angular grid of the atomic grid:
 
         .. math::
-            \rho^{lm}(r) = \int \int f(r, \theta, \phi) Y^m_l(\theta, \phi) \sin(\theta)
-             d\theta d\phi.
+            \rho^{lm}(r_i) = \int \int f(r_i, \theta, \phi) Y^m_l(\theta, \phi) \sin(\theta)
+             d\theta d\phi,
+
+        and then interpolated using a cubic spline over all radial points of the atomic grid.
 
         Parameters
         ----------
@@ -526,12 +530,11 @@ class AtomGrid(Grid):
         # Multiply spherical harmonic basis with the function values to project.
         values = np.einsum("ln,n->ln",self._basis, func_vals)
         radial_components = self.integrate_angular_coordinates(values)
-        # each shell can only integrate two spherical harmonics upto shell_degree // 2,
+        # each shell can only integratespherical harmonics up to the shell_degree,
         # so if shell_degree < l_max, the f_{lm} should be set to zero for l > shell_degree // 2.
         # Instead, one could set truncate the basis of a given shell.
         for i in range(self.n_shells):
-            # if self.degrees[i] != self.l_max:
-            if self.degrees[i] > self.l_max // 2:
+            if self.degrees[i] != self.l_max:
                 num_nonzero_sph = (self.degrees[i] // 2 + 1) ** 2
                 radial_components[num_nonzero_sph:, i] = 0.0
 
