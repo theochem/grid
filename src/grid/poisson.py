@@ -187,10 +187,10 @@ def solve_poisson_bvp(
     atomgrid: AtomGrid,
     func_vals: np.ndarray,
     transform: BaseTransform,
-    boundary: Union(float, type(None)) = None,
+    boundary: Union[float, type(None)] = None,
     include_origin: bool = True,
     remove_large_pts: float = 1e6,
-    ode_params: Union(dict, type(None)) = None,
+    ode_params: Union[dict, type(None)] = None,
 ):
     r"""
     Return interpolation of the solution to the Poisson equation solved as a boundary value problem.
