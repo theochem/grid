@@ -508,6 +508,34 @@ def generate_derivative_real_spherical_harmonics(l_max, theta, phi):
     return output
 
 
+def solid_harmonics(l_max: int, sph_pts: np.ndarray):
+    r"""
+    Generate the solid harmonics from zero to a maximum angular degree.
+
+    .. math::
+        R_l^m(r, \theta, \phi) = \sqrt{\frac{4\pi}{2l + 1}} r^l Y_l^m(\theta, \phi)
+
+    Parameters
+    ----------
+    l_max : int
+        Largest angular degree of the spherical harmonics.
+    sph_pts : ndarray(M, 3)
+        Three-dimensional points in spherical coordinates :math:`(r, \theta, \phi)`, where
+        :math:`r\geq 0, \theta \in [0, 2\pi]` and :math:`\phi \in [0, \pi]`.
+
+    Returns
+    -------
+    ndarray((l_max + 1)^2, M)
+        The solid harmonics from degree :math:`l=0=, \cdots, l_{max}` and for all orders :math:`m`,
+        ordered as :math:`m=0, 1, -1, 2, -2, \cdots, l, -l` evaluated on :math:`M` points.
+
+    """
+    r, theta, phi = sph_pts.T
+    spherical_harm = generate_real_spherical_harmonics(l_max, theta, phi)
+    degrees = np.array(sum([[l] * (2 * l + 1) for l in range(l_max + 1)], []))
+    return spherical_harm * r**degrees[:, None] * np.sqrt(4.0 * np.pi / (2 * degrees[:, None] + 1))
+
+
 def convert_derivative_from_spherical_to_cartesian(
     deriv_r, deriv_theta, deriv_phi, r, theta, phi
 ):
