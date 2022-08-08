@@ -243,7 +243,11 @@ def get_cov_radii(atnums, type="bragg"):
         raise ValueError(f"Not supported radii type, got {type}")
 
 
-def generate_real_spherical_harmonics(l_max, theta, phi):
+def generate_real_spherical_harmonics_scipy(
+    l_max: int,
+    theta: np.ndarray,
+    phi: np.ndarray
+):
     r"""Generate real spherical harmonics up to degree :math:`l` and for all orders :math:`m`.
 
     The real spherical harmonics are defined as a function
@@ -293,24 +297,28 @@ def generate_real_spherical_harmonics(l_max, theta, phi):
     total_sph = np.zeros((0, len(theta)), dtype=float)
     l_list = np.arange(l_max + 1)
     for l_val in l_list:
-        # generate m=0 real spheric
+        # generate m=0 real sphericla harmonic
         zero_real_sph = sph_harm(0, l_val, theta, phi).real
 
-        # generate order m=positive real spheric
+        # generate order m=positive real spherical harmonic
         m_list_p = np.arange(1, l_val + 1, dtype=float)
         pos_real_sph = (
             sph_harm(m_list_p[:, None], l_val, theta, phi).real
             * np.sqrt(2)
-            * (-1) ** m_list_p[:, None]
+            * (-1) ** m_list_p[:, None]  # Remove Conway phase from SciPy
         )
         # generate order m=negative real spherical harmonic
-        m_list_n = np.arange(-l_val, 0, dtype=float)
+        m_list_n = np.arange(-1, -l_val - 1, -1, dtype=float)
         neg_real_sph = (
             sph_harm(m_list_n[:, None], l_val, theta, phi).imag
             * np.sqrt(2)
-            * (-1) ** m_list_n[:, None]
+            * (-1) ** m_list_n[:, None]  # Remove Conway phase from SciPy
         )
-        total_sph = np.vstack((total_sph, zero_real_sph, pos_real_sph, neg_real_sph))
+
+        # Convert to horton order
+        horton_ord = [[pos_real_sph[i], neg_real_sph[i]] for i in range(0, l_val)]
+        horton_ord = tuple(x for sublist in horton_ord for x in sublist)
+        total_sph = np.vstack((total_sph, zero_real_sph) + horton_ord)
     return total_sph
 
 
