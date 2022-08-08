@@ -322,6 +322,111 @@ def generate_real_spherical_harmonics_scipy(
     return total_sph
 
 
+def generate_real_spherical_harmonics(l_max: int, theta: np.ndarray, phi: np.ndarray):
+    r"""
+    Compute the real spherical harmonics recursively up to a maximum angular degree l:
+
+    .. math::
+        Y_l^m(\theta, \phi) = \frac{(2l + 1) (l - m)!}{4\pi (l + m)!} f(m, \theta)
+        P_l^m(\cos(\phi)),
+
+    where :math:`l` is the angular degree, :math:`m` is the order and
+    :math:`f(m, \theta) = \sqrt{2} \cos(m \theta)` when :math:`m>0` otherwise
+    :math:`f(m, \theta) = \sqrt{2} \sin(m\theta)`
+    when :math:`m<0`, and equal to one when :math:`m= 0`.  :math:`P_l^m` is the associated
+    Legendre polynomial.  The angle :math:`\theta \in [0, 2\pi]` is the azimuthal angle and
+    :math:`\phi \in [0, \pi]` is the polar angle.
+
+    Parameters
+    ----------
+    l_max : int
+        Largest angular degree of the spherical harmonics.
+    theta : np.ndarray(N,)
+        Azimuthal angle :math:`\theta \in [0, 2\pi]` that are being evaluated on.
+        If this angle is outside of bounds, then periodicity is used.
+    phi : np.ndarray(N,)
+        Polar angle :math:`\phi \in [0, \pi]` that are being evaluated on.
+        If this angle is outside of bounds, then periodicity is used.
+
+    Returns
+    -------
+    ndarray((l_max + 1)**2, N)
+        Value of real spherical harmonics of all orders :math:`m`,and degree
+        :math:`l` spherical harmonics. For each degree :math:`l`, the orders :math:`m` are
+        in Horton order, i.e. :math:`m=0, 1, -1, 2, -2, \cdots, l, -l`.
+
+    Notes
+    -----
+    - The associated Legendre polynomials are computed using the forward recursion:
+      :math:`P_l^m(\phi) = \frac{2l + 1}{l - m + 1}\cos(\phi) P_{l-1}^m(x) -
+      \frac{(l + m)}{l - m + 1} P_{l-1}^m(x)`, and
+      :math:`P_l^l(\phi) = (2l + 1) \sin(\phi) P_{l-1}^{l-1}(\phi)`.
+    - For higher maximum degree :math:`l_{max} > 1900` with double precision the computation
+      of spherical harmonic will underflow within the range
+      :math:`20^\circ \leq \phi \leq 160^\circ`.  This code will try to package
+      shtools to generate the spherical harmonic and if it doesn't work, it will use the
+      slow SciPy implementation.
+
+    References
+    ----------
+    .. [1] Colombo, Oscar L. Numerical methods for harmonic analysis on the sphere.
+       Ohio State Univ Columbus Dept of Geodetic Science And Surveying, 1981.
+    .. [2] Holmes, Simon A., and Will E. Featherstone. "A unified approach to the Clenshaw
+       summation and the recursive computation of very high degree and order normalised
+       associated Legendre functions." Journal of Geodesy 76.5 (2002): 279-299.
+
+    """
+
+
+    # TODO
+
+    numb_pts = len(theta)
+    sin_phi = np.sin(phi)
+    cos_phi = np.cos(phi)
+    spherical_harm = np.zeros(((l_max + 1)**2, numb_pts))
+
+    # Forward recursion requires P_{l-1}^m, P_{l-2}^m, these are the two columns, respectively
+    # the rows are the order m which ranges from 0 to l_max and p_leg[:l, :] gets updated every l
+    p_leg = np.zeros((l_max + 1, 2, numb_pts))
+    p_leg[0, :, :] = 1.0    # Initial conditions: P_0^0 = 1.0
+
+    # the coefficients of the forward recursions and initial factor of spherical harmonic.
+    a_k = lambda l, m: (2.0 * (l - 1.0) + 1) / ((l - 1.0) - m + 1.0)
+    b_k = lambda l, m: (l - 1.0 + m) / (l - m)
+    fac_sph = lambda l, m: np.sqrt((2.0 * l + 1) / (4.0 * np.pi))  # Note (l-m)!/(l+m)! is moved
+
+    # Go through each degree and then order and fill out
+    spherical_harm[0, :] = fac_sph(0, 0)   # Compute Y_0^0
+    i_sph = 1  # Index to start of spherical_harm, could explicitly do it via (l+1)^2 + m
+    for l in range(1, l_max + 1):
+        for m in range(0, l + 1):
+            if l == m:
+                # Do diagonal spherical harmonic Y_l^m, when l=m.
+                # Diagonal recursion: P_m^m = sin(phi) * P_{m-1}^{m-1} * (2 (l - 1) + 1)
+                p_leg[m, 0] = sin_phi * p_leg[m - 1, 1] * (2 * (l - 1.0) + 1)
+            else:
+                # Do forward recursion here and fill out Y_l^m and Y_l^{-m}
+                # Compute b_k P_{l-2}^m,  since m < l, then m < l - 2
+                second_fac = b_k(l, m) * p_leg[m, 1] if m <= l - 2 else 0
+                # Update/re-define P_{l-2}^m to be equal to P_{l-1}^m
+                p_leg[m, 1, :] = p_leg[m, 0]
+                # Then update P_{l-1}^m := P_l^m := a_k cos(\phi) P_{l-1}^m - b_k P_{l, -2}^m
+                p_leg[m, 0, :] = a_k(l, m) * cos_phi * p_leg[m, 0] - second_fac
+            # Compute Y_l^{m} that has cosine(theta) and Y_l^{-m} that has sin(theta)
+            if m == 0:
+                factorial = (l + 1.0) * l  # factorial needed to compute (l-m)!/(l+m)!
+                spherical_harm[i_sph, :] = fac_sph(l, m) * p_leg[m, 0]
+            else:
+                common_fact = p_leg[m, 0] * fac_sph(l, m) * np.sqrt(2.0) / np.sqrt(factorial)
+                spherical_harm[i_sph, :] = common_fact * np.cos(m * theta)
+                i_sph += 1
+                # Note entirely certain why I need a (-1)^(m+1), was testing against SciPy solution
+                spherical_harm[i_sph, :] = common_fact * np.sin(m * theta) * (-1)**(m + 1)
+                factorial *= (l + m + 1.0) * (l - m)  # Update (l-m)!/(l+m)! for next iteration
+            i_sph += 1
+    return spherical_harm
+
+
 def generate_derivative_real_spherical_harmonics(l_max, theta, phi):
     r"""
     Generate derivatives of real spherical harmonics.
