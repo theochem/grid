@@ -310,7 +310,7 @@ def generate_real_spherical_harmonics_scipy(
         # generate order m=negative real spherical harmonic
         m_list_n = np.arange(-1, -l_val - 1, -1, dtype=float)
         neg_real_sph = (
-            sph_harm(m_list_n[:, None], l_val, theta, phi).imag
+            sph_harm(m_list_p[:, None], l_val, theta, phi).imag
             * np.sqrt(2)
             * (-1) ** m_list_n[:, None]  # Remove Conway phase from SciPy
         )
@@ -334,8 +334,9 @@ def generate_real_spherical_harmonics(l_max: int, theta: np.ndarray, phi: np.nda
     :math:`f(m, \theta) = \sqrt{2} \cos(m \theta)` when :math:`m>0` otherwise
     :math:`f(m, \theta) = \sqrt{2} \sin(m\theta)`
     when :math:`m<0`, and equal to one when :math:`m= 0`.  :math:`P_l^m` is the associated
-    Legendre polynomial.  The angle :math:`\theta \in [0, 2\pi]` is the azimuthal angle and
-    :math:`\phi \in [0, \pi]` is the polar angle.
+    Legendre polynomial without the Conway phase factor.
+    The angle :math:`\theta \in [0, 2\pi]` is the azimuthal angle and :math:`\phi \in [0, \pi]`
+    is the polar angle.
 
     Parameters
     ----------
@@ -363,9 +364,11 @@ def generate_real_spherical_harmonics(l_max: int, theta: np.ndarray, phi: np.nda
       :math:`P_l^l(\phi) = (2l + 1) \sin(\phi) P_{l-1}^{l-1}(\phi)`.
     - For higher maximum degree :math:`l_{max} > 1900` with double precision the computation
       of spherical harmonic will underflow within the range
-      :math:`20^\circ \leq \phi \leq 160^\circ`.  This code will try to package
-      shtools to generate the spherical harmonic and if it doesn't work, it will use the
-      slow SciPy implementation.
+      :math:`20^\circ \leq \phi \leq 160^\circ`.  This code does not implement the
+      modified recursion formulas in [2] and instead opts for higher precision defined
+      by the computer system and np.longdouble.
+    - The mapping from :math:`(l, m)` to the correct row index in the spherical harmonic array is
+      given by :math:`(l + 1)^2 + 2 * m - 1` if :math:`m > 0`, else it is :math:`(l+1)^2 + 2 |m|`.
 
     References
     ----------
@@ -376,10 +379,6 @@ def generate_real_spherical_harmonics(l_max: int, theta: np.ndarray, phi: np.nda
        associated Legendre functions." Journal of Geodesy 76.5 (2002): 279-299.
 
     """
-
-
-    # TODO
-
     numb_pts = len(theta)
     sin_phi = np.sin(phi)
     cos_phi = np.cos(phi)
@@ -387,7 +386,7 @@ def generate_real_spherical_harmonics(l_max: int, theta: np.ndarray, phi: np.nda
 
     # Forward recursion requires P_{l-1}^m, P_{l-2}^m, these are the two columns, respectively
     # the rows are the order m which ranges from 0 to l_max and p_leg[:l, :] gets updated every l
-    p_leg = np.zeros((l_max + 1, 2, numb_pts))
+    p_leg = np.zeros((l_max + 1, 2, numb_pts), dtype=np.longdouble)
     p_leg[0, :, :] = 1.0    # Initial conditions: P_0^0 = 1.0
 
     # the coefficients of the forward recursions and initial factor of spherical harmonic.
@@ -403,7 +402,7 @@ def generate_real_spherical_harmonics(l_max: int, theta: np.ndarray, phi: np.nda
             if l == m:
                 # Do diagonal spherical harmonic Y_l^m, when l=m.
                 # Diagonal recursion: P_m^m = sin(phi) * P_{m-1}^{m-1} * (2 (l - 1) + 1)
-                p_leg[m, 0] = sin_phi * p_leg[m - 1, 1] * (2 * (l - 1.0) + 1)
+                p_leg[m, 0] = p_leg[m - 1, 1] * (2 * (l - 1.0) + 1) * sin_phi
             else:
                 # Do forward recursion here and fill out Y_l^m and Y_l^{-m}
                 # Compute b_k P_{l-2}^m,  since m < l, then m < l - 2
@@ -411,17 +410,16 @@ def generate_real_spherical_harmonics(l_max: int, theta: np.ndarray, phi: np.nda
                 # Update/re-define P_{l-2}^m to be equal to P_{l-1}^m
                 p_leg[m, 1, :] = p_leg[m, 0]
                 # Then update P_{l-1}^m := P_l^m := a_k cos(\phi) P_{l-1}^m - b_k P_{l, -2}^m
-                p_leg[m, 0, :] = a_k(l, m) * cos_phi * p_leg[m, 0] - second_fac
+                p_leg[m, 0, :] = (a_k(l, m) * cos_phi * p_leg[m, 0] - second_fac)
             # Compute Y_l^{m} that has cosine(theta) and Y_l^{-m} that has sin(theta)
             if m == 0:
-                factorial = (l + 1.0) * l  # factorial needed to compute (l-m)!/(l+m)!
+                factorial = (l + 1.0) * l  # initialize factorial needed to compute (l-m)!/(l+m)!
                 spherical_harm[i_sph, :] = fac_sph(l, m) * p_leg[m, 0]
             else:
-                common_fact = p_leg[m, 0] * fac_sph(l, m) * np.sqrt(2.0) / np.sqrt(factorial)
+                common_fact = (p_leg[m, 0] / np.sqrt(factorial)) * fac_sph(l, m) * np.sqrt(2.0)
                 spherical_harm[i_sph, :] = common_fact * np.cos(m * theta)
                 i_sph += 1
-                # Note entirely certain why I need a (-1)^(m+1), was testing against SciPy solution
-                spherical_harm[i_sph, :] = common_fact * np.sin(m * theta) * (-1)**(m + 1)
+                spherical_harm[i_sph, :] = common_fact * np.sin(m * theta)
                 factorial *= (l + m + 1.0) * (l - m)  # Update (l-m)!/(l+m)! for next iteration
             i_sph += 1
     return spherical_harm
@@ -457,12 +455,13 @@ def generate_derivative_real_spherical_harmonics(l_max, theta, phi):
     - The derivative with respect to :math:`\phi` is
 
     .. math::
-        \frac{\partial Y_l^m(\theta, \phi)}{\partial\phi} = (-1)^m m Y_l^{-m}(\theta, \phi),
+        \frac{\partial Y_l^m(\theta, \phi)}{\partial\phi} = -m Y_l^{-m}(\theta, \phi),
     - The derivative with respect to :math:`\theta` is
 
     .. math::
-        \frac{\partial Y_l^m(\theta, \phi)}{\partial\phi} = m \cot(\phi) \Re (Y_l^m(\theta, \phi)) +
-         \sqrt{(n - m)(n + m + 1)} \Re(e^{-i\theta} Y_l^{m + 1}(\theta, \phi))
+        \frac{\partial Y_l^m(\theta, \phi)}{\partial\phi} = |m| \cot(\phi)
+         \Re (Y_l^{|m|}(\theta, \phi)) + \sqrt{(n - |m|)(n + |m| + 1)}
+         Re(e^{-i\theta} Y_l^{|m| + 1}(\theta, \phi))
     for positive :math:`m` and for negative :math:`m`, the real projection :math:`\Re` is replaced
     with the imaginary projection :math:`\Im`.
 
@@ -480,27 +479,29 @@ def generate_derivative_real_spherical_harmonics(l_max, theta, phi):
             sph_harm_degree = sph_harm_vals[(l_val) ** 2 : (l_val + 1) ** 2, :]
 
             # Take derivative wrt to theta :
-            # for complex spherical harmonic it is   i m Y^m_l
-            # Not entirely certain why (-1)^m comes from, index_m maps m to index where (l, m)
-            # is located in `sph_harm_degree`.
+            # for complex spherical harmonic it is   i m Y^m_l,
+            # Note ie^(i |m| x) = -sin(|m| x) + i cos(|m| x), then take real/imaginery component.
+            # hence why the negative is in (-m).
+            # index_m maps m to index where (l, m)  is located in `sph_harm_degree`.
             index_m = lambda m: 2 * m - 1 if m > 0 else int(2 * np.fabs(m))
-            output[0, i_output, :] = (-1) ** (m) * m * sph_harm_degree[index_m(-m), :]
+            output[0, i_output, :] = -m * sph_harm_degree[index_m(-m), :]
 
             # Take derivative wrt to phi:
             with np.errstate(divide="ignore", invalid="ignore"):
                 cot_tangent = 1.0 / np.tan(phi)
             cot_tangent[np.abs(np.tan(phi)) < 1e-10] = 0.0
             # Calculate the derivative in two pieces:
-            fac = np.sqrt((l_val - m) * (l_val + m + 1))
-            output[1, i_output, :] = m * cot_tangent * sph_harm_degree[index_m(m), :]
-            # Compute it using SciPy.
-            sph_harm_m = fac * sph_harm(m + 1, l_val, theta, phi) * np.sqrt(2) * (-1)**(m + 1)
+            fac = np.sqrt((l_val - np.abs(m)) * (l_val + np.abs(m) + 1))
+            output[1, i_output, :] = np.abs(m) * cot_tangent * sph_harm_degree[index_m(m), :]
+            # Compute it using SciPy, removing conway phase (-1)^m and multiply by 2^0.5.
+            sph_harm_m = fac * sph_harm(np.abs(m) + 1, l_val, theta, phi) * np.sqrt(2) * (-1)**m
             if m >= 0:
                 if m < l_val:  # When m == l_val, then fac = 0
-                    output[1, i_output, :] -= np.real(complex_expon * sph_harm_m)
+                    output[1, i_output, :] += np.real(complex_expon * sph_harm_m)
             elif m < 0:
                 # generate order m=negative real spherical harmonic
-                output[1, i_output, :] -= np.imag(complex_expon * sph_harm_m)
+                if m > -l_val:
+                    output[1, i_output, :] += np.imag(complex_expon * sph_harm_m)
             if m == 0:
                 # sqrt(2.0) isn't included in Y_l^m only m \neq 0
                 output[1, i_output, :] /= np.sqrt(2.0)
