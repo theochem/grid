@@ -25,7 +25,9 @@ from grid.utils import (
     convert_cart_to_sph,
     generate_derivative_real_spherical_harmonics,
     generate_real_spherical_harmonics,
+    generate_real_spherical_harmonics_scipy,
     get_cov_radii,
+    solid_harmonics,
 )
 
 import numpy as np
@@ -215,7 +217,7 @@ class TestUtils(TestCase):
 
 
 @pytest.mark.parametrize(
-    "numb_pts, max_degree", [[1000, 10], [5000, 2], [100, 15], [10, 20]]
+    "numb_pts, max_degree", [[5000, 2], [100, 15], [10, 20], [1000, 10], [10, 0]]
 )
 def test_derivative_of_spherical_harmonics_with_finite_difference(numb_pts, max_degree):
     """Test the derivative value from spherical harmonics with finite difference."""
@@ -231,6 +233,70 @@ def test_derivative_of_spherical_harmonics_with_finite_difference(numb_pts, max_
     actual_answer = generate_derivative_real_spherical_harmonics(l_max, theta, phi)
     deriv_theta = (value_at_eps_theta - value) / eps
     deriv_phi = (value_at_eps_phi - value) / eps
-
     assert_almost_equal(actual_answer[0, :], deriv_theta, decimal=3)
     assert_almost_equal(actual_answer[1, :], deriv_phi, decimal=3)
+
+
+@pytest.mark.parametrize(
+    "numb_pts, max_degree", [[5, 70], [1000, 4], [5000, 2], [100, 15]]
+)
+def test_spherical_harmonic_recursion_against_scipy(numb_pts, max_degree):
+    r"""Test spherical harmonic recursion against SciPy implementation."""
+    theta = np.array([1e-5])
+    theta = np.hstack((theta, np.random.uniform(0.0, 2.0 * np.pi, size=(numb_pts,))))
+    phi = np.array([1e-5])
+    phi = np.hstack((phi, np.random.uniform(0.0, np.pi, size=(numb_pts,))))
+    pytho_sol = generate_real_spherical_harmonics(max_degree, theta, phi)
+    scipy_sol = generate_real_spherical_harmonics_scipy(max_degree, theta, phi)
+    assert_allclose(pytho_sol, scipy_sol, atol=1e-10)
+
+
+@pytest.mark.parametrize(
+    "numb_pts, max_degree", [[1000, 4], [5000, 2], [100, 15], [10, 100]]
+)
+def test_solid_harmonics_for_few_degrees(numb_pts, max_degree):
+    r"""Test solid harmonic for a few degrees against spherical harmonic implementation."""
+    pts = np.random.uniform(-1, 1, size=(numb_pts, 3))
+    sph_pts = convert_cart_to_sph(pts)
+    r, theta, phi = sph_pts.T
+    true = solid_harmonics(max_degree, sph_pts)
+    sph_harm = generate_real_spherical_harmonics(max_degree, theta, phi)
+    # Go through all orders and ma
+    i_sph = 0
+    r_solid = np.ones((numb_pts,))  # r^0 = 1
+    for l in range(0, max_degree + 1):
+        factor = np.sqrt(4.0 * np.pi / (2.0 * l + 1.0))
+        for i_order in range(0, (2 * l + 1)):
+            assert_allclose(true[i_sph], sph_harm[i_sph] * r_solid * factor)
+            i_sph += 1
+        r_solid *= r  # Update r^l
+
+
+def test_regular_solid_spherical_harmonics():
+    r"""Test regular solid spherical harmonics against analytic forms."""
+    # This code was taken from theochem/denspart, credit given to Toon Verstraelen
+    npt = 20
+    points = np.random.normal(0, 1, (npt, 3))
+    r = np.linalg.norm(points, axis=1)
+    x, y, z = points.T
+    lmax = 3
+    # Comparison
+    sph_pts = convert_cart_to_sph(points)
+    result = solid_harmonics(lmax, sph_pts)
+    # l = 1, m = 0
+    assert_allclose(result[1], z)
+    # l = 1, m = 1
+    assert_allclose(result[2], x)
+    assert_allclose(result[3], y)
+    # l = 2, m = 0
+    assert_allclose(result[4], (3 * z ** 2 - r ** 2) / 2)
+    # l = 2, m = 1
+    assert_allclose(result[5], np.sqrt(3) * z * x)
+    assert_allclose(result[6], np.sqrt(3) * z * y)
+    # l = 2, m = 2
+    assert_allclose(result[7], np.sqrt(3) / 2 * (x ** 2 - y ** 2))
+    assert_allclose(result[8], np.sqrt(3) * x * y)
+    # l = 3, m = 0
+    assert_allclose(result[9], z * (5 * z ** 2 - 3 * r ** 2) / 2)
+    # l=4, m=4
+    assert_allclose(result[13], np.sqrt(15) * x * y * z)
