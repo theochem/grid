@@ -25,7 +25,7 @@ from unittest import TestCase
 from grid.atomgrid import AtomGrid
 from grid.basegrid import Grid, OneDGrid
 from grid.lebedev import AngularGrid, LEBEDEV_DEGREES
-from grid.onedgrid import GaussLegendre, GaussLaguerre, UniformInteger
+from grid.onedgrid import GaussLaguerre, GaussLegendre, UniformInteger
 from grid.rtransform import BeckeRTransform, IdentityRTransform, PowerRTransform
 from grid.utils import generate_real_spherical_harmonics
 
@@ -732,31 +732,33 @@ class TestAtomGrid(TestCase):
 
         # Consider two centers.
         orders = 1
-        centers = np.array([[0.0, 0.0, 0.0],
-                            [0.1, 0.1, 0.3]])
+        centers = np.array([[0.0, 0.0, 0.0], [0.1, 0.1, 0.3]])
         true = atgrid.moments(orders, centers, func_vals)
         # Test Cartesian order: (0, 0, 0), which is integral e^{-(x - c)^2} in x-dim
-        assert_allclose(true[0, 0], np.sqrt(np.pi)**3.0, atol=1e-4)
+        assert_allclose(true[0, 0], np.sqrt(np.pi) ** 3.0, atol=1e-4)
         assert_allclose(true[0, 1], np.sqrt(np.pi) ** 3.0, atol=1e-4)
 
         # Test Cartesian order: (1, 0, 0), which is integral (x - X_c) e^{-(x-c)^2}
         #  Wolfram: integral (x - c) e^(-(x - d)^2)  = sqrt(pi) (d - c)
-        assert_allclose(true[1, 0], np.sqrt(np.pi)**3.0 * 0.175, atol=1e-5)
-        assert_allclose(true[1, 1], np.sqrt(np.pi)**3.0 * (0.175 - 0.1), atol=1e-5)
+        assert_allclose(true[1, 0], np.sqrt(np.pi) ** 3.0 * 0.175, atol=1e-5)
+        assert_allclose(true[1, 1], np.sqrt(np.pi) ** 3.0 * (0.175 - 0.1), atol=1e-5)
 
         # # Test (0, 0, 1)
-        assert_allclose(true[3, 0], np.sqrt(np.pi)**3.0 * 0.15, atol=1e-3)
-        assert_allclose(true[3, 1], np.sqrt(np.pi)**3.0 * (0.15 - 0.3), atol=1e-3)
+        assert_allclose(true[3, 0], np.sqrt(np.pi) ** 3.0 * 0.15, atol=1e-3)
+        assert_allclose(true[3, 1], np.sqrt(np.pi) ** 3.0 * (0.15 - 0.3), atol=1e-3)
 
         with self.assertRaises(TypeError):
-            atgrid.moments(np.array([1, 1]), centers, func_vals)  # orders should be integer
+            # orders should be integer
+            atgrid.moments(np.array([1, 1]), centers, func_vals)
         with self.assertRaises(ValueError):
             multidim_f = np.array([func_vals, func_vals])
             atgrid.moments(1, centers, multidim_f)  # func_vals should be ndim = 1
-            atgrid.moments(1, np.array([1, 1, 1]), func_vals)  # centers should be ndim =2
+            # centers should be ndim =2
+            atgrid.moments(1, np.array([1, 1, 1]), func_vals)
             atgrid.moments(1, np.array([[1, 1]]), func_vals)  # centers should be dim=3
             atgrid.moments(0, centers, func_vals, type_mom="pure_radial")  # l>0
-            atgrid.moments(1, centers, np.array([1, 2, 3]))  # func_vals too little points
+            # func_vals too little points
+            atgrid.moments(1, centers, np.array([1, 2, 3]))
 
     def test_pure_moment_integral_with_identity_function(self):
         r"""Test pure moment integral with identify function is mostly all zeros."""
@@ -773,35 +775,65 @@ class TestAtomGrid(TestCase):
         r"""Test pure multipole moment integral with Gaussian upto order 5."""
         center = np.array([[0.0, 0.5, 1.0]])
         # Obtained this from Horton on atomgrid
-        horton_answer = np.array([
-            5.56832800e+00, -5.56832800e+00, 8.75535482e-18, -2.78416400e+00,
-            4.87228700e+00, 1.96316697e-18, 4.82231350e+00, -1.20557838e+00,
-            -1.26575073e-17, -3.48020500e+00, 1.19286145e-16, -6.39354483e+00,
-            2.69575520e+00, 5.23442037e-17, -4.68564343e-17, 5.50268726e-01,
-            1.52258969e+00, -3.26136843e-13, 7.15349344e+00, -4.47463560e+00,
-            -2.80536246e-13, -1.40807305e-12, -1.45587420e+00, 2.57364630e-01,
-            -1.56214452e-13, 7.39543562e-01, 1.35462566e-12, -6.82363035e+00,
-            6.24076062e+00, 2.67670790e-12, 5.05401764e-12, 2.82075627e+00,
-            -7.72093891e-01, 3.45622696e-12, -3.70252405e-13, -1.22078763e-01]
+        horton_answer = np.array(
+            [
+                5.56832800,
+                -5.56832800,
+                8.75535482e-18,
+                -2.78416400,
+                4.87228700,
+                1.96316697e-18,
+                4.82231350,
+                -1.20557838,
+                -1.26575073e-17,
+                -3.48020500,
+                1.19286145e-16,
+                -6.39354483,
+                2.69575520,
+                5.23442037e-17,
+                -4.68564343e-17,
+                5.50268726e-01,
+                1.52258969,
+                -3.26136843e-13,
+                7.15349344,
+                -4.47463560,
+                -2.80536246e-13,
+                -1.40807305e-12,
+                -1.45587420,
+                2.57364630e-01,
+                -1.56214452e-13,
+                7.39543562e-01,
+                1.35462566e-12,
+                -6.82363035,
+                6.24076062,
+                2.67670790e-12,
+                5.05401764e-12,
+                2.82075627,
+                -7.72093891e-01,
+                3.45622696e-12,
+                -3.70252405e-13,
+                -1.22078763e-01,
+            ]
         )
         # Generate atomic grid.
         oned = GaussLaguerre(50)
         atgrid = AtomGrid(oned, degrees=[50])
         order = 5
-        gaussian = np.exp(-np.linalg.norm(atgrid.points, axis=1)**2.0)
+        gaussian = np.exp(-np.linalg.norm(atgrid.points, axis=1) ** 2.0)
         true = atgrid.moments(
             orders=order, centers=center, func_vals=gaussian, type_mom="pure"
         )
         assert_allclose(np.ravel(true), horton_answer, atol=1e-6)
 
     def test_radial_moments_of_gaussian_against_horton(self):
+        r"""Test radial moments of Gausian against theochem/horton."""
         center = np.array([[0.0, 0.5, 0.0]])
         # Generate atomic grid.
         oned = GaussLaguerre(100)
         atgrid = AtomGrid(oned, degrees=[50])
-        horton_answer = np.array([5.568328,  6.79414003,  9.744574, 15.78558743])
+        horton_answer = np.array([5.568328, 6.79414003, 9.744574, 15.78558743])
         order = 3
-        gaussian = np.exp(-np.linalg.norm(atgrid.points, axis=1)**2.0)
+        gaussian = np.exp(-np.linalg.norm(atgrid.points, axis=1) ** 2.0)
         true = atgrid.moments(
             orders=order, centers=center, func_vals=gaussian, type_mom="radial"
         )
@@ -816,11 +848,12 @@ class TestAtomGrid(TestCase):
         order = 3
         ident_func = np.ones(atgrid.points.shape[0])
         true, orders = atgrid.moments(
-            orders=order, centers=center, func_vals=ident_func, type_mom="pure-radial",
-            return_orders=True
+            order, center, ident_func, "pure-radial", return_orders=True
         )
 
-        ident_func = atgrid.convert_cartesian_to_spherical(atgrid.points, center=center[0])[:, 0]
+        ident_func = atgrid.convert_cartesian_to_spherical(
+            atgrid.points, center=center[0]
+        )[:, 0]
         # Go through each (n, _, m)
         for i, (n, l, m) in enumerate(orders):
             index = l**2 + 2 * m - 1 if m > 0 else l**2 - 2 * m
@@ -840,11 +873,18 @@ class TestAtomGrid(TestCase):
 
         i_sph = 0
         for l_sph, m_sph in [
-            (0, 0), (1, 0), (1, 1), (1, -1), (2, 0), (2, 1), (2, -1), (2, 2), (2, -2)
+            (0, 0),
+            (1, 0),
+            (1, 1),
+            (1, -1),
+            (2, 0),
+            (2, 1),
+            (2, -1),
+            (2, 2),
+            (2, -2),
         ]:
             true, orders = atgrid.moments(
-                orders=order // 2, centers=center, func_vals=spherical[i_sph], type_mom="pure-radial",
-                return_orders=True
+                order // 2, center, spherical[i_sph], "pure-radial", return_orders=True
             )
             for i_mom, (n_mom, l_mom, m_mom) in enumerate(orders):
                 # If the spherical harmonics match, then the integral over sph_coords is one
@@ -856,7 +896,6 @@ class TestAtomGrid(TestCase):
                     # is zero.
                     assert_allclose(true[i_mom], 0.0, atol=1e-5)
             i_sph += 1
-
 
     def test_error_raises(self):
         """Tests for error raises."""

@@ -19,13 +19,15 @@
 # --
 """Construct basic grid data structure."""
 
-from grid.utils import convert_cart_to_sph, generate_orders_horton_order, solid_harmonics
+from grid.utils import (
+    convert_cart_to_sph,
+    generate_orders_horton_order,
+    solid_harmonics,
+)
 
 import numpy as np
 
 from scipy.spatial import cKDTree
-
-from typing import Union
 
 
 class Grid:
@@ -236,22 +238,36 @@ class Grid:
         if func_vals.ndim > 1:
             raise ValueError(f"`func_vals` {func_vals.ndim} should have dimension one.")
         if centers.ndim != 2:
-            raise ValueError(f"`centers` {centers.ndim} should have dimension one or two.")
+            raise ValueError(
+                f"`centers` {centers.ndim} should have dimension one or two."
+            )
         if self.points.shape[1] != centers.shape[1]:
-            raise ValueError(f"The dimension of the grid {self.points.shape[1]} should"
-                             f"match the dimension of the centers {centers.shape[1]}.")
+            raise ValueError(
+                f"The dimension of the grid {self.points.shape[1]} should"
+                f"match the dimension of the centers {centers.shape[1]}."
+            )
         if len(func_vals) != self.points.shape[0]:
-            raise ValueError(f"The length of function values {len(func_vals)} should match "
-                             f"the number of points in the grid {self.points.shape[0]}.")
+            raise ValueError(
+                f"The length of function values {len(func_vals)} should match "
+                f"the number of points in the grid {self.points.shape[0]}."
+            )
         if type_mom == "pure-radial" and orders == 0:
-            raise ValueError(f"The n/order parameter {orders} for pure-radial multipole moments"
-                             f"should be positive")
+            raise ValueError(
+                f"The n/order parameter {orders} for pure-radial multipole moments"
+                f"should be positive"
+            )
 
         # Generate all orders, e.g. cartesian it is (m_x, m_y, m_z) in Horton 2 order.
         if isinstance(orders, (int, np.int32, np.int64)):
-            orders = range(0, orders + 1) if type_mom != "pure-radial" else range(1, orders + 1)
+            orders = (
+                range(0, orders + 1)
+                if type_mom != "pure-radial"
+                else range(1, orders + 1)
+            )
         else:
-            raise TypeError(f"Orders {type(orders)} should be either integer, list or numpy array.")
+            raise TypeError(
+                f"Orders {type(orders)} should be either integer, list or numpy array."
+            )
         dim = self.points.shape[1]
         all_orders = generate_orders_horton_order(orders[0], type_mom, dim)
         for l_ord in orders[1:]:
@@ -261,7 +277,8 @@ class Grid:
 
         integrals = []
         for center in centers:
-            centered_pts = self.points - center  # Calculate centered pts: [(X-c), (Y-c), (Z-c)]
+            # Calculate centered pts: [(X-c), (Y-c), (Z-c)]
+            centered_pts = self.points - center
 
             if type_mom == "cartesian":
                 # Take the powers to get [(X-c)^mx, (Y-c)^my, (Z-c)^mz]
@@ -270,8 +287,12 @@ class Grid:
                 # Take the product: [(X-c)^_mx (Y-c)^my (Z-c)^mz], has shape (L, N)
                 cent_pts_with_order = np.prod(cent_pts_with_order, axis=2)
                 # Calculate integral (X-c)^mx (Y-c)^my (Z-c)^mz by the function values and weights
-                integral = np.einsum("ln,n,n->l", cent_pts_with_order, func_vals, self.weights)
-            elif type_mom == "radial" or type_mom == "pure" or type_mom == "pure-radial":
+                integral = np.einsum(
+                    "ln,n,n->l", cent_pts_with_order, func_vals, self.weights
+                )
+            elif (
+                type_mom == "radial" or type_mom == "pure" or type_mom == "pure-radial"
+            ):
                 # Take the norm |r - R_c|
                 cent_pts_with_order = np.linalg.norm(centered_pts, axis=1)
 
@@ -284,24 +305,28 @@ class Grid:
                     if type_mom == "pure":
                         # Take the integral |r - R_c|^l S_l^m(theta, phi) f(r, theta, phi) weights
                         integral = np.einsum(
-                            "ln,n,n->l",
-                            solid_harm, func_vals, self.weights
+                            "ln,n,n->l", solid_harm, func_vals, self.weights
                         )
                     elif type_mom == "pure-radial":
                         # Get the correct indices in solid_harm associated to l_degree and m_orders.
                         n_princ, l_degrees, m_orders = all_orders.T
-                        indices = l_degrees ** 2
+                        indices = l_degrees**2
                         indices[m_orders > 0] += 2 * m_orders[m_orders > 0] - 1
                         indices[m_orders <= 0] += 2 * np.abs(m_orders[m_orders <= 0])
                         # Take the power to get |r - R_c|^{n}
                         cent_pts_with_order = cent_pts_with_order ** n_princ[:, None]
                         integral = np.einsum(
-                            "ln,ln,n,n->l", cent_pts_with_order, solid_harm[indices], func_vals,
-                            self.weights
+                            "ln,ln,n,n->l",
+                            cent_pts_with_order,
+                            solid_harm[indices],
+                            func_vals,
+                            self.weights,
                         )
 
                 elif type_mom == "radial":
-                    cent_pts_with_order = cent_pts_with_order ** np.ravel(all_orders)[:, None]
+                    cent_pts_with_order = (
+                        cent_pts_with_order ** np.ravel(all_orders)[:, None]
+                    )
                     # Take the integral |r - R_c|^l  f(r, theta, phi) weights
                     integral = np.einsum(
                         "ln,n,n->l", cent_pts_with_order, func_vals, self.weights

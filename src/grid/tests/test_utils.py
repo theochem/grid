@@ -264,9 +264,9 @@ def test_solid_harmonics_for_few_degrees(numb_pts, max_degree):
     # Go through all orders and ma
     i_sph = 0
     r_solid = np.ones((numb_pts,))  # r^0 = 1
-    for l in range(0, max_degree + 1):
-        factor = np.sqrt(4.0 * np.pi / (2.0 * l + 1.0))
-        for i_order in range(0, (2 * l + 1)):
+    for l_deg in range(0, max_degree + 1):
+        factor = np.sqrt(4.0 * np.pi / (2.0 * l_deg + 1.0))
+        for i_order in range(0, (2 * l_deg + 1)):
             assert_allclose(true[i_sph], sph_harm[i_sph] * r_solid * factor)
             i_sph += 1
         r_solid *= r  # Update r^l
@@ -289,14 +289,14 @@ def test_regular_solid_spherical_harmonics():
     assert_allclose(result[2], x)
     assert_allclose(result[3], y)
     # l = 2, m = 0
-    assert_allclose(result[4], (3 * z ** 2 - r ** 2) / 2)
+    assert_allclose(result[4], (3 * z**2 - r**2) / 2)
     # l = 2, m = 1
     assert_allclose(result[5], np.sqrt(3) * z * x)
     assert_allclose(result[6], np.sqrt(3) * z * y)
     # l = 2, m = 2
-    assert_allclose(result[7], np.sqrt(3) / 2 * (x ** 2 - y ** 2))
+    assert_allclose(result[7], np.sqrt(3) / 2 * (x**2 - y**2))
     assert_allclose(result[8], np.sqrt(3) * x * y)
     # l = 3, m = 0
-    assert_allclose(result[9], z * (5 * z ** 2 - 3 * r ** 2) / 2)
+    assert_allclose(result[9], z * (5 * z**2 - 3 * r**2) / 2)
     # l=4, m=4
     assert_allclose(result[13], np.sqrt(15) * x * y * z)
