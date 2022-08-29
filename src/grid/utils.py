@@ -315,7 +315,7 @@ def generate_real_spherical_harmonics_scipy(
             * (-1) ** m_list_n[:, None]  # Remove Conway phase from SciPy
         )
 
-        # Convert to horton order
+        # Convert to horton 2 order
         horton_ord = [[pos_real_sph[i], neg_real_sph[i]] for i in range(0, l_val)]
         horton_ord = tuple(x for sublist in horton_ord for x in sublist)
         total_sph = np.vstack((total_sph, zero_real_sph) + horton_ord)
@@ -354,7 +354,7 @@ def generate_real_spherical_harmonics(l_max: int, theta: np.ndarray, phi: np.nda
     ndarray((l_max + 1)**2, N)
         Value of real spherical harmonics of all orders :math:`m`,and degree
         :math:`l` spherical harmonics. For each degree :math:`l`, the orders :math:`m` are
-        in Horton order, i.e. :math:`m=0, 1, -1, 2, -2, \cdots, l, -l`.
+        in Horton 2 order, i.e. :math:`m=0, 1, -1, 2, -2, \cdots, l, -l`.
 
     Notes
     -----
@@ -447,7 +447,7 @@ def generate_derivative_real_spherical_harmonics(l_max, theta, phi):
     -------
     ndarray(2, (l_max^2 + 1)^2, M)
         Derivative of spherical harmonics, (theta first, then phi) of all degrees up to
-        :math:`l_{max}` and orders :math:`m` in Horton order, i.e.
+        :math:`l_{max}` and orders :math:`m` in Horton 2 order, i.e.
         :math:`m=0, 1, -1, \cdots, l, -l`.
 
     Notes
@@ -617,3 +617,73 @@ def convert_cart_to_sph(points, center=None):
     # azimuthal angle arctan2(y / x)
     theta = np.arctan2(relat_pts[:, 1], relat_pts[:, 0])
     return np.vstack([r, theta, phi]).T
+
+
+def generate_orders_horton_order(order: int, type_ord: str, dim: int = 3):
+    r"""
+    Generate all orders from an integer :math:`l`.
+
+    For Cartesian, the orders are :math:`(n_x, n_y, n_z)` such that they sum to `order`.
+    If `dim=1,2`, then it generates Cartesian orders :math:`(n_x)`, :math:`(n_x, n_y)`,
+    respectively, such that they sum to `order`.
+
+    For radial, the orders is just the order :math:`l`.
+
+    For spherical, the orders :math:`(l, m)` following the order
+     :math:`[(l, 0), (l, 1), (l, -1), \cdots, (l, l), (l, -l)]`.
+
+    Parameters
+    ----------
+    order: int
+        The order :math:`l`.
+    type_ord : str, optional
+        The type of the order, it is either "cartesian", "radial" or "spherical".
+    dim : int, optional
+        The dimension of the orders for only Cartesian.
+
+    Returns
+    -------
+    ndarray(3 * `order` , D)
+        Each row is a list of `D` integers (e.g. :math:`(n_x, n_y, n_z)` or :math:`(l, m)`).
+        The output is in Horton 2 order. e.g. order=2 it's
+        [[2, 0, 0], [1, 1, 0], [1, 0, 1], [0, 2, 0], ....]
+
+    """
+    if not isinstance(order, int):
+        raise TypeError(f"Order {type(order)} should be integer type.")
+    if type_ord not in ["cartesian", "radial", "pure", "pure-radial"]:
+        raise ValueError(f"Type {type_ord} is not recognized.")
+
+    orders = []
+    if type_ord == "cartesian":
+        if dim == 3:
+            for m_x in range(order, -1, -1):
+                for m_y in range(order - m_x, -1, -1):
+                    orders.append([m_x, m_y, order - m_x - m_y])
+        elif dim == 2:
+            for m_x in range(order, -1, -1):
+                orders.append([m_x, order - m_x])
+        elif dim == 1:
+            return np.arange(0, order + 1, dtype=np.int)
+        else:
+            raise ValueError(f"dim {dim} parameter should be either 1, 2, 3.")
+    elif type_ord == "radial":
+        return np.array([order])
+    elif type_ord == "pure":
+        # Add the (l, 0)
+        orders.append([order, 0])
+        # Add orders (i, l) (i, -l) i=1, to l
+        for x in range(1, order + 1):
+            orders += [[order, x], [order, -x]]
+    elif type_ord == "pure-radial":
+        # Generate (n, l=0,1, 2 ..., (n-1), m=0, 1, -1, ... l -l)
+        for l in range(0, order):
+            for m in range(0, l + 1):
+                if m != 0:
+                    orders += [[order, l, m], [order, l, -m]]
+                else:
+                    orders += [[order, l, m]]
+    else:
+        raise ValueError(f"Type {type_ord} is not recognized.")
+    orders = np.array(orders, dtype=int)
+    return orders
