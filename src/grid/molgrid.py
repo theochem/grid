@@ -135,6 +135,43 @@ class MolGrid(Grid):
         # initialize parent class
         super().__init__(self.points, self._atweights * self._aim_weights)
 
+    @property
+    def atgrids(self):
+        r"""List[AtomGrid] : List of atomic grids for each center. Returns None if `store` false."""
+        return self._atgrids
+
+    @property
+    def indices(self):
+        r"""
+        ndarray(M + 1,) :
+            List of indices :math:`[i_0, i_1, \cdots]` that whose indices range [i_k, i_{k+1}]
+            specify which points in `points` correspond to kth atomic grid.
+
+        """
+        return self._indices
+
+    @property
+    def aim_weights(self):
+        r"""
+        ndarray(K,):
+            List of atomic weights where :math:`K = \sum_n N_i` and :math:`N_i` is the number
+            of points in the ith atomic grid.
+        """
+        return self._aim_weights
+    @property
+    def atcoords(self):
+        r"""ndarray(M, 3) : Center/Atomic coordinates."""
+        return self._atcoords
+
+    @property
+    def atweights(self):
+        r"""
+        ndarray(K,):
+            List of weight for each point,where :math:`K = \sum_n N_i` and :math:`N_i` is the
+            number of points in the ith atomic grid.
+        """
+        return self._atweights
+
     def save(self, filename):
         r"""
         Save molecular grid attributes as a npz file.
