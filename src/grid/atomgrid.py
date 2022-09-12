@@ -276,7 +276,7 @@ class AtomGrid(Grid):
 
     @property
     def points(self):
-        """ndarray(N, 3): Cartesian coordinates of the grid points."""
+        """ndarray(N, 3): Cartesian coordinates of the grid points (centered)."""
         return self._points + self._center
 
     @property
@@ -613,7 +613,7 @@ class AtomGrid(Grid):
                 deriv_spherical : bool
                     If True, then returns the derivatives with respect to spherical coordinates
                     :math:`(r, \theta, \phi)`. Default False.
-                only_radial_derivs : bool
+                only_radial_deriv : bool
                     If true, then the derivative wrt to radius :math:`r` is returned.
             and returns:
                 ndarray(M,...) :
@@ -647,7 +647,7 @@ class AtomGrid(Grid):
         splines = self.radial_component_splines(func_vals)
 
         def interpolate_low(
-            points, deriv=0, deriv_spherical=False, only_radial_derivs=False
+            points, deriv=0, deriv_spherical=False, only_radial_deriv=False
         ):
             r"""Construct a spline like callable for intepolation.
 
@@ -663,7 +663,7 @@ class AtomGrid(Grid):
             deriv_spherical : bool
                 If True, then returns the derivatives with respect to spherical coordinates
                 :math:`(r, \theta, \phi)`. Default False.
-            only_radial_derivs : bool
+            only_radial_deriv : bool
                 If true, then the derivative wrt to radius :math:`r` is returned.
 
             Returns
@@ -674,7 +674,7 @@ class AtomGrid(Grid):
                 if `only_radial_derivs` then derivative wrt to :math:`r` is only returned.
 
             """
-            if deriv_spherical and only_radial_derivs:
+            if deriv_spherical and only_radial_deriv:
                 warnings.warn(
                     "Since `only_radial_derivs` is true, then only the derivative wrt to"
                     "radius is returned and `deriv_spherical` value is ignored."
@@ -684,7 +684,7 @@ class AtomGrid(Grid):
             r_sph_harm = generate_real_spherical_harmonics(self.l_max // 2, theta, phi)
 
             # If theta, phi derivaitves are wanted and the derivative is first-order.
-            if not only_radial_derivs and deriv == 1:
+            if not only_radial_deriv and deriv == 1:
                 # Calculate derivative of f with respect to radial, theta, phi
                 # Get derivative of spherical harmonics first.
                 radial_components = np.array([spline(r_pts, 0) for spline in splines])
@@ -717,7 +717,7 @@ class AtomGrid(Grid):
                         phi_i,
                     )
                 return derivs
-            elif not only_radial_derivs and deriv != 0:
+            elif not only_radial_deriv and deriv != 0:
                 raise ValueError(
                     f"Higher order derivatives are only supported for derivatives"
                     f"with respect to the radius. Deriv is {deriv}."
