@@ -300,6 +300,27 @@ class AtomGrid(Grid):
         """int: Largest angular degree L value in angular grids."""
         return np.max(self._degs)
 
+    def save(self, filename):
+        r"""
+        Save atomic grid attributes as a npz file.
+
+        Parameters
+        ----------
+        filename: str
+           The path/name of the .npz file.
+
+        """
+        dict_save = {
+            "points": self.points,
+            "weights": self.weights,
+            "center": self.center,
+            "degrees": self.degrees,
+            "indices": self.indices,
+            "rgrid_pts": self.rgrid.points,
+            "rgrid_weights": self.rgrid.weights,
+        }
+        np.savez(filename, **save_dict)
+
     def get_shell_grid(self, index: int, r_sq: bool = True):
         """Get the spherical integral grid at radial point from specified index.
 

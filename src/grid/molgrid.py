@@ -76,6 +76,35 @@ class MolGrid(Grid):
         # initialize parent class
         super().__init__(self.points, self._atweights * self._aim_weights)
 
+    def save(self, filename):
+        r"""
+        Save molecular grid attributes as a npz file.
+
+        Parameters
+        ----------
+        filename: str
+           The path/name of the .npz file.
+
+        """
+        dict_save = {
+            "points": self.points,
+            "weights": self.weights,
+            "atweights": self.atweights,
+            "atcoords": self.atcoords,
+            "aim_weights": self.aim_weights,
+            "indices": self.indices,
+        }
+        # Save each attribute of the atomic grid.
+        for i, atomgrid in enumerate(self.atgrids):
+            dict_save["atgrid_" + str(i) + "_points"] = atomgrid.points,
+            dict_save["atgrid_" + str(i) + "_weights"] = atomgrid.weights,
+            dict_save["atgrid_" + str(i) + "_center"] = atomgrid.center,
+            dict_save["atgrid_" + str(i) + "_degrees"] = atomgrid.degrees,
+            dict_save["atgrid_" + str(i) + "_indices"] = atomgrid.indices,
+            dict_save["atgrid_" + str(i) + "_rgrid_pts"] = atomgrid.rgrid.points,
+            dict_save["atgrid_" + str(i) + "_rgrid_weights"] = atomgrid.rgrid.weights,
+        np.savez(filename, **save_dict)
+
     @classmethod
     def from_preset(
         cls,
