@@ -44,11 +44,7 @@ class TestMolGrid(TestCase):
 
     def test_integrate_hydrogen_single_1s(self):
         """Test molecular integral in H atom."""
-        # numbers = np.array([1], int)
         coordinates = np.array([0.0, 0.0, -0.5], float)
-        # rgrid = BeckeRTransform.transform_grid(oned, 0.001, 0.5)[0]
-        # rtf = ExpRTransform(1e-3, 1e1, 100)
-        # rgrid = RadialGrid(rtf)
         atg1 = AtomGrid.from_pruned(
             self.rgrid,
             0.5,
