@@ -25,11 +25,67 @@ from grid.basegrid import Grid, LocalGrid, OneDGrid
 
 import numpy as np
 
+from typing import Union
 
 class MolGrid(Grid):
-    """Molecular Grid for integration."""
+    """
+    Molecular grid class for integration of three-dimensional functions.
 
-    def __init__(self, atnums, atgrids, aim_weights, store=False):
+    Molecular grid is defined here to be a weighted average of :math:`M` atomic grids
+    (see AtomGrid). This is defined by a atom in molecule weights (or nuclear weight functions)
+    :math:`w_n(r)` for each center n such that :math:`\sum^M_n w_n(r) = 1` for all points
+    :math:`r\in\mathbb{R}^3.`
+
+    Examples
+    --------
+    There are multiple methods of specifiying molecular grids.
+    This example chooses Becke weights as the atom in molecule/nuclear weights and the
+    radial grid is the same for all atoms.  Two atoms are considered with charges [1, 2],
+    respectively.
+    >>> from grid.becke BeckeWeights
+    >>> from grid.onedgrid import GaussLaguerre
+    >>> becke = BeckeWeights(order=3)
+    >>> rgrid = GaussLaguerre(100)
+    >>> charges = [1, 2]
+    >>> coords = np.array([[-1.0, 0.0, 0.0], [1.0, 0.0, 0.0]])
+    The default method is based on explicitly specifing the atomic grids (AtomGrids) for each atom.
+    >>> from grid.atomgrid import AtomGrid
+    >>> atgrid1 = AtomGrid(rgrid, degrees=5, center=coords[0])
+    >>> atgrid2 = AtomGrid(rgrid, degrees=10, center=coords[1])
+    >>> molgrid = MolGrid(charges, [atgrid1, atgrid2], aim_weights=becke)
+    The `from_size` method constructs AtomGrids with degree_size specified from integer size.
+    >>> size = 100  # Number of angular points used in each shell in the atomic grid.
+    >>> molgrid = MolGrid.from_size(charges, coords, rgrid, size=5, aim_weights=becke)
+    The `from_pruned` method is based on `AtomGrid.from_pruned` method on the idea
+    of spliting radial grid points into sectors that have the same angular degrees.
+    >>> sectors_r = [[0.5, 1., 1.5], [0.25, 0.5]]
+    >>> sectors_deg = [[3, 7, 5, 3], [3, 2, 2]]
+    >>> radius = 1.0
+    >>> mol_grid = MolGrid.from_pruned(charges, coords, rgrid, radius, becke,
+    >>>                                sectors_r=sectors_r, sectors_degree=sectors_deg)
+    The `from_preset` method is based on `AtomGrid.from_preset` method based on a string
+    specifying the size of each Levedev grid at each radial points.
+    >>> preset = "fine"  # Many choices available.
+    >>> molgrid = MolGrid.from_preset(charges, coords, rgrid, preset, aim_weights=becke)
+
+    The general way to integrate is the following.
+    >>> integrand = integrand_func(molgrid.points)
+    >>> integrate = molgrid.integrate(integrand)
+
+    References
+    ----------
+    .. [1] Becke, Axel D. "A multicenter numerical integration scheme for polyatomic molecules."
+       The Journal of chemical physics 88.4 (1988): 2547-2553.
+
+    """
+
+    def __init__(
+        self,
+        atnums: np.ndarray,
+        atgrids: list,
+        aim_weights: Union[callable, np.ndarray],
+        store: bool = False
+    ):
         r"""Initialize class.
 
         Parameters
@@ -37,9 +93,12 @@ class MolGrid(Grid):
         atnums : np.ndarray(M, 3)
             Atomic number of :math:`M` atoms in molecule.
         atgrids : list[AtomGrid]
-            list of atomic grid
-        aim_weights : Callable or np.ndarray(K,)
-            Atoms in molecule weights.
+            List of atomic grids of size :math:`M` for each atom in molecule.
+        aim_weights : Callable or np.ndarray(\sum^M_n N_n,)
+            Atoms in molecule weights :math:`{ {w_n(r_k)}_k^{N_i}}_n^{M}`, where
+            :math:`N_i` is the number of points in the ith atomic grid.
+        store: bool
+            If true, then the atomic grids `atgrids` are stored as attribute `atgrids`.
 
         """
         # initialize these attributes
@@ -108,34 +167,40 @@ class MolGrid(Grid):
     @classmethod
     def from_preset(
         cls,
-        atnums,
-        atcoords,
-        rgrid,
-        preset,
-        aim_weights,
+        atnums: np.ndarray,
+        atcoords: np.ndarray,
+        rgrid: Union[OneDGrid, list, dict],
+        preset: Union[str, list, dict],
+        aim_weights: Union[callable, np.ndarray],
         *_,
-        rotate=37,
-        store=False,
+        rotate: int = 37,
+        store: bool = False,
     ):
         """Construct molecular grid wih preset parameters.
 
         Parameters
         ----------
-        atnums : np.ndarray(N,)
-            array of atomic number
-        atcoords : np.ndarray(N, 3)
-            atomic coordinates of atoms
-        rgrid : OneDGrid
-            one dimension grid  to construct spherical grid
-        preset : str
-            preset grid accuracy scheme, support "coarse", "medium", "fine",
-            "veryfine", "ultrafine", "insane"
+        atnums : np.ndarray(M,)
+            Array of atomic numbers.
+        atcoords : np.ndarray(M, 3)
+            Atomic coordinates of atoms.
+        rgrid : (OneDGrid, list[OneDGrid], dict[int: OneDGrid])
+            One dimensional radial grid. If of type `OneDGrid` then this radial grid is used for
+            all atoms. If a list is provided,then ith grid correspond to the ith atom.  If
+            dictionary is provided, then the keys correspond to the `atnums[i]`attribute.
+        preset : (str, list[str], dict[int: str])
+            Preset grid accuracy scheme, support "coarse", "medium", "fine",
+            "veryfine", "ultrafine", "insane".  If string is provided ,then preset is used
+            for all atoms, either it is specified by a list, or a dictionary whose keys
+            are from `atnums`.
         aim_weights : Callable or np.ndarray(K,)
             Atoms in molecule weights.
-        rotate : bool, optional
-            Random rotate for each shell of atomic grid
+        rotate : bool or int, optional
+            Flag to set auto rotation for atomic grid, if given int, the number
+            will be used as a seed to generate rantom matrix.
         store : bool, optional
-            Store atomic grid separately
+            Store atomic grid as a class attribute.
+
         """
         # construct for a atom molecule
         if atcoords.ndim != 2:
@@ -182,15 +247,16 @@ class MolGrid(Grid):
     @classmethod
     def from_size(
         cls,
-        atnums,
-        atcoords,
-        rgrid,
-        size,
-        aim_weights,
-        rotate=37,
-        store=False,
+        atnums: np.ndarray,
+        atcoords: np.ndarray,
+        rgrid: OneDGrid,
+        size: int,
+        aim_weights: Union[callable, np.ndarray],
+        rotate: int = 37,
+        store: bool = False,
     ):
-        """Initialize a MolGrid instance with Horton Style input.
+        """
+        Initialize a MolGrid instance with Horton Style input.
 
         Example
         -------
@@ -211,16 +277,17 @@ class MolGrid(Grid):
             Num of points on each shell of angular grid
         aim_weights : Callable or np.ndarray(K,)
             Atoms in molecule weights.
-        store : bool, optional
-            Flag to store each original atomic grid information
         rotate : bool or int , optional
             Flag to set auto rotation for atomic grid, if given int, the number
             will be used as a seed to generate rantom matrix.
+        store : bool, optional
+            Flag to store each original atomic grid information
 
         Returns
         -------
         MolGrid
             MolGrid instance with specified grid property
+
         """
         at_grids = []
         for i in range(len(atcoords)):
@@ -256,20 +323,13 @@ class MolGrid(Grid):
         wts = self._atweights[self._indices[index] : self._indices[index + 1]]
         return LocalGrid(pts, wts, self._atcoords[index])
 
-    @property
-    def aim_weights(self):
-        """np.ndarray(N,): atom in molecular weights for all points in grid."""
-        return self._aim_weights
-
-    def __getitem__(self, index):
+    def __getitem__(self, index: int):
         """Get separate atomic grid in molecules.
-
-        Same function as get_simple_atomic_grid. May be removed in the future.
 
         Parameters
         ----------
         index : int
-            Index of atom in the molecule
+            Index of the atom in the molecule.
 
         Returns
         -------
