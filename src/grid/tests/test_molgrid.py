@@ -473,6 +473,35 @@ class TestMolGrid(TestCase):
         assert_allclose(ref_grid.points, mol_grid.points)
         assert_allclose(ref_grid.weights, mol_grid.weights)
 
+    def test_from_pruned(self):
+        r"""Test MolGrid construction via from_pruned method."""
+        nums = np.array([1, 1])
+        coors = np.array([[0, 0, -0.5], [0, 0, 0.5]])
+        becke = BeckeWeights(order=3)
+        radius = np.array([1.0, 0.5])
+        sectors_r = [[0.5, 1., 1.5], [0.25, 0.5]]
+        sectors_deg = [[3, 7, 5, 3], [3, 2, 2]]
+        mol_grid = MolGrid.from_pruned(nums, coors, self.rgrid, radius, becke,
+                                       sectors_r=sectors_r, sectors_degree=sectors_deg,
+                                       rotate=False)
+        atg1 = AtomGrid.from_pruned(
+            self.rgrid,
+            radius[0],
+            sectors_r=sectors_r[0],
+            sectors_degree=sectors_deg[0],
+            center=coors[0],
+        )
+        atg2 = AtomGrid.from_pruned(
+            self.rgrid,
+            radius[1],
+            sectors_r=sectors_r[1],
+            sectors_degree=sectors_deg[1],
+            center=coors[1],
+        )
+        ref_grid = MolGrid(nums, [atg1, atg2], becke, store=True)
+        assert_allclose(ref_grid.points, mol_grid.points)
+        assert_allclose(ref_grid.weights, mol_grid.weights)
+
     def test_raise_errors(self):
         """Test molgrid errors raise."""
         atg = AtomGrid.from_pruned(

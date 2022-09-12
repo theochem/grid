@@ -333,7 +333,99 @@ class MolGrid(Grid):
             )
         return cls(atnums, at_grids, aim_weights, store=store)
 
-    def get_atomic_grid(self, index):
+    @classmethod
+    def from_pruned(
+        cls,
+        atnums: np.ndarray,
+        atcoords: np.ndarray,
+        rgrid: Union[OneDGrid, list],
+        radius: Union[float, list],
+        aim_weights: Union[callable, np.ndarray],
+        sectors_r: np.ndarray,
+        sectors_degree: np.ndarray = None,
+        sectors_size: np.ndarray = None,
+        rotate: int = 37,
+        store: bool = False,
+    ):
+        r"""
+        Initialize a MolGrid instance with pruned method from AtomGrid.
+
+        Parameters
+        ----------
+        atnums: ndarray(M,)
+            List of atomic numbers for each atom.
+        atcoords: np.ndarray(M, 3)
+            Cartesian coordinates for each atoms
+        rgrid : OneDGrid or List[OneDGrid] or Dict[int: OneDGrid]
+            One dimensional grid for the radial component.  If a list is provided,then ith
+            grid correspond to the ith atom.  If dictionary is provided, then the keys are
+            correspond to the `atnums[i]` attribute.
+        radius: float, List[float]
+            The atomic radius to be multiplied with `r_sectors` (to make them atom specific).
+            If float, then the same atomic radius is used for all atoms, else a list specifies
+            it for each atom.
+        aim_weights: Callable or np.ndarray(\sum^M_n N_n,)
+            Atoms in molecule/nuclear weights :math:`{ {w_n(r_k)}_k^{N_i}}_n^{M}`, where
+            :math:`N_i` is the number of points in the ith atomic grid.
+        sectors_r: List[List], keyword-only argument
+            Each row is a sequence of boundary points specifying radial sectors of the pruned grid
+            for the `m`th atom. The first sector is ``[0, radius*sectors_r[0]]``, then
+            ``[radius*sectors_r[0], radius*sectors_r[1]]``, and so on.
+        sectors_degree: List[List], keyword-only argument
+            Each row is a sequence of Lebedev/angular degrees for each radial sector of the pruned
+            grid for the `m`th atom. If both `sectors_degree` and `sectors_size` are given,
+            `sectors_degree` is used.
+        sectors_size: List[List], keyword-only argument
+            Each row is a sequence of Lebedev sizes for each radial sector of the pruned grid
+            for the `m`th atom. If both `sectors_degree` and `sectors_size` are given,
+            `sectors_degree` is used.
+        rotate : bool or int , optional
+            Flag to set auto rotation for atomic grid, if given int, the number
+            will be used as a seed to generate rantom matrix.
+        store : bool, optional
+            Flag to store each original atomic grid information.
+
+        Returns
+        -------
+        MolGrid:
+            Molecular grid class for integration.
+
+        """
+        if atcoords.ndim != 2:
+            raise ValueError(
+                "The dimension of coordinates need to be 2\n"
+                f"got shape: {atcoords.ndim}"
+            )
+
+        at_grids = []
+        num_atoms = len(atcoords)
+        # List of None is created, so that indexing is possible in the for-loop.
+        sectors_degree = [None] * num_atoms if sectors_degree is None else sectors_degree
+        sectors_size = [None] * num_atoms if sectors_size is None else sectors_size
+        radius_atom = [radius] * num_atoms if isinstance(radius, (float, np.float64)) else radius
+        for i in range(num_atoms):
+            # get proper radial grid
+            if isinstance(rgrid, OneDGrid):
+                rad = rgrid
+            elif isinstance(rgrid, list):
+                rad = rgrid[i]
+            elif isinstance(rgrid, dict):
+                rad = rgrid[atnums[i]]
+            else:
+                raise TypeError(
+                    f"not supported radial grid input; got input type: {type(rgrid)}"
+                )
+
+            at_grids.append(
+                AtomGrid.from_pruned(
+                    rad, radius[i], sectors_r=sectors_r[i],
+                    sectors_degree=sectors_degree[i], sectors_size=sectors_size[i],
+                    center=atcoords[i], rotate=rotate
+                )
+            )
+        return cls(atnums, at_grids, aim_weights, store=store)
+
+    def get_atomic_grid(self, index: int):
         r"""Get atomic grid corresponding to the given atomic index.
 
         Parameters
