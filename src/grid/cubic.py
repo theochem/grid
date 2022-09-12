@@ -300,6 +300,7 @@ class _HyperRectangleGrid(Grid):
         """
         if self.ndim == 3:
             n_1d, n_2d = self.shape[2], self.shape[1] * self.shape[2]
+            # TODO Change this so that indices can be multi-dimensional
             index = n_2d * indices[0] + n_1d * indices[1] + indices[2]
             return index
         # Case of two-dimensions

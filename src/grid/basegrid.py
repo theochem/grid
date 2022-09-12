@@ -178,10 +178,7 @@ class Grid:
             The path/name of the .npz file.
 
         """
-        save_dict = {
-            "points": self.points,
-            "weights": self.weights
-        }
+        save_dict = {"points": self.points, "weights": self.weights}
         np.savez(filename, **save_dict)
 
 
@@ -241,7 +238,7 @@ class LocalGrid(Grid):
             "points": self.points,
             "weights": self.weights,
             "center": self.center,
-            "indices": self.indices
+            "indices": self.indices,
         }
         np.savez(filename, **save_dict)
 

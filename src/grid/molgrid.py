@@ -19,16 +19,16 @@
 # --
 """Molecular grid class."""
 
+from typing import Union
 
 from grid.atomgrid import AtomGrid
 from grid.basegrid import Grid, LocalGrid, OneDGrid
 
 import numpy as np
 
-from typing import Union
 
 class MolGrid(Grid):
-    """
+    r"""
     Molecular grid class for integration of three-dimensional functions.
 
     Molecular grid is defined here to be a weighted average of :math:`M` atomic grids
@@ -84,7 +84,7 @@ class MolGrid(Grid):
         atnums: np.ndarray,
         atgrids: list,
         aim_weights: Union[callable, np.ndarray],
-        store: bool = False
+        store: bool = False,
     ):
         r"""Initialize class.
 
@@ -143,6 +143,10 @@ class MolGrid(Grid):
     @property
     def indices(self):
         r"""
+        Get the indices of the molecualr grid.
+
+        Returns
+        -------
         ndarray(M + 1,) :
             List of indices :math:`[i_0, i_1, \cdots]` that whose indices range [i_k, i_{k+1}]
             specify which points in `points` correspond to kth atomic grid.
@@ -153,11 +157,17 @@ class MolGrid(Grid):
     @property
     def aim_weights(self):
         r"""
+        Get the atom in molecules/nuclear weight function of the molecular grid.
+
+        Returns
+        -------
         ndarray(K,):
             List of atomic weights where :math:`K = \sum_n N_i` and :math:`N_i` is the number
             of points in the ith atomic grid.
+
         """
         return self._aim_weights
+
     @property
     def atcoords(self):
         r"""ndarray(M, 3) : Center/Atomic coordinates."""
@@ -166,9 +176,14 @@ class MolGrid(Grid):
     @property
     def atweights(self):
         r"""
+        Get the atomic grid weights for all points, i.e. without atom in molecule weights.
+
+        Returns
+        -------
         ndarray(K,):
-            List of weight for each point,where :math:`K = \sum_n N_i` and :math:`N_i` is the
-            number of points in the ith atomic grid.
+            List of weights of atomic grid for each point,where :math:`K = \sum_n N_i` and
+            :math:`N_i` is the number of points in the ith atomic grid.
+
         """
         return self._atweights
 
@@ -192,14 +207,14 @@ class MolGrid(Grid):
         }
         # Save each attribute of the atomic grid.
         for i, atomgrid in enumerate(self.atgrids):
-            dict_save["atgrid_" + str(i) + "_points"] = atomgrid.points,
-            dict_save["atgrid_" + str(i) + "_weights"] = atomgrid.weights,
-            dict_save["atgrid_" + str(i) + "_center"] = atomgrid.center,
-            dict_save["atgrid_" + str(i) + "_degrees"] = atomgrid.degrees,
-            dict_save["atgrid_" + str(i) + "_indices"] = atomgrid.indices,
-            dict_save["atgrid_" + str(i) + "_rgrid_pts"] = atomgrid.rgrid.points,
-            dict_save["atgrid_" + str(i) + "_rgrid_weights"] = atomgrid.rgrid.weights,
-        np.savez(filename, **save_dict)
+            dict_save["atgrid_" + str(i) + "_points"] = atomgrid.points
+            dict_save["atgrid_" + str(i) + "_weights"] = atomgrid.weights
+            dict_save["atgrid_" + str(i) + "_center"] = atomgrid.center
+            dict_save["atgrid_" + str(i) + "_degrees"] = atomgrid.degrees
+            dict_save["atgrid_" + str(i) + "_indices"] = atomgrid.indices
+            dict_save["atgrid_" + str(i) + "_rgrid_pts"] = atomgrid.rgrid.points
+            dict_save["atgrid_" + str(i) + "_rgrid_weights"] = atomgrid.rgrid.weights
+        np.savez(filename, **dict_save)
 
     @classmethod
     def from_preset(
@@ -400,9 +415,13 @@ class MolGrid(Grid):
         at_grids = []
         num_atoms = len(atcoords)
         # List of None is created, so that indexing is possible in the for-loop.
-        sectors_degree = [None] * num_atoms if sectors_degree is None else sectors_degree
+        sectors_degree = (
+            [None] * num_atoms if sectors_degree is None else sectors_degree
+        )
         sectors_size = [None] * num_atoms if sectors_size is None else sectors_size
-        radius_atom = [radius] * num_atoms if isinstance(radius, (float, np.float64)) else radius
+        radius_atom = (
+            [radius] * num_atoms if isinstance(radius, (float, np.float64)) else radius
+        )
         for i in range(num_atoms):
             # get proper radial grid
             if isinstance(rgrid, OneDGrid):
@@ -418,9 +437,13 @@ class MolGrid(Grid):
 
             at_grids.append(
                 AtomGrid.from_pruned(
-                    rad, radius[i], sectors_r=sectors_r[i],
-                    sectors_degree=sectors_degree[i], sectors_size=sectors_size[i],
-                    center=atcoords[i], rotate=rotate
+                    rad,
+                    radius_atom[i],
+                    sectors_r=sectors_r[i],
+                    sectors_degree=sectors_degree[i],
+                    sectors_size=sectors_size[i],
+                    center=atcoords[i],
+                    rotate=rotate,
                 )
             )
         return cls(atnums, at_grids, aim_weights, store=store)

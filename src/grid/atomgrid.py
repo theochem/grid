@@ -319,7 +319,7 @@ class AtomGrid(Grid):
             "rgrid_pts": self.rgrid.points,
             "rgrid_weights": self.rgrid.weights,
         }
-        np.savez(filename, **save_dict)
+        np.savez(filename, **dict_save)
 
     def get_shell_grid(self, index: int, r_sq: bool = True):
         """Get the spherical integral grid at radial point from specified index.
