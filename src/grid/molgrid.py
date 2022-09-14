@@ -113,7 +113,7 @@ class MolGrid(Grid):
             self._atcoords[i] = atom_grid.center
             self._indices[i + 1] += self._indices[i] + atom_grid.size
             start, end = self._indices[i], self._indices[i + 1]
-            self._points[start:end] = atom_grid.points
+            self._points[start:end] = atom_grid.points  # centers it at the atomic grid.
             self._atweights[start:end] = atom_grid.weights
 
         if callable(aim_weights):
@@ -215,6 +215,105 @@ class MolGrid(Grid):
             dict_save["atgrid_" + str(i) + "_rgrid_pts"] = atomgrid.rgrid.points
             dict_save["atgrid_" + str(i) + "_rgrid_weights"] = atomgrid.rgrid.weights
         np.savez(filename, **dict_save)
+
+    def interpolate(self, func_vals: np.ndarray):
+        r"""
+        Return function that interpolates (and its derivatives) from function values.
+
+        Consider a real-valued function :math:`f(r, \theta, \phi) = \sum_A f_A(r, \theta, \phi)`
+        written as a sum of atomic centers :math:`f_A(r, \theta, \phi)`.  Each of these
+        functions can be further decomposed based on the atom grid centered at :math:`A`:
+
+        .. math::
+            f_A(r, \theta, \phi) = \sum_l \sum_{m=-l}^l \sum_i \rho^A_{ilm}(r) Y_{lm}(\theta, \phi)
+
+        A cubic spline is used to interpolate the radial functions :math:`\sum_i \rho^A_{ilm}(r)`
+        based on the atomic grid centered at :math:`A`.
+        This is then multipled by the corresponding spherical harmonics at all
+        :math:`(\theta_j, \phi_j)` angles and summed to obtain approximation to :math:`f_A`. This
+        is then further summed over all centers to get :math:`f`.
+
+        Parameters
+        ----------
+        func_vals : ndarray(\sum_i N_i ,)
+            The function values evaluated on all :math:`N_i` points on the :math:`i`th atomic grid.
+
+        Returns
+        -------
+        Callable[[ndarray(M, 3), int] -> ndarray(M)]
+            Callable function that interpolates the function and its derivative provided.
+            The function takes the following attributes:
+                points : ndarray(N, 3)
+                Cartesian coordinates of :math:`N` points to evaluate the splines on.
+                deriv : int, optional
+                    If deriv is zero, then only returns function values. If it is one, then
+                    returns the first derivative of the interpolated function with respect to either
+                    Cartesian or spherical coordinates. Only higher-order derivatives
+                    (`deriv`=2,3) are supported for the derivatives wrt to radial components.
+                deriv_spherical : bool
+                    If True, then returns the derivatives with respect to spherical coordinates
+                    :math:`(r, \theta, \phi)`. Default False.
+                only_radial_derivs : bool
+                    If true, then the derivative wrt to radius :math:`r` is returned.
+            and returns:
+                ndarray(M,...) :
+                    The interpolated function values or its derivatives with respect to Cartesian
+                    :math:`(x,y,z)` or if `deriv_spherical` then :math:`(r, \theta, \phi)` or
+                    if `only_radial_derivs` then derivative wrt to :math:`r` is only returned.
+
+        Examples
+        --------
+        TODO:
+        >>>
+
+        """
+        if self.atgrids is None:
+            raise ValueError(f"Atomic grids need to be stored in molecular grid for this to work."
+                             f"Turn `store` attribute to true.")
+        # Multiply f by the nuclear weight function w_n(r) for each atom grid segment.
+        func_vals_atom = func_vals * self.aim_weights
+        # Go through each atomic grid and construct interpolation of f*w_n.
+        intepolate_funcs = []
+        for i in range(len(self.atcoords)):
+            start_index = self.indices[i]
+            final_index = self.indices[i + 1]
+            atom_grid = self[i]
+            intepolate_funcs.append(atom_grid.interpolate(func_vals_atom[start_index:final_index]))
+
+        def interpolate_low(
+            points, deriv=0, deriv_spherical=False, only_radial_derivs=False
+        ):
+            r"""Construct a spline like callable for intepolation.
+
+            Parameters
+            ----------
+            points : ndarray(N, 3)
+                Cartesian coordinates of :math:`N` points to evaluate the splines on.
+            deriv : int, optional
+                If deriv is zero, then only returns function values. If it is one, then returns
+                the first derivative of the interpolated function with respect to either Cartesian
+                or spherical coordinates. Only higher-order derivatives (`deriv` =2,3) are supported
+                for the derivatives wrt to radial components. `deriv=3` only returns a constant.
+            deriv_spherical : bool
+                If True, then returns the derivatives with respect to spherical coordinates
+                :math:`(r, \theta, \phi)`. Default False.
+            only_radial_derivs : bool
+                If true, then the derivative wrt to radius :math:`r` is returned.
+
+            Returns
+            -------
+            ndarray(M,...) :
+                The interpolated function values or its derivatives with respect to Cartesian
+                :math:`(x,y,z)` or if `deriv_spherical` then :math:`(r, \theta, \phi)` or
+                if `only_radial_derivs` then derivative wrt to :math:`r` is only returned.
+
+            """
+            output = intepolate_funcs[0](points, deriv, deriv_spherical, only_radial_derivs)
+            for interpolate in intepolate_funcs[1:]:
+                output += interpolate(points, deriv, deriv_spherical, only_radial_derivs)
+            return output
+
+        return interpolate_low
 
     @classmethod
     def from_preset(
