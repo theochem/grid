@@ -18,7 +18,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
 """
-Lebedev angular grid module for constructing integration grids on the unit sphere.
+Angular grid module for constructing integration grids on the unit sphere.
 
 The Lebedev grid points here were obtained and calculated from the theochem/HORTON package.
 Their calculations were based on F77 translation by Dr. Christoph van Wuellen
@@ -34,8 +34,12 @@ publications, and in the user- and programmers-manuals
 describing their codes.
 This code was distributed through CCL (http://www.ccl.net/).
 
+The symmetric spherical t-design were obtained from reference [7].
+
 References
 ----------
+The following references are for the Lebedev grid points.
+
 .. [1] V.I. Lebedev, and D.N. Laikov
    "A quadrature formula for the sphere of the 131st algebraic order of accuracy"
    Doklady Mathematics, Vol. 59, No. 3, 1999, pp. 477-481.
@@ -50,6 +54,14 @@ References
 .. [6] V.I. Lebedev "Values of the nodes and weights of ninth to seventeenth order Gauss-Markov
    quadrature formulae invariant under the octahedron group with inversion" Computational
    Mathematics and Mathematical Physics, Vol. 15, 1975, pp. 44-51.
+
+
+The following is references for the symmetric spherical t-design points:
+
+.. [7] R. S. Womersley, Efficient Spherical Designs with Good Geometric Properties.
+       In: Dick J., Kuo F., Wozniakowski H. (eds) Contemporary Computational Mathematics -
+       A Celebration of the 80th Birthday of Ian Sloan. Springer (2018) pp. 1243-1285
+       https://doi.org/10.1007/978-3-319-72456-0_57
 
 """
 
@@ -263,12 +275,12 @@ SPHERICAL_NPOINTS = {
     52978: 325,
 }
 
-
 # Lebedev/Spherical dictionary for converting grid's degrees (keys) to numb of grid points (values)
 LEBEDEV_DEGREES = dict([(v, k) for k, v in LEBEDEV_NPOINTS.items()])
 SPHERICAL_DEGREES = dict([(v, k) for k, v in SPHERICAL_NPOINTS.items()])
 
-CACHE = {}
+LEBEDEV_CACHE = {}
+SPHERICAL_CACHE = {}
 
 
 class AngularGrid(Grid):
@@ -288,6 +300,9 @@ class AngularGrid(Grid):
 
     .. math::
         \int_0^\pi \int_0^{2\pi} Y^l_m(\theta, \phi) \sin(\theta) d\theta d\phi = 4\pi.
+
+    Specifically, for spherical t-design, the weights are constant value of :math:`4 \pi / N`,
+    where :math:`N` is the number of points in the grid.
 
     """
 
@@ -354,6 +369,9 @@ class AngularGrid(Grid):
         >>> AngularGrid(pts, wts)
 
         """
+        if not isinstance(use_spherical, bool):
+            raise TypeError(f"use_spherical {use_spherical, type(use_spherical)} should be of type "
+                            f"boolean.")
         # construct grid from pts and wts given directly
         if points is not None and weights is not None:
             super().__init__(points, weights)
@@ -369,19 +387,26 @@ class AngularGrid(Grid):
                 degree=degree, size=size, use_spherical=use_spherical
             )
             # load pre-computed angular points & weights and make angular grid
-            if degree not in CACHE:
+            cache_dict = SPHERICAL_CACHE if use_spherical else LEBEDEV_CACHE
+            if degree not in cache_dict:
                 points, weights = self._load_precomputed_angular_grid(degree, size, use_spherical)
                 if cache:
-                    CACHE[degree] = points, weights
+                    cache_dict[degree] = points, weights
             else:
-                points, weights = CACHE[degree]
+                points, weights = cache_dict[degree]
             self._degree = degree
             super().__init__(points, weights * 4 * np.pi)
+        self._use_spherical = use_spherical
 
     @property
     def degree(self):
         r"""int: The degree of spherical harmonics that this angular grid can integrate exactly."""
         return self._degree
+
+    @property
+    def use_spherical(self):
+        r"""bool: If true, then symmetric spherical t-design was used else Lebedev-Laikov grid."""
+        return self._use_spherical
 
     @staticmethod
     def convert_angular_sizes_to_degrees(sizes: np.ndarray, use_spherical: bool = False):
@@ -407,7 +432,9 @@ class AngularGrid(Grid):
         degrees = np.zeros(len(sizes), dtype=int)
         for size in np.unique(sizes):
             # get the degree corresponding to the given (unique) size
-            deg = AngularGrid._get_size_and_degree(size=size, use_spherical=use_spherical)[0]
+            deg = AngularGrid._get_size_and_degree(
+                degree=None, size=size, use_spherical=use_spherical
+            )[0]
             # set value of degree to corresponding to the given size equal to deg
             degrees[np.where(sizes == size)] = deg
         return degrees
@@ -420,8 +447,7 @@ class AngularGrid(Grid):
         Parameters
         ----------
         degree : int, optional
-            Maximum angular degree :math:`l` of spherical harmonics that the Lebedev grid
-            TODO double check this
+            Maximum angular degree :math:`l` of spherical harmonics that the angular grid
             can integrate accurately. If the angular grid corresponding to the given angular
             degree is not supported, the next largest degree is used.
         size : int, optional
@@ -439,6 +465,10 @@ class AngularGrid(Grid):
             requested grid).
 
         """
+        if isinstance(size, bool):
+            raise TypeError(f"size {size} should be of type int, not boolean. May be confused"
+                            f"with use_spherical.")
+
         degrees = SPHERICAL_DEGREES if use_spherical else LEBEDEV_DEGREES
         npoints = SPHERICAL_NPOINTS if use_spherical else LEBEDEV_NPOINTS
         if degree and size:
@@ -488,7 +518,6 @@ class AngularGrid(Grid):
         ----------
         degree : int, optional
             Maximum angular degree :math:`l` of spherical harmonics that the angular grid
-            TODO Double Check this.
             can integrate accurately.
         size : int, optional
             Number of angular grid points. If the angular grid corresponding to the given size is
@@ -504,6 +533,8 @@ class AngularGrid(Grid):
             points on a unit sphere.
 
         """
+        if not isinstance(use_spherical, bool):
+            raise TypeError(f"use_spherical {use_spherical} should be of type boolean.")
         degrees = SPHERICAL_DEGREES if use_spherical else LEBEDEV_DEGREES
         npoints = SPHERICAL_NPOINTS if use_spherical else LEBEDEV_NPOINTS
         type = "spherical" if use_spherical else "lebedev"
@@ -522,4 +553,6 @@ class AngularGrid(Grid):
         filename = f"{type}_{degree}_{size}.npz"
         with path(file_path, filename) as npz_file:
             data = np.load(npz_file)
-        return data["points"], np.ones(len(data["points"])) * data["weights"]
+        if len(data["weights"]) == 1:
+            return data["points"], np.ones(len(data["points"])) * data["weights"]
+        return data["points"], data["weights"]

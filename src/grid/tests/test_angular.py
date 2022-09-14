@@ -22,9 +22,9 @@
 
 from unittest import TestCase
 
-from grid.lebedev import (
+from grid.angular import (
     AngularGrid,
-    CACHE,
+    LEBEDEV_CACHE,
     LEBEDEV_DEGREES,
     LEBEDEV_NPOINTS,
     SPHERICAL_DEGREES,
@@ -60,15 +60,15 @@ class TestLebedev(TestCase):
     def test_lebedev_cache(self):
         """Test cache behavior of spherical grid."""
         degrees = np.random.randint(1, 100, 50)
-        CACHE.clear()
+        LEBEDEV_CACHE.clear()
         for i in degrees:
             AngularGrid(degree=i, cache=False)
-        assert len(CACHE) == 0
+        assert len(LEBEDEV_CACHE) == 0
 
         for i in degrees:
             AngularGrid(degree=i)
             ref_d = AngularGrid._get_size_and_degree(degree=i)[0]
-            assert ref_d in CACHE
+            assert ref_d in LEBEDEV_CACHE
 
     def test_convert_lebedev_sizes_to_degrees(self):
         """Test size to degree conversion."""
@@ -176,9 +176,17 @@ def test_orthogonality_of_spherical_harmonic_up_to_degree_three(use_spherical):
     #   Returns a three dimensional array where [order m, degree l, points]
     sph_harm = generate_real_spherical_harmonics(degree, theta, phi)
     for l_deg in range(0, 4):
-        for m_ord in range(-l_deg, l_deg + 1):
+        for m_ord in (
+                [0]
+                + [x for x in range(1, l_deg + 1)]
+                + [-x for x in range(1, l_deg + 1)]
+        ):
             for l2 in range(0, 4):
-                for m2 in range(-l2, l2 + 1):
+                for m2 in (
+                        [0]
+                        + [x for x in range(1, l2 + 1)]
+                        + [-x for x in range(1, l2 + 1)]
+                ):
                     sph_harm_one = sph_harm[l_deg**2 : (l_deg + 1) ** 2, :]
                     sph_harm_two = sph_harm[l2**2 : (l2 + 1) ** 2, :]
                     integral = grid.integrate(
@@ -193,6 +201,6 @@ def test_orthogonality_of_spherical_harmonic_up_to_degree_three(use_spherical):
 def test_that_symmetric_spherical_design_is_symmetric():
     r"""Test the sum of all points on the sphere is zero."""
     for degree in SPHERICAL_DEGREES.keys():
-        grid = AngularGrid(degree=degree, use_spherical=True)
+        grid = AngularGrid(degree=degree, use_spherical=True, cache=False)
         assert np.all(np.abs(np.sum(grid.points, axis=0)) < 1e-8)
 
