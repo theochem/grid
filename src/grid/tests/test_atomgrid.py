@@ -645,7 +645,7 @@ class TestAtomGrid(TestCase):
                 xyz = np.random.rand(10, 3) * np.random.uniform(1, 6)
                 ref_value = self.helper_func_power_deriv(xyz)
                 interp_func = atgrid.interpolate(values)
-                interp = interp_func(xyz, deriv=1, only_radial_derivs=True)
+                interp = interp_func(xyz, deriv=1, only_radial_deriv=True)
                 assert_allclose(interp, ref_value)
 
             with self.assertRaises(ValueError):
