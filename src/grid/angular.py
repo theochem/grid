@@ -284,7 +284,7 @@ SPHERICAL_CACHE = {}
 
 
 class AngularGrid(Grid):
-    r"""Lebedev-Laikov grid for integrating functions on the unit sphere.
+    r"""Angular grid for integrating functions on the unit sphere.
 
     This class numerically evaluates the integral of a function
     :math:`f: S^2 \rightarrow \mathbb{R}` on the unit-sphere as follows:
@@ -296,13 +296,15 @@ class AngularGrid(Grid):
     where :math:`S^2` is the unit-sphere,
     :math:`w^{ang}_i` are the quadrature weights that includes :math:`4\pi`.
 
+    Two types of angular grids are provided: Lebedev-Laikov grid (default) or the
+    symmetric spherical t-design. Specifically, for spherical t-design, the weights are constant
+    value of :math:`4 \pi / N`,
+    where :math:`N` is the number of points in the grid.
+
     The weights are chosen so that the spherical harmonics integrate to :math:`4\pi`:
 
     .. math::
         \int_0^\pi \int_0^{2\pi} Y^l_m(\theta, \phi) \sin(\theta) d\theta d\phi = 4\pi.
-
-    Specifically, for spherical t-design, the weights are constant value of :math:`4 \pi / N`,
-    where :math:`N` is the number of points in the grid.
 
     """
 
@@ -316,12 +318,12 @@ class AngularGrid(Grid):
         cache: bool = True,
         use_spherical: bool = False,
     ):
-        r"""Generate a Lebedev angular grid for a given degree and/or size.
+        r"""Generate angular grid for a given degree and/or size.
 
         Three choices to construct this grid:
 
         1. Add your own points and weights.
-        2. Specify maximum degree of spherical harmonics that Lebedev grid can
+        2. Specify maximum degree of spherical harmonics that the angular grid can
            integrate accurately on a unit sphere.
         3. The number of points (size) wanted in the grid. The size corresponds
            to a maximum degree.
@@ -416,7 +418,7 @@ class AngularGrid(Grid):
         Parameters
         ----------
         sizes : ndarray[int]
-            Sequence of Lebedev grid sizes (e.g., number of points for each atomic shell).
+            Sequence of angular grid sizes (e.g., number of points for each atomic shell).
         use_spherical: bool, optional
             If true, loads the symmetric spherical t-design grid rather than the Lebedev-Laikov
             grid.
@@ -425,7 +427,7 @@ class AngularGrid(Grid):
         Returns
         -------
         ndarray[int]
-            Sequence of the corresponding angular degree of the Lebedev grid corresponding to
+            Sequence of the corresponding angular degree of the angular grid corresponding to
             its size.
 
         """
@@ -461,7 +463,7 @@ class AngularGrid(Grid):
         Returns
         -------
         (int, int)
-            Degree and size of a supported Lebedev grid (equal to or larger than the
+            Degree and size of a supported angular grid (equal to or larger than the
             requested grid).
 
         """

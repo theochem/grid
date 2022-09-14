@@ -328,7 +328,7 @@ class AtomGrid(Grid):
 
     @property
     def use_spherical(self):
-        r"""bool: True then symmetric spherical t-design is used rather than Levedev-Laikov grid."""
+        r"""bool: True then symmetric spherical t-design is used rather than Lebedev-Laikov grid."""
         return self._use_spherical
 
     def save(self, filename):
