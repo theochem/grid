@@ -25,8 +25,8 @@ from grid.basegrid import LocalGrid
 from grid.becke import BeckeWeights
 from grid.hirshfeld import HirshfeldWeights
 from grid.molgrid import MolGrid
-from grid.onedgrid import GaussLaguerre, UniformInteger
-from grid.rtransform import ExpRTransform
+from grid.onedgrid import GaussLaguerre, Trapezoidal, UniformInteger
+from grid.rtransform import ExpRTransform, LinearFiniteRTransform
 
 # from importlib_resources import path
 import numpy as np
@@ -688,3 +688,34 @@ class TestMolGrid(TestCase):
         fn = np.exp(-2 * dist0) / np.pi + 1.5 * np.exp(-2 * dist1) / np.pi
         occupation = mg.integrate(fn)
         assert_almost_equal(occupation, 2.5, decimal=5)
+
+
+def test_interpolation_with_gaussian_center():
+    r"""
+    Test interpolation with molecular grid of sum of two Gaussian examples.
+
+    The domain of the rtransform is incredibly important for teh accuracy.
+    - Hirshfeld is not accurate at all. Need to use bECKE
+    - Change centerse from -1.5 to 1.0 goes to 2 decimal place accuracy.
+    - Changing alphas from -1.0 and -1.5 makes it inaccruate.
+
+    :return:
+    """
+    coordinates = np.array([[0.0, 0.0, -1.5], [0.0, 0.0, 1.5]])
+
+    pts = Trapezoidal(400)
+    tf = LinearFiniteRTransform(1e-8, 10.)
+    rgrid = tf.transform_1d_grid(pts)
+
+    atg1 = AtomGrid(rgrid, degrees=[11], center=coordinates[0])
+    atg2 = AtomGrid(rgrid, degrees=[9], center=coordinates[1])
+    mg = MolGrid(np.array([1, 1]), [atg1, atg2], BeckeWeights(), store=True)
+
+    gaussians = np.exp(-5.0 * np.linalg.norm(mg.points - coordinates[0], axis=1)**2.0)
+    gaussians += np.exp(-3.5 * np.linalg.norm(mg.points - coordinates[1], axis=1)**2.0)
+    interpolate_func = mg.interpolate(gaussians)
+
+    # Test how accurate it is from interpolation at the points.
+    assert_almost_equal(interpolate_func(mg.points), gaussians, decimal=3)
+
+
