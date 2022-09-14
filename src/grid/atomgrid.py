@@ -966,7 +966,7 @@ class AtomGrid(Grid):
         )  # The actual degree used to construct the Angular/lebedev/spherical grid.
         for i, deg_i in enumerate(degrees):  # TODO: proper tests
             # Generate Angular grid with the correct degree at the ith radial point.
-            sphere_grid = AngularGrid(degree=deg_i, use_spherical=False)
+            sphere_grid = AngularGrid(degree=deg_i, use_spherical=use_spherical)
             # Note that the copy is needed here.
             points, weights = sphere_grid.points.copy(), sphere_grid.weights.copy()
             actual_degrees.append(sphere_grid.degree)
