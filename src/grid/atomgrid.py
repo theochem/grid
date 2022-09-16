@@ -21,8 +21,8 @@
 import warnings
 from typing import Union
 
-from grid.basegrid import Grid, OneDGrid
 from grid.angular import AngularGrid
+from grid.basegrid import Grid, OneDGrid
 from grid.utils import (
     convert_cart_to_sph,
     convert_derivative_from_spherical_to_cartesian,
@@ -196,7 +196,11 @@ class AtomGrid(Grid):
         degs = AngularGrid.convert_angular_sizes_to_degrees(npt, use_spherical)
         rad_degs = AtomGrid._find_l_for_rad_list(rgrid.points, rad, degs)
         return cls(
-            rgrid, degrees=rad_degs, center=center, rotate=rotate, use_spherical=use_spherical
+            rgrid,
+            degrees=rad_degs,
+            center=center,
+            rotate=rotate,
+            use_spherical=use_spherical,
         )
 
     @classmethod
@@ -282,7 +286,11 @@ class AtomGrid(Grid):
             rgrid, radius, sectors_r, sectors_degree, use_spherical
         )
         return cls(
-            rgrid, degrees=degrees, center=center, rotate=rotate, use_spherical=use_spherical
+            rgrid,
+            degrees=degrees,
+            center=center,
+            rotate=rotate,
+            use_spherical=use_spherical,
         )
 
     @property
@@ -445,7 +453,9 @@ class AtomGrid(Grid):
             r_index = np.where(self.rgrid.points == 0.0)[0]
             for i in r_index:
                 # build angular grid for the degree at r=0
-                agrid = AngularGrid(degree=self._degs[i], use_spherical=self.use_spherical)
+                agrid = AngularGrid(
+                    degree=self._degs[i], use_spherical=self.use_spherical
+                )
                 start_index = self._indices[i]
                 final_index = self._indices[i + 1]
 
@@ -930,7 +940,10 @@ class AtomGrid(Grid):
 
     @staticmethod
     def _generate_atomic_grid(
-            rgrid: OneDGrid, degrees: np.ndarray, rotate: int = 0, use_spherical: bool = False
+        rgrid: OneDGrid,
+        degrees: np.ndarray,
+        rotate: int = 0,
+        use_spherical: bool = False,
     ):
         """Generate atomic grid for each radial point with angular degree.
 

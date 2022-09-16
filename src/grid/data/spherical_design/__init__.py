@@ -1,5 +1,5 @@
 r"""
-Spherical Designs Obtained from:
+Symmetric Spherical t-Designs.
 
 These were obtained from `https://web.maths.unsw.edu.au/~rsw/Sphere/EffSphDes/`.
 

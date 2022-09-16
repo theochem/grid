@@ -372,8 +372,10 @@ class AngularGrid(Grid):
 
         """
         if not isinstance(use_spherical, bool):
-            raise TypeError(f"use_spherical {use_spherical, type(use_spherical)} should be of type "
-                            f"boolean.")
+            raise TypeError(
+                f"use_spherical {use_spherical, type(use_spherical)} should be of type "
+                f"boolean."
+            )
         # construct grid from pts and wts given directly
         if points is not None and weights is not None:
             super().__init__(points, weights)
@@ -391,7 +393,9 @@ class AngularGrid(Grid):
             # load pre-computed angular points & weights and make angular grid
             cache_dict = SPHERICAL_CACHE if use_spherical else LEBEDEV_CACHE
             if degree not in cache_dict:
-                points, weights = self._load_precomputed_angular_grid(degree, size, use_spherical)
+                points, weights = self._load_precomputed_angular_grid(
+                    degree, size, use_spherical
+                )
                 if cache:
                     cache_dict[degree] = points, weights
             else:
@@ -411,7 +415,9 @@ class AngularGrid(Grid):
         return self._use_spherical
 
     @staticmethod
-    def convert_angular_sizes_to_degrees(sizes: np.ndarray, use_spherical: bool = False):
+    def convert_angular_sizes_to_degrees(
+        sizes: np.ndarray, use_spherical: bool = False
+    ):
         """
         Convert given Lebedev/Spherical design grid sizes to degrees.
 
@@ -442,7 +448,9 @@ class AngularGrid(Grid):
         return degrees
 
     @staticmethod
-    def _get_size_and_degree(*, degree: int = None, size: int = None, use_spherical: bool = False):
+    def _get_size_and_degree(
+        *, degree: int = None, size: int = None, use_spherical: bool = False
+    ):
         """
         Map the given degree and/or size to the degree and size of a supported angular grid.
 
@@ -468,8 +476,10 @@ class AngularGrid(Grid):
 
         """
         if isinstance(size, bool):
-            raise TypeError(f"size {size} should be of type int, not boolean. May be confused"
-                            f"with use_spherical.")
+            raise TypeError(
+                f"size {size} should be of type int, not boolean. May be confused"
+                f"with use_spherical."
+            )
 
         degrees = SPHERICAL_DEGREES if use_spherical else LEBEDEV_DEGREES
         npoints = SPHERICAL_NPOINTS if use_spherical else LEBEDEV_NPOINTS
@@ -487,9 +497,7 @@ class AngularGrid(Grid):
                 )
             # match the given degree to the existing angular degree or the next largest degree
             degree = (
-                degree
-                if degree in degrees
-                else ang_degs[bisect_left(ang_degs, degree)]
+                degree if degree in degrees else ang_degs[bisect_left(ang_degs, degree)]
             )
             return degree, degrees[degree]
         elif size:
@@ -500,11 +508,7 @@ class AngularGrid(Grid):
                     f"Argument size should be a positive integer <= {max_size}, got {size}"
                 )
             # match the given size to the existing angular size or the next largest size
-            size = (
-                size
-                if size in npoints
-                else ang_npts[bisect_left(ang_npts, size)]
-            )
+            size = size if size in npoints else ang_npts[bisect_left(ang_npts, size)]
             return npoints[size], size
         else:
             raise ValueError("Provide degree and/or size arguments!")
@@ -540,7 +544,9 @@ class AngularGrid(Grid):
         degrees = SPHERICAL_DEGREES if use_spherical else LEBEDEV_DEGREES
         npoints = SPHERICAL_NPOINTS if use_spherical else LEBEDEV_NPOINTS
         type = "spherical" if use_spherical else "lebedev"
-        file_path = "grid.data.spherical_design" if use_spherical else "grid.data.lebedev"
+        file_path = (
+            "grid.data.spherical_design" if use_spherical else "grid.data.lebedev"
+        )
 
         # check given degree & size
         if degree not in degrees:

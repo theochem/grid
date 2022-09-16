@@ -385,6 +385,7 @@ class RectangleRuleSineEndPoints(OneDGrid):
 
         super().__init__(points, weights, (-1, 1))
 
+
 # Developer Note: This is depreciated, the points/weights seems to be incorrect from the book.
 # class RectangleRuleSine(OneDGrid):
 #     r"""

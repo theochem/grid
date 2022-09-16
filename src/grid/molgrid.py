@@ -279,8 +279,10 @@ class MolGrid(Grid):
 
         """
         if self.atgrids is None:
-            raise ValueError(f"Atomic grids need to be stored in molecular grid for this to work."
-                             f"Turn `store` attribute to true.")
+            raise ValueError(
+                "Atomic grids need to be stored in molecular grid for this to work. "
+                "Turn `store` attribute to true."
+            )
         # Multiply f by the nuclear weight function w_n(r) for each atom grid segment.
         func_vals_atom = func_vals * self.aim_weights
         # Go through each atomic grid and construct interpolation of f*w_n.
@@ -289,7 +291,9 @@ class MolGrid(Grid):
             start_index = self.indices[i]
             final_index = self.indices[i + 1]
             atom_grid = self[i]
-            intepolate_funcs.append(atom_grid.interpolate(func_vals_atom[start_index:final_index]))
+            intepolate_funcs.append(
+                atom_grid.interpolate(func_vals_atom[start_index:final_index])
+            )
 
         def interpolate_low(
             points, deriv=0, deriv_spherical=False, only_radial_derivs=False
@@ -319,9 +323,13 @@ class MolGrid(Grid):
                 if `only_radial_derivs` then derivative wrt to :math:`r` is only returned.
 
             """
-            output = intepolate_funcs[0](points, deriv, deriv_spherical, only_radial_derivs)
+            output = intepolate_funcs[0](
+                points, deriv, deriv_spherical, only_radial_derivs
+            )
             for interpolate in intepolate_funcs[1:]:
-                output += interpolate(points, deriv, deriv_spherical, only_radial_derivs)
+                output += interpolate(
+                    points, deriv, deriv_spherical, only_radial_derivs
+                )
             return output
 
         return interpolate_low

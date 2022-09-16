@@ -695,15 +695,18 @@ def test_interpolation_with_gaussian_center():
     coordinates = np.array([[0.0, 0.0, -1.5], [0.0, 0.0, 1.5]])
 
     pts = Trapezoidal(400)
-    tf = LinearFiniteRTransform(1e-8, 10.)
+    tf = LinearFiniteRTransform(1e-8, 10.0)
     rgrid = tf.transform_1d_grid(pts)
 
     atg1 = AtomGrid(rgrid, degrees=[15], center=coordinates[0])
     atg2 = AtomGrid(rgrid, degrees=[17], center=coordinates[1])
     mg = MolGrid(np.array([1, 1]), [atg1, atg2], BeckeWeights(), store=True)
 
-    gaussian_func = lambda pts: np.exp(-5.0 * np.linalg.norm(pts - coordinates[0], axis=1)**2.0) + \
-        np.exp(-3.5 * np.linalg.norm(pts - coordinates[1], axis=1) ** 2.0)
+    def gaussian_func(pts):
+        return np.exp(
+            -5.0 * np.linalg.norm(pts - coordinates[0], axis=1) ** 2.0
+        ) + np.exp(-3.5 * np.linalg.norm(pts - coordinates[1], axis=1) ** 2.0)
+
     gaussians = gaussian_func(mg.points)
     interpolate_func = mg.interpolate(gaussians)
 

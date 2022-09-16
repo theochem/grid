@@ -20,9 +20,9 @@
 """Test class for atomic grid."""
 
 
+from grid.angular import AngularGrid, LEBEDEV_DEGREES
 from grid.atomgrid import AtomGrid
 from grid.basegrid import Grid, OneDGrid
-from grid.angular import AngularGrid, LEBEDEV_DEGREES
 from grid.onedgrid import GaussLegendre, UniformInteger
 from grid.rtransform import BeckeRTransform, IdentityRTransform, PowerRTransform
 from grid.utils import generate_real_spherical_harmonics
@@ -35,9 +35,10 @@ from numpy.testing import (
     assert_equal,
 )
 
+import pytest
+
 from scipy.spatial.transform import Rotation as R
 
-import pytest
 
 class TestAtomGrid:
     """Atomic grid factory test class."""
@@ -317,7 +318,9 @@ class TestAtomGrid:
             tf = PowerRTransform(start, end)
             rad_grid = tf.transform_1d_grid(pts)
             atgrid = AtomGrid(
-                rad_grid, degrees=list(LEBEDEV_DEGREES.keys()), use_spherical=use_spherical
+                rad_grid,
+                degrees=list(LEBEDEV_DEGREES.keys()),
+                use_spherical=use_spherical,
             )
             values = np.random.rand(len(LEBEDEV_DEGREES))
             pt_val = np.zeros(atgrid.size)
@@ -470,8 +473,9 @@ class TestAtomGrid:
         """Test spline projection the same as spherical harmonics."""
         odg = OneDGrid(np.arange(10) + 1, np.ones(10), (0, np.inf))
         rad = IdentityRTransform().transform_1d_grid(odg)
-        atgrid = AtomGrid.from_pruned(rad, 1, sectors_r=[], sectors_degree=[7],
-                                      use_spherical=use_spherical)
+        atgrid = AtomGrid.from_pruned(
+            rad, 1, sectors_r=[], sectors_degree=[7], use_spherical=use_spherical
+        )
         values = self.helper_func_power(atgrid.points)
         spls = atgrid.radial_component_splines(values)
         assert len(spls) == 16
@@ -493,8 +497,9 @@ class TestAtomGrid:
         oned = GaussLegendre(30)
         btf = BeckeRTransform(0.0001, 1.5)
         rad = btf.transform_1d_grid(oned)
-        atgrid = AtomGrid.from_pruned(rad, 1, sectors_r=[], sectors_degree=[7],
-                                      use_spherical=False)
+        atgrid = AtomGrid.from_pruned(
+            rad, 1, sectors_r=[], sectors_degree=[7], use_spherical=False
+        )
         value_array = self.helper_func_gauss(atgrid.points)
         # random test points on gauss function
         for _ in range(20):
@@ -515,8 +520,9 @@ class TestAtomGrid:
         """Test cubicspline interpolation values."""
         odg = OneDGrid(np.arange(10) + 1, np.ones(10), (0, np.inf))
         rad = IdentityRTransform().transform_1d_grid(odg)
-        atgrid = AtomGrid.from_pruned(rad, 1, sectors_r=[], sectors_degree=[7],
-                                      use_spherical=use_spherical)
+        atgrid = AtomGrid.from_pruned(
+            rad, 1, sectors_r=[], sectors_degree=[7], use_spherical=use_spherical
+        )
         values = self.helper_func_power(atgrid.points)
         # spls = atgrid.fit_values(values)
         for i in range(10):
@@ -634,8 +640,13 @@ class TestAtomGrid:
         rad = IdentityRTransform().transform_1d_grid(odg)
         for _ in range(10):
             degree = np.random.randint(5, 20)
-            atgrid = AtomGrid.from_pruned(rad, 1, sectors_r=[], sectors_degree=[degree],
-                                          use_spherical=use_spherical)
+            atgrid = AtomGrid.from_pruned(
+                rad,
+                1,
+                sectors_r=[],
+                sectors_degree=[degree],
+                use_spherical=use_spherical,
+            )
             values = self.helper_func_power(atgrid.points)
             # spls = atgrid.fit_values(values)
 
