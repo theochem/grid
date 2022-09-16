@@ -691,31 +691,24 @@ class TestMolGrid(TestCase):
 
 
 def test_interpolation_with_gaussian_center():
-    r"""
-    Test interpolation with molecular grid of sum of two Gaussian examples.
-
-    The domain of the rtransform is incredibly important for teh accuracy.
-    - Hirshfeld is not accurate at all. Need to use bECKE
-    - Change centerse from -1.5 to 1.0 goes to 2 decimal place accuracy.
-    - Changing alphas from -1.0 and -1.5 makes it inaccruate.
-
-    :return:
-    """
+    r"""Test interpolation with molecular grid of sum of two Gaussian examples."""
     coordinates = np.array([[0.0, 0.0, -1.5], [0.0, 0.0, 1.5]])
 
     pts = Trapezoidal(400)
     tf = LinearFiniteRTransform(1e-8, 10.)
     rgrid = tf.transform_1d_grid(pts)
 
-    atg1 = AtomGrid(rgrid, degrees=[11], center=coordinates[0])
-    atg2 = AtomGrid(rgrid, degrees=[9], center=coordinates[1])
+    atg1 = AtomGrid(rgrid, degrees=[15], center=coordinates[0])
+    atg2 = AtomGrid(rgrid, degrees=[17], center=coordinates[1])
     mg = MolGrid(np.array([1, 1]), [atg1, atg2], BeckeWeights(), store=True)
 
-    gaussians = np.exp(-5.0 * np.linalg.norm(mg.points - coordinates[0], axis=1)**2.0)
-    gaussians += np.exp(-3.5 * np.linalg.norm(mg.points - coordinates[1], axis=1)**2.0)
+    gaussian_func = lambda pts: np.exp(-5.0 * np.linalg.norm(pts - coordinates[0], axis=1)**2.0) + \
+        np.exp(-3.5 * np.linalg.norm(pts - coordinates[1], axis=1) ** 2.0)
+    gaussians = gaussian_func(mg.points)
     interpolate_func = mg.interpolate(gaussians)
 
-    # Test how accurate it is from interpolation at the points.
     assert_almost_equal(interpolate_func(mg.points), gaussians, decimal=3)
 
-
+    # Test interpolation at new points
+    new_pts = np.random.uniform(2.0, 2.0, size=(100, 3))
+    assert_almost_equal(interpolate_func(new_pts), gaussian_func(new_pts), decimal=3)

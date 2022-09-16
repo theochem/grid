@@ -263,8 +263,19 @@ class MolGrid(Grid):
 
         Examples
         --------
-        TODO:
-        >>>
+        Consider the function (3x^2 + 4y^2 + 5z^2)
+        >>> def polynomial_func(pts) :
+        >>>     return 3.0 * points[:, 0]**2.0 + 4.0 * points[:, 1]**2.0 + 5.0 * points[:, 2]**2.0
+        Evaluate the polynomial over the molecular grid points and construct interpolation func.
+        >>> polynomial_vals = polynomial_func(molgrid.points)
+        >>> interpolate_func = molgrid.interpolate(polynomial_vals)
+        Use it to interpolate at new points.
+        >>> interpolate_vals = interpolate_func(new_pts)
+         # Can calculate first derivative wrt to Cartesian or spherical
+        >>> interpolate_derivs = interpolate_func(new_pts, deriv=1)
+        >>> interpolate_derivs_sph = interpolate_func(new_pts, deriv=1, deriv_spherical=True)
+        # Only higher-order derivatives are supported for the radius coordinate r.
+        >>> interpolated_derivs_radial = interpolate_func(new_pts, deriv=2, only_radial_derivs=True)
 
         """
         if self.atgrids is None:
