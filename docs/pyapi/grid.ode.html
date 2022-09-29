@@ -178,47 +178,57 @@
             
   <div class="section" id="module-grid.ode">
 <span id="grid-ode-module"></span><h1>grid.ode module<a class="headerlink" href="#module-grid.ode" title="Permalink to this headline">¶</a></h1>
-<p>Generic ode solver module.</p>
-<dl class="py class">
-<dt id="grid.ode.ODE">
-<em class="property">class </em><code class="sig-name descname">ODE</code><a class="headerlink" href="#grid.ode.ODE" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>General ordinary differential equation solver.</p>
-<dl class="py method">
-<dt id="grid.ode.ODE.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#grid.ode.ODE.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="grid.ode.ODE.solve_ode">
-<em class="property">static </em><code class="sig-name descname">solve_ode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">fx</span></em>, <em class="sig-param"><span class="n">coeffs</span></em>, <em class="sig-param"><span class="n">bd_cond</span></em>, <em class="sig-param"><span class="n">transform</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.ode.ODE.solve_ode" title="Permalink to this definition">¶</a></dt>
-<dd><p>Solve generic boundary condition ODE.</p>
+<p>Linear ordinary differential equation solver with boundary conditions.</p>
+<p>Solves a linear ordinary differential equation of order <span class="math notranslate nohighlight">\(K\)</span> of the form</p>
 <div class="math notranslate nohighlight">
-\[...\]</div>
+\[\sum_{k=0}^{K} a_k(x) \frac{d^k y(x)}{dx^k} = f(x)\]</div>
+<p>with boundary conditions on the two end-points for some unknown function
+<span class="math notranslate nohighlight">\(y(x)\)</span> with independent variable <span class="math notranslate nohighlight">\(x\)</span>.</p>
+<p>It also supports the ability to transform the independent variable <span class="math notranslate nohighlight">\(x\)</span>
+to another domain <span class="math notranslate nohighlight">\(g(x)\)</span> for some <span class="math notranslate nohighlight">\(K\)</span>-th differentiable transformation
+<span class="math notranslate nohighlight">\(g(x)\)</span>.  This is particularly useful to convert infinite domains, e.g.
+<span class="math notranslate nohighlight">\([0, \infty)\)</span>, to a finite interval. module.</p>
+<dl class="py function">
+<dt id="grid.ode.solve_ode">
+<code class="sig-name descname">solve_ode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">fx</span></em>, <em class="sig-param"><span class="n">coeffs</span></em>, <em class="sig-param"><span class="n">bd_cond</span></em>, <em class="sig-param"><span class="n">transform</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">tol</span><span class="o">=</span><span class="default_value">0.0001</span></em>, <em class="sig-param"><span class="n">max_nodes</span><span class="o">=</span><span class="default_value">5000</span></em>, <em class="sig-param"><span class="n">initial_guess_y</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">no_derivatives</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.ode.solve_ode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solve a linear ODE with boundary conditions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – Points from domain for solver ODE</p></li>
-<li><p><strong>fx</strong> (<em>callable</em>) – Non homogeneous term in ODE</p></li>
-<li><p><strong>coeffs</strong> (<em>list</em><em>[</em><em>int</em><em> or </em><em>callable</em><em>] or </em><em>np.ndarray</em><em>(</em><em>K</em><em>,</em><em>)</em>) – Coefficients of each differential term</p></li>
-<li><p><strong>bd_cond</strong> (<em>iterable</em>) – Boundary condition for specific solution</p></li>
-<li><p><strong>transform</strong> (<a class="reference internal" href="grid.rtransform.html#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><em>BaseTransform</em></a><em>, </em><em>optional</em>) – Transformation instance r -&gt; x</p></li>
+<li><p><strong>x</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – Points of the independent variable/domain.  If <cite>transform</cite> is provided, then
+these are the points that are to be transformed.</p></li>
+<li><p><strong>fx</strong> (<em>callable</em>) – Right-hand function <span class="math notranslate nohighlight">\(f(x)\)</span>.</p></li>
+<li><p><strong>coeffs</strong> (<em>list</em><em>[</em><em>callable</em><em> or </em><em>float</em><em>] or </em><em>ndarray</em><em>(</em><em>K + 1</em><em>,</em><em>)</em>) – Coefficients <span class="math notranslate nohighlight">\(a_k\)</span> of each term <span class="math notranslate nohighlight">\(\frac{d^k y(x)}{d x^k}\)</span>
+ordered from 0 to K. Either a list of callable functions <span class="math notranslate nohighlight">\(a_k(x)\)</span> that depends
+on <span class="math notranslate nohighlight">\(x\)</span> or array of constants <span class="math notranslate nohighlight">\(\{a_k\}_{k=0}^{K}\)</span>.</p></li>
+<li><p><strong>bd_cond</strong> (<em>list</em><em>[</em><em>list</em><em>[</em><em>int</em><em>, </em><em>int</em><em>, </em><em>float</em><em>]</em><em>]</em>) – Boundary condition specified by list of size <span class="math notranslate nohighlight">\(K\)</span> of three entries [i, j, C],
+where <span class="math notranslate nohighlight">\(i \in \{0, 1\}\)</span> determines whether the lower or upper bound is being
+constrained, <span class="math notranslate nohighlight">\(j \in \{0, \cdots, K\}\)</span> determines which derivative
+<span class="math notranslate nohighlight">\(\frac{d^j y}{dx^j}\)</span> is being constrained, and <span class="math notranslate nohighlight">\(C\)</span>
+determines the boundary constraint value, i.e. <span class="math notranslate nohighlight">\(\frac{d^j y}{dx^j} = C\)</span>.
+Size needs to be the same as the order <span class="math notranslate nohighlight">\(K\)</span> of the ODE.
+If <cite>transform</cite> is given, then the constraint of the derivatives is assumed
+to be with respect to the new coordinate i.e. <span class="math notranslate nohighlight">\(\frac{d^j y}{dr^j} = C\)</span>.</p></li>
+<li><p><strong>transform</strong> (<a class="reference internal" href="grid.rtransform.html#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><em>BaseTransform</em></a><em>, </em><em>optional</em>) – Transformation from one domain <span class="math notranslate nohighlight">\(x\)</span> to another <span class="math notranslate nohighlight">\(r := g(x)\)</span>.</p></li>
+<li><p><strong>tol</strong> (<em>float</em><em>, </em><em>optional</em>) – Tolerance of the ODE solver and for the boundary condition residuals.
+See <cite>scipy.integrate.solve_bvp</cite> for more info.</p></li>
+<li><p><strong>max_nodes</strong> (<em>int</em><em>, </em><em>optional</em>) – The maximum number of mesh nodes that determine termination.
+See <cite>scipy.integrate.solve_bvp</cite> function for more info.</p></li>
+<li><p><strong>initial_guess_y</strong> (<em>ndarray</em><em>(</em><em>K</em><em>, </em><em>N</em><em>)</em><em>, </em><em>optional</em>) – Initial guess for <span class="math notranslate nohighlight">\(y(x), \cdots, \frac{d^{K} y}{d x^{K}}\)</span> at the points <cite>x</cite>.
+If not provided, then random set of points from 0 to 1..</p></li>
+<li><p><strong>no_derivatives</strong> (<em>bool</em><em>, </em><em>optional</em>) – If true, when transform is used then it only returns the solution <span class="math notranslate nohighlight">\(y(x)\)</span> rather
+than its derivative. If false, it includes the derivatives up to <span class="math notranslate nohighlight">\(P-1\)</span>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>scipy.interpolate.PPoly instance for interpolating new values
-and its derivative</p>
+<dd class="field-even"><p>Interpolate function (scipy.interpolate.PPoly) instance whose input is the
+original domain <span class="math notranslate nohighlight">\(x\)</span> and output is an array of the function <span class="math notranslate nohighlight">\(y(x)\)</span> evaluated
+on the points and its derivatives wrt to <span class="math notranslate nohighlight">\(x\)</span> up to <span class="math notranslate nohighlight">\(K - 1\)</span>.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>PPoly</p>
-</dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>NotImplementedError</strong> – ODE over 3rd order is not supported at this stage.</p>
+<dd class="field-odd"><p>callable</p>
 </dd>
 </dl>
-</dd></dl>
-
 </dd></dl>
 
 </div>

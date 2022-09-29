@@ -179,13 +179,126 @@
 <span id="grid-utils-module"></span><h1>grid.utils module<a class="headerlink" href="#module-grid.utils" title="Permalink to this headline">¶</a></h1>
 <p>Utils function module.</p>
 <dl class="py function">
+<dt id="grid.utils.convert_cart_to_sph">
+<code class="sig-name descname">convert_cart_to_sph</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">points</span></em>, <em class="sig-param"><span class="n">center</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.utils.convert_cart_to_sph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a set of points from cartesian to spherical coordinates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>points</strong> (<em>np.ndarray</em><em>(</em><em>n</em><em>, </em><em>3</em><em>)</em>) – The (3-dimensional) Cartesian coordinates of points.</p></li>
+<li><p><strong>center</strong> (<em>np.ndarray</em><em>(</em><em>3</em><em>,</em><em>)</em><em>, </em><em>list</em><em>, </em><em>optional</em>) – Cartesian coordinates of the center of spherical coordinate system.
+If <cite>None</cite>, origin is used.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Spherical coordinates of atoms respect to the center
+[radius <span class="math notranslate nohighlight">\(r\)</span>, azumuthal <span class="math notranslate nohighlight">\(\theta\)</span>, polar <span class="math notranslate nohighlight">\(\phi\)</span>]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray(N, 3)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="grid.utils.convert_derivative_from_spherical_to_cartesian">
+<code class="sig-name descname">convert_derivative_from_spherical_to_cartesian</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">deriv_r</span></em>, <em class="sig-param"><span class="n">deriv_theta</span></em>, <em class="sig-param"><span class="n">deriv_phi</span></em>, <em class="sig-param"><span class="n">r</span></em>, <em class="sig-param"><span class="n">theta</span></em>, <em class="sig-param"><span class="n">phi</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.utils.convert_derivative_from_spherical_to_cartesian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the derivative form spherical coordinates to Cartesian.</p>
+<p>If <span class="math notranslate nohighlight">\(r\)</span> is zero, then the derivative wrt to theta and phi are set to zero.
+If <span class="math notranslate nohighlight">\(\phi\)</span> is zero, then the derivative wrt to theta is set to zero.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>deriv_theta</strong><strong>, </strong><strong>deriv_phi</strong> (<em>deriv_r</em><em>,</em>) – Derivative wrt to spherical coordinates</p></li>
+<li><p><strong>theta</strong><strong>, </strong><strong>phi</strong> (<em>r</em><em>,</em>) – The spherical points where the derivative is taken.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The derivative wrt to (x, y, z) Cartesian coordinates.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(3,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="grid.utils.generate_derivative_real_spherical_harmonics">
+<code class="sig-name descname">generate_derivative_real_spherical_harmonics</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">l_max</span></em>, <em class="sig-param"><span class="n">theta</span></em>, <em class="sig-param"><span class="n">phi</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.utils.generate_derivative_real_spherical_harmonics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate derivatives of real spherical harmonics.</p>
+<p>If <span class="math notranslate nohighlight">\(\phi\)</span> is zero, then the first component of the derivative wrt to
+<span class="math notranslate nohighlight">\(phi\)</span> is set to zero.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>l_max</strong> (<em>int</em>) – Largest angular degree of the spherical harmonics.</p></li>
+<li><p><strong>theta</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – Azimuthal angle <span class="math notranslate nohighlight">\(\theta \in [0, 2\pi]\)</span> that are being evaluated on.
+If this angle is outside of bounds, then periodicity is used.</p></li>
+<li><p><strong>phi</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – Polar angle <span class="math notranslate nohighlight">\(\phi \in [0, \pi]\)</span> that are being evaluated on.
+If this angle is outside of bounds, then periodicity is used.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Derivative of spherical harmonics, (theta first, then phi) of all degrees up to
+<span class="math notranslate nohighlight">\(l_{max}\)</span> and orders <span class="math notranslate nohighlight">\(m\)</span>, ordered as
+<span class="math notranslate nohighlight">\((0, 1, ..., l_{max}, -l_{max}, ..., -1).\)</span></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(2, (l_max^2 + 1)^2, M)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="grid.utils.generate_real_spherical_harmonics">
+<code class="sig-name descname">generate_real_spherical_harmonics</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">l_max</span></em>, <em class="sig-param"><span class="n">theta</span></em>, <em class="sig-param"><span class="n">phi</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.utils.generate_real_spherical_harmonics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate real spherical harmonics up to degree <span class="math notranslate nohighlight">\(l\)</span> and for all orders <span class="math notranslate nohighlight">\(m\)</span>.</p>
+<p>The real spherical harmonics are defined as a function
+<span class="math notranslate nohighlight">\(Y_{lm} : L^2(S^2) \rightarrow \mathbb{R}\)</span> such that</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}Y_{lm} = \begin{cases}
+    \frac{i}{\sqrt{2}} (Y^m_l - (-1)^m Y_l^{-m} &amp; \text{if } &lt; m &lt; 0 \\
+    Y_l^0 &amp; \text{if } m = 0 \\
+    \frac{1}{\sqrt{2}} (Y^{-|m|}_{l} + (-1)^m Y_l^m) &amp; \text{if } m &gt; 0
+\end{cases},\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(l \in \mathbb{N}\)</span>, <span class="math notranslate nohighlight">\(m \in \{-l_{max}, \cdots, l_{max} \}\)</span> and
+<span class="math notranslate nohighlight">\(Y^m_l\)</span> is the complex spherical harmonic.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>l_max</strong> (<em>int</em>) – Largest angular degree of the spherical harmonics.</p></li>
+<li><p><strong>theta</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – Azimuthal angle <span class="math notranslate nohighlight">\(\theta \in [0, 2\pi]\)</span> that are being evaluated on.
+If this angle is outside of bounds, then periodicity is used.</p></li>
+<li><p><strong>phi</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – Polar angle <span class="math notranslate nohighlight">\(\phi \in [0, \pi]\)</span> that are being evaluated on.
+If this angle is outside of bounds, then periodicity is used.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Value of real spherical harmonics of all orders <span class="math notranslate nohighlight">\(m\)</span>,and degree
+<span class="math notranslate nohighlight">\(l\)</span> spherical harmonics. For each degree, the zeroth order
+is stored, followed by positive orders then negative orders,ordered as:
+<span class="math notranslate nohighlight">\((-l, -l + 1, \cdots -1)\)</span>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray((l_max + 1)**2, N)</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>To obtain the l-th degree for all orders
+&gt;&gt;&gt; spherical_harmonic = generate_real_spherical_harmonics(5, theta, phi)
+To obtain specific degrees, e.g. l=2
+&gt;&gt;&gt; desired_degree = 2
+&gt;&gt;&gt; spherical_harmonic[(desired_degree)**2: (desired_degree + 1)**2, :]</p>
+</dd></dl>
+
+<dl class="py function">
 <dt id="grid.utils.get_cov_radii">
-<code class="sig-name descname">get_cov_radii</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">numbers</span></em>, <em class="sig-param"><span class="n">type</span><span class="o">=</span><span class="default_value">'bragg'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.utils.get_cov_radii" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_cov_radii</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">atnums</span></em>, <em class="sig-param"><span class="n">type</span><span class="o">=</span><span class="default_value">'bragg'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.utils.get_cov_radii" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the covalent radii for given atomic number(s).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>numbers</strong> (<em>int</em><em> or </em><em>np.ndarray</em>) – atomic number of interested</p></li>
+<li><p><strong>atnums</strong> (<em>int</em><em> or </em><em>np.ndarray</em>) – atomic number of interested</p></li>
 <li><p><strong>type</strong> (<em>str</em><em>, </em><em>default to bragg</em>) – types of covalent radii for elements.
 “bragg”: Bragg-Slater empirically measured covalent radii
 “cambridge”: Covalent radii from analysis of the Cambridge Database”</p></li>

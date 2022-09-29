@@ -181,7 +181,7 @@
 <p>Grids with periodic boundary conditions.</p>
 <div class="section" id="algorithm">
 <h2>Algorithm<a class="headerlink" href="#algorithm" title="Permalink to this headline">¶</a></h2>
-<p>To understand how the algorithm in <code class="docutils literal notranslate"><span class="pre">get_subgrid</span></code> works, it may be useful
+<p>To understand how the algorithm in <code class="docutils literal notranslate"><span class="pre">get_localgrid</span></code> works, it may be useful
 review a few basic crystallographic concepts:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Bravais_lattice">https://en.wikipedia.org/wiki/Bravais_lattice</a></p></li>
@@ -200,7 +200,7 @@ such a problem in the 1D case:</p>
 grid points in one primitive cell, with the lattice repeated for clarity. The
 last line is the cutoff “sphere” with center <code class="docutils literal notranslate"><span class="pre">c</span></code> and the extent of the sphere
 is shown by the parenthesis.</p>
-<p>The conventional approach to build the subgrid considers all the relevant
+<p>The conventional approach to build the local grid considers all the relevant
 periodic images of the grid points and retains only those that lie within the
 cutoff sphere:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">lattice</span><span class="p">:</span>       <span class="o">|</span>          <span class="o">|</span>          <span class="o">|</span>          <span class="o">|</span>          <span class="o">|</span>          <span class="o">|</span>
@@ -301,7 +301,7 @@ cases are 1D, 2D, 3D grids. The number of cell vectors can be anything from
 zero up to the dimensionality of the grid points. The cell vectors cannot
 form a singular matrix.</p>
 <p>The whole-grid integration works in exactly the same way as in the base
-class. Through the <code class="docutils literal notranslate"><span class="pre">get_subgrid</span></code> method, the following two operations can
+class. Through the <code class="docutils literal notranslate"><span class="pre">get_localgrid</span></code> method, the following two operations can
 be carried out easily:</p>
 <p>1) The integration of a local function on a part of the periodic grid. The
 integrand may cover several unit cells and may contain contributions from a
@@ -309,21 +309,22 @@ periodic function, as long as it decays sufficiently fast to zero near the
 cutoff radius.</p>
 <p>2) The addition of the periodic repetition of a local function to the whole
 grid.</p>
-<p>In both cases, one uses <code class="docutils literal notranslate"><span class="pre">get_subgrid</span></code> to construct an aperiodic grid,
+<p>In both cases, one uses <code class="docutils literal notranslate"><span class="pre">get_localgrid</span></code> to construct an aperiodic grid,
 whose grid points lie within a given (hyper)sphere enclosing the local
 function of interest. This grid is a periodic repetition of the
 single-unit-cell grid of which only the points within the (hyper)sphere are
 retained. On this aperiodic grid, one can carry out operations as usual. The
-attribute <code class="docutils literal notranslate"><span class="pre">subgrid.indices</span></code> can be used for two purposes:</p>
-<p>1) To transfer a periodic function on the parent grid to the subgrid, one
-simply uses NumPy slicing: <code class="docutils literal notranslate"><span class="pre">fnsub</span> <span class="pre">=</span> <span class="pre">fnperiodic[subgrid.indices]</span></code></p>
+attribute <code class="docutils literal notranslate"><span class="pre">localgrid.indices</span></code> can be used for two purposes:</p>
+<p>1) To transfer a periodic function on the parent grid to the localgrid, one
+simply uses NumPy slicing: <code class="docutils literal notranslate"><span class="pre">fnlocal</span> <span class="pre">=</span> <span class="pre">fnperiodic[localgrid.indices]</span></code></p>
 <p>2) To add a periodic repetition of a local function to the parent grid, one
-uses <code class="docutils literal notranslate"><span class="pre">np.add.att(fnperiodic,</span> <span class="pre">subgrid.indices,</span> <span class="pre">fnsub)</span></code>. One should not
-use <code class="docutils literal notranslate"><span class="pre">fnperiodic[subgrid.indices]</span> <span class="pre">+=</span> <span class="pre">fnsub</span></code>, because this will give wrong
-results when <code class="docutils literal notranslate"><span class="pre">subgrid.indices</span></code> contains the same index multiple times,
-which happens when the cutoff (hyper)sphere covers multiple primitive cells.
+uses <code class="docutils literal notranslate"><span class="pre">np.add.att(fnperiodic,</span> <span class="pre">localgrid.indices,</span> <span class="pre">fnlocal)</span></code>. One should not
+use <code class="docutils literal notranslate"><span class="pre">fnperiodic[localgrid.indices]</span> <span class="pre">+=</span> <span class="pre">fnlocal</span></code>, because this will give
+wrong results when <code class="docutils literal notranslate"><span class="pre">localgrid.indices</span></code> contains the same index multiple
+times, which happens when the cutoff (hyper)sphere covers multiple primitive
+cells.
 See <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ufunc.at.html">https://docs.scipy.org/doc/numpy/reference/generated/numpy.ufunc.at.html</a></p>
-<p>The efficiency of the <code class="docutils literal notranslate"><span class="pre">get_subgrid</span></code> method will be optimal when all grid
+<p>The efficiency of the <code class="docutils literal notranslate"><span class="pre">get_localgrid</span></code> method will be optimal when all grid
 points fall within one primitive cell, e.g. the fractional coordinates
 should lie in [0, 1[ or [-0.5, 0.5[. The algorithm will also work when the
 grid points of the primitive cell accidentally overflow into neighboring
@@ -348,15 +349,7 @@ of the points array provided by the user.) As a result, all points
 will have fractional coordinates in the interval [0, 1[. When False,
 a warning is raised when the fractional coordinates span an interval
 wider than 1.1, because this implies a degradation of efficiency of
-<code class="docutils literal notranslate"><span class="pre">get_subgrid</span></code>, which can be easily avoided.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>ValueError</strong> – When the shape of points, weights and realvecs are inconsistent, or
-    when the lattice vectors are singular.</p></li>
-<li><p><a class="reference internal" href="#grid.periodicgrid.PeriodicGridWarning" title="grid.periodicgrid.PeriodicGridWarning"><strong>PeriodicGridWarning</strong></a> – When <code class="docutils literal notranslate"><span class="pre">wrap==False</span></code> and the fractional coordinates span an interval
-    wider than 1.1.</p></li>
+<code class="docutils literal notranslate"><span class="pre">get_localgrid</span></code>, which can be easily avoided.</p></li>
 </ul>
 </dd>
 </dl>
@@ -374,21 +367,21 @@ wider than 1.1, because this implies a degradation of efficiency of
 </dd></dl>
 
 <dl class="py method">
-<dt id="grid.periodicgrid.PeriodicGrid.get_subgrid">
-<code class="sig-name descname">get_subgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">radius</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.get_subgrid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a non-peroidic subgrid within the given distance from the center.</p>
+<dt id="grid.periodicgrid.PeriodicGrid.get_localgrid">
+<code class="sig-name descname">get_localgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">radius</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.get_localgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a non-peroidic local grid within the given distance from the center.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>center</strong> (<em>float</em><em> or </em><em>np.array</em><em>(</em><em>M</em><em>,</em><em>)</em>) – Cartesian coordinates of the center of the subgrid.</p></li>
+<li><p><strong>center</strong> (<em>float</em><em> or </em><em>np.array</em><em>(</em><em>M</em><em>,</em><em>)</em>) – Cartesian coordinates of the center of the local grid.</p></li>
 <li><p><strong>radius</strong> (<em>float</em>) – Radius of sphere around the center.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Instance of SubGrid.</p>
+<dd class="field-even"><p>Instance of LocalGrid.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.SubGrid" title="grid.basegrid.SubGrid">SubGrid</a></p>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.LocalGrid" title="grid.basegrid.LocalGrid">LocalGrid</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -412,12 +405,6 @@ integrated on the grid with its weights.
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>float</p>
-</dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>TypeError</strong> – Input integrand is not of type np.ndarray.</p></li>
-<li><p><strong>ValueError</strong> – Input integrand array is given or not of proper shape.</p></li>
-</ul>
 </dd>
 </dl>
 </dd></dl>
