@@ -30,14 +30,16 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "tex2jax_ignore|mathjax_ignore|document", "processClass": "tex2jax_process|mathjax_process|math|output_area"}})</script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="grid" href="pyapi/modules.html" /> 
+    <link rel="next" title="Molecular Integration" href="notebooks/Molecular_Integration.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -82,7 +84,35 @@
               
             
             
-              <ul>
+              <p class="caption"><span class="caption-text">Example Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/Molecular_Integration.html">Molecular Integration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/Molecular_Integration.html#Construction-of-Molecular-Grid">Construction of Molecular Grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Integration.html#Initailizor-Method">Initailizor Method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Integration.html#from_preset-method">from_preset method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Integration.html#from_size-method">from_size method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Integration.html#from_pruned-method">from_pruned method</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/Interpolation_and_Poisson.html">Interpolation and Solving Poisson’s Equation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/Interpolation_and_Poisson.html#Interpolation">Interpolation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/Interpolation_and_Poisson.html#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/Cubic_Grids.html">Cubic Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/Cubic_Grids.html#Tensor-1D-Grids">Tensor 1D Grids</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/Cubic_Grids.html#Interpolation">Interpolation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/Cubic_Grids.html#Uniform-Grid">Uniform Grid</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/Multipole_Moments.html">Multipole Moments</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Grid Modules</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="pyapi/modules.html">grid</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="pyapi/grid.html">grid package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="pyapi/grid.html#submodules">Submodules</a><ul>
@@ -158,7 +188,7 @@
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/index.rst" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -171,7 +201,31 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="welcome-to-grid-s-documentation">
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="welcome-to-grid-s-documentation">
 <h1>Welcome to grid’s documentation!<a class="headerlink" href="#welcome-to-grid-s-documentation" title="Permalink to this headline">¶</a></h1>
 <p>Grid is a free and open-source Python library for numerical integration,
 interpolation and differentiation of interest for the quantum chemistry community.
@@ -217,8 +271,8 @@ information and inquiries please contact us at <a class="reference external" hre
 </div>
 <div class="section" id="details">
 <h1>Details<a class="headerlink" href="#details" title="Permalink to this headline">¶</a></h1>
-<table class="colwidths-given docutils align-center" id="id2">
-<caption><span class="caption-text">Various Modules of Grid</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<table class="colwidths-given docutils align-center" id="id1">
+<caption><span class="caption-text">Various Modules of Grid</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
 <colgroup>
 <col style="width: 42%" />
 <col style="width: 58%" />
@@ -261,70 +315,21 @@ information and inquiries please contact us at <a class="reference external" hre
 </tr>
 </tbody>
 </table>
-<div class="section" id="integration-in-three-dimensions">
-<h2>Integration In Three-Dimensions<a class="headerlink" href="#integration-in-three-dimensions" title="Permalink to this headline">¶</a></h2>
-<p>The main goal of Grid package is to integrate functions whose values locally concentrate
-at various centers <span class="math notranslate nohighlight">\(\{A_k\}\)</span> and tend to decay outwards from them.  As proposed by Becke <a class="footnote-reference brackets" href="#becke1988-multicenter" id="id1">1</a>,
-this is done as</p>
-<div class="math notranslate nohighlight">
-\[\int_{\mathbb{R}^3} f(\vec{\textbf{r}}) d\vec{\textbf{r}} = \sum_{A} \int_{\mathbb{R}^3}
-w_A(\vec{\textbf{r}}) f(\vec{\textbf{r}}) d\vec{\textbf{r}},\]</div>
-<p>where <span class="math notranslate nohighlight">\(w_A\)</span> is known as the nuclear weight function (or atom in molecule weights) such that
-it has value one close to  the center and decay’s continuous over other centers with the condition that
-<span class="math notranslate nohighlight">\(\sum_{A} w_A(\vec{\textbf{r}}) = 1\)</span> for all <span class="math notranslate nohighlight">\(\vec{\textbf{r}}\)</span>.  The module
-<a class="reference internal" href="pyapi/grid.molgrid.html#module-grid.molgrid" title="grid.molgrid"><code class="xref py py-func docutils literal notranslate"><span class="pre">Molecular</span> <span class="pre">Grids</span></code></a> is responsible for computing integrals in this fashion with
-either <a class="reference internal" href="pyapi/grid.becke.html#module-grid.becke" title="grid.becke"><code class="xref py py-func docutils literal notranslate"><span class="pre">Becke</span></code></a> or <a class="reference internal" href="pyapi/grid.hirshfeld.html#module-grid.hirshfeld" title="grid.hirshfeld"><code class="xref py py-func docutils literal notranslate"><span class="pre">Hirshfeld</span></code></a> atom in molecule weights.</p>
-<p>The process to integrate each individual integral is done by first converting to spherical coordinates
-<span class="math notranslate nohighlight">\((r, \theta, \phi)\)</span>:</p>
-<div class="math notranslate nohighlight">
-\[\int_{\mathbb{R}^3} w_A(\vec{\textbf{r}}) f(\vec{\textbf{r}}) d\vec{\textbf{r}} =
-\int \int \int  w_A(r, \theta, \phi) f(r, \theta, \phi) r^2 \sin(\theta) dr d\theta d\phi\]</div>
-<p>Then a one-dimensional grid is chosen over the radial grid (see <a class="reference internal" href="pyapi/grid.onedgrid.html#module-grid.onedgrid" title="grid.onedgrid"><code class="xref py py-func docutils literal notranslate"><span class="pre">radial</span></code></a> and
-<a class="reference internal" href="pyapi/grid.rtransform.html#module-grid.rtransform" title="grid.rtransform"><code class="xref py py-func docutils literal notranslate"><span class="pre">radial</span> <span class="pre">transform</span></code></a> module) with weights <span class="math notranslate nohighlight">\(w_i^{rad}\)</span> and an angular grid
-with weights <span class="math notranslate nohighlight">\(w_j^{ang}\)</span> is  chosen to integrate over the angles <span class="math notranslate nohighlight">\((\theta, \phi)\)</span>
-including the sin factor. The combination of the two is handled by the <a class="reference internal" href="pyapi/grid.atomgrid.html#module-grid.atomgrid" title="grid.atomgrid"><code class="xref py py-func docutils literal notranslate"><span class="pre">atomic</span> <span class="pre">grid</span></code></a> module
-with weights <span class="math notranslate nohighlight">\(w_{ij} = w_i^{rad} w_j^{ang} r^2\)</span> to achieve the numerical
-integral</p>
-<div class="math notranslate nohighlight">
-\[\int \int \int  w_A(r, \theta, \phi) f(r, \theta, \phi) r^2 \sin(\theta) dr d\theta d\phi \approx
-\sum_{i=1}^{N_{rad}} \sum_{j=1}^{N_{ang}} w_{ij}(r, \theta, \phi)
-w_A(r, \theta, \phi) f(r, \theta, \phi).\]</div>
-<p>For any general function <span class="math notranslate nohighlight">\(f: \mathbb{R}^3\rightarrow \mathbb{R}\)</span>, Grid package offers various grids in
-<a class="reference internal" href="pyapi/grid.cubic.html#module-grid.cubic" title="grid.cubic"><code class="xref py py-func docutils literal notranslate"><span class="pre">Cubic</span></code></a> class for constructing hyper-rectangular grids. If <span class="math notranslate nohighlight">\(f\)</span> is periodic,
-then the <a class="reference internal" href="pyapi/grid.periodicgrid.html#module-grid.periodicgrid" title="grid.periodicgrid"><code class="xref py py-func docutils literal notranslate"><span class="pre">periodic</span></code></a> module is useful.</p>
-<p>Furthermore, the multipole moments can be computed, see <code class="xref py py-func docutils literal notranslate"><span class="pre">moment</span> <span class="pre">function</span></code>.
-For example, Cartesian type moments are
-<span class="math notranslate nohighlight">\(m_{n_x, n_y, n_z} = \int (x - X_c)^{n_x} (y - Y_c)^{n_y} (z - Z_c)^{n_z} f(r) dr\)</span>,
-where <span class="math notranslate nohighlight">\(\textbf{R}_c = (X_c, Y_c, Z_c)\)</span> is the center of the moment,
-<span class="math notranslate nohighlight">\(f(r)\)</span> is the density, and <span class="math notranslate nohighlight">\((n_x, n_y, n_z)\)</span> are the Cartesian orders.</p>
-</div>
-<div class="section" id="interpolation">
-<h2>Interpolation<a class="headerlink" href="#interpolation" title="Permalink to this headline">¶</a></h2>
-<p>It is known based on the properties of the real spherical harmonics <span class="math notranslate nohighlight">\(Y_{lm}\)</span>
-(see <a class="reference internal" href="pyapi/grid.utils.html#grid.utils.generate_real_spherical_harmonics" title="grid.utils.generate_real_spherical_harmonics"><code class="xref py py-func docutils literal notranslate"><span class="pre">definition</span></code></a> ) that any <span class="math notranslate nohighlight">\(L_2\)</span> function
-<span class="math notranslate nohighlight">\(f : \mathbb{R}^3 \rightarrow \mathbb{R}\)</span> can be decomposed as</p>
-<div class="math notranslate nohighlight">
-\[f(r, \theta, \phi) = \sum_{l=0}^\infty \sum_{m=-l}^l w_{lm}(r) Y_{lm}(\theta, \phi),\]</div>
-<p>where the unknown <span class="math notranslate nohighlight">\(w_{lm}\)</span> is a function of the radial component and is found as follows.
-For a fixed <span class="math notranslate nohighlight">\(r\)</span>, the radial component <span class="math notranslate nohighlight">\(w_{lm}\)</span> is computed as the integral
-<span class="math notranslate nohighlight">\(w_{lm}(r) = \int \int f(r, \theta, \phi) Y_{lm}(\theta, \phi) \sin(\theta) d\theta d\phi\)</span>
-over various values of <span class="math notranslate nohighlight">\(r\)</span> and then interpolated <span class="math notranslate nohighlight">\(\tilde{w}_{lm}\)</span> using a cubic spline.
-This integral can be done using the <code class="xref py py-func docutils literal notranslate"><span class="pre">angular</span> <span class="pre">grid</span></code> module.
-The interpolation of <span class="math notranslate nohighlight">\(f\)</span> is simply then</p>
-<div class="math notranslate nohighlight">
-\[f(r, \theta, \phi) \approx \sum_{l=0}^{L_{max}} \sum_{m=-l}^l \tilde{w}_{lm}(r) Y_{lm}(\theta, \phi),\]</div>
-<p>where <span class="math notranslate nohighlight">\(L_{max}\)</span> is the maximum chosen degree <span class="math notranslate nohighlight">\(l\)</span> of the real spherical harmonics.
-Derivatives up to second order can also be interpolated using this procedure.</p>
-</div>
-<div class="section" id="linear-ode-solver-and-poisson">
-<h2>Linear ODE Solver and Poisson<a class="headerlink" href="#linear-ode-solver-and-poisson" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Example Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/Molecular_Integration.html">Molecular Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/Interpolation_and_Poisson.html">Interpolation and Solving Poisson’s Equation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/Cubic_Grids.html">Cubic Grids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/Multipole_Moments.html">Multipole Moments</a></li>
+</ul>
 </div>
 <div class="section" id="one-dimensional-grids">
 <h2>One-dimensional grids<a class="headerlink" href="#one-dimensional-grids" title="Permalink to this headline">¶</a></h2>
 <p>There are various choices of one dimensional grid for integrating functions over some finite or infinite
 intervals.</p>
-<table class="colwidths-given docutils align-center" id="id3">
-<caption><span class="caption-text">One-Dimensional Quadrature Grids With Explicit Solutions</span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
+<table class="colwidths-given docutils align-center" id="id2">
+<caption><span class="caption-text">One-Dimensional Quadrature Grids With Explicit Solutions</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
 <colgroup>
 <col style="width: 13%" />
 <col style="width: 29%" />
@@ -401,9 +406,9 @@ intervals.</p>
 </tr>
 </tbody>
 </table>
-<p>Grid also includes popular quadrature grids that can integrate polynomials of
+<p>Grid also includes popular quadrature grids that can integrate polynomials up to
 degree <span class="math notranslate nohighlight">\(2n - 1\)</span> on <span class="math notranslate nohighlight">\([-1, 1]\)</span>: <a class="reference internal" href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussLaguerre" title="grid.onedgrid.GaussLaguerre"><code class="xref py py-func docutils literal notranslate"><span class="pre">Gauss-Laguerre</span></code></a> (domain <span class="math notranslate nohighlight">\([0, \infty)\)</span>),
-<a class="reference internal" href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussLegendre" title="grid.onedgrid.GaussLegendre"><code class="xref py py-func docutils literal notranslate"><span class="pre">Gauss-Legendre</span></code></a>, and <a class="reference internal" href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussChebyshev" title="grid.onedgrid.GaussChebyshev"><code class="xref py py-func docutils literal notranslate"><span class="pre">Gauss-Chebyshev</span></code></a>;</p>
+<a class="reference internal" href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussLegendre" title="grid.onedgrid.GaussLegendre"><code class="xref py py-func docutils literal notranslate"><span class="pre">Gauss-Legendre</span></code></a>, and <a class="reference internal" href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussChebyshev" title="grid.onedgrid.GaussChebyshev"><code class="xref py py-func docutils literal notranslate"><span class="pre">Gauss-Chebyshev</span></code></a>.</p>
 <p>FInally, the Trefethen grid class on <span class="math notranslate nohighlight">\([-1, 1]\)</span> is also included TODO: Include information about this.</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenCC" title="grid.onedgrid.TrefethenCC"><code class="xref py py-func docutils literal notranslate"><span class="pre">Trefethen</span> <span class="pre">(Clenshaw-Curtis)</span></code></a></p></li>
@@ -415,8 +420,8 @@ degree <span class="math notranslate nohighlight">\(2n - 1\)</span> on <span cla
 </ul>
 <p>These one-dimensional grids can be transformed to other kinds of intervals using the
 <a class="reference internal" href="pyapi/grid.rtransform.html#module-grid.rtransform" title="grid.rtransform"><code class="xref py py-func docutils literal notranslate"><span class="pre">radial</span> <span class="pre">transform</span></code></a> module.</p>
-<table class="colwidths-given docutils align-center" id="id4">
-<caption><span class="caption-text">Radial Transformation</span><a class="headerlink" href="#id4" title="Permalink to this table">¶</a></caption>
+<table class="colwidths-given docutils align-center" id="id3">
+<caption><span class="caption-text">Radial Transformation</span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
 <colgroup>
 <col style="width: 13%" />
 <col style="width: 29%" />
@@ -464,7 +469,7 @@ degree <span class="math notranslate nohighlight">\(2n - 1\)</span> on <span cla
 <tr class="row-even"><td><p><a class="reference internal" href="pyapi/grid.rtransform.html#grid.rtransform.PowerRTransform" title="grid.rtransform.PowerRTransform"><code class="xref py py-func docutils literal notranslate"><span class="pre">PowerRTransform</span></code></a></p></td>
 <td><p><span class="math notranslate nohighlight">\([0,\infty)\)</span></p></td>
 <td><p><span class="math notranslate nohighlight">\([r_{min},r_{max}]\)</span></p></td>
-<td><p><span class="math notranslate nohighlight">\(r = r_{min}  (x + 1)^{\frac{\log(r_{max} - \log(r_{min}}{N}},\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(r = r_{min}  (x + 1)^{\frac{\log(r_{max}) - \log(r_{min})}{N}},\)</span></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="pyapi/grid.rtransform.html#grid.rtransform.HyperbolicRTransform" title="grid.rtransform.HyperbolicRTransform"><code class="xref py py-func docutils literal notranslate"><span class="pre">HyperbolicRTransform</span></code></a></p></td>
 <td><p><span class="math notranslate nohighlight">\([0,\infty)\)</span></p></td>
@@ -495,15 +500,19 @@ degree <span class="math notranslate nohighlight">\(2n - 1\)</span> on <span cla
 </table>
 <div class="toctree-wrapper compound">
 </div>
+<div class="section" id="literature">
+<h3>Literature<a class="headerlink" href="#literature" title="Permalink to this headline">¶</a></h3>
 <dl class="footnote brackets">
-<dt class="label" id="becke1988-multicenter"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dt class="label" id="becke1988-multicenter"><span class="brackets">1</span></dt>
 <dd><p>“A multicenter numerical integration scheme for polyatomic molecules”,
 Becke, A. D.; J. Chem. Phys. 1988 (v. 88 pp. 2547–2553); <a class="reference external" href="http://dx.doi.org/10.1063/1.454033">http://dx.doi.org/10.1063/1.454033</a></p>
 </dd>
 </dl>
+</div>
 <div class="section" id="api-reference">
 <h3>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h3>
 <div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Grid Modules</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="pyapi/modules.html">grid</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="pyapi/grid.html">grid package</a></li>
@@ -531,7 +540,7 @@ Becke, A. D.; J. Chem. Phys. 1988 (v. 88 pp. 2547–2553); <a class="reference e
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="pyapi/modules.html" class="btn btn-neutral float-right" title="grid" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="notebooks/Molecular_Integration.html" class="btn btn-neutral float-right" title="Molecular Integration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
     </div>
