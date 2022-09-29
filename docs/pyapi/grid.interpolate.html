@@ -30,7 +30,9 @@
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "tex2jax_ignore|mathjax_ignore|document", "processClass": "tex2jax_process|mathjax_process|math|output_area"}})</script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -83,7 +85,35 @@
               
             
             
-              <ul class="current">
+              <p class="caption"><span class="caption-text">Example Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/Molecular_Integration.html">Molecular Integration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/Molecular_Integration.html#Construction-of-Molecular-Grid">Construction of Molecular Grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Integration.html#Initailizor-Method">Initailizor Method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Integration.html#from_preset-method">from_preset method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Integration.html#from_size-method">from_size method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Integration.html#from_pruned-method">from_pruned method</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/Interpolation_and_Poisson.html">Interpolation and Solving Poisson’s Equation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/Interpolation_and_Poisson.html#Interpolation">Interpolation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/Interpolation_and_Poisson.html#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/Cubic_Grids.html">Cubic Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/Cubic_Grids.html#Tensor-1D-Grids">Tensor 1D Grids</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/Cubic_Grids.html#Interpolation">Interpolation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/Cubic_Grids.html#Uniform-Grid">Uniform Grid</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/Multipole_Moments.html">Multipole Moments</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Grid Modules</span></p>
+<ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">grid</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="grid.html">grid package</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="grid.html#submodules">Submodules</a><ul class="current">
@@ -163,7 +193,7 @@
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../_sources/pyapi/grid.interpolate.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/pyapi/grid.interpolate.rst" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -176,7 +206,31 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="grid-interpolate-module">
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="grid-interpolate-module">
 <h1>grid.interpolate module<a class="headerlink" href="#grid-interpolate-module" title="Permalink to this headline">¶</a></h1>
 </div>
 

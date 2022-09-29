@@ -32,8 +32,36 @@ extensions = [
     'sphinx.ext.napoleon',
     'sphinx_autodoc_typehints',
     'sphinx.ext.autosummary',
-    'sphinx.ext.mathjax'
+    'sphinx.ext.mathjax',
+    'nbsphinx'
 ]
+
+# List of arguments to be passed to the kernel that executes the notebooks:
+nbsphinx_execute_arguments = [
+    "--InlineBackend.figure_formats={'svg', 'pdf'}",
+    "--InlineBackend.rc=figure.dpi=200",
+]
+# nbsphinx_input_prompt = 'In [%s]:'
+# nbsphinx_output_prompt = 'Out[%s]:'
+# explicitly dis-/enabling notebook execution
+nbsphinx_execute = 'never'
+
+# Don't add .txt suffix to source files:
+html_sourcelink_suffix = ''
+
+# This is processed by Jinja2 and inserted before each notebook
+
+# nbsphinx_prolog = r"""
+# nbsphinx_epilog = r"""
+# {% set docname = env.docname.split("/")[-1] %}
+# .. raw:: html
+# .. role:: raw-html(raw)
+#  :format: html
+# .. nbinfo::
+#  The corresponding file can be obtained from:
+#  - Jupyter Notebook: :download:`{{docname+".ipynb"}}`
+#  - Interactive Jupyter Notebook: :raw-html:`<a href="https://mybinder.org/v2/gh/theochem/procrustes/master?filepath=doc%2Fnotebooks%2F/{{ docname }}.ipynb"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a>`    """
+
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

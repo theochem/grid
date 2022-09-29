@@ -1,0 +1,671 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Interpolation and Solving Poisson’s Equation &mdash; grid  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/override.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "tex2jax_ignore|mathjax_ignore|document", "processClass": "tex2jax_process|mathjax_process|math|output_area"}})</script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Cubic Grids" href="Cubic_Grids.html" />
+    <link rel="prev" title="Molecular Integration" href="Molecular_Integration.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> grid
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Example Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Molecular_Integration.html">Molecular Integration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Molecular_Integration.html#Construction-of-Molecular-Grid">Construction of Molecular Grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Molecular_Integration.html#Initailizor-Method">Initailizor Method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Molecular_Integration.html#from_preset-method">from_preset method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Molecular_Integration.html#from_size-method">from_size method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Molecular_Integration.html#from_pruned-method">from_pruned method</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Interpolation and Solving Poisson’s Equation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Interpolation">Interpolation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Cubic_Grids.html">Cubic Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Cubic_Grids.html#Tensor-1D-Grids">Tensor 1D Grids</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Cubic_Grids.html#Interpolation">Interpolation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Cubic_Grids.html#Uniform-Grid">Uniform Grid</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Multipole_Moments.html">Multipole Moments</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Grid Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pyapi/modules.html">grid</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.html">grid package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../pyapi/grid.html#submodules">Submodules</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.atomgrid.html">grid.atomgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.basegrid.html">grid.basegrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.becke.html">grid.becke module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.hirshfeld.html">grid.hirshfeld module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.interpolate.html">grid.interpolate module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.lebedev.html">grid.lebedev module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.molgrid.html">grid.molgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.ode.html">grid.ode module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.onedgrid.html">grid.onedgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.periodicgrid.html">grid.periodicgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.poisson.html">grid.poisson module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.rtransform.html">grid.rtransform module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.utils.html">grid.utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../pyapi/grid.html#module-grid">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">grid</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Interpolation and Solving Poisson’s Equation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/notebooks/Interpolation_and_Poisson.ipynb" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="Interpolation-and-Solving-Poisson’s-Equation">
+<h1>Interpolation and Solving Poisson’s Equation<a class="headerlink" href="#Interpolation-and-Solving-Poisson’s-Equation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="Interpolation">
+<h2>Interpolation<a class="headerlink" href="#Interpolation" title="Permalink to this headline">¶</a></h2>
+<p>It is known based on the properties of the real spherical harmonics <span class="math notranslate nohighlight">\(Y_{lm}\)</span> that any <span class="math notranslate nohighlight">\(L_2\)</span> function <span class="math notranslate nohighlight">\(f : \mathbb{R}^3 \rightarrow \mathbb{R}\)</span> can be decomposed as</p>
+<div class="math notranslate nohighlight">
+\[f(r, \theta, \phi) = \sum_{l=0}^\infty \sum_{m=-l}^l w_{lm}(r) Y_{lm}(\theta, \phi),\]</div>
+<p>where the unknown <span class="math notranslate nohighlight">\(w_{lm}\)</span> is a function of the radial component and is found as follows. For a fixed <span class="math notranslate nohighlight">\(r\)</span>, the radial component <span class="math notranslate nohighlight">\(w_{lm}\)</span> is computed as the integral</p>
+<div class="math notranslate nohighlight">
+\[w_{lm}(r) = \int \int f(r, \theta, \phi) Y_{lm}(\theta, \phi) \sin(\theta) d\theta d\phi\]</div>
+<p>over various values of <span class="math notranslate nohighlight">\(r\)</span> and then interpolated <span class="math notranslate nohighlight">\(\tilde{w}_{lm}\)</span> using a cubic spline. This integral can be done using the <a class="reference internal" href="../pyapi/grid.lebedev.html"><span class="doc">angular grid</span></a> module. The interpolation of <span class="math notranslate nohighlight">\(f\)</span> is simply then</p>
+<div class="math notranslate nohighlight">
+\[f(r, \theta, \phi) \approx \sum_{l=0}^{L_{max}} \sum_{m=-l}^l \tilde{w}_{lm}(r) Y_{lm}(\theta, \phi),\]</div>
+<p>where <span class="math notranslate nohighlight">\(L_{max}\)</span> is the maximum chosen degree <span class="math notranslate nohighlight">\(l\)</span> of the real spherical harmonics.</p>
+<p>This example tries to interpolate the unit-charge distribution given by <span class="math notranslate nohighlight">\(f(r, \theta, \phi) = \bigg( \frac{\alpha}{\pi} \bigg)^{1.5} e^{-\alpha r_A^2}\)</span>, where <span class="math notranslate nohighlight">\(\alpha = 0.25\)</span> and <span class="math notranslate nohighlight">\(r_A\)</span> is the radius centered at the coordinate <span class="math notranslate nohighlight">\([0, 1, 0]\)</span>. Since, this function does not depend on the angles, then <span class="math notranslate nohighlight">\(w_{lm} = 0\)</span> when <span class="math notranslate nohighlight">\(l &gt; 0\)</span>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">center</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">charge_distribution</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.25</span><span class="p">):</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">center</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">alpha</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="mf">3.0</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">alpha</span> <span class="o">*</span> <span class="n">r</span><span class="o">**</span><span class="mf">2.0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Construct Atomic Grid</span>
+<span class="kn">from</span> <span class="nn">grid.onedgrid</span> <span class="kn">import</span> <span class="n">UniformInteger</span>
+<span class="kn">from</span> <span class="nn">grid.rtransform</span> <span class="kn">import</span> <span class="n">ExpRTransform</span>
+<span class="kn">from</span> <span class="nn">grid.atomgrid</span> <span class="kn">import</span> <span class="n">AtomGrid</span>
+
+<span class="n">oned</span> <span class="o">=</span> <span class="n">UniformInteger</span><span class="p">(</span><span class="n">npoints</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">btf</span> <span class="o">=</span> <span class="n">ExpRTransform</span><span class="p">(</span><span class="n">rmin</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">rmax</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
+<span class="n">radial</span> <span class="o">=</span> <span class="n">btf</span><span class="o">.</span><span class="n">transform_1d_grid</span><span class="p">(</span><span class="n">oned</span><span class="p">)</span>
+<span class="n">degree</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">atgrid</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="o">.</span><span class="n">from_pruned</span><span class="p">(</span><span class="n">radial</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">sectors_r</span><span class="o">=</span><span class="p">[],</span> <span class="n">sectors_degree</span><span class="o">=</span><span class="p">[</span><span class="n">degree</span><span class="p">],</span> <span class="n">center</span><span class="o">=</span><span class="n">center</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Construct the interpolation of the charge distribution.</span>
+<span class="n">density</span> <span class="o">=</span> <span class="n">charge_distribution</span><span class="p">(</span><span class="n">atgrid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>   <span class="c1"># evaluate the charge distribution on the atomic grid points.</span>
+<span class="n">interpolate_func</span> <span class="o">=</span> <span class="n">atgrid</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">density</span><span class="p">)</span>
+
+<span class="c1"># Compute the density form the interpolation on random points</span>
+<span class="n">random_pts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span>
+    <span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">20</span><span class="p">),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">20</span><span class="p">),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+    <span class="p">)</span>
+<span class="p">)</span><span class="o">.</span><span class="n">T</span>
+<span class="n">interpolate</span> <span class="o">=</span> <span class="n">interpolate_func</span><span class="p">(</span><span class="n">random_pts</span><span class="p">)</span>
+<span class="n">true</span> <span class="o">=</span> <span class="n">charge_distribution</span><span class="p">(</span><span class="n">random_pts</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error difference between interpolation and true:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">interpolate</span> <span class="o">-</span> <span class="n">true</span><span class="p">))</span>
+<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">interpolate</span> <span class="o">-</span> <span class="n">true</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-6</span><span class="p">)</span>
+
+
+<span class="c1"># First derivative wrt to Cartesian coordinates (x, y, z) can also be calculated</span>
+<span class="n">derivative</span> <span class="o">=</span> <span class="n">interpolate_func</span><span class="p">(</span><span class="n">random_pts</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1"># First derivative wrt to Spherical coordinates (r, \theta, \phi)</span>
+<span class="n">derivative</span> <span class="o">=</span> <span class="n">interpolate_func</span><span class="p">(</span><span class="n">random_pts</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">deriv_spherical</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="c1"># Higher order derivative wrt to r can be calculated</span>
+<span class="n">sec_deriv</span> <span class="o">=</span> <span class="n">interpolate_func</span><span class="p">(</span><span class="n">random_pts</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">only_radial_derivs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Error difference between interpolation and true:
+[4.11721435e-10 4.89748683e-10 2.50742215e-10 3.83401616e-10
+ 4.63309946e-14 2.34473004e-10 4.25210700e-11 4.73712781e-10
+ 5.40653390e-11 9.58283106e-12 4.89972958e-11 6.66237898e-14
+ 2.60595436e-09 6.48782625e-11 1.20643079e-13 2.26664885e-10
+ 1.58356033e-10 5.98270603e-10 2.10105725e-09 4.38614613e-10]
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="Solving-Poisson-Equation">
+<h2>Solving Poisson Equation<a class="headerlink" href="#Solving-Poisson-Equation" title="Permalink to this headline">¶</a></h2>
+<p>The Poisson equation is defined as <span class="math notranslate nohighlight">\(\nabla^2 V = - 4\pi f(\vec{\textbf{r}})\)</span>, where <span class="math notranslate nohighlight">\(V\)</span> is the unknown potential, <span class="math notranslate nohighlight">\(\nabla^2\)</span> is the Laplacian and <span class="math notranslate nohighlight">\(f\)</span> is the charge distribution. It is well-known that the solution to this is given by <span class="math notranslate nohighlight">\(V(\vec{\textbf{r}}) = \int \frac{f(\vec{\textbf{r}}^\prime)}{|\vec{\textbf{r}} - \vec{\textbf{r}}^\prime| } d\vec{\textbf{r}}^\prime\)</span>. For the unit-charge distribution given above, the solution is given by
+<span class="math notranslate nohighlight">\(V(r, \theta, \phi) = ERF \bigg[ \frac{\sqrt{\alpha} r_A}{r_A} \bigg],\)</span> where ERF is the error function. Grid offers two methods of solving the Poisson equation over an atomic grid. The recommended method is the <code class="docutils literal notranslate"><span class="pre">solve_poisson_bvp</span></code> and is used in this example.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">grid.poisson</span> <span class="kn">import</span> <span class="n">solve_poisson_bvp</span><span class="p">,</span> <span class="n">solve_poisson_ivp</span>
+
+<span class="n">remove_large_pts</span> <span class="o">=</span> <span class="mf">1e6</span>
+
+<span class="n">potential</span> <span class="o">=</span> <span class="n">solve_poisson_bvp</span><span class="p">(</span>
+        <span class="n">atgrid</span><span class="p">,</span>
+        <span class="n">charge_distribution</span><span class="p">(</span><span class="n">atgrid</span><span class="o">.</span><span class="n">points</span><span class="p">),</span>
+        <span class="n">InverseRTransform</span><span class="p">(</span><span class="n">tf</span><span class="p">),</span>
+        <span class="n">remove_large_pts</span><span class="o">=</span><span class="n">remove_large_pts</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<span class="c1">#Set up of the radial grid</span>
+<span class="n">oned_grid</span> <span class="o">=</span> <span class="n">Trapezoidal</span><span class="p">(</span><span class="mi">10000</span><span class="p">)</span>
+<span class="n">tf</span> <span class="o">=</span> <span class="n">LinearFiniteRTransform</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="n">radial_grid</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">transform_1d_grid</span><span class="p">(</span><span class="n">oned</span><span class="p">)</span>
+<span class="c1"># Set up the atomic grid with degree 10 at each radial point.</span>
+<span class="n">atomic_grid</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="p">(</span><span class="n">radial_grid</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">])</span>
+<span class="c1">#Set the charge distribution to be unit-charge density and evaluate on atomic grid points.</span>
+<span class="k">def</span> <span class="nf">charge_distribution</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+   <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+   <span class="k">return</span> <span class="p">(</span><span class="n">alpha</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mf">3.0</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">alpha</span> <span class="o">*</span> <span class="n">r</span><span class="o">**</span><span class="mf">2.0</span><span class="p">)</span>
+<span class="n">func_vals</span> <span class="o">=</span> <span class="n">charge_distribution</span><span class="p">(</span><span class="n">atomic_grid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
+<span class="c1"># Solve for the potential as an initial value problem and evaluate it over the atomic grid.</span>
+<span class="n">potential</span> <span class="o">=</span> <span class="n">solve_poisson_ivp</span><span class="p">(</span>
+     <span class="n">atgrid</span><span class="p">,</span> <span class="n">func_vals</span><span class="p">,</span> <span class="n">InverseRTransform</span><span class="p">(</span><span class="n">tf</span><span class="p">),</span> <span class="n">r_interval</span><span class="o">=</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">),</span>
+     <span class="n">ode_params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;method&quot;</span> <span class="p">:</span> <span class="s2">&quot;DOP853&quot;</span><span class="p">,</span> <span class="s2">&quot;atol&quot;</span><span class="p">:</span> <span class="mf">1e-8</span><span class="p">},</span>
+<span class="p">)</span>
+<span class="n">potential_values</span> <span class="o">=</span> <span class="n">potential</span><span class="p">(</span><span class="n">atgrid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Cubic_Grids.html" class="btn btn-neutral float-right" title="Cubic Grids" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Molecular_Integration.html" class="btn btn-neutral float-left" title="Molecular Integration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2021, QC-Devs
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
