@@ -176,8 +176,43 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="grid-hirshfeld-module">
-<h1>grid.hirshfeld module<a class="headerlink" href="#grid-hirshfeld-module" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-grid.hirshfeld">
+<span id="grid-hirshfeld-module"></span><h1>grid.hirshfeld module<a class="headerlink" href="#module-grid.hirshfeld" title="Permalink to this headline">¶</a></h1>
+<p>Hirshfeld Weights Module.</p>
+<dl class="py class">
+<dt id="grid.hirshfeld.HirshfeldWeights">
+<em class="property">class </em><code class="sig-name descname">HirshfeldWeights</code><a class="headerlink" href="#grid.hirshfeld.HirshfeldWeights" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Hirshfeld weights functions holder class.</p>
+<dl class="py method">
+<dt id="grid.hirshfeld.HirshfeldWeights.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#grid.hirshfeld.HirshfeldWeights.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize class.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.hirshfeld.HirshfeldWeights.generate_proatom">
+<em class="property">static </em><code class="sig-name descname">generate_proatom</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">points</span></em>, <em class="sig-param"><span class="n">coord</span></em>, <em class="sig-param"><span class="n">num</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.hirshfeld.HirshfeldWeights.generate_proatom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate pro-atom densities on the given grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>points</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> grid points.</p></li>
+<li><p><strong>coord</strong> (<em>np.ndarray</em><em>(</em><em>3</em><em>,</em><em>)</em>) – Cartesian coordinates of the atom.</p></li>
+<li><p><strong>num</strong> (<em>int</em>) – Atomic number of the atom.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Pro-atom densities evaluated on <span class="math notranslate nohighlight">\(N\)</span> grid points.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 

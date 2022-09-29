@@ -179,19 +179,38 @@
   <div class="section" id="module-grid.onedgrid">
 <span id="grid-onedgrid-module"></span><h1>grid.onedgrid module<a class="headerlink" href="#module-grid.onedgrid" title="Permalink to this headline">¶</a></h1>
 <p>1D integration grid.</p>
-<dl class="py function">
+<dl class="py class">
 <dt id="grid.onedgrid.ClenshawCurtis">
-<code class="sig-name descname">ClenshawCurtis</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.ClenshawCurtis" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate 1D grid on [-1,1] interval based on Clenshaw-Curtis method.</p>
-<p>The fundamental definition is:</p>
+<em class="property">class </em><code class="sig-name descname">ClenshawCurtis</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.ClenshawCurtis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.basegrid.OneDGrid</span></code></a></p>
+<p>Clenshow Curtis integral quadrature class.</p>
+<p>The definition of this quadrature is:</p>
 <div class="math notranslate nohighlight">
-\[\int_{-1}^{1} f(x) dx \approx \sum_{i=1}^n w_i f(x_i)\]</div>
+\[\begin{split}\theta_i &amp;= \pi (i - 1) / (N_{pts} - 1) \\
+x_i &amp;= \cos (\theta_i) \\
+w_i &amp;= \frac{c_k}{n} \bigg(1 - \sum_{j=1}^{\lfloor n/2 \rfloor}
+    \frac{b_j}{4j^2 - 1} \cos(2j\theta_i) \bigg)
+b_j = \begin{cases}
+    1 &amp; \text{if } j = n/2 \\
+    2 &amp; \text{if } j &lt; n/2
+\end{cases} \\
+c_j = \begin{cases}
+    1 &amp; \text{if } k = 0, n\\
+    2 &amp; else
+\end{cases}\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(k=0,\cdots,N_{pts}\)</span>.</p>
+<p>If discontinuous, it is recommended to break the intervals at the discontinuities
+and handled separately.</p>
+<dl class="py method">
+<dt id="grid.onedgrid.ClenshawCurtis.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.ClenshawCurtis.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate grid on <span class="math notranslate nohighlight">\([-1,1]\)</span> interval based on Clenshaw-Curtis method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>npoints</strong> (<em>int</em>) – Number of points in the grid.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A 1D grid instance.</p>
+<dd class="field-even"><p>One-dimensional grid instance.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid">OneDGrid</a></p>
@@ -199,19 +218,121 @@
 </dl>
 </dd></dl>
 
-<dl class="py function">
+<dl class="py method">
+<dt id="grid.onedgrid.ClenshawCurtis.domain">
+<em class="property">property </em><code class="sig-name descname">domain</code><a class="headerlink" href="#grid.onedgrid.ClenshawCurtis.domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>the range of grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>(float, float)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.ClenshawCurtis.get_localgrid">
+<code class="sig-name descname">get_localgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">radius</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.ClenshawCurtis.get_localgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a grid contain points within the given radius of center.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>center</strong> (<em>float</em><em> or </em><em>np.array</em><em>(</em><em>M</em><em>,</em><em>)</em>) – Cartesian coordinates of the center of the local grid.</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – Radius of sphere around the center. When equal to np.inf, the
+local grid coincides with the whole grid, which can be useful for
+debugging.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Instance of LocalGrid.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.LocalGrid" title="grid.basegrid.LocalGrid">LocalGrid</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.ClenshawCurtis.integrate">
+<code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">value_arrays</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.ClenshawCurtis.integrate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integrate over the whole grid for given multiple value arrays.</p>
+<p>Product of all value_arrays will be computed element-wise then
+integrated on the grid with its weights.
+.. math:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Integral</span> <span class="o">=</span> \<span class="nb">int</span> <span class="n">w</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> \<span class="n">prod_i</span> <span class="n">f_i</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="n">dx</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>*value_arrays</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>, </em><em>)</em>) – One or multiple value array to integrate.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The calculated integral over given integrand or function</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.ClenshawCurtis.points">
+<em class="property">property </em><code class="sig-name descname">points</code><a class="headerlink" href="#grid.onedgrid.ClenshawCurtis.points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Positions of the grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,) or np.ndarray(N, M)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.ClenshawCurtis.size">
+<em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#grid.onedgrid.ClenshawCurtis.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>the total number of points on the grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.ClenshawCurtis.weights">
+<em class="property">property </em><code class="sig-name descname">weights</code><a class="headerlink" href="#grid.onedgrid.ClenshawCurtis.weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>the weights of each grid point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt id="grid.onedgrid.FejerFirst">
-<code class="sig-name descname">FejerFirst</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.FejerFirst" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate 1D grid on [-1,1] interval based on Fejer-1 method.</p>
-<p>The fundamental definition is:</p>
+<em class="property">class </em><code class="sig-name descname">FejerFirst</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.FejerFirst" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.basegrid.OneDGrid</span></code></a></p>
+<p>Fejer first integral quadrature class.</p>
+<p>The definition of this quadrature is:</p>
 <div class="math notranslate nohighlight">
-\[\int_{-1}^{1} f(x) dx \approx \sum_{i=1}^n w_i f(x_i)\]</div>
+\[\theta_i &amp;= \frac{(2i - 1)\pi}{2n},
+x_i &amp;= \cos(\theta_i),
+w_i &amp;= \frac{2}{n}\bigg(1 - 2 \sum_{j=1}^{\lfloor n/2 \rfloor}
+    \frac{\cos(2j \theta_j)}{4 j^2 - 1} \bigg),\]</div>
+<p>where <span class="math notranslate nohighlight">\(k=1,\cdots, n\)</span>. It uses the zeros of the Chebyshev polynomial.
+If discontinuous, it is recommended to break the intervals at the discontinuities
+and handled separately.</p>
+<dl class="py method">
+<dt id="grid.onedgrid.FejerFirst.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.FejerFirst.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate 1D grid on <span class="math notranslate nohighlight">\((-1,1)\)</span> interval based on Fejer’s first rule.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>npoints</strong> (<em>int</em>) – Number of points in the grid.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A 1D grid instance.</p>
+<dd class="field-even"><p>One-dimensional grid instance.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid">OneDGrid</a></p>
@@ -219,20 +340,121 @@
 </dl>
 </dd></dl>
 
-<dl class="py function">
+<dl class="py method">
+<dt id="grid.onedgrid.FejerFirst.domain">
+<em class="property">property </em><code class="sig-name descname">domain</code><a class="headerlink" href="#grid.onedgrid.FejerFirst.domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>the range of grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>(float, float)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.FejerFirst.get_localgrid">
+<code class="sig-name descname">get_localgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">radius</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.FejerFirst.get_localgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a grid contain points within the given radius of center.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>center</strong> (<em>float</em><em> or </em><em>np.array</em><em>(</em><em>M</em><em>,</em><em>)</em>) – Cartesian coordinates of the center of the local grid.</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – Radius of sphere around the center. When equal to np.inf, the
+local grid coincides with the whole grid, which can be useful for
+debugging.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Instance of LocalGrid.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.LocalGrid" title="grid.basegrid.LocalGrid">LocalGrid</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.FejerFirst.integrate">
+<code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">value_arrays</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.FejerFirst.integrate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integrate over the whole grid for given multiple value arrays.</p>
+<p>Product of all value_arrays will be computed element-wise then
+integrated on the grid with its weights.
+.. math:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Integral</span> <span class="o">=</span> \<span class="nb">int</span> <span class="n">w</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> \<span class="n">prod_i</span> <span class="n">f_i</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="n">dx</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>*value_arrays</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>, </em><em>)</em>) – One or multiple value array to integrate.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The calculated integral over given integrand or function</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.FejerFirst.points">
+<em class="property">property </em><code class="sig-name descname">points</code><a class="headerlink" href="#grid.onedgrid.FejerFirst.points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Positions of the grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,) or np.ndarray(N, M)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.FejerFirst.size">
+<em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#grid.onedgrid.FejerFirst.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>the total number of points on the grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.FejerFirst.weights">
+<em class="property">property </em><code class="sig-name descname">weights</code><a class="headerlink" href="#grid.onedgrid.FejerFirst.weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>the weights of each grid point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt id="grid.onedgrid.FejerSecond">
-<code class="sig-name descname">FejerSecond</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.FejerSecond" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate 1D grid on [-1,1] interval based on Fejer-2 method.</p>
-<p>The fundamental definition is:</p>
+<em class="property">class </em><code class="sig-name descname">FejerSecond</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.FejerSecond" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.basegrid.OneDGrid</span></code></a></p>
+<p>Fejer Second integral quadrature class.</p>
+<p>The definition of this quadrature is:</p>
 <div class="math notranslate nohighlight">
-\[\int_{-1}^{1} f(x) dx \approx
-\sum_{i=1}^n w_i f(x_i)\]</div>
+\[\begin{split}theta_i &amp;= i \pi / n \\
+x_i &amp;= \cos(\theta_i) \\
+w_i &amp;= \frac{4 \sin(\theta_i)}{n} \sum_{j=1}^{\lfloor n/2 \rfloor}
+    \frac{\sin(2j - 1)\theta_i}{2j - 1}\\\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(k=1, \cdots n - 1\)</span> and <span class="math notranslate nohighlight">\(n\)</span> is the number of points. This
+method is considered more practical than the first method.  If discontinuous, it is
+recommended to break the intervals at the discontinuities and handled separately.</p>
+<dl class="py method">
+<dt id="grid.onedgrid.FejerSecond.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.FejerSecond.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate grid on <span class="math notranslate nohighlight">\((-1,1)\)</span> interval based on Fejer’s second rule.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>npoints</strong> (<em>int</em>) – Number of points in the grid.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A 1D grid instance.</p>
+<dd class="field-even"><p>One-dimensional grid instance.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid">OneDGrid</a></p>
@@ -240,23 +462,121 @@
 </dl>
 </dd></dl>
 
-<dl class="py function">
+<dl class="py method">
+<dt id="grid.onedgrid.FejerSecond.domain">
+<em class="property">property </em><code class="sig-name descname">domain</code><a class="headerlink" href="#grid.onedgrid.FejerSecond.domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>the range of grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>(float, float)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.FejerSecond.get_localgrid">
+<code class="sig-name descname">get_localgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">radius</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.FejerSecond.get_localgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a grid contain points within the given radius of center.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>center</strong> (<em>float</em><em> or </em><em>np.array</em><em>(</em><em>M</em><em>,</em><em>)</em>) – Cartesian coordinates of the center of the local grid.</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – Radius of sphere around the center. When equal to np.inf, the
+local grid coincides with the whole grid, which can be useful for
+debugging.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Instance of LocalGrid.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.LocalGrid" title="grid.basegrid.LocalGrid">LocalGrid</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.FejerSecond.integrate">
+<code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">value_arrays</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.FejerSecond.integrate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integrate over the whole grid for given multiple value arrays.</p>
+<p>Product of all value_arrays will be computed element-wise then
+integrated on the grid with its weights.
+.. math:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Integral</span> <span class="o">=</span> \<span class="nb">int</span> <span class="n">w</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> \<span class="n">prod_i</span> <span class="n">f_i</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="n">dx</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>*value_arrays</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>, </em><em>)</em>) – One or multiple value array to integrate.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The calculated integral over given integrand or function</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.FejerSecond.points">
+<em class="property">property </em><code class="sig-name descname">points</code><a class="headerlink" href="#grid.onedgrid.FejerSecond.points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Positions of the grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,) or np.ndarray(N, M)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.FejerSecond.size">
+<em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#grid.onedgrid.FejerSecond.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>the total number of points on the grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.FejerSecond.weights">
+<em class="property">property </em><code class="sig-name descname">weights</code><a class="headerlink" href="#grid.onedgrid.FejerSecond.weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>the weights of each grid point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt id="grid.onedgrid.GaussChebyshev">
-<code class="sig-name descname">GaussChebyshev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.GaussChebyshev" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate 1D grid on [-1, 1] interval based on Gauss-Chebyshev quadrature.</p>
+<em class="property">class </em><code class="sig-name descname">GaussChebyshev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.GaussChebyshev" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.basegrid.OneDGrid</span></code></a></p>
+<p>Gauss-Chebyshev integral quadrature class.</p>
 <p>The fundamental definition of Gauss-Chebyshev quadrature is:</p>
 <div class="math notranslate nohighlight">
-\[\int_{-1}^{1} \frac{f(x)}{\sqrt{1-x^2}} dx \approx \sum_{i=1}^n w_i f(x_i)\]</div>
-<p>However, to integrate function <span class="math notranslate nohighlight">\(g(x)\)</span> over [-1, 1], this is re-written as:</p>
+\[\begin{split}\int_{-1}^{1} \frac{f(x)}{\sqrt{1-x^2}} dx \approx&amp; \sum_{i=1}^n w_i f(x_i) \\
+x_i =&amp; \cos\left( \frac{2i-1}{2n}\pi \right) \\
+w_i =&amp; \frac{\pi}{n}\end{split}\]</div>
+<p>However, to integrate a given function <span class="math notranslate nohighlight">\(g(x)\)</span> over <span class="math notranslate nohighlight">\([-1, 1]\)</span>, this is re-written as:</p>
 <div class="math notranslate nohighlight">
-\[\int_{-1}^{1}g(x) dx \approx \sum_{i=1}^n w_i \sqrt{1-x_i^2} g(x_i)
-= \sum_{i=1}^n w_i' g(x_i)\]</div>
+\[\int_{-1}^{1}g(x)dx \approx \sum_{i=1}^n \left(w_i\sqrt{1-x_i^2}\right)g(x_i) =
+\sum_{i=1}^n w_i'g(x_i)\]</div>
+<dl class="py method">
+<dt id="grid.onedgrid.GaussChebyshev.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.GaussChebyshev.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate grid on <span class="math notranslate nohighlight">\([-1, 1]\)</span> interval based on Gauss-Chebyshev quadrature.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>npoints</strong> (<em>int</em>) – Number of grid points.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A 1D grid instance.</p>
+<dd class="field-even"><p>A 1-D grid instance containing points and weights.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid">OneDGrid</a></p>
@@ -264,63 +584,122 @@
 </dl>
 </dd></dl>
 
-<dl class="py function">
+<dl class="py method">
+<dt id="grid.onedgrid.GaussChebyshev.domain">
+<em class="property">property </em><code class="sig-name descname">domain</code><a class="headerlink" href="#grid.onedgrid.GaussChebyshev.domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>the range of grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>(float, float)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.GaussChebyshev.get_localgrid">
+<code class="sig-name descname">get_localgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">radius</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.GaussChebyshev.get_localgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a grid contain points within the given radius of center.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>center</strong> (<em>float</em><em> or </em><em>np.array</em><em>(</em><em>M</em><em>,</em><em>)</em>) – Cartesian coordinates of the center of the local grid.</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – Radius of sphere around the center. When equal to np.inf, the
+local grid coincides with the whole grid, which can be useful for
+debugging.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Instance of LocalGrid.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.LocalGrid" title="grid.basegrid.LocalGrid">LocalGrid</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.GaussChebyshev.integrate">
+<code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">value_arrays</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.GaussChebyshev.integrate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integrate over the whole grid for given multiple value arrays.</p>
+<p>Product of all value_arrays will be computed element-wise then
+integrated on the grid with its weights.
+.. math:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Integral</span> <span class="o">=</span> \<span class="nb">int</span> <span class="n">w</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> \<span class="n">prod_i</span> <span class="n">f_i</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="n">dx</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>*value_arrays</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>, </em><em>)</em>) – One or multiple value array to integrate.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The calculated integral over given integrand or function</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.GaussChebyshev.points">
+<em class="property">property </em><code class="sig-name descname">points</code><a class="headerlink" href="#grid.onedgrid.GaussChebyshev.points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Positions of the grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,) or np.ndarray(N, M)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.GaussChebyshev.size">
+<em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#grid.onedgrid.GaussChebyshev.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>the total number of points on the grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.GaussChebyshev.weights">
+<em class="property">property </em><code class="sig-name descname">weights</code><a class="headerlink" href="#grid.onedgrid.GaussChebyshev.weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>the weights of each grid point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt id="grid.onedgrid.GaussChebyshevLobatto">
-<code class="sig-name descname">GaussChebyshevLobatto</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.GaussChebyshevLobatto" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate 1D grid on [-1, 1] interval based on Gauss-Chebyshev-Lobatto.</p>
+<em class="property">class </em><code class="sig-name descname">GaussChebyshevLobatto</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.GaussChebyshevLobatto" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.basegrid.OneDGrid</span></code></a></p>
+<p>Gauss Chebyshev Lobatto integral quadrature class.</p>
 <p>The definition of Gauss-Chebyshev-Lobato quadrature is:</p>
 <div class="math notranslate nohighlight">
-\[\int_{-1}^{1} \frac{f(x)}{\sqrt{1-x^2}} dx
-\approx \sum_{i=1}^n w_i f(x_i)\]</div>
-<p>However, to integrate function <span class="math notranslate nohighlight">\(g(x)\)</span> over [-1, 1], this is re-written as:</p>
+\[\begin{split}\int_{-1}^{1} \frac{f(x)}{\sqrt{1-x^2}} dx \approx&amp; \sum_{i=1}^n w_i f(x_i) \\
+x_i =&amp; \cos\left( \frac{(i-1)}{n-1}\pi \right) \\
+w_{1} = w_{n} =&amp; \frac{\pi}{2(n-1)} \\
+w_{i\neq 1,n} =&amp; \frac{\pi}{n-1}\end{split}\]</div>
+<p>However, to integrate a given function <span class="math notranslate nohighlight">\(g(x)\)</span> over <span class="math notranslate nohighlight">\([-1, 1]\)</span>, this is re-written as:</p>
 <div class="math notranslate nohighlight">
-\[\int_{-1}^{1}g(x) dx \approx \sum_{i=1}^n w_i \sqrt{1-x_i^2} f(x_i)
-= \sum_{i=1}^n w_i' f(x_i)\]</div>
-<p>Where</p>
-<div class="math notranslate nohighlight">
-\[x_i = \cos\left( \frac{(i-1)\pi}{n-1} \right)\]</div>
-<p>And the weights</p>
-<div class="math notranslate nohighlight">
-\[w_{1} = w_{n} = \frac{\pi}{2(n-1)}\]</div>
-<p>And the internal weights</p>
-<div class="math notranslate nohighlight">
-\[w_{i\neq 1,n} = \frac{\pi}{n-1}\]</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>npoints</strong> (<em>int</em>) – Number of points in the grid</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A 1D grid instance.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid">OneDGrid</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="grid.onedgrid.GaussChebyshevType2">
-<code class="sig-name descname">GaussChebyshevType2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.GaussChebyshevType2" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate 1D grid on [-1, 1] interval based on Gauss-Chebyshev 2nd kind.</p>
-<p>The fundamental definition of Gauss-Chebyshev quadrature is:</p>
-<div class="math notranslate nohighlight">
-\[\int_{-1}^{1} \sqrt{1-x^2} f(x) dx \approx \sum_{i=1}^n w_i f(x_i)\]</div>
-<p>However, to integrate function <span class="math notranslate nohighlight">\(g(x)\)</span> over [-1, 1], this is re-written as:</p>
-<div class="math notranslate nohighlight">
-\[\int_{-1}^{1}g(x) dx \approx \sum_{i=1}^n \frac{w_i}{\sqrt{1-x_i^2}} f(x_i)
-= \sum_{i=1}^n w_i' f(x_i)\]</div>
-<p>Where</p>
-<div class="math notranslate nohighlight">
-\[x_i = \cos\left( \frac{i}{n+1} \pi \right)\]</div>
-<p>and the weights</p>
-<div class="math notranslate nohighlight">
-\[w_i = \frac{\pi}{n+1} \sin^2 \left( \frac{i}{n+1} \pi \right)\]</div>
+\[\int_{-1}^{1}g(x) dx \approx \sum_{i=1}^n \left(w_i \sqrt{1-x_i^2}\right) g(x_i) =
+\sum_{i=1}^n w_i' g(x_i)\]</div>
+<dl class="py method">
+<dt id="grid.onedgrid.GaussChebyshevLobatto.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.GaussChebyshevLobatto.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate grid on <span class="math notranslate nohighlight">\([-1, 1]\)</span> interval based on Gauss-Chebyshev-Lobatto quadrature.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>npoints</strong> (<em>int</em>) – Number of grid points.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A 1D grid instance.</p>
+<dd class="field-even"><p>A 1-D grid instance containing points and weights.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid">OneDGrid</a></p>
@@ -328,26 +707,245 @@
 </dl>
 </dd></dl>
 
-<dl class="py function">
-<dt id="grid.onedgrid.GaussLaguerre">
-<code class="sig-name descname">GaussLaguerre</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em>, <em class="sig-param"><span class="n">alpha</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.GaussLaguerre" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate 1D grid on [0, inf) interval based on Generalized Gauss-Laguerre quadrature.</p>
-<p>The fundamental definition of Generalized Gauss-Laguerre quadrature is:</p>
+<dl class="py method">
+<dt id="grid.onedgrid.GaussChebyshevLobatto.domain">
+<em class="property">property </em><code class="sig-name descname">domain</code><a class="headerlink" href="#grid.onedgrid.GaussChebyshevLobatto.domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>the range of grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>(float, float)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.GaussChebyshevLobatto.get_localgrid">
+<code class="sig-name descname">get_localgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">radius</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.GaussChebyshevLobatto.get_localgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a grid contain points within the given radius of center.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>center</strong> (<em>float</em><em> or </em><em>np.array</em><em>(</em><em>M</em><em>,</em><em>)</em>) – Cartesian coordinates of the center of the local grid.</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – Radius of sphere around the center. When equal to np.inf, the
+local grid coincides with the whole grid, which can be useful for
+debugging.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Instance of LocalGrid.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.LocalGrid" title="grid.basegrid.LocalGrid">LocalGrid</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.GaussChebyshevLobatto.integrate">
+<code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">value_arrays</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.GaussChebyshevLobatto.integrate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integrate over the whole grid for given multiple value arrays.</p>
+<p>Product of all value_arrays will be computed element-wise then
+integrated on the grid with its weights.
+.. math:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Integral</span> <span class="o">=</span> \<span class="nb">int</span> <span class="n">w</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> \<span class="n">prod_i</span> <span class="n">f_i</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="n">dx</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>*value_arrays</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>, </em><em>)</em>) – One or multiple value array to integrate.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The calculated integral over given integrand or function</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.GaussChebyshevLobatto.points">
+<em class="property">property </em><code class="sig-name descname">points</code><a class="headerlink" href="#grid.onedgrid.GaussChebyshevLobatto.points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Positions of the grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,) or np.ndarray(N, M)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.GaussChebyshevLobatto.size">
+<em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#grid.onedgrid.GaussChebyshevLobatto.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>the total number of points on the grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.GaussChebyshevLobatto.weights">
+<em class="property">property </em><code class="sig-name descname">weights</code><a class="headerlink" href="#grid.onedgrid.GaussChebyshevLobatto.weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>the weights of each grid point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="grid.onedgrid.GaussChebyshevType2">
+<em class="property">class </em><code class="sig-name descname">GaussChebyshevType2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.GaussChebyshevType2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.basegrid.OneDGrid</span></code></a></p>
+<p>Gauss Chebyshev Type2 integral quadrature class.</p>
+<p>The definition of the Gauss-Chebyshev of the second kind quadrature is:</p>
 <div class="math notranslate nohighlight">
-\[\int_{0}^{\infty} x^\alpha e^{-x} f(x) dx \approx \sum_{i=1}^n w_i f(x_i)\]</div>
-<p>However, to integrate function <span class="math notranslate nohighlight">\(g(x)\)</span> over [0, inf), this is re-written as:</p>
+\[\begin{split}\int_{-1}^{1} f(x) \sqrt{1-x^2} dx \approx&amp; \sum_{i=1}^n w_i f(x_i) \\
+x_i =&amp; \cos\left( \frac{i}{n+1} \pi \right) \\
+w_i =&amp; \frac{\pi}{n+1} \sin^2 \left( \frac{i}{n+1} \pi \right)\end{split}\]</div>
+<p>However, to integrate a given function <span class="math notranslate nohighlight">\(g(x)\)</span> over <span class="math notranslate nohighlight">\([-1, 1]\)</span>, this is re-written as:</p>
+<div class="math notranslate nohighlight">
+\[\int_{-1}^{1} g(x) dx \approx \sum_{i=1}^n \left(\frac{w_i}{\sqrt{1-x_i^2}}\right) g(x_i) =
+\sum_{i=1}^n w_i' g(x_i)\]</div>
+<dl class="py method">
+<dt id="grid.onedgrid.GaussChebyshevType2.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.GaussChebyshevType2.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate grid on <span class="math notranslate nohighlight">\([-1, 1]\)</span> interval based on Gauss-Chebyshev Type 2.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>npoints</strong> (<em>int</em>) – Number of grid points.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A 1-D grid instance containing points and weights.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid">OneDGrid</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.GaussChebyshevType2.domain">
+<em class="property">property </em><code class="sig-name descname">domain</code><a class="headerlink" href="#grid.onedgrid.GaussChebyshevType2.domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>the range of grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>(float, float)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.GaussChebyshevType2.get_localgrid">
+<code class="sig-name descname">get_localgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">radius</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.GaussChebyshevType2.get_localgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a grid contain points within the given radius of center.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>center</strong> (<em>float</em><em> or </em><em>np.array</em><em>(</em><em>M</em><em>,</em><em>)</em>) – Cartesian coordinates of the center of the local grid.</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – Radius of sphere around the center. When equal to np.inf, the
+local grid coincides with the whole grid, which can be useful for
+debugging.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Instance of LocalGrid.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.LocalGrid" title="grid.basegrid.LocalGrid">LocalGrid</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.GaussChebyshevType2.integrate">
+<code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">value_arrays</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.GaussChebyshevType2.integrate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integrate over the whole grid for given multiple value arrays.</p>
+<p>Product of all value_arrays will be computed element-wise then
+integrated on the grid with its weights.
+.. math:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Integral</span> <span class="o">=</span> \<span class="nb">int</span> <span class="n">w</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> \<span class="n">prod_i</span> <span class="n">f_i</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="n">dx</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>*value_arrays</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>, </em><em>)</em>) – One or multiple value array to integrate.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The calculated integral over given integrand or function</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.GaussChebyshevType2.points">
+<em class="property">property </em><code class="sig-name descname">points</code><a class="headerlink" href="#grid.onedgrid.GaussChebyshevType2.points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Positions of the grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,) or np.ndarray(N, M)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.GaussChebyshevType2.size">
+<em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#grid.onedgrid.GaussChebyshevType2.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>the total number of points on the grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.GaussChebyshevType2.weights">
+<em class="property">property </em><code class="sig-name descname">weights</code><a class="headerlink" href="#grid.onedgrid.GaussChebyshevType2.weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>the weights of each grid point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="grid.onedgrid.GaussLaguerre">
+<em class="property">class </em><code class="sig-name descname">GaussLaguerre</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em>, <em class="sig-param"><span class="n">alpha</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.GaussLaguerre" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.basegrid.OneDGrid</span></code></a></p>
+<p>Gauss Laguerre integral quadrature class.</p>
+<p>The definition of generalized Gauss-Laguerre quadrature is:</p>
+<div class="math notranslate nohighlight">
+\[\int_{0}^{\infty} x^\alpha e^{-x} f(x) dx \approx \sum_{i=1}^n w_i f(x_i),\]</div>
+<p>where <span class="math notranslate nohighlight">\(\alpha &gt; -1\)</span>.</p>
+<p>However, to integrate function <span class="math notranslate nohighlight">\(g(x)\)</span> over <span class="math notranslate nohighlight">\([0, \infty)\)</span>, this is re-written as:</p>
 <div class="math notranslate nohighlight">
 \[\int_{0}^{\infty} g(x)dx \approx
-\sum_{i=1}^n \frac{w_i}{x_i^\alpha e^{-x_i}} g(x_i) = \sum_{i=1}^n w_i' g(x_i)\]</div>
+\sum_{i=1}^n \left(\frac{w_i}{x_i^\alpha e^{-x_i}}\right) g(x_i) = \sum_{i=1}^n w_i' g(x_i)\]</div>
+<dl class="py method">
+<dt id="grid.onedgrid.GaussLaguerre.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em>, <em class="sig-param"><span class="n">alpha</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.GaussLaguerre.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate grid on <span class="math notranslate nohighlight">\([0, \infty)\)</span> based on generalized Gauss-Laguerre quadrature.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>npoints</strong> (<em>int</em>) – Number of grid points.</p></li>
-<li><p><strong>alpha</strong> (<em>float</em><em>, </em><em>optional</em>) – Value of parameter <span class="math notranslate nohighlight">\(alpha\)</span> which should be larger than -1.</p></li>
+<li><p><strong>alpha</strong> (<em>float</em><em>, </em><em>optional</em>) – Value of the parameter <span class="math notranslate nohighlight">\(alpha\)</span> which must be larger than -1.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A 1D grid instance.</p>
+<dd class="field-even"><p>A 1-D grid instance containing points and weights.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid">OneDGrid</a></p>
@@ -355,178 +953,240 @@
 </dl>
 </dd></dl>
 
-<dl class="py function">
-<dt id="grid.onedgrid.GaussLegendre">
-<code class="sig-name descname">GaussLegendre</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.GaussLegendre" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate 1D grid on [-1, 1] interval based on Gauss-Legendre quadrature.</p>
-<div class="math notranslate nohighlight">
-\[\int_{-1}^{1} f(x) dx \approx \sum_{i=1}^n w_i f(x_i)\]</div>
+<dl class="py method">
+<dt id="grid.onedgrid.GaussLaguerre.domain">
+<em class="property">property </em><code class="sig-name descname">domain</code><a class="headerlink" href="#grid.onedgrid.GaussLaguerre.domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>the range of grid points.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>npoints</strong> (<em>int</em>) – Number of grid points.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A 1D grid instance.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid">OneDGrid</a></p>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>(float, float)</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py function">
-<dt id="grid.onedgrid.HortonLinear">
-<code class="sig-name descname">HortonLinear</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.HortonLinear" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate 1D grid on [0, npoints] interval using equally spaced uniform distribution.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>npoints</strong> (<em>int</em>) – Number of grid points.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A 1D grid instance.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid">OneDGrid</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="grid.onedgrid.MidPoint">
-<code class="sig-name descname">MidPoint</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.MidPoint" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate 1D grid on [-1,1] interval based on Mid Point rule.</p>
-<p>The fundamental definition is:</p>
-<div class="math notranslate nohighlight">
-\[\int_{-1}^{1} f(x) dx \approx
-\sum_{i=1}^n w_i f(x_i)\]</div>
-<p>Where</p>
-<div class="math notranslate nohighlight">
-\[x_i = (2*i + 1)/n - 1\]</div>
-<p>And the weights</p>
-<div class="math notranslate nohighlight">
-\[w_i = 2/n\]</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>npoints</strong> (<em>int</em>) – Number of points in the grid.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A 1D grid instance.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid">OneDGrid</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="grid.onedgrid.RectangleRuleSine">
-<code class="sig-name descname">RectangleRuleSine</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.RectangleRuleSine" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate 1D grid on (0:1) interval based on rectangle rule.</p>
-<p>The fundamental definition of this quadrature is:</p>
-<div class="math notranslate nohighlight">
-\[\int_{0}^{1} f(x) dx \approx \sum_{i=1}^n w_i f(x_i)\]</div>
-<p>The range of integration can be modified by :math: <cite>q = 2 x - 1</cite>.</p>
-<div class="math notranslate nohighlight">
-\[2 \int_{0}^{1} f(x) dx = \int_{-1}^{1} f(q) dq\]</div>
-<p>Where</p>
-<div class="math notranslate nohighlight">
-\[x_i = \frac{2 i - 1}{2 n}\]</div>
-<p>And the weights</p>
-<div class="math notranslate nohighlight">
-\[w_i = \frac{2}{n^2 \pi} \sin(n\pi x_i) \sin^2(n\pi /2)
-    + \frac{4}{n \pi}\sum_{m=1}^{n-1}
-    \frac{\sin(m \pi x_i)\sin^2(m\pi /2)}
-        {m}\]</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>npoints</strong> (<em>int</em>) – Number of points in the grid.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A 1D grid instance.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid">OneDGrid</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="grid.onedgrid.RectangleRuleSineEndPoints">
-<code class="sig-name descname">RectangleRuleSineEndPoints</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.RectangleRuleSineEndPoints" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate 1D grid on [-1:1] interval based on rectangle rule.</p>
-<p>The fundamental definition of this quadrature is:</p>
-<div class="math notranslate nohighlight">
-\[\int_{-1}^{1} f(x) dx \approx \sum_{i=1}^n w_i f(x_i)\]</div>
-<p>The range of integration can be modified by :math: <cite>q = 2 x - 1</cite>.</p>
-<div class="math notranslate nohighlight">
-\[2 \int_{0}^{1} f(x) dx = \int_{-1}^{1} f(q) dq\]</div>
-<p>Where</p>
-<div class="math notranslate nohighlight">
-\[x_i = \frac{i}{n+1}\]</div>
-<p>And the weights</p>
-<div class="math notranslate nohighlight">
-\[w_i = \frac{2}{n+1} \sum_{m=1}^n
-        \frac{\sin(m \pi x_i)(1-\cos(m \pi))}{m \pi}\]</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>npoints</strong> (<em>int</em>) – Number of points in the grid.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A 1D grid instance.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid">OneDGrid</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="grid.onedgrid.Simpson">
-<code class="sig-name descname">Simpson</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.Simpson" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate 1D grid on [-1:1] interval based on Simpson rule.</p>
-<p>The fundamental definition of this rule is:</p>
-<div class="math notranslate nohighlight">
-\[\int_{-1}^{1} f(x) dx \approx \sum_{i=1}^n w_i f(x_i)\]</div>
-<p>Where</p>
-<div class="math notranslate nohighlight">
-\[x_i = -1 + 2 \left(\frac{i-1}{n-1}\right)\]</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>npoints</strong> (<em>int</em>) – Number of points in the grid.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A 1D grid instance.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid">OneDGrid</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="grid.onedgrid.TanhSinh">
-<code class="sig-name descname">TanhSinh</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em>, <em class="sig-param"><span class="n">delta</span><span class="o">=</span><span class="default_value">0.1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.TanhSinh" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate 1D grid on [-1,1] interval based on Tanh-Sinh rule.</p>
-<p>The fundamental definition is:</p>
-<div class="math notranslate nohighlight">
-\[\int_{-1}^{1} f(x) dx \approx
-\sum_{i=-\frac{1}{2}(n-1)}^{\frac{1}{2}(n-1)} w_i f(x_i)\]</div>
-<p>Where</p>
-<div class="math notranslate nohighlight">
-\[x_i = \tanh\left( \frac{\pi}{2} \sinh(i\delta) \right)\]</div>
-<p>And the weights</p>
-<div class="math notranslate nohighlight">
-\[w_i = \frac{\frac{\pi}{2}\delta \cosh(i\delta)}
-{\cosh^2(\frac{\pi}{2}\sinh(i\delta))}\]</div>
+<dl class="py method">
+<dt id="grid.onedgrid.GaussLaguerre.get_localgrid">
+<code class="sig-name descname">get_localgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">radius</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.GaussLaguerre.get_localgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a grid contain points within the given radius of center.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>npoints</strong> (<em>int</em>) – Number of points in the grid, this value must be odd.</p></li>
-<li><p><strong>delta</strong> (<em>float</em>) – This values is a parameter <span class="math notranslate nohighlight">\(\delta\)</span>, is related with the size.</p></li>
+<li><p><strong>center</strong> (<em>float</em><em> or </em><em>np.array</em><em>(</em><em>M</em><em>,</em><em>)</em>) – Cartesian coordinates of the center of the local grid.</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – Radius of sphere around the center. When equal to np.inf, the
+local grid coincides with the whole grid, which can be useful for
+debugging.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A 1D grid instance.</p>
+<dd class="field-even"><p>Instance of LocalGrid.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.LocalGrid" title="grid.basegrid.LocalGrid">LocalGrid</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.GaussLaguerre.integrate">
+<code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">value_arrays</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.GaussLaguerre.integrate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integrate over the whole grid for given multiple value arrays.</p>
+<p>Product of all value_arrays will be computed element-wise then
+integrated on the grid with its weights.
+.. math:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Integral</span> <span class="o">=</span> \<span class="nb">int</span> <span class="n">w</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> \<span class="n">prod_i</span> <span class="n">f_i</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="n">dx</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>*value_arrays</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>, </em><em>)</em>) – One or multiple value array to integrate.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The calculated integral over given integrand or function</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.GaussLaguerre.points">
+<em class="property">property </em><code class="sig-name descname">points</code><a class="headerlink" href="#grid.onedgrid.GaussLaguerre.points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Positions of the grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,) or np.ndarray(N, M)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.GaussLaguerre.size">
+<em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#grid.onedgrid.GaussLaguerre.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>the total number of points on the grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.GaussLaguerre.weights">
+<em class="property">property </em><code class="sig-name descname">weights</code><a class="headerlink" href="#grid.onedgrid.GaussLaguerre.weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>the weights of each grid point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="grid.onedgrid.GaussLegendre">
+<em class="property">class </em><code class="sig-name descname">GaussLegendre</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.GaussLegendre" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.basegrid.OneDGrid</span></code></a></p>
+<p>Gauss-Legendre integral quadrature class.</p>
+<p>The definition of Gauss-Legendre quadrature is:</p>
+<div class="math notranslate nohighlight">
+\[\int_{-1}^{1} f(x) dx \approx \sum_{i=1}^n w_i f(x_i),\]</div>
+<p>where <span class="math notranslate nohighlight">\(w_i\)</span> are the quadrature weights and <span class="math notranslate nohighlight">\(x_i\)</span> are the
+roots of the nth Legendre polynomial.</p>
+<dl class="py method">
+<dt id="grid.onedgrid.GaussLegendre.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.GaussLegendre.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate grid on <span class="math notranslate nohighlight">\([-1, 1]\)</span> interval based on Gauss-Legendre quadrature.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>npoints</strong> (<em>int</em>) – Number of grid points.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A 1-D grid instance containing points and weights.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid">OneDGrid</a></p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Only known to be accurate up to <a href="#id1"><span class="problematic" id="id2">`</span></a>npoints`=100 and may cause problems after</p></li>
+</ul>
+<p>that amount.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.GaussLegendre.domain">
+<em class="property">property </em><code class="sig-name descname">domain</code><a class="headerlink" href="#grid.onedgrid.GaussLegendre.domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>the range of grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>(float, float)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.GaussLegendre.get_localgrid">
+<code class="sig-name descname">get_localgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">radius</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.GaussLegendre.get_localgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a grid contain points within the given radius of center.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>center</strong> (<em>float</em><em> or </em><em>np.array</em><em>(</em><em>M</em><em>,</em><em>)</em>) – Cartesian coordinates of the center of the local grid.</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – Radius of sphere around the center. When equal to np.inf, the
+local grid coincides with the whole grid, which can be useful for
+debugging.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Instance of LocalGrid.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.LocalGrid" title="grid.basegrid.LocalGrid">LocalGrid</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.GaussLegendre.integrate">
+<code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">value_arrays</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.GaussLegendre.integrate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integrate over the whole grid for given multiple value arrays.</p>
+<p>Product of all value_arrays will be computed element-wise then
+integrated on the grid with its weights.
+.. math:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Integral</span> <span class="o">=</span> \<span class="nb">int</span> <span class="n">w</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> \<span class="n">prod_i</span> <span class="n">f_i</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="n">dx</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>*value_arrays</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>, </em><em>)</em>) – One or multiple value array to integrate.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The calculated integral over given integrand or function</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.GaussLegendre.points">
+<em class="property">property </em><code class="sig-name descname">points</code><a class="headerlink" href="#grid.onedgrid.GaussLegendre.points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Positions of the grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,) or np.ndarray(N, M)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.GaussLegendre.size">
+<em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#grid.onedgrid.GaussLegendre.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>the total number of points on the grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.GaussLegendre.weights">
+<em class="property">property </em><code class="sig-name descname">weights</code><a class="headerlink" href="#grid.onedgrid.GaussLegendre.weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>the weights of each grid point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="grid.onedgrid.MidPoint">
+<em class="property">class </em><code class="sig-name descname">MidPoint</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.MidPoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.basegrid.OneDGrid</span></code></a></p>
+<p>MidPoint integral quadrature class.</p>
+<p>The definition of this quadrature is:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\int_{-1}^{1} f(x) dx \approx&amp; \sum_{i=1}^n w_i f(x_i) \\
+x_i =&amp; -1 + \frac{2i + 1}{n} \\
+w_i =&amp; \frac{2}{n}\end{split}\]</div>
+<dl class="py method">
+<dt id="grid.onedgrid.MidPoint.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.MidPoint.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate grid on <span class="math notranslate nohighlight">\([-1, 1]\)</span> interval based on Mid-Point rule.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>npoints</strong> (<em>int</em>) – Number of grid points.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>One-dimensional grid instance containing points and weights.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid">OneDGrid</a></p>
@@ -534,28 +1194,622 @@
 </dl>
 </dd></dl>
 
-<dl class="py function">
+<dl class="py method">
+<dt id="grid.onedgrid.MidPoint.domain">
+<em class="property">property </em><code class="sig-name descname">domain</code><a class="headerlink" href="#grid.onedgrid.MidPoint.domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>the range of grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>(float, float)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.MidPoint.get_localgrid">
+<code class="sig-name descname">get_localgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">radius</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.MidPoint.get_localgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a grid contain points within the given radius of center.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>center</strong> (<em>float</em><em> or </em><em>np.array</em><em>(</em><em>M</em><em>,</em><em>)</em>) – Cartesian coordinates of the center of the local grid.</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – Radius of sphere around the center. When equal to np.inf, the
+local grid coincides with the whole grid, which can be useful for
+debugging.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Instance of LocalGrid.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.LocalGrid" title="grid.basegrid.LocalGrid">LocalGrid</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.MidPoint.integrate">
+<code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">value_arrays</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.MidPoint.integrate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integrate over the whole grid for given multiple value arrays.</p>
+<p>Product of all value_arrays will be computed element-wise then
+integrated on the grid with its weights.
+.. math:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Integral</span> <span class="o">=</span> \<span class="nb">int</span> <span class="n">w</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> \<span class="n">prod_i</span> <span class="n">f_i</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="n">dx</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>*value_arrays</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>, </em><em>)</em>) – One or multiple value array to integrate.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The calculated integral over given integrand or function</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.MidPoint.points">
+<em class="property">property </em><code class="sig-name descname">points</code><a class="headerlink" href="#grid.onedgrid.MidPoint.points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Positions of the grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,) or np.ndarray(N, M)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.MidPoint.size">
+<em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#grid.onedgrid.MidPoint.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>the total number of points on the grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.MidPoint.weights">
+<em class="property">property </em><code class="sig-name descname">weights</code><a class="headerlink" href="#grid.onedgrid.MidPoint.weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>the weights of each grid point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="grid.onedgrid.RectangleRuleSine">
+<em class="property">class </em><code class="sig-name descname">RectangleRuleSine</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.RectangleRuleSine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.basegrid.OneDGrid</span></code></a></p>
+<p>Rectangle-Rule Sine integral quadrature class.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\int_{-1}^{1} f(x) dx \approx&amp; \sum_{i=1}^n w_i f(x_i) \\
+x_i =&amp; \frac{2 i - 1}{2 n} \\
+w_i =&amp; \frac{2}{n^2 \pi} \sin(n\pi x_i) \sin^2(n\pi /2) +
+        \frac{4}{n \pi} \sum_{m=1}^{n-1} \frac{\sin(m \pi x_i)\sin^2(m\pi /2)}{m}\end{split}\]</div>
+<p>For consistency with other 1-D grids, the integration range is modified
+by <span class="math notranslate nohighlight">\(q=2x-1\)</span> to the interval <span class="math notranslate nohighlight">\([-1, 1]\)</span>, such that</p>
+<div class="math notranslate nohighlight">
+\[2 \int_{0}^{1} f(x) dx = \int_{-1}^{1} f(q) dq\]</div>
+<p class="rubric">References</p>
+<dl class="footnote brackets">
+<dt class="label" id="id3"><span class="brackets">1</span></dt>
+<dd><p>Boyd, John P. Chebyshev and Fourier spectral methods. Courier Corporation, 2001.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="grid.onedgrid.RectangleRuleSine.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.RectangleRuleSine.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate grid on <span class="math notranslate nohighlight">\([-1, 1]\)</span> interval using Interior Rectangle Rule for Sines.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>npoints</strong> (<em>int</em>) – Number of grid points.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>One-dimensional grid instance containing points and weights.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid">OneDGrid</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.RectangleRuleSine.domain">
+<em class="property">property </em><code class="sig-name descname">domain</code><a class="headerlink" href="#grid.onedgrid.RectangleRuleSine.domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>the range of grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>(float, float)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.RectangleRuleSine.get_localgrid">
+<code class="sig-name descname">get_localgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">radius</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.RectangleRuleSine.get_localgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a grid contain points within the given radius of center.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>center</strong> (<em>float</em><em> or </em><em>np.array</em><em>(</em><em>M</em><em>,</em><em>)</em>) – Cartesian coordinates of the center of the local grid.</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – Radius of sphere around the center. When equal to np.inf, the
+local grid coincides with the whole grid, which can be useful for
+debugging.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Instance of LocalGrid.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.LocalGrid" title="grid.basegrid.LocalGrid">LocalGrid</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.RectangleRuleSine.integrate">
+<code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">value_arrays</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.RectangleRuleSine.integrate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integrate over the whole grid for given multiple value arrays.</p>
+<p>Product of all value_arrays will be computed element-wise then
+integrated on the grid with its weights.
+.. math:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Integral</span> <span class="o">=</span> \<span class="nb">int</span> <span class="n">w</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> \<span class="n">prod_i</span> <span class="n">f_i</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="n">dx</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>*value_arrays</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>, </em><em>)</em>) – One or multiple value array to integrate.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The calculated integral over given integrand or function</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.RectangleRuleSine.points">
+<em class="property">property </em><code class="sig-name descname">points</code><a class="headerlink" href="#grid.onedgrid.RectangleRuleSine.points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Positions of the grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,) or np.ndarray(N, M)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.RectangleRuleSine.size">
+<em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#grid.onedgrid.RectangleRuleSine.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>the total number of points on the grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.RectangleRuleSine.weights">
+<em class="property">property </em><code class="sig-name descname">weights</code><a class="headerlink" href="#grid.onedgrid.RectangleRuleSine.weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>the weights of each grid point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="grid.onedgrid.RectangleRuleSineEndPoints">
+<em class="property">class </em><code class="sig-name descname">RectangleRuleSineEndPoints</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.RectangleRuleSineEndPoints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.basegrid.OneDGrid</span></code></a></p>
+<p>Rectangle-Rule Sine end points integral quadrature class.</p>
+<blockquote>
+<div><div class="math notranslate nohighlight">
+\[\begin{split}\int_{-1}^{1} f(x) dx \approx&amp; \sum_{i=1}^n w_i f(x_i) \\
+x_i =&amp; \frac{i}{n+1} \\
+w_i =&amp; \frac{2}{n+1} \sum_{m=1}^n \frac{\sin(m \pi x_i)(1-\cos(m \pi))}{m \pi}\end{split}\]</div>
+</div></blockquote>
+<p>For consistency with other 1-D grids, the integration range is modified
+by <span class="math notranslate nohighlight">\(q=2x-1\)</span> to the interval <span class="math notranslate nohighlight">\([-1, 1]\)</span>, so that</p>
+<div class="math notranslate nohighlight">
+\[2 \int_{0}^{1} f(x) dx = \int_{-1}^{1} f(q) dq\]</div>
+<p class="rubric">References</p>
+<dl class="footnote brackets">
+<dt class="label" id="id4"><span class="brackets">1</span></dt>
+<dd><p>Boyd, John P. Chebyshev and Fourier spectral methods. Courier Corporation, 2001.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="grid.onedgrid.RectangleRuleSineEndPoints.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.RectangleRuleSineEndPoints.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate grid on <span class="math notranslate nohighlight">\([-1, 1]\)</span> using rectangle rule for Sine Series (with endpoints).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>npoints</strong> (<em>int</em>) – Number of grid points.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>One-dimensional grid instance containing points and weights.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid">OneDGrid</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.RectangleRuleSineEndPoints.domain">
+<em class="property">property </em><code class="sig-name descname">domain</code><a class="headerlink" href="#grid.onedgrid.RectangleRuleSineEndPoints.domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>the range of grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>(float, float)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.RectangleRuleSineEndPoints.get_localgrid">
+<code class="sig-name descname">get_localgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">radius</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.RectangleRuleSineEndPoints.get_localgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a grid contain points within the given radius of center.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>center</strong> (<em>float</em><em> or </em><em>np.array</em><em>(</em><em>M</em><em>,</em><em>)</em>) – Cartesian coordinates of the center of the local grid.</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – Radius of sphere around the center. When equal to np.inf, the
+local grid coincides with the whole grid, which can be useful for
+debugging.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Instance of LocalGrid.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.LocalGrid" title="grid.basegrid.LocalGrid">LocalGrid</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.RectangleRuleSineEndPoints.integrate">
+<code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">value_arrays</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.RectangleRuleSineEndPoints.integrate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integrate over the whole grid for given multiple value arrays.</p>
+<p>Product of all value_arrays will be computed element-wise then
+integrated on the grid with its weights.
+.. math:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Integral</span> <span class="o">=</span> \<span class="nb">int</span> <span class="n">w</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> \<span class="n">prod_i</span> <span class="n">f_i</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="n">dx</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>*value_arrays</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>, </em><em>)</em>) – One or multiple value array to integrate.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The calculated integral over given integrand or function</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.RectangleRuleSineEndPoints.points">
+<em class="property">property </em><code class="sig-name descname">points</code><a class="headerlink" href="#grid.onedgrid.RectangleRuleSineEndPoints.points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Positions of the grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,) or np.ndarray(N, M)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.RectangleRuleSineEndPoints.size">
+<em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#grid.onedgrid.RectangleRuleSineEndPoints.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>the total number of points on the grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.RectangleRuleSineEndPoints.weights">
+<em class="property">property </em><code class="sig-name descname">weights</code><a class="headerlink" href="#grid.onedgrid.RectangleRuleSineEndPoints.weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>the weights of each grid point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="grid.onedgrid.Simpson">
+<em class="property">class </em><code class="sig-name descname">Simpson</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.Simpson" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.basegrid.OneDGrid</span></code></a></p>
+<p>Simpson integral quadrature class.</p>
+<p>The definition of this quadrature is:</p>
+<div class="math notranslate nohighlight">
+\[\int_{-1}^{1} f(x) dx \approx \sum_{i=1}^n w_i f(x_i),\]</div>
+<p>where</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}x_i &amp;= -1 + 2 \left(\frac{i-1}{n-1}\right),
+w_i &amp;= \begin{cases}
+    2 / (3(N - 1)) &amp; i = 0 \\
+    8 / (3(N - 1)) &amp; i \geq 1 \text{and is odd}, \\
+    4 / (3(N - 1)) &amp; i \geq 2 \text{and is even}.
+\end{cases}\end{split}\]</div>
+<dl class="py method">
+<dt id="grid.onedgrid.Simpson.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.Simpson.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate grid on <span class="math notranslate nohighlight">\([-1,1]\)</span> interval based on Simpson rule.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>npoints</strong> (<em>int</em>) – Number of points in the grid.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>One-dimensional grid instance.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid">OneDGrid</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.Simpson.domain">
+<em class="property">property </em><code class="sig-name descname">domain</code><a class="headerlink" href="#grid.onedgrid.Simpson.domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>the range of grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>(float, float)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.Simpson.get_localgrid">
+<code class="sig-name descname">get_localgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">radius</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.Simpson.get_localgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a grid contain points within the given radius of center.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>center</strong> (<em>float</em><em> or </em><em>np.array</em><em>(</em><em>M</em><em>,</em><em>)</em>) – Cartesian coordinates of the center of the local grid.</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – Radius of sphere around the center. When equal to np.inf, the
+local grid coincides with the whole grid, which can be useful for
+debugging.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Instance of LocalGrid.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.LocalGrid" title="grid.basegrid.LocalGrid">LocalGrid</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.Simpson.integrate">
+<code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">value_arrays</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.Simpson.integrate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integrate over the whole grid for given multiple value arrays.</p>
+<p>Product of all value_arrays will be computed element-wise then
+integrated on the grid with its weights.
+.. math:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Integral</span> <span class="o">=</span> \<span class="nb">int</span> <span class="n">w</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> \<span class="n">prod_i</span> <span class="n">f_i</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="n">dx</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>*value_arrays</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>, </em><em>)</em>) – One or multiple value array to integrate.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The calculated integral over given integrand or function</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.Simpson.points">
+<em class="property">property </em><code class="sig-name descname">points</code><a class="headerlink" href="#grid.onedgrid.Simpson.points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Positions of the grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,) or np.ndarray(N, M)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.Simpson.size">
+<em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#grid.onedgrid.Simpson.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>the total number of points on the grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.Simpson.weights">
+<em class="property">property </em><code class="sig-name descname">weights</code><a class="headerlink" href="#grid.onedgrid.Simpson.weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>the weights of each grid point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="grid.onedgrid.TanhSinh">
+<em class="property">class </em><code class="sig-name descname">TanhSinh</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em>, <em class="sig-param"><span class="n">delta</span><span class="o">=</span><span class="default_value">0.1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.TanhSinh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.basegrid.OneDGrid</span></code></a></p>
+<p>Tanh Sinh integral quadrature class.</p>
+<p>The definition of the quadrature is:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\int_{-1}^{1} f(x) dx \approx&amp; \sum_{i=-\frac{1}{2}(n-1)}^{\frac{1}{2}(n-1)} w_i f(x_i) \\
+x_i =&amp; \tanh\left( \frac{\pi}{2} \sinh(i\delta) \right) \\
+w_i =&amp; \frac{\frac{\pi}{2}\delta \cosh(i\delta)}{\cosh^2(\frac{\pi}{2}\sinh(i\delta))}\end{split}\]</div>
+<p>This quadrature is useful when singularities or infinite derivatives exist on the
+endpoints of <span class="math notranslate nohighlight">\([-1, 1]\)</span>.</p>
+<dl class="py method">
+<dt id="grid.onedgrid.TanhSinh.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em>, <em class="sig-param"><span class="n">delta</span><span class="o">=</span><span class="default_value">0.1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.TanhSinh.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate grid on <span class="math notranslate nohighlight">\([-1, 1]\)</span> interval based on Tanh-Sinh rule.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>npoints</strong> (<em>int</em>) – Number of grid points, which should be an odd integer.</p></li>
+<li><p><strong>delta</strong> (<em>float</em>) – The value of parameter <span class="math notranslate nohighlight">\(\delta\)</span>, which is related with the size.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>One-dimensional grid instance containing points and weights.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid">OneDGrid</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.TanhSinh.domain">
+<em class="property">property </em><code class="sig-name descname">domain</code><a class="headerlink" href="#grid.onedgrid.TanhSinh.domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>the range of grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>(float, float)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.TanhSinh.get_localgrid">
+<code class="sig-name descname">get_localgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">radius</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.TanhSinh.get_localgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a grid contain points within the given radius of center.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>center</strong> (<em>float</em><em> or </em><em>np.array</em><em>(</em><em>M</em><em>,</em><em>)</em>) – Cartesian coordinates of the center of the local grid.</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – Radius of sphere around the center. When equal to np.inf, the
+local grid coincides with the whole grid, which can be useful for
+debugging.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Instance of LocalGrid.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.LocalGrid" title="grid.basegrid.LocalGrid">LocalGrid</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.TanhSinh.integrate">
+<code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">value_arrays</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.TanhSinh.integrate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integrate over the whole grid for given multiple value arrays.</p>
+<p>Product of all value_arrays will be computed element-wise then
+integrated on the grid with its weights.
+.. math:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Integral</span> <span class="o">=</span> \<span class="nb">int</span> <span class="n">w</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> \<span class="n">prod_i</span> <span class="n">f_i</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="n">dx</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>*value_arrays</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>, </em><em>)</em>) – One or multiple value array to integrate.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The calculated integral over given integrand or function</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.TanhSinh.points">
+<em class="property">property </em><code class="sig-name descname">points</code><a class="headerlink" href="#grid.onedgrid.TanhSinh.points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Positions of the grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,) or np.ndarray(N, M)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.TanhSinh.size">
+<em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#grid.onedgrid.TanhSinh.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>the total number of points on the grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.TanhSinh.weights">
+<em class="property">property </em><code class="sig-name descname">weights</code><a class="headerlink" href="#grid.onedgrid.TanhSinh.weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>the weights of each grid point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt id="grid.onedgrid.Trapezoidal">
-<code class="sig-name descname">Trapezoidal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.Trapezoidal" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate 1D grid on [-1:1] interval based on trapezoidal rule.</p>
-<p>The fundamental definition of this rule is:</p>
+<em class="property">class </em><code class="sig-name descname">Trapezoidal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.Trapezoidal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.basegrid.OneDGrid</span></code></a></p>
+<p>Trapezoidal Lobatto integral quadrature class.</p>
+<p>The fundamental definition of Trapezoidal rule is:</p>
 <div class="math notranslate nohighlight">
-\[\int_{-1}^{1} f(x) dx \approx \sum_{i=1}^n w_i f(x_i)\]</div>
-<p>Where</p>
-<div class="math notranslate nohighlight">
-\[x_i = -1 + 2 \left(\frac{i-1}{n-1}\right)\]</div>
-<p>The weights</p>
-<div class="math notranslate nohighlight">
-\[w_{i\neq 1,n} = \frac{2}{n}\]</div>
-<p>and</p>
-<div class="math notranslate nohighlight">
-\[w_1 = w_n = \frac{1}{n}\]</div>
+\[\begin{split}\int_{-1}^{1} f(x) dx \approx&amp; \sum_{i=1}^n w_i f(x_i) \\
+x_i =&amp; -1 + 2 \left(\frac{i-1}{n-1}\right) \\
+w_1 = w_n =&amp; \frac{1}{n} \\
+w_{i\neq 1,n} =&amp; \frac{2}{n}\end{split}\]</div>
+<dl class="py method">
+<dt id="grid.onedgrid.Trapezoidal.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.Trapezoidal.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate grid on [-1, 1] interval based on Trapezoidal (Euler-Maclaurin) rule.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>npoints</strong> (<em>int</em>) – Number of points in the grid.</p>
+<dd class="field-odd"><p><strong>npoints</strong> (<em>int</em>) – Number of grid points.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A 1D grid instance.</p>
+<dd class="field-even"><p>One-dimensional grid instance containing points and weights.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid">OneDGrid</a></p>
@@ -563,16 +1817,123 @@
 </dl>
 </dd></dl>
 
-<dl class="py function">
+<dl class="py method">
+<dt id="grid.onedgrid.Trapezoidal.domain">
+<em class="property">property </em><code class="sig-name descname">domain</code><a class="headerlink" href="#grid.onedgrid.Trapezoidal.domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>the range of grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>(float, float)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.Trapezoidal.get_localgrid">
+<code class="sig-name descname">get_localgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">radius</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.Trapezoidal.get_localgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a grid contain points within the given radius of center.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>center</strong> (<em>float</em><em> or </em><em>np.array</em><em>(</em><em>M</em><em>,</em><em>)</em>) – Cartesian coordinates of the center of the local grid.</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – Radius of sphere around the center. When equal to np.inf, the
+local grid coincides with the whole grid, which can be useful for
+debugging.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Instance of LocalGrid.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.LocalGrid" title="grid.basegrid.LocalGrid">LocalGrid</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.Trapezoidal.integrate">
+<code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">value_arrays</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.Trapezoidal.integrate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integrate over the whole grid for given multiple value arrays.</p>
+<p>Product of all value_arrays will be computed element-wise then
+integrated on the grid with its weights.
+.. math:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Integral</span> <span class="o">=</span> \<span class="nb">int</span> <span class="n">w</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> \<span class="n">prod_i</span> <span class="n">f_i</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="n">dx</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>*value_arrays</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>, </em><em>)</em>) – One or multiple value array to integrate.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The calculated integral over given integrand or function</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.Trapezoidal.points">
+<em class="property">property </em><code class="sig-name descname">points</code><a class="headerlink" href="#grid.onedgrid.Trapezoidal.points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Positions of the grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,) or np.ndarray(N, M)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.Trapezoidal.size">
+<em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#grid.onedgrid.Trapezoidal.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>the total number of points on the grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.Trapezoidal.weights">
+<em class="property">property </em><code class="sig-name descname">weights</code><a class="headerlink" href="#grid.onedgrid.Trapezoidal.weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>the weights of each grid point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt id="grid.onedgrid.TrefethenCC">
-<code class="sig-name descname">TrefethenCC</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em>, <em class="sig-param"><span class="n">d</span><span class="o">=</span><span class="default_value">3</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.TrefethenCC" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate 1D grid on [-1,1] interval based on Trefethen-Clenshaw-Curtis.</p>
+<em class="property">class </em><code class="sig-name descname">TrefethenCC</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em>, <em class="sig-param"><span class="n">d</span><span class="o">=</span><span class="default_value">9</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.TrefethenCC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.basegrid.OneDGrid</span></code></a></p>
+<p>Trefethen polynomial transformation of Clenshaw-Curtis integral quadrature class.</p>
+<p class="rubric">References</p>
+<dl class="footnote brackets">
+<dt class="label" id="id5"><span class="brackets">1</span></dt>
+<dd><p>Hale, Nicholas, and Lloyd N. Trefethen. “New quadrature formulas from conformal maps.”
+SIAM Journal on Numerical Analysis 46.2 (2008): 930-948.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="grid.onedgrid.TrefethenCC.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em>, <em class="sig-param"><span class="n">d</span><span class="o">=</span><span class="default_value">9</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.TrefethenCC.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate 1D grid on <span class="math notranslate nohighlight">\([-1,1]\)</span> interval based on Trefethen-Clenshaw-Curtis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>npoints</strong> (<em>int</em>) – Number of points in the grid.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>npoints</strong> (<em>int</em>) – Number of points in the grid.</p></li>
+<li><p><strong>d</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Odd degree of the Taylor series polynomial of <span class="math notranslate nohighlight">\(\sin^{-1}\)</span>.
+Only d=1,5,9 are supported.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A 1D grid instance.</p>
+<dd class="field-even"><p>One-dimensional grid instance.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid">OneDGrid</a></p>
@@ -580,16 +1941,123 @@
 </dl>
 </dd></dl>
 
-<dl class="py function">
+<dl class="py method">
+<dt id="grid.onedgrid.TrefethenCC.domain">
+<em class="property">property </em><code class="sig-name descname">domain</code><a class="headerlink" href="#grid.onedgrid.TrefethenCC.domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>the range of grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>(float, float)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.TrefethenCC.get_localgrid">
+<code class="sig-name descname">get_localgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">radius</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.TrefethenCC.get_localgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a grid contain points within the given radius of center.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>center</strong> (<em>float</em><em> or </em><em>np.array</em><em>(</em><em>M</em><em>,</em><em>)</em>) – Cartesian coordinates of the center of the local grid.</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – Radius of sphere around the center. When equal to np.inf, the
+local grid coincides with the whole grid, which can be useful for
+debugging.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Instance of LocalGrid.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.LocalGrid" title="grid.basegrid.LocalGrid">LocalGrid</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.TrefethenCC.integrate">
+<code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">value_arrays</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.TrefethenCC.integrate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integrate over the whole grid for given multiple value arrays.</p>
+<p>Product of all value_arrays will be computed element-wise then
+integrated on the grid with its weights.
+.. math:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Integral</span> <span class="o">=</span> \<span class="nb">int</span> <span class="n">w</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> \<span class="n">prod_i</span> <span class="n">f_i</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="n">dx</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>*value_arrays</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>, </em><em>)</em>) – One or multiple value array to integrate.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The calculated integral over given integrand or function</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.TrefethenCC.points">
+<em class="property">property </em><code class="sig-name descname">points</code><a class="headerlink" href="#grid.onedgrid.TrefethenCC.points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Positions of the grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,) or np.ndarray(N, M)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.TrefethenCC.size">
+<em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#grid.onedgrid.TrefethenCC.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>the total number of points on the grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.TrefethenCC.weights">
+<em class="property">property </em><code class="sig-name descname">weights</code><a class="headerlink" href="#grid.onedgrid.TrefethenCC.weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>the weights of each grid point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt id="grid.onedgrid.TrefethenGC2">
-<code class="sig-name descname">TrefethenGC2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em>, <em class="sig-param"><span class="n">d</span><span class="o">=</span><span class="default_value">3</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.TrefethenGC2" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">TrefethenGC2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em>, <em class="sig-param"><span class="n">d</span><span class="o">=</span><span class="default_value">9</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.TrefethenGC2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.basegrid.OneDGrid</span></code></a></p>
+<p>Trefethen polynomial transformation of Gauss-Chebyshev of the second kind integral quadrature.</p>
+<p class="rubric">References</p>
+<dl class="footnote brackets">
+<dt class="label" id="id6"><span class="brackets">1</span></dt>
+<dd><p>Hale, Nicholas, and Lloyd N. Trefethen. “New quadrature formulas from conformal maps.”
+SIAM Journal on Numerical Analysis 46.2 (2008): 930-948.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="grid.onedgrid.TrefethenGC2.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em>, <em class="sig-param"><span class="n">d</span><span class="o">=</span><span class="default_value">9</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.TrefethenGC2.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate 1D grid on [-1,1] interval based on Trefethen-Gauss-Chebyshev.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>npoints</strong> (<em>int</em>) – Number of points in the grid.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>npoints</strong> (<em>int</em>) – Number of points in the grid.</p></li>
+<li><p><strong>d</strong> (<em>int</em>) – Odd degree of the Taylor series polynomial of <span class="math notranslate nohighlight">\(\sin^{-1}\)</span>.
+Only d=1,5,9 are supported.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A 1D grid instance.</p>
+<dd class="field-even"><p>One-dimensional grid instance.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid">OneDGrid</a></p>
@@ -597,16 +2065,124 @@
 </dl>
 </dd></dl>
 
-<dl class="py function">
+<dl class="py method">
+<dt id="grid.onedgrid.TrefethenGC2.domain">
+<em class="property">property </em><code class="sig-name descname">domain</code><a class="headerlink" href="#grid.onedgrid.TrefethenGC2.domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>the range of grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>(float, float)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.TrefethenGC2.get_localgrid">
+<code class="sig-name descname">get_localgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">radius</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.TrefethenGC2.get_localgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a grid contain points within the given radius of center.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>center</strong> (<em>float</em><em> or </em><em>np.array</em><em>(</em><em>M</em><em>,</em><em>)</em>) – Cartesian coordinates of the center of the local grid.</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – Radius of sphere around the center. When equal to np.inf, the
+local grid coincides with the whole grid, which can be useful for
+debugging.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Instance of LocalGrid.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.LocalGrid" title="grid.basegrid.LocalGrid">LocalGrid</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.TrefethenGC2.integrate">
+<code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">value_arrays</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.TrefethenGC2.integrate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integrate over the whole grid for given multiple value arrays.</p>
+<p>Product of all value_arrays will be computed element-wise then
+integrated on the grid with its weights.
+.. math:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Integral</span> <span class="o">=</span> \<span class="nb">int</span> <span class="n">w</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> \<span class="n">prod_i</span> <span class="n">f_i</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="n">dx</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>*value_arrays</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>, </em><em>)</em>) – One or multiple value array to integrate.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The calculated integral over given integrand or function</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.TrefethenGC2.points">
+<em class="property">property </em><code class="sig-name descname">points</code><a class="headerlink" href="#grid.onedgrid.TrefethenGC2.points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Positions of the grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,) or np.ndarray(N, M)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.TrefethenGC2.size">
+<em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#grid.onedgrid.TrefethenGC2.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>the total number of points on the grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.TrefethenGC2.weights">
+<em class="property">property </em><code class="sig-name descname">weights</code><a class="headerlink" href="#grid.onedgrid.TrefethenGC2.weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>the weights of each grid point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt id="grid.onedgrid.TrefethenGeneral">
-<code class="sig-name descname">TrefethenGeneral</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em>, <em class="sig-param"><span class="n">quadrature</span></em>, <em class="sig-param"><span class="n">d</span><span class="o">=</span><span class="default_value">3</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.TrefethenGeneral" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate 1D grid on [-1,1] interval based on Trefethen-General.</p>
+<em class="property">class </em><code class="sig-name descname">TrefethenGeneral</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em>, <em class="sig-param"><span class="n">quadrature</span></em>, <em class="sig-param"><span class="n">d</span><span class="o">=</span><span class="default_value">9</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.TrefethenGeneral" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.basegrid.OneDGrid</span></code></a></p>
+<p>Trefethen polynomial transformation of a general integral quadrature class.</p>
+<p class="rubric">References</p>
+<dl class="footnote brackets">
+<dt class="label" id="id7"><span class="brackets">1</span></dt>
+<dd><p>Hale, Nicholas, and Lloyd N. Trefethen. “New quadrature formulas from conformal maps.”
+SIAM Journal on Numerical Analysis 46.2 (2008): 930-948.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="grid.onedgrid.TrefethenGeneral.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em>, <em class="sig-param"><span class="n">quadrature</span></em>, <em class="sig-param"><span class="n">d</span><span class="o">=</span><span class="default_value">9</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.TrefethenGeneral.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate 1D grid on <span class="math notranslate nohighlight">\([-1,1]\)</span> interval based on Trefethen-General.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>npoints</strong> (<em>int</em>) – Number of points in the grid.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>npoints</strong> (<em>int</em>) – Number of points in the grid.</p></li>
+<li><p><strong>quadrature</strong> (<a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><em>OneDGrid</em></a>) – General one-dimensional grid.</p></li>
+<li><p><strong>d</strong> – Odd degree of the Taylor series polynomial of <span class="math notranslate nohighlight">\(\sin^{-1}\)</span>.
+Only d=1,5,9 are supported.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A 1D grid instance.</p>
+<dd class="field-even"><p>One-dimensional grid instance.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid">OneDGrid</a></p>
@@ -614,16 +2190,121 @@
 </dl>
 </dd></dl>
 
-<dl class="py function">
+<dl class="py method">
+<dt id="grid.onedgrid.TrefethenGeneral.domain">
+<em class="property">property </em><code class="sig-name descname">domain</code><a class="headerlink" href="#grid.onedgrid.TrefethenGeneral.domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>the range of grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>(float, float)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.TrefethenGeneral.get_localgrid">
+<code class="sig-name descname">get_localgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">radius</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.TrefethenGeneral.get_localgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a grid contain points within the given radius of center.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>center</strong> (<em>float</em><em> or </em><em>np.array</em><em>(</em><em>M</em><em>,</em><em>)</em>) – Cartesian coordinates of the center of the local grid.</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – Radius of sphere around the center. When equal to np.inf, the
+local grid coincides with the whole grid, which can be useful for
+debugging.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Instance of LocalGrid.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.LocalGrid" title="grid.basegrid.LocalGrid">LocalGrid</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.TrefethenGeneral.integrate">
+<code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">value_arrays</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.TrefethenGeneral.integrate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integrate over the whole grid for given multiple value arrays.</p>
+<p>Product of all value_arrays will be computed element-wise then
+integrated on the grid with its weights.
+.. math:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Integral</span> <span class="o">=</span> \<span class="nb">int</span> <span class="n">w</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> \<span class="n">prod_i</span> <span class="n">f_i</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="n">dx</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>*value_arrays</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>, </em><em>)</em>) – One or multiple value array to integrate.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The calculated integral over given integrand or function</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.TrefethenGeneral.points">
+<em class="property">property </em><code class="sig-name descname">points</code><a class="headerlink" href="#grid.onedgrid.TrefethenGeneral.points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Positions of the grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,) or np.ndarray(N, M)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.TrefethenGeneral.size">
+<em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#grid.onedgrid.TrefethenGeneral.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>the total number of points on the grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.TrefethenGeneral.weights">
+<em class="property">property </em><code class="sig-name descname">weights</code><a class="headerlink" href="#grid.onedgrid.TrefethenGeneral.weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>the weights of each grid point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt id="grid.onedgrid.TrefethenStripCC">
-<code class="sig-name descname">TrefethenStripCC</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em>, <em class="sig-param"><span class="n">rho</span><span class="o">=</span><span class="default_value">1.1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.TrefethenStripCC" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate 1D grid on [-1,1] interval based on Trefethen-Clenshaw-Curtis.</p>
+<em class="property">class </em><code class="sig-name descname">TrefethenStripCC</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em>, <em class="sig-param"><span class="n">rho</span><span class="o">=</span><span class="default_value">1.1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.TrefethenStripCC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.basegrid.OneDGrid</span></code></a></p>
+<p>Trefethen strip transformation of Clenshaw-Curtis integral quadrature.</p>
+<blockquote>
+<div><p>References</p>
+</div></blockquote>
+<dl class="footnote brackets">
+<dt class="label" id="id8"><span class="brackets">1</span></dt>
+<dd><p>Hale, Nicholas, and Lloyd N. Trefethen. “New quadrature formulas from conformal maps.”
+SIAM Journal on Numerical Analysis 46.2 (2008): 930-948.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="grid.onedgrid.TrefethenStripCC.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em>, <em class="sig-param"><span class="n">rho</span><span class="o">=</span><span class="default_value">1.1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.TrefethenStripCC.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate grid on <span class="math notranslate nohighlight">\([-1,1]\)</span> interval based on Trefethen-Clenshaw-Curtis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>npoints</strong> (<em>int</em>) – Number of points in the grid.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A 1D grid instance.</p>
+<dd class="field-even"><p>One-dimensional grid instance.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid">OneDGrid</a></p>
@@ -631,16 +2312,121 @@
 </dl>
 </dd></dl>
 
-<dl class="py function">
+<dl class="py method">
+<dt id="grid.onedgrid.TrefethenStripCC.domain">
+<em class="property">property </em><code class="sig-name descname">domain</code><a class="headerlink" href="#grid.onedgrid.TrefethenStripCC.domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>the range of grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>(float, float)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.TrefethenStripCC.get_localgrid">
+<code class="sig-name descname">get_localgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">radius</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.TrefethenStripCC.get_localgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a grid contain points within the given radius of center.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>center</strong> (<em>float</em><em> or </em><em>np.array</em><em>(</em><em>M</em><em>,</em><em>)</em>) – Cartesian coordinates of the center of the local grid.</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – Radius of sphere around the center. When equal to np.inf, the
+local grid coincides with the whole grid, which can be useful for
+debugging.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Instance of LocalGrid.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.LocalGrid" title="grid.basegrid.LocalGrid">LocalGrid</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.TrefethenStripCC.integrate">
+<code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">value_arrays</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.TrefethenStripCC.integrate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integrate over the whole grid for given multiple value arrays.</p>
+<p>Product of all value_arrays will be computed element-wise then
+integrated on the grid with its weights.
+.. math:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Integral</span> <span class="o">=</span> \<span class="nb">int</span> <span class="n">w</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> \<span class="n">prod_i</span> <span class="n">f_i</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="n">dx</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>*value_arrays</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>, </em><em>)</em>) – One or multiple value array to integrate.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The calculated integral over given integrand or function</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.TrefethenStripCC.points">
+<em class="property">property </em><code class="sig-name descname">points</code><a class="headerlink" href="#grid.onedgrid.TrefethenStripCC.points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Positions of the grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,) or np.ndarray(N, M)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.TrefethenStripCC.size">
+<em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#grid.onedgrid.TrefethenStripCC.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>the total number of points on the grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.TrefethenStripCC.weights">
+<em class="property">property </em><code class="sig-name descname">weights</code><a class="headerlink" href="#grid.onedgrid.TrefethenStripCC.weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>the weights of each grid point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt id="grid.onedgrid.TrefethenStripGC2">
-<code class="sig-name descname">TrefethenStripGC2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em>, <em class="sig-param"><span class="n">rho</span><span class="o">=</span><span class="default_value">1.1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.TrefethenStripGC2" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate 1D grid on [-1,1] interval based on Trefethen-Gauss-Chebyshev.</p>
+<em class="property">class </em><code class="sig-name descname">TrefethenStripGC2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em>, <em class="sig-param"><span class="n">rho</span><span class="o">=</span><span class="default_value">1.1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.TrefethenStripGC2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.basegrid.OneDGrid</span></code></a></p>
+<p>Trefethen strip transformation of the Gauss-Chebyshev of the second kind integral quadrature.</p>
+<blockquote>
+<div><p>References</p>
+</div></blockquote>
+<dl class="footnote brackets">
+<dt class="label" id="id9"><span class="brackets">1</span></dt>
+<dd><p>Hale, Nicholas, and Lloyd N. Trefethen. “New quadrature formulas from conformal maps.”
+SIAM Journal on Numerical Analysis 46.2 (2008): 930-948.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="grid.onedgrid.TrefethenStripGC2.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em>, <em class="sig-param"><span class="n">rho</span><span class="o">=</span><span class="default_value">1.1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.TrefethenStripGC2.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate grid on <span class="math notranslate nohighlight">\([-1,1]\)</span> interval based on Trefethen-Gauss-Chebyshev.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>npoints</strong> (<em>int</em>) – Number of points in the grid.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A 1D grid instance.</p>
+<dd class="field-even"><p>One-dimensional grid instance.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid">OneDGrid</a></p>
@@ -648,21 +2434,334 @@
 </dl>
 </dd></dl>
 
-<dl class="py function">
+<dl class="py method">
+<dt id="grid.onedgrid.TrefethenStripGC2.domain">
+<em class="property">property </em><code class="sig-name descname">domain</code><a class="headerlink" href="#grid.onedgrid.TrefethenStripGC2.domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>the range of grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>(float, float)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.TrefethenStripGC2.get_localgrid">
+<code class="sig-name descname">get_localgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">radius</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.TrefethenStripGC2.get_localgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a grid contain points within the given radius of center.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>center</strong> (<em>float</em><em> or </em><em>np.array</em><em>(</em><em>M</em><em>,</em><em>)</em>) – Cartesian coordinates of the center of the local grid.</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – Radius of sphere around the center. When equal to np.inf, the
+local grid coincides with the whole grid, which can be useful for
+debugging.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Instance of LocalGrid.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.LocalGrid" title="grid.basegrid.LocalGrid">LocalGrid</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.TrefethenStripGC2.integrate">
+<code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">value_arrays</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.TrefethenStripGC2.integrate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integrate over the whole grid for given multiple value arrays.</p>
+<p>Product of all value_arrays will be computed element-wise then
+integrated on the grid with its weights.
+.. math:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Integral</span> <span class="o">=</span> \<span class="nb">int</span> <span class="n">w</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> \<span class="n">prod_i</span> <span class="n">f_i</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="n">dx</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>*value_arrays</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>, </em><em>)</em>) – One or multiple value array to integrate.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The calculated integral over given integrand or function</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.TrefethenStripGC2.points">
+<em class="property">property </em><code class="sig-name descname">points</code><a class="headerlink" href="#grid.onedgrid.TrefethenStripGC2.points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Positions of the grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,) or np.ndarray(N, M)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.TrefethenStripGC2.size">
+<em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#grid.onedgrid.TrefethenStripGC2.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>the total number of points on the grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.TrefethenStripGC2.weights">
+<em class="property">property </em><code class="sig-name descname">weights</code><a class="headerlink" href="#grid.onedgrid.TrefethenStripGC2.weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>the weights of each grid point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt id="grid.onedgrid.TrefethenStripGeneral">
-<code class="sig-name descname">TrefethenStripGeneral</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em>, <em class="sig-param"><span class="n">quadrature</span></em>, <em class="sig-param"><span class="n">rho</span><span class="o">=</span><span class="default_value">1.1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.TrefethenStripGeneral" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate 1D grid on [-1,1] interval based on Trefethen-General.</p>
+<em class="property">class </em><code class="sig-name descname">TrefethenStripGeneral</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em>, <em class="sig-param"><span class="n">quadrature</span></em>, <em class="sig-param"><span class="n">rho</span><span class="o">=</span><span class="default_value">1.1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.TrefethenStripGeneral" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.basegrid.OneDGrid</span></code></a></p>
+<p>Trefethen Strip General integral quadrature class.</p>
+<blockquote>
+<div><p>References</p>
+</div></blockquote>
+<dl class="footnote brackets">
+<dt class="label" id="id10"><span class="brackets">1</span></dt>
+<dd><p>Hale, Nicholas, and Lloyd N. Trefethen. “New quadrature formulas from conformal maps.”
+SIAM Journal on Numerical Analysis 46.2 (2008): 930-948.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="grid.onedgrid.TrefethenStripGeneral.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em>, <em class="sig-param"><span class="n">quadrature</span></em>, <em class="sig-param"><span class="n">rho</span><span class="o">=</span><span class="default_value">1.1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.TrefethenStripGeneral.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate grid on <span class="math notranslate nohighlight">\([-1,1]\)</span> interval based on Trefethen-General.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>npoints</strong> (<em>int</em>) – Number of points in the grid.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A 1D grid instance.</p>
+<dd class="field-even"><p>One-dimensional grid instance.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid">OneDGrid</a></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.TrefethenStripGeneral.domain">
+<em class="property">property </em><code class="sig-name descname">domain</code><a class="headerlink" href="#grid.onedgrid.TrefethenStripGeneral.domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>the range of grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>(float, float)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.TrefethenStripGeneral.get_localgrid">
+<code class="sig-name descname">get_localgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">radius</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.TrefethenStripGeneral.get_localgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a grid contain points within the given radius of center.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>center</strong> (<em>float</em><em> or </em><em>np.array</em><em>(</em><em>M</em><em>,</em><em>)</em>) – Cartesian coordinates of the center of the local grid.</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – Radius of sphere around the center. When equal to np.inf, the
+local grid coincides with the whole grid, which can be useful for
+debugging.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Instance of LocalGrid.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.LocalGrid" title="grid.basegrid.LocalGrid">LocalGrid</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.TrefethenStripGeneral.integrate">
+<code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">value_arrays</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.TrefethenStripGeneral.integrate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integrate over the whole grid for given multiple value arrays.</p>
+<p>Product of all value_arrays will be computed element-wise then
+integrated on the grid with its weights.
+.. math:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Integral</span> <span class="o">=</span> \<span class="nb">int</span> <span class="n">w</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> \<span class="n">prod_i</span> <span class="n">f_i</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="n">dx</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>*value_arrays</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>, </em><em>)</em>) – One or multiple value array to integrate.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The calculated integral over given integrand or function</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.TrefethenStripGeneral.points">
+<em class="property">property </em><code class="sig-name descname">points</code><a class="headerlink" href="#grid.onedgrid.TrefethenStripGeneral.points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Positions of the grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,) or np.ndarray(N, M)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.TrefethenStripGeneral.size">
+<em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#grid.onedgrid.TrefethenStripGeneral.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>the total number of points on the grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.TrefethenStripGeneral.weights">
+<em class="property">property </em><code class="sig-name descname">weights</code><a class="headerlink" href="#grid.onedgrid.TrefethenStripGeneral.weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>the weights of each grid point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="grid.onedgrid.UniformInteger">
+<em class="property">class </em><code class="sig-name descname">UniformInteger</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.UniformInteger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.basegrid.OneDGrid</span></code></a></p>
+<p>HORTON2 integral quadrature (HortonLinear) class.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\int_{0}^{n} f(x) dx \approx&amp; \sum_{i=1}^n w_i f(x_i) \\
+x_i =&amp; i - 1 \\
+w_i =&amp; 1.0\end{split}\]</div>
+<dl class="py method">
+<dt id="grid.onedgrid.UniformInteger.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npoints</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.UniformInteger.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate grid on [0, npoints] interval using equally spaced uniform distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>npoints</strong> (<em>int</em>) – Number of grid points.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>One-dimensional grid instance containing points and weights.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid">OneDGrid</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.UniformInteger.domain">
+<em class="property">property </em><code class="sig-name descname">domain</code><a class="headerlink" href="#grid.onedgrid.UniformInteger.domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>the range of grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>(float, float)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.UniformInteger.get_localgrid">
+<code class="sig-name descname">get_localgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">radius</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.UniformInteger.get_localgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a grid contain points within the given radius of center.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>center</strong> (<em>float</em><em> or </em><em>np.array</em><em>(</em><em>M</em><em>,</em><em>)</em>) – Cartesian coordinates of the center of the local grid.</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – Radius of sphere around the center. When equal to np.inf, the
+local grid coincides with the whole grid, which can be useful for
+debugging.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Instance of LocalGrid.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.LocalGrid" title="grid.basegrid.LocalGrid">LocalGrid</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.UniformInteger.integrate">
+<code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">value_arrays</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.onedgrid.UniformInteger.integrate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integrate over the whole grid for given multiple value arrays.</p>
+<p>Product of all value_arrays will be computed element-wise then
+integrated on the grid with its weights.
+.. math:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Integral</span> <span class="o">=</span> \<span class="nb">int</span> <span class="n">w</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> \<span class="n">prod_i</span> <span class="n">f_i</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="n">dx</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>*value_arrays</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>, </em><em>)</em>) – One or multiple value array to integrate.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The calculated integral over given integrand or function</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.UniformInteger.points">
+<em class="property">property </em><code class="sig-name descname">points</code><a class="headerlink" href="#grid.onedgrid.UniformInteger.points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Positions of the grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,) or np.ndarray(N, M)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.UniformInteger.size">
+<em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#grid.onedgrid.UniformInteger.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>the total number of points on the grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="grid.onedgrid.UniformInteger.weights">
+<em class="property">property </em><code class="sig-name descname">weights</code><a class="headerlink" href="#grid.onedgrid.UniformInteger.weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>the weights of each grid point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 </div>
