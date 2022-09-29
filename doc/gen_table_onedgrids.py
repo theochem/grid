@@ -47,9 +47,9 @@ def generate_one_dimensional_grid_table_csv():
         found_class = False
         while line:
             line = line.rstrip()  # strip trailing spaces and newline
-
+            print("line: ", line)
             # If you found a class that is a child of OneDGrid, then explore further.
-            if "class" in line and "OneDGrid" in line:
+            if "class" in line and "OneDGrid" in line and "issubclass" not in line:
                 row_result = []
 
                 # Get the class name, by looking at what's after class
@@ -59,11 +59,17 @@ def generate_one_dimensional_grid_table_csv():
 
                 # Get the name of the Grid
                 line_document = f.readline()
+                print("linedoc", line_document.strip())
+                if line_document.strip() == "r\"\"\"":
+                    line_document = f.readline()
+                    print("linedoc rev", line_document)
                 if "integral" in line_document:
                     line_document = line_document.split("integral")
                     line_name = line_document[0].strip()
                     # Remove triple quotation marks: """
-                    line_name = line_name[3:]
+                    line_name = line_name[:]
+                    line_name = line_name.replace("r\"\"\"", "")
+                    line_name = line_name.replace("\"\"\"", "")
 
                     if "HORTON" in line_name:
                         line_name = line_name.replace("HORTON", "Horton")
@@ -86,8 +92,12 @@ def generate_one_dimensional_grid_table_csv():
                 if "def __init__" in line:
                     # The next line should contain the domain information
                     line_domain = f.readline()
+                    print(line_domain)
 
-                    if "on" not in line_domain or "interval" not in line_domain:
+                    if line_domain.strip() == "r\"\"\"":
+                        line_domain = f.readline()
+                        print(line_domain)
+                    if "on" not in line_domain: #or "interval" not in line_domain:
                         raise RuntimeError(
                             f"The words 'on' and 'interval' needs to be in {line_domain} for this to parse correctly."
                         )
@@ -101,8 +111,8 @@ def generate_one_dimensional_grid_table_csv():
                     if "npoints" in line_domain:
                         line_domain = line_domain.replace("npoints", "N")
                     # Typo that too lazy to do pull request
-                    if ":" in line_domain:
-                        line_domain = line_domain.replace(":", ",")
+                    # if ":" in line_domain:
+                    #     line_domain = line_domain.replace(":", ",")
 
                     line_domain = line_domain.replace(" ", "")
                     # Store the result into pandas
@@ -113,7 +123,7 @@ def generate_one_dimensional_grid_table_csv():
 
             line = f.readline()
     print(df)
-    df.to_csv("table_onedgrids.csv", index=False)
+    df.to_csv("table_onedgrids.csv", index=False, sep=";")
 
 
 if __name__ == "__main__":
