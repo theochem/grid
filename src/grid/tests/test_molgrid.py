@@ -25,8 +25,8 @@ from grid.basegrid import LocalGrid
 from grid.becke import BeckeWeights
 from grid.hirshfeld import HirshfeldWeights
 from grid.molgrid import MolGrid
-from grid.onedgrid import GaussLaguerre, UniformInteger
-from grid.rtransform import ExpRTransform
+from grid.onedgrid import GaussLaguerre, Trapezoidal, UniformInteger
+from grid.rtransform import ExpRTransform, LinearFiniteRTransform
 
 # from importlib_resources import path
 import numpy as np
@@ -44,11 +44,7 @@ class TestMolGrid(TestCase):
 
     def test_integrate_hydrogen_single_1s(self):
         """Test molecular integral in H atom."""
-        # numbers = np.array([1], int)
         coordinates = np.array([0.0, 0.0, -0.5], float)
-        # rgrid = BeckeRTransform.transform_grid(oned, 0.001, 0.5)[0]
-        # rtf = ExpRTransform(1e-3, 1e1, 100)
-        # rgrid = RadialGrid(rtf)
         atg1 = AtomGrid.from_pruned(
             self.rgrid,
             0.5,
@@ -473,6 +469,42 @@ class TestMolGrid(TestCase):
         assert_allclose(ref_grid.points, mol_grid.points)
         assert_allclose(ref_grid.weights, mol_grid.weights)
 
+    def test_from_pruned(self):
+        r"""Test MolGrid construction via from_pruned method."""
+        nums = np.array([1, 1])
+        coors = np.array([[0, 0, -0.5], [0, 0, 0.5]])
+        becke = BeckeWeights(order=3)
+        radius = np.array([1.0, 0.5])
+        sectors_r = [[0.5, 1.0, 1.5], [0.25, 0.5]]
+        sectors_deg = [[3, 7, 5, 3], [3, 2, 2]]
+        mol_grid = MolGrid.from_pruned(
+            nums,
+            coors,
+            self.rgrid,
+            radius,
+            becke,
+            sectors_r=sectors_r,
+            sectors_degree=sectors_deg,
+            rotate=False,
+        )
+        atg1 = AtomGrid.from_pruned(
+            self.rgrid,
+            radius[0],
+            sectors_r=sectors_r[0],
+            sectors_degree=sectors_deg[0],
+            center=coors[0],
+        )
+        atg2 = AtomGrid.from_pruned(
+            self.rgrid,
+            radius[1],
+            sectors_r=sectors_r[1],
+            sectors_degree=sectors_deg[1],
+            center=coors[1],
+        )
+        ref_grid = MolGrid(nums, [atg1, atg2], becke, store=True)
+        assert_allclose(ref_grid.points, mol_grid.points)
+        assert_allclose(ref_grid.weights, mol_grid.weights)
+
     def test_raise_errors(self):
         """Test molgrid errors raise."""
         atg = AtomGrid.from_pruned(
@@ -656,3 +688,30 @@ class TestMolGrid(TestCase):
         fn = np.exp(-2 * dist0) / np.pi + 1.5 * np.exp(-2 * dist1) / np.pi
         occupation = mg.integrate(fn)
         assert_almost_equal(occupation, 2.5, decimal=5)
+
+
+def test_interpolation_with_gaussian_center():
+    r"""Test interpolation with molecular grid of sum of two Gaussian examples."""
+    coordinates = np.array([[0.0, 0.0, -1.5], [0.0, 0.0, 1.5]])
+
+    pts = Trapezoidal(400)
+    tf = LinearFiniteRTransform(1e-8, 10.0)
+    rgrid = tf.transform_1d_grid(pts)
+
+    atg1 = AtomGrid(rgrid, degrees=[15], center=coordinates[0])
+    atg2 = AtomGrid(rgrid, degrees=[17], center=coordinates[1])
+    mg = MolGrid(np.array([1, 1]), [atg1, atg2], BeckeWeights(), store=True)
+
+    def gaussian_func(pts):
+        return np.exp(
+            -5.0 * np.linalg.norm(pts - coordinates[0], axis=1) ** 2.0
+        ) + np.exp(-3.5 * np.linalg.norm(pts - coordinates[1], axis=1) ** 2.0)
+
+    gaussians = gaussian_func(mg.points)
+    interpolate_func = mg.interpolate(gaussians)
+
+    assert_almost_equal(interpolate_func(mg.points), gaussians, decimal=3)
+
+    # Test interpolation at new points
+    new_pts = np.random.uniform(2.0, 2.0, size=(100, 3))
+    assert_almost_equal(interpolate_func(new_pts), gaussian_func(new_pts), decimal=3)

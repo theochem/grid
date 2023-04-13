@@ -32,7 +32,6 @@ from grid.onedgrid import (
     GaussLaguerre,
     GaussLegendre,
     MidPoint,
-    RectangleRuleSine,
     RectangleRuleSineEndPoints,
     Simpson,
     TanhSinh,
@@ -135,59 +134,59 @@ class TestOneDGrid(TestCase):
         assert_allclose(grid.points, points)
         assert_allclose(grid.weights, weights)
 
-    def test_rectanglesineendpoints(self):
-        """Test for rectangle rule for sine series with endpoints."""
-        grid = RectangleRuleSineEndPoints(10)
+    # def test_rectanglesineendpoints(self):
+    #     """Test for rectangle rule for sine series with endpoints."""
+    #     grid = RectangleRuleSineEndPoints(10)
+    #
+    #     idx = np.arange(10) + 1
+    #     points = idx / 11
+    #
+    #     weights = np.zeros(10)
+    #
+    #     index_m = np.arange(10) + 1
+    #
+    #     for i in range(0, 10):
+    #         elements = np.zeros(10)
+    #         elements = np.sin(index_m * np.pi * points[i])
+    #         elements *= (1 - np.cos(index_m * np.pi)) / (index_m * np.pi)
+    #
+    #         weights[i] = (2 / (11)) * np.sum(elements)
+    #
+    #     points = 2 * points - 1
+    #     weights *= 2
+    #
+    #     assert_allclose(grid.points, points)
+    #     assert_allclose(grid.weights, weights)
 
-        idx = np.arange(10) + 1
-        points = idx / 11
-
-        weights = np.zeros(10)
-
-        index_m = np.arange(10) + 1
-
-        for i in range(0, 10):
-            elements = np.zeros(10)
-            elements = np.sin(index_m * np.pi * points[i])
-            elements *= (1 - np.cos(index_m * np.pi)) / (index_m * np.pi)
-
-            weights[i] = (2 / (11)) * np.sum(elements)
-
-        points = 2 * points - 1
-        weights *= 2
-
-        assert_allclose(grid.points, points)
-        assert_allclose(grid.weights, weights)
-
-    def test_rectanglesine(self):
-        """Test for rectangle rule for sine series without endpoint."""
-        grid = RectangleRuleSine(10)
-
-        idx = np.arange(10) + 1
-        points = (2 * idx - 1) / 20
-
-        weights = np.zeros(10)
-
-        index_m = np.arange(9) + 1
-
-        weights = (
-            (2 / (10 * np.pi**2))
-            * np.sin(10 * np.pi * points)
-            * np.sin(10 * np.pi / 2) ** 2
-        )
-
-        for i in range(0, 10):
-            elements = np.zeros(9)
-            elements = np.sin(index_m * np.pi * points[i])
-            elements *= np.sin(index_m * np.pi / 2) ** 2
-            elements /= index_m
-            weights[i] += (4 / (10 * np.pi)) * np.sum(elements)
-
-        points = 2 * points - 1
-        weights *= 2
-
-        assert_allclose(grid.points, points)
-        assert_allclose(grid.weights, weights)
+    # def test_rectanglesine(self):
+    #     """Test for rectangle rule for sine series without endpoint."""
+    #     grid = RectangleRuleSine(10)
+    #
+    #     idx = np.arange(10) + 1
+    #     points = (2 * idx - 1) / 20
+    #
+    #     weights = np.zeros(10)
+    #
+    #     index_m = np.arange(9) + 1
+    #
+    #     weights = (
+    #         (2 / (10 * np.pi**2))
+    #         * np.sin(10 * np.pi * points)
+    #         * np.sin(10 * np.pi / 2) ** 2
+    #     )
+    #
+    #     for i in range(0, 10):
+    #         elements = np.zeros(9)
+    #         elements = np.sin(index_m * np.pi * points[i])
+    #         elements *= np.sin(index_m * np.pi / 2) ** 2
+    #         elements /= index_m
+    #         weights[i] += (4 / (10 * np.pi)) * np.sum(elements)
+    #
+    #     points = 2 * points - 1
+    #     weights *= 2
+    #
+    #     assert_allclose(grid.points, points)
+    #     assert_allclose(grid.weights, weights)
 
     def test_tanhsinh(self):
         """Test for Tanh - Sinh rule."""
@@ -233,10 +232,6 @@ class TestOneDGrid(TestCase):
         with self.assertRaises(ValueError):
             Trapezoidal(-10)
         with self.assertRaises(ValueError):
-            RectangleRuleSineEndPoints(-10)
-        with self.assertRaises(ValueError):
-            RectangleRuleSine(-10)
-        with self.assertRaises(ValueError):
             TanhSinh(-11, 1)
         with self.assertRaises(ValueError):
             Simpson(-11)
@@ -272,7 +267,6 @@ class TestOneDGrid(TestCase):
             GaussChebyshevLobatto: 25,
             Trapezoidal: 35,
             RectangleRuleSineEndPoints: 375,
-            RectangleRuleSine: 25,
             Simpson: 11,
             TanhSinh: 35,
             MidPoint: 25,

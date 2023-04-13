@@ -21,8 +21,8 @@
 import warnings
 from typing import Union
 
+from grid.angular import AngularGrid
 from grid.basegrid import Grid, OneDGrid
-from grid.lebedev import AngularGrid
 from grid.utils import (
     convert_cart_to_sph,
     convert_derivative_from_spherical_to_cartesian,
@@ -44,9 +44,10 @@ class AtomGrid(Grid):
 
     Atomic grid is composed of a radial grid :math:`\{(r_i, w_i)\}_{i=1}^{N}` meant to
     integrate the radius coordinate in spherical coordinates. Further, each radial point
-    is associated with an Angular/Lebedev grid :math:`\{(\theta^i_j, \phi^i_j, w_j^i)\}_{j=1}^{M_i}`
-    that integrates over a sphere (angles in spherical coordinates).  The atomic grid points
-    can also be centered at a given location.
+    is associated with an Angular (Lebedev or Symmetric spherical t-design) grid
+    :math:`\{(\theta^i_j, \phi^i_j, w_j^i)\}_{j=1}^{M_i}` that integrates over a sphere
+    (angles in spherical coordinates).  The atomic grid points can also be centered at a given
+    location.
 
     """
 
@@ -58,6 +59,7 @@ class AtomGrid(Grid):
         sizes: Union[np.ndarray, list] = None,
         center: np.ndarray = None,
         rotate: int = 0,
+        use_spherical: bool = False,
     ):
         """
         Construct atomic grid for given arguments.
@@ -67,12 +69,12 @@ class AtomGrid(Grid):
         rgrid : OneDGrid
             The (one-dimensional) radial grid representing the radius of spherical grids.
         degrees : ndarray(N, dtype=int) or list, keyword-only argument
-            Sequence of Lebedev grid degrees used for constructing spherical grids at each
+            Sequence of angular grid degrees used for constructing spherical grids at each
             radial grid point.
             If only one degree is given, the specified degree is used for all spherical grids.
             If the given degree is not supported, the next largest degree is used.
         sizes : ndarray(N, dtype=int) or list, keyword-only argument
-            Sequence of Lebedev grid sizes used for constructing spherical grids at each
+            Sequence of angular grid sizes used for constructing spherical grids at each
             radial grid point.
             If only one size is given, the specified size is used for all spherical grids.
             If the given size is not supported, the next largest size is used.
@@ -80,11 +82,16 @@ class AtomGrid(Grid):
         center : ndarray(3,), optional, keyword-only argument
             Cartesian coordinates of the grid center. If `None`, the origin is used.
         rotate : int, optional
-            Integer used as a seed for generating random rotation matrices to rotate the Lebedev
+            Integer used as a seed for generating random rotation matrices to rotate the angular
             spherical grids at each radial grid point. If the integer is zero, then no rotate
             is used.
+        use_spherical: bool, optional
+            If true, loads the symmetric spherical t-design grid rather than the Lebedev-Laikov
+            grid for the angular grid.
 
         """
+        if not isinstance(use_spherical, bool):
+            raise TypeError(f"Use_spherical {use_spherical} should be of type boolean.")
         # check stage, if center is None, set to (0., 0., 0.)
         center = (
             np.zeros(3, dtype=float)
@@ -110,7 +117,7 @@ class AtomGrid(Grid):
                 raise TypeError(
                     f"sizes is not type: np.array or list, got {type(sizes)}"
                 )
-            degrees = AngularGrid.convert_lebedev_sizes_to_degrees(sizes)
+            degrees = AngularGrid.convert_angular_sizes_to_degrees(sizes)
         if not isinstance(degrees, (np.ndarray, list)):
             raise TypeError(
                 f"degrees is not type: np.array or list, got {type(degrees)}"
@@ -122,9 +129,12 @@ class AtomGrid(Grid):
             self._weights,
             self._indices,
             self._degs,
-        ) = self._generate_atomic_grid(self._rgrid, degrees, rotate=self._rot)
+        ) = self._generate_atomic_grid(
+            self._rgrid, degrees, rotate=self._rot, use_spherical=use_spherical
+        )
         self._size = self._weights.size
         self._basis = None
+        self._use_spherical = use_spherical
 
     @classmethod
     def from_preset(
@@ -135,6 +145,7 @@ class AtomGrid(Grid):
         preset: str,
         center: np.ndarray = None,
         rotate: int = 0,
+        use_spherical: bool = False,
     ):
         """High level api to construct an atomic grid with preset arguments.
 
@@ -151,16 +162,21 @@ class AtomGrid(Grid):
             The atomic number specifying the predefined grid.
         preset : str, keyword-only argument
             The name of predefined grid specifying the radial sectors and their corresponding
-            number of Lebedev grid points. Supported preset options include:
+            number of angular grid points. Supported preset options include:
             'coarse', 'medium', 'fine', 'veryfine', 'ultrafine', and 'insane'.
         center : ndarray(3,), optional, keyword-only argument
             Cartesian coordinates of the grid center. If `None`, the origin is used.
         rotate : int, optional
-            Integer used as a seed for generating random rotation matrices to rotate the Lebedev
+            Integer used as a seed for generating random rotation matrices to rotate the angular
             spherical grids at each radial grid point. If the integer is zero, then no rotate
             is used.
+        use_spherical: bool, optional
+            If true, loads the symmetric spherical t-design grid rather than the Lebedev-Laikov
+            grid for the angular grid.
 
         """
+        if not isinstance(use_spherical, bool):
+            raise TypeError(f"use_spherical {use_spherical} should be of type bool.")
         if rgrid is None:
             # TODO: generate a default rgrid, currently raise an error instead
             raise ValueError("A default OneDGrid will be generated")
@@ -177,9 +193,15 @@ class AtomGrid(Grid):
             rad = data[f"{atnum}_rad"]
             npt = data[f"{atnum}_npt"]
 
-        degs = AngularGrid.convert_lebedev_sizes_to_degrees(npt)
+        degs = AngularGrid.convert_angular_sizes_to_degrees(npt, use_spherical)
         rad_degs = AtomGrid._find_l_for_rad_list(rgrid.points, rad, degs)
-        return cls(rgrid, degrees=rad_degs, center=center, rotate=rotate)
+        return cls(
+            rgrid,
+            degrees=rad_degs,
+            center=center,
+            rotate=rotate,
+            use_spherical=use_spherical,
+        )
 
     @classmethod
     def from_pruned(
@@ -192,6 +214,7 @@ class AtomGrid(Grid):
         sectors_size: np.ndarray = None,
         center: np.ndarray = None,
         rotate: int = 0,
+        use_spherical: bool = False,
     ):
         r"""
         Initialize AtomGrid class that splits radial sections into sectors which specified degrees.
@@ -229,16 +252,19 @@ class AtomGrid(Grid):
             The first sector is ``[0, radius*sectors_r[0]]``, then ``[radius*sectors_r[0],
             radius*sectors_r[1]]``, and so on.
         sectors_degree : ndarray(N + 1, dtype=int), keyword-only argument
-            Sequence of Lebedev degrees for each radial sector of the pruned grid.
+            Sequence of angular degrees for each radial sector of the pruned grid.
         sectors_size : ndarray(N + 1, dtype=int), keyword-only argument
-            Sequence of Lebedev sizes for each radial sector of the pruned grid.
+            Sequence of angular sizes for each radial sector of the pruned grid.
             If both sectors_degree and sectors_size are given, sectors_degree is used.
         center : ndarray(3,), optional, keyword-only argument
             Cartesian coordinates of the grid center. If `None`, the origin is used.
         rotate : int, optional
-            Integer used as a seed for generating random rotation matrices to rotate the Lebedev
+            Integer used as a seed for generating random rotation matrices to rotate the angular
             spherical grids at each radial grid point. If the integer is zero, then no rotate
             is used.
+        use_spherical: bool, optional
+            If true, loads the symmetric spherical t-design grid rather than the Lebedev-Laikov
+            grid for the angular grid.
 
         Returns
         -------
@@ -247,7 +273,9 @@ class AtomGrid(Grid):
 
         """
         if sectors_degree is None:
-            sectors_degree = AngularGrid.convert_lebedev_sizes_to_degrees(sectors_size)
+            sectors_degree = AngularGrid.convert_angular_sizes_to_degrees(
+                sectors_size, use_spherical
+            )
         center = (
             np.zeros(3, dtype=float)
             if center is None
@@ -255,9 +283,15 @@ class AtomGrid(Grid):
         )
         cls._input_type_check(rgrid, center)
         degrees = cls._generate_degree_from_radius(
-            rgrid, radius, sectors_r, sectors_degree
+            rgrid, radius, sectors_r, sectors_degree, use_spherical
         )
-        return cls(rgrid, degrees=degrees, center=center, rotate=rotate)
+        return cls(
+            rgrid,
+            degrees=degrees,
+            center=center,
+            rotate=rotate,
+            use_spherical=use_spherical,
+        )
 
     @property
     def rgrid(self):
@@ -266,17 +300,17 @@ class AtomGrid(Grid):
 
     @property
     def rotate(self):
-        """int: Integer representing the seed for rotating the Lebedev grid."""
+        """int: Integer representing the seed for rotating the angular grid."""
         return self._rot
 
     @property
     def degrees(self):
-        r"""ndarray(N,): Return the degree of each angular/Lebedev grid at each radial point."""
+        r"""ndarray(N,): Return the degree of each angular grid at each radial point."""
         return self._degs
 
     @property
     def points(self):
-        """ndarray(N, 3): Cartesian coordinates of the grid points."""
+        """ndarray(N, 3): Cartesian coordinates of the grid points (centered)."""
         return self._points + self._center
 
     @property
@@ -299,6 +333,33 @@ class AtomGrid(Grid):
     def l_max(self):
         """int: Largest angular degree L value in angular grids."""
         return np.max(self._degs)
+
+    @property
+    def use_spherical(self):
+        r"""bool: True then symmetric spherical t-design is used rather than Lebedev-Laikov grid."""
+        return self._use_spherical
+
+    def save(self, filename):
+        r"""
+        Save atomic grid attributes as a npz file.
+
+        Parameters
+        ----------
+        filename: str
+           The path/name of the .npz file.
+
+        """
+        dict_save = {
+            "points": self.points,
+            "weights": self.weights,
+            "center": self.center,
+            "degrees": self.degrees,
+            "indices": self.indices,
+            "rgrid_pts": self.rgrid.points,
+            "rgrid_weights": self.rgrid.weights,
+            "use_spherical": self.use_spherical,
+        }
+        np.savez(filename, **dict_save)
 
     def get_shell_grid(self, index: int, r_sq: bool = True):
         """Get the spherical integral grid at radial point from specified index.
@@ -327,7 +388,7 @@ class AtomGrid(Grid):
                 f"radial points {len(self.degrees)}."
             )
         degree = self.degrees[index]
-        sphere_grid = AngularGrid(degree=degree)
+        sphere_grid = AngularGrid(degree=degree, use_spherical=self.use_spherical)
 
         pts = sphere_grid.points.copy()
         wts = sphere_grid.weights.copy()
@@ -360,7 +421,7 @@ class AtomGrid(Grid):
         If the `points` attribute is not specified, then atomic grid points are used
         and the canonical choice when :math:`r=0`, is the points
         :math:`(r=0, \theta_j, \phi_j)` where :math:`(\theta_j, \phi_j)` come
-        from the Angular/Lebedev grid with the degree at :math:`r=0`.
+        from the Angular grid with the degree at :math:`r=0`.
 
         Parameters
         ----------
@@ -392,7 +453,9 @@ class AtomGrid(Grid):
             r_index = np.where(self.rgrid.points == 0.0)[0]
             for i in r_index:
                 # build angular grid for the degree at r=0
-                agrid = AngularGrid(degree=self._degs[i])
+                agrid = AngularGrid(
+                    degree=self._degs[i], use_spherical=self.use_spherical
+                )
                 start_index = self._indices[i]
                 final_index = self._indices[i + 1]
 
@@ -447,7 +510,7 @@ class AtomGrid(Grid):
         r_index = np.where(self.rgrid.points < 1e-8)[0]
         for i in r_index:  # if r_index = [], then for loop doesn't occur.
             # build angular grid for i-th shell
-            agrid = AngularGrid(degree=self._degs[i])
+            agrid = AngularGrid(degree=self._degs[i], use_spherical=self.use_spherical)
             values = (
                 func_vals[..., self.indices[i] : self.indices[i + 1]] * agrid.weights
             )
@@ -597,7 +660,7 @@ class AtomGrid(Grid):
                 deriv_spherical : bool
                     If True, then returns the derivatives with respect to spherical coordinates
                     :math:`(r, \theta, \phi)`. Default False.
-                only_radial_derivs : bool
+                only_radial_deriv : bool
                     If true, then the derivative wrt to radius :math:`r` is returned.
             and returns:
                 ndarray(M,...) :
@@ -631,7 +694,7 @@ class AtomGrid(Grid):
         splines = self.radial_component_splines(func_vals)
 
         def interpolate_low(
-            points, deriv=0, deriv_spherical=False, only_radial_derivs=False
+            points, deriv=0, deriv_spherical=False, only_radial_deriv=False
         ):
             r"""Construct a spline like callable for intepolation.
 
@@ -647,7 +710,7 @@ class AtomGrid(Grid):
             deriv_spherical : bool
                 If True, then returns the derivatives with respect to spherical coordinates
                 :math:`(r, \theta, \phi)`. Default False.
-            only_radial_derivs : bool
+            only_radial_deriv : bool
                 If true, then the derivative wrt to radius :math:`r` is returned.
 
             Returns
@@ -658,7 +721,7 @@ class AtomGrid(Grid):
                 if `only_radial_derivs` then derivative wrt to :math:`r` is only returned.
 
             """
-            if deriv_spherical and only_radial_derivs:
+            if deriv_spherical and only_radial_deriv:
                 warnings.warn(
                     "Since `only_radial_derivs` is true, then only the derivative wrt to"
                     "radius is returned and `deriv_spherical` value is ignored."
@@ -668,7 +731,7 @@ class AtomGrid(Grid):
             r_sph_harm = generate_real_spherical_harmonics(self.l_max // 2, theta, phi)
 
             # If theta, phi derivaitves are wanted and the derivative is first-order.
-            if not only_radial_derivs and deriv == 1:
+            if not only_radial_deriv and deriv == 1:
                 # Calculate derivative of f with respect to radial, theta, phi
                 # Get derivative of spherical harmonics first.
                 radial_components = np.array([spline(r_pts, 0) for spline in splines])
@@ -701,7 +764,7 @@ class AtomGrid(Grid):
                         phi_i,
                     )
                 return derivs
-            elif not only_radial_derivs and deriv != 0:
+            elif not only_radial_deriv and deriv != 0:
                 raise ValueError(
                     f"Higher order derivatives are only supported for derivatives"
                     f"with respect to the radius. Deriv is {deriv}."
@@ -746,6 +809,7 @@ class AtomGrid(Grid):
         radius: float,
         r_sectors: Union[list, np.ndarray],
         deg_sectors: Union[list, np.ndarray],
+        use_spherical: bool = False,
     ):
         """
         Get all degrees for every radial point inside the radial grid based on the sectors.
@@ -773,9 +837,14 @@ class AtomGrid(Grid):
             raise ValueError("deg_sectors can't be empty.")
         if len(deg_sectors) - len(r_sectors) != 1:
             raise ValueError("degs should have only one more element than r_sectors.")
-        # match given degrees to the supported (i.e., pre-computed) Lebedev degrees
+        # match given degrees to the supported (i.e., pre-computed) angular degrees
         matched_deg = np.array(
-            [AngularGrid._get_lebedev_size_and_degree(degree=d)[0] for d in deg_sectors]
+            [
+                AngularGrid._get_size_and_degree(
+                    degree=d, size=None, use_spherical=use_spherical
+                )[0]
+                for d in deg_sectors
+            ]
         )
         rad_degs = AtomGrid._find_l_for_rad_list(
             rgrid.points, radius * r_sectors, matched_deg
@@ -810,7 +879,12 @@ class AtomGrid(Grid):
         return deg_sectors[position]
 
     @staticmethod
-    def _generate_atomic_grid(rgrid: OneDGrid, degrees: np.ndarray, rotate: int = 0):
+    def _generate_atomic_grid(
+        rgrid: OneDGrid,
+        degrees: np.ndarray,
+        rotate: int = 0,
+        use_spherical: bool = False,
+    ):
         """Generate atomic grid for each radial point with angular degree.
 
         Parameters
@@ -818,13 +892,16 @@ class AtomGrid(Grid):
         rgrid : OneDGrid
             The (1-dimensional) radial grid representing the radius of spherical grids.
         degrees : ndarray(N,)
-            Sequence of Lebedev grid degrees used for constructing spherical grids at each
+            Sequence of angular grid degrees used for constructing spherical grids at each
             radial grid point.
             If the given degree is not supported, the next largest degree is used.
         rotate : int, optional
-            Integer used as a seed for generating random rotation matrices to rotate the Lebedev
+            Integer used as a seed for generating random rotation matrices to rotate the angular
             spherical grids at each radial grid point. If the integer is zero, then no rotate
             is used.
+        use_spherical: bool, optional
+            If true, loads the symmetric spherical t-design grid rather than the Lebedev-Laikov
+            grid for the angular grid.
 
         Returns
         -------
@@ -839,10 +916,10 @@ class AtomGrid(Grid):
         shell_pt_indices = np.zeros(len(degrees) + 1, dtype=int)  # set index to int
         actual_degrees = (
             []
-        )  # The actual degree used to construct the Angular/lebedev grid.
+        )  # The actual degree used to construct the Angular/lebedev/spherical grid.
         for i, deg_i in enumerate(degrees):  # TODO: proper tests
             # Generate Angular grid with the correct degree at the ith radial point.
-            sphere_grid = AngularGrid(degree=deg_i)
+            sphere_grid = AngularGrid(degree=deg_i, use_spherical=use_spherical)
             # Note that the copy is needed here.
             points, weights = sphere_grid.points.copy(), sphere_grid.weights.copy()
             actual_degrees.append(sphere_grid.degree)
