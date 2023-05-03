@@ -569,6 +569,7 @@ class TestAtomGrid:
     @pytest.mark.parametrize("use_spherical", [False, True])
     def test_spherical_average_of_gaussian(self, use_spherical):
         r"""Test spherical average of a Gaussian (radial) function is itself and its integral."""
+    
         # construct helper function
         def func(sph_points):
             return np.exp(-sph_points[:, 0] ** 2.0)
@@ -602,6 +603,7 @@ class TestAtomGrid:
 
     def test_spherical_average_of_spherical_harmonic(self):
         r"""Test spherical average of spherical harmonic is zero."""
+    
         # construct helper function
         def func(sph_points):
             # Spherical harmonic of order 6 and magnetic 0
