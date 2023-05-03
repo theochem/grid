@@ -464,7 +464,7 @@ class TestUniformGrid(TestCase):
         r"""Test volume of a cube is the same as multiplying by length of axes."""
         origin = np.array([0.0, 0.0, 0.0])
         axes = np.eye(3)
-        shape = np.array([5, 6, 7], dtype=np.int)
+        shape = np.array([5, 6, 7], dtype=int)
         uniform = UniformGrid(origin, axes, shape=shape)
         volume = 5 * 6 * 7
         assert_allclose(volume, uniform._calculate_volume(shape))
@@ -473,7 +473,7 @@ class TestUniformGrid(TestCase):
         r"""Test area of a rectangle is the same as multiplying the length of axes."""
         origin = np.array([0.0, 0.0])
         axes = np.eye(2)
-        shape = np.array([5, 6], dtype=np.int)
+        shape = np.array([5, 6], dtype=int)
         uniform = UniformGrid(origin, axes, shape=shape)
         volume = 5 * 6
         assert_allclose(volume, uniform._calculate_volume(shape))
@@ -482,7 +482,7 @@ class TestUniformGrid(TestCase):
         r"""Test Fourier1 weights are correct against brute force."""
         origin = np.array([0.0, 0.0, 0.0])
         axes = np.eye(3)
-        shape = np.array([5, 6, 7], dtype=np.int)
+        shape = np.array([5, 6, 7], dtype=int)
         volume = (
             5 * 6 * 7
         )  # Volume of cube centered at zero, moves in one step at a time (axes)
@@ -521,7 +521,7 @@ class TestUniformGrid(TestCase):
         r"""Test that the Fourier2 weights are correct against brute force."""
         origin = np.array([0.0, 0.0, 0.0])
         axes = np.eye(3)
-        shape = np.array([5, 6, 7], dtype=np.int)
+        shape = np.array([5, 6, 7], dtype=int)
         volume = (
             5 * 6 * 7
         )  # Volume of cube centered at zero, moves in one step at a time (axes)
@@ -591,7 +591,7 @@ class TestUniformGrid(TestCase):
         # Set up the grid with easy examples but axes that form a cube.
         origin = np.array([0.0, 0.0, 0.0])
         axes = np.array([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]])
-        shape = np.array([3, 3, 3], dtype=np.int)
+        shape = np.array([3, 3, 3], dtype=int)
         uniform = UniformGrid(origin, axes, shape, weight="Rectangle")
         volume = 3 * 3 * 3  # Volume of cube.
         desired_wghts = np.ones(uniform.size) * volume / np.prod(shape)
@@ -602,7 +602,7 @@ class TestUniformGrid(TestCase):
         # Set up the grid with easy examples but axes that form a cube.
         origin = np.array([0.0, 0.0, 0.0])
         axes = np.array([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]])
-        shape = np.array([3, 3, 3], dtype=np.int)
+        shape = np.array([3, 3, 3], dtype=int)
         uniform = UniformGrid(origin, axes, shape, weight="Trapezoid")
         volume = 3 * 3 * 3  # Volume of cube.
         desired_wghts = np.ones(uniform.size) * volume / np.prod(shape + 1)
@@ -613,7 +613,7 @@ class TestUniformGrid(TestCase):
         # Set up the grid with easy examples but axes that form a cube.
         origin = np.array([0.0, 0.0, 0.0])
         axes = np.array([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]])
-        shape = np.array([3, 3, 3], dtype=np.int)
+        shape = np.array([3, 3, 3], dtype=int)
         uniform = UniformGrid(origin, axes, shape, weight="Alternative")
         volume = 3 * 3 * 3  # Volume of cube.
         desired_wghts = (
@@ -625,7 +625,7 @@ class TestUniformGrid(TestCase):
         r"""Test integration against a Gaussian with a cubic grid."""
         origin = np.array([-1.0, -1.0, -1.0])
         axes = np.eye(3) * 0.01
-        shape = np.array([250, 250, 250], dtype=np.int)
+        shape = np.array([250, 250, 250], dtype=int)
 
         def gaussian(points):
             return np.exp(-5 * np.linalg.norm(points, axis=1) ** 2.0)
@@ -655,7 +655,7 @@ class TestUniformGrid(TestCase):
         r"""Test integration against a Gaussian with a square grid."""
         origin = np.array([-1.0, -1.0])
         axes = np.eye(2) * 0.005
-        shape = np.array([500, 500], dtype=np.int)
+        shape = np.array([500, 500], dtype=int)
 
         def gaussian(points):
             return np.exp(-5 * np.linalg.norm(points, axis=1) ** 2.0)
@@ -693,7 +693,7 @@ class TestUniformGrid(TestCase):
         # Set up the grid with easy examples but axes that form a cube.
         origin = np.array([0.0, 0.0, 0.0])
         axes = np.array([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]])
-        shape = np.array([3, 3, 3], dtype=np.int)
+        shape = np.array([3, 3, 3], dtype=int)
         uniform = UniformGrid(origin, axes, shape)
 
         # Create point close to the origin
@@ -731,7 +731,7 @@ class TestUniformGrid(TestCase):
         # Set up the grid with easy examples but axes that form a cube.
         origin = np.array([0.0, 0.0])
         axes = np.eye(2)
-        shape = np.array([3, 3], dtype=np.int)
+        shape = np.array([3, 3], dtype=int)
         uniform = UniformGrid(origin, axes, shape)
 
         # Create point close to the origin
