@@ -358,6 +358,7 @@ def test_transformation_of_ode_with_linear_transform():
 
 def test_high_order_transformations_gives_itself():
     r"""Test transforming then transforming back gives back the same result."""
+    
     # Consider the following transformation x^4 and its derivatives
     def transf(x):
         return x**4.0
