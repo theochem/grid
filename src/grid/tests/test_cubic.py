@@ -497,7 +497,6 @@ class TestUniformGrid(TestCase):
                 / (grid_x * np.pi)
             )
             for k in range(1, shape[1] + 1):
-
                 grid_y = np.arange(1, shape[1] + 1)
                 desired_y = np.sum(
                     np.sin(k * np.pi * grid_y / (shape[1] + 1))
