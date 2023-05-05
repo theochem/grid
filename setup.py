@@ -20,38 +20,38 @@
 # --
 # pragma pylint: disable=invalid-name
 """Package build and install script."""
-
+import os
 
 from setuptools import find_packages, setup
 
 
-def get_version():
-    """Load the version from version.py, without importing it.
-
-    This function assumes that the last line in the file contains a variable defining the
-    version string with single quotes.
-
-    """
-    try:
-        with open("grid/version.py", "r") as f:
-            return f.read().split("=")[-1].replace("'", "").strip()
-    except FileNotFoundError:
-        return "0.0.0"
+def get_version_info():
+    """Read __version__ and DEV_CLASSIFIER from version.py, using exec, not import."""
+    fn_version = os.path.join("bfit", "_version.py")
+    if os.path.isfile(fn_version):
+        myglobals = {}
+        with open(fn_version, "r") as f:
+            exec(f.read(), myglobals)  # pylint: disable=exec-used
+        return myglobals["__version__"], myglobals["DEV_CLASSIFIER"]
+    return "0.0.0.post0", "Development Status :: 2 - Pre-Alpha"
 
 
 def get_readme():
     """Load README.rst for display on PyPI."""
-    with open("README.md") as f:
-        return f.read()
+    with open('README.md') as fhandle:
+        return fhandle.read()
+
+
+VERSION, DEV_CLASSIFIER = get_version_info()
 
 
 setup(
-    name="grid",
-    version=get_version(),
-    description="Python Library for Numerical Molecular Integration.",
+    name="qc-grid",
+    version=VERSION,
+    description="Grid Package",
     long_description=get_readme(),
-    author="HORTON-ChemTools Dev Team",
-    author_email="horton.chemtools@gmail.com",
+    author="QC-Devs Community",
+    author_email="qcdevs@gmail.com",
     url="https://github.com/theochem/grid",
     package_dir={"": "src"},
     packages=find_packages(where="src"),
@@ -69,5 +69,16 @@ setup(
         "scipy>=1.4",
         "importlib_resources",
         "sympy",
+        "numpydoc", "sphinx_copybutton", "sphinx-autoapi", "nbsphinx", "sphinx_rtd_theme"
+    ],
+    classifiers=[
+        'Development Status :: 0 - Released',
+        'Environment :: Console',
+        'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
+        'Operating System :: POSIX :: Linux',
+        'Programming Language :: Python :: 3',
+        'Topic :: Scientific/Engineering :: Physics',
+        'Topic :: Scientific/Engineering :: Chemistry',
+        'Intended Audience :: Science/Research',
     ],
 )
