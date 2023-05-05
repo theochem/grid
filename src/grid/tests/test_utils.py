@@ -20,7 +20,7 @@
 """Utils function test file."""
 from unittest import TestCase
 
-from grid.lebedev import AngularGrid
+from grid.angular import AngularGrid
 from grid.utils import (
     convert_cart_to_sph,
     generate_derivative_real_spherical_harmonics,
@@ -101,10 +101,8 @@ class TestUtils(TestCase):
             n1, n2 = np.random.randint(0, 16, 2)
             re = sum(sph_h[n1] * sph_h[n2] * wts)
             if n1 != n2:
-                print(n1, n2, re)
                 assert_almost_equal(re, 0)
             else:
-                print(n1, n2, re)
                 assert_almost_equal(re, 1)
 
         for i in range(10):

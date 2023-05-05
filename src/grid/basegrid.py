@@ -337,6 +337,19 @@ class Grid:
             return np.array(integrals).T, all_orders
         return np.array(integrals).T  # output has shape (L, Number of centers)
 
+    def save(self, filename):
+        r"""
+        Save the points and weights as a npz file.
+
+        Parameters
+        ----------
+        filename : str
+            The path/name of the .npz file.
+
+        """
+        save_dict = {"points": self.points, "weights": self.weights}
+        np.savez(filename, **save_dict)
+
 
 class LocalGrid(Grid):
     """Local portion of a grid, containing all points within a sphere."""
@@ -379,6 +392,24 @@ class LocalGrid(Grid):
     def indices(self):
         """np.ndarray(N,): Indices of grid points and weights in the parent grid."""
         return self._indices
+
+    def save(self, filename):
+        r"""
+        Save the points, indices and weights as a npz file.
+
+        Parameters
+        ----------
+        filename : str
+           The path/name of the .npz file.
+
+        """
+        save_dict = {
+            "points": self.points,
+            "weights": self.weights,
+            "center": self.center,
+            "indices": self.indices,
+        }
+        np.savez(filename, **save_dict)
 
 
 class OneDGrid(Grid):

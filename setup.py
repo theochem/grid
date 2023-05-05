@@ -58,6 +58,7 @@ setup(
     package_data={
         "grid.data": ["*.*"],
         "grid.data.lebedev": ["*.npz"],
+        "grid.data.spherical_design": ["*.npz"],
         "grid.data.prune_grid": ["*.npz"],
         "grid.data.proatoms": ["*.npz"],
     },
