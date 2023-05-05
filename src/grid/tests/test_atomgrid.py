@@ -23,7 +23,6 @@
 from grid.angular import AngularGrid, LEBEDEV_DEGREES
 from grid.atomgrid import AtomGrid
 from grid.basegrid import Grid, OneDGrid
-from grid.lebedev import AngularGrid, LEBEDEV_DEGREES
 from grid.onedgrid import GaussLaguerre, GaussLegendre, UniformInteger
 from grid.rtransform import BeckeRTransform, IdentityRTransform, PowerRTransform
 from grid.utils import generate_real_spherical_harmonics
