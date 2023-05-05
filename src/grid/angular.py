@@ -370,6 +370,12 @@ class AngularGrid(Grid):
         >>> wts = np.array([0.5, 0.4, 0.3])
         >>> AngularGrid(pts, wts)
 
+        Notes
+        -----
+        - Sometimes the weights for Lebedev-Laikov grids can be negative. Choosing degrees that have
+            positive weights can mitigate round-off errors. Degrees equal to 13, 25 or 27 have
+            negative weights.
+
         """
         if not isinstance(use_spherical, bool):
             raise TypeError(
@@ -402,6 +408,14 @@ class AngularGrid(Grid):
                 points, weights = cache_dict[degree]
             self._degree = degree
             super().__init__(points, weights * 4 * np.pi)
+
+        if not use_spherical and np.any(weights < 0.0):
+            # Lebedev degrees 13, 25, 27 have negative weights. Symmetric spherical t-design
+            # have positive weights.
+            warnings.warn(
+                f"Lebedev weights are negative which can introduce round-off errors."
+            )
+
         self._use_spherical = use_spherical
 
     @property
@@ -522,10 +536,10 @@ class AngularGrid(Grid):
 
         Parameters
         ----------
-        degree : int, optional
+        degree : int
             Maximum angular degree :math:`l` of spherical harmonics that the angular grid
             can integrate accurately.
-        size : int, optional
+        size : int
             Number of angular grid points. If the angular grid corresponding to the given size is
             not supported, the next largest size is used.
         use_spherical: bool, optional
