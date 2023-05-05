@@ -115,7 +115,6 @@ _bragg = np.array(
     ]
 )
 
-
 _cambridge = np.array(
     [
         np.nan,  # index 0, place holder
