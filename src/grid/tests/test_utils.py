@@ -42,7 +42,7 @@ class TestUtils(TestCase):
     def test_get_atomic_radii(self):
         """Test get_cov_radii function for all atoms."""
         # fmt: off
-        bragg_Slater = np.array([
+        bragg_slater = np.array([
             np.nan, 0.25, np.nan, 1.45, 1.05, 0.85, 0.7, 0.65, 0.6, 0.5, np.nan,
             1.8, 1.5, 1.25, 1.1, 1., 1., 1., np.nan, 2.2, 1.8, 1.6, 1.4, 1.35,
             1.4, 1.4, 1.4, 1.35, 1.35, 1.35, 1.35, 1.3, 1.25, 1.15, 1.15, 1.15,
@@ -74,9 +74,9 @@ class TestUtils(TestCase):
         # fmt: on
         all_index = np.arange(1, 87)
         bragg_bohr = get_cov_radii(all_index, type="bragg")
-        assert_allclose(bragg_bohr, Bragg_Slater[1:] * 1.8897261339213)
+        assert_allclose(bragg_bohr, bragg_slater[1:] * 1.8897261339213)
         cambridge_bohr = get_cov_radii(all_index, type="cambridge")
-        assert_allclose(cambridge_bohr, Cambridge[1:] * 1.8897261339213)
+        assert_allclose(cambridge_bohr, cambridge[1:] * 1.8897261339213)
         all_index = np.arange(1, 97)
         alvaraz_bohr = get_cov_radii(all_index, type="alvarez")
         assert_allclose(alvaraz_bohr, alvarez[1:] * 1.8897261339213)
