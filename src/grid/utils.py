@@ -236,14 +236,14 @@ _alvarez = np.array(
         2.89128098,
         2.62671933,
         2.62671933,
-        2.4944385 ,
+        2.4944385,
         2.38105493,
         2.34326041,
         2.4944385,
         2.30546588,
         2.30546588,
         2.26767136,
-        2.2487741 ,
+        2.2487741,
         2.26767136,
         2.26767136,
         2.19208232,
@@ -267,7 +267,7 @@ _alvarez = np.array(
         2.64561659,
         4.61093177,
         4.06291119,
-        3.9117331 ,
+        3.9117331,
         3.85504131,
         3.83614405,
         3.79834953,
@@ -275,7 +275,7 @@ _alvarez = np.array(
         3.74165775,
         3.74165775,
         3.70386322,
-        3.6660687 ,
+        3.6660687,
         3.62827418,
         3.62827418,
         3.57158239,
@@ -290,13 +290,13 @@ _alvarez = np.array(
         2.66451385,
         2.57002754,
         2.57002754,
-        2.4944385 ,
+        2.4944385,
         2.74010289,
         2.75900016,
         2.79679468,
         2.64561659,
-        2.8345892 ,
-        2.8345892 ,
+        2.8345892,
+        2.8345892,
         4.91328795,
         4.17629476,
         4.06291119,
@@ -306,12 +306,9 @@ _alvarez = np.array(
         3.59047965,
         3.53378787,
         3.40150704,
-        3.19363717
+        3.19363717,
     ]
-) 
-       
-        
-
+)
 
 
 def get_cov_radii(atnums, type="bragg"):
@@ -351,9 +348,7 @@ def get_cov_radii(atnums, type="bragg"):
         raise ValueError(f"Not supported radii type, got {type}")
 
 
-def generate_real_spherical_harmonics_scipy(
-    l_max: int, theta: np.ndarray, phi: np.ndarray
-):
+def generate_real_spherical_harmonics_scipy(l_max: int, theta: np.ndarray, phi: np.ndarray):
     r"""Generate real spherical harmonics up to degree :math:`l` and for all orders :math:`m`.
 
     The real spherical harmonics are defined as a function
@@ -498,9 +493,7 @@ def generate_real_spherical_harmonics(l_max: int, theta: np.ndarray, phi: np.nda
     # the coefficients of the forward recursions and initial factor of spherical harmonic.
     a_k = lambda l, m: (2.0 * (l - 1.0) + 1) / ((l - 1.0) - m + 1.0)
     b_k = lambda l, m: (l - 1.0 + m) / (l - m)
-    fac_sph = lambda l, m: np.sqrt(
-        (2.0 * l + 1) / (4.0 * np.pi)
-    )  # Note (l-m)!/(l+m)! is moved
+    fac_sph = lambda l, m: np.sqrt((2.0 * l + 1) / (4.0 * np.pi))  # Note (l-m)!/(l+m)! is moved
 
     # Go through each degree and then order and fill out
     spherical_harm[0, :] = fac_sph(0, 0)  # Compute Y_0^0
@@ -510,21 +503,15 @@ def generate_real_spherical_harmonics(l_max: int, theta: np.ndarray, phi: np.nda
             if l_deg == m_ord:
                 # Do diagonal spherical harmonic Y_l^m, when l=m.
                 # Diagonal recursion: P_m^m = sin(phi) * P_{m-1}^{m-1} * (2 (l - 1) + 1)
-                p_leg[m_ord, 0] = (
-                    p_leg[m_ord - 1, 1] * (2 * (l_deg - 1.0) + 1) * sin_phi
-                )
+                p_leg[m_ord, 0] = p_leg[m_ord - 1, 1] * (2 * (l_deg - 1.0) + 1) * sin_phi
             else:
                 # Do forward recursion here and fill out Y_l^m and Y_l^{-m}
                 # Compute b_k P_{l-2}^m,  since m < l, then m < l - 2
-                second_fac = (
-                    b_k(l_deg, m_ord) * p_leg[m_ord, 1] if m_ord <= l_deg - 2 else 0
-                )
+                second_fac = b_k(l_deg, m_ord) * p_leg[m_ord, 1] if m_ord <= l_deg - 2 else 0
                 # Update/re-define P_{l-2}^m to be equal to P_{l-1}^m
                 p_leg[m_ord, 1, :] = p_leg[m_ord, 0]
                 # Then update P_{l-1}^m := P_l^m := a_k cos(\phi) P_{l-1}^m - b_k P_{l, -2}^m
-                p_leg[m_ord, 0, :] = (
-                    a_k(l_deg, m_ord) * cos_phi * p_leg[m_ord, 0] - second_fac
-                )
+                p_leg[m_ord, 0, :] = a_k(l_deg, m_ord) * cos_phi * p_leg[m_ord, 0] - second_fac
             # Compute Y_l^{m} that has cosine(theta) and Y_l^{-m} that has sin(theta)
             if m_ord == 0:
                 # init factorial needed to compute (l-m)!/(l+m)!
@@ -532,9 +519,7 @@ def generate_real_spherical_harmonics(l_max: int, theta: np.ndarray, phi: np.nda
                 spherical_harm[i_sph, :] = fac_sph(l_deg, m_ord) * p_leg[m_ord, 0]
             else:
                 common_fact = (
-                    (p_leg[m_ord, 0] / np.sqrt(factorial))
-                    * fac_sph(l_deg, m_ord)
-                    * np.sqrt(2.0)
+                    (p_leg[m_ord, 0] / np.sqrt(factorial)) * fac_sph(l_deg, m_ord) * np.sqrt(2.0)
                 )
                 spherical_harm[i_sph, :] = common_fact * np.cos(m_ord * theta)
                 i_sph += 1
@@ -545,9 +530,7 @@ def generate_real_spherical_harmonics(l_max: int, theta: np.ndarray, phi: np.nda
     return spherical_harm
 
 
-def generate_derivative_real_spherical_harmonics(
-    l_max: int, theta: np.ndarray, phi: np.ndarray
-):
+def generate_derivative_real_spherical_harmonics(l_max: int, theta: np.ndarray, phi: np.ndarray):
     r"""
     Generate derivatives of real spherical harmonics.
 
@@ -615,16 +598,9 @@ def generate_derivative_real_spherical_harmonics(
             cot_tangent[np.abs(np.tan(phi)) < 1e-10] = 0.0
             # Calculate the derivative in two pieces:
             fac = np.sqrt((l_val - np.abs(m)) * (l_val + np.abs(m) + 1))
-            output[1, i_output, :] = (
-                np.abs(m) * cot_tangent * sph_harm_degree[index_m(m), :]
-            )
+            output[1, i_output, :] = np.abs(m) * cot_tangent * sph_harm_degree[index_m(m), :]
             # Compute it using SciPy, removing conway phase (-1)^m and multiply by 2^0.5.
-            sph_harm_m = (
-                fac
-                * sph_harm(np.abs(m) + 1, l_val, theta, phi)
-                * np.sqrt(2)
-                * (-1) ** m
-            )
+            sph_harm_m = fac * sph_harm(np.abs(m) + 1, l_val, theta, phi) * np.sqrt(2) * (-1) ** m
             if m >= 0:
                 if m < l_val:  # When m == l_val, then fac = 0
                     output[1, i_output, :] += np.real(complex_expon * sph_harm_m)
@@ -663,19 +639,13 @@ def solid_harmonics(l_max: int, sph_pts: np.ndarray):
     """
     r, theta, phi = sph_pts.T
     spherical_harm = generate_real_spherical_harmonics(l_max, theta, phi)
-    degrees = np.array(
-        sum([[l_deg] * (2 * l_deg + 1) for l_deg in range(l_max + 1)], [])
-    )
+    degrees = np.array(sum([[l_deg] * (2 * l_deg + 1) for l_deg in range(l_max + 1)], []))
     return (
-        spherical_harm
-        * r ** degrees[:, None]
-        * np.sqrt(4.0 * np.pi / (2 * degrees[:, None] + 1))
+        spherical_harm * r ** degrees[:, None] * np.sqrt(4.0 * np.pi / (2 * degrees[:, None] + 1))
     )
 
 
-def convert_derivative_from_spherical_to_cartesian(
-    deriv_r, deriv_theta, deriv_phi, r, theta, phi
-):
+def convert_derivative_from_spherical_to_cartesian(deriv_r, deriv_theta, deriv_phi, r, theta, phi):
     r"""Convert the derivative form spherical coordinates to Cartesian.
 
     If :math:`r` is zero, then the derivative wrt to theta and phi are set to zero.
