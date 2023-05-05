@@ -20,9 +20,8 @@ https://github.com/theochem/grid/issues/new) or email [qcdevs@gmail.com]().
 
 ## Functionality
 * One-dimensional integration
-  * Includes various:
-    * quadratures
-    * transformations
+  * quadratures
+  * transformations
 * Multivariate integration 
   * Hypercubes:
     * Tensor product of one-dimensional quadratures
