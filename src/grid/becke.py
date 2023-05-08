@@ -164,7 +164,7 @@ class BeckeWeights:
         if len(indices) != 0:
             warnings.warn(
                 f"Covalent radii for the following atom numbers {atnums[indices]} is nan."
-                f"Instead the radii with 1 less the atomic number is used."
+                f" Instead the radii with 1 less the atomic number is used."
             )
         radii = np.array(
             [
