@@ -356,7 +356,7 @@ def _transform_ode_from_derivs(
 
     """
     # `derivs` has shape (K, N), calculate d^j g/ dr^j
-    derivs = np.array([dev(x) for dev in deriv_transformation], dtype=np.float64)
+    derivs = np.array([dev(x) for dev in deriv_transformation], dtype=float)
     total = len(coeffs)  # Should be K+1, K is the order of the ODE
     # coeff_a_mtr has shape (K+1, N)
     coeff_a_mtr = _evaluate_coeffs_on_points(x, coeffs)  # a_k(x)
@@ -509,7 +509,7 @@ def _derivative_transformation_matrix(deriv_func_list: list, point: float, order
             f"functions {len(deriv_func_list)} provided."
         )
     # Calculate derivatives of transformation evaluated at the point
-    derivs_at_pt = np.array([dev(point) for dev in deriv_func_list], dtype=np.float64)
+    derivs_at_pt = np.array([dev(point) for dev in deriv_func_list], dtype=float)
     deriv_transf = np.zeros((order, order))
     for i in range(0, order):
         for j in range(0, i + 1):
