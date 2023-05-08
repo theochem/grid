@@ -32,6 +32,7 @@ for handing singularities near the origin of the atomic grid.
 """
 
 from grid.atomgrid import AtomGrid
+from grid.molgrid import MolGrid
 from grid.ode import solve_ode_bvp, solve_ode_ivp
 from grid.rtransform import BaseTransform
 from grid.utils import convert_cart_to_sph, generate_real_spherical_harmonics
@@ -44,73 +45,51 @@ import numpy as np
 __all__ = ["solve_poisson_bvp", "solve_poisson_ivp"]
 
 
-def solve_poisson_ivp(
+def _interpolate_molgrid_helper(molgrid, func_vals, interpolate_callable):
+    # Common routine for both solve_poisson_bvp and solve_poisson_ivp
+    #  the difference between the two methods lies in the interpolate_callable function
+    #  which takes in two parameters, the atomic grid and function values on that atomic grid.
+    if isinstance(molgrid, AtomGrid):
+        # Convert AtomGrid to MolGrid, may increase computational time.
+        molgrid = MolGrid(
+            atnums=np.array([1.0]),
+            atgrids=[molgrid],
+            aim_weights=np.array([1.0] * molgrid.size),
+            store=True
+        )
+    if molgrid.atgrids is None:
+        raise ValueError(
+            "Molecular grid (MolGrid) attribute `store` should be set to True."
+        )
+
+    # Multiply f by the nuclear weight function w_n(r) for each atom grid segment.
+    func_vals_atom = func_vals * molgrid.aim_weights
+    # Go through each atomic grid and construct interpolation of f*w_n.
+    intepolate_funcs = []
+    for i in range(len(molgrid.atcoords)):
+        start_index = molgrid.indices[i]
+        final_index = molgrid.indices[i + 1]
+        atom_grid = molgrid[i]
+        intepolate_funcs.append(
+            interpolate_callable(atom_grid, func_vals_atom[start_index:final_index])
+        )
+
+    def interpolate_low(points):
+        output = intepolate_funcs[0](points)
+        for interpolate in intepolate_funcs[1:]:
+            output += interpolate(points)
+        return output
+
+    return interpolate_low
+
+
+def _solve_poisson_ivp_atomgrid(
     atomgrid: AtomGrid,
     func_vals: np.ndarray,
     transform: BaseTransform,
     r_interval: tuple = (1000, 1e-5),
     ode_params: Union[dict, type(None)] = None,
 ):
-    r"""
-    Return interpolation of the solution to the Poisson equation solved as an initial value problem.
-
-    The Poisson equation solves for function :math:`g` of the following:
-
-    .. math::
-        \Delta g = (-4\pi) f,
-
-    for a fixed function :math:`f`, where :math:`\Delta` is the Laplacian.  This
-    is transformed to an set of ODE problems as a initial value problem.
-
-    Ihe initial value problem is chosen so that the boundary of :math:`g` for large r is set to
-    :math:`\int \int \int f(r, \theta, \phi) / r`.  Depending on :math:`f`, this function has
-    difficulty in capturing the origin :math:`r=0` region, and is recommended to keep the
-    final interval :math:`a` close to zero.
-
-    Parameters
-    ----------
-    atomgrid : AtomGrid
-        Atomic grid that is used for integration and expanding func into real spherical
-        harmonic basis.
-    func_vals : ndarray(N,)
-        The function values evaluated on all :math:`N` points on the atomic grid.
-    transform : BaseTransform, optional
-        Transformation from infinite domain :math:`r` (:math:`[0, \infty)` to another
-        domain that is a finite.
-    r_interval : tuple, optional
-        The interval :math:`(b, a)` of :math:`r` for which the ODE solver will start from and end,
-        where :math:`b>a`. The value :math:`b` should be large as it determines the asymptotic
-        region of :math:`g` and value :math:`a` is recommended to be small but not zero depending
-        on :math:`f`.
-    ode_params : dict, optional
-        The parameters for the ode solver. See `grid.ode.solve_ode_ivp` for all options.
-
-    Returns
-    -------
-    callable(ndarray(N, 3) -> float) :
-        The solution to Poisson equaiton/potential :math:`g : \mathbb{R}^3 \rightarrow \mathbb{R}`.
-
-    Examples
-    --------
-    Set up of the radial grid
-    >>> oned_grid = Trapezoidal(10000)
-    >>> tf = LinearFiniteRTransform(0.0, 1000)
-    >>> radial_grid = tf.transform_1d_grid(oned)
-    Set up the atomic grid with degree 10 at each radial point.
-    >>> atomic_grid = AtomGrid(radial_grid, degrees=[10])
-    Set the charge distribution to be unit-charge density and evaluate on atomic grid points.
-    >>> def charge_distribution(x, alpha=0.1):
-    >>>    r = np.linalg.norm(x, axis=1)
-    >>>    return (alpha / np.pi)**(3.0 / 2.0) * np.exp(-alpha * r**2.0)
-    >>> func_vals = charge_distribution(atomic_grid.points)
-    Solve for the potential as an initial value problem and evaluate it over the atomic grid.
-    >>> potential = solve_poisson_ivp(
-    >>>      atgrid, func_vals, InverseRTransform(tf), r_interval=(1000, 1e-3),
-    >>>      ode_params={"method" : "DOP853", "atol": 1e-8},
-    >>> )
-    >>> potential_values = potential(atgrid.points)
-
-    """
     if r_interval[0] < r_interval[1]:
         raise ValueError(
             f"Initial Radial interval {r_interval[0]} should be greater than "
@@ -183,17 +162,16 @@ def solve_poisson_ivp(
     return interpolate
 
 
-def solve_poisson_bvp(
-    atomgrid: AtomGrid,
+def solve_poisson_ivp(
+    molgrid: Union[MolGrid, AtomGrid],
     func_vals: np.ndarray,
     transform: BaseTransform,
-    boundary: Union[float, type(None)] = None,
-    include_origin: bool = True,
-    remove_large_pts: float = 1e6,
+    r_interval: tuple = (1000, 1e-5),
     ode_params: Union[dict, type(None)] = None,
 ):
+
     r"""
-    Return interpolation of the solution to the Poisson equation solved as a boundary value problem.
+    Return interpolation of the solution to the Poisson equation solved as an initial value problem.
 
     The Poisson equation solves for function :math:`g` of the following:
 
@@ -201,31 +179,30 @@ def solve_poisson_bvp(
         \Delta g = (-4\pi) f,
 
     for a fixed function :math:`f`, where :math:`\Delta` is the Laplacian.  This
-    is transformed to an set of ODE problems as a boundary value problem.
+    is transformed to an set of ODE problems as a initial value problem.
 
-    If boundary is not provided, then the boundary of :math:`g` for large r is set to
-    :math:`\int \int \int f(r, \theta, \phi) / r`.
+    Ihe initial value problem is chosen so that the boundary of :math:`g` for large r is set to
+    :math:`\int \int \int f(r, \theta, \phi) / r`.  Depending on :math:`f`, this function has
+    difficulty in capturing the origin :math:`r=0` region, and is recommended to keep the
+    final interval :math:`a` close to zero.
 
     Parameters
     ----------
-    atomgrid : AtomGrid
-        Atomic grid that is used for integration and expanding func into real spherical
-        harmonic basis.
+    molgrid : Union[MolGrid, AtomGrid]
+        Molecular or atomic grid that is used for integration and expanding func into real
+        spherical harmonic basis.
     func_vals : ndarray(N,)
-        The function values evaluated on all :math:`N` points on the atomic grid.
+        The function values evaluated on all :math:`N` points on the molecular grid.
     transform : BaseTransform, optional
         Transformation from infinite domain :math:`r` (:math:`[0, \infty)` to another
         domain that is a finite.
-    boundary : float, optional
-        The boundary value of :math:`g` in the limit of r to infinity.
-    include_origin : bool, optional
-        If true, will add r=0 point when solving for the ode only. If false, it is recommended
-        to have many radial points near the origin.
-    remove_large_pts : float, optional
-        If true, will remove any points larger than `remove_large_pts` when solving for the ode
-        only.
+    r_interval : tuple, optional
+        The interval :math:`(b, a)` of :math:`r` for which the ODE solver will start from and end,
+        where :math:`b>a`. The value :math:`b` should be large as it determines the asymptotic
+        region of :math:`g` and value :math:`a` is recommended to be small but not zero depending
+        on :math:`f`.
     ode_params : dict, optional
-        The parameters for the ode solver. See `grid.ode.solve_ode_bvp` for all options.
+        The parameters for the ode solver. See `grid.ode.solve_ode_ivp` for all options.
 
     Returns
     -------
@@ -235,29 +212,46 @@ def solve_poisson_bvp(
     Examples
     --------
     Set up of the radial grid
-    >>> radial_grid = Trapezoidal(10000)
-    Set up the atomic grid with degree 10 at each radial point.
-    >>> degree = 10
-    >>> atomic_grid = AtomGrid(radial, degrees=[degree])
+    >>> oned_grid = Trapezoidal(10000)
+    >>> tf = LinearFiniteRTransform(0.0, 1000)
+    >>> radial_grid = tf.transform_1d_grid(oned)
+    Set up the atomic grid with degree 10 at each radial point. Molecular grid works as well.
+    >>> atomic_grid = AtomGrid(radial_grid, degrees=[10])
     Set the charge distribution to be unit-charge density and evaluate on atomic grid points.
     >>> def charge_distribution(x, alpha=0.1):
     >>>    r = np.linalg.norm(x, axis=1)
     >>>    return (alpha / np.pi)**(3.0 / 2.0) * np.exp(-alpha * r**2.0)
     >>> func_vals = charge_distribution(atomic_grid.points)
-    Solve the Poisson equation with Becke transformation
-    >>> transform = BeckeRTransform(1e-6, 1.5, trim_inf=True)
-    >>> potential = solve_poisson_bvp(
-    >>>      atgrid, func_vals, InverseRTransform(tf), include_origin=True,
-    >>>      remove_large_pts=1e6, ode_params={"tol" : 1e-6, "max_nodes": 20000},
+    Solve for the potential as an initial value problem and evaluate it over the atomic grid.
+    >>> potential = solve_poisson_ivp(
+    >>>      atgrid, func_vals, InverseRTransform(tf), r_interval=(1000, 1e-3),
+    >>>      ode_params={"method" : "DOP853", "atol": 1e-8},
     >>> )
-    >>> actual = potential(atgrid.points)
-
-    References
-    ----------
-    .. [1] Becke, A. D., & Dickson, R. M. (1988). Numerical solution of Poisson’s equation in
-           polyatomic molecules. The Journal of chemical physics, 89(5), 2993-2997.
+    >>> potential_values = potential(atgrid.points)
 
     """
+    return _interpolate_molgrid_helper(
+        molgrid,
+        func_vals,
+        lambda atom_grid, func_vals: _solve_poisson_ivp_atomgrid(
+            atom_grid,
+            func_vals,
+            transform,
+            r_interval,
+            ode_params
+        )
+    )
+
+
+def _solve_poisson_bvp_atomgrid(
+    atomgrid: AtomGrid,
+    func_vals: np.ndarray,
+    transform: BaseTransform,
+    boundary: Union[float, type(None)] = None,
+    include_origin: bool = True,
+    remove_large_pts: float = 1e6,
+    ode_params: Union[dict, type(None)] = None,
+):
     if not isinstance(boundary, (float, type(None))):
         raise TypeError(f"`boundary` {type(boundary)} should be either float or None.")
     if not isinstance(include_origin, bool):
@@ -340,6 +334,96 @@ def solve_poisson_bvp(
         return np.einsum("ij, ij -> j", r_values, r_sph_harm)
 
     return interpolate
+
+
+def solve_poisson_bvp(
+    molgrid: Union[MolGrid, AtomGrid],
+    func_vals: np.ndarray,
+    transform: BaseTransform,
+    boundary: Union[float, type(None)] = None,
+    include_origin: bool = True,
+    remove_large_pts: float = 1e6,
+    ode_params: Union[dict, type(None)] = None,
+):
+    r"""
+    Return interpolation of the solution to the Poisson equation solved as a boundary value problem.
+
+    The Poisson equation solves for function :math:`g` of the following:
+
+    .. math::
+        \Delta g = (-4\pi) f,
+
+    for a fixed function :math:`f`, where :math:`\Delta` is the Laplacian.  This
+    is transformed to an set of ODE problems as a boundary value problem.
+
+    If boundary is not provided, then the boundary of :math:`g` for large r is set to
+    :math:`\int \int \int f(r, \theta, \phi) / r`.
+
+    Parameters
+    ----------
+    molgrid : Union[MolGrid, AtomGrid]
+        Molecular or atomic grid that is used for integration and expanding func into real spherical
+        harmonic basis.
+    func_vals : ndarray(N,)
+        The function values evaluated on all :math:`N` points on the molecular grid.
+    transform : BaseTransform, optional
+        Transformation from infinite domain :math:`r` (:math:`[0, \infty)` to another
+        domain that is a finite.
+    boundary : float, optional
+        The boundary value of :math:`g` in the limit of r to infinity.
+    include_origin : bool, optional
+        If true, will add r=0 point when solving for the ode only. If false, it is recommended
+        to have many radial points near the origin.
+    remove_large_pts : float, optional
+        If true, will remove any points larger than `remove_large_pts` when solving for the ode
+        only.
+    ode_params : dict, optional
+        The parameters for the ode solver. See `grid.ode.solve_ode_bvp` for all options.
+
+    Returns
+    -------
+    callable(ndarray(N, 3) -> float) :
+        The solution to Poisson equaiton/potential :math:`g : \mathbb{R}^3 \rightarrow \mathbb{R}`.
+
+    Examples
+    --------
+    Set up of the radial grid
+    >>> radial_grid = Trapezoidal(10000)
+    Set up the atomic grid with degree 10 at each radial point. Molecular grid works as well.
+    >>> degree = 10
+    >>> atomic_grid = AtomGrid(radial, degrees=[degree])
+    Set the charge distribution to be unit-charge density and evaluate on atomic grid points.
+    >>> def charge_distribution(x, alpha=0.1):
+    >>>    r = np.linalg.norm(x, axis=1)
+    >>>    return (alpha / np.pi)**(3.0 / 2.0) * np.exp(-alpha * r**2.0)
+    >>> func_vals = charge_distribution(atomic_grid.points)
+    Solve the Poisson equation with Becke transformation
+    >>> transform = BeckeRTransform(1e-6, 1.5, trim_inf=True)
+    >>> potential = solve_poisson_bvp(
+    >>>      atgrid, func_vals, InverseRTransform(tf), include_origin=True,
+    >>>      remove_large_pts=1e6, ode_params={"tol" : 1e-6, "max_nodes": 20000},
+    >>> )
+    >>> actual = potential(atgrid.points)
+
+    References
+    ----------
+    .. [1] Becke, A. D., & Dickson, R. M. (1988). Numerical solution of Poisson’s equation in
+           polyatomic molecules. The Journal of chemical physics, 89(5), 2993-2997.
+
+    """
+    return _interpolate_molgrid_helper(
+        molgrid,
+        func_vals,
+        lambda atom_grid, func_vals: _solve_poisson_bvp_atomgrid(
+                atom_grid,
+                func_vals,
+                transform,
+                boundary,
+                include_origin,
+                remove_large_pts,
+                ode_params
+            )
+        )
 
 
 def interpolate_laplacian(atomgrid: AtomGrid, func_vals: np.ndarray):
