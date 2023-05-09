@@ -528,7 +528,7 @@ class TestAtomGrid:
             )
             assert_allclose(r_sph_proj, [spl(shell) for spl in spls], atol=1e-10)
 
-    def test_cubicspline_and_interp_gauss(self):
+    def test_cubicspline_and_interp_gauss(self, centers):
         """Test cubicspline interpolation values."""
         oned = GaussLegendre(30)
         btf = BeckeRTransform(0.0001, 1.5)
@@ -536,7 +536,7 @@ class TestAtomGrid:
         atgrid = AtomGrid.from_pruned(
             rad, 1, sectors_r=[], sectors_degree=[7], use_spherical=False
         )
-        value_array = self.helper_func_gauss(atgrid.points)
+        value_array = self.helper_func_gauss(atgrid.points, centers)
         # random test points on gauss function
         for _ in range(20):
             r = np.random.rand(1)[0] * 2
@@ -548,7 +548,7 @@ class TestAtomGrid:
             input_points = np.array((x, y, z)).T
             interfunc = atgrid.interpolate(value_array)
             assert_allclose(
-                self.helper_func_gauss(input_points), interfunc(input_points), atol=1e-4
+                self.helper_func_gauss(input_points, centers), interfunc(input_points), atol=1e-4
             )
 
     @pytest.mark.parametrize("use_spherical", [False, True])
