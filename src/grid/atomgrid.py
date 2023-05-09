@@ -339,6 +339,12 @@ class AtomGrid(Grid):
         r"""bool: True then symmetric spherical t-design is used rather than Lebedev-Laikov grid."""
         return self._use_spherical
 
+    @property
+    def basis(self):
+        r"""ndarray(N, 3): Generate spherical harmonic basis evaluated on atomic grid points."""
+        # Used for mostly interpolation
+        return self._basis
+
     def save(self, filename):
         r"""
         Save atomic grid attributes as a npz file.
@@ -505,7 +511,7 @@ class AtomGrid(Grid):
         # Remove the radial weights and r^2 values that are in self.weights
         with np.errstate(divide='ignore', invalid='ignore'):
             radial_coefficients /= (self.rgrid.points ** 2 * self.rgrid.weights)
-        # For radius smaller than 1.0e-8, due to division by zero, we regenerate
+        # For radius smaller than 1.0e-8, due to division by zero by r^2, we regenerate
         # the angular grid and calculate the integral at those points.
         r_index = np.where(self.rgrid.points < 1e-8)[0]
         for i in r_index:  # if r_index = [], then for loop doesn't occur.
@@ -614,7 +620,7 @@ class AtomGrid(Grid):
         # Multiply spherical harmonic basis with the function values to project.
         values = np.einsum("ln,n->ln", self._basis, func_vals)
         radial_components = self.integrate_angular_coordinates(values)
-        # each shell can only integrate two spherical harmonics upto shell_degree // 2,
+        # each shell can only integrate spherical harmonics up to the shell_degree,
         # so if shell_degree < l_max, the f_{lm} should be set to zero for l > shell_degree // 2.
         # Instead, one could set truncate the basis of a given shell.
         for i in range(self.n_shells):
