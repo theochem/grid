@@ -369,8 +369,8 @@ class TestAtomGrid:
         return dxf + dyf + dzf
 
     @pytest.mark.parametrize("use_spherical", [False, True])
-    def test_integrating_angular_components(self, use_spherical):
-        """Test radial points that contain zero."""
+    def test_integrating_angular_components_spherical(self, use_spherical):
+        """Test integrating angular components of a spherical harmonics of maximum degree 3."""
         odg = OneDGrid(
             np.array([0.0, 1e-16, 1e-8, 1e-4, 1e-2]), np.ones(5), (0, np.inf)
         )
@@ -398,6 +398,49 @@ class TestAtomGrid:
         assert_almost_equal(integral[0, 0, :], np.sqrt(4.0 * np.pi))
         assert_almost_equal(integral[0, 1:, :], 0.0)
         assert_almost_equal(integral[1:, :, :], 0.0)
+
+    @pytest.mark.parametrize("numb_rads, degs", [(10, 2), (10, 5), (10, 10)])
+    def test_integrating_angular_components_with_gaussian_projected_to_spherical_harmonic(
+        self, numb_rads, degs
+    ):
+        r"""Test integrating angular components of a Gaussian projected to spherical harmonic."""
+        odg = OneDGrid(np.linspace(0.0, 1.0, numb_rads), np.ones(numb_rads), (0, np.inf))
+        atom_grid = AtomGrid(odg, degrees=[degs])
+        func_vals = self.helper_func_gauss(atom_grid.points)
+        # Generate spherical harmonic basis
+        theta, phi = atom_grid.convert_cartesian_to_spherical().T[1:]
+        basis = generate_real_spherical_harmonics(degs // 2, theta, phi)
+        # Multiply spherical harmonic basis with the Gaussian function values to project.
+        values = np.einsum("ln,n->ln", basis, func_vals)
+        # Take the integral of the projection of the Gaussian onto spherical harmonic basis.
+        integrals = atom_grid.integrate_angular_coordinates(values)
+        # Since the Gaussian is spherical, then this is just the integral of a spherical harmonic
+        #  thus whenever l!= 0, we have it is zero everywhere.
+        assert_allclose(integrals[1:, :], 0.0, atol=1e-6)
+        # Integral of e^(-r^2) * int sin(theta) dtheta dphi / (sqrt(4 pi))
+        assert_allclose(integrals[0, :], np.exp(-atom_grid.rgrid.points**2.0) * (4.0 * np.pi)**0.5)
+
+    @pytest.mark.parametrize("numb_rads, degs", [(50, 10)])
+    def test_integrating_angular_components_with_offcentered_gaussian(
+        self, numb_rads, degs
+    ):
+        r"""Test integrating angular components off-centered Gaussian is non-zero due symmetry."""
+        # Go from 1e-3, since it is zero
+        odg = OneDGrid(np.linspace(1e-3, 1.0, numb_rads), np.ones(numb_rads), (0, np.inf))
+        atom_grid = AtomGrid(odg, degrees=[degs])
+        # Since it is off-centered, one of the l=1, (p-z orbital) would be non-zero
+        func_vals = self.helper_func_gauss(atom_grid.points, center=np.array([0.0, 0.0, 0.1]))
+        # Generate spherical harmonic basis
+        theta, phi = atom_grid.convert_cartesian_to_spherical().T[1:]
+        basis = generate_real_spherical_harmonics(degs // 2, theta, phi)
+        # Multiply spherical harmonic basis with the Gaussian function values to project.
+        values = np.einsum("ln,n->ln", basis, func_vals)
+        # Take the integral of the projection of the Gaussian onto spherical harmonic basis.
+        integrals = atom_grid.integrate_angular_coordinates(values)
+        # Integral of e^(-r^2) * int sin(\theta) d\theta d\phi / (sqrt(4 pi))
+        assert np.all(integrals[1, :] > 1e-5)  # pz-orbital should be non-zero
+        assert np.all(integrals[2, :] < 1e-5)  # px, py-orbital should be zero
+        assert np.all(integrals[3, :] < 1e-5)
 
     @pytest.mark.parametrize("use_spherical", [False, True])
     def test_fitting_spherical_harmonics(self, use_spherical):
