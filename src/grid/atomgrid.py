@@ -775,7 +775,6 @@ class AtomGrid(Grid):
 
         return interpolate_low
 
-
     @staticmethod
     def _input_type_check(rgrid: OneDGrid, center: np.ndarray):
         """Check input type.
