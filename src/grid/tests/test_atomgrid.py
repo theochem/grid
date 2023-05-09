@@ -571,28 +571,34 @@ class TestAtomGrid:
             )
             assert_allclose(r_sph_proj, [spl(shell) for spl in spls], atol=1e-10)
 
-    def test_cubicspline_and_interp_gauss(self, centers):
-        """Test cubicspline interpolation values."""
-        oned = GaussLegendre(30)
+    @pytest.mark.parametrize("centers",
+        [
+            np.array([[0.0, 0.0, 0.0]]),
+            np.array([[0.1, 0.0, 0.0]]),
+            np.array([[0.1, 1.1, 0.0]]),
+            np.array([[1.1, 0.0, -0.1]]),
+        ]
+     )
+    def test_interpolation_of_gaussian(self, centers):
+        """Test cubicspline interpolation values on a Gaussian."""
+        oned = GaussLegendre(200)
         btf = BeckeRTransform(0.0001, 1.5)
         rad = btf.transform_1d_grid(oned)
-        atgrid = AtomGrid.from_pruned(
-            rad, 1, sectors_r=[], sectors_degree=[7], use_spherical=False
-        )
+        atgrid = AtomGrid.from_pruned(rad, 1, sectors_r=[], sectors_degree=[7])
         value_array = self.helper_func_gauss(atgrid.points, centers)
         # random test points on gauss function
-        for _ in range(20):
-            r = np.random.rand(1)[0] * 2
-            theta = np.random.rand(10)
-            phi = np.random.rand(10)
-            x = r * np.sin(phi) * np.cos(theta)
-            y = r * np.sin(phi) * np.sin(theta)
-            z = r * np.cos(phi)
-            input_points = np.array((x, y, z)).T
-            interfunc = atgrid.interpolate(value_array)
-            assert_allclose(
-                self.helper_func_gauss(input_points, centers), interfunc(input_points), atol=1e-4
-            )
+        size = 2000
+        r= np.random.uniform(0.0, np.max(rad.points), size=size)
+        theta = np.random.uniform(0.0, np.pi, size=size)
+        phi = np.random.uniform(0.0, 2.0 * np.pi, size=size)
+        x = r * np.sin(phi) * np.cos(theta)
+        y = r * np.sin(phi) * np.sin(theta)
+        z = r * np.cos(phi)
+        input_points = np.array((x, y, z)).T
+        interfunc = atgrid.interpolate(value_array)
+        assert_allclose(
+            self.helper_func_gauss(input_points, centers), interfunc(input_points), atol=1e-5
+        )
 
     @pytest.mark.parametrize("use_spherical", [False, True])
     def test_cubicspline_and_interp_mol(self, use_spherical):
@@ -715,7 +721,7 @@ class TestAtomGrid:
         assert_allclose(spherical_avg2, 0.0, atol=1e-4)
 
     @pytest.mark.parametrize("use_spherical", [False, True])
-    def test_interpolate_and_its_derivatives(self, use_spherical):
+    def test_interpolate_and_its_derivatives_on_polynomial(self, use_spherical):
         """Test interpolation of derivative of polynomial function."""
         odg = OneDGrid(np.linspace(0.01, 10, num=50), np.ones(50), (0, np.inf))
         rad = IdentityRTransform().transform_1d_grid(odg)
