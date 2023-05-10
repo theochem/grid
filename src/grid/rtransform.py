@@ -870,15 +870,20 @@ class ExpRTransform(BaseTransform):
     This transformation is given by
 
     .. math::
-        r(x) = r_{min} e^{x \log\bigg(\frac{r_{max}}{r_{min} / (N - 1)}  \bigg)}.
+        r(x) = r_{min} e^{x \log\bigg(\frac{r_{max}}{r_{min} / b}  \bigg)},
+
+
+    where :math:`b` maps to `rmax`. If None, then the :math:`b` is taken to be the maximum
+     from the first grid that is being transformed. This transformation always maps zero to
+     :math:`r_{min}`.
 
     The inverse transformation is given by
 
     .. math::
-        x(r) = \frac{\log\big(\frac{r}{r_{min}} \big) (N - 1)}{\log(\frac{r_{max}}{r_{min}})}
+        x(r) = \frac{\log\big(\frac{r}{r_{min}} \big) b}{\log(\frac{r_{max}}{r_{min}})}
     """
 
-    def __init__(self, rmin: float, rmax: float):
+    def __init__(self, rmin: float, rmax: float, b: float = None):
         r"""Initialize exp transform instance.
 
         Parameters
@@ -887,6 +892,10 @@ class ExpRTransform(BaseTransform):
             Minimum value for transformed points.
         rmax : float
             Maximum value for transformed points.
+        b: float
+            Maximum :math:`b` of a prespecified radial grid :math:`[0, b]` such that
+            :math:`b` maps to `rmax`. If None, then the maximum is taken and stored from the
+            grid that is transformed initially.
 
         """
         if rmin < 0 or rmax < 0:
@@ -901,6 +910,7 @@ class ExpRTransform(BaseTransform):
         self._rmax = rmax
         self._domain = (0, np.inf)
         self._codomain = (rmin, rmax)
+        self._b = b
 
     @property
     def rmin(self):
@@ -912,14 +922,27 @@ class ExpRTransform(BaseTransform):
         r"""float: the value of rmax."""
         return self._rmax
 
+    @property
+    def b(self):
+        r"""float: Parameter :math:`b` that maps/transforms to :math:`r_{max}`."""
+        return self._b
+
+    def set_maximum_parameter_b(self, x):
+        r"""Sets up the parameter b from taken the maximum over x."""
+        if self.b is None:
+            self._b = np.max(x)
+            if np.abs(self.b) < 1e-16:
+                raise ValueError(f"The parameter b {self.b} is taken from the maximum of the grid"
+                                 f"and can't be zero.")
+
     def transform(self, x: np.ndarray):
         r"""
         Perform exponential transform.
 
         .. math::
-            r = r_{min} e^{x \log\bigg(\frac{r_{max}}{r_{min} / (N - 1)}  \bigg)},
+            r = r_{min} e^{x \log\bigg(\frac{r_{max}}{r_{min} / b}  \bigg)},
 
-        where :math:`N` is the number of points in grid.
+        where :math:`b` is a prespecified parameter that maps to :math:`r_{max}`.
 
         Parameters
         ----------
@@ -932,7 +955,8 @@ class ExpRTransform(BaseTransform):
             The transformation of x in the co-domain of the transformation.
 
         """
-        alpha = np.log(self._rmax / self._rmin) / (x.size - 1)
+        self.set_maximum_parameter_b(x)
+        alpha = np.log(self._rmax / self._rmin) / self.b
         return self._rmin * np.exp(x * alpha)
 
     def deriv(self, x: np.ndarray):
@@ -950,7 +974,8 @@ class ExpRTransform(BaseTransform):
             First derivative of transformation at x.
 
         """
-        alpha = np.log(self._rmax / self._rmin) / (x.size - 1)
+        self.set_maximum_parameter_b(x)
+        alpha = np.log(self._rmax / self._rmin) / self.b
         return self.transform(x) * alpha
 
     def deriv2(self, x: np.ndarray):
@@ -968,7 +993,8 @@ class ExpRTransform(BaseTransform):
             Second derivative of transformation at x.
 
         """
-        alpha = np.log(self._rmax / self._rmin) / (x.size - 1)
+        self.set_maximum_parameter_b(x)
+        alpha = np.log(self._rmax / self._rmin) / self.b
         return self.deriv(x) * alpha
 
     def deriv3(self, x: np.ndarray):
@@ -986,7 +1012,8 @@ class ExpRTransform(BaseTransform):
             Third derivative of transformation at x.
 
         """
-        alpha = np.log(self._rmax / self._rmin) / (x.size - 1)
+        self.set_maximum_parameter_b(x)
+        alpha = np.log(self._rmax / self._rmin) / self.b
         return self.deriv2(x) * alpha
 
     def inverse(self, r: np.ndarray):
@@ -994,7 +1021,9 @@ class ExpRTransform(BaseTransform):
         Compute the inverse of exponential transform.
 
         .. math::
-            x(r_i) = \frac{\log\big(\frac{r}{r_{min}} \big) (N - 1)}{\log(\frac{r_{max}}{r_{min}})}
+            x(r_i) = \frac{\log\big(\frac{r}{r_{min}} \big) b}{\log(\frac{r_{max}}{r_{min}})},
+
+        where :math:`b` is a prespecified parameter
 
         Parameters
         ----------
@@ -1007,7 +1036,8 @@ class ExpRTransform(BaseTransform):
             Inverse transformation at r.
 
         """
-        alpha = np.log(self._rmax / self._rmin) / (r.size - 1)
+        self.set_maximum_parameter_b(r)
+        alpha = np.log(self._rmax / self._rmin) / self.b
         return np.log(r / self._rmin) / alpha
 
 
