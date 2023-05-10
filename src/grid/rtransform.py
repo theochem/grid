@@ -1048,7 +1048,9 @@ class PowerRTransform(BaseTransform):
     This transformations is given by
 
     .. math::
-        r(x) = r_{min}  (x + 1)^{\frac{\log(r_{max} - \log(r_{min}}{N}}.
+        r(x) = r_{min}  (x + 1)^{\frac{\log(r_{max} - \log(r_{min}}{\log(b + 1)}},
+
+    such that :math:`r(b) = r_{max}`.
 
     The inverse of the transformation is given by
 
@@ -1057,7 +1059,7 @@ class PowerRTransform(BaseTransform):
 
     """
 
-    def __init__(self, rmin: float, rmax: float):
+    def __init__(self, rmin: float, rmax: float, b: float = None):
         r"""Initialize power transform instance.
 
         Parameters
@@ -1066,6 +1068,9 @@ class PowerRTransform(BaseTransform):
             Minimum value for transformed points
         rmax : float
             Maximum value for transformed points
+        b: float
+            The parameter b that maps to :math:`r_{max}`.
+
 
         """
         if rmin >= rmax:
@@ -1076,7 +1081,20 @@ class PowerRTransform(BaseTransform):
         self._rmax = rmax
         self._domain = (0, np.inf)
         self._codomain = (rmin, rmax)
+        self._b = b
 
+    @property
+    def b(self):
+        r"""float: Parameter :math:`b` that maps/transforms to :math:`r_{max}`."""
+        return self._b
+
+    def set_maximum_parameter_b(self, x):
+        r"""Sets up the parameter b from taken the maximum over x."""
+        if self.b is None:
+            self._b = np.max(x)
+            if np.abs(self.b) < 1e-16:
+                raise ValueError(f"The parameter b {self.b} is taken from the maximum of the grid"
+                                 f"and can't be zero.")
     @property
     def rmin(self):
         r"""float: the value of rmin."""
@@ -1092,9 +1110,9 @@ class PowerRTransform(BaseTransform):
         Perform power transform.
 
         .. math::
-            r = r_{min}  (x + 1)^{\frac{\log(r_{max} - \log(r_{min}}{N}},
+            r = r_{min}  (x + 1)^{\frac{\log(r_{max} - \log(r_{min}}{b + 1}},
 
-        where :math:`N` is the number of points in x.
+        such that :math:`r(b) = r_{max}`.
 
         Parameters
         ----------
@@ -1107,7 +1125,8 @@ class PowerRTransform(BaseTransform):
             The transformation of x to the co-domain of the transformation.
 
         """
-        power = (np.log(self._rmax) - np.log(self._rmin)) / np.log(x.size)
+        self.set_maximum_parameter_b(x)
+        power = (np.log(self._rmax) - np.log(self._rmin)) / np.log(self.b + 1)
         if power < 2:
             warnings.warn(
                 f"power need to be larger than 2\n  power: {power}", RuntimeWarning
@@ -1129,7 +1148,8 @@ class PowerRTransform(BaseTransform):
             First derivative of transformation at x.
 
         """
-        power = (np.log(self._rmax) - np.log(self._rmin)) / np.log(x.size)
+        self.set_maximum_parameter_b(x)
+        power = (np.log(self._rmax) - np.log(self._rmin)) / np.log(self.b + 1)
         return power * self._rmin * np.power(x + 1, power - 1)
 
     def deriv2(self, x: np.ndarray):
@@ -1147,7 +1167,9 @@ class PowerRTransform(BaseTransform):
             Second derivative of transformation at x.
 
         """
-        power = (np.log(self._rmax) - np.log(self._rmin)) / np.log(x.size)
+
+        self.set_maximum_parameter_b(x)
+        power = (np.log(self._rmax) - np.log(self._rmin)) / np.log(self.b + 1)
         return power * (power - 1) * self._rmin * np.power(x + 1, power - 2)
 
     def deriv3(self, x: np.ndarray):
@@ -1165,7 +1187,8 @@ class PowerRTransform(BaseTransform):
             Third derivative of transformation at x.
 
         """
-        power = (np.log(self._rmax) - np.log(self._rmin)) / np.log(x.size)
+        self.set_maximum_parameter_b(x)
+        power = (np.log(self._rmax) - np.log(self._rmin)) / np.log(self.b + 1)
         return (
             power * (power - 1) * (power - 2) * self._rmin * np.power(x + 1, power - 3)
         )
@@ -1175,7 +1198,10 @@ class PowerRTransform(BaseTransform):
         Compute the inverse of power transform.
 
         .. math::
-            x(r) = \frac{r}{r_{min}}^{\frac{\log(N)}{\log(r_{max}) - \log(r_{min})}} - 1
+            x(r) = \frac{r}{r_{min}}^{\frac{\log(b + 1)}{\log(r_{max}) - \log(r_{min})}} - 1
+
+        such that :math:`r(b) = r_{max}`.
+
 
         Parameters
         ----------
@@ -1188,7 +1214,8 @@ class PowerRTransform(BaseTransform):
             Inverse of transformation at r.
 
         """
-        power = (np.log(self._rmax) - np.log(self._rmin)) / np.log(r.size)
+        self.set_maximum_parameter_b(r)
+        power = (np.log(self._rmax) - np.log(self._rmin)) / np.log(self.b + 1)
         return np.power(r / self._rmin, 1.0 / power) - 1
 
 

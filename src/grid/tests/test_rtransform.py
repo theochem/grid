@@ -141,11 +141,12 @@ class TestRTransform(TestCase):
 
     def test_exp_basics(self):
         """Test exponential tf."""
-        rtf = ExpRTransform(0.1, 1e1)
-        gd = np.ones(100) * 0
-        assert abs(rtf.transform(gd)[0] - 0.1) < 1e-15
+        rtf = ExpRTransform(0.1, 10.0)
+        gd = np.arange(100)
+        assert abs(rtf.transform(gd)[0] - 0.1) < 1e-10
+        assert abs(rtf.transform(gd)[-1] - 10.0) < 1e-10
         gd = np.ones(100) * 99
-        assert abs(rtf.transform(gd)[0] - 1e1) < 1e-10
+        assert abs(rtf.transform(gd)[0] - 10.0) < 1e-10
         self.check_consistency(rtf)
         self.check_deriv(rtf)
         # check_chop(rtf)
@@ -160,9 +161,10 @@ class TestRTransform(TestCase):
         """Test power tf."""
         cases = self.get_power_cases()
         for rmin, rmax in cases:
-            gd = np.ones(100) * 99
+            gd = np.arange(100)
             rtf = PowerRTransform(rmin, rmax)
-            assert abs(rtf.transform(gd)[0] - rmax) < 1e-9
+            assert abs(rtf.transform(gd)[-1] - rmax) < 1e-9
+            assert abs(rtf.transform(gd)[0] - rmin) < 1e-9
             self.check_consistency(rtf)
             self.check_deriv(rtf)
             # check_chop(rtf)
