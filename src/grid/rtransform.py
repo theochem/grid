@@ -705,16 +705,23 @@ class LinearInfiniteRTransform(BaseTransform):
     interval :math:`[r_{min}, r_{max}]` given by
 
     .. math::
-        r(x) = \frac{(r_{max} - r_{min})}{N - 1} x + r_{min},
+        r(x) = \frac{(r_{max} - r_{min})}{\max_i (x_i)} x + r_{min},
+
+    where :math:`\max_i (x_i)` is the maximum over a pre-specified radial grid and stored
+    as an attribute of this transformation.  The goal is to transform some interval :math:`[0, b]`
+    such that :math:`b` maps to :math:`r_{max}` and zero maps to :math:`r_{min}`
+
+    The goal is to transform the `UniformGrid`, equally-spaced integers from 0 to N-1,
+    to :math:`[r_{min}, r_{max}]`.
 
     The inverse is given by
 
     .. math::
-        x(r) = (r - r_{min}) \frac{N - 1}{r_{max} - r_{min}}
+        x(r) = (r - r_{min}) \frac{\max_i (r_i)}{r_{max} - r_{min}}
 
     """
 
-    def __init__(self, rmin: float, rmax: float):
+    def __init__(self, rmin: float, rmax: float, maximum: float = None):
         r"""Initialize linear transform class.
 
         Parameters
@@ -723,6 +730,10 @@ class LinearInfiniteRTransform(BaseTransform):
             Define the lower end of the linear transform
         rmax : float
             Define the upper end of the linear transform
+        maximum: float
+            Maximum :math:`b` of a prespecified radial grid :math:`[0, b]` such that
+            :math:`b` maps to `rmax`. If None, then the maximum is taken and stored from the
+            grid that is transformed initially.
 
         """
         if rmin >= rmax:
@@ -733,6 +744,7 @@ class LinearInfiniteRTransform(BaseTransform):
         self._rmax = rmax
         self._domain = (0, np.inf)
         self._codomain = (rmin, rmax)
+        self._maximum = maximum
 
     @property
     def rmin(self):
@@ -744,11 +756,16 @@ class LinearInfiniteRTransform(BaseTransform):
         r"""float: rmax value of the tf."""
         return self._rmax
 
+    @property
+    def maximum(self):
+        r"""float: Maximum of a prespecified grid."""
+        return self._maximum
+
     def transform(self, x: np.ndarray):
         r"""Transform from interval :math:`[0, \infty)` to :math:`[r_{min}, r_{max}]`.
 
         .. math::
-            r_i = \frac{(r_{max} - r_{min})}{N - 1} x_i + r_{min},
+            r_i = \frac{(r_{max} - r_{min})}{\max_i x_i} x_i + r_{min},
 
         where :math:`N` is the number of points. The goal is to transform
         equally-spaced integers from 0 to N-1, to :math:`[r_{min}, r_{max}]`.
@@ -764,7 +781,11 @@ class LinearInfiniteRTransform(BaseTransform):
             Transformed points between :math:`[r_{min}, r_{max}]`.
 
         """
-        alpha = (self._rmax - self._rmin) / (x.size - 1)
+        if self.maximum is None:
+            self._maximum = np.max(x)
+            if np.abs(self.maximum) < 1e-16:
+                raise ValueError(f"Maximum of the grid {self.maximum} can't be zero.")
+        alpha = (self._rmax - self._rmin) / self.maximum
         return alpha * x + self._rmin
 
     def deriv(self, x: np.ndarray):
@@ -782,7 +803,7 @@ class LinearInfiniteRTransform(BaseTransform):
             First derivative of transformation at x.
 
         """
-        alpha = (self._rmax - self._rmin) / (x.size - 1)
+        alpha = (self._rmax - self._rmin) / self.maximum
         return np.ones(x.size) * alpha
 
     def deriv2(self, x: np.ndarray):
@@ -834,7 +855,11 @@ class LinearInfiniteRTransform(BaseTransform):
             Inverse of transformation from coordinate :math:`r` to :math:`x`.
 
         """
-        alpha = (self._rmax - self._rmin) / (r.size - 1)
+        if self.maximum is None:
+            self._maximum = np.max(x)
+            if np.abs(self.maximum) < 1e-16:
+                raise ValueError(f"Maximum of the grid {self.maximum} can't be zero.")
+        alpha = (self._rmax - self._rmin) / self.maximum
         return (r - self._rmin) / alpha
 
 

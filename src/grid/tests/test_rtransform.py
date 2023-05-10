@@ -127,9 +127,11 @@ class TestRTransform(TestCase):
 
     def test_linear_basics(self):
         """Test linear tf."""
-        gd = np.ones(100) * 0
+        gd = np.arange(100)
         rtf = LinearInfiniteRTransform(-0.7, 0.8)
+        print(rtf.transform(gd))
         assert abs(rtf.transform(gd)[0] - -0.7) < 1e-15
+        assert abs(rtf.transform(gd)[-1] - 0.8) < 1e-15
         gd = np.ones(100) * 99
         assert abs(rtf.transform(gd)[0] - 0.8) < 1e-10
         self.check_consistency(rtf)
