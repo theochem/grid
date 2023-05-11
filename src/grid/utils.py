@@ -734,7 +734,7 @@ def generate_orders_horton_order(order: int, type_ord: str, dim: int = 3):
 
     For radial, the orders is just the order :math:`l`.
 
-    For spherical, the orders :math:`(l, m)` following the order
+    For pure, the orders :math:`(l, m)` following the order
      :math:`[(l, 0), (l, 1), (l, -1), \cdots, (l, l), (l, -l)]`.
 
     Parameters
@@ -742,7 +742,7 @@ def generate_orders_horton_order(order: int, type_ord: str, dim: int = 3):
     order: int
         The order :math:`l`.
     type_ord : str, optional
-        The type of the order, it is either "cartesian", "radial" or "spherical".
+        The type of the order, it is either "cartesian", "radial", "pure" or "pure-radial".
     dim : int, optional
         The dimension of the orders for only Cartesian.
 
