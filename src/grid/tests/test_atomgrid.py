@@ -33,6 +33,7 @@ from numpy.testing import (
     assert_almost_equal,
     assert_array_equal,
     assert_equal,
+    assert_raises,
 )
 
 import pytest
@@ -774,18 +775,18 @@ class TestAtomGrid:
         assert_allclose(true[3, 0], np.sqrt(np.pi) ** 3.0 * 0.15, atol=1e-3)
         assert_allclose(true[3, 1], np.sqrt(np.pi) ** 3.0 * (0.15 - 0.3), atol=1e-3)
 
-        with self.assertRaises(TypeError):
-            # orders should be integer
-            atgrid.moments(np.array([1, 1]), centers, func_vals)
-        with self.assertRaises(ValueError):
-            multidim_f = np.array([func_vals, func_vals])
-            atgrid.moments(1, centers, multidim_f)  # func_vals should be ndim = 1
-            # centers should be ndim =2
-            atgrid.moments(1, np.array([1, 1, 1]), func_vals)
-            atgrid.moments(1, np.array([[1, 1]]), func_vals)  # centers should be dim=3
-            atgrid.moments(0, centers, func_vals, type_mom="pure_radial")  # l>0
-            # func_vals too little points
-            atgrid.moments(1, centers, np.array([1, 2, 3]))
+        assert_raises(TypeError, atgrid.moments, np.array([1, 1]), centers, func_vals)
+
+        multidim_f = np.array([func_vals, func_vals])
+        assert_raises(ValueError, atgrid.moments, 1, centers, multidim_f)
+        # centers should be ndim =2
+        assert_raises(ValueError, atgrid.moments, 1, np.array([1, 1, 1]), func_vals)
+        # centers should be dim=3
+        assert_raises(ValueError, atgrid.moments, 1, np.array([[1, 1]]), func_vals)
+        # l > 0
+        assert_raises(ValueError, atgrid.moments, 0, centers, func_vals, type_mom="pure_radial")
+        # func_vals too little points
+        assert_raises(ValueError, atgrid.moments, 1, centers, np.array([1, 2, 3]))
 
     def test_pure_moment_integral_with_identity_function(self):
         r"""Test pure moment integral with identify function is mostly all zeros."""
