@@ -31,7 +31,11 @@
         <script src="../_static/doctools.js"></script>
         <script src="../_static/language_data.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+<<<<<<< HEAD
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+=======
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
         <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "tex2jax_ignore|mathjax_ignore|document", "processClass": "tex2jax_process|mathjax_process|math|output_area"}})</script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
@@ -84,6 +88,7 @@
               
             
             
+<<<<<<< HEAD
               <p class="caption"><span class="caption-text">User Documentation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
@@ -96,6 +101,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../radial_transf.html">Radial Transformations</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Example Tutorials</span></p>
+=======
+              <p class="caption"><span class="caption-text">Example Tutorials</span></p>
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/Molecular_Integration.html">Molecular Integration</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/Molecular_Integration.html#Construction-of-Molecular-Grid">Construction of Molecular Grid</a><ul>
@@ -122,7 +130,11 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/Multipole_Moments.html">Multipole Moments</a></li>
 </ul>
+<<<<<<< HEAD
 <p class="caption"><span class="caption-text">API Documentation</span></p>
+=======
+<p class="caption"><span class="caption-text">Grid Modules</span></p>
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">grid</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="grid.html">grid package</a><ul class="current">
@@ -243,9 +255,15 @@
 <div class="section" id="module-grid.utils">
 <span id="grid-utils-module"></span><h1>grid.utils module<a class="headerlink" href="#module-grid.utils" title="Permalink to this headline">¶</a></h1>
 <p>Utils function module.</p>
+<<<<<<< HEAD
 <dl class="function">
 <dt id="grid.utils.convert_cart_to_sph">
 <code class="sig-name descname">convert_cart_to_sph</code><span class="sig-paren">(</span><em class="sig-param">points</em>, <em class="sig-param">center=None</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.utils.convert_cart_to_sph" title="Permalink to this definition">¶</a></dt>
+=======
+<dl class="py function">
+<dt id="grid.utils.convert_cart_to_sph">
+<code class="sig-name descname">convert_cart_to_sph</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">points</span></em>, <em class="sig-param"><span class="n">center</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.utils.convert_cart_to_sph" title="Permalink to this definition">¶</a></dt>
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 <dd><p>Convert a set of points from cartesian to spherical coordinates.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -265,9 +283,15 @@ If <cite>None</cite>, origin is used.</p></li>
 </dl>
 </dd></dl>
 
+<<<<<<< HEAD
 <dl class="function">
 <dt id="grid.utils.convert_derivative_from_spherical_to_cartesian">
 <code class="sig-name descname">convert_derivative_from_spherical_to_cartesian</code><span class="sig-paren">(</span><em class="sig-param">deriv_r</em>, <em class="sig-param">deriv_theta</em>, <em class="sig-param">deriv_phi</em>, <em class="sig-param">r</em>, <em class="sig-param">theta</em>, <em class="sig-param">phi</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.utils.convert_derivative_from_spherical_to_cartesian" title="Permalink to this definition">¶</a></dt>
+=======
+<dl class="py function">
+<dt id="grid.utils.convert_derivative_from_spherical_to_cartesian">
+<code class="sig-name descname">convert_derivative_from_spherical_to_cartesian</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">deriv_r</span></em>, <em class="sig-param"><span class="n">deriv_theta</span></em>, <em class="sig-param"><span class="n">deriv_phi</span></em>, <em class="sig-param"><span class="n">r</span></em>, <em class="sig-param"><span class="n">theta</span></em>, <em class="sig-param"><span class="n">phi</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.utils.convert_derivative_from_spherical_to_cartesian" title="Permalink to this definition">¶</a></dt>
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 <dd><p>Convert the derivative form spherical coordinates to Cartesian.</p>
 <p>If <span class="math notranslate nohighlight">\(r\)</span> is zero, then the derivative wrt to theta and phi are set to zero.
 If <span class="math notranslate nohighlight">\(\phi\)</span> is zero, then the derivative wrt to theta is set to zero.</p>
@@ -287,9 +311,15 @@ If <span class="math notranslate nohighlight">\(\phi\)</span> is zero, then the 
 </dl>
 </dd></dl>
 
+<<<<<<< HEAD
 <dl class="function">
 <dt id="grid.utils.generate_derivative_real_spherical_harmonics">
 <code class="sig-name descname">generate_derivative_real_spherical_harmonics</code><span class="sig-paren">(</span><em class="sig-param">l_max</em>, <em class="sig-param">theta</em>, <em class="sig-param">phi</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.utils.generate_derivative_real_spherical_harmonics" title="Permalink to this definition">¶</a></dt>
+=======
+<dl class="py function">
+<dt id="grid.utils.generate_derivative_real_spherical_harmonics">
+<code class="sig-name descname">generate_derivative_real_spherical_harmonics</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">l_max</span></em>, <em class="sig-param"><span class="n">theta</span></em>, <em class="sig-param"><span class="n">phi</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.utils.generate_derivative_real_spherical_harmonics" title="Permalink to this definition">¶</a></dt>
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 <dd><p>Generate derivatives of real spherical harmonics.</p>
 <p>If <span class="math notranslate nohighlight">\(\phi\)</span> is zero, then the first component of the derivative wrt to
 <span class="math notranslate nohighlight">\(phi\)</span> is set to zero.</p>
@@ -305,13 +335,19 @@ If this angle is outside of bounds, then periodicity is used.</p></li>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Derivative of spherical harmonics, (theta first, then phi) of all degrees up to
+<<<<<<< HEAD
 <span class="math notranslate nohighlight">\(l_{max}\)</span> and orders <span class="math notranslate nohighlight">\(m\)</span> in Horton 2 order, i.e.
 <span class="math notranslate nohighlight">\(m=0, 1, -1, \cdots, l, -l\)</span>.</p>
+=======
+<span class="math notranslate nohighlight">\(l_{max}\)</span> and orders <span class="math notranslate nohighlight">\(m\)</span>, ordered as
+<span class="math notranslate nohighlight">\((0, 1, ..., l_{max}, -l_{max}, ..., -1).\)</span></p>
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>ndarray(2, (l_max^2 + 1)^2, M)</p>
 </dd>
 </dl>
+<<<<<<< HEAD
 <p class="rubric">Notes</p>
 <ul class="simple">
 <li><p>The derivative with respect to <span class="math notranslate nohighlight">\(\phi\)</span> is</p></li>
@@ -424,6 +460,13 @@ associated Legendre functions.” Journal of Geodesy 76.5 (2002): 279-299.</p>
 <dl class="function">
 <dt id="grid.utils.generate_real_spherical_harmonics_scipy">
 <code class="sig-name descname">generate_real_spherical_harmonics_scipy</code><span class="sig-paren">(</span><em class="sig-param">l_max</em>, <em class="sig-param">theta</em>, <em class="sig-param">phi</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.utils.generate_real_spherical_harmonics_scipy" title="Permalink to this definition">¶</a></dt>
+=======
+</dd></dl>
+
+<dl class="py function">
+<dt id="grid.utils.generate_real_spherical_harmonics">
+<code class="sig-name descname">generate_real_spherical_harmonics</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">l_max</span></em>, <em class="sig-param"><span class="n">theta</span></em>, <em class="sig-param"><span class="n">phi</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.utils.generate_real_spherical_harmonics" title="Permalink to this definition">¶</a></dt>
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 <dd><p>Generate real spherical harmonics up to degree <span class="math notranslate nohighlight">\(l\)</span> and for all orders <span class="math notranslate nohighlight">\(m\)</span>.</p>
 <p>The real spherical harmonics are defined as a function
 <span class="math notranslate nohighlight">\(Y_{lm} : L^2(S^2) \rightarrow \mathbb{R}\)</span> such that</p>
@@ -463,9 +506,15 @@ To obtain specific degrees, e.g. l=2
 &gt;&gt;&gt; spherical_harmonic[(desired_degree)**2: (desired_degree + 1)**2, :]</p>
 </dd></dl>
 
+<<<<<<< HEAD
 <dl class="function">
 <dt id="grid.utils.get_cov_radii">
 <code class="sig-name descname">get_cov_radii</code><span class="sig-paren">(</span><em class="sig-param">atnums</em>, <em class="sig-param">type='bragg'</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.utils.get_cov_radii" title="Permalink to this definition">¶</a></dt>
+=======
+<dl class="py function">
+<dt id="grid.utils.get_cov_radii">
+<code class="sig-name descname">get_cov_radii</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">atnums</span></em>, <em class="sig-param"><span class="n">type</span><span class="o">=</span><span class="default_value">'bragg'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.utils.get_cov_radii" title="Permalink to this definition">¶</a></dt>
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 <dd><p>Get the covalent radii for given atomic number(s).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -473,8 +522,12 @@ To obtain specific degrees, e.g. l=2
 <li><p><strong>atnums</strong> (<em>int</em><em> or </em><em>np.ndarray</em>) – atomic number of interested</p></li>
 <li><p><strong>type</strong> (<em>str</em><em>, </em><em>default to bragg</em>) – types of covalent radii for elements.
 “bragg”: Bragg-Slater empirically measured covalent radii
+<<<<<<< HEAD
 “cambridge”: Covalent radii from analysis of the Cambridge Database”
 “alvarez”: Covalent radii from <a class="reference external" href="https://doi.org/10.1039/B801115J">https://doi.org/10.1039/B801115J</a></p></li>
+=======
+“cambridge”: Covalent radii from analysis of the Cambridge Database”</p></li>
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -489,6 +542,7 @@ To obtain specific degrees, e.g. l=2
 </dl>
 </dd></dl>
 
+<<<<<<< HEAD
 <dl class="function">
 <dt id="grid.utils.solid_harmonics">
 <code class="sig-name descname">solid_harmonics</code><span class="sig-paren">(</span><em class="sig-param">l_max</em>, <em class="sig-param">sph_pts</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.utils.solid_harmonics" title="Permalink to this definition">¶</a></dt>
@@ -513,6 +567,8 @@ ordered as <span class="math notranslate nohighlight">\(m=0, 1, -1, 2, -2, \cdot
 </dl>
 </dd></dl>
 
+=======
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 </div>
 
 
@@ -534,7 +590,11 @@ ordered as <span class="math notranslate nohighlight">\(m=0, 1, -1, 2, -2, \cdot
   <div role="contentinfo">
     <p>
         
+<<<<<<< HEAD
         &copy; Copyright 2023, QC-Devs
+=======
+        &copy; Copyright 2021, QC-Devs
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 
     </p>
   </div>

@@ -15,6 +15,15 @@ div.clearer {
     clear: both;
 }
 
+<<<<<<< HEAD
+=======
+div.section::after {
+    display: block;
+    content: '';
+    clear: left;
+}
+
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 /* -- relbar ---------------------------------------------------------------- */
 
 div.related {
@@ -316,21 +325,41 @@ img.align-default, .figure.align-default {
 div.sidebar {
     margin: 0 0 0.5em 1em;
     border: 1px solid #ddb;
+<<<<<<< HEAD
     padding: 7px 7px 0 7px;
     background-color: #ffe;
     width: 40%;
     float: right;
+=======
+    padding: 7px;
+    background-color: #ffe;
+    width: 40%;
+    float: right;
+    clear: right;
+    overflow-x: auto;
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 }
 
 p.sidebar-title {
     font-weight: bold;
 }
 
+<<<<<<< HEAD
+=======
+div.admonition, div.topic, blockquote {
+    clear: left;
+}
+
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 /* -- topics ---------------------------------------------------------------- */
 
 div.topic {
     border: 1px solid #ccc;
+<<<<<<< HEAD
     padding: 7px 7px 0 7px;
+=======
+    padding: 7px;
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
     margin: 10px 0 10px 0;
 }
 
@@ -352,10 +381,13 @@ div.admonition dt {
     font-weight: bold;
 }
 
+<<<<<<< HEAD
 div.admonition dl {
     margin-bottom: 0;
 }
 
+=======
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 p.admonition-title {
     margin: 0px 10px 5px 0px;
     font-weight: bold;
@@ -366,9 +398,34 @@ div.body p.centered {
     margin-top: 25px;
 }
 
+<<<<<<< HEAD
 /* -- tables ---------------------------------------------------------------- */
 
 table.docutils {
+=======
+/* -- content of sidebars/topics/admonitions -------------------------------- */
+
+div.sidebar > :last-child,
+div.topic > :last-child,
+div.admonition > :last-child {
+    margin-bottom: 0;
+}
+
+div.sidebar::after,
+div.topic::after,
+div.admonition::after,
+blockquote::after {
+    display: block;
+    content: '';
+    clear: both;
+}
+
+/* -- tables ---------------------------------------------------------------- */
+
+table.docutils {
+    margin-top: 10px;
+    margin-bottom: 10px;
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
     border: 0;
     border-collapse: collapse;
 }
@@ -416,6 +473,7 @@ table.citation td {
     border-bottom: none;
 }
 
+<<<<<<< HEAD
 th > p:first-child,
 td > p:first-child {
     margin-top: 0px;
@@ -423,6 +481,15 @@ td > p:first-child {
 
 th > p:last-child,
 td > p:last-child {
+=======
+th > :first-child,
+td > :first-child {
+    margin-top: 0px;
+}
+
+th > :last-child,
+td > :last-child {
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
     margin-bottom: 0px;
 }
 
@@ -468,6 +535,13 @@ table.field-list td, table.field-list th {
 
 /* -- hlist styles ---------------------------------------------------------- */
 
+<<<<<<< HEAD
+=======
+table.hlist {
+    margin: 1em 0;
+}
+
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 table.hlist td {
     vertical-align: top;
 }
@@ -495,6 +569,7 @@ ol.upperroman {
     list-style: upper-roman;
 }
 
+<<<<<<< HEAD
 li > p:first-child {
     margin-top: 0px;
 }
@@ -506,6 +581,39 @@ li > p:last-child {
 dl.footnote > dt,
 dl.citation > dt {
     float: left;
+=======
+:not(li) > ol > li:first-child > :first-child,
+:not(li) > ul > li:first-child > :first-child {
+    margin-top: 0px;
+}
+
+:not(li) > ol > li:last-child > :last-child,
+:not(li) > ul > li:last-child > :last-child {
+    margin-bottom: 0px;
+}
+
+ol.simple ol p,
+ol.simple ul p,
+ul.simple ol p,
+ul.simple ul p {
+    margin-top: 0;
+}
+
+ol.simple > li:not(:first-child) > p,
+ul.simple > li:not(:first-child) > p {
+    margin-top: 0;
+}
+
+ol.simple p,
+ul.simple p {
+    margin-bottom: 0;
+}
+
+dl.footnote > dt,
+dl.citation > dt {
+    float: left;
+    margin-right: 0.5em;
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 }
 
 dl.footnote > dd,
@@ -546,7 +654,11 @@ dl {
     margin-bottom: 15px;
 }
 
+<<<<<<< HEAD
 dd > p:first-child {
+=======
+dd > :first-child {
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
     margin-top: 0px;
 }
 
@@ -560,6 +672,14 @@ dd {
     margin-left: 30px;
 }
 
+<<<<<<< HEAD
+=======
+dl > dd:last-child,
+dl > dd:last-child > :last-child {
+    margin-bottom: 0;
+}
+
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 dt:target, span.highlighted {
     background-color: #fbe54e;
 }
@@ -637,6 +757,13 @@ pre {
     overflow-y: hidden;  /* fixes display issues on Chrome browsers */
 }
 
+<<<<<<< HEAD
+=======
+pre, div[class|="highlight"] {
+    clear: both;
+}
+
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 span.pre {
     -moz-hyphens: none;
     -ms-hyphens: none;
@@ -644,14 +771,23 @@ span.pre {
     hyphens: none;
 }
 
+<<<<<<< HEAD
 td.linenos pre {
     padding: 5px 0px;
+=======
+div[class^="highlight-"] {
+    margin: 1em 0;
+}
+
+td.linenos pre {
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
     border: 0;
     background-color: transparent;
     color: #aaa;
 }
 
 table.highlighttable {
+<<<<<<< HEAD
     margin-left: 0.5em;
 }
 
@@ -660,6 +796,48 @@ table.highlighttable td {
 }
 
 div.code-block-caption {
+=======
+    display: block;
+}
+
+table.highlighttable tbody {
+    display: block;
+}
+
+table.highlighttable tr {
+    display: flex;
+}
+
+table.highlighttable td {
+    margin: 0;
+    padding: 0;
+}
+
+table.highlighttable td.linenos {
+    padding-right: 0.5em;
+}
+
+table.highlighttable td.code {
+    flex: 1;
+    overflow: hidden;
+}
+
+.highlight .hll {
+    display: block;
+}
+
+div.highlight pre,
+table.highlighttable pre {
+    margin: 0;
+}
+
+div.code-block-caption + div {
+    margin-top: 0;
+}
+
+div.code-block-caption {
+    margin-top: 1em;
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
     padding: 2px 5px;
     font-size: small;
 }
@@ -668,10 +846,14 @@ div.code-block-caption code {
     background-color: transparent;
 }
 
+<<<<<<< HEAD
 div.code-block-caption + div > div.highlight > pre {
     margin-top: 0;
 }
 
+=======
+table.highlighttable td.linenos,
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 div.doctest > div.highlight span.gp {  /* gp: Generic.Prompt */
     user-select: none;
 }
@@ -685,11 +867,15 @@ div.code-block-caption span.caption-text {
 }
 
 div.literal-block-wrapper {
+<<<<<<< HEAD
     padding: 1em 1em 0;
 }
 
 div.literal-block-wrapper div.highlight {
     margin: 0;
+=======
+    margin: 1em 0;
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 }
 
 code.descname {
@@ -740,8 +926,12 @@ span.eqno {
 }
 
 span.eqno a.headerlink {
+<<<<<<< HEAD
     position: relative;
     left: 0px;
+=======
+    position: absolute;
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
     z-index: 1;
 }
 

@@ -251,6 +251,10 @@ var Search = {
         var item = results.pop();
         var listItem = $('<li style="display:none"></li>');
         var requestUrl = "";
+<<<<<<< HEAD
+=======
+        var linkUrl = "";
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
         if (DOCUMENTATION_OPTIONS.BUILDER === 'dirhtml') {
           // dirhtml builder
           var dirname = item[0] + '/';
@@ -260,13 +264,24 @@ var Search = {
             dirname = '';
           }
           requestUrl = DOCUMENTATION_OPTIONS.URL_ROOT + dirname;
+<<<<<<< HEAD
+=======
+          linkUrl = requestUrl;
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 
         } else {
           // normal html builders
           requestUrl = DOCUMENTATION_OPTIONS.URL_ROOT + item[0] + DOCUMENTATION_OPTIONS.FILE_SUFFIX;
+<<<<<<< HEAD
         }
         listItem.append($('<a/>').attr('href',
             requestUrl +
+=======
+          linkUrl = item[0] + DOCUMENTATION_OPTIONS.LINK_SUFFIX;
+        }
+        listItem.append($('<a/>').attr('href',
+            linkUrl +
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
             highlightstring + item[2]).html(item[1]));
         if (item[3]) {
           listItem.append($('<span> (' + item[3] + ')</span>'));

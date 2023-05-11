@@ -31,7 +31,11 @@
         <script src="../_static/doctools.js"></script>
         <script src="../_static/language_data.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+<<<<<<< HEAD
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+=======
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
         <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "tex2jax_ignore|mathjax_ignore|document", "processClass": "tex2jax_process|mathjax_process|math|output_area"}})</script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
@@ -85,6 +89,7 @@
               
             
             
+<<<<<<< HEAD
               <p class="caption"><span class="caption-text">User Documentation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
@@ -97,6 +102,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../radial_transf.html">Radial Transformations</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Example Tutorials</span></p>
+=======
+              <p class="caption"><span class="caption-text">Example Tutorials</span></p>
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/Molecular_Integration.html">Molecular Integration</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/Molecular_Integration.html#Construction-of-Molecular-Grid">Construction of Molecular Grid</a><ul>
@@ -123,7 +131,11 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/Multipole_Moments.html">Multipole Moments</a></li>
 </ul>
+<<<<<<< HEAD
 <p class="caption"><span class="caption-text">API Documentation</span></p>
+=======
+<p class="caption"><span class="caption-text">Grid Modules</span></p>
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">grid</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="grid.html">grid package</a><ul class="current">
@@ -244,6 +256,7 @@
 <div class="section" id="module-grid.basegrid">
 <span id="grid-basegrid-module"></span><h1>grid.basegrid module<a class="headerlink" href="#module-grid.basegrid" title="Permalink to this headline">¶</a></h1>
 <p>Construct basic grid data structure.</p>
+<<<<<<< HEAD
 <dl class="class">
 <dt id="grid.basegrid.Grid">
 <em class="property">class </em><code class="sig-name descname">Grid</code><span class="sig-paren">(</span><em class="sig-param">points</em>, <em class="sig-param">weights</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.Grid" title="Permalink to this definition">¶</a></dt>
@@ -252,6 +265,16 @@
 <dl class="method">
 <dt id="grid.basegrid.Grid.__init__">
 <code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">points</em>, <em class="sig-param">weights</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.Grid.__init__" title="Permalink to this definition">¶</a></dt>
+=======
+<dl class="py class">
+<dt id="grid.basegrid.Grid">
+<em class="property">class </em><code class="sig-name descname">Grid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">points</span></em>, <em class="sig-param"><span class="n">weights</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.Grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Basic Grid class for grid information storage.</p>
+<dl class="py method">
+<dt id="grid.basegrid.Grid.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">points</span></em>, <em class="sig-param"><span class="n">weights</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.Grid.__init__" title="Permalink to this definition">¶</a></dt>
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 <dd><p>Construct Grid instance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -263,9 +286,15 @@
 </dl>
 </dd></dl>
 
+<<<<<<< HEAD
 <dl class="method">
 <dt id="grid.basegrid.Grid.get_localgrid">
 <code class="sig-name descname">get_localgrid</code><span class="sig-paren">(</span><em class="sig-param">center</em>, <em class="sig-param">radius</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.Grid.get_localgrid" title="Permalink to this definition">¶</a></dt>
+=======
+<dl class="py method">
+<dt id="grid.basegrid.Grid.get_localgrid">
+<code class="sig-name descname">get_localgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">radius</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.Grid.get_localgrid" title="Permalink to this definition">¶</a></dt>
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 <dd><p>Create a grid contain points within the given radius of center.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -285,9 +314,15 @@ debugging.</p></li>
 </dl>
 </dd></dl>
 
+<<<<<<< HEAD
 <dl class="method">
 <dt id="grid.basegrid.Grid.integrate">
 <code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param">*value_arrays</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.Grid.integrate" title="Permalink to this definition">¶</a></dt>
+=======
+<dl class="py method">
+<dt id="grid.basegrid.Grid.integrate">
+<code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">value_arrays</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.Grid.integrate" title="Permalink to this definition">¶</a></dt>
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 <dd><p>Integrate over the whole grid for given multiple value arrays.</p>
 <p>Product of all value_arrays will be computed element-wise then
 integrated on the grid with its weights.
@@ -308,6 +343,7 @@ integrated on the grid with its weights.
 </dl>
 </dd></dl>
 
+<<<<<<< HEAD
 <dl class="method">
 <dt id="grid.basegrid.Grid.moments">
 <code class="sig-name descname">moments</code><span class="sig-paren">(</span><em class="sig-param">orders</em>, <em class="sig-param">centers</em>, <em class="sig-param">func_vals</em>, <em class="sig-param">type_mom='cartesian'</em>, <em class="sig-param">return_orders=False</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.Grid.moments" title="Permalink to this definition">¶</a></dt>
@@ -357,6 +393,9 @@ each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 </dd></dl>
 
 <dl class="method">
+=======
+<dl class="py method">
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 <dt id="grid.basegrid.Grid.points">
 <em class="property">property </em><code class="sig-name descname">points</code><a class="headerlink" href="#grid.basegrid.Grid.points" title="Permalink to this definition">¶</a></dt>
 <dd><p>Positions of the grid points.</p>
@@ -367,6 +406,7 @@ each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 </dl>
 </dd></dl>
 
+<<<<<<< HEAD
 <dl class="method">
 <dt id="grid.basegrid.Grid.save">
 <code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param">filename</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.Grid.save" title="Permalink to this definition">¶</a></dt>
@@ -379,6 +419,9 @@ each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 </dd></dl>
 
 <dl class="method">
+=======
+<dl class="py method">
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 <dt id="grid.basegrid.Grid.size">
 <em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#grid.basegrid.Grid.size" title="Permalink to this definition">¶</a></dt>
 <dd><p>the total number of points on the grid.</p>
@@ -389,7 +432,11 @@ each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 </dl>
 </dd></dl>
 
+<<<<<<< HEAD
 <dl class="method">
+=======
+<dl class="py method">
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 <dt id="grid.basegrid.Grid.weights">
 <em class="property">property </em><code class="sig-name descname">weights</code><a class="headerlink" href="#grid.basegrid.Grid.weights" title="Permalink to this definition">¶</a></dt>
 <dd><p>the weights of each grid point.</p>
@@ -402,6 +449,7 @@ each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 
 </dd></dl>
 
+<<<<<<< HEAD
 <dl class="class">
 <dt id="grid.basegrid.LocalGrid">
 <em class="property">class </em><code class="sig-name descname">LocalGrid</code><span class="sig-paren">(</span><em class="sig-param">points</em>, <em class="sig-param">weights</em>, <em class="sig-param">center</em>, <em class="sig-param">indices=None</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.LocalGrid" title="Permalink to this definition">¶</a></dt>
@@ -410,6 +458,16 @@ each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 <dl class="method">
 <dt id="grid.basegrid.LocalGrid.__init__">
 <code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">points</em>, <em class="sig-param">weights</em>, <em class="sig-param">center</em>, <em class="sig-param">indices=None</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.LocalGrid.__init__" title="Permalink to this definition">¶</a></dt>
+=======
+<dl class="py class">
+<dt id="grid.basegrid.LocalGrid">
+<em class="property">class </em><code class="sig-name descname">LocalGrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">points</span></em>, <em class="sig-param"><span class="n">weights</span></em>, <em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">indices</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.LocalGrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#grid.basegrid.Grid" title="grid.basegrid.Grid"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.basegrid.Grid</span></code></a></p>
+<p>Local portion of a grid, containing all points within a sphere.</p>
+<dl class="py method">
+<dt id="grid.basegrid.LocalGrid.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">points</span></em>, <em class="sig-param"><span class="n">weights</span></em>, <em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">indices</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.LocalGrid.__init__" title="Permalink to this definition">¶</a></dt>
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 <dd><p>Initialize a local grid.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -423,7 +481,11 @@ each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 </dl>
 </dd></dl>
 
+<<<<<<< HEAD
 <dl class="method">
+=======
+<dl class="py method">
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 <dt id="grid.basegrid.LocalGrid.center">
 <em class="property">property </em><code class="sig-name descname">center</code><a class="headerlink" href="#grid.basegrid.LocalGrid.center" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cartesian coordinates of the center of the local grid.</p>
@@ -434,9 +496,15 @@ each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 </dl>
 </dd></dl>
 
+<<<<<<< HEAD
 <dl class="method">
 <dt id="grid.basegrid.LocalGrid.get_localgrid">
 <code class="sig-name descname">get_localgrid</code><span class="sig-paren">(</span><em class="sig-param">center</em>, <em class="sig-param">radius</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.LocalGrid.get_localgrid" title="Permalink to this definition">¶</a></dt>
+=======
+<dl class="py method">
+<dt id="grid.basegrid.LocalGrid.get_localgrid">
+<code class="sig-name descname">get_localgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">radius</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.LocalGrid.get_localgrid" title="Permalink to this definition">¶</a></dt>
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 <dd><p>Create a grid contain points within the given radius of center.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -456,7 +524,11 @@ debugging.</p></li>
 </dl>
 </dd></dl>
 
+<<<<<<< HEAD
 <dl class="method">
+=======
+<dl class="py method">
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 <dt id="grid.basegrid.LocalGrid.indices">
 <em class="property">property </em><code class="sig-name descname">indices</code><a class="headerlink" href="#grid.basegrid.LocalGrid.indices" title="Permalink to this definition">¶</a></dt>
 <dd><p>Indices of grid points and weights in the parent grid.</p>
@@ -467,9 +539,15 @@ debugging.</p></li>
 </dl>
 </dd></dl>
 
+<<<<<<< HEAD
 <dl class="method">
 <dt id="grid.basegrid.LocalGrid.integrate">
 <code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param">*value_arrays</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.LocalGrid.integrate" title="Permalink to this definition">¶</a></dt>
+=======
+<dl class="py method">
+<dt id="grid.basegrid.LocalGrid.integrate">
+<code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">value_arrays</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.LocalGrid.integrate" title="Permalink to this definition">¶</a></dt>
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 <dd><p>Integrate over the whole grid for given multiple value arrays.</p>
 <p>Product of all value_arrays will be computed element-wise then
 integrated on the grid with its weights.
@@ -490,6 +568,7 @@ integrated on the grid with its weights.
 </dl>
 </dd></dl>
 
+<<<<<<< HEAD
 <dl class="method">
 <dt id="grid.basegrid.LocalGrid.moments">
 <code class="sig-name descname">moments</code><span class="sig-paren">(</span><em class="sig-param">orders</em>, <em class="sig-param">centers</em>, <em class="sig-param">func_vals</em>, <em class="sig-param">type_mom='cartesian'</em>, <em class="sig-param">return_orders=False</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.LocalGrid.moments" title="Permalink to this definition">¶</a></dt>
@@ -539,6 +618,9 @@ each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 </dd></dl>
 
 <dl class="method">
+=======
+<dl class="py method">
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 <dt id="grid.basegrid.LocalGrid.points">
 <em class="property">property </em><code class="sig-name descname">points</code><a class="headerlink" href="#grid.basegrid.LocalGrid.points" title="Permalink to this definition">¶</a></dt>
 <dd><p>Positions of the grid points.</p>
@@ -549,6 +631,7 @@ each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 </dl>
 </dd></dl>
 
+<<<<<<< HEAD
 <dl class="method">
 <dt id="grid.basegrid.LocalGrid.save">
 <code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param">filename</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.LocalGrid.save" title="Permalink to this definition">¶</a></dt>
@@ -561,6 +644,9 @@ each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 </dd></dl>
 
 <dl class="method">
+=======
+<dl class="py method">
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 <dt id="grid.basegrid.LocalGrid.size">
 <em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#grid.basegrid.LocalGrid.size" title="Permalink to this definition">¶</a></dt>
 <dd><p>the total number of points on the grid.</p>
@@ -571,7 +657,11 @@ each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 </dl>
 </dd></dl>
 
+<<<<<<< HEAD
 <dl class="method">
+=======
+<dl class="py method">
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 <dt id="grid.basegrid.LocalGrid.weights">
 <em class="property">property </em><code class="sig-name descname">weights</code><a class="headerlink" href="#grid.basegrid.LocalGrid.weights" title="Permalink to this definition">¶</a></dt>
 <dd><p>the weights of each grid point.</p>
@@ -584,6 +674,7 @@ each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 
 </dd></dl>
 
+<<<<<<< HEAD
 <dl class="class">
 <dt id="grid.basegrid.OneDGrid">
 <em class="property">class </em><code class="sig-name descname">OneDGrid</code><span class="sig-paren">(</span><em class="sig-param">points</em>, <em class="sig-param">weights</em>, <em class="sig-param">domain=None</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.OneDGrid" title="Permalink to this definition">¶</a></dt>
@@ -592,6 +683,16 @@ each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 <dl class="method">
 <dt id="grid.basegrid.OneDGrid.__init__">
 <code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">points</em>, <em class="sig-param">weights</em>, <em class="sig-param">domain=None</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.OneDGrid.__init__" title="Permalink to this definition">¶</a></dt>
+=======
+<dl class="py class">
+<dt id="grid.basegrid.OneDGrid">
+<em class="property">class </em><code class="sig-name descname">OneDGrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">points</span></em>, <em class="sig-param"><span class="n">weights</span></em>, <em class="sig-param"><span class="n">domain</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.OneDGrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#grid.basegrid.Grid" title="grid.basegrid.Grid"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.basegrid.Grid</span></code></a></p>
+<p>One-Dimensional Grid.</p>
+<dl class="py method">
+<dt id="grid.basegrid.OneDGrid.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">points</span></em>, <em class="sig-param"><span class="n">weights</span></em>, <em class="sig-param"><span class="n">domain</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.OneDGrid.__init__" title="Permalink to this definition">¶</a></dt>
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 <dd><p>Construct grid.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -607,7 +708,11 @@ the domain is [-1,1] but all grid points lie in (-1, 1).</p></li>
 </dl>
 </dd></dl>
 
+<<<<<<< HEAD
 <dl class="method">
+=======
+<dl class="py method">
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 <dt id="grid.basegrid.OneDGrid.domain">
 <em class="property">property </em><code class="sig-name descname">domain</code><a class="headerlink" href="#grid.basegrid.OneDGrid.domain" title="Permalink to this definition">¶</a></dt>
 <dd><p>the range of grid points.</p>
@@ -618,9 +723,15 @@ the domain is [-1,1] but all grid points lie in (-1, 1).</p></li>
 </dl>
 </dd></dl>
 
+<<<<<<< HEAD
 <dl class="method">
 <dt id="grid.basegrid.OneDGrid.get_localgrid">
 <code class="sig-name descname">get_localgrid</code><span class="sig-paren">(</span><em class="sig-param">center</em>, <em class="sig-param">radius</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.OneDGrid.get_localgrid" title="Permalink to this definition">¶</a></dt>
+=======
+<dl class="py method">
+<dt id="grid.basegrid.OneDGrid.get_localgrid">
+<code class="sig-name descname">get_localgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">radius</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.OneDGrid.get_localgrid" title="Permalink to this definition">¶</a></dt>
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 <dd><p>Create a grid contain points within the given radius of center.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -640,9 +751,15 @@ debugging.</p></li>
 </dl>
 </dd></dl>
 
+<<<<<<< HEAD
 <dl class="method">
 <dt id="grid.basegrid.OneDGrid.integrate">
 <code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param">*value_arrays</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.OneDGrid.integrate" title="Permalink to this definition">¶</a></dt>
+=======
+<dl class="py method">
+<dt id="grid.basegrid.OneDGrid.integrate">
+<code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">value_arrays</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.OneDGrid.integrate" title="Permalink to this definition">¶</a></dt>
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 <dd><p>Integrate over the whole grid for given multiple value arrays.</p>
 <p>Product of all value_arrays will be computed element-wise then
 integrated on the grid with its weights.
@@ -663,6 +780,7 @@ integrated on the grid with its weights.
 </dl>
 </dd></dl>
 
+<<<<<<< HEAD
 <dl class="method">
 <dt id="grid.basegrid.OneDGrid.moments">
 <code class="sig-name descname">moments</code><span class="sig-paren">(</span><em class="sig-param">orders</em>, <em class="sig-param">centers</em>, <em class="sig-param">func_vals</em>, <em class="sig-param">type_mom='cartesian'</em>, <em class="sig-param">return_orders=False</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.OneDGrid.moments" title="Permalink to this definition">¶</a></dt>
@@ -712,6 +830,9 @@ each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 </dd></dl>
 
 <dl class="method">
+=======
+<dl class="py method">
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 <dt id="grid.basegrid.OneDGrid.points">
 <em class="property">property </em><code class="sig-name descname">points</code><a class="headerlink" href="#grid.basegrid.OneDGrid.points" title="Permalink to this definition">¶</a></dt>
 <dd><p>Positions of the grid points.</p>
@@ -722,6 +843,7 @@ each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 </dl>
 </dd></dl>
 
+<<<<<<< HEAD
 <dl class="method">
 <dt id="grid.basegrid.OneDGrid.save">
 <code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param">filename</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.OneDGrid.save" title="Permalink to this definition">¶</a></dt>
@@ -734,6 +856,9 @@ each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 </dd></dl>
 
 <dl class="method">
+=======
+<dl class="py method">
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 <dt id="grid.basegrid.OneDGrid.size">
 <em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#grid.basegrid.OneDGrid.size" title="Permalink to this definition">¶</a></dt>
 <dd><p>the total number of points on the grid.</p>
@@ -744,7 +869,11 @@ each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 </dl>
 </dd></dl>
 
+<<<<<<< HEAD
 <dl class="method">
+=======
+<dl class="py method">
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 <dt id="grid.basegrid.OneDGrid.weights">
 <em class="property">property </em><code class="sig-name descname">weights</code><a class="headerlink" href="#grid.basegrid.OneDGrid.weights" title="Permalink to this definition">¶</a></dt>
 <dd><p>the weights of each grid point.</p>
@@ -780,7 +909,11 @@ each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
   <div role="contentinfo">
     <p>
         
+<<<<<<< HEAD
         &copy; Copyright 2023, QC-Devs
+=======
+        &copy; Copyright 2021, QC-Devs
+>>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 
     </p>
   </div>
