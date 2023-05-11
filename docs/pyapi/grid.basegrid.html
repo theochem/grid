@@ -31,7 +31,7 @@
         <script src="../_static/doctools.js"></script>
         <script src="../_static/language_data.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "tex2jax_ignore|mathjax_ignore|document", "processClass": "tex2jax_process|mathjax_process|math|output_area"}})</script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
@@ -85,7 +85,18 @@
               
             
             
-              <p class="caption"><span class="caption-text">Example Tutorials</span></p>
+              <p class="caption"><span class="caption-text">User Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#downloading-code">Downloading Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#id1">Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../onedgrids.html">One-Dimensional Grids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../radial_transf.html">Radial Transformations</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Example Tutorials</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/Molecular_Integration.html">Molecular Integration</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/Molecular_Integration.html#Construction-of-Molecular-Grid">Construction of Molecular Grid</a><ul>
@@ -112,7 +123,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/Multipole_Moments.html">Multipole Moments</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Grid Modules</span></p>
+<p class="caption"><span class="caption-text">API Documentation</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">grid</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="grid.html">grid package</a><ul class="current">
@@ -233,14 +244,14 @@
 <div class="section" id="module-grid.basegrid">
 <span id="grid-basegrid-module"></span><h1>grid.basegrid module<a class="headerlink" href="#module-grid.basegrid" title="Permalink to this headline">¶</a></h1>
 <p>Construct basic grid data structure.</p>
-<dl class="py class">
+<dl class="class">
 <dt id="grid.basegrid.Grid">
-<em class="property">class </em><code class="sig-name descname">Grid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">points</span></em>, <em class="sig-param"><span class="n">weights</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.Grid" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">Grid</code><span class="sig-paren">(</span><em class="sig-param">points</em>, <em class="sig-param">weights</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.Grid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Basic Grid class for grid information storage.</p>
-<dl class="py method">
+<dl class="method">
 <dt id="grid.basegrid.Grid.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">points</span></em>, <em class="sig-param"><span class="n">weights</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.Grid.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">points</em>, <em class="sig-param">weights</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.Grid.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct Grid instance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -252,9 +263,9 @@
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.basegrid.Grid.get_localgrid">
-<code class="sig-name descname">get_localgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">radius</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.Grid.get_localgrid" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_localgrid</code><span class="sig-paren">(</span><em class="sig-param">center</em>, <em class="sig-param">radius</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.Grid.get_localgrid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a grid contain points within the given radius of center.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -274,9 +285,9 @@ debugging.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.basegrid.Grid.integrate">
-<code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">value_arrays</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.Grid.integrate" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param">*value_arrays</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.Grid.integrate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Integrate over the whole grid for given multiple value arrays.</p>
 <p>Product of all value_arrays will be computed element-wise then
 integrated on the grid with its weights.
@@ -297,7 +308,55 @@ integrated on the grid with its weights.
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
+<dt id="grid.basegrid.Grid.moments">
+<code class="sig-name descname">moments</code><span class="sig-paren">(</span><em class="sig-param">orders</em>, <em class="sig-param">centers</em>, <em class="sig-param">func_vals</em>, <em class="sig-param">type_mom='cartesian'</em>, <em class="sig-param">return_orders=False</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.Grid.moments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the multipole moment integral of a function over centers.</p>
+<p>The Cartesian type moments are:</p>
+<div class="math notranslate nohighlight">
+\[m_{n_x, n_y, n_z} = \int (x - X_c)^{n_x} (y - Y_c)^{n_y} (z - Z_c)^{n_z} f(r) dr,\]</div>
+<p>where <span class="math notranslate nohighlight">\(\textbf{R}_c = (X_c, Y_c, Z_c)\)</span> is the center of the moment,
+<span class="math notranslate nohighlight">\(\f(r)\)</span> is the density, and <span class="math notranslate nohighlight">\((n_x, n_y, n_z)\)</span> are the Cartesian orders.</p>
+<p>The spherical/pure moments with <span class="math notranslate nohighlight">\((l, m)\)</span> parameter are:</p>
+<div class="math notranslate nohighlight">
+\[m_{lm} = \int | \textbf{r} - \textbf{R}_c|^l S_l^m(\theta, \phi) f(\textbf{r})
+d\textbf{r},\]</div>
+<p>where <span class="math notranslate nohighlight">\(S_l^m\)</span> is a regular, real solid harmonic.</p>
+<p>The radial moments with <span class="math notranslate nohighlight">\(n\)</span> parameter are:</p>
+<div class="math notranslate nohighlight">
+\[m_n = \int | \textbf{r} - \textbf{R}_c|^{n} f(\textbf{r}) d\textbf{r}\]</div>
+<p>The radial combined with spherical/pure moments <span class="math notranslate nohighlight">\((n, l, m)\)</span> are:</p>
+<div class="math notranslate nohighlight">
+\[m_{nlm} = \int | \textbf{r} - \textbf{R}_c|^{n+1} S_l^m(\theta, \phi) f(\textbf{r})
+d\textbf{r}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>orders</strong> (<em>int</em>) – Generates all orders with Horton order depending on the type of the multipole
+moment <cite>type_mom</cite>.</p></li>
+<li><p><strong>centers</strong> (<em>ndarray</em><em>(</em><em>M</em><em>,  </em><em>3</em><em>)</em>) – The centers <span class="math notranslate nohighlight">\(\textbf{R}_c\)</span> of the moments to compute from.</p></li>
+<li><p><strong>func_vals</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – The function <span class="math notranslate nohighlight">\(f\)</span> values evaluated on all <span class="math notranslate nohighlight">\(N\)</span> points on the integration
+grid.</p></li>
+<li><p><strong>type_mom</strong> (<em>str</em>) – The type of multipole moments: “cartesian”, “pure”, “radial” and “pure-radial”.</p></li>
+<li><p><strong>return_orders</strong> (<em>bool</em>) – <dl class="simple">
+<dt>If true, it will also return a list of size <span class="math notranslate nohighlight">\(L\)</span> of the orders</dt><dd><p>corresponding to each integral/row of the output.</p>
+</dd>
+</dl>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Computes the moment integral of the function on the <cite>m`th center for all orders.
+If `return_orders</cite> is true, then this also returns a list that describes what
+each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(L, M), or (ndarray(L, M), list)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="grid.basegrid.Grid.points">
 <em class="property">property </em><code class="sig-name descname">points</code><a class="headerlink" href="#grid.basegrid.Grid.points" title="Permalink to this definition">¶</a></dt>
 <dd><p>Positions of the grid points.</p>
@@ -308,7 +367,18 @@ integrated on the grid with its weights.
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
+<dt id="grid.basegrid.Grid.save">
+<code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param">filename</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.Grid.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the points and weights as a npz file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> (<em>str</em>) – The path/name of the .npz file.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="grid.basegrid.Grid.size">
 <em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#grid.basegrid.Grid.size" title="Permalink to this definition">¶</a></dt>
 <dd><p>the total number of points on the grid.</p>
@@ -319,7 +389,7 @@ integrated on the grid with its weights.
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.basegrid.Grid.weights">
 <em class="property">property </em><code class="sig-name descname">weights</code><a class="headerlink" href="#grid.basegrid.Grid.weights" title="Permalink to this definition">¶</a></dt>
 <dd><p>the weights of each grid point.</p>
@@ -332,14 +402,14 @@ integrated on the grid with its weights.
 
 </dd></dl>
 
-<dl class="py class">
+<dl class="class">
 <dt id="grid.basegrid.LocalGrid">
-<em class="property">class </em><code class="sig-name descname">LocalGrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">points</span></em>, <em class="sig-param"><span class="n">weights</span></em>, <em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">indices</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.LocalGrid" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">LocalGrid</code><span class="sig-paren">(</span><em class="sig-param">points</em>, <em class="sig-param">weights</em>, <em class="sig-param">center</em>, <em class="sig-param">indices=None</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.LocalGrid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#grid.basegrid.Grid" title="grid.basegrid.Grid"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.basegrid.Grid</span></code></a></p>
 <p>Local portion of a grid, containing all points within a sphere.</p>
-<dl class="py method">
+<dl class="method">
 <dt id="grid.basegrid.LocalGrid.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">points</span></em>, <em class="sig-param"><span class="n">weights</span></em>, <em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">indices</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.LocalGrid.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">points</em>, <em class="sig-param">weights</em>, <em class="sig-param">center</em>, <em class="sig-param">indices=None</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.LocalGrid.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize a local grid.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -353,7 +423,7 @@ integrated on the grid with its weights.
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.basegrid.LocalGrid.center">
 <em class="property">property </em><code class="sig-name descname">center</code><a class="headerlink" href="#grid.basegrid.LocalGrid.center" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cartesian coordinates of the center of the local grid.</p>
@@ -364,9 +434,9 @@ integrated on the grid with its weights.
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.basegrid.LocalGrid.get_localgrid">
-<code class="sig-name descname">get_localgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">radius</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.LocalGrid.get_localgrid" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_localgrid</code><span class="sig-paren">(</span><em class="sig-param">center</em>, <em class="sig-param">radius</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.LocalGrid.get_localgrid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a grid contain points within the given radius of center.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -386,7 +456,7 @@ debugging.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.basegrid.LocalGrid.indices">
 <em class="property">property </em><code class="sig-name descname">indices</code><a class="headerlink" href="#grid.basegrid.LocalGrid.indices" title="Permalink to this definition">¶</a></dt>
 <dd><p>Indices of grid points and weights in the parent grid.</p>
@@ -397,9 +467,9 @@ debugging.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.basegrid.LocalGrid.integrate">
-<code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">value_arrays</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.LocalGrid.integrate" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param">*value_arrays</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.LocalGrid.integrate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Integrate over the whole grid for given multiple value arrays.</p>
 <p>Product of all value_arrays will be computed element-wise then
 integrated on the grid with its weights.
@@ -420,7 +490,55 @@ integrated on the grid with its weights.
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
+<dt id="grid.basegrid.LocalGrid.moments">
+<code class="sig-name descname">moments</code><span class="sig-paren">(</span><em class="sig-param">orders</em>, <em class="sig-param">centers</em>, <em class="sig-param">func_vals</em>, <em class="sig-param">type_mom='cartesian'</em>, <em class="sig-param">return_orders=False</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.LocalGrid.moments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the multipole moment integral of a function over centers.</p>
+<p>The Cartesian type moments are:</p>
+<div class="math notranslate nohighlight">
+\[m_{n_x, n_y, n_z} = \int (x - X_c)^{n_x} (y - Y_c)^{n_y} (z - Z_c)^{n_z} f(r) dr,\]</div>
+<p>where <span class="math notranslate nohighlight">\(\textbf{R}_c = (X_c, Y_c, Z_c)\)</span> is the center of the moment,
+<span class="math notranslate nohighlight">\(\f(r)\)</span> is the density, and <span class="math notranslate nohighlight">\((n_x, n_y, n_z)\)</span> are the Cartesian orders.</p>
+<p>The spherical/pure moments with <span class="math notranslate nohighlight">\((l, m)\)</span> parameter are:</p>
+<div class="math notranslate nohighlight">
+\[m_{lm} = \int | \textbf{r} - \textbf{R}_c|^l S_l^m(\theta, \phi) f(\textbf{r})
+d\textbf{r},\]</div>
+<p>where <span class="math notranslate nohighlight">\(S_l^m\)</span> is a regular, real solid harmonic.</p>
+<p>The radial moments with <span class="math notranslate nohighlight">\(n\)</span> parameter are:</p>
+<div class="math notranslate nohighlight">
+\[m_n = \int | \textbf{r} - \textbf{R}_c|^{n} f(\textbf{r}) d\textbf{r}\]</div>
+<p>The radial combined with spherical/pure moments <span class="math notranslate nohighlight">\((n, l, m)\)</span> are:</p>
+<div class="math notranslate nohighlight">
+\[m_{nlm} = \int | \textbf{r} - \textbf{R}_c|^{n+1} S_l^m(\theta, \phi) f(\textbf{r})
+d\textbf{r}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>orders</strong> (<em>int</em>) – Generates all orders with Horton order depending on the type of the multipole
+moment <cite>type_mom</cite>.</p></li>
+<li><p><strong>centers</strong> (<em>ndarray</em><em>(</em><em>M</em><em>,  </em><em>3</em><em>)</em>) – The centers <span class="math notranslate nohighlight">\(\textbf{R}_c\)</span> of the moments to compute from.</p></li>
+<li><p><strong>func_vals</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – The function <span class="math notranslate nohighlight">\(f\)</span> values evaluated on all <span class="math notranslate nohighlight">\(N\)</span> points on the integration
+grid.</p></li>
+<li><p><strong>type_mom</strong> (<em>str</em>) – The type of multipole moments: “cartesian”, “pure”, “radial” and “pure-radial”.</p></li>
+<li><p><strong>return_orders</strong> (<em>bool</em>) – <dl class="simple">
+<dt>If true, it will also return a list of size <span class="math notranslate nohighlight">\(L\)</span> of the orders</dt><dd><p>corresponding to each integral/row of the output.</p>
+</dd>
+</dl>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Computes the moment integral of the function on the <cite>m`th center for all orders.
+If `return_orders</cite> is true, then this also returns a list that describes what
+each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(L, M), or (ndarray(L, M), list)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="grid.basegrid.LocalGrid.points">
 <em class="property">property </em><code class="sig-name descname">points</code><a class="headerlink" href="#grid.basegrid.LocalGrid.points" title="Permalink to this definition">¶</a></dt>
 <dd><p>Positions of the grid points.</p>
@@ -431,7 +549,18 @@ integrated on the grid with its weights.
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
+<dt id="grid.basegrid.LocalGrid.save">
+<code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param">filename</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.LocalGrid.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the points, indices and weights as a npz file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> (<em>str</em>) – The path/name of the .npz file.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="grid.basegrid.LocalGrid.size">
 <em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#grid.basegrid.LocalGrid.size" title="Permalink to this definition">¶</a></dt>
 <dd><p>the total number of points on the grid.</p>
@@ -442,7 +571,7 @@ integrated on the grid with its weights.
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.basegrid.LocalGrid.weights">
 <em class="property">property </em><code class="sig-name descname">weights</code><a class="headerlink" href="#grid.basegrid.LocalGrid.weights" title="Permalink to this definition">¶</a></dt>
 <dd><p>the weights of each grid point.</p>
@@ -455,14 +584,14 @@ integrated on the grid with its weights.
 
 </dd></dl>
 
-<dl class="py class">
+<dl class="class">
 <dt id="grid.basegrid.OneDGrid">
-<em class="property">class </em><code class="sig-name descname">OneDGrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">points</span></em>, <em class="sig-param"><span class="n">weights</span></em>, <em class="sig-param"><span class="n">domain</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.OneDGrid" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">OneDGrid</code><span class="sig-paren">(</span><em class="sig-param">points</em>, <em class="sig-param">weights</em>, <em class="sig-param">domain=None</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.OneDGrid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#grid.basegrid.Grid" title="grid.basegrid.Grid"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.basegrid.Grid</span></code></a></p>
 <p>One-Dimensional Grid.</p>
-<dl class="py method">
+<dl class="method">
 <dt id="grid.basegrid.OneDGrid.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">points</span></em>, <em class="sig-param"><span class="n">weights</span></em>, <em class="sig-param"><span class="n">domain</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.OneDGrid.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">points</em>, <em class="sig-param">weights</em>, <em class="sig-param">domain=None</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.OneDGrid.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct grid.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -478,7 +607,7 @@ the domain is [-1,1] but all grid points lie in (-1, 1).</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.basegrid.OneDGrid.domain">
 <em class="property">property </em><code class="sig-name descname">domain</code><a class="headerlink" href="#grid.basegrid.OneDGrid.domain" title="Permalink to this definition">¶</a></dt>
 <dd><p>the range of grid points.</p>
@@ -489,9 +618,9 @@ the domain is [-1,1] but all grid points lie in (-1, 1).</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.basegrid.OneDGrid.get_localgrid">
-<code class="sig-name descname">get_localgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">radius</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.OneDGrid.get_localgrid" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_localgrid</code><span class="sig-paren">(</span><em class="sig-param">center</em>, <em class="sig-param">radius</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.OneDGrid.get_localgrid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a grid contain points within the given radius of center.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -511,9 +640,9 @@ debugging.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.basegrid.OneDGrid.integrate">
-<code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">value_arrays</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.OneDGrid.integrate" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param">*value_arrays</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.OneDGrid.integrate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Integrate over the whole grid for given multiple value arrays.</p>
 <p>Product of all value_arrays will be computed element-wise then
 integrated on the grid with its weights.
@@ -534,7 +663,55 @@ integrated on the grid with its weights.
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
+<dt id="grid.basegrid.OneDGrid.moments">
+<code class="sig-name descname">moments</code><span class="sig-paren">(</span><em class="sig-param">orders</em>, <em class="sig-param">centers</em>, <em class="sig-param">func_vals</em>, <em class="sig-param">type_mom='cartesian'</em>, <em class="sig-param">return_orders=False</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.OneDGrid.moments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the multipole moment integral of a function over centers.</p>
+<p>The Cartesian type moments are:</p>
+<div class="math notranslate nohighlight">
+\[m_{n_x, n_y, n_z} = \int (x - X_c)^{n_x} (y - Y_c)^{n_y} (z - Z_c)^{n_z} f(r) dr,\]</div>
+<p>where <span class="math notranslate nohighlight">\(\textbf{R}_c = (X_c, Y_c, Z_c)\)</span> is the center of the moment,
+<span class="math notranslate nohighlight">\(\f(r)\)</span> is the density, and <span class="math notranslate nohighlight">\((n_x, n_y, n_z)\)</span> are the Cartesian orders.</p>
+<p>The spherical/pure moments with <span class="math notranslate nohighlight">\((l, m)\)</span> parameter are:</p>
+<div class="math notranslate nohighlight">
+\[m_{lm} = \int | \textbf{r} - \textbf{R}_c|^l S_l^m(\theta, \phi) f(\textbf{r})
+d\textbf{r},\]</div>
+<p>where <span class="math notranslate nohighlight">\(S_l^m\)</span> is a regular, real solid harmonic.</p>
+<p>The radial moments with <span class="math notranslate nohighlight">\(n\)</span> parameter are:</p>
+<div class="math notranslate nohighlight">
+\[m_n = \int | \textbf{r} - \textbf{R}_c|^{n} f(\textbf{r}) d\textbf{r}\]</div>
+<p>The radial combined with spherical/pure moments <span class="math notranslate nohighlight">\((n, l, m)\)</span> are:</p>
+<div class="math notranslate nohighlight">
+\[m_{nlm} = \int | \textbf{r} - \textbf{R}_c|^{n+1} S_l^m(\theta, \phi) f(\textbf{r})
+d\textbf{r}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>orders</strong> (<em>int</em>) – Generates all orders with Horton order depending on the type of the multipole
+moment <cite>type_mom</cite>.</p></li>
+<li><p><strong>centers</strong> (<em>ndarray</em><em>(</em><em>M</em><em>,  </em><em>3</em><em>)</em>) – The centers <span class="math notranslate nohighlight">\(\textbf{R}_c\)</span> of the moments to compute from.</p></li>
+<li><p><strong>func_vals</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – The function <span class="math notranslate nohighlight">\(f\)</span> values evaluated on all <span class="math notranslate nohighlight">\(N\)</span> points on the integration
+grid.</p></li>
+<li><p><strong>type_mom</strong> (<em>str</em>) – The type of multipole moments: “cartesian”, “pure”, “radial” and “pure-radial”.</p></li>
+<li><p><strong>return_orders</strong> (<em>bool</em>) – <dl class="simple">
+<dt>If true, it will also return a list of size <span class="math notranslate nohighlight">\(L\)</span> of the orders</dt><dd><p>corresponding to each integral/row of the output.</p>
+</dd>
+</dl>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Computes the moment integral of the function on the <cite>m`th center for all orders.
+If `return_orders</cite> is true, then this also returns a list that describes what
+each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(L, M), or (ndarray(L, M), list)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="grid.basegrid.OneDGrid.points">
 <em class="property">property </em><code class="sig-name descname">points</code><a class="headerlink" href="#grid.basegrid.OneDGrid.points" title="Permalink to this definition">¶</a></dt>
 <dd><p>Positions of the grid points.</p>
@@ -545,7 +722,18 @@ integrated on the grid with its weights.
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
+<dt id="grid.basegrid.OneDGrid.save">
+<code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param">filename</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.basegrid.OneDGrid.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the points and weights as a npz file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> (<em>str</em>) – The path/name of the .npz file.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="grid.basegrid.OneDGrid.size">
 <em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#grid.basegrid.OneDGrid.size" title="Permalink to this definition">¶</a></dt>
 <dd><p>the total number of points on the grid.</p>
@@ -556,7 +744,7 @@ integrated on the grid with its weights.
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.basegrid.OneDGrid.weights">
 <em class="property">property </em><code class="sig-name descname">weights</code><a class="headerlink" href="#grid.basegrid.OneDGrid.weights" title="Permalink to this definition">¶</a></dt>
 <dd><p>the weights of each grid point.</p>
@@ -592,7 +780,7 @@ integrated on the grid with its weights.
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2021, QC-Devs
+        &copy; Copyright 2023, QC-Devs
 
     </p>
   </div>

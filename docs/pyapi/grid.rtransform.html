@@ -31,7 +31,7 @@
         <script src="../_static/doctools.js"></script>
         <script src="../_static/language_data.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "tex2jax_ignore|mathjax_ignore|document", "processClass": "tex2jax_process|mathjax_process|math|output_area"}})</script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
@@ -85,7 +85,18 @@
               
             
             
-              <p class="caption"><span class="caption-text">Example Tutorials</span></p>
+              <p class="caption"><span class="caption-text">User Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#downloading-code">Downloading Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#id1">Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../onedgrids.html">One-Dimensional Grids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../radial_transf.html">Radial Transformations</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Example Tutorials</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/Molecular_Integration.html">Molecular Integration</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/Molecular_Integration.html#Construction-of-Molecular-Grid">Construction of Molecular Grid</a><ul>
@@ -112,7 +123,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/Multipole_Moments.html">Multipole Moments</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Grid Modules</span></p>
+<p class="caption"><span class="caption-text">API Documentation</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">grid</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="grid.html">grid package</a><ul class="current">
@@ -233,18 +244,18 @@
 <div class="section" id="module-grid.rtransform">
 <span id="grid-rtransform-module"></span><h1>grid.rtransform module<a class="headerlink" href="#module-grid.rtransform" title="Permalink to this headline">¶</a></h1>
 <p>Transformation from 1D intervals [a, b] to other 1D intervals [c, d].</p>
-<dl class="py class">
+<dl class="class">
 <dt id="grid.rtransform.BaseTransform">
 <em class="property">class </em><code class="sig-name descname">BaseTransform</code><a class="headerlink" href="#grid.rtransform.BaseTransform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
 <p>Abstract class for transformation.</p>
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.BaseTransform.__init__">
 <code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BaseTransform.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.BaseTransform.codomain">
 <em class="property">property </em><code class="sig-name descname">codomain</code><a class="headerlink" href="#grid.rtransform.BaseTransform.codomain" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transformation codomain.</p>
@@ -255,25 +266,25 @@
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.BaseTransform.deriv">
-<em class="property">abstract </em><code class="sig-name descname">deriv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BaseTransform.deriv" title="Permalink to this definition">¶</a></dt>
+<em class="property">abstract </em><code class="sig-name descname">deriv</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BaseTransform.deriv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Abstract method for 1st derivative of transformation.</p>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.BaseTransform.deriv2">
-<em class="property">abstract </em><code class="sig-name descname">deriv2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BaseTransform.deriv2" title="Permalink to this definition">¶</a></dt>
+<em class="property">abstract </em><code class="sig-name descname">deriv2</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BaseTransform.deriv2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Abstract method for the second derivative of transformation.</p>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.BaseTransform.deriv3">
-<em class="property">abstract </em><code class="sig-name descname">deriv3</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BaseTransform.deriv3" title="Permalink to this definition">¶</a></dt>
+<em class="property">abstract </em><code class="sig-name descname">deriv3</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BaseTransform.deriv3" title="Permalink to this definition">¶</a></dt>
 <dd><p>Abstract method for the third derivative of transformation.</p>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.BaseTransform.domain">
 <em class="property">property </em><code class="sig-name descname">domain</code><a class="headerlink" href="#grid.rtransform.BaseTransform.domain" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transformation domain.</p>
@@ -284,21 +295,21 @@
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.BaseTransform.inverse">
-<em class="property">abstract </em><code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BaseTransform.inverse" title="Permalink to this definition">¶</a></dt>
+<em class="property">abstract </em><code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param">r</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BaseTransform.inverse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Abstract method for inverse transformation.</p>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.BaseTransform.transform">
-<em class="property">abstract </em><code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BaseTransform.transform" title="Permalink to this definition">¶</a></dt>
+<em class="property">abstract </em><code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BaseTransform.transform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Abstract method for transformation.</p>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.BaseTransform.transform_1d_grid">
-<code class="sig-name descname">transform_1d_grid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">oned_grid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BaseTransform.transform_1d_grid" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">transform_1d_grid</code><span class="sig-paren">(</span><em class="sig-param">oned_grid</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BaseTransform.transform_1d_grid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a new integral grid by transforming the provided grid.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\int^{\inf}_0 g(r) d r &amp;= \int^{r(\infty)}_{r(0)} g(r(x)) \frac{dr}{dx} dx \\
@@ -321,12 +332,13 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 </dd></dl>
 
-<dl class="py class">
+<dl class="class">
 <dt id="grid.rtransform.BeckeRTransform">
-<em class="property">class </em><code class="sig-name descname">BeckeRTransform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rmin</span></em>, <em class="sig-param"><span class="n">R</span></em>, <em class="sig-param"><span class="n">trim_inf</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BeckeRTransform" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">BeckeRTransform</code><span class="sig-paren">(</span><em class="sig-param">rmin</em>, <em class="sig-param">R</em>, <em class="sig-param">trim_inf=True</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BeckeRTransform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.rtransform.BaseTransform</span></code></a></p>
-<p>Becke Transformation from <span class="math notranslate nohighlight">\([-1, 1]\)</span> to <span class="math notranslate nohighlight">\([r_{min}, \infty)\)</span>.</p>
-<p>The Becke transformation transforms according to</p>
+<p>Becke Transformation.</p>
+<p>The Becke transformation transforms from <span class="math notranslate nohighlight">\([-1, 1]\)</span> to <span class="math notranslate nohighlight">\([r_{min}, \infty)\)</span>
+according to</p>
 <div class="math notranslate nohighlight">
 \[r(x) = R \frac{1 + x}{1 - x} + r_{min}.\]</div>
 <p>The inverse transformation is given by</p>
@@ -339,7 +351,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 The Journal of chemical physics 88.4 (1988): 2547-2553.</p>
 </dd>
 </dl>
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.BeckeRTransform.R">
 <em class="property">property </em><code class="sig-name descname">R</code><a class="headerlink" href="#grid.rtransform.BeckeRTransform.R" title="Permalink to this definition">¶</a></dt>
 <dd><p>the scale factor for the transformed array.</p>
@@ -350,9 +362,9 @@ The Journal of chemical physics 88.4 (1988): 2547-2553.</p>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.BeckeRTransform.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rmin</span></em>, <em class="sig-param"><span class="n">R</span></em>, <em class="sig-param"><span class="n">trim_inf</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BeckeRTransform.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">rmin</em>, <em class="sig-param">R</em>, <em class="sig-param">trim_inf=True</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BeckeRTransform.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct Becke transform, <span class="math notranslate nohighlight">\([-1, 1]\)</span> to :math`[r_{min}, infty)`.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -368,7 +380,7 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.BeckeRTransform.codomain">
 <em class="property">property </em><code class="sig-name descname">codomain</code><a class="headerlink" href="#grid.rtransform.BeckeRTransform.codomain" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transformation codomain.</p>
@@ -379,9 +391,9 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.BeckeRTransform.deriv">
-<code class="sig-name descname">deriv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BeckeRTransform.deriv" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">deriv</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BeckeRTransform.deriv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the first derivative of Becke transformation.</p>
 <div class="math notranslate nohighlight">
 \[\frac{dr_i}{dx_i} = 2R \frac{1}{(1-x)^2}\]</div>
@@ -398,9 +410,9 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.BeckeRTransform.deriv2">
-<code class="sig-name descname">deriv2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BeckeRTransform.deriv2" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">deriv2</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BeckeRTransform.deriv2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the second derivative of Becke transformation.</p>
 <div class="math notranslate nohighlight">
 \[\frac{d^2r}{dx^2} = 4R \frac{1}{1-x^3}\]</div>
@@ -417,9 +429,9 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.BeckeRTransform.deriv3">
-<code class="sig-name descname">deriv3</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BeckeRTransform.deriv3" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">deriv3</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BeckeRTransform.deriv3" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the third derivative of Becke transformation.</p>
 <div class="math notranslate nohighlight">
 \[\frac{d^3r}{dx^3} = 12R \frac{1}{1 - x^4}\]</div>
@@ -436,7 +448,7 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.BeckeRTransform.domain">
 <em class="property">property </em><code class="sig-name descname">domain</code><a class="headerlink" href="#grid.rtransform.BeckeRTransform.domain" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transformation domain.</p>
@@ -447,9 +459,9 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.BeckeRTransform.find_parameter">
-<em class="property">static </em><code class="sig-name descname">find_parameter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">array</span></em>, <em class="sig-param"><span class="n">rmin</span></em>, <em class="sig-param"><span class="n">radius</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BeckeRTransform.find_parameter" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">find_parameter</code><span class="sig-paren">(</span><em class="sig-param">array</em>, <em class="sig-param">rmin</em>, <em class="sig-param">radius</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BeckeRTransform.find_parameter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute R such that half of the points in <span class="math notranslate nohighlight">\([r_{min}, \infty)\)</span> are within radius.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -468,9 +480,9 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.BeckeRTransform.inverse">
-<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BeckeRTransform.inverse" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param">r</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BeckeRTransform.inverse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transform <span class="math notranslate nohighlight">\([r_{mi}n, \infty)\)</span> back to original <span class="math notranslate nohighlight">\([-1, 1]\)</span>.</p>
 <div class="math notranslate nohighlight">
 \[x_i = \frac{r_i - r_{min} - R} {r_i - r_{min} + R}\]</div>
@@ -487,7 +499,7 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.BeckeRTransform.rmin">
 <em class="property">property </em><code class="sig-name descname">rmin</code><a class="headerlink" href="#grid.rtransform.BeckeRTransform.rmin" title="Permalink to this definition">¶</a></dt>
 <dd><p>the minimum value for the transformed array.</p>
@@ -498,9 +510,9 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.BeckeRTransform.transform">
-<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BeckeRTransform.transform" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BeckeRTransform.transform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transform from <span class="math notranslate nohighlight">\([-1, 1]\)</span> to <span class="math notranslate nohighlight">\([r_{min}, \infty)\)</span>.</p>
 <div class="math notranslate nohighlight">
 \[r_i = R \frac{1 + x_i}{1 - x_i} + r_{min}\]</div>
@@ -517,9 +529,9 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.BeckeRTransform.transform_1d_grid">
-<code class="sig-name descname">transform_1d_grid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">oned_grid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BeckeRTransform.transform_1d_grid" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">transform_1d_grid</code><span class="sig-paren">(</span><em class="sig-param">oned_grid</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BeckeRTransform.transform_1d_grid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a new integral grid by transforming the provided grid.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\int^{\inf}_0 g(r) d r &amp;= \int^{r(\infty)}_{r(0)} g(r(x)) \frac{dr}{dx} dx \\
@@ -542,9 +554,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 </dd></dl>
 
-<dl class="py class">
+<dl class="class">
 <dt id="grid.rtransform.ExpRTransform">
-<em class="property">class </em><code class="sig-name descname">ExpRTransform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rmin</span></em>, <em class="sig-param"><span class="n">rmax</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.ExpRTransform" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">ExpRTransform</code><span class="sig-paren">(</span><em class="sig-param">rmin</em>, <em class="sig-param">rmax</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.ExpRTransform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.rtransform.BaseTransform</span></code></a></p>
 <p>Exponential transform from <span class="math notranslate nohighlight">\([0, \infty)\)</span> to <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span>.</p>
 <p>This transformation is given by</p>
@@ -553,9 +565,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 <p>The inverse transformation is given by</p>
 <div class="math notranslate nohighlight">
 \[x(r) = \frac{\log\big(\frac{r}{r_{min}} \big) (N - 1)}{\log(\frac{r_{max}}{r_{min}})}\]</div>
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.ExpRTransform.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rmin</span></em>, <em class="sig-param"><span class="n">rmax</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.ExpRTransform.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">rmin</em>, <em class="sig-param">rmax</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.ExpRTransform.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize exp transform instance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -567,7 +579,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.ExpRTransform.codomain">
 <em class="property">property </em><code class="sig-name descname">codomain</code><a class="headerlink" href="#grid.rtransform.ExpRTransform.codomain" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transformation codomain.</p>
@@ -578,9 +590,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.ExpRTransform.deriv">
-<code class="sig-name descname">deriv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.ExpRTransform.deriv" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">deriv</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.ExpRTransform.deriv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the first derivative of exponential transform.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -595,9 +607,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.ExpRTransform.deriv2">
-<code class="sig-name descname">deriv2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.ExpRTransform.deriv2" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">deriv2</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.ExpRTransform.deriv2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the second derivative of exponential transform.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -612,9 +624,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.ExpRTransform.deriv3">
-<code class="sig-name descname">deriv3</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.ExpRTransform.deriv3" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">deriv3</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.ExpRTransform.deriv3" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the third derivative of exponential transform.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -629,7 +641,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.ExpRTransform.domain">
 <em class="property">property </em><code class="sig-name descname">domain</code><a class="headerlink" href="#grid.rtransform.ExpRTransform.domain" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transformation domain.</p>
@@ -640,9 +652,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.ExpRTransform.inverse">
-<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.ExpRTransform.inverse" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param">r</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.ExpRTransform.inverse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the inverse of exponential transform.</p>
 <div class="math notranslate nohighlight">
 \[x(r_i) = \frac{\log\big(\frac{r}{r_{min}} \big) (N - 1)}{\log(\frac{r_{max}}{r_{min}})}\]</div>
@@ -659,7 +671,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.ExpRTransform.rmax">
 <em class="property">property </em><code class="sig-name descname">rmax</code><a class="headerlink" href="#grid.rtransform.ExpRTransform.rmax" title="Permalink to this definition">¶</a></dt>
 <dd><p>the value of rmax.</p>
@@ -670,7 +682,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.ExpRTransform.rmin">
 <em class="property">property </em><code class="sig-name descname">rmin</code><a class="headerlink" href="#grid.rtransform.ExpRTransform.rmin" title="Permalink to this definition">¶</a></dt>
 <dd><p>the value of rmin.</p>
@@ -681,9 +693,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.ExpRTransform.transform">
-<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.ExpRTransform.transform" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.ExpRTransform.transform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform exponential transform.</p>
 <div class="math notranslate nohighlight">
 \[r = r_{min} e^{x \log\bigg(\frac{r_{max}}{r_{min} / (N - 1)}  \bigg)},\]</div>
@@ -701,9 +713,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.ExpRTransform.transform_1d_grid">
-<code class="sig-name descname">transform_1d_grid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">oned_grid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.ExpRTransform.transform_1d_grid" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">transform_1d_grid</code><span class="sig-paren">(</span><em class="sig-param">oned_grid</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.ExpRTransform.transform_1d_grid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a new integral grid by transforming the provided grid.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\int^{\inf}_0 g(r) d r &amp;= \int^{r(\infty)}_{r(0)} g(r(x)) \frac{dr}{dx} dx \\
@@ -726,9 +738,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 </dd></dl>
 
-<dl class="py class">
+<dl class="class">
 <dt id="grid.rtransform.HandyModRTransform">
-<em class="property">class </em><code class="sig-name descname">HandyModRTransform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rmin</span></em>, <em class="sig-param"><span class="n">rmax</span></em>, <em class="sig-param"><span class="n">m</span></em>, <em class="sig-param"><span class="n">trim_inf</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyModRTransform" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">HandyModRTransform</code><span class="sig-paren">(</span><em class="sig-param">rmin</em>, <em class="sig-param">rmax</em>, <em class="sig-param">m</em>, <em class="sig-param">trim_inf=True</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyModRTransform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.rtransform.BaseTransform</span></code></a></p>
 <p>Modified Handy Transformation class from <span class="math notranslate nohighlight">\([-1, 1]\)</span> to <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span>.</p>
 <p>This transformation is given by</p>
@@ -743,9 +755,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
         \frac{(r - r_{min})(r_{max} - r_{min} - 2^m + 1)}
         {(r - r_{min})(r_{max} - r_{min} - 2^m) + r_{max} - r_{min}}
         } - 1.\]</div>
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.HandyModRTransform.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rmin</span></em>, <em class="sig-param"><span class="n">rmax</span></em>, <em class="sig-param"><span class="n">m</span></em>, <em class="sig-param"><span class="n">trim_inf</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyModRTransform.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">rmin</em>, <em class="sig-param">rmax</em>, <em class="sig-param">m</em>, <em class="sig-param">trim_inf=True</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyModRTransform.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct a modified Handy transform from <span class="math notranslate nohighlight">\([-1, 1]\)</span> to <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -761,7 +773,7 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.HandyModRTransform.codomain">
 <em class="property">property </em><code class="sig-name descname">codomain</code><a class="headerlink" href="#grid.rtransform.HandyModRTransform.codomain" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transformation codomain.</p>
@@ -772,9 +784,9 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.HandyModRTransform.deriv">
-<code class="sig-name descname">deriv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyModRTransform.deriv" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">deriv</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyModRTransform.deriv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the first derivative of modified Handy transformation.</p>
 <div class="math notranslate nohighlight">
 \[\frac{dr}{dx} = -\frac{
@@ -794,9 +806,9 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.HandyModRTransform.deriv2">
-<code class="sig-name descname">deriv2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyModRTransform.deriv2" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">deriv2</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyModRTransform.deriv2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the second derivative of modified Handy transformation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -811,9 +823,9 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.HandyModRTransform.deriv3">
-<code class="sig-name descname">deriv3</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyModRTransform.deriv3" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">deriv3</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyModRTransform.deriv3" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the third derivative of modified Handy transformation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -828,7 +840,7 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.HandyModRTransform.domain">
 <em class="property">property </em><code class="sig-name descname">domain</code><a class="headerlink" href="#grid.rtransform.HandyModRTransform.domain" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transformation domain.</p>
@@ -839,9 +851,9 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.HandyModRTransform.inverse">
-<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyModRTransform.inverse" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param">r</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyModRTransform.inverse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Inverse transform from <span class="math notranslate nohighlight">\([r_{min},r_{max}]\)</span> to <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
 <div class="math notranslate nohighlight">
 \[x_i = 2 \sqrt[m]{
@@ -861,7 +873,7 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.HandyModRTransform.m">
 <em class="property">property </em><code class="sig-name descname">m</code><a class="headerlink" href="#grid.rtransform.HandyModRTransform.m" title="Permalink to this definition">¶</a></dt>
 <dd><p>Free and extra parameter, m must be &gt; 0.</p>
@@ -872,7 +884,7 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.HandyModRTransform.rmax">
 <em class="property">property </em><code class="sig-name descname">rmax</code><a class="headerlink" href="#grid.rtransform.HandyModRTransform.rmax" title="Permalink to this definition">¶</a></dt>
 <dd><p>The maximum value for the transformed radial array.</p>
@@ -883,7 +895,7 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.HandyModRTransform.rmin">
 <em class="property">property </em><code class="sig-name descname">rmin</code><a class="headerlink" href="#grid.rtransform.HandyModRTransform.rmin" title="Permalink to this definition">¶</a></dt>
 <dd><p>The minimum value for the transformed radial array.</p>
@@ -894,9 +906,9 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.HandyModRTransform.transform">
-<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyModRTransform.transform" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyModRTransform.transform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transform given array <span class="math notranslate nohighlight">\([-1,1]\)</span> to radial array <span class="math notranslate nohighlight">\([r_{min},r_{max}]\)</span>.</p>
 <div class="math notranslate nohighlight">
 \[r_i = \frac{(1+x_i)^m (r_{max} - r_{min})}
@@ -915,9 +927,9 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.HandyModRTransform.transform_1d_grid">
-<code class="sig-name descname">transform_1d_grid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">oned_grid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyModRTransform.transform_1d_grid" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">transform_1d_grid</code><span class="sig-paren">(</span><em class="sig-param">oned_grid</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyModRTransform.transform_1d_grid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a new integral grid by transforming the provided grid.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\int^{\inf}_0 g(r) d r &amp;= \int^{r(\infty)}_{r(0)} g(r(x)) \frac{dr}{dx} dx \\
@@ -940,9 +952,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 </dd></dl>
 
-<dl class="py class">
+<dl class="class">
 <dt id="grid.rtransform.HandyRTransform">
-<em class="property">class </em><code class="sig-name descname">HandyRTransform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rmin</span></em>, <em class="sig-param"><span class="n">R</span></em>, <em class="sig-param"><span class="n">m</span></em>, <em class="sig-param"><span class="n">trim_inf</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyRTransform" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">HandyRTransform</code><span class="sig-paren">(</span><em class="sig-param">rmin</em>, <em class="sig-param">R</em>, <em class="sig-param">m</em>, <em class="sig-param">trim_inf=True</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyRTransform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.rtransform.BaseTransform</span></code></a></p>
 <p>Handy Transformation class from <span class="math notranslate nohighlight">\([-1, 1]\)</span> to <span class="math notranslate nohighlight">\([r_{min}, \infty)\)</span>.</p>
 <p>This transformation is given by</p>
@@ -951,7 +963,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 <p>The inverse transformations is given by</p>
 <div class="math notranslate nohighlight">
 \[x(r) = \frac{\sqrt[m]{r-r_{min}} - \sqrt[m]{R}} {\sqrt[m]{r-r_{min}} + \sqrt[m]{R}}.\]</div>
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.HandyRTransform.R">
 <em class="property">property </em><code class="sig-name descname">R</code><a class="headerlink" href="#grid.rtransform.HandyRTransform.R" title="Permalink to this definition">¶</a></dt>
 <dd><p>The scale factor for the transformed radial array.</p>
@@ -962,9 +974,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.HandyRTransform.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rmin</span></em>, <em class="sig-param"><span class="n">R</span></em>, <em class="sig-param"><span class="n">m</span></em>, <em class="sig-param"><span class="n">trim_inf</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyRTransform.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">rmin</em>, <em class="sig-param">R</em>, <em class="sig-param">m</em>, <em class="sig-param">trim_inf=True</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyRTransform.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct Handy transformation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -980,7 +992,7 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.HandyRTransform.codomain">
 <em class="property">property </em><code class="sig-name descname">codomain</code><a class="headerlink" href="#grid.rtransform.HandyRTransform.codomain" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transformation codomain.</p>
@@ -991,9 +1003,9 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.HandyRTransform.deriv">
-<code class="sig-name descname">deriv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyRTransform.deriv" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">deriv</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyRTransform.deriv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the first derivative of Handy transformation.</p>
 <div class="math notranslate nohighlight">
 \[\frac{dr}{dx} = 2mR \frac{(1+x)^{m-1}}{(1-x)^{m+1}}\]</div>
@@ -1010,9 +1022,9 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.HandyRTransform.deriv2">
-<code class="sig-name descname">deriv2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyRTransform.deriv2" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">deriv2</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyRTransform.deriv2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the second derivative of Handy transformation.</p>
 <div class="math notranslate nohighlight">
 \[\frac{d^2r}{dx^2} = 4mR (m + x) \frac{(1+x)^{m-2}}{(1-x)^{m+2}}\]</div>
@@ -1029,9 +1041,9 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.HandyRTransform.deriv3">
-<code class="sig-name descname">deriv3</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyRTransform.deriv3" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">deriv3</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyRTransform.deriv3" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the third derivative of Handy transformation.</p>
 <div class="math notranslate nohighlight">
 \[\frac{d^3r}{dx^3} = 4mR ( 1 + 6 m x + 2 m^2 + 3 x^2)
@@ -1049,7 +1061,7 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.HandyRTransform.domain">
 <em class="property">property </em><code class="sig-name descname">domain</code><a class="headerlink" href="#grid.rtransform.HandyRTransform.domain" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transformation domain.</p>
@@ -1060,9 +1072,9 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.HandyRTransform.inverse">
-<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyRTransform.inverse" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param">r</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyRTransform.inverse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Inverse transform from <span class="math notranslate nohighlight">\([r_{min},\infty)\)</span> to <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
 <div class="math notranslate nohighlight">
 \[x_i = \frac{\sqrt[m]{r_i-r_{min}} - \sqrt[m]{R}}
@@ -1080,7 +1092,7 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.HandyRTransform.m">
 <em class="property">property </em><code class="sig-name descname">m</code><a class="headerlink" href="#grid.rtransform.HandyRTransform.m" title="Permalink to this definition">¶</a></dt>
 <dd><p>Free and extra parameter, m must be &gt; 0.</p>
@@ -1091,7 +1103,7 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.HandyRTransform.rmin">
 <em class="property">property </em><code class="sig-name descname">rmin</code><a class="headerlink" href="#grid.rtransform.HandyRTransform.rmin" title="Permalink to this definition">¶</a></dt>
 <dd><p>The minimum value for the transformed radial array.</p>
@@ -1102,9 +1114,9 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.HandyRTransform.transform">
-<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyRTransform.transform" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyRTransform.transform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transform from <span class="math notranslate nohighlight">\([-1,1]\)</span> to <span class="math notranslate nohighlight">\([r_{min},\infty)\)</span>.</p>
 <div class="math notranslate nohighlight">
 \[r_i = R \left( \frac{1+x_i}{1-x_i} \right)^m + r_{min}\]</div>
@@ -1121,9 +1133,9 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.HandyRTransform.transform_1d_grid">
-<code class="sig-name descname">transform_1d_grid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">oned_grid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyRTransform.transform_1d_grid" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">transform_1d_grid</code><span class="sig-paren">(</span><em class="sig-param">oned_grid</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyRTransform.transform_1d_grid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a new integral grid by transforming the provided grid.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\int^{\inf}_0 g(r) d r &amp;= \int^{r(\infty)}_{r(0)} g(r(x)) \frac{dr}{dx} dx \\
@@ -1146,11 +1158,11 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 </dd></dl>
 
-<dl class="py class">
+<dl class="class">
 <dt id="grid.rtransform.HyperbolicRTransform">
-<em class="property">class </em><code class="sig-name descname">HyperbolicRTransform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">a</span></em>, <em class="sig-param"><span class="n">b</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">HyperbolicRTransform</code><span class="sig-paren">(</span><em class="sig-param">a</em>, <em class="sig-param">b</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.rtransform.BaseTransform</span></code></a></p>
-<p>Hyperbolic transform from <span class="math notranslate nohighlight">\([0, \infty)\)</span> to <span class="math notranslate nohighlight">\([0, \infty)\)</span>.</p>
+<p>Hyperbolic transform from :math`[0, infty)` to <span class="math notranslate nohighlight">\([0, \infty)\)</span>.</p>
 <p>The transformation is given by</p>
 <div class="math notranslate nohighlight">
 \[r(x) = \frac{a x}{(1 - bx)},\]</div>
@@ -1158,9 +1170,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 <p>The inverse transformation is given by</p>
 <div class="math notranslate nohighlight">
 \[x(r) = \frac{r}{a + br}\]</div>
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.HyperbolicRTransform.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">a</span></em>, <em class="sig-param"><span class="n">b</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">a</em>, <em class="sig-param">b</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Hyperbolic transform class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1172,7 +1184,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.HyperbolicRTransform.a">
 <em class="property">property </em><code class="sig-name descname">a</code><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.a" title="Permalink to this definition">¶</a></dt>
 <dd><p>value of parameter a.</p>
@@ -1183,7 +1195,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.HyperbolicRTransform.b">
 <em class="property">property </em><code class="sig-name descname">b</code><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.b" title="Permalink to this definition">¶</a></dt>
 <dd><p>value of parameter b.</p>
@@ -1194,7 +1206,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.HyperbolicRTransform.codomain">
 <em class="property">property </em><code class="sig-name descname">codomain</code><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.codomain" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transformation codomain.</p>
@@ -1205,9 +1217,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.HyperbolicRTransform.deriv">
-<code class="sig-name descname">deriv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.deriv" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">deriv</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.deriv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the first derivative of hyperbolic transformation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1222,9 +1234,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.HyperbolicRTransform.deriv2">
-<code class="sig-name descname">deriv2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.deriv2" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">deriv2</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.deriv2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the second derivative of hyperbolic transformation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1239,9 +1251,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.HyperbolicRTransform.deriv3">
-<code class="sig-name descname">deriv3</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.deriv3" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">deriv3</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.deriv3" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the third derivative of hyperbolic transformation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1256,7 +1268,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.HyperbolicRTransform.domain">
 <em class="property">property </em><code class="sig-name descname">domain</code><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.domain" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transformation domain.</p>
@@ -1267,9 +1279,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.HyperbolicRTransform.inverse">
-<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.inverse" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param">r</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.inverse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the inverse of hyperbolic transformation.</p>
 <div class="math notranslate nohighlight">
 \[x(r) = \frac{r}{a + br}\]</div>
@@ -1286,9 +1298,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.HyperbolicRTransform.transform">
-<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.transform" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.transform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform hyperbolic transformation.</p>
 <div class="math notranslate nohighlight">
 \[r_i = \frac{a x_i}{(1 - bx_i)},\]</div>
@@ -1306,9 +1318,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.HyperbolicRTransform.transform_1d_grid">
-<code class="sig-name descname">transform_1d_grid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">oned_grid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.transform_1d_grid" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">transform_1d_grid</code><span class="sig-paren">(</span><em class="sig-param">oned_grid</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.transform_1d_grid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a new integral grid by transforming the provided grid.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\int^{\inf}_0 g(r) d r &amp;= \int^{r(\infty)}_{r(0)} g(r(x)) \frac{dr}{dx} dx \\
@@ -1331,7 +1343,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 </dd></dl>
 
-<dl class="py class">
+<dl class="class">
 <dt id="grid.rtransform.IdentityRTransform">
 <em class="property">class </em><code class="sig-name descname">IdentityRTransform</code><a class="headerlink" href="#grid.rtransform.IdentityRTransform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.rtransform.BaseTransform</span></code></a></p>
@@ -1343,13 +1355,13 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 <p>The inverse transformation is given by</p>
 <div class="math notranslate nohighlight">
 \[x(r) = r.\]</div>
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.IdentityRTransform.__init__">
 <code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.IdentityRTransform.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.IdentityRTransform.codomain">
 <em class="property">property </em><code class="sig-name descname">codomain</code><a class="headerlink" href="#grid.rtransform.IdentityRTransform.codomain" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transformation codomain.</p>
@@ -1360,9 +1372,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.IdentityRTransform.deriv">
-<code class="sig-name descname">deriv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.IdentityRTransform.deriv" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">deriv</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.IdentityRTransform.deriv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the first derivative of identity transform.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1377,9 +1389,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.IdentityRTransform.deriv2">
-<code class="sig-name descname">deriv2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.IdentityRTransform.deriv2" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">deriv2</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.IdentityRTransform.deriv2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the second derivative of identity transform.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1394,9 +1406,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.IdentityRTransform.deriv3">
-<code class="sig-name descname">deriv3</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.IdentityRTransform.deriv3" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">deriv3</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.IdentityRTransform.deriv3" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the third derivative of identity transform.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1411,7 +1423,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.IdentityRTransform.domain">
 <em class="property">property </em><code class="sig-name descname">domain</code><a class="headerlink" href="#grid.rtransform.IdentityRTransform.domain" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transformation domain.</p>
@@ -1422,9 +1434,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.IdentityRTransform.inverse">
-<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.IdentityRTransform.inverse" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param">r</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.IdentityRTransform.inverse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the inverse of identity transform.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1439,9 +1451,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.IdentityRTransform.transform">
-<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.IdentityRTransform.transform" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.IdentityRTransform.transform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform given array into itself.</p>
 <div class="math notranslate nohighlight">
 \[r_i = x_i\]</div>
@@ -1458,9 +1470,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.IdentityRTransform.transform_1d_grid">
-<code class="sig-name descname">transform_1d_grid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">oned_grid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.IdentityRTransform.transform_1d_grid" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">transform_1d_grid</code><span class="sig-paren">(</span><em class="sig-param">oned_grid</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.IdentityRTransform.transform_1d_grid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a new integral grid by transforming the provided grid.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\int^{\inf}_0 g(r) d r &amp;= \int^{r(\infty)}_{r(0)} g(r(x)) \frac{dr}{dx} dx \\
@@ -1483,14 +1495,14 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 </dd></dl>
 
-<dl class="py class">
+<dl class="class">
 <dt id="grid.rtransform.InverseRTransform">
-<em class="property">class </em><code class="sig-name descname">InverseRTransform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">transform</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.InverseRTransform" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">InverseRTransform</code><span class="sig-paren">(</span><em class="sig-param">transform</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.InverseRTransform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.rtransform.BaseTransform</span></code></a></p>
 <p>Inverse transformation class for any general transformation.</p>
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.InverseRTransform.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">transform</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.InverseRTransform.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">transform</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.InverseRTransform.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct InverseRTransform instance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1499,7 +1511,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.InverseRTransform.codomain">
 <em class="property">property </em><code class="sig-name descname">codomain</code><a class="headerlink" href="#grid.rtransform.InverseRTransform.codomain" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transformation codomain.</p>
@@ -1510,9 +1522,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.InverseRTransform.deriv">
-<code class="sig-name descname">deriv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.InverseRTransform.deriv" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">deriv</code><span class="sig-paren">(</span><em class="sig-param">r</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.InverseRTransform.deriv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the first derivative of inverse transformation.</p>
 <div class="math notranslate nohighlight">
 \[\frac{dx}{dr} = (\frac{dr}{dx})^{-1}\]</div>
@@ -1529,9 +1541,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.InverseRTransform.deriv2">
-<code class="sig-name descname">deriv2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.InverseRTransform.deriv2" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">deriv2</code><span class="sig-paren">(</span><em class="sig-param">r</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.InverseRTransform.deriv2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the second derivative of inverse transformation.</p>
 <div class="math notranslate nohighlight">
 \[\frac{d^2 x}{dr^2} = - \frac{d^2 r}{dx^2} (\frac{dx}{dr})^3\]</div>
@@ -1548,9 +1560,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.InverseRTransform.deriv3">
-<code class="sig-name descname">deriv3</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.InverseRTransform.deriv3" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">deriv3</code><span class="sig-paren">(</span><em class="sig-param">r</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.InverseRTransform.deriv3" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the third derivative of inverse transformation.</p>
 <div class="math notranslate nohighlight">
 \[\frac{d^3 x}{dr^3} = -\frac{d^3 r}{dx^3} (\frac{dx}{dr})^4
@@ -1568,7 +1580,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.InverseRTransform.domain">
 <em class="property">property </em><code class="sig-name descname">domain</code><a class="headerlink" href="#grid.rtransform.InverseRTransform.domain" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transformation domain.</p>
@@ -1579,9 +1591,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.InverseRTransform.inverse">
-<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.InverseRTransform.inverse" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.InverseRTransform.inverse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transform array to the co-domain of the provided transformation.</p>
 <p>This transformation is equivalent to the transformation function of the original
 transformation (i.e. OriginTF.transform).</p>
@@ -1598,9 +1610,9 @@ transformation (i.e. OriginTF.transform).</p>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.InverseRTransform.transform">
-<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.InverseRTransform.transform" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param">r</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.InverseRTransform.transform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transform array back to the original, domain of the provided transformation.</p>
 <p>This transformation is equivalent to the inverse function of the original
 transformation (i.e. OriginTF.inverse).</p>
@@ -1617,9 +1629,9 @@ transformation (i.e. OriginTF.inverse).</p>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.InverseRTransform.transform_1d_grid">
-<code class="sig-name descname">transform_1d_grid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">oned_grid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.InverseRTransform.transform_1d_grid" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">transform_1d_grid</code><span class="sig-paren">(</span><em class="sig-param">oned_grid</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.InverseRTransform.transform_1d_grid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a new integral grid by transforming the provided grid.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\int^{\inf}_0 g(r) d r &amp;= \int^{r(\infty)}_{r(0)} g(r(x)) \frac{dr}{dx} dx \\
@@ -1642,9 +1654,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 </dd></dl>
 
-<dl class="py class">
+<dl class="class">
 <dt id="grid.rtransform.KnowlesRTransform">
-<em class="property">class </em><code class="sig-name descname">KnowlesRTransform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rmin</span></em>, <em class="sig-param"><span class="n">R</span></em>, <em class="sig-param"><span class="n">k</span></em>, <em class="sig-param"><span class="n">trim_inf</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.KnowlesRTransform" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">KnowlesRTransform</code><span class="sig-paren">(</span><em class="sig-param">rmin</em>, <em class="sig-param">R</em>, <em class="sig-param">k</em>, <em class="sig-param">trim_inf=True</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.KnowlesRTransform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.rtransform.BaseTransform</span></code></a></p>
 <p>Knowles Transformation from <span class="math notranslate nohighlight">\([-1, 1]\)</span> to <span class="math notranslate nohighlight">\([r_{min}, \infty)\)</span>.</p>
 <p>The transformation is given by</p>
@@ -1654,7 +1666,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 <p>The inverse transformation is given by</p>
 <div class="math notranslate nohighlight">
 \[x(r) = 2 \sqrt[k]{1-\exp \left( -\frac{r-r_{min}}{R}\right)}-1\]</div>
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.KnowlesRTransform.R">
 <em class="property">property </em><code class="sig-name descname">R</code><a class="headerlink" href="#grid.rtransform.KnowlesRTransform.R" title="Permalink to this definition">¶</a></dt>
 <dd><p>The scale factor for the transformed radial array.</p>
@@ -1665,9 +1677,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.KnowlesRTransform.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rmin</span></em>, <em class="sig-param"><span class="n">R</span></em>, <em class="sig-param"><span class="n">k</span></em>, <em class="sig-param"><span class="n">trim_inf</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.KnowlesRTransform.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">rmin</em>, <em class="sig-param">R</em>, <em class="sig-param">k</em>, <em class="sig-param">trim_inf=True</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.KnowlesRTransform.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct Knowles transformation class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1683,7 +1695,7 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.KnowlesRTransform.codomain">
 <em class="property">property </em><code class="sig-name descname">codomain</code><a class="headerlink" href="#grid.rtransform.KnowlesRTransform.codomain" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transformation codomain.</p>
@@ -1694,9 +1706,9 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.KnowlesRTransform.deriv">
-<code class="sig-name descname">deriv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.KnowlesRTransform.deriv" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">deriv</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.KnowlesRTransform.deriv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the first derivative of Knowles transformation.</p>
 <div class="math notranslate nohighlight">
 \[\frac{dr}{dx} = kR \frac{(1+x_i)^{k-1}}{2^k-(1+x_i)^k}\]</div>
@@ -1713,9 +1725,9 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.KnowlesRTransform.deriv2">
-<code class="sig-name descname">deriv2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.KnowlesRTransform.deriv2" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">deriv2</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.KnowlesRTransform.deriv2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the second derivative of Knowles transformation.</p>
 <div class="math notranslate nohighlight">
 \[\frac{d^2r}{dx^2} = kR \frac{(1+x_i)^{k-2}
@@ -1733,9 +1745,9 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.KnowlesRTransform.deriv3">
-<code class="sig-name descname">deriv3</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.KnowlesRTransform.deriv3" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">deriv3</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.KnowlesRTransform.deriv3" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the third derivative of Knowles transformation.</p>
 <div class="math notranslate nohighlight">
 \[\frac{d^3r}{dx^3} = kR \frac{(1+x_i)^{k-3}
@@ -1755,7 +1767,7 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.KnowlesRTransform.domain">
 <em class="property">property </em><code class="sig-name descname">domain</code><a class="headerlink" href="#grid.rtransform.KnowlesRTransform.domain" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transformation domain.</p>
@@ -1766,9 +1778,9 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.KnowlesRTransform.inverse">
-<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.KnowlesRTransform.inverse" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param">r</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.KnowlesRTransform.inverse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Inverse of transformation from <span class="math notranslate nohighlight">\([r_{min},\infty)\)</span> to <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
 <div class="math notranslate nohighlight">
 \[x_i = 2 \sqrt[k]{1-\exp \left( -\frac{r_i-r_{min}}{R}\right)}-1\]</div>
@@ -1785,7 +1797,7 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.KnowlesRTransform.k">
 <em class="property">property </em><code class="sig-name descname">k</code><a class="headerlink" href="#grid.rtransform.KnowlesRTransform.k" title="Permalink to this definition">¶</a></dt>
 <dd><p>Free and extra parameter, k must be &gt; 0.</p>
@@ -1796,7 +1808,7 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.KnowlesRTransform.rmin">
 <em class="property">property </em><code class="sig-name descname">rmin</code><a class="headerlink" href="#grid.rtransform.KnowlesRTransform.rmin" title="Permalink to this definition">¶</a></dt>
 <dd><p>The minimum value for the transformed radial array.</p>
@@ -1807,9 +1819,9 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.KnowlesRTransform.transform">
-<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.KnowlesRTransform.transform" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.KnowlesRTransform.transform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transform from <span class="math notranslate nohighlight">\([-1,1]\)</span> to <span class="math notranslate nohighlight">\([r_{min},\infty)\)</span>.</p>
 <div class="math notranslate nohighlight">
 \[r_i = r_{min} - R \log \left( 1 - 2^{-k} (x_i + 1)^k \right)\]</div>
@@ -1826,9 +1838,9 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.KnowlesRTransform.transform_1d_grid">
-<code class="sig-name descname">transform_1d_grid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">oned_grid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.KnowlesRTransform.transform_1d_grid" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">transform_1d_grid</code><span class="sig-paren">(</span><em class="sig-param">oned_grid</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.KnowlesRTransform.transform_1d_grid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a new integral grid by transforming the provided grid.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\int^{\inf}_0 g(r) d r &amp;= \int^{r(\infty)}_{r(0)} g(r(x)) \frac{dr}{dx} dx \\
@@ -1851,9 +1863,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 </dd></dl>
 
-<dl class="py class">
+<dl class="class">
 <dt id="grid.rtransform.LinearFiniteRTransform">
-<em class="property">class </em><code class="sig-name descname">LinearFiniteRTransform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rmin</span></em>, <em class="sig-param"><span class="n">rmax</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearFiniteRTransform" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">LinearFiniteRTransform</code><span class="sig-paren">(</span><em class="sig-param">rmin</em>, <em class="sig-param">rmax</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearFiniteRTransform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.rtransform.BaseTransform</span></code></a></p>
 <p>Linear finite transformation from <span class="math notranslate nohighlight">\([-1, 1]\)</span> to <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span>.</p>
 <p>The Linear transformation from finite interval <span class="math notranslate nohighlight">\([-1, 1]\)</span> to finite interval
@@ -1863,9 +1875,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 <p>The inverse transformation is given by</p>
 <div class="math notranslate nohighlight">
 \[x(r) = \frac{2 r - (r_{max} + r_{min})}{r_{max} - r_{min}}\]</div>
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.LinearFiniteRTransform.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rmin</span></em>, <em class="sig-param"><span class="n">rmax</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearFiniteRTransform.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">rmin</em>, <em class="sig-param">rmax</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearFiniteRTransform.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct linear transformation instance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1877,7 +1889,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.LinearFiniteRTransform.codomain">
 <em class="property">property </em><code class="sig-name descname">codomain</code><a class="headerlink" href="#grid.rtransform.LinearFiniteRTransform.codomain" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transformation codomain.</p>
@@ -1888,9 +1900,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.LinearFiniteRTransform.deriv">
-<code class="sig-name descname">deriv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearFiniteRTransform.deriv" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">deriv</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearFiniteRTransform.deriv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the 1st order derivative.</p>
 <div class="math notranslate nohighlight">
 \[\frac{dr}{dx} = \frac{r_{max} - r_{min}}{2}\]</div>
@@ -1907,9 +1919,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.LinearFiniteRTransform.deriv2">
-<code class="sig-name descname">deriv2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearFiniteRTransform.deriv2" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">deriv2</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearFiniteRTransform.deriv2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the second order derivative.</p>
 <div class="math notranslate nohighlight">
 \[\frac{d^2 r}{dx^2} = 0\]</div>
@@ -1926,9 +1938,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.LinearFiniteRTransform.deriv3">
-<code class="sig-name descname">deriv3</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearFiniteRTransform.deriv3" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">deriv3</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearFiniteRTransform.deriv3" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the third order derivative.</p>
 <div class="math notranslate nohighlight">
 \[\frac{d^2 r}{dx^2} = 0\]</div>
@@ -1945,7 +1957,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.LinearFiniteRTransform.domain">
 <em class="property">property </em><code class="sig-name descname">domain</code><a class="headerlink" href="#grid.rtransform.LinearFiniteRTransform.domain" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transformation domain.</p>
@@ -1956,9 +1968,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.LinearFiniteRTransform.inverse">
-<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearFiniteRTransform.inverse" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param">r</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearFiniteRTransform.inverse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the inverse of the transformation.</p>
 <div class="math notranslate nohighlight">
 \[x_i = \frac{2 r_i - (r_{max} + r_{min})}{r_{max} - r_{min}}\]</div>
@@ -1975,9 +1987,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.LinearFiniteRTransform.transform">
-<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearFiniteRTransform.transform" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearFiniteRTransform.transform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transform from interval <span class="math notranslate nohighlight">\([-1, 1]\)</span> to <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span>.</p>
 <div class="math notranslate nohighlight">
 \[r_i = \frac{r_{max} - r_{min}}{2} (1 + x_i) + r_{min}.\]</div>
@@ -1995,9 +2007,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.LinearFiniteRTransform.transform_1d_grid">
-<code class="sig-name descname">transform_1d_grid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">oned_grid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearFiniteRTransform.transform_1d_grid" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">transform_1d_grid</code><span class="sig-paren">(</span><em class="sig-param">oned_grid</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearFiniteRTransform.transform_1d_grid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a new integral grid by transforming the provided grid.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\int^{\inf}_0 g(r) d r &amp;= \int^{r(\infty)}_{r(0)} g(r(x)) \frac{dr}{dx} dx \\
@@ -2020,11 +2032,11 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 </dd></dl>
 
-<dl class="py class">
+<dl class="class">
 <dt id="grid.rtransform.LinearInfiniteRTransform">
-<em class="property">class </em><code class="sig-name descname">LinearInfiniteRTransform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rmin</span></em>, <em class="sig-param"><span class="n">rmax</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearInfiniteRTransform" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">LinearInfiniteRTransform</code><span class="sig-paren">(</span><em class="sig-param">rmin</em>, <em class="sig-param">rmax</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearInfiniteRTransform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.rtransform.BaseTransform</span></code></a></p>
-<p>Linear transform from <span class="math notranslate nohighlight">\([0, \infty)\)</span> to <span class="math notranslate nohighlight">\([r_{min}, r_{max})\)</span>.</p>
+<p>Linear transform from interval <span class="math notranslate nohighlight">\([0, \infty)\)</span> to <span class="math notranslate nohighlight">\([r_{min}, r_{max})\)</span>.</p>
 <p>This transformation linearly maps the infinite interval <span class="math notranslate nohighlight">\([0, \infty)\)</span> to a finite
 interval <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span> given by</p>
 <div class="math notranslate nohighlight">
@@ -2032,9 +2044,9 @@ interval <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span
 <p>The inverse is given by</p>
 <div class="math notranslate nohighlight">
 \[x(r) = (r - r_{min}) \frac{N - 1}{r_{max} - r_{min}}\]</div>
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.LinearInfiniteRTransform.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rmin</span></em>, <em class="sig-param"><span class="n">rmax</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearInfiniteRTransform.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">rmin</em>, <em class="sig-param">rmax</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearInfiniteRTransform.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize linear transform class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2046,7 +2058,7 @@ interval <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.LinearInfiniteRTransform.codomain">
 <em class="property">property </em><code class="sig-name descname">codomain</code><a class="headerlink" href="#grid.rtransform.LinearInfiniteRTransform.codomain" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transformation codomain.</p>
@@ -2057,9 +2069,9 @@ interval <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.LinearInfiniteRTransform.deriv">
-<code class="sig-name descname">deriv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearInfiniteRTransform.deriv" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">deriv</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearInfiniteRTransform.deriv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the first derivative of linear transformation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2074,9 +2086,9 @@ interval <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.LinearInfiniteRTransform.deriv2">
-<code class="sig-name descname">deriv2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearInfiniteRTransform.deriv2" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">deriv2</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearInfiniteRTransform.deriv2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the second derivative of linear transformation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2091,9 +2103,9 @@ interval <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.LinearInfiniteRTransform.deriv3">
-<code class="sig-name descname">deriv3</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearInfiniteRTransform.deriv3" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">deriv3</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearInfiniteRTransform.deriv3" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the third derivative of linear transformation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2108,7 +2120,7 @@ interval <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.LinearInfiniteRTransform.domain">
 <em class="property">property </em><code class="sig-name descname">domain</code><a class="headerlink" href="#grid.rtransform.LinearInfiniteRTransform.domain" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transformation domain.</p>
@@ -2119,9 +2131,9 @@ interval <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.LinearInfiniteRTransform.inverse">
-<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearInfiniteRTransform.inverse" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param">r</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearInfiniteRTransform.inverse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the inverse of linear transformation.</p>
 <div class="math notranslate nohighlight">
 \[x_i = (r - r_{min}) \frac{N - 1}{r_{max} - r_{min}}\]</div>
@@ -2138,7 +2150,7 @@ interval <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.LinearInfiniteRTransform.rmax">
 <em class="property">property </em><code class="sig-name descname">rmax</code><a class="headerlink" href="#grid.rtransform.LinearInfiniteRTransform.rmax" title="Permalink to this definition">¶</a></dt>
 <dd><p>rmax value of the tf.</p>
@@ -2149,7 +2161,7 @@ interval <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.LinearInfiniteRTransform.rmin">
 <em class="property">property </em><code class="sig-name descname">rmin</code><a class="headerlink" href="#grid.rtransform.LinearInfiniteRTransform.rmin" title="Permalink to this definition">¶</a></dt>
 <dd><p>rmin value of the tf.</p>
@@ -2160,9 +2172,9 @@ interval <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.LinearInfiniteRTransform.transform">
-<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearInfiniteRTransform.transform" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearInfiniteRTransform.transform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transform from interval <span class="math notranslate nohighlight">\([0, \infty)\)</span> to <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span>.</p>
 <div class="math notranslate nohighlight">
 \[r_i = \frac{(r_{max} - r_{min})}{N - 1} x_i + r_{min},\]</div>
@@ -2181,9 +2193,9 @@ equally-spaced integers from 0 to N-1, to <span class="math notranslate nohighli
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.LinearInfiniteRTransform.transform_1d_grid">
-<code class="sig-name descname">transform_1d_grid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">oned_grid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearInfiniteRTransform.transform_1d_grid" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">transform_1d_grid</code><span class="sig-paren">(</span><em class="sig-param">oned_grid</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearInfiniteRTransform.transform_1d_grid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a new integral grid by transforming the provided grid.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\int^{\inf}_0 g(r) d r &amp;= \int^{r(\infty)}_{r(0)} g(r(x)) \frac{dr}{dx} dx \\
@@ -2206,9 +2218,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 </dd></dl>
 
-<dl class="py class">
+<dl class="class">
 <dt id="grid.rtransform.MultiExpRTransform">
-<em class="property">class </em><code class="sig-name descname">MultiExpRTransform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rmin</span></em>, <em class="sig-param"><span class="n">R</span></em>, <em class="sig-param"><span class="n">trim_inf</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.MultiExpRTransform" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">MultiExpRTransform</code><span class="sig-paren">(</span><em class="sig-param">rmin</em>, <em class="sig-param">R</em>, <em class="sig-param">trim_inf=True</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.MultiExpRTransform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.rtransform.BaseTransform</span></code></a></p>
 <p>MultiExp Transformation class from <span class="math notranslate nohighlight">\([-1,1]\)</span> to <span class="math notranslate nohighlight">\([r_{min}, \infty)\)</span>.</p>
 <p>The transformation is given by</p>
@@ -2224,7 +2236,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 Journal of computational chemistry 24.6 (2003): 732-740.</p>
 </dd>
 </dl>
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.MultiExpRTransform.R">
 <em class="property">property </em><code class="sig-name descname">R</code><a class="headerlink" href="#grid.rtransform.MultiExpRTransform.R" title="Permalink to this definition">¶</a></dt>
 <dd><p>The scale factor for the transformed radial array.</p>
@@ -2235,9 +2247,9 @@ Journal of computational chemistry 24.6 (2003): 732-740.</p>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.MultiExpRTransform.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rmin</span></em>, <em class="sig-param"><span class="n">R</span></em>, <em class="sig-param"><span class="n">trim_inf</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.MultiExpRTransform.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">rmin</em>, <em class="sig-param">R</em>, <em class="sig-param">trim_inf=True</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.MultiExpRTransform.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct MultiExp transform from <span class="math notranslate nohighlight">\([-1,1]\)</span> to <span class="math notranslate nohighlight">\([r_{min}, \infty)\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2252,7 +2264,7 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.MultiExpRTransform.codomain">
 <em class="property">property </em><code class="sig-name descname">codomain</code><a class="headerlink" href="#grid.rtransform.MultiExpRTransform.codomain" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transformation codomain.</p>
@@ -2263,9 +2275,9 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.MultiExpRTransform.deriv">
-<code class="sig-name descname">deriv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.MultiExpRTransform.deriv" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">deriv</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.MultiExpRTransform.deriv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the first derivative of MultiExp transformation.</p>
 <div class="math notranslate nohighlight">
 \[\frac{dr}{dx} = -\frac{R}{1+x}\]</div>
@@ -2282,9 +2294,9 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.MultiExpRTransform.deriv2">
-<code class="sig-name descname">deriv2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.MultiExpRTransform.deriv2" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">deriv2</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.MultiExpRTransform.deriv2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the second derivative of MultiExp transformation.</p>
 <div class="math notranslate nohighlight">
 \[\frac{d^2r}{dx^2} = \frac{R}{(1 + x)^2}\]</div>
@@ -2301,9 +2313,9 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.MultiExpRTransform.deriv3">
-<code class="sig-name descname">deriv3</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.MultiExpRTransform.deriv3" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">deriv3</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.MultiExpRTransform.deriv3" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the third derivative of MultiExp transformation.</p>
 <div class="math notranslate nohighlight">
 \[\frac{d^3r}{dx^3} = -\frac{2R}{(1 + x)^3}\]</div>
@@ -2320,7 +2332,7 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.MultiExpRTransform.domain">
 <em class="property">property </em><code class="sig-name descname">domain</code><a class="headerlink" href="#grid.rtransform.MultiExpRTransform.domain" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transformation domain.</p>
@@ -2331,9 +2343,9 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.MultiExpRTransform.inverse">
-<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.MultiExpRTransform.inverse" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param">r</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.MultiExpRTransform.inverse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Inverse of transform from <span class="math notranslate nohighlight">\([r_{min},\infty)\)</span> to <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
 <div class="math notranslate nohighlight">
 \[x_i = 2 \exp \left( \frac{-(r_i - r_{min})}{R} \right) - 1\]</div>
@@ -2350,7 +2362,7 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.MultiExpRTransform.rmin">
 <em class="property">property </em><code class="sig-name descname">rmin</code><a class="headerlink" href="#grid.rtransform.MultiExpRTransform.rmin" title="Permalink to this definition">¶</a></dt>
 <dd><p>The minimum value for the transformed radial array.</p>
@@ -2361,9 +2373,9 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.MultiExpRTransform.transform">
-<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.MultiExpRTransform.transform" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.MultiExpRTransform.transform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transform from [-1,1] to  <span class="math notranslate nohighlight">\([r_{min},\infty)\)</span>.</p>
 <div class="math notranslate nohighlight">
 \[r_i = -R \log \left( \frac{x_i + 1}{2} \right) + r_{min}\]</div>
@@ -2380,9 +2392,9 @@ following operations.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.MultiExpRTransform.transform_1d_grid">
-<code class="sig-name descname">transform_1d_grid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">oned_grid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.MultiExpRTransform.transform_1d_grid" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">transform_1d_grid</code><span class="sig-paren">(</span><em class="sig-param">oned_grid</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.MultiExpRTransform.transform_1d_grid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a new integral grid by transforming the provided grid.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\int^{\inf}_0 g(r) d r &amp;= \int^{r(\infty)}_{r(0)} g(r(x)) \frac{dr}{dx} dx \\
@@ -2405,9 +2417,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 </dd></dl>
 
-<dl class="py class">
+<dl class="class">
 <dt id="grid.rtransform.PowerRTransform">
-<em class="property">class </em><code class="sig-name descname">PowerRTransform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rmin</span></em>, <em class="sig-param"><span class="n">rmax</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.PowerRTransform" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">PowerRTransform</code><span class="sig-paren">(</span><em class="sig-param">rmin</em>, <em class="sig-param">rmax</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.PowerRTransform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.rtransform.BaseTransform</span></code></a></p>
 <p>Power transform class from <span class="math notranslate nohighlight">\([0, \infty)\)</span> to <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span>.</p>
 <p>This transformations is given by</p>
@@ -2416,9 +2428,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 <p>The inverse of the transformation is given by</p>
 <div class="math notranslate nohighlight">
 \[x(r) = \frac{r}{r_{min}}^{\frac{\log(N)}{\log(r_{max}) - \log(r_{min})}} - 1.\]</div>
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.PowerRTransform.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rmin</span></em>, <em class="sig-param"><span class="n">rmax</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.PowerRTransform.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">rmin</em>, <em class="sig-param">rmax</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.PowerRTransform.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize power transform instance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2430,7 +2442,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.PowerRTransform.codomain">
 <em class="property">property </em><code class="sig-name descname">codomain</code><a class="headerlink" href="#grid.rtransform.PowerRTransform.codomain" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transformation codomain.</p>
@@ -2441,9 +2453,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.PowerRTransform.deriv">
-<code class="sig-name descname">deriv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.PowerRTransform.deriv" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">deriv</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.PowerRTransform.deriv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute first derivative of power transform.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2458,9 +2470,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.PowerRTransform.deriv2">
-<code class="sig-name descname">deriv2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.PowerRTransform.deriv2" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">deriv2</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.PowerRTransform.deriv2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute second derivative of power transform.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2475,9 +2487,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.PowerRTransform.deriv3">
-<code class="sig-name descname">deriv3</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.PowerRTransform.deriv3" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">deriv3</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.PowerRTransform.deriv3" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute third derivative of power transform.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2492,7 +2504,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.PowerRTransform.domain">
 <em class="property">property </em><code class="sig-name descname">domain</code><a class="headerlink" href="#grid.rtransform.PowerRTransform.domain" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transformation domain.</p>
@@ -2503,9 +2515,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.PowerRTransform.inverse">
-<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.PowerRTransform.inverse" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param">r</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.PowerRTransform.inverse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the inverse of power transform.</p>
 <div class="math notranslate nohighlight">
 \[x(r) = \frac{r}{r_{min}}^{\frac{\log(N)}{\log(r_{max}) - \log(r_{min})}} - 1\]</div>
@@ -2522,7 +2534,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.PowerRTransform.rmax">
 <em class="property">property </em><code class="sig-name descname">rmax</code><a class="headerlink" href="#grid.rtransform.PowerRTransform.rmax" title="Permalink to this definition">¶</a></dt>
 <dd><p>the value of rmax.</p>
@@ -2533,7 +2545,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.PowerRTransform.rmin">
 <em class="property">property </em><code class="sig-name descname">rmin</code><a class="headerlink" href="#grid.rtransform.PowerRTransform.rmin" title="Permalink to this definition">¶</a></dt>
 <dd><p>the value of rmin.</p>
@@ -2544,12 +2556,12 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.PowerRTransform.transform">
-<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.PowerRTransform.transform" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.PowerRTransform.transform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform power transform.</p>
 <div class="math notranslate nohighlight">
-\[r = r_{min}  (x + 1)^{\frac{\log(r_{max}) - \log(r_{min})}{N}},\]</div>
+\[r = r_{min}  (x + 1)^{\frac{\log(r_{max} - \log(r_{min}}{N}},\]</div>
 <p>where <span class="math notranslate nohighlight">\(N\)</span> is the number of points in x.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2564,9 +2576,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="method">
 <dt id="grid.rtransform.PowerRTransform.transform_1d_grid">
-<code class="sig-name descname">transform_1d_grid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">oned_grid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.PowerRTransform.transform_1d_grid" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">transform_1d_grid</code><span class="sig-paren">(</span><em class="sig-param">oned_grid</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.PowerRTransform.transform_1d_grid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a new integral grid by transforming the provided grid.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\int^{\inf}_0 g(r) d r &amp;= \int^{r(\infty)}_{r(0)} g(r(x)) \frac{dr}{dx} dx \\
@@ -2612,7 +2624,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2021, QC-Devs
+        &copy; Copyright 2023, QC-Devs
 
     </p>
   </div>

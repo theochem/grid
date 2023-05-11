@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Search &mdash; grid  documentation</title>
+  <title>Installation &mdash; grid  documentation</title>
   
 
   
@@ -20,7 +20,6 @@
   
 
   
-    
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -38,9 +37,10 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-    <script type="text/javascript" src="_static/searchtools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="#" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="One-Dimensional Grids" href="onedgrids.html" />
+    <link rel="prev" title="Welcome to grid’s documentation!" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -67,7 +67,7 @@
 
           
 <div role="search">
-  <form id="rtd-search-form" class="wy-form" action="#" method="get">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
@@ -86,11 +86,11 @@
             
             
               <p class="caption"><span class="caption-text">User Documentation</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#downloading-code">Downloading Code</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#dependencies">Dependencies</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#id1">Installation</a></li>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#downloading-code">Downloading Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id1">Installation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="onedgrids.html">One-Dimensional Grids</a></li>
@@ -194,12 +194,14 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Search</li>
+      <li>Installation</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
+            <a href="_sources/installation.rst" rel="nofollow"> View page source</a>
+          
         
       </li>
     
@@ -211,23 +213,85 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <noscript>
-  <div id="fallback" class="admonition warning">
-    <p class="last">
-      Please activate JavaScript to enable the search functionality.
-    </p>
-  </div>
-  </noscript>
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
 
-  
-  <div id="search-results">
-  
-  </div>
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="installation">
+<span id="usr-installation"></span><h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="downloading-code">
+<h2>Downloading Code<a class="headerlink" href="#downloading-code" title="Permalink to this headline">¶</a></h2>
+<p>The latest code can be obtained through theochem (<a class="reference external" href="https://github.com/theochem/grid">https://github.com/theochem/grid</a>) in Github,</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone git@github.com:theochem/grid.git
+</pre></div>
+</div>
+</div>
+<div class="section" id="dependencies">
+<span id="usr-py-depend"></span><h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<p>The following dependencies will be necessary for Procrustes to build properly,</p>
+<ul class="simple">
+<li><p>Python &gt;= 3.0: <a class="reference external" href="http://www.python.org/">http://www.python.org/</a></p></li>
+<li><p>NumPy &gt;= 1.16.0: <a class="reference external" href="http://www.numpy.org/">http://www.numpy.org/</a></p></li>
+<li><p>SciPy &gt;= 1.4.0: <a class="reference external" href="http://www.scipy.org/">http://www.scipy.org/</a></p></li>
+<li><p>Sphinx &gt;= 2.3.0: <a class="reference external" href="https://www.sphinx-doc.org/">https://www.sphinx-doc.org/</a></p></li>
+<li><p>SymPy &gt;= 1.4.0: <a class="reference external" href="https://www.sympy.org/en/index.html">https://www.sympy.org/en/index.html</a></p></li>
+<li><p>PyTest &gt;= 5.4.3: <a class="reference external" href="https://docs.pytest.org/">https://docs.pytest.org/</a></p></li>
+<li><p>QA requirement: Tox &gt;= 4.0.0: <a class="reference external" href="https://tox.wiki/en/latest/">https://tox.wiki/en/latest/</a></p></li>
+<li><p>Sphinx &gt;= 2.3.0, if one wishes to build the documentation locally:
+<a class="reference external" href="https://www.sphinx-doc.org/">https://www.sphinx-doc.org/</a></p></li>
+</ul>
+</div>
+<div class="section" id="id1">
+<h2>Installation<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<p>Grid can be cloned via git,</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/theochem/grid.git
+</pre></div>
+</div>
+<p>Then installation via pip can be done by going into the directory where Grid is downloaded to and running,</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install .
+</pre></div>
+</div>
+<p>Successful installation can be checked by running the tests,</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pytest --pyargs grid
+</pre></div>
+</div>
+</div>
+</div>
+
 
            </div>
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="onedgrids.html" class="btn btn-neutral float-right" title="One-Dimensional Grids" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to grid’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>
@@ -267,14 +331,7 @@
   
   
     
-  
-  <script type="text/javascript">
-    jQuery(function() { Search.loadIndex("searchindex.js"); });
-  </script>
-  
-  <script type="text/javascript" id="searchindexloader"></script>
    
-
 
 </body>
 </html>

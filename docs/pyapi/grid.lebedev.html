@@ -31,7 +31,7 @@
         <script src="../_static/doctools.js"></script>
         <script src="../_static/language_data.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "tex2jax_ignore|mathjax_ignore|document", "processClass": "tex2jax_process|mathjax_process|math|output_area"}})</script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
@@ -85,7 +85,18 @@
               
             
             
-              <p class="caption"><span class="caption-text">Example Tutorials</span></p>
+              <p class="caption"><span class="caption-text">User Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#downloading-code">Downloading Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#id1">Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../onedgrids.html">One-Dimensional Grids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../radial_transf.html">Radial Transformations</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Example Tutorials</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/Molecular_Integration.html">Molecular Integration</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/Molecular_Integration.html#Construction-of-Molecular-Grid">Construction of Molecular Grid</a><ul>
@@ -112,7 +123,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/Multipole_Moments.html">Multipole Moments</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Grid Modules</span></p>
+<p class="caption"><span class="caption-text">API Documentation</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">grid</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="grid.html">grid package</a><ul class="current">
@@ -230,226 +241,8 @@
     text-align: unset;
 }
 </style>
-<div class="section" id="module-grid.lebedev">
-<span id="grid-lebedev-module"></span><h1>grid.lebedev module<a class="headerlink" href="#module-grid.lebedev" title="Permalink to this headline">¶</a></h1>
-<p>Lebedev angular grid module for constructing integration grids on the unit sphere.</p>
-<p>The Lebedev grid points here were obtained and calculated from the theochem/HORTON package.
-Their calculations were based on F77 translation by Dr. Christoph van Wuellen
-and these are the comments from that translation.</p>
-<p>This subroutine is part of a set of subroutines that generate
-Lebedev grids [1-6] for integration on a sphere. The original
-C-code [1] was kindly provided by Dr. Dmitri N. Laikov and
-translated into fortran by Dr. Christoph van Wuellen.
-This subroutine was translated from C to fortran77 by hand.
-Users of this code are asked to include reference [1] in their
-publications, and in the user- and programmers-manuals
-describing their codes.
-This code was distributed through CCL (<a class="reference external" href="http://www.ccl.net/">http://www.ccl.net/</a>).</p>
-<p class="rubric">References</p>
-<dl class="footnote brackets">
-<dt class="label" id="id1"><span class="brackets">1</span></dt>
-<dd><p>V.I. Lebedev, and D.N. Laikov
-“A quadrature formula for the sphere of the 131st algebraic order of accuracy”
-Doklady Mathematics, Vol. 59, No. 3, 1999, pp. 477-481.</p>
-</dd>
-<dt class="label" id="id2"><span class="brackets">2</span></dt>
-<dd><p>V.I. Lebedev “A quadrature formula for the sphere of 59th algebraic order of accuracy”
-Russian Acad. Sci. Dokl. Math., Vol. 50, 1995, pp. 283-286.</p>
-</dd>
-<dt class="label" id="id3"><span class="brackets">3</span></dt>
-<dd><p>V.I. Lebedev, and A.L. Skorokhodov “Quadrature formulas of orders 41, 47, and 53 for
-the sphere” Russian Acad. Sci. Dokl. Math., Vol. 45, 1992, pp. 587-592.</p>
-</dd>
-<dt class="label" id="id4"><span class="brackets">4</span></dt>
-<dd><p>V.I. Lebedev “Spherical quadrature formulas exact to orders 25-29”
-Siberian Mathematical Journal, Vol. 18, 1977, pp. 99-107.</p>
-</dd>
-<dt class="label" id="id5"><span class="brackets">5</span></dt>
-<dd><p>V.I. Lebedev “Quadratures on a sphere” Computational Mathematics and Mathematical
-Physics, Vol. 16, 1976, pp. 10-24.</p>
-</dd>
-<dt class="label" id="id6"><span class="brackets">6</span></dt>
-<dd><p>V.I. Lebedev “Values of the nodes and weights of ninth to seventeenth order Gauss-Markov
-quadrature formulae invariant under the octahedron group with inversion” Computational
-Mathematics and Mathematical Physics, Vol. 15, 1975, pp. 44-51.</p>
-</dd>
-</dl>
-<dl class="py class">
-<dt id="grid.lebedev.AngularGrid">
-<em class="property">class </em><code class="sig-name descname">AngularGrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">points</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">weights</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">degree</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">size</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">cache</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.lebedev.AngularGrid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="grid.basegrid.html#grid.basegrid.Grid" title="grid.basegrid.Grid"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.basegrid.Grid</span></code></a></p>
-<p>Lebedev-Laikov grid for integrating functions on the unit sphere.</p>
-<p>This class numerically evaluates the integral of a function
-<span class="math notranslate nohighlight">\(f: S^2 \rightarrow \mathbb{R}\)</span> on the unit-sphere as follows:</p>
-<div class="math notranslate nohighlight">
-\[4 \pi \int_{S^2} f d\Sigma  = 4\pi \int_0^\pi \int_0^{2\pi} f(\theta, \phi) \sin(\theta)
- d\theta d\phi \approx \sum w_i f(\phi_i, \theta_i),\]</div>
-<p>where <span class="math notranslate nohighlight">\(S^2\)</span> is the unit-sphere,
-<span class="math notranslate nohighlight">\(w^{ang}_i\)</span> are the quadrature weights that includes <span class="math notranslate nohighlight">\(4\pi\)</span>.</p>
-<p>The weights are chosen so that the spherical harmonics integrate to <span class="math notranslate nohighlight">\(4\pi\)</span>:</p>
-<div class="math notranslate nohighlight">
-\[\int_0^\pi \int_0^{2\pi} Y^l_m(\theta, \phi) \sin(\theta) d\theta d\phi = 4\pi.\]</div>
-<dl class="py method">
-<dt id="grid.lebedev.AngularGrid.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">points</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">weights</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">degree</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">size</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">cache</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.lebedev.AngularGrid.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate a Lebedev angular grid for a given degree and/or size.</p>
-<p>Three choices to construct this grid:</p>
-<ol class="arabic simple">
-<li><p>Add your own points and weights.</p></li>
-<li><p>Specify maximum degree of spherical harmonics that Lebedev grid can
-integrate accurately on a unit sphere.</p></li>
-<li><p>The number of points (size) wanted in the grid. The size corresponds
-to a maximum degree.</p></li>
-</ol>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em><em>, </em><em>optional</em>) – The Cartesian coordinates of integral grid points.  The attribute
-<cite>weights</cite> should also be provided.</p></li>
-<li><p><strong>weights</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em><em>, </em><em>optional</em>) – The weights of each point on the integral quadrature grid. The attribute
-<cite>points</cite> should also be applied.</p></li>
-<li><p><strong>degree</strong> (<em>int</em><em>, </em><em>optional</em>) – Maximum angular degree <span class="math notranslate nohighlight">\(l\)</span> of spherical harmonics that the Lebedev grid
-can integrate accurately. If the Lebedev grid corresponding to the given angular
-degree is not supported, the next largest degree is used.</p></li>
-<li><p><strong>size</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of Lebedev grid points. If the Lebedev grid corresponding to the given size is
-not supported, the next largest size is used. If both degree and size are given,
-degree is used for constructing the grid.</p></li>
-<li><p><strong>cache</strong> (<em>bool</em><em>, </em><em>optional</em>) – If true, then store the points and weights of the AngularGrid in cache
-to avoid duplicate grids that have the same <cite>degree</cite>. Default to <cite>True</cite>.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>An angular grid with Lebedev points and weights (including <span class="math notranslate nohighlight">\(4\pi\)</span>) on
-a unit sphere.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#grid.lebedev.AngularGrid" title="grid.lebedev.AngularGrid">AngularGrid</a></p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Initialize with degree</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">AngularGrid</span><span class="p">(</span><span class="n">degree</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Initialize with size</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">AngularGrid</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Initialize with points and weights</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">pts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">wts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">AngularGrid</span><span class="p">(</span><span class="n">pts</span><span class="p">,</span> <span class="n">wts</span><span class="p">)</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt id="grid.lebedev.AngularGrid.convert_lebedev_sizes_to_degrees">
-<em class="property">static </em><code class="sig-name descname">convert_lebedev_sizes_to_degrees</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sizes</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.lebedev.AngularGrid.convert_lebedev_sizes_to_degrees" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert given Lebedev grid sizes to degrees.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>sizes</strong> (<em>ndarray</em><em>[</em><em>int</em><em>]</em>) – Sequence of Lebedev grid sizes (e.g., number of points for each atomic shell).</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Sequence of the corresponding angular degree of the Lebedev grid corresponding to
-its size.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>ndarray[int]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="grid.lebedev.AngularGrid.degree">
-<em class="property">property </em><code class="sig-name descname">degree</code><a class="headerlink" href="#grid.lebedev.AngularGrid.degree" title="Permalink to this definition">¶</a></dt>
-<dd><p>The degree of spherical harmonics that this angular grid can integrate exactly.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>int</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="grid.lebedev.AngularGrid.get_localgrid">
-<code class="sig-name descname">get_localgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">radius</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.lebedev.AngularGrid.get_localgrid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a grid contain points within the given radius of center.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>center</strong> (<em>float</em><em> or </em><em>np.array</em><em>(</em><em>M</em><em>,</em><em>)</em>) – Cartesian coordinates of the center of the local grid.</p></li>
-<li><p><strong>radius</strong> (<em>float</em>) – Radius of sphere around the center. When equal to np.inf, the
-local grid coincides with the whole grid, which can be useful for
-debugging.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Instance of LocalGrid.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.LocalGrid" title="grid.basegrid.LocalGrid">LocalGrid</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="grid.lebedev.AngularGrid.integrate">
-<code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">value_arrays</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.lebedev.AngularGrid.integrate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Integrate over the whole grid for given multiple value arrays.</p>
-<p>Product of all value_arrays will be computed element-wise then
-integrated on the grid with its weights.
-.. math:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Integral</span> <span class="o">=</span> \<span class="nb">int</span> <span class="n">w</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> \<span class="n">prod_i</span> <span class="n">f_i</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="n">dx</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>*value_arrays</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>, </em><em>)</em>) – One or multiple value array to integrate.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The calculated integral over given integrand or function</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="grid.lebedev.AngularGrid.points">
-<em class="property">property </em><code class="sig-name descname">points</code><a class="headerlink" href="#grid.lebedev.AngularGrid.points" title="Permalink to this definition">¶</a></dt>
-<dd><p>Positions of the grid points.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>np.ndarray(N,) or np.ndarray(N, M)</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="grid.lebedev.AngularGrid.size">
-<em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#grid.lebedev.AngularGrid.size" title="Permalink to this definition">¶</a></dt>
-<dd><p>the total number of points on the grid.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>int</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="grid.lebedev.AngularGrid.weights">
-<em class="property">property </em><code class="sig-name descname">weights</code><a class="headerlink" href="#grid.lebedev.AngularGrid.weights" title="Permalink to this definition">¶</a></dt>
-<dd><p>the weights of each grid point.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>np.ndarray(N,)</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
+<div class="section" id="grid-lebedev-module">
+<h1>grid.lebedev module<a class="headerlink" href="#grid-lebedev-module" title="Permalink to this headline">¶</a></h1>
 </div>
 
 
@@ -473,7 +266,7 @@ integrated on the grid with its weights.
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2021, QC-Devs
+        &copy; Copyright 2023, QC-Devs
 
     </p>
   </div>

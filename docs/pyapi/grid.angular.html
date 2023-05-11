@@ -1,0 +1,607 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>grid.angular module &mdash; grid  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/override.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "tex2jax_ignore|mathjax_ignore|document", "processClass": "tex2jax_process|mathjax_process|math|output_area"}})</script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> grid
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#downloading-code">Downloading Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#id1">Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../onedgrids.html">One-Dimensional Grids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../radial_transf.html">Radial Transformations</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Example Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/Molecular_Integration.html">Molecular Integration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/Molecular_Integration.html#Construction-of-Molecular-Grid">Construction of Molecular Grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Integration.html#Initailizor-Method">Initailizor Method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Integration.html#from_preset-method">from_preset method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Integration.html#from_size-method">from_size method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Integration.html#from_pruned-method">from_pruned method</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/Interpolation_and_Poisson.html">Interpolation and Solving Poisson’s Equation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/Interpolation_and_Poisson.html#Interpolation">Interpolation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/Interpolation_and_Poisson.html#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/Cubic_Grids.html">Cubic Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/Cubic_Grids.html#Tensor-1D-Grids">Tensor 1D Grids</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/Cubic_Grids.html#Interpolation">Interpolation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/Cubic_Grids.html#Uniform-Grid">Uniform Grid</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/Multipole_Moments.html">Multipole Moments</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">grid</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="grid.html">grid package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="grid.html#submodules">Submodules</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="grid.atomgrid.html">grid.atomgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.basegrid.html">grid.basegrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.becke.html">grid.becke module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.hirshfeld.html">grid.hirshfeld module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.interpolate.html">grid.interpolate module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.lebedev.html">grid.lebedev module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.molgrid.html">grid.molgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.ode.html">grid.ode module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.onedgrid.html">grid.onedgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.periodicgrid.html">grid.periodicgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.poisson.html">grid.poisson module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.rtransform.html">grid.rtransform module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.utils.html">grid.utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="grid.html#module-grid">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">grid</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>grid.angular module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/pyapi/grid.angular.rst" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="module-grid.angular">
+<span id="grid-angular-module"></span><h1>grid.angular module<a class="headerlink" href="#module-grid.angular" title="Permalink to this headline">¶</a></h1>
+<p>Angular grid module for constructing integration grids on the unit sphere.</p>
+<p>The Lebedev grid points here were obtained and calculated from the theochem/HORTON package.
+Their calculations were based on F77 translation by Dr. Christoph van Wuellen
+and these are the comments from that translation.</p>
+<p>This subroutine is part of a set of subroutines that generate
+Lebedev grids [1-6] for integration on a sphere. The original
+C-code [1] was kindly provided by Dr. Dmitri N. Laikov and
+translated into fortran by Dr. Christoph van Wuellen.
+This subroutine was translated from C to fortran77 by hand.
+Users of this code are asked to include reference [1] in their
+publications, and in the user- and programmers-manuals
+describing their codes.
+This code was distributed through CCL (<a class="reference external" href="http://www.ccl.net/">http://www.ccl.net/</a>).</p>
+<p>The symmetric spherical t-design were obtained from reference [7].</p>
+<p class="rubric">References</p>
+<p>The following references are for the Lebedev grid points.</p>
+<dl class="footnote brackets">
+<dt class="label" id="id1"><span class="brackets">1</span></dt>
+<dd><p>V.I. Lebedev, and D.N. Laikov
+“A quadrature formula for the sphere of the 131st algebraic order of accuracy”
+Doklady Mathematics, Vol. 59, No. 3, 1999, pp. 477-481.</p>
+</dd>
+<dt class="label" id="id2"><span class="brackets">2</span></dt>
+<dd><p>V.I. Lebedev “A quadrature formula for the sphere of 59th algebraic order of accuracy”
+Russian Acad. Sci. Dokl. Math., Vol. 50, 1995, pp. 283-286.</p>
+</dd>
+<dt class="label" id="id3"><span class="brackets">3</span></dt>
+<dd><p>V.I. Lebedev, and A.L. Skorokhodov “Quadrature formulas of orders 41, 47, and 53 for
+the sphere” Russian Acad. Sci. Dokl. Math., Vol. 45, 1992, pp. 587-592.</p>
+</dd>
+<dt class="label" id="id4"><span class="brackets">4</span></dt>
+<dd><p>V.I. Lebedev “Spherical quadrature formulas exact to orders 25-29”
+Siberian Mathematical Journal, Vol. 18, 1977, pp. 99-107.</p>
+</dd>
+<dt class="label" id="id5"><span class="brackets">5</span></dt>
+<dd><p>V.I. Lebedev “Quadratures on a sphere” Computational Mathematics and Mathematical
+Physics, Vol. 16, 1976, pp. 10-24.</p>
+</dd>
+<dt class="label" id="id6"><span class="brackets">6</span></dt>
+<dd><p>V.I. Lebedev “Values of the nodes and weights of ninth to seventeenth order Gauss-Markov
+quadrature formulae invariant under the octahedron group with inversion” Computational
+Mathematics and Mathematical Physics, Vol. 15, 1975, pp. 44-51.</p>
+</dd>
+</dl>
+<p>The following is references for the symmetric spherical t-design points:</p>
+<dl class="footnote brackets">
+<dt class="label" id="id7"><span class="brackets">7</span></dt>
+<dd><p>R. S. Womersley, Efficient Spherical Designs with Good Geometric Properties.
+In: Dick J., Kuo F., Wozniakowski H. (eds) Contemporary Computational Mathematics -
+A Celebration of the 80th Birthday of Ian Sloan. Springer (2018) pp. 1243-1285
+<a class="reference external" href="https://doi.org/10.1007/978-3-319-72456-0_57">https://doi.org/10.1007/978-3-319-72456-0_57</a></p>
+</dd>
+</dl>
+<dl class="class">
+<dt id="grid.angular.AngularGrid">
+<em class="property">class </em><code class="sig-name descname">AngularGrid</code><span class="sig-paren">(</span><em class="sig-param">points=None</em>, <em class="sig-param">weights=None</em>, <em class="sig-param">*</em>, <em class="sig-param">degree=None</em>, <em class="sig-param">size=None</em>, <em class="sig-param">cache=True</em>, <em class="sig-param">use_spherical=False</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.angular.AngularGrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="grid.basegrid.html#grid.basegrid.Grid" title="grid.basegrid.Grid"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.basegrid.Grid</span></code></a></p>
+<p>Angular grid for integrating functions on the unit sphere.</p>
+<p>This class numerically evaluates the integral of a function
+<span class="math notranslate nohighlight">\(f: S^2 \rightarrow \mathbb{R}\)</span> on the unit-sphere as follows:</p>
+<div class="math notranslate nohighlight">
+\[4 \pi \int_{S^2} f d\Sigma  = 4\pi \int_0^\pi \int_0^{2\pi} f(\theta, \phi) \sin(\theta)
+ d\theta d\phi \approx \sum w_i f(\phi_i, \theta_i),\]</div>
+<p>where <span class="math notranslate nohighlight">\(S^2\)</span> is the unit-sphere,
+<span class="math notranslate nohighlight">\(w^{ang}_i\)</span> are the quadrature weights that includes <span class="math notranslate nohighlight">\(4\pi\)</span>.</p>
+<p>Two types of angular grids are provided: Lebedev-Laikov grid (default) or the
+symmetric spherical t-design. Specifically, for spherical t-design, the weights are constant
+value of <span class="math notranslate nohighlight">\(4 \pi / N\)</span>,
+where <span class="math notranslate nohighlight">\(N\)</span> is the number of points in the grid.</p>
+<p>The weights are chosen so that the spherical harmonics integrate to <span class="math notranslate nohighlight">\(4\pi\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\int_0^\pi \int_0^{2\pi} Y^l_m(\theta, \phi) \sin(\theta) d\theta d\phi = 4\pi.\]</div>
+<dl class="method">
+<dt id="grid.angular.AngularGrid.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">points=None</em>, <em class="sig-param">weights=None</em>, <em class="sig-param">*</em>, <em class="sig-param">degree=None</em>, <em class="sig-param">size=None</em>, <em class="sig-param">cache=True</em>, <em class="sig-param">use_spherical=False</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.angular.AngularGrid.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate angular grid for a given degree and/or size.</p>
+<p>Three choices to construct this grid:</p>
+<ol class="arabic simple">
+<li><p>Add your own points and weights.</p></li>
+<li><p>Specify maximum degree of spherical harmonics that the angular grid can
+integrate accurately on a unit sphere.</p></li>
+<li><p>The number of points (size) wanted in the grid. The size corresponds
+to a maximum degree.</p></li>
+</ol>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em><em>, </em><em>optional</em>) – The Cartesian coordinates of integral grid points.  The attribute
+<cite>weights</cite> should also be provided.</p></li>
+<li><p><strong>weights</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em><em>, </em><em>optional</em>) – The weights of each point on the integral quadrature grid. The attribute
+<cite>points</cite> should also be applied.</p></li>
+<li><p><strong>degree</strong> (<em>int</em><em>, </em><em>optional</em>) – Maximum angular degree <span class="math notranslate nohighlight">\(l\)</span> of spherical harmonics that the Lebedev grid
+can integrate accurately. If the Lebedev grid corresponding to the given angular
+degree is not supported, the next largest degree is used.</p></li>
+<li><p><strong>size</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of Lebedev grid points. If the Lebedev grid corresponding to the given size is
+not supported, the next largest size is used. If both degree and size are given,
+degree is used for constructing the grid.</p></li>
+<li><p><strong>cache</strong> (<em>bool</em><em>, </em><em>optional</em>) – If true, then store the points and weights of the AngularGrid in cache
+to avoid duplicate grids that have the same <cite>degree</cite>. Default to <cite>True</cite>.</p></li>
+<li><p><strong>use_spherical</strong> (<em>bool</em><em>, </em><em>optional</em>) – If true, then it loads/uses the symmetric spherical t-design, rather than
+Lebedev-Laikov grid.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An angular grid with points and weights (including <span class="math notranslate nohighlight">\(4\pi\)</span>) on
+a unit sphere.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#grid.angular.AngularGrid" title="grid.angular.AngularGrid">AngularGrid</a></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Initialize with degree</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">AngularGrid</span><span class="p">(</span><span class="n">degree</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Initialize with size</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">AngularGrid</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Initialize with points and weights</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">wts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">AngularGrid</span><span class="p">(</span><span class="n">pts</span><span class="p">,</span> <span class="n">wts</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>Sometimes the weights for Lebedev-Laikov grids can be negative. Choosing degrees that have</dt><dd><p>positive weights can mitigate round-off errors. Degrees equal to 13, 25 or 27 have
+negative weights.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="grid.angular.AngularGrid.convert_angular_sizes_to_degrees">
+<em class="property">static </em><code class="sig-name descname">convert_angular_sizes_to_degrees</code><span class="sig-paren">(</span><em class="sig-param">sizes</em>, <em class="sig-param">use_spherical=False</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.angular.AngularGrid.convert_angular_sizes_to_degrees" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert given Lebedev/Spherical design grid sizes to degrees.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sizes</strong> (<em>ndarray</em><em>[</em><em>int</em><em>]</em>) – Sequence of angular grid sizes (e.g., number of points for each atomic shell).</p></li>
+<li><p><strong>use_spherical</strong> (<em>bool</em><em>, </em><em>optional</em>) – If true, loads the symmetric spherical t-design grid rather than the Lebedev-Laikov
+grid.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Sequence of the corresponding angular degree of the angular grid corresponding to
+its size.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray[int]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="grid.angular.AngularGrid.degree">
+<em class="property">property </em><code class="sig-name descname">degree</code><a class="headerlink" href="#grid.angular.AngularGrid.degree" title="Permalink to this definition">¶</a></dt>
+<dd><p>The degree of spherical harmonics that this angular grid can integrate exactly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="grid.angular.AngularGrid.get_localgrid">
+<code class="sig-name descname">get_localgrid</code><span class="sig-paren">(</span><em class="sig-param">center</em>, <em class="sig-param">radius</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.angular.AngularGrid.get_localgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a grid contain points within the given radius of center.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>center</strong> (<em>float</em><em> or </em><em>np.array</em><em>(</em><em>M</em><em>,</em><em>)</em>) – Cartesian coordinates of the center of the local grid.</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – Radius of sphere around the center. When equal to np.inf, the
+local grid coincides with the whole grid, which can be useful for
+debugging.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Instance of LocalGrid.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.LocalGrid" title="grid.basegrid.LocalGrid">LocalGrid</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="grid.angular.AngularGrid.integrate">
+<code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param">*value_arrays</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.angular.AngularGrid.integrate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integrate over the whole grid for given multiple value arrays.</p>
+<p>Product of all value_arrays will be computed element-wise then
+integrated on the grid with its weights.
+.. math:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Integral</span> <span class="o">=</span> \<span class="nb">int</span> <span class="n">w</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> \<span class="n">prod_i</span> <span class="n">f_i</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="n">dx</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>*value_arrays</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>, </em><em>)</em>) – One or multiple value array to integrate.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The calculated integral over given integrand or function</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="grid.angular.AngularGrid.moments">
+<code class="sig-name descname">moments</code><span class="sig-paren">(</span><em class="sig-param">orders</em>, <em class="sig-param">centers</em>, <em class="sig-param">func_vals</em>, <em class="sig-param">type_mom='cartesian'</em>, <em class="sig-param">return_orders=False</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.angular.AngularGrid.moments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the multipole moment integral of a function over centers.</p>
+<p>The Cartesian type moments are:</p>
+<div class="math notranslate nohighlight">
+\[m_{n_x, n_y, n_z} = \int (x - X_c)^{n_x} (y - Y_c)^{n_y} (z - Z_c)^{n_z} f(r) dr,\]</div>
+<p>where <span class="math notranslate nohighlight">\(\textbf{R}_c = (X_c, Y_c, Z_c)\)</span> is the center of the moment,
+<span class="math notranslate nohighlight">\(\f(r)\)</span> is the density, and <span class="math notranslate nohighlight">\((n_x, n_y, n_z)\)</span> are the Cartesian orders.</p>
+<p>The spherical/pure moments with <span class="math notranslate nohighlight">\((l, m)\)</span> parameter are:</p>
+<div class="math notranslate nohighlight">
+\[m_{lm} = \int | \textbf{r} - \textbf{R}_c|^l S_l^m(\theta, \phi) f(\textbf{r})
+d\textbf{r},\]</div>
+<p>where <span class="math notranslate nohighlight">\(S_l^m\)</span> is a regular, real solid harmonic.</p>
+<p>The radial moments with <span class="math notranslate nohighlight">\(n\)</span> parameter are:</p>
+<div class="math notranslate nohighlight">
+\[m_n = \int | \textbf{r} - \textbf{R}_c|^{n} f(\textbf{r}) d\textbf{r}\]</div>
+<p>The radial combined with spherical/pure moments <span class="math notranslate nohighlight">\((n, l, m)\)</span> are:</p>
+<div class="math notranslate nohighlight">
+\[m_{nlm} = \int | \textbf{r} - \textbf{R}_c|^{n+1} S_l^m(\theta, \phi) f(\textbf{r})
+d\textbf{r}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>orders</strong> (<em>int</em>) – Generates all orders with Horton order depending on the type of the multipole
+moment <cite>type_mom</cite>.</p></li>
+<li><p><strong>centers</strong> (<em>ndarray</em><em>(</em><em>M</em><em>,  </em><em>3</em><em>)</em>) – The centers <span class="math notranslate nohighlight">\(\textbf{R}_c\)</span> of the moments to compute from.</p></li>
+<li><p><strong>func_vals</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – The function <span class="math notranslate nohighlight">\(f\)</span> values evaluated on all <span class="math notranslate nohighlight">\(N\)</span> points on the integration
+grid.</p></li>
+<li><p><strong>type_mom</strong> (<em>str</em>) – The type of multipole moments: “cartesian”, “pure”, “radial” and “pure-radial”.</p></li>
+<li><p><strong>return_orders</strong> (<em>bool</em>) – <dl class="simple">
+<dt>If true, it will also return a list of size <span class="math notranslate nohighlight">\(L\)</span> of the orders</dt><dd><p>corresponding to each integral/row of the output.</p>
+</dd>
+</dl>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Computes the moment integral of the function on the <cite>m`th center for all orders.
+If `return_orders</cite> is true, then this also returns a list that describes what
+each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(L, M), or (ndarray(L, M), list)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="grid.angular.AngularGrid.points">
+<em class="property">property </em><code class="sig-name descname">points</code><a class="headerlink" href="#grid.angular.AngularGrid.points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Positions of the grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,) or np.ndarray(N, M)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="grid.angular.AngularGrid.save">
+<code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param">filename</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.angular.AngularGrid.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the points and weights as a npz file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> (<em>str</em>) – The path/name of the .npz file.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="grid.angular.AngularGrid.size">
+<em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#grid.angular.AngularGrid.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>the total number of points on the grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="grid.angular.AngularGrid.use_spherical">
+<em class="property">property </em><code class="sig-name descname">use_spherical</code><a class="headerlink" href="#grid.angular.AngularGrid.use_spherical" title="Permalink to this definition">¶</a></dt>
+<dd><p>If true, then symmetric spherical t-design was used else Lebedev-Laikov grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="grid.angular.AngularGrid.weights">
+<em class="property">property </em><code class="sig-name descname">weights</code><a class="headerlink" href="#grid.angular.AngularGrid.weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>the weights of each grid point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2023, QC-Devs
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

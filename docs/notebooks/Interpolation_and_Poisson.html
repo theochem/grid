@@ -31,7 +31,7 @@
         <script src="../_static/doctools.js"></script>
         <script src="../_static/language_data.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "tex2jax_ignore|mathjax_ignore|document", "processClass": "tex2jax_process|mathjax_process|math|output_area"}})</script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
@@ -85,7 +85,18 @@
               
             
             
-              <p class="caption"><span class="caption-text">Example Tutorials</span></p>
+              <p class="caption"><span class="caption-text">User Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#downloading-code">Downloading Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#id1">Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../onedgrids.html">One-Dimensional Grids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../radial_transf.html">Radial Transformations</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Example Tutorials</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Molecular_Integration.html">Molecular Integration</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="Molecular_Integration.html#Construction-of-Molecular-Grid">Construction of Molecular Grid</a><ul>
@@ -112,7 +123,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="Multipole_Moments.html">Multipole Moments</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Grid Modules</span></p>
+<p class="caption"><span class="caption-text">API Documentation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../pyapi/modules.html">grid</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.html">grid package</a><ul>
@@ -571,7 +582,7 @@ Error difference between interpolation and true:
 <div class="section" id="Solving-Poisson-Equation">
 <h2>Solving Poisson Equation<a class="headerlink" href="#Solving-Poisson-Equation" title="Permalink to this headline">¶</a></h2>
 <p>The Poisson equation is defined as <span class="math notranslate nohighlight">\(\nabla^2 V = - 4\pi f(\vec{\textbf{r}})\)</span>, where <span class="math notranslate nohighlight">\(V\)</span> is the unknown potential, <span class="math notranslate nohighlight">\(\nabla^2\)</span> is the Laplacian and <span class="math notranslate nohighlight">\(f\)</span> is the charge distribution. It is well-known that the solution to this is given by <span class="math notranslate nohighlight">\(V(\vec{\textbf{r}}) = \int \frac{f(\vec{\textbf{r}}^\prime)}{|\vec{\textbf{r}} - \vec{\textbf{r}}^\prime| } d\vec{\textbf{r}}^\prime\)</span>. For the unit-charge distribution given above, the solution is given by
-<span class="math notranslate nohighlight">\(V(r, \theta, \phi) = ERF \bigg[ \frac{\sqrt{\alpha} r_A}{r_A} \bigg],\)</span> where ERF is the error function. Grid offers two methods of solving the Poisson equation over an atomic grid. The recommended method is the <code class="docutils literal notranslate"><span class="pre">solve_poisson_bvp</span></code> and is used in this example.</p>
+<span class="math notranslate nohighlight">\(V(r, \theta, \phi) = \text{erf} \bigg[ \frac{\sqrt{\alpha} r_A}{r_A} \bigg],\)</span> where ERF is the error function. Grid offers two methods of solving the Poisson equation over an atomic grid. The recommended method is the <code class="docutils literal notranslate"><span class="pre">solve_poisson_bvp</span></code> and is used in this example.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
@@ -633,7 +644,7 @@ Error difference between interpolation and true:
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2021, QC-Devs
+        &copy; Copyright 2023, QC-Devs
 
     </p>
   </div>
