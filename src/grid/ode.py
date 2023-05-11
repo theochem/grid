@@ -500,7 +500,7 @@ def _derivative_transformation_matrix(deriv_func_list: list, point: float, order
         Returns the matrix that converts derivatives of one domain to another.
 
     """
-    if not isinstance(point, (Real, np.float)):
+    if not isinstance(point, (Real, float)):
         raise TypeError(f"Point {type(point)} should be of type float.")
     numb_derivs = len(deriv_func_list)
     if order > numb_derivs:
