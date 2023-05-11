@@ -30,7 +30,6 @@ over a centered atomic grid. It is recommended to use the boundary value problem
 for handing singularities near the origin of the atomic grid.
 
 """
-
 from grid.atomgrid import AtomGrid
 from grid.molgrid import MolGrid
 from grid.ode import solve_ode_bvp, solve_ode_ivp
@@ -431,7 +430,7 @@ def solve_poisson_bvp(
         )
 
 
-def interpolate_laplacian(atomgrid: AtomGrid, func_vals: np.ndarray):
+def interpolate_laplacian(molgrid: Union[MolGrid, AtomGrid], func_vals: np.ndarray):
     r"""
     Return a function that interpolates the Laplacian of a function.
 
@@ -450,7 +449,7 @@ def interpolate_laplacian(atomgrid: AtomGrid, func_vals: np.ndarray):
 
     Parameters
     ----------
-    atomgrid : AtomGrid
+    molgrid : Union[MolGrid, AtomGrid]
         Atomic grid that can integrate spherical functions and interpolate radial components.
     func_vals : ndarray(N,)
         The function values evaluated on all :math:`N` points on the atomic grid.
@@ -466,43 +465,81 @@ def interpolate_laplacian(atomgrid: AtomGrid, func_vals: np.ndarray):
     Warnings
     --------
     - Since :math:`\rho_{lm}` and its derivatives are being interpolated and due to division by
-      powers of :math:`r`, it is recommend to be very careful of having values near zero.
+      powers of :math:`r`, it is recommended to be very careful of having values near zero.
 
     """
-    # compute spline for the radial components for f
-    radial_comps_f = atomgrid.radial_component_splines(func_vals)
-
-    def interpolate_laplacian(points: np.ndarray, cutoff: float = 1e-6):
-        r_pts, theta, phi = atomgrid.convert_cartesian_to_spherical(points).T
-
-        if np.any(r_pts < cutoff):
-            r_pts[r_pts < cutoff] = cutoff
-
-        # Evaluate the radial components, its derivative and second deriv for function f
-        r_values_f = np.array([spline(r_pts) for spline in radial_comps_f])
-        dr_values = np.array([spline(r_pts, 1) for spline in radial_comps_f])
-        d2r_values = np.array([spline(r_pts, 2) for spline in radial_comps_f])
-
-        r_sph_harm = generate_real_spherical_harmonics(atomgrid.l_max // 2, theta, phi)
-
-        # Take the sum of each component with the spherical harmonics
-        # l means the angular (l,m) variables and n represents points.
-        # Note this was computed on seperate due to the difficulty in handing 0/inf, 0/0, 0*inf.
-        first_component = np.einsum("ln, ln -> n", d2r_values, r_sph_harm)
-        second_component = np.einsum("ln, ln -> n", dr_values, r_sph_harm)
-
-        # Compute 2 \sum \sum dr_values Y_l^m / r,
-        with np.errstate(divide="ignore", invalid="ignore"):
-            second_component *= 2.0 / r_pts
-
-        # Compute l(l+1) \sum \sum r_values Y_l^m / r^2
-        degrees = np.hstack(
-            [[x * (x + 1)] * (2 * x + 1) for x in np.arange(0, atomgrid.l_max // 2 + 1)]
+    if isinstance(molgrid, AtomGrid):
+        # Convert AtomGrid to MolGrid, may increase computational time.
+        molgrid = MolGrid(
+            atnums=np.array([1.0]),
+            atgrids=[molgrid],
+            aim_weights=np.array([1.0] * molgrid.size),
+            store=True
         )
-        third_component = np.einsum("ln,l,ln -> n", r_values_f, degrees, r_sph_harm)
-        with np.errstate(divide="ignore", invalid="ignore"):
-            third_component /= r_pts**2.0
+    if molgrid.atgrids is None:
+        raise ValueError(
+            "Molecular grid (MolGrid) attribute `store` should be set to True."
+        )
 
-        return first_component + second_component - third_component
+    # Multiply f by the nuclear weight function w_n(r) for each atom grid segment.
+    func_vals_atom = func_vals * molgrid.aim_weights
+    # Go through each atomic grid and construct interpolation of f*w_n.
+    interpolate_funcs = []
+    for i in range(len(molgrid.atcoords)):
+        start_index = molgrid.indices[i]
+        final_index = molgrid.indices[i + 1]
+        atom_grid = molgrid[i]
 
-    return interpolate_laplacian
+        def interpolate_laplacian_atom_grid(
+            points: np.ndarray,
+            atom_grid: AtomGrid,
+            cutoff: float = 1e-6
+        ):
+            # compute spline for the radial components for f
+            radial_comps_f = atom_grid.radial_component_splines(
+                func_vals_atom[start_index:final_index]
+            )
+
+            r_pts, theta, phi = atom_grid.convert_cartesian_to_spherical(points).T
+
+            if np.any(r_pts < cutoff):
+                r_pts[r_pts < cutoff] = cutoff
+
+            # Evaluate the radial components, its derivative and second deriv for function f
+            r_values_f = np.array([spline(r_pts) for spline in radial_comps_f])
+            dr_values = np.array([spline(r_pts, 1) for spline in radial_comps_f])
+            d2r_values = np.array([spline(r_pts, 2) for spline in radial_comps_f])
+
+            r_sph_harm = generate_real_spherical_harmonics(atom_grid.l_max // 2, theta, phi)
+
+            # Take the sum of each component with the spherical harmonics
+            # l means the angular (l,m) variables and n represents points.
+            # Note this was computed on seperate due to the difficulty in handing 0/inf, 0/0, 0*inf.
+            first_component = np.einsum("ln, ln -> n", d2r_values, r_sph_harm)
+            second_component = np.einsum("ln, ln -> n", dr_values, r_sph_harm)
+
+            # Compute 2 \sum \sum dr_values Y_l^m / r,
+            with np.errstate(divide="ignore", invalid="ignore"):
+                second_component *= 2.0 / r_pts
+
+            # Compute l(l+1) \sum \sum r_values Y_l^m / r^2
+            degrees = np.hstack(
+                [[x * (x + 1)] * (2 * x + 1) for x in np.arange(0, atom_grid.l_max // 2 + 1)]
+            )
+            third_component = np.einsum("ln,l,ln -> n", r_values_f, degrees, r_sph_harm)
+            with np.errstate(divide="ignore", invalid="ignore"):
+                third_component /= r_pts ** 2.0
+
+            return first_component + second_component - third_component
+
+        interpolate_funcs.append(
+            lambda points, cut_off: interpolate_laplacian_atom_grid(points, atom_grid, cut_off)
+        )
+
+    def interpolate_low(points, cut_off: float = 1e-6):
+        output = interpolate_funcs[0](points, cut_off)
+        for interpolate in interpolate_funcs[1:]:
+            output += interpolate(points, cut_off)
+        return output
+
+    return interpolate_low
