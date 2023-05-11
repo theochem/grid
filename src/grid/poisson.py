@@ -67,20 +67,23 @@ def _interpolate_molgrid_helper(molgrid, func_vals, interpolate_callable):
     # Go through each atomic grid and construct interpolation of f*w_n.
     intepolate_funcs = []
     for i in range(len(molgrid.atcoords)):
+        # Get the atomic grid
         start_index = molgrid.indices[i]
         final_index = molgrid.indices[i + 1]
         atom_grid = molgrid[i]
+
+        # Add the interpolation for that atom in a list
         intepolate_funcs.append(
             interpolate_callable(atom_grid, func_vals_atom[start_index:final_index])
         )
 
-    def interpolate_low(points):
+    def sum_of_interpolation_functions(points):
         output = intepolate_funcs[0](points)
         for interpolate in intepolate_funcs[1:]:
             output += interpolate(points)
         return output
 
-    return interpolate_low
+    return sum_of_interpolation_functions
 
 
 def _solve_poisson_ivp_atomgrid(
@@ -139,6 +142,7 @@ def _solve_poisson_ivp_atomgrid(
                 ivp = [boundary / r_max, -boundary / r_max**2.0]
             else:
                 ivp = [0.0, 0.0]
+
             # Solve ode
             u_lm = solve_ode_ivp(
                 r_interval,
@@ -154,7 +158,7 @@ def _solve_poisson_ivp_atomgrid(
             splines.append(u_lm)
 
     def interpolate(points):
-        r_pts, theta, phi = convert_cart_to_sph(points).T
+        r_pts, theta, phi = atomgrid.convert_cart_to_sph(points).T
         r_values = np.array([spline(r_pts) for spline in splines])
         r_sph_harm = generate_real_spherical_harmonics(atomgrid.l_max // 2, theta, phi)
         return np.einsum("ij, ij -> j", r_values, r_sph_harm)
@@ -236,9 +240,9 @@ def solve_poisson_ivp(
         lambda atom_grid, func_vals: _solve_poisson_ivp_atomgrid(
             atom_grid,
             func_vals,
-            transform,
-            r_interval,
-            ode_params
+            transform=transform,
+            r_interval=r_interval,
+            ode_params=ode_params
         )
     )
 
@@ -279,15 +283,15 @@ def _solve_poisson_bvp_atomgrid(
 
     # Include the origin r=0 point if it isn't included, this is due to potential
     # expanded with 1/r factor and so to be finite at r=0, the numerator should be zero.
-    points = atomgrid.rgrid.points.copy()
+    rad_points = atomgrid.rgrid.points.copy()
     if include_origin:
         if np.all(atomgrid.rgrid.points > 0.0):
-            points = np.hstack((np.array([0.0]), points))
+            rad_points = np.hstack((np.array([0.0]), rad_points))
 
     # Get indices where the points are large and remove them for ill-conditioning of ode-solver.
     if remove_large_pts is not None:
-        indices = np.where(points > remove_large_pts)[0]
-        points = np.delete(points, indices)
+        indices = np.where(rad_points > remove_large_pts)[0]
+        rad_points = np.delete(rad_points, indices)
 
     # Set up default ode parameters if it isn't set up already.
     if ode_params is None:
@@ -308,7 +312,7 @@ def _solve_poisson_bvp_atomgrid(
                 with np.errstate(divide="ignore", invalid="ignore"):
                     a = -l_deg * (l_deg + 1) / r**2
                 # Note that this assumes the boundary condition that y(0) = 0.
-                a[np.abs(r) == 0.0] = 0.0
+                a[np.abs(r) == 0.0] = -l_deg * (l_deg + 1) / 1e-10**2
                 return a
 
             # Set up coefficients of the ode
@@ -321,14 +325,15 @@ def _solve_poisson_bvp_atomgrid(
                 bd_cond = [(0, 0, 0), (1, 0, 0)]
 
             # Solve ode
-            u_lm = solve_ode_bvp(points, f_x, coeffs, bd_cond, transform, **ode_params)
+            u_lm = solve_ode_bvp(rad_points, f_x, coeffs, bd_cond, transform, **ode_params)
+
             i_spline += 1
             splines.append(u_lm)
 
     def interpolate(points):
-        r_pts, theta, phi = convert_cart_to_sph(points).T
+        r_pts, theta, phi = atomgrid.convert_cartesian_to_spherical(points).T
         r_values = np.array([spline(r_pts) / r_pts for spline in splines])
-        # Since splin(r=0) = 0, then set points to zero there.
+        # Since spline(r=0) = 0, then set points to zero there.
         r_values[:, np.abs(r_pts) < 1e-300] = 0.0
         r_sph_harm = generate_real_spherical_harmonics(atomgrid.l_max // 2, theta, phi)
         return np.einsum("ij, ij -> j", r_values, r_sph_harm)
