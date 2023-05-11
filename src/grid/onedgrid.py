@@ -502,7 +502,8 @@ class TanhSinh(OneDGrid):
 
 
 class Simpson(OneDGrid):
-    r"""Simpson integral quadrature class.
+    r"""
+    Simpson integral quadrature class.
 
     The definition of this quadrature is:
 
@@ -551,7 +552,8 @@ class Simpson(OneDGrid):
 
 
 class MidPoint(OneDGrid):
-    r"""MidPoint integral quadrature class.
+    r"""
+    MidPoint integral quadrature class.
 
     The definition of this quadrature is:
 
@@ -588,12 +590,13 @@ class MidPoint(OneDGrid):
 
 
 class ClenshawCurtis(OneDGrid):
-    r"""Clenshow Curtis integral quadrature class.
+    r"""
+    Clenshow Curtis integral quadrature class.
 
     The definition of this quadrature is:
 
     .. math::
-        \theta_i &= \pi (i - 1) / (n - 1) \\
+        \theta_i &= \pi (i - 1) / (N_{pts} - 1) \\
         x_i &= \cos (\theta_i) \\
         w_i &= \frac{c_k}{n} \bigg(1 - \sum_{j=1}^{\lfloor n/2 \rfloor}
             \frac{b_j}{4j^2 - 1} \cos(2j\theta_i) \bigg)
@@ -606,7 +609,7 @@ class ClenshawCurtis(OneDGrid):
             2 & else
         \end{cases}
 
-    where :math:k`=0,\cdots,n.
+    where :math:`k=0,\cdots,N_{pts}`.
 
     If discontinuous, it is recommended to break the intervals at the discontinuities
     and handled separately.
@@ -710,7 +713,7 @@ class FejerSecond(OneDGrid):
     The definition of this quadrature is:
 
     .. math::
-        theta_i &= k \pi / n \\
+        theta_i &= i \pi / n \\
         x_i &= \cos(\theta_i) \\
         w_i &= \frac{4 \sin(\theta_i)}{n} \sum_{j=1}^{\lfloor n/2 \rfloor}
             \frac{\sin(2j - 1)\theta_i}{2j - 1}\\
@@ -785,7 +788,7 @@ def _derg3(x):
 
 
 class TrefethenCC(OneDGrid):
-    """
+    r"""
     Trefethen polynomial transformation of Clenshaw-Curtis integral quadrature class.
 
     References
@@ -828,8 +831,8 @@ class TrefethenCC(OneDGrid):
 
 
 class TrefethenGC2(OneDGrid):
-    """
-    Trefethen polynomial transformation of Gauss-Chebyshev of the second kind quadrature.
+    r"""
+    Trefethen polynomial transformation of Gauss-Chebyshev of the second kind integral quadrature.
 
     References
     ----------
@@ -871,7 +874,7 @@ class TrefethenGC2(OneDGrid):
 
 
 class TrefethenGeneral(OneDGrid):
-    """
+    r"""
     Trefethen polynomial transformation of a general integral quadrature class.
 
     References
@@ -964,7 +967,7 @@ def _dergstrip(rho, s):
 
 
 class TrefethenStripCC(OneDGrid):
-    """Trefethen strip transformation of Clenshaw-Curtis quadrature.
+    r"""Trefethen strip transformation of Clenshaw-Curtis integral quadrature.
 
      References
     ----------
@@ -993,7 +996,7 @@ class TrefethenStripCC(OneDGrid):
 
 
 class TrefethenStripGC2(OneDGrid):
-    """Trefethen strip transformation of the Gauss-Chebyshev of the second kind quadrature.
+    """Trefethen strip transformation of the Gauss-Chebyshev of the second kind integral quadrature.
 
      References
     ----------
