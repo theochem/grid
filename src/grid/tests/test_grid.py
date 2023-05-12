@@ -22,7 +22,7 @@
 
 from unittest import TestCase
 
-from grid.basegrid import Grid, OneDGrid, SubGrid
+from grid.basegrid import Grid, LocalGrid, OneDGrid
 
 import numpy as np
 from numpy.testing import assert_allclose
@@ -52,7 +52,7 @@ class TestGrid(TestCase):
         assert_allclose(result2, 2.1)
         # integral test2
         value1 = np.linspace(-1, 1, 21)
-        value2 = value1 ** 2
+        value2 = value1**2
         result3 = self.grid.integrate(value1, value2)
         assert_allclose(result3, 0, atol=1e-7)
 
@@ -75,33 +75,33 @@ class TestGrid(TestCase):
         assert_allclose(ref_smt_index.points, self._ref_points[a])
         assert_allclose(ref_smt_index.weights, self._ref_weights[a])
 
-    def test_get_subgrid(self):
-        """Test the creation of the subgrid with a normal radius."""
+    def test_get_localgrid(self):
+        """Test the creation of the local grid with a normal radius."""
         center = self.grid.points[3]
         radius = 0.2
-        subgrid = self.grid.get_subgrid(center, radius)
-        # Just make sure we are testing with an actual subgrid with less (but
+        localgrid = self.grid.get_localgrid(center, radius)
+        # Just make sure we are testing with an actual local grid with less (but
         # not zero) points.
-        assert subgrid.size > 0
-        assert subgrid.size < self.grid.size
-        # Test that the subgrid contains the correct results.
-        assert subgrid.points.ndim == self.grid.points.ndim
-        assert subgrid.weights.ndim == self.grid.weights.ndim
-        assert_allclose(subgrid.points, self.grid.points[subgrid.indices])
-        assert_allclose(subgrid.weights, self.grid.weights[subgrid.indices])
+        assert localgrid.size > 0
+        assert localgrid.size < self.grid.size
+        # Test that the local grid contains the correct results.
+        assert localgrid.points.ndim == self.grid.points.ndim
+        assert localgrid.weights.ndim == self.grid.weights.ndim
+        assert_allclose(localgrid.points, self.grid.points[localgrid.indices])
+        assert_allclose(localgrid.weights, self.grid.weights[localgrid.indices])
         if self._ref_points.ndim == 2:
-            assert (np.linalg.norm(subgrid.points - center, axis=1) <= radius).all()
+            assert (np.linalg.norm(localgrid.points - center, axis=1) <= radius).all()
         else:
-            assert (abs(subgrid.points - center) <= radius).all()
+            assert (abs(localgrid.points - center) <= radius).all()
 
-    def test_get_subgrid_radius_inf(self):
-        """Test the creation of the subgrid with an infinite radius."""
-        subgrid = self.grid.get_subgrid(self.grid.points[3], np.inf)
-        # Just make sure we are testing with a real subgrid
-        assert subgrid.size == self.grid.size
-        assert_allclose(subgrid.points, self.grid.points)
-        assert_allclose(subgrid.weights, self.grid.weights)
-        assert_allclose(subgrid.indices, np.arange(self.grid.size))
+    def test_get_localgrid_radius_inf(self):
+        """Test the creation of the local grid with an infinite radius."""
+        localgrid = self.grid.get_localgrid(self.grid.points[3], np.inf)
+        # Just make sure we are testing with a real local grid
+        assert localgrid.size == self.grid.size
+        assert_allclose(localgrid.points, self.grid.points)
+        assert_allclose(localgrid.weights, self.grid.weights)
+        assert_allclose(localgrid.indices, np.arange(self.grid.size))
 
     def test_errors_raise(self):
         """Test errors raise."""
@@ -120,19 +120,19 @@ class TestGrid(TestCase):
         if self._ref_points.ndim == 2:
             with self.assertRaises(ValueError):
                 self.grid.integrate(self._ref_points)
-        # get_subgrid
+        # get_localgrid
         with self.assertRaises(ValueError):
-            self.grid.get_subgrid(self._ref_points[0], -1)
+            self.grid.get_localgrid(self._ref_points[0], -1)
         with self.assertRaises(ValueError):
-            self.grid.get_subgrid(self._ref_points[0], -np.inf)
+            self.grid.get_localgrid(self._ref_points[0], -np.inf)
         with self.assertRaises(ValueError):
-            self.grid.get_subgrid(self._ref_points[0], np.nan)
+            self.grid.get_localgrid(self._ref_points[0], np.nan)
         if self._ref_points.ndim == 2:
             with self.assertRaises(ValueError):
-                self.grid.get_subgrid(np.zeros(self._ref_points.shape[1] + 1), 5.0)
+                self.grid.get_localgrid(np.zeros(self._ref_points.shape[1] + 1), 5.0)
         else:
             with self.assertRaises(ValueError):
-                self.grid.get_subgrid(np.zeros(2), 5.0)
+                self.grid.get_localgrid(np.zeros(2), 5.0)
 
 
 class TestGrid1D(TestGrid):
@@ -165,8 +165,8 @@ class TestGrid3D(TestGrid):
         self.grid = Grid(self._ref_points, self._ref_weights)
 
 
-class TestSubGrid(TestCase):
-    """SubGrid test class."""
+class TestLocalGrid(TestCase):
+    """LocalGrid test class."""
 
     def test_properties(self):
         """Test consistency of the properties with constructor arguments."""
@@ -174,7 +174,7 @@ class TestSubGrid(TestCase):
         points = np.arange(12).reshape(4, 3)
         center = np.array([4.0, 5.0, 6.0])
         indices = np.arange(4)
-        sg = SubGrid(points, weights, center, indices)
+        sg = LocalGrid(points, weights, center, indices)
         assert_allclose(sg.weights, weights)
         assert_allclose(sg.points, points)
         assert_allclose(sg.center, center)
@@ -186,9 +186,9 @@ class TestSubGrid(TestCase):
         points = np.arange(12).reshape(4, 3)
         center = np.zeros(3)
         with self.assertRaises(ValueError):
-            SubGrid(points, weights, center, np.arange(5))
+            LocalGrid(points, weights, center, np.arange(5))
         with self.assertRaises(ValueError):
-            SubGrid(points, weights, center, np.arange(8).reshape(4, 2))
+            LocalGrid(points, weights, center, np.arange(8).reshape(4, 2))
 
 
 class TestOneDGrid(TestCase):

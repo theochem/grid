@@ -31,7 +31,6 @@ from grid.onedgrid import (
     GaussChebyshevType2,
     GaussLaguerre,
     GaussLegendre,
-    HortonLinear,
     MidPoint,
     RectangleRuleSine,
     RectangleRuleSineEndPoints,
@@ -44,6 +43,7 @@ from grid.onedgrid import (
     TrefethenStripCC,
     TrefethenStripGC2,
     TrefethenStripGeneral,
+    UniformInteger,
     _derg2,
     _derg3,
     _dergstrip,
@@ -90,7 +90,7 @@ class TestOneDGrid(TestCase):
 
     def test_horton_linear(self):
         """Test horton linear grids."""
-        grid = HortonLinear(10)
+        grid = UniformInteger(10)
         assert_allclose(grid.points, np.arange(10))
         assert_allclose(grid.weights, np.ones(10))
 
@@ -171,7 +171,7 @@ class TestOneDGrid(TestCase):
         index_m = np.arange(9) + 1
 
         weights = (
-            (2 / (10 * np.pi ** 2))
+            (2 / (10 * np.pi**2))
             * np.sin(10 * np.pi * points)
             * np.sin(10 * np.pi / 2) ** 2
         )
@@ -215,6 +215,14 @@ class TestOneDGrid(TestCase):
         with self.assertRaises(ValueError):
             GaussLaguerre(10, -1)
         with self.assertRaises(ValueError):
+            GaussLaguerre(0, 1)
+        with self.assertRaises(ValueError):
+            GaussLegendre(-10)
+        with self.assertRaises(ValueError):
+            GaussChebyshev(-10)
+        with self.assertRaises(ValueError):
+            UniformInteger(-10)
+        with self.assertRaises(ValueError):
             TanhSinh(10, 1)
         with self.assertRaises(ValueError):
             Simpson(4)
@@ -245,13 +253,13 @@ class TestOneDGrid(TestCase):
     def helper_gaussian(x):
         """Compute gauss function for integral between [-1, 1]."""
         # integrate (exp(-x^2)) x=[-1, 1], result = 1.49365
-        return np.exp(-(x ** 2))
+        return np.exp(-(x**2))
 
     @staticmethod
     def helper_quadratic(x):
         """Compute quadratic function for integral between [-1, 1]."""
         # integrate (-x^2 + 1) x=[-1, 1], result = 1.33333
-        return -(x ** 2) + 1
+        return -(x**2) + 1
 
     def test_oned_integral(self):
         """A simple integral tests for basic oned grid."""
@@ -374,7 +382,7 @@ class TestOneDGrid(TestCase):
             serie = 0
 
             for m in range(1, nsum):
-                serie += np.cos(2 * m * theta[k]) / (4 * m ** 2 - 1)
+                serie += np.cos(2 * m * theta[k]) / (4 * m**2 - 1)
 
             serie = 1 - 2 * serie
 
@@ -427,8 +435,8 @@ class TestOneDGrid(TestCase):
         assert_allclose(d3ref, newd3)
 
     def test_TrefethenCC_d2(self):
-        """Test for Trefethen - Sausage Clenshaw Curtis and parameter d=2."""
-        grid = TrefethenCC(10, 2)
+        """Test for Trefethen - Sausage Clenshaw Curtis and parameter d=5."""
+        grid = TrefethenCC(10, 5)
 
         tmp = ClenshawCurtis(10)
 
@@ -439,8 +447,8 @@ class TestOneDGrid(TestCase):
         assert_allclose(grid.weights, new_weights)
 
     def test_TrefethenCC_d3(self):
-        """Test for Trefethen - Sausage Clenshaw Curtis and parameter d=3."""
-        grid = TrefethenCC(10, 3)
+        """Test for Trefethen - Sausage Clenshaw Curtis and parameter d=9."""
+        grid = TrefethenCC(10, 9)
 
         tmp = ClenshawCurtis(10)
 
@@ -451,8 +459,8 @@ class TestOneDGrid(TestCase):
         assert_allclose(grid.weights, new_weights)
 
     def test_TrefethenCC_d0(self):
-        """Test for Trefethen - Sausage Clenshaw Curtis and parameter d=0."""
-        grid = TrefethenCC(10, 0)
+        """Test for Trefethen - Sausage Clenshaw Curtis and parameter d=1."""
+        grid = TrefethenCC(10, 1)
 
         tmp = ClenshawCurtis(10)
 
@@ -460,8 +468,8 @@ class TestOneDGrid(TestCase):
         assert_allclose(grid.weights, tmp.weights)
 
     def test_TrefethenGC2_d2(self):
-        """Test for Trefethen - Sausage GaussChebyshev2 and parameter d=2."""
-        grid = TrefethenGC2(10, 2)
+        """Test for Trefethen - Sausage GaussChebyshev2 and parameter d=5."""
+        grid = TrefethenGC2(10, 5)
 
         tmp = GaussChebyshevType2(10)
 
@@ -472,8 +480,8 @@ class TestOneDGrid(TestCase):
         assert_allclose(grid.weights, new_weights)
 
     def test_TrefethenGC2_d3(self):
-        """Test for Trefethen - Sausage GaussChebyshev2 and parameter d=3."""
-        grid = TrefethenGC2(10, 3)
+        """Test for Trefethen - Sausage GaussChebyshev2 and parameter d=9."""
+        grid = TrefethenGC2(10, 9)
 
         tmp = GaussChebyshevType2(10)
 
@@ -484,8 +492,8 @@ class TestOneDGrid(TestCase):
         assert_allclose(grid.weights, new_weights)
 
     def test_TrefethenGC2_d0(self):
-        """Test for Trefethen - Sausage GaussChebyshev2 and parameter d=0."""
-        grid = TrefethenGC2(10, 0)
+        """Test for Trefethen - Sausage GaussChebyshev2 and parameter d=1."""
+        grid = TrefethenGC2(10, 1)
 
         tmp = GaussChebyshevType2(10)
 
@@ -493,25 +501,25 @@ class TestOneDGrid(TestCase):
         assert_allclose(grid.weights, tmp.weights)
 
     def test_TrefethenGeneral_d2(self):
-        """Test for Trefethen - Sausage General and parameter d=2."""
-        grid = TrefethenGeneral(10, ClenshawCurtis, 2)
-        new = TrefethenCC(10, 2)
+        """Test for Trefethen - Sausage General and parameter d=5."""
+        grid = TrefethenGeneral(10, ClenshawCurtis, 5)
+        new = TrefethenCC(10, 5)
 
         assert_allclose(grid.points, new.points)
         assert_allclose(grid.weights, new.weights)
 
     def test_TrefethenGeneral_d3(self):
-        """Test for Trefethen - Sausage General and parameter d=2."""
-        grid = TrefethenGeneral(10, ClenshawCurtis, 3)
-        new = TrefethenCC(10, 3)
+        """Test for Trefethen - Sausage General and parameter d=9."""
+        grid = TrefethenGeneral(10, ClenshawCurtis, 9)
+        new = TrefethenCC(10, 9)
 
         assert_allclose(grid.points, new.points)
         assert_allclose(grid.weights, new.weights)
 
     def test_TrefethenGeneral_d0(self):
-        """Test for Trefethen - Sausage General and parameter d=0."""
-        grid = TrefethenGeneral(10, ClenshawCurtis, 0)
-        new = TrefethenCC(10, 0)
+        """Test for Trefethen - Sausage General and parameter d=1."""
+        grid = TrefethenGeneral(10, ClenshawCurtis, 1)
+        new = TrefethenCC(10, 1)
 
         assert_allclose(grid.points, new.points)
         assert_allclose(grid.weights, new.weights)
@@ -529,7 +537,6 @@ class TestOneDGrid(TestCase):
     def test_TrefethenStripCC(self):
         """Test for Trefethen - Strip Clenshaw Curtis."""
         grid = TrefethenStripCC(10, 1.1)
-
         tmp = ClenshawCurtis(10)
 
         new_points = _gstrip(1.1, tmp.points)
