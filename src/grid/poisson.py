@@ -118,7 +118,6 @@ def _solve_poisson_ivp_atomgrid(
     i_spline = 0
     for l_deg in range(0, atomgrid.l_max // 2 + 1):
         for m_ord in [x for x in range(0, l_deg + 1)] + [-x for x in range(-l_deg, 0)]:
-
             def f_x(r):
                 return radial_components[i_spline](r) * -4 * np.pi
 
@@ -157,7 +156,8 @@ def _solve_poisson_ivp_atomgrid(
             splines.append(u_lm)
 
     def interpolate(points):
-        r_pts, theta, phi = atomgrid.convert_cart_to_sph(points).T
+        # Need atomgrid to center the points to the atomic grid, then convert to spherical.
+        r_pts, theta, phi = atomgrid.convert_cartesian_to_spherical(points).T
         r_values = np.array([spline(r_pts) for spline in splines])
         r_sph_harm = generate_real_spherical_harmonics(atomgrid.l_max // 2, theta, phi)
         return np.einsum("ij, ij -> j", r_values, r_sph_harm)
@@ -182,7 +182,7 @@ def solve_poisson_ivp(
         \Delta g = (-4\pi) f,
 
     for a fixed function :math:`f`, where :math:`\Delta` is the Laplacian.  This
-    is transformed to an set of ODE problems as a initial value problem.
+    is transformed to a set of ODE problems as an initial value problem.
 
     Ihe initial value problem is chosen so that the boundary of :math:`g` for large r is set to
     :math:`\int \int \int f(r, \theta, \phi) / r`.  Depending on :math:`f`, this function has
@@ -330,6 +330,7 @@ def _solve_poisson_bvp_atomgrid(
             splines.append(u_lm)
 
     def interpolate(points):
+        # Need atomgrid to center the points to the atomic grid, then convert to spherical.
         r_pts, theta, phi = atomgrid.convert_cartesian_to_spherical(points).T
         r_values = np.array([spline(r_pts) / r_pts for spline in splines])
         # Since spline(r=0) = 0, then set points to zero there.
@@ -536,10 +537,10 @@ def interpolate_laplacian(molgrid: Union[MolGrid, AtomGrid], func_vals: np.ndarr
             lambda points, cut_off: interpolate_laplacian_atom_grid(points, atom_grid, cut_off)
         )
 
-    def interpolate_low(points, cut_off: float = 1e-6):
+    def sum_of_interpolation_funcs(points, cut_off: float = 1e-6):
         output = interpolate_funcs[0](points, cut_off)
         for interpolate in interpolate_funcs[1:]:
             output += interpolate(points, cut_off)
         return output
 
-    return interpolate_low
+    return sum_of_interpolation_funcs
