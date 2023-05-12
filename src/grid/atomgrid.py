@@ -339,6 +339,12 @@ class AtomGrid(Grid):
         r"""bool: True then symmetric spherical t-design is used rather than Lebedev-Laikov grid."""
         return self._use_spherical
 
+    @property
+    def basis(self):
+        r"""ndarray(N, 3): Generate spherical harmonic basis evaluated on atomic grid points."""
+        # Used for mostly interpolation
+        return self._basis
+
     def save(self, filename):
         r"""
         Save atomic grid attributes as a npz file.
@@ -503,8 +509,9 @@ class AtomGrid(Grid):
         )  # swap points axes to last
 
         # Remove the radial weights and r^2 values that are in self.weights
-        radial_coefficients /= self.rgrid.points**2 * self.rgrid.weights
-        # For radius smaller than 1.0e-8, due to division by zero, we regenerate
+        with np.errstate(divide='ignore', invalid='ignore'):
+            radial_coefficients /= (self.rgrid.points ** 2 * self.rgrid.weights)
+        # For radius smaller than 1.0e-8, due to division by zero by r^2, we regenerate
         # the angular grid and calculate the integral at those points.
         r_index = np.where(self.rgrid.points < 1e-8)[0]
         for i in r_index:  # if r_index = [], then for loop doesn't occur.
@@ -567,19 +574,23 @@ class AtomGrid(Grid):
         r"""
         Return spline to interpolate radial components wrt to expansion in real spherical harmonics.
 
-        For fixed r, a function :math:`f(r, \theta, \phi)` is projected onto the spherical
-        harmonic expansion
+        For each pt :math:`r_i` of the atomic grid with associated angular degree :math:`l_i`,
+        the function :math:`f(r_i, \theta, \phi)` is projected onto the spherical
+        harmonic expansion:
 
         .. math::
-            f(r, \theta, \phi) = \sum_{l=0}^\infty \sum_{m=-l}^l \rho^{lm}(r) Y^m_l(\theta, \phi)
+            f(r_i, \theta, \phi) \approx \sum_{l=0}^{l_i} \sum_{m=-l}^l \rho^{lm}(r_i)
+            Y^m_l(\theta, \phi)
 
-        where :math:`Y^m_l` is the real Spherical harmonic of order :math:`l` and degree :math:`m`.
-        The radial components :math:`\rho^{lm}(r)` are interpolated using a cubic spline and
-        are calculated via integration:
+        where :math:`Y^m_l` is the real Spherical harmonic of degree :math:`l` and order :math:`m`.
+        The radial components :math:`\rho^{lm}(r_i)` are calculated via integration on
+        the :math:`i`th Lebedev/angular grid of the atomic grid:
 
         .. math::
-            \rho^{lm}(r) = \int \int f(r, \theta, \phi) Y^m_l(\theta, \phi) \sin(\theta)
-             d\theta d\phi.
+            \rho^{lm}(r_i) = \int \int f(r_i, \theta, \phi) Y^m_l(\theta, \phi) \sin(\theta)
+             d\theta d\phi,
+
+        and then interpolated using a cubic spline over all radial points of the atomic grid.
 
         Parameters
         ----------
@@ -609,11 +620,12 @@ class AtomGrid(Grid):
         # Multiply spherical harmonic basis with the function values to project.
         values = np.einsum("ln,n->ln", self._basis, func_vals)
         radial_components = self.integrate_angular_coordinates(values)
-        # each shell can only integrate upto shell_degree // 2, so if shell_degree < l_max,
-        # the f_{lm} should be set to zero for l > shell_degree // 2. Instead, one could set
-        # truncate the basis of a given shell.
+        # each shell can only integrate spherical harmonics up to the shell_degree,
+        # so if shell_degree < l_max, the f_{lm} should be set to zero for l > shell_degree // 2.
+        # Instead, one could set truncate the basis of a given shell.
         for i in range(self.n_shells):
-            if self.degrees[i] != self.l_max:
+            # if self.degrees[i] != self.l_max:
+            if self.degrees[i] > self.l_max // 2:
                 num_nonzero_sph = (self.degrees[i] // 2 + 1) ** 2
                 radial_components[num_nonzero_sph:, i] = 0.0
 
@@ -646,7 +658,7 @@ class AtomGrid(Grid):
             Callable function that interpolates the function and its derivative provided.
             The function takes the following attributes:
                 points : ndarray(N, 3)
-                Cartesian coordinates of :math:`N` points to evaluate the splines on.
+                    Cartesian coordinates of :math:`N` points to evaluate the splines on.
                 deriv : int, optional
                     If deriv is zero, then only returns function values. If it is one, then
                     returns the first derivative of the interpolated function with respect to either
@@ -768,72 +780,6 @@ class AtomGrid(Grid):
             return np.einsum("ij, ij -> j", r_values, r_sph_harm)
 
         return interpolate_low
-
-    def interpolate_laplacian(self, func_vals: np.ndarray):
-        r"""
-        Return a function that interpolates the Laplacian of a function.
-
-        .. math::
-            \Deltaf = \frac{1}{r}\frac{\partial^2 rf}{\partial r^2} - \frac{\hat{L}}{r^2},
-
-        such that the angular momentum operator satisfies :math:`\hat{L}(Y_l^m) = l (l + 1) Y_l^m`.
-        Expanding f in terms of spherical harmonic expansion, we get that
-
-        .. math::
-            \Deltaf = \sum \sum \bigg[\frac{\rho_{lm}^{rf}}{r} -
-            \frac{l(l+1) \rho_{lm}^f}{r^2} \bigg] Y_l^m,
-
-        where :math:`\rho_{lm}^f` is the lth, mth radial component of function f.
-
-        Parameters
-        ----------
-        func_vals : ndarray(N,)
-            The function values evaluated on all :math:`N` points on the atomic grid.
-
-        Returns
-        -------
-        callable[ndarray(M,3) -> ndarray(M,)] :
-            Function that interpolates the Laplacian of a function whose input is
-            Cartesian points.
-
-        """
-        radial, theta, phi = self.convert_cartesian_to_spherical().T
-        # Multiply f by r to get rf
-        func_vals_radial = radial * func_vals
-
-        # compute spline for the radial components for rf and f
-        radial_comps_rf = self.radial_component_splines(func_vals_radial)
-        radial_comps_f = self.radial_component_splines(func_vals)
-
-        def interpolate_laplacian(points):
-            r_pts, theta, phi = self.convert_cartesian_to_spherical(points).T
-
-            # Evaluate the radial components for function f
-            r_values_f = np.array([spline(r_pts) for spline in radial_comps_f])
-            # Evaluate the second derivatives of splines of radial component of function rf
-            r_values_rf = np.array([spline(r_pts, 2) for spline in radial_comps_rf])
-
-            r_sph_harm = generate_real_spherical_harmonics(self.l_max // 2, theta, phi)
-
-            # Divide \rho_{lm}^{rf} by r  and \rho_{lm}^{rf} by r^2
-            # l means the angular (l,m) variables and n represents points.
-            with np.errstate(divide="ignore", invalid="ignore"):
-                r_values_rf /= r_pts
-                r_values_rf[:, r_pts < 1e-10] = 0.0
-                r_values_f /= r_pts**2.0
-                r_values_f[:, r_pts**2.0 < 1e-10] = 0.0
-
-            # Multiply \rho_{lm}^f by l(l+1), note 2l+1 orders for each degree l
-            degrees = np.hstack(
-                [[x * (x + 1)] * (2 * x + 1) for x in np.arange(0, self.l_max // 2 + 1)]
-            )
-            second_component = np.einsum("ln,l->ln", r_values_f, degrees)
-            # Compute \rho_{lm}^{rf}/r - \rho_{lm}^f l(l + 1) / r^2
-            component = r_values_rf - second_component
-            # Multiply by spherical harmonics and take the sum
-            return np.einsum("ln, ln -> n", component, r_sph_harm)
-
-        return interpolate_laplacian
 
     @staticmethod
     def _input_type_check(rgrid: OneDGrid, center: np.ndarray):

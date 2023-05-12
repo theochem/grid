@@ -23,12 +23,14 @@ from numbers import Number
 
 
 from grid.ode import (
+    _derivative_transformation_matrix,
     _evaluate_coeffs_on_points,
     _rearrange_to_explicit_ode,
     _transform_and_rearrange_to_explicit_ode,
     _transform_ode_from_derivs,
     _transform_ode_from_rtransform,
-    solve_ode,
+    solve_ode_bvp,
+    solve_ode_ivp,
 )
 from grid.onedgrid import GaussLaguerre
 from grid.rtransform import (
@@ -81,6 +83,10 @@ class SqTF(BaseTransform):
         """Initialize power transform instance."""
         self._exp = exp
         self._extra = extra
+
+    @property
+    def domain(self):
+        return (-1.0, 1.0)
 
     def transform(self, x):
         """Transform given array."""
@@ -211,10 +217,10 @@ def test_transform_and_rearrange_to_explicit_ode_with_simple_boundary(
         ],
     ],
 )
-def test_solve_ode_with_and_without_transormation(transform, fx, coeffs, bd_cond):
+def test_solve_ode_bvp_with_and_without_transormation(transform, fx, coeffs, bd_cond):
     r"""Test solve_ode with and without transformation with different bd conditions."""
     x = np.linspace(0.01, 0.999, 20)
-    sol_with_transform = solve_ode(
+    sol_with_transform = solve_ode_bvp(
         x,
         fx,
         coeffs,
@@ -226,7 +232,7 @@ def test_solve_ode_with_and_without_transormation(transform, fx, coeffs, bd_cond
     )
     init_guess = sol_with_transform(x)
 
-    sol_normal = solve_ode(
+    sol_normal = solve_ode_bvp(
         x, fx, coeffs, bd_cond, tol=1e-8, max_nodes=20000, initial_guess_y=init_guess
     )
     # Test the function values
@@ -235,6 +241,71 @@ def test_solve_ode_with_and_without_transormation(transform, fx, coeffs, bd_cond
     for bd in bd_cond:
         bnd, deriv, val = bd
         assert_allclose(sol_with_transform(x)[deriv][-bnd], val, atol=1e-5)
+
+    if len(coeffs) >= 3:
+        # Test the first derivative of y.
+        assert_allclose(sol_with_transform(x)[1], sol_normal(x)[1], atol=1e-3)
+        if len(coeffs) >= 4:
+            assert_allclose(sol_with_transform(x)[2], sol_normal(x)[2], atol=1e-3)
+
+
+@pytest.mark.parametrize(
+    "transform, fx, coeffs, ivp",
+    [
+        # Test with ode -y + y` + y`` =1/x^2
+        [
+            BeckeRTransform(0.01, 5.0),
+            fx_complicated_example3,
+            [-1, 1, 1],
+            [3.0, 0.0],
+        ],
+        [
+            BeckeRTransform(0.01, 5.0),
+            fx_complicated_example3,
+            [-1, 1, 1],
+            [3.0, 6.0],
+        ],
+        [
+            BeckeRTransform(0.01, 5.0),
+            fx_complicated_example3,
+            [-1, 1, 1],
+            [0.0, 0.0],
+        ],
+        # Test one with boundary conditions on the derivatives
+        [
+            SqTF(1, 3),
+            fx_complicated_example,
+            np.random.uniform(-100, 100, (4,)),
+            [0.0, 3.0, 6.0],
+        ],
+        [
+            KnowlesRTransform(0.01, 1.5, 3),
+            fx_complicated_example,
+            np.random.uniform(-100, 100, (4,)),
+            [0.0, 3.0, 6.0],
+        ],
+    ],
+)
+def test_solve_ode_ivp_with_and_without_transformation(transform, fx, coeffs, ivp):
+    r"""Test solve_ode_ivp with and without transformation with different initial guesses."""
+    sol_with_transform = solve_ode_ivp(
+        (0.01, 0.999),
+        fx,
+        coeffs,
+        ivp,
+        transform,
+    )
+
+    sol_normal = solve_ode_ivp((0.01, 0.999), fx, coeffs, ivp)
+
+    # Test the initial value problem
+    for i, ivp_val in enumerate(ivp):
+        assert_allclose(sol_normal(np.array([0.01]))[i], ivp_val, atol=1e-5)
+        assert_allclose(sol_with_transform(np.array([0.01]))[i], ivp_val, atol=1e-5)
+
+    # Test the function values
+    x = np.arange(0.01, 0.999, 0.1)
+    assert_allclose(sol_with_transform(x)[0], sol_normal(x)[0], atol=1e-5)
     if len(coeffs) >= 3:
         # Test the first derivative of y.
         assert_allclose(sol_with_transform(x)[1], sol_normal(x)[1], atol=1e-3)
@@ -243,7 +314,7 @@ def test_solve_ode_with_and_without_transormation(transform, fx, coeffs, bd_cond
 
 
 def test_solve_ode_bvp_against_analytic_example():
-    """Test solve_ode against analytic solution."""
+    """Test solve_ode_bvp against analytic solution."""
     x = np.linspace(0, 2, 10)
 
     def fx(x):
@@ -254,7 +325,7 @@ def test_solve_ode_bvp_against_analytic_example():
     # lower and upper bound of y is equal to zero.
     bd_cond = [[0, 0, 0], [1, 0, 0]]
 
-    res = solve_ode(x, fx, coeffs, bd_cond)
+    res = solve_ode_bvp(x, fx, coeffs, bd_cond)
 
     def solution(x):
         return x**2.0 / 2.0 - x
@@ -268,10 +339,45 @@ def test_solve_ode_bvp_against_analytic_example():
     assert_almost_equal(res(rand_pts)[1], deriv(rand_pts))
 
 
-def test_error_raises():
-    """Test proper error raises."""
+@pytest.mark.parametrize(
+    "fx, coeffs, ivp, solutions",
+    [
+        # Test ode  y^`` = 1 with y(0) = 0, y`(0) = -1
+        [
+            lambda x: 1 if isinstance(x, Number) else np.ones(x.size),
+            [0, 0, 1],
+            [0.0, -1.0],
+            lambda x: (x**2.0 / 2.0 - x, x - 1.0),
+        ],
+        # Test ode y′+ y cos(t) =0,
+        [
+            lambda x: 0 if isinstance(x, Number) else np.zeros(x.size),
+            [lambda x: np.cos(x), 1],
+            [0.5],
+            lambda x: np.array([np.exp(-np.sin(x)) / 2.0]),
+        ],
+        # Test ode y`` - y` = 2 sin(x) with y(0) = 1 and y`(0)=-1
+        [
+            lambda x: 2.0 * np.sin(x),
+            [0, -1, 1],
+            [1.0, -1.0],
+            lambda x: (np.cos(x) - np.sin(x), -np.sin(x) - np.cos(x)),
+        ],
+    ],
+)
+def test_solve_ode_ivp_against_analytic_example(fx, coeffs, ivp, solutions):
+    """Test solve_ode_ivp against analytic solution."""
+    res = solve_ode_ivp((0, 2), fx, coeffs, ivp)
+
+    # Test on random points.
+    # rand_pts = np.random.uniform(0.0, 2.0, size=100)
+    rand_pts = np.arange(0, 2, 0.5)
+    assert_allclose(res(rand_pts), solutions(rand_pts), atol=1e-5)
+
+
+def test_error_raises_for_solve_ode_bvp():
+    """Test proper error raises for solve_ode_bvp."""
     x = np.linspace(-0.999, 0.999, 20)
-    # r = btf.transform(x)
 
     def fx(x):
         return 1 / x**2
@@ -279,14 +385,14 @@ def test_error_raises():
     coeffs = [-1, -2, 1]
     bd_cond = [(0, 0, 0), (1, 0, 0), (0, 1, 0), (1, 1, 0)]
     # Test the error that the number of boundary conditions should be equal to order.
-    assert_raises(ValueError, solve_ode, x, fx, coeffs, bd_cond[3:])
-    assert_raises(ValueError, solve_ode, x, fx, coeffs, bd_cond)
+    assert_raises(ValueError, solve_ode_bvp, x, fx, coeffs, bd_cond[3:])
+    assert_raises(ValueError, solve_ode_bvp, x, fx, coeffs, bd_cond)
     test_coeff = [1, 2, 3, 4, 5]
-    assert_raises(ValueError, solve_ode, x, fx, test_coeff, bd_cond)
+    assert_raises(ValueError, solve_ode_bvp, x, fx, test_coeff, bd_cond)
 
     test_coeff = [1, 2, 3, 3]
     tf = BeckeRTransform(0.1, 1)
-    assert_raises(ValueError, solve_ode, x, fx, test_coeff, bd_cond[:3], tf)
+    assert_raises(ValueError, solve_ode_bvp, x, fx, test_coeff, bd_cond[:3], tf)
 
 
 def test_construct_coeffs_of_ode_over_mesh():
@@ -438,3 +544,38 @@ def test_rearange_ode_coeff():
     assert_almost_equal(res2.sol(0)[1], 3)
     assert_almost_equal(res2.sol(1)[1], 7)
     assert_almost_equal(res2.sol(2)[1], 11)
+
+
+def test_first_and_second_derivative_transformation_with_Becke_transform():
+    r"""Test derivative transformation of cubic function with Becke transform."""
+    transform = BeckeRTransform(0.0, 5.0)
+    func = lambda x: x**3.0
+    origin_domain = np.arange(0.0, 10, 0.1)  # r \in [0, \infty)
+    new_domain = transform.inverse(origin_domain)  # x \in [-1, 1]
+
+    # dr/dx,  d^2 r/ dx^2,
+    deriv_tranfs = [transform.deriv, transform.deriv2, transform.deriv3]
+
+    # derivative g(r) := r^3 wrt to r in [0, \infty)
+    deriv_func_old = lambda x: 3.0 * x**2.0
+    sec_deriv_func_old = lambda x: 6.0 * x
+
+    # derivative g(r(x)) wrt to x in [-1, 1]
+    desired_deriv_new = lambda x: 6 * 5.0**3.0 * (1 + x) ** 2.0 / (1 - x) ** 4.0
+    desired_sec_deriv_new = (
+        lambda x: -12 * 5.0**3.0 * (1 + x) * (x + 3) / (x - 1.0) ** 5.0
+    )
+
+    # Go through each pt, calculate the jacobian, calculate the derivative g(r(x)) and compare
+    for i, pt_x in enumerate(new_domain):
+        pt_r = origin_domain[i]
+        # derivative r^3 wrt to r in [0, \infty)
+        actual_deriv_origin = np.array([deriv_func_old(pt_r), sec_deriv_func_old(pt_r)])
+
+        # transform derivative to get  g(r(x)) wrt to x in [-1, 1]
+        jacobian = _derivative_transformation_matrix(deriv_tranfs, pt_x, 2)
+        actual_deriv_new = jacobian.dot(actual_deriv_origin)
+
+        assert_allclose(
+            actual_deriv_new, [desired_deriv_new(pt_x), desired_sec_deriv_new(pt_x)]
+        )

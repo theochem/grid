@@ -269,7 +269,10 @@ class BeckeRTransform(BaseTransform):
         np.ndarray(N,)
             First derivative of Becke transformation at each point.
         """
-        return 2 * self._R / ((1 - x) ** 2)
+        deriv = 2 * self._R / ((1 - x) ** 2)
+        if self.trim_inf:
+            deriv = self._convert_inf(deriv)
+        return deriv
 
     def deriv2(self, x: np.ndarray):
         r"""Compute the second derivative of Becke transformation.
@@ -358,7 +361,7 @@ class LinearFiniteRTransform(BaseTransform):
         float or np.ndarray
             Transformed points between :math:`[r_{min}, r_{max}]`
         """
-        return (self._rmax - self._rmin) / 2 * (1 + x) + self._rmin
+        return (1 + x) * (self._rmax - self._rmin) / 2 + self._rmin
 
     def deriv(self, x: np.ndarray):
         r"""Compute the 1st order derivative.
@@ -1562,9 +1565,12 @@ class KnowlesRTransform(BaseTransform):
 
         """
         qi = 1 + x
-        return (
+        deriv = (
             self._R * self._k * (qi ** (self._k - 1)) / (2**self._k - qi**self._k)
         )
+        if self.trim_inf:
+            deriv = self._convert_inf(deriv)
+        return deriv
 
     def deriv2(self, x: np.ndarray):
         r"""Compute the second derivative of Knowles transformation.
@@ -1703,7 +1709,7 @@ class HandyRTransform(BaseTransform):
         """
         rf_array = self._R * ((1 + x) / (1 - x)) ** self._m + self._rmin
         if self.trim_inf:
-            self._convert_inf(rf_array)
+            rf_array = self._convert_inf(rf_array)
         return rf_array
 
     def inverse(self, r: np.ndarray):
@@ -1747,7 +1753,7 @@ class HandyRTransform(BaseTransform):
         """
         dr = 2 * self._m * self._R * (1 + x) ** (self._m - 1) / (1 - x) ** (self._m + 1)
         if self.trim_inf:
-            self._convert_inf(dr)
+            dr = self._convert_inf(dr)
         return dr
 
     def deriv2(self, x: np.ndarray):
@@ -1776,7 +1782,7 @@ class HandyRTransform(BaseTransform):
         )
 
         if self.trim_inf:
-            self._convert_inf(dr)
+            dr = self._convert_inf(dr)
         return dr
 
     def deriv3(self, x: np.ndarray):
@@ -1806,7 +1812,7 @@ class HandyRTransform(BaseTransform):
         )
 
         if self.trim_inf:
-            self._convert_inf(dr)
+            dr = self._convert_inf(dr)
         return dr
 
 
@@ -1904,7 +1910,7 @@ class HandyModRTransform(BaseTransform):
         rf_array += self._rmin
 
         if self.trim_inf:
-            self._convert_inf(rf_array)
+            rf_array = self._convert_inf(rf_array)
         return rf_array
 
     def inverse(self, r: np.ndarray):
@@ -1960,7 +1966,7 @@ class HandyModRTransform(BaseTransform):
         """
         two_m = 2**self._m
         size_r = self._rmax - self._rmin
-        return (
+        deriv = (
             -(
                 self._m
                 * two_m
@@ -1971,6 +1977,9 @@ class HandyModRTransform(BaseTransform):
             / (two_m * (1 - two_m + size_r) + (two_m - size_r) * (1 + x) ** self._m)
             ** 2
         )
+        if self.trim_inf:
+            deriv = self._convert_inf(deriv)
+        return deriv
 
     def deriv2(self, x: np.ndarray):
         r"""Compute the second derivative of modified Handy transformation.
