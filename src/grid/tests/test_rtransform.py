@@ -21,11 +21,12 @@
 
 from unittest import TestCase
 
+from grid.onedgrid import GaussLegendre
 from grid.rtransform import (
     ExpRTransform,
     HyperbolicRTransform,
     IdentityRTransform,
-    LinearRTransform,
+    LinearInfiniteRTransform,
     PowerRTransform,
 )
 
@@ -127,7 +128,7 @@ class TestRTransform(TestCase):
     def test_linear_basics(self):
         """Test linear tf."""
         gd = np.ones(100) * 0
-        rtf = LinearRTransform(-0.7, 0.8)
+        rtf = LinearInfiniteRTransform(-0.7, 0.8)
         assert abs(rtf.transform(gd)[0] - -0.7) < 1e-15
         gd = np.ones(100) * 99
         assert abs(rtf.transform(gd)[0] - 0.8) < 1e-10
@@ -177,7 +178,7 @@ class TestRTransform(TestCase):
 
     def test_linear_properties(self):
         """Test linear tf properties."""
-        rtf = LinearRTransform(-0.7, 0.8)
+        rtf = LinearInfiniteRTransform(-0.7, 0.8)
         assert rtf.rmin == -0.7
         assert rtf.rmax == 0.8
         # assert rtf.npoint == 100
@@ -208,10 +209,29 @@ class TestRTransform(TestCase):
         assert rtf.b == 1.0 / 450
         # assert rtf.npoint == 450
 
+    def test_domain(self):
+        """Test domain errors."""
+        rad = GaussLegendre(10)
+        with self.assertRaises(ValueError):
+            tf = IdentityRTransform()
+            tf.transform_1d_grid(rad)
+        with self.assertRaises(ValueError):
+            tf = LinearInfiniteRTransform(0.1, 1.5)
+            tf.transform_1d_grid(rad)
+        with self.assertRaises(ValueError):
+            tf = ExpRTransform(0.1, 1e1)
+            tf.transform_1d_grid(rad)
+        with self.assertRaises(ValueError):
+            tf = PowerRTransform(1e-3, 1e2)
+            tf.transform_1d_grid(rad)
+        with self.assertRaises(ValueError):
+            tf = HyperbolicRTransform(0.4 / 450, 1.0 / 450)
+            tf.transform_1d_grid(rad)
+
     def test_linear_bounds(self):
         """Test linear tf raise errors."""
         with self.assertRaises(ValueError):
-            LinearRTransform(1.1, 0.9)
+            LinearInfiniteRTransform(1.1, 0.9)
 
     def test_exp_bounds(self):
         """Test exponential tf raise errors."""
@@ -285,7 +305,7 @@ def test_identiy_string():
 
 
 def test_linear_string():
-    rtf1 = LinearRTransform(np.random.uniform(1e-5, 5e-5), np.random.uniform(1, 5), 88)
+    rtf1 = LinearInfiniteRTransform(np.random.uniform(1e-5, 5e-5), np.random.uniform(1, 5), 88)
     s = rtf1.to_string()
     rtf2 = RTransform.from_string(s)
     assert rtf1.rmin == rtf2.rmin
@@ -294,11 +314,11 @@ def test_linear_string():
     assert rtf1.alpha == rtf2.alpha
 
     with assert_raises(ValueError):
-        RTransform.from_string("LinearRTransform A 5")
+        RTransform.from_string("LinearInfiniteRTransform A 5")
     with assert_raises(ValueError):
-        RTransform.from_string("LinearRTransform A 5 .1")
+        RTransform.from_string("LinearInfiniteRTransform A 5 .1")
 
-    rtf3 = RTransform.from_string("LinearRTransform -1.0 12.15643216847 77")
+    rtf3 = RTransform.from_string("LinearInfiniteRTransform -1.0 12.15643216847 77")
     assert rtf3.rmin == -1.0
     assert rtf3.rmax == 12.15643216847
     assert rtf3.npoint == 77

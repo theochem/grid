@@ -17,211 +17,315 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
-"""Generate Lebedev grid."""
+"""
+Lebedev angular grid module for constructing integration grids on the unit sphere.
+
+The Lebedev grid points here were obtained and calculated from the theochem/HORTON package.
+Their calculations were based on F77 translation by Dr. Christoph van Wuellen
+and these are the comments from that translation.
+
+This subroutine is part of a set of subroutines that generate
+Lebedev grids [1-6] for integration on a sphere. The original
+C-code [1] was kindly provided by Dr. Dmitri N. Laikov and
+translated into fortran by Dr. Christoph van Wuellen.
+This subroutine was translated from C to fortran77 by hand.
+Users of this code are asked to include reference [1] in their
+publications, and in the user- and programmers-manuals
+describing their codes.
+This code was distributed through CCL (http://www.ccl.net/).
+
+References
+----------
+.. [1] V.I. Lebedev, and D.N. Laikov
+   "A quadrature formula for the sphere of the 131st algebraic order of accuracy"
+   Doklady Mathematics, Vol. 59, No. 3, 1999, pp. 477-481.
+.. [2] V.I. Lebedev "A quadrature formula for the sphere of 59th algebraic order of accuracy"
+   Russian Acad. Sci. Dokl. Math., Vol. 50, 1995, pp. 283-286.
+.. [3] V.I. Lebedev, and A.L. Skorokhodov "Quadrature formulas of orders 41, 47, and 53 for
+   the sphere" Russian Acad. Sci. Dokl. Math., Vol. 45, 1992, pp. 587-592.
+.. [4] V.I. Lebedev "Spherical quadrature formulas exact to orders 25-29"
+   Siberian Mathematical Journal, Vol. 18, 1977, pp. 99-107.
+.. [5] V.I. Lebedev "Quadratures on a sphere" Computational Mathematics and Mathematical
+   Physics, Vol. 16, 1976, pp. 10-24.
+.. [6] V.I. Lebedev "Values of the nodes and weights of ninth to seventeenth order Gauss-Markov
+   quadrature formulae invariant under the octahedron group with inversion" Computational
+   Mathematics and Mathematical Physics, Vol. 15, 1975, pp. 44-51.
+
+"""
 
 import warnings
+from bisect import bisect_left
 
-from grid.basegrid import AngularGrid
+from grid.basegrid import Grid
 
 from importlib_resources import path
 
 import numpy as np
 
-n_points = [
-    6,
-    14,
-    26,
-    38,
-    50,
-    74,
-    86,
-    110,
-    146,
-    170,
-    194,
-    230,
-    266,
-    302,
-    350,
-    434,
-    590,
-    770,
-    974,
-    1202,
-    1454,
-    1730,
-    2030,
-    2354,
-    2702,
-    3074,
-    3470,
-    3890,
-    4334,
-    4802,
-    5294,
-    5810,
-]
+# Lebedev dictionary for converting number of grid points (keys) to grid's degrees (values)
+LEBEDEV_NPOINTS = {
+    6: 3,
+    14: 5,
+    26: 7,
+    38: 9,
+    50: 11,
+    74: 13,
+    86: 15,
+    110: 17,
+    146: 19,
+    170: 21,
+    194: 23,
+    230: 25,
+    266: 27,
+    302: 29,
+    350: 31,
+    434: 35,
+    590: 41,
+    770: 47,
+    974: 53,
+    1202: 59,
+    1454: 65,
+    1730: 71,
+    2030: 77,
+    2354: 83,
+    2702: 89,
+    3074: 95,
+    3470: 101,
+    3890: 107,
+    4334: 113,
+    4802: 119,
+    5294: 125,
+    5810: 131,
+}
 
-n_degree = [
-    3,
-    5,
-    7,
-    9,
-    11,
-    13,
-    15,
-    17,
-    19,
-    21,
-    23,
-    25,
-    27,
-    29,
-    31,
-    35,
-    41,
-    47,
-    53,
-    59,
-    65,
-    71,
-    77,
-    83,
-    89,
-    95,
-    101,
-    107,
-    113,
-    119,
-    125,
-    131,
-]
+# Lebedev dictionary for converting grid's degrees (keys) to number of grid points (values)
+LEBEDEV_DEGREES = dict([(v, k) for k, v in LEBEDEV_NPOINTS.items()])
+
+LEBEDEV_CACHE = {}
 
 
-def generate_lebedev_grid(*, degree=None, size=None):
-    """Generate Lebedev grid for given degree or size.
+class AngularGrid(Grid):
+    r"""Lebedev-Laikov grid for integrating functions on the unit sphere.
 
-    Either degree or size is needed to generate proper grid. If both provided,
-    degree will be used instead of size.
+    This class numerically evaluates the integral of a function
+    :math:`f: S^2 \rightarrow \mathbb{R}` on the unit-sphere as follows:
 
-    Parameters
-    ----------
-    degree : None, optional
-        Degree L for Lebedev grid
-    size : None, optional
-        Number of preferred points on Lebedev grid
+    .. math::
+        4 \pi \int_{S^2} f d\Sigma  = 4\pi \int_0^\pi \int_0^{2\pi} f(\theta, \phi) \sin(\theta)
+         d\theta d\phi \approx \sum w_i f(\phi_i, \theta_i),
 
-    Returns
-    -------
-    AngularGrid
-        An AngularGrid instance with points and weights.
+    where :math:`S^2` is the unit-sphere,
+    :math:`w^{ang}_i` are the quadrature weights that includes :math:`4\pi`.
+
+    The weights are chosen so that the spherical harmonics integrate to :math:`4\pi`:
+
+    .. math::
+        \int_0^\pi \int_0^{2\pi} Y^l_m(\theta, \phi) \sin(\theta) d\theta d\phi = 4\pi.
+
     """
-    degree, size = _select_grid_type(degree=degree, size=size)
-    points, weights = _load_grid_arrays(_load_grid_filename(degree, size))
-    # set weights to 4\pi
-    return AngularGrid(points, weights * 4 * np.pi)
 
+    def __init__(
+        self,
+        points: np.ndarray = None,
+        weights: np.ndarray = None,
+        *,
+        degree: int = None,
+        size: int = None,
+        cache: bool = True,
+    ):
+        r"""Generate a Lebedev angular grid for a given degree and/or size.
 
-def match_degree(degree_nums):
-    """Generate proper angular degree for given arbitrary degree list.
+        Three choices to construct this grid:
 
-    Parameters
-    ----------
-    degree_nums : list[int]
-        a list of arbitrary degree nums
+        1. Add your own points and weights.
+        2. Specify maximum degree of spherical harmonics that Lebedev grid can
+           integrate accurately on a unit sphere.
+        3. The number of points (size) wanted in the grid. The size corresponds
+           to a maximum degree.
 
-    Returns
-    -------
-    np.ndarray[int]
-        An array of proper angular degree values
-    """
-    return np.array([_select_grid_type(degree=i)[0] for i in degree_nums], dtype=int)
+        Parameters
+        ----------
+        points : ndarray(N, 3), optional
+            The Cartesian coordinates of integral grid points.  The attribute
+            `weights` should also be provided.
+        weights : ndarray(N,), optional
+            The weights of each point on the integral quadrature grid. The attribute
+            `points` should also be applied.
+        degree : int, optional
+            Maximum angular degree :math:`l` of spherical harmonics that the Lebedev grid
+            can integrate accurately. If the Lebedev grid corresponding to the given angular
+            degree is not supported, the next largest degree is used.
+        size : int, optional
+            Number of Lebedev grid points. If the Lebedev grid corresponding to the given size is
+            not supported, the next largest size is used. If both degree and size are given,
+            degree is used for constructing the grid.
+        cache : bool, optional
+            If true, then store the points and weights of the AngularGrid in cache
+            to avoid duplicate grids that have the same `degree`. Default to `True`.
 
+        Returns
+        -------
+        AngularGrid
+            An angular grid with Lebedev points and weights (including :math:`4\pi`) on
+            a unit sphere.
 
-def size_to_degree(num_array):
-    """Generate degs given nums.
+        Examples
+        --------
+        >>> # Initialize with degree
+        >>> AngularGrid(degree=3)
+        >>>
+        >>> # Initialize with size
+        >>> AngularGrid(size=6)
+        >>>
+        >>> # Initialize with points and weights
+        >>> pts = np.array([[0, 1, 0], [1, 0, 1], [0, 1, 1]], dtype=float)
+        >>> wts = np.array([0.5, 0.4, 0.3])
+        >>> AngularGrid(pts, wts)
 
-    Parameters
-    ----------
-    num_array : np.ndarray(N,)
-        Numpy array with # of points for each shell
+        """
+        # construct grid from pts and wts given directly
+        if points is not None and weights is not None:
+            super().__init__(points, weights)
+            if degree or size:
+                warnings.warn(
+                    "degree or size are not used for generating grids "
+                    "because points and weights are provided",
+                    RuntimeWarning,
+                )
+        else:
+            # map degree and size to the supported (i.e., pre-computed) degree and size
+            degree, size = self._get_lebedev_size_and_degree(degree=degree, size=size)
+            # load pre-computed Lebedev points & weights and make angular grid
+            if degree not in LEBEDEV_CACHE:
+                points, weights = self._load_lebedev_grid(degree, size)
+                if cache:
+                    LEBEDEV_CACHE[degree] = points, weights
+            else:
+                points, weights = LEBEDEV_CACHE[degree]
+            self._degree = degree
+            super().__init__(points, weights * 4 * np.pi)
 
-    Returns
-    -------
-    np.ndarray(N,)
-        Numpy array with L value for each shell
-    """
-    num_array = np.array(num_array)
-    unik_arr = np.unique(num_array)
-    degs = np.zeros(num_array.size)
-    for i in unik_arr:
-        deg = _select_grid_type(size=i)[0]
-        degs[np.where(num_array == i)] = deg
-    return degs
+    @property
+    def degree(self):
+        r"""int: The degree of spherical harmonics that this angular grid can integrate exactly."""
+        return self._degree
 
+    @staticmethod
+    def convert_lebedev_sizes_to_degrees(sizes: np.ndarray):
+        """
+        Convert given Lebedev grid sizes to degrees.
 
-def _select_grid_type(*, degree=None, size=None):
-    """Select proper Lebedev grid scheme for given degree or size.
+        Parameters
+        ----------
+        sizes : ndarray[int]
+            Sequence of Lebedev grid sizes (e.g., number of points for each atomic shell).
 
-    Parameters
-    ----------
-    degree : int, the magic number for spherical grid
-    size : int, the number of points for spherical grid
+        Returns
+        -------
+        ndarray[int]
+            Sequence of the corresponding angular degree of the Lebedev grid corresponding to
+            its size.
 
-    Returns
-    -------
-    tuple(int, int), proper magic number and its corresponding number of points.
-    """
-    if degree and size:
-        warnings.warn(
-            "Both degree and size are provided, will use degree only", RuntimeWarning
-        )
-    if degree:
-        if degree < 0 or degree > 131:
-            raise ValueError(
-                f"'degree' needs to be an positive integer <= 131, got {degree}"
+        """
+        degrees = np.zeros(len(sizes), dtype=int)
+        for size in np.unique(sizes):
+            # get the degree corresponding to the given (unique) size
+            deg = AngularGrid._get_lebedev_size_and_degree(size=size)[0]
+            # set value of degree to corresponding to the given size equal to deg
+            degrees[np.where(sizes == size)] = deg
+        return degrees
+
+    @staticmethod
+    def _get_lebedev_size_and_degree(*, degree: int = None, size: int = None):
+        """
+        Map the given degree and/or size to the degree and size of a supported Lebedev grid.
+
+        Parameters
+        ----------
+        degree : int, optional
+            Maximum angular degree :math:`l` of spherical harmonics that the Lebedev grid
+            can integrate accurately. If the Lebedev grid corresponding to the given angular
+            degree is not supported, the next largest degree is used.
+        size : int, optional
+            Number of Lebedev grid points. If the Lebedev grid corresponding to the given size is
+            not supported, the next largest size is used. If both degree and size are given,
+            degree is used for constructing the grid.
+
+        Returns
+        -------
+        (int, int)
+            Degree and size of a supported Lebedev grid (equal to or larger than the
+            requested grid).
+
+        """
+        if degree and size:
+            warnings.warn(
+                "Both degree and size arguments are given, so only degree is used!",
+                RuntimeWarning,
             )
-        for index, pre_degree in enumerate(n_degree):
-            if degree <= pre_degree:
-                return n_degree[index], n_points[index]
-    elif size:
-        if size < 0 or size > 5810:
-            raise ValueError(f"'size' needs to be an integer <= 5810, got {degree}")
-        for index, pre_point in enumerate(n_points):
-            if size <= pre_point:
-                return n_degree[index], n_points[index]
-    else:
-        raise ValueError(
-            "Please provide 'degree' or 'size' to define a grid type is provided in arguments"
-        )
+        if degree is not None:
+            leb_degs = list(LEBEDEV_DEGREES.keys())
+            max_degree = max(leb_degs)
+            if degree < 0 or degree > max_degree:
+                raise ValueError(
+                    f"Argument degree should be a positive integer <= {max_degree}, got {degree}"
+                )
+            # match the given degree to the existing Lebedev degree or the next largest degree
+            degree = (
+                degree
+                if degree in LEBEDEV_DEGREES
+                else leb_degs[bisect_left(leb_degs, degree)]
+            )
+            return degree, LEBEDEV_DEGREES[degree]
+        elif size:
+            leb_npts = list(LEBEDEV_NPOINTS.keys())
+            max_size = max(leb_npts)
+            if size < 0 or size > max_size:
+                raise ValueError(
+                    f"Argument size should be a positive integer <= {max_size}, got {size}"
+                )
+            # match the given size to the existing Lebedev size or the next largest size
+            size = (
+                size
+                if size in LEBEDEV_NPOINTS
+                else leb_npts[bisect_left(leb_npts, size)]
+            )
+            return LEBEDEV_NPOINTS[size], size
+        else:
+            raise ValueError("Provide degree and/or size arguments!")
 
+    @staticmethod
+    def _load_lebedev_grid(degree: int, size: int):
+        """
+        Load the .npz file containing the pre-computed Lebedev grid points and weights.
 
-def _load_grid_filename(degree: int, size: int):
-    """Construct Lebedev file name for given degree and size.
+        Parameters
+        ----------
+        degree : int, optional
+            Maximum angular degree :math:`l` of spherical harmonics that the Lebedev grid
+            can integrate accurately.
+        size : int, optional
+            Number of Lebedev grid points. If the Lebedev grid corresponding to the given size is
+            not supported, the next largest size is used.
 
-    Parameters
-    ----------
-    degree : int
-    size : int
+        Returns
+        -------
+        (ndarray(N, 3), ndarray(N,))
+            The three-dimensional Cartesian coordinates & weights of :math:`N` grid
+            points on a unit sphere.
 
-    Returns
-    -------
-    str, file name for given type of Lebedev grid
-    """
-    return f"lebedev_{degree}_{size}.npz"
-
-
-def _load_grid_arrays(filename):
-    """Load saved .npz file to generate Lebedev points.
-
-    Parameters
-    ----------
-    filename : str or Path
-
-    Returns
-    -------
-    tuple(np.ndarray(N,), np.ndarray(N,)), the coordinates and weights of grid.
-    """
-    with path("grid.data.lebedev", filename) as npz_file:
-        data = np.load(npz_file)
-    return data["points"], data["weights"]
+        """
+        # check given degree & size
+        if degree not in LEBEDEV_DEGREES:
+            raise ValueError(
+                f"Given degree={degree} is not supported, choose from {LEBEDEV_DEGREES}"
+            )
+        if size not in LEBEDEV_NPOINTS:
+            raise ValueError(
+                f"Given size={size} is not supported, choose from {LEBEDEV_NPOINTS}"
+            )
+        # load npz file corresponding to the given degree & size
+        filename = f"lebedev_{degree}_{size}.npz"
+        with path("grid.data.lebedev", filename) as npz_file:
+            data = np.load(npz_file)
+        return data["points"], data["weights"]

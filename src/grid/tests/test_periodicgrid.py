@@ -60,23 +60,23 @@ def test_tutorial_periodic_repetition(delta_p, delta_c):
         grid = PeriodicGrid(
             np.linspace(-1, 1, 21) + delta_p, np.full(21, 0.1), np.array([a])
         )
-    # The subgrid is wider than one primitive cell, such that there will be
-    # more points in the subgrid than in the periodic grid. The test is repeated
+    # The local grid is wider than one primitive cell, such that there will be
+    # more points in the local grid than in the periodic grid. The test is repeated
     # with two displacements of the center by an integer multiple of the
     # periodic unit.
     center = 1.8362 - delta_c
     radius = 2.1876
     fn_old = None
     for _ in range(3):
-        subgrid = grid.get_subgrid(center, radius)
-        assert subgrid.size > grid.size
+        localgrid = grid.get_localgrid(center, radius)
+        assert localgrid.size > grid.size
         # Compute one Gaussian, which is to be periodically repeated.
-        subfn = np.exp(-20 * (subgrid.points - center) ** 2)
+        localfn = np.exp(-20 * (localgrid.points - center) ** 2)
         # Construct the periodic model on grid points of one primitive cell.
         # Mind the ``np.add.at`` line. This is explained in the documentation of
         # PeriodicGrid.__init__.
         fn = np.zeros(grid.size)
-        np.add.at(fn, subgrid.indices, subfn)
+        np.add.at(fn, localgrid.indices, localfn)
         # Compare the periodic function to the result with the previous value
         # of center. It should be the same because the center was translated by
         # exactly one periodic unit.
@@ -85,7 +85,7 @@ def test_tutorial_periodic_repetition(delta_p, delta_c):
         fn_old = fn
         # The integral over one primitive cell should be the same as the integral
         # over one isolated Gaussian.
-        assert_allclose(subgrid.integrate(subfn), grid.integrate(fn))
+        assert_allclose(localgrid.integrate(localfn), grid.integrate(fn))
         # Manually construct the periodic repetition and compare.
         fn2 = np.zeros(grid.size)
         jmin = np.ceil((grid.points.min() - center - radius) / a).astype(int)
@@ -155,21 +155,21 @@ def test_tutorial_local_integral_1(delta_p, delta_c):
     # A) Setup a periodic grid with uniformly spaced grid points.
     realvecs = np.array([[0.3, 0.4], [1.0, -0.5]])
     grid = setup_equidistant_grid(delta_p, realvecs, [40, 40])
-    # B) Get a subgrid centered at some point
+    # B) Get a local grid centered at some point
     center = np.array([-1.1, 4.0]) - delta_c
     cutoff = 5.4097
-    subgrid = grid.get_subgrid(center, cutoff)
+    localgrid = grid.get_localgrid(center, cutoff)
     # C) Evaluate a quadratic function on the local grid, with a known
     # solution for the integral.
-    dists = np.linalg.norm(subgrid.points - center, axis=1)
+    dists = np.linalg.norm(localgrid.points - center, axis=1)
     assert (dists <= cutoff).all()
     localfn = (dists - cutoff) ** 2
-    assert_allclose(subgrid.integrate(localfn), cutoff ** 4 * np.pi / 6)
+    assert_allclose(localgrid.integrate(localfn), cutoff**4 * np.pi / 6)
     # D) Construct a periodic repetition of the local integrand and perform the
     # same check on the integral
     periodicfn = np.zeros(grid.size)
-    np.add.at(periodicfn, subgrid.indices, localfn)
-    assert_allclose(grid.integrate(periodicfn), cutoff ** 4 * np.pi / 6)
+    np.add.at(periodicfn, localgrid.indices, localfn)
+    assert_allclose(grid.integrate(periodicfn), cutoff**4 * np.pi / 6)
 
 
 @pytest.mark.parametrize("delta_p", DELTAS_2D, ids=format_nd)
@@ -188,17 +188,17 @@ def test_tutorial_local_integral_2(delta_p, delta_c):
     a = 4.0
     realvecs = np.array([[a, 0.0], [a * np.cos(alpha), a * np.sin(alpha)]])
     grid = setup_equidistant_grid(delta_p, realvecs, [10, 10])
-    # Create a subgrid to evaluate a single Gaussian, to be periodically repeated
+    # Create a local grid to evaluate a single Gaussian, to be periodically repeated
     cutoff = 6.0
     center1 = np.array([0.3, 0.7]) - delta_c
-    subgrid1 = grid.get_subgrid(center1, cutoff)
-    dists1 = np.linalg.norm(subgrid1.points - center1, axis=1)
-    localfn1 = np.exp(-0.5 * dists1 ** 2)
+    localgrid1 = grid.get_localgrid(center1, cutoff)
+    dists1 = np.linalg.norm(localgrid1.points - center1, axis=1)
+    localfn1 = np.exp(-0.5 * dists1**2)
     periodicfn = np.zeros(grid.size)
-    np.add.at(periodicfn, subgrid1.indices, localfn1)
+    np.add.at(periodicfn, localgrid1.indices, localfn1)
     # Check some obvious integrals:
     # - Integral over the local function within the cutoff.
-    assert_allclose(subgrid1.integrate(localfn1), 2 * np.pi)
+    assert_allclose(localgrid1.integrate(localfn1), 2 * np.pi)
     # - Integral over the periodic function within one unit cell.
     #   (This should be the same.)
     assert_allclose(grid.integrate(periodicfn), 2 * np.pi)
@@ -207,13 +207,13 @@ def test_tutorial_local_integral_2(delta_p, delta_c):
     # The test would not be very challenging with a nearly constant periodic
     # function.
     assert periodicfn.std() > 0.1
-    # Create another subgrid for the second Gaussian, which will remain local.
+    # Create another local grid for the second Gaussian, which will remain local.
     center2 = np.array([-3.3, -0.7])
-    subgrid2 = grid.get_subgrid(center2, cutoff)
-    dists2 = np.linalg.norm(subgrid2.points - center2, axis=1)
-    localfn2 = np.exp(-0.5 * dists2 ** 2)
+    localgrid2 = grid.get_localgrid(center2, cutoff)
+    dists2 = np.linalg.norm(localgrid2.points - center2, axis=1)
+    localfn2 = np.exp(-0.5 * dists2**2)
     # Compute the overlap integral of the periodic and the second local Gaussian
-    oint_a = subgrid2.integrate(localfn2, periodicfn[subgrid2.indices])
+    oint_a = localgrid2.integrate(localfn2, periodicfn[localgrid2.indices])
     # Compute this overlap integral as a lattice sum of overlap integrals between
     # individual Gaussians. This is done with a fairly mindless algorithm: first
     # the relative vector between the two centers under the minimum image
@@ -230,31 +230,31 @@ def test_tutorial_local_integral_2(delta_p, delta_c):
             delta_01 = delta_mic + grid.realvecs[0] * i0 + grid.realvecs[1] * i1
             dist_01 = np.linalg.norm(delta_01)
             # Compute the overlap integral derived with Gaussian-Product theorem
-            overlap_01 = np.pi * np.exp(-0.25 * dist_01 ** 2)
+            overlap_01 = np.pi * np.exp(-0.25 * dist_01**2)
             oint_b += overlap_01
     assert_allclose(oint_a, oint_b)
 
 
-def assert_equal_subgrids(subgrid1, subgrid2):
-    """Assert the equality of two subgrids which may differ in point order.
+def assert_equal_localgrids(localgrid1, localgrid2):
+    """Assert the equality of two local grids which may differ in point order.
 
     This check also works for the case that a point from the parent grid appears
     multiple times (due to periodic images).
     """
-    assert_allclose(subgrid1.center, subgrid2.center)
-    assert sorted(subgrid1.indices) == sorted(subgrid2.indices)
-    for index in np.unique(subgrid1.indices):
+    assert_allclose(localgrid1.center, localgrid2.center)
+    assert sorted(localgrid1.indices) == sorted(localgrid2.indices)
+    for index in np.unique(localgrid1.indices):
         # Get all points corresponding to the index in both grids
-        selection1 = (subgrid1.indices == index).nonzero()[0]
-        selection2 = (subgrid2.indices == index).nonzero()[0]
-        points1 = subgrid1.points[selection1]
-        points2 = subgrid2.points[selection2]
+        selection1 = (localgrid1.indices == index).nonzero()[0]
+        selection2 = (localgrid2.indices == index).nonzero()[0]
+        points1 = localgrid1.points[selection1]
+        points2 = localgrid2.points[selection2]
         # The points in set 1 and 2 should form pairs of coinciding points
         # without too much ambiguity. Either they overlap or either they
         # differ by an integer linear combination of lattice vectors.
         found = set([])
         for i1, point1 in enumerate(points1):
-            if subgrid1.points.ndim == 1:
+            if localgrid1.points.ndim == 1:
                 dists = abs(points2 - point1)
             else:
                 dists = np.linalg.norm(points2 - point1, axis=1)
@@ -263,8 +263,8 @@ def assert_equal_subgrids(subgrid1, subgrid2):
             assert i2 not in found
             found.add(i2)
         # All selected weights should be equal
-        weights1 = subgrid1.weights[selection1]
-        weights2 = subgrid2.weights[selection2]
+        weights1 = localgrid1.weights[selection1]
+        weights2 = localgrid2.weights[selection2]
         assert_allclose(weights1, weights1.mean())
         assert_allclose(weights2, weights2.mean())
         assert_allclose(weights1, weights2)
@@ -376,58 +376,60 @@ class PeriodicGridTester:
         assert_allclose(grid_mtake.spacings, self.grid.spacings)
         assert isinstance(grid_mtake, PeriodicGrid)
 
-    def test_get_subgrid_small_radius(self):
-        """Basic checks for the get_subgrid method.
+    def test_get_localgrid_small_radius(self):
+        """Basic checks for the get_localgrid method.
 
         In this unit test, the cutoff sphere fits inside a primitive cell, such
         that each grid point from the parent periodic grid will at most appear
-        once in the subgrid.
+        once in the local grid.
         """
         center = self.grid.points[3]
         radius = 0.19475
         # Check that the sphere fits inside the primitive cell:
         assert (2 * radius < self.grid.spacings).all()
-        # Build subgrids.
-        subgrids = [
-            self.grid.get_subgrid(center, radius),
-            self.wrapped_grid.get_subgrid(center, radius),
+        # Build local grids.
+        localgrids = [
+            self.grid.get_localgrid(center, radius),
+            self.wrapped_grid.get_localgrid(center, radius),
         ]
-        # When there are no lattice vectors, the subgrid from the base class
+        # When there are no lattice vectors, the local grid from the base class
         # should also be the same.
         if self._ref_realvecs is None:
             aperiodic_grid = Grid(self._ref_points, self._ref_weights)
-            subgrids.append(aperiodic_grid.get_subgrid(center, radius))
+            localgrids.append(aperiodic_grid.get_localgrid(center, radius))
         # One should get the same local grid with or without wrapping, possibly
         # with a different ordering of the points. We can perform a relatively
         # simple check here because each point appears at most once.
-        order0 = subgrids[0].indices.argsort()
-        for subgrid in subgrids[1:]:
-            assert_allclose(subgrids[0].center, subgrid.center)
-            order = subgrid.indices.argsort()
-            assert_allclose(subgrids[0].points[order0], subgrid.points[order])
-            assert_allclose(subgrids[0].weights[order0], subgrid.weights[order])
+        order0 = localgrids[0].indices.argsort()
+        for localgrid in localgrids[1:]:
+            assert_allclose(localgrids[0].center, localgrid.center)
+            order = localgrid.indices.argsort()
+            assert_allclose(localgrids[0].points[order0], localgrid.points[order])
+            assert_allclose(localgrids[0].weights[order0], localgrid.weights[order])
         # Other sanity checks on the grids.
-        for subgrid in subgrids:
-            # Just make sure we are testing with an actual subgrid with at least
+        for localgrid in localgrids:
+            # Just make sure we are testing with an actual local grid with at least
             # some points.
-            assert subgrid.size > 0
-            assert subgrid.size <= self.grid.size
-            assert len(subgrid.indices) == len(set(subgrid.indices))
-            # Test that the subgrid contains sensible results.
-            assert_allclose(subgrid.center, center)
-            assert subgrid.points.ndim == self.grid.points.ndim
-            assert subgrid.weights.ndim == self.grid.weights.ndim
+            assert localgrid.size > 0
+            assert localgrid.size <= self.grid.size
+            assert len(localgrid.indices) == len(set(localgrid.indices))
+            # Test that the localgrid contains sensible results.
+            assert_allclose(localgrid.center, center)
+            assert localgrid.points.ndim == self.grid.points.ndim
+            assert localgrid.weights.ndim == self.grid.weights.ndim
             if self._ref_points.ndim == 2:
-                assert (np.linalg.norm(subgrid.points - center, axis=1) <= radius).all()
+                assert (
+                    np.linalg.norm(localgrid.points - center, axis=1) <= radius
+                ).all()
             else:
-                assert (abs(subgrid.points - center) <= radius).all()
+                assert (abs(localgrid.points - center) <= radius).all()
 
-    def test_get_subgrid_large_radius(self):
-        """Basic checks for the get_subgrid method.
+    def test_get_localgrid_large_radius(self):
+        """Basic checks for the get_localgrid method.
 
         In this unit test, the cutoff sphere fits inside a primitive cell, such
         that each grid point from the parent periodic grid will at most appear
-        once in the subgrid.
+        once in the local grid.
         """
         center = self.grid.points[3]
         radius = 2.51235
@@ -435,35 +437,37 @@ class PeriodicGridTester:
         # some lattice vectors.
         if self._ref_realvecs is not None:
             assert (2 * radius > self.grid.spacings).any()
-        # Build subgrids.
-        subgrids = [
-            self.grid.get_subgrid(center, radius),
-            self.wrapped_grid.get_subgrid(center, radius),
+        # Build local grids.
+        localgrids = [
+            self.grid.get_localgrid(center, radius),
+            self.wrapped_grid.get_localgrid(center, radius),
         ]
-        # When there are no lattice vectors, the subgrid from the base class
+        # When there are no lattice vectors, the local grid from the base class
         # should also be the same.
         if self._ref_realvecs is None:
             aperiodic_grid = Grid(self._ref_points, self._ref_weights)
-            subgrids.append(aperiodic_grid.get_subgrid(center, radius))
+            localgrids.append(aperiodic_grid.get_localgrid(center, radius))
         # One should get the same local grid with or without wrapping, possibly
         # with a different ordering of the points.
-        for subgrid in subgrids[1:]:
-            assert_equal_subgrids(subgrids[0], subgrid)
+        for localgrid in localgrids[1:]:
+            assert_equal_localgrids(localgrids[0], localgrid)
         # Other sanity checks.
-        for subgrid in subgrids:
-            # With a large radius there will never be less points in the subgrid.
+        for localgrid in localgrids:
+            # With a large radius there will never be less points in the local grid.
             if self._ref_realvecs is None:
-                assert subgrid.size == self.grid.size
+                assert localgrid.size == self.grid.size
             else:
-                assert subgrid.size > self.grid.size
-            # Test that the subgrid contains sensible results.
-            assert_allclose(subgrid.center, center)
-            assert subgrid.points.ndim == self.grid.points.ndim
-            assert subgrid.weights.ndim == self.grid.weights.ndim
+                assert localgrid.size > self.grid.size
+            # Test that the local grid contains sensible results.
+            assert_allclose(localgrid.center, center)
+            assert localgrid.points.ndim == self.grid.points.ndim
+            assert localgrid.weights.ndim == self.grid.weights.ndim
             if self._ref_points.ndim == 2:
-                assert (np.linalg.norm(subgrid.points - center, axis=1) <= radius).all()
+                assert (
+                    np.linalg.norm(localgrid.points - center, axis=1) <= radius
+                ).all()
             else:
-                assert (abs(subgrid.points - center) <= radius).all()
+                assert (abs(localgrid.points - center) <= radius).all()
 
     def test_exceptions(self):
         """Check exceptions, the new ones specific to PeriodicGrid."""
@@ -484,15 +488,15 @@ class PeriodicGridTester:
                 realvecs = self._ref_realvecs.copy()
                 realvecs[0] = realvecs[1]
                 PeriodicGrid(self._ref_points, self._ref_weights, realvecs)
-        # get_subgrid
+        # get_localgrid
         with pytest.raises(ValueError):
-            self.grid.get_subgrid(np.zeros(100), 3.0)
+            self.grid.get_localgrid(np.zeros(100), 3.0)
         with pytest.raises(ValueError):
-            self.grid.get_subgrid(self.grid.points[4], np.inf)
+            self.grid.get_localgrid(self.grid.points[4], np.inf)
         with pytest.raises(ValueError):
-            self.grid.get_subgrid(self.grid.points[4], -np.nan)
+            self.grid.get_localgrid(self.grid.points[4], -np.nan)
         with pytest.raises(ValueError):
-            self.grid.get_subgrid(self.grid.points[4], -1.0)
+            self.grid.get_localgrid(self.grid.points[4], -1.0)
 
 
 class TestPeriodicGrid1D0CV(PeriodicGridTester):
@@ -595,7 +599,7 @@ class TestPeriodicGrid3D2CV(PeriodicGridTester):
         self._ref_weights = np.linspace(0.1, 0.2, 21)
         self._ref_realvecs = np.array([[0.7, 0.1, -0.2], [-0.3, 0.2, 0.6]])
         self._ref_recivecs = np.linalg.pinv(self._ref_realvecs).T
-        self._ref_spacings = 1 / np.sqrt((self._ref_recivecs ** 2).sum(axis=1))
+        self._ref_spacings = 1 / np.sqrt((self._ref_recivecs**2).sum(axis=1))
         frac_edges = np.dot(self._ref_points[[0, -1]], self._ref_recivecs.T)
         self._ref_frac_intvls = np.array(
             [frac_edges.min(axis=0), frac_edges.max(axis=0)]

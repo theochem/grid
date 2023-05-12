@@ -20,8 +20,8 @@
 """Molecular grid class."""
 
 
-from grid.atomic_grid import AtomicGrid
-from grid.basegrid import Grid, OneDGrid, SubGrid
+from grid.atomgrid import AtomGrid
+from grid.basegrid import Grid, LocalGrid, OneDGrid
 
 import numpy as np
 
@@ -29,29 +29,29 @@ import numpy as np
 class MolGrid(Grid):
     """Molecular Grid for integration."""
 
-    def __init__(self, atomic_grids, aim_weights, atom_nums, store=False):
+    def __init__(self, atnums, atgrids, aim_weights, store=False):
         r"""Initialize class.
 
         Parameters
         ----------
-        atomic_grids : list[AtomicGrid]
+        atnums : np.ndarray(M, 3)
+            Atomic number of :math:`M` atoms in molecule.
+        atgrids : list[AtomGrid]
             list of atomic grid
         aim_weights : Callable or np.ndarray(K,)
             Atoms in molecule weights.
-        atom_nums : np.ndarray(M, 3)
-            Atomic number of :math:`M` atoms in molecule.
 
         """
         # initialize these attributes
-        self._coors = np.zeros((len(atomic_grids), 3))
-        self._indices = np.zeros(len(atomic_grids) + 1, dtype=int)
-        size = np.sum([atomgrid.size for atomgrid in atomic_grids])
+        self._atcoords = np.zeros((len(atgrids), 3))
+        self._indices = np.zeros(len(atgrids) + 1, dtype=int)
+        size = np.sum([atomgrid.size for atomgrid in atgrids])
         self._points = np.zeros((size, 3))
         self._atweights = np.zeros(size)
-        self._atomic_grids = atomic_grids if store else None
+        self._atgrids = atgrids if store else None
 
-        for i, atom_grid in enumerate(atomic_grids):
-            self._coors[i] = atom_grid.center
+        for i, atom_grid in enumerate(atgrids):
+            self._atcoords[i] = atom_grid.center
             self._indices[i + 1] += self._indices[i] + atom_grid.size
             start, end = self._indices[i], self._indices[i + 1]
             self._points[start:end] = atom_grid.points
@@ -59,7 +59,7 @@ class MolGrid(Grid):
 
         if callable(aim_weights):
             self._aim_weights = aim_weights(
-                self._points, self._coors, atom_nums, self._indices
+                self._points, self._atcoords, atnums, self._indices
             )
 
         elif isinstance(aim_weights, np.ndarray):
@@ -77,28 +77,28 @@ class MolGrid(Grid):
         super().__init__(self.points, self._atweights * self._aim_weights)
 
     @classmethod
-    def make_grid(
+    def from_preset(
         cls,
-        atom_nums,
-        coordinates,
-        radial_grid,
-        grid_type,
+        atnums,
+        atcoords,
+        rgrid,
+        preset,
         aim_weights,
         *_,
-        rotate=False,
+        rotate=37,
         store=False,
     ):
-        """Contruct molecular grid wih preset parameters.
+        """Construct molecular grid wih preset parameters.
 
         Parameters
         ----------
-        atom_nums : np.ndarray(N,)
+        atnums : np.ndarray(N,)
             array of atomic number
-        coordinates : np.ndarray(N, 3)
+        atcoords : np.ndarray(N, 3)
             atomic coordinates of atoms
-        radial_grid : OneDGrid
+        rgrid : OneDGrid
             one dimension grid  to construct spherical grid
-        grid_type : str
+        preset : str
             preset grid accuracy scheme, support "coarse", "medium", "fine",
             "veryfine", "ultrafine", "insane"
         aim_weights : Callable or np.ndarray(K,)
@@ -109,76 +109,76 @@ class MolGrid(Grid):
             Store atomic grid separately
         """
         # construct for a atom molecule
-        if coordinates.ndim != 2:
+        if atcoords.ndim != 2:
             raise ValueError(
                 "The dimension of coordinates need to be 2\n"
-                f"got shape: {coordinates.ndim}"
+                f"got shape: {atcoords.ndim}"
             )
-        if len(atom_nums) != coordinates.shape[0]:
+        if len(atnums) != atcoords.shape[0]:
             raise ValueError(
                 "shape of atomic nums does not match with coordinates\n"
-                f"atomic numbers: {atom_nums.shape}, coordinates: {coordinates.shape}"
+                f"atomic numbers: {atnums.shape}, coordinates: {atcoords.shape}"
             )
-        total_atm = len(atom_nums)
+        total_atm = len(atnums)
         atomic_grids = []
         for i in range(total_atm):
             # get proper radial grid
-            if isinstance(radial_grid, OneDGrid):
-                rad = radial_grid
-            elif isinstance(radial_grid, list):
-                rad = radial_grid[i]
-            elif isinstance(radial_grid, dict):
-                rad = radial_grid[atom_nums[i]]
+            if isinstance(rgrid, OneDGrid):
+                rad = rgrid
+            elif isinstance(rgrid, list):
+                rad = rgrid[i]
+            elif isinstance(rgrid, dict):
+                rad = rgrid[atnums[i]]
             else:
                 raise TypeError(
-                    "not supported radial grid input\n"
-                    f"got input type: {type(radial_grid)}"
+                    f"not supported radial grid input; got input type: {type(rgrid)}"
                 )
             # get proper grid type
-            if isinstance(grid_type, str):
-                gd_type = grid_type
-            elif isinstance(grid_type, list):
-                gd_type = grid_type[i]
-            elif isinstance(grid_type, dict):
-                gd_type = grid_type[atom_nums[i]]
+            if isinstance(preset, str):
+                gd_type = preset
+            elif isinstance(preset, list):
+                gd_type = preset[i]
+            elif isinstance(preset, dict):
+                gd_type = preset[atnums[i]]
             else:
                 raise TypeError(
-                    "not supported grid_type input\n"
-                    f"got input type: {type(grid_type)}"
+                    f"Not supported preset type; got preset {preset} with type {type(preset)}"
                 )
-            at_grid = AtomicGrid.quick_grid(
-                atom_nums[i], rad, gd_type, center=coordinates[i], rotate=rotate
+            at_grid = AtomGrid.from_preset(
+                rad, atnum=atnums[i], preset=gd_type, center=atcoords[i], rotate=rotate
             )
             atomic_grids.append(at_grid)
-        return cls(atomic_grids, aim_weights, atom_nums, store=store)
+        return cls(atnums, atomic_grids, aim_weights, store=store)
 
     @classmethod
-    def horton_molgrid(
+    def from_size(
         cls,
-        coors,
-        nums,
-        radial,
-        points_of_angular,
+        atnums,
+        atcoords,
+        rgrid,
+        size,
         aim_weights,
+        rotate=37,
         store=False,
-        rotate=False,
     ):
         """Initialize a MolGrid instance with Horton Style input.
 
         Example
         -------
-        >>> onedg = HortonLinear(100) # number of points, oned grid before TF.
+        >>> onedg = UniformInteger(100) # number of points, oned grid before TF.
         >>> rgrid = ExpRTransform(1e-5, 2e1).generate_radial(onedg) # radial grid
         >>> becke = BeckeWeights(order=3)
-        >>> molgrid = MolGrid.horton_molgrid(coors, nums, rgrid, 110, becke)
+        >>> molgrid = MolGrid.from_size(atnums, atcoords, rgrid, 110, becke)
 
         Parameters
         ----------
-        coors : np.ndarray(N, 3)
-            Cartesian coordinates for each atoms
-        nums : np.ndarray(M, 3)
+        atnums : np.ndarray(M, 3)
             Atomic number of :math:`M` atoms in molecule.
-        points_of_angular : int
+        atcoords : np.ndarray(N, 3)
+            Cartesian coordinates for each atoms
+        rgrid : OneDGrid
+            one dimension grid  to construct spherical grid
+        size : int
             Num of points on each shell of angular grid
         aim_weights : Callable or np.ndarray(K,)
             Atoms in molecule weights.
@@ -194,13 +194,11 @@ class MolGrid(Grid):
             MolGrid instance with specified grid property
         """
         at_grids = []
-        for i in range(len(coors)):
+        for i in range(len(atcoords)):
             at_grids.append(
-                AtomicGrid(
-                    radial, nums=[points_of_angular], center=coors[i], rotate=rotate
-                )
+                AtomGrid(rgrid, sizes=[size], center=atcoords[i], rotate=rotate)
             )
-        return cls(at_grids, aim_weights, nums, store=store)
+        return cls(atnums, at_grids, aim_weights, store=store)
 
     def get_atomic_grid(self, index):
         r"""Get atomic grid corresponding to the given atomic index.
@@ -213,25 +211,21 @@ class MolGrid(Grid):
 
         Returns
         -------
-        AtomicGrid or SubGrid
-            If store=True, the AtomicGrid instance used is returned.
-            If store=False, the SubGrid containing points and weights of AtomicGrid
+        AtomGrid or LocalGrid
+            If store=True, the AtomGrid instance used is returned.
+            If store=False, the LocalGrid containing points and weights of AtomGrid
             is returned.
 
-        Raises
-        ------
-        ValueError
-            The input index is negative
         """
         if index < 0:
             raise ValueError(f"index should be non-negative, got {index}")
         # get atomic grid if stored
-        if self._atomic_grids is not None:
-            return self._atomic_grids[index]
-        # make a sub-grid
+        if self._atgrids is not None:
+            return self._atgrids[index]
+        # make a local grid
         pts = self.points[self._indices[index] : self._indices[index + 1]]
         wts = self._atweights[self._indices[index] : self._indices[index + 1]]
-        return SubGrid(pts, wts, self._coors[index])
+        return LocalGrid(pts, wts, self._atcoords[index])
 
     @property
     def aim_weights(self):
@@ -250,13 +244,15 @@ class MolGrid(Grid):
 
         Returns
         -------
-        AtomicGrid
-            AtomicGrid of desired atom with aim weights integrated
+        AtomGrid
+            AtomGrid of desired atom with aim weights integrated
         """
-        if self._atomic_grids is None:
+        if self._atgrids is None:
             s_ind = self._indices[index]
             f_ind = self._indices[index + 1]
-            return SubGrid(
-                self.points[s_ind:f_ind], self.weights[s_ind:f_ind], self._coors[index]
+            return LocalGrid(
+                self.points[s_ind:f_ind],
+                self.weights[s_ind:f_ind],
+                self._atcoords[index],
             )
-        return self._atomic_grids[index]
+        return self._atgrids[index]

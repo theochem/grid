@@ -89,6 +89,61 @@ class TestBecke(TestCase):
         )
         assert_allclose(weights, [0, 0, 0])
 
+    def test_becke_compute_atom_weight(self):
+        """Test becke compute pa function."""
+        npoint = 10
+        points = np.random.uniform(-5, 5, (npoint, 3))
+
+        nums = np.array([1, 2, 3])
+        centers = np.array([[1.2, 2.3, 0.1], [-0.4, 0.0, -2.2], [2.2, -1.5, 0.0]])
+        becke = BeckeWeights({1: 0.5, 2: 0.8, 3: 5.0}, order=3)
+
+        weights0 = becke.generate_weights(points, centers, nums, select=[0])
+        weights1 = becke.generate_weights(points, centers, nums, select=[1])
+        weights2 = becke.generate_weights(points, centers, nums, select=[2])
+        aw_0 = becke.compute_atom_weight(points, centers, nums, 0)
+        aw_1 = becke.compute_atom_weight(points, centers, nums, 1)
+        aw_2 = becke.compute_atom_weight(points, centers, nums, 2)
+        assert_allclose(weights0, aw_0)
+        assert_allclose(weights1, aw_1)
+        assert_allclose(weights2, aw_2)
+
+    def test_compute_weights(self):
+        """Tes compute weights function."""
+        # generate random points
+        npoint = 50
+        points = np.random.uniform(-5, 5, (npoint, 3))
+
+        nums = np.array([1, 2, 3])
+        centers = np.array([[1.2, 2.3, 0.1], [-0.4, 0.0, -2.2], [2.2, -1.5, 0.0]])
+        becke = BeckeWeights({1: 0.5, 2: 0.8, 3: 5.0}, order=3)
+        indices = [0, 13, 29, 50]
+        # compute with old generate_weights method
+        weights_ref = becke.generate_weights(points, centers, nums, pt_ind=indices)
+        # compute with compute_weights
+        weights_compute = becke.compute_weights(points, centers, nums, pt_ind=indices)
+        assert_allclose(weights_ref, weights_compute)
+
+        # compute with one selected atom weights
+        weights_ref2 = becke.generate_weights(points, centers, nums, select=1)
+        weights_compute2 = becke.compute_weights(points, centers, nums, select=1)
+        assert_allclose(weights_ref2, weights_compute2)
+
+    def test_noble_gas_radius(self):
+        """Test np.nan value to be handled properly."""
+        noble_list = [2, 10, 18, 36, 54, 85, 86]
+        for i in noble_list:
+            nums = np.array([i, i - 1]) if i != 86 else np.array([i, i - 2])
+            centers = np.array([[0.5, 0.0, 0.0], [-0.5, 0.0, 0.0]])
+            pts = np.zeros((10, 3), dtype=float)
+            pts[:, 1:] += np.random.rand(10, 2)
+
+            becke = BeckeWeights(order=3)
+            wts = becke.generate_weights(pts, centers, nums, pt_ind=[0, 5, 10])
+            assert_allclose(wts, 0.5)
+            wts = becke.compute_weights(pts, centers, nums, pt_ind=[0, 5, 10])
+            assert_allclose(wts, 0.5)
+
     def test_raise_errors(self):
         """Test errors raise."""
         npoint = 100
@@ -107,6 +162,18 @@ class TestBecke(TestCase):
             becke.generate_weights(points, centers, nums, select=[], pt_ind=[])
         with self.assertRaises(ValueError):
             becke.generate_weights(
+                points, centers, nums, select=[0, 1], pt_ind=[0, 10, 50, 99]
+            )
+        with self.assertRaises(ValueError):
+            becke.compute_weights(points, centers, nums, select=[])
+        with self.assertRaises(ValueError):
+            becke.compute_weights(points, centers, nums, pt_ind=[3])
+        with self.assertRaises(ValueError):
+            becke.compute_weights(points, centers, nums, pt_ind=[3, 6])
+        with self.assertRaises(ValueError):
+            becke.compute_weights(points, centers, nums, select=[], pt_ind=[])
+        with self.assertRaises(ValueError):
+            becke.compute_weights(
                 points, centers, nums, select=[0, 1], pt_ind=[0, 10, 50, 99]
             )
         # error of order

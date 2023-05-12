@@ -20,397 +20,58 @@
 # --
 """ODE test module."""
 from numbers import Number
-from unittest import TestCase
 
-from grid.ode import ODE
+
+from grid.ode import (
+    _evaluate_coeffs_on_points,
+    _rearrange_to_explicit_ode,
+    _transform_and_rearrange_to_explicit_ode,
+    _transform_ode_from_derivs,
+    _transform_ode_from_rtransform,
+    solve_ode,
+)
 from grid.onedgrid import GaussLaguerre
 from grid.rtransform import (
     BaseTransform,
-    BeckeTF,
+    BeckeRTransform,
     IdentityRTransform,
-    InverseTF,
-    LinearTF,
+    InverseRTransform,
+    KnowlesRTransform,
+    LinearFiniteRTransform,
 )
 
 import numpy as np
-from numpy.testing import assert_allclose, assert_almost_equal
+from numpy.testing import assert_allclose, assert_almost_equal, assert_raises
+
+import pytest
 
 from scipy.integrate import solve_bvp
 
 
-class TestODE(TestCase):
-    """ODE solver test class."""
+# List of constant right-hand side terms
+def fx_ones(x):
+    """Constant all ones."""
+    return 1 if isinstance(x, Number) else np.ones(x.size)
 
-    def test_transform_coeff_with_x_and_r(self):
-        """Test coefficient transform between x and r."""
-        coeff = np.array([2, 3, 4])
-        ltf = LinearTF(1, 10)  # (-1, 1) -> (r0, rmax)
-        inv_tf = InverseTF(ltf)  # (r0, rmax) -> (-1, 1)
-        x = np.linspace(-1, 1, 20)
-        r = ltf.transform(x)
-        assert r[0] == 1
-        assert r[-1] == 10
-        coeff_b = ODE._transformed_coeff_ode(coeff, inv_tf, x)
-        derivs_fun = [inv_tf.deriv, inv_tf.deriv2, inv_tf.deriv3]
-        coeff_b_ref = ODE._transformed_coeff_ode_with_r(coeff, derivs_fun, r)
-        assert_allclose(coeff_b, coeff_b_ref)
 
-    def test_transform_coeff(self):
-        """Test coefficient transform with r."""
-        # d^2y / dx^2 = 1
-        itf = IdentityRTransform()
-        inv_tf = InverseTF(itf)
-        derivs_fun = [inv_tf.deriv, inv_tf.deriv2, inv_tf.deriv3]
-        coeff = np.array([0, 0, 1])
-        x = np.linspace(0, 1, 10)
-        coeff_b = ODE._transformed_coeff_ode_with_r(coeff, derivs_fun, x)
-        # compute transformed coeffs
-        assert_allclose(coeff_b, np.zeros((3, 10), dtype=float) + coeff[:, None])
-        # f_x = 0 * x + 1  # 1 for every
+def fx_complicated_example(x):
+    """Reciprocal of x cube with polynomial terms."""
+    return 1 / x**3 + 3 * x**2 + x
 
-    def test_linear_transform_coeff(self):
-        """Test coefficient with linear transformation."""
-        x = GaussLaguerre(10).points
-        ltf = LinearTF(1, 10)
-        inv_ltf = InverseTF(ltf)
-        derivs_fun = [inv_ltf.deriv, inv_ltf.deriv2, inv_ltf.deriv3]
-        coeff = np.array([2, 3, 4])
-        coeff_b = ODE._transformed_coeff_ode_with_r(coeff, derivs_fun, x)
-        # assert values
-        assert_allclose(coeff_b[0], np.ones(len(x)) * coeff[0])
-        assert_allclose(coeff_b[1], 1 / 4.5 * coeff[1])
-        assert_allclose(coeff_b[2], (1 / 4.5) ** 2 * coeff[2])
 
-    def test_rearange_ode_coeff(self):
-        """Test rearange ode coeff and solver result."""
-        coeff_b = [0, 0, 1]
-        x = np.linspace(0, 2, 20)
-        y = np.zeros((2, x.size))
+def fx_complicated_example2(x):
+    """Reciprocal of x to the power of four."""
+    return 1 / x**4
 
-        def fx(x):
-            return 1 if isinstance(x, Number) else np.ones(x.size)
 
-        def func(x, y):
-            dy_dx = ODE._rearrange_ode(x, y, coeff_b, fx(x))
-            return np.vstack((*y[1:], dy_dx))
+def fx_complicated_example3(x):
+    """Reciprocal of x to the power of two."""
+    return 1 / x**2
 
-        def bc(ya, yb):
-            return np.array([ya[0], yb[0]])
 
-        res = solve_bvp(func, bc, x, y)
-        # res = 0.5 * x**2 - x
-        assert_almost_equal(res.sol(0)[0], 0)
-        assert_almost_equal(res.sol(1)[0], -0.5)
-        assert_almost_equal(res.sol(2)[0], 0)
-        assert_almost_equal(res.sol(0)[1], -1)
-        assert_almost_equal(res.sol(1)[1], 0)
-        assert_almost_equal(res.sol(2)[1], 1)
-
-        # 2nd example
-        coeff_b_2 = [-3, 2, 1]
-
-        def fx2(x):
-            return -6 * x ** 2 - x + 10
-
-        def func2(x, y):
-            dy_dx = ODE._rearrange_ode(x, y, coeff_b_2, fx2(x))
-            return np.vstack((*y[1:], dy_dx))
-
-        def bc2(ya, yb):
-            return np.array([ya[0], yb[0] - 14])
-
-        res2 = solve_bvp(func2, bc2, x, y)
-        # res2 = 2 * x**2 + 3x
-        assert_almost_equal(res2.sol(0)[0], 0)
-        assert_almost_equal(res2.sol(1)[0], 5)
-        assert_almost_equal(res2.sol(2)[0], 14)
-        assert_almost_equal(res2.sol(0)[1], 3)
-        assert_almost_equal(res2.sol(1)[1], 7)
-        assert_almost_equal(res2.sol(2)[1], 11)
-
-    def test_second_order_ode(self):
-        """Test same result for 2nd order ode."""
-        stf = SqTF()
-        coeff = np.array([0, 0, 1])
-        # transform
-        r = np.linspace(1, 2, 10)  # r
-        y = np.zeros((2, r.size))
-        x = stf.transform(r)  # transformed x
-        assert_almost_equal(x, r ** 2)
-
-        def fx(x):
-            return 1 if isinstance(x, Number) else np.ones(x.size)
-
-        def func(x, y):
-            dy_dx = ODE._rearrange_trans_ode(x, y, coeff, stf, fx)
-            return np.vstack((*y[1:], dy_dx))
-
-        def bc(ya, yb):
-            return np.array([ya[0], yb[0]])
-
-        res = solve_bvp(func, bc, x, y)
-        # print(res.sol(x))
-        ref_y = np.zeros((2, r.size))
-
-        def func_ref(x, y):
-            return np.vstack((y[1:], np.ones(y[0].size)))
-
-        res_ref = solve_bvp(func_ref, bc, r, ref_y)
-        assert_allclose(res.sol(x)[0], res_ref.sol(r)[0], atol=1e-4)
-
-    def test_second_order_ode_with_diff_coeff(self):
-        """Test same result for 2nd order with diff TF and Coeffs."""
-        stf = SqTF()
-        stf = SqTF(3, 1)
-        coeff = np.array([2, 3, 2])
-        # transform
-        r = np.linspace(1, 2, 10)  # r
-        y = np.zeros((2, r.size))
-        x = stf.transform(r)  # transformed x
-        # assert_almost_equal(x, r ** 2)
-
-        def fx(x):
-            return 1 / x ** 3 + 3 * x ** 2 + x
-
-        def func(x, y):
-            dy_dx = ODE._rearrange_trans_ode(x, y, coeff, stf, fx)
-            return np.vstack((*y[1:], dy_dx))
-
-        def bc(ya, yb):
-            return np.array([ya[0], yb[0]])
-
-        res = solve_bvp(func, bc, x, y)
-        # print(res.sol(x))
-        ref_y = np.zeros((2, r.size))
-
-        def func_ref(x, y):
-            return np.vstack((y[1], (fx(x) - 2 * y[0] - 3 * y[1]) / 2))
-
-        res_ref = solve_bvp(func_ref, bc, r, ref_y)
-        assert_allclose(res.sol(x)[0], res_ref.sol(r)[0], atol=1e-4)
-
-    def test_second_order_ode_with_fx(self):
-        """Test same result for 2nd order with non-homo term."""
-        stf = SqTF()
-        coeff = np.array([2, 2, 3])
-        # transform
-        r = np.linspace(1, 2, 10)  # r
-        y = np.zeros((2, r.size))
-        x = stf.transform(r)  # transformed x
-        assert_almost_equal(x, r ** 2)
-
-        def fx(x):
-            return x ** 2 + 3 * x - 5
-
-        def func(x, y):
-            dy_dx = ODE._rearrange_trans_ode(x, y, coeff, stf, fx)
-            return np.vstack((*y[1:], dy_dx))
-
-        def bc(ya, yb):
-            return np.array([ya[0], yb[0]])
-
-        res = solve_bvp(func, bc, x, y)
-        # print(res.sol(x))
-        ref_y = np.zeros((2, r.size))
-
-        def func_ref(x, y):
-            dy_dx = ODE._rearrange_ode(x, y, coeff, fx(x))
-            return np.vstack((*y[1:], dy_dx))
-
-        res_ref = solve_bvp(func_ref, bc, r, ref_y)
-        assert_allclose(res.sol(x)[0], res_ref.sol(r)[0], atol=1e-4)
-
-    def test_becke_transform_2nd_order_ode(self):
-        """Test same result for 2nd order ode with becke tf."""
-        btf = BeckeTF(0.1, 2)
-        ibtf = InverseTF(btf)
-        coeff = np.array([0, 1, 1])
-        # transform
-        # r = np.linspace(1, 2, 10)  # r
-        # x = ibtf.transform(r)  # transformed x
-        x = np.linspace(-0.9, 0.9, 20)
-        r = ibtf.inverse(x)
-        y = np.zeros((2, r.size))
-
-        def fx(x):
-            return 1 / x ** 2
-
-        def func(x, y):
-            dy_dx = ODE._rearrange_trans_ode(x, y, coeff, ibtf, fx)
-            return np.vstack((*y[1:], dy_dx))
-
-        def bc(ya, yb):
-            return np.array([ya[0], yb[0]])
-
-        res = solve_bvp(func, bc, x, y)
-        print(res.sol(x)[0])
-
-        def func_ref(x, y):
-            dy_dx = ODE._rearrange_ode(x, y, coeff, fx(x))
-            return np.vstack((*y[1:], dy_dx))
-
-        res_ref = solve_bvp(func_ref, bc, r, y)
-        print(res_ref.sol(r)[0])
-
-        assert_allclose(res.sol(x)[0], res_ref.sol(r)[0], atol=5e-3)
-
-    def test_becke_transform_3nd_order_ode(self):
-        """Test same result for 3rd order ode with becke tf."""
-        btf = BeckeTF(0.1, 10)
-        ibtf = InverseTF(btf)
-        coeff = np.array([0, 2, 3, 3])
-        # transform
-        # r = np.linspace(1, 2, 10)  # r
-        # x = ibtf.transform(r)  # transformed x
-        x = np.linspace(-0.9, 0.9, 20)
-        r = ibtf.inverse(x)
-        y = np.random.rand(3, r.size)
-
-        def fx(x):
-            return 1 / x ** 4
-
-        def func(x, y):
-            dy_dx = ODE._rearrange_trans_ode(x, y, coeff, ibtf, fx)
-            return np.vstack((*y[1:], dy_dx))
-
-        def bc(ya, yb):
-            return np.array([ya[0], yb[0], ya[1]])
-
-        res = solve_bvp(func, bc, x, y)
-        # print(res.sol(x)[0])
-
-        def func_ref(x, y):
-            dy_dx = ODE._rearrange_ode(x, y, coeff, fx(x))
-            return np.vstack((*y[1:], dy_dx))
-
-        res_ref = solve_bvp(func_ref, bc, r, y)
-        # print(res_ref.sol(r)[0])
-        assert_allclose(res.sol(x)[0], res_ref.sol(r)[0], atol=1e-4)
-
-    def test_becke_transform_f0_ode(self):
-        """Test same result for 3rd order ode with becke tf and fx term."""
-        btf = BeckeTF(0.1, 10)
-        x = np.linspace(-0.9, 0.9, 20)
-        btf = BeckeTF(0.1, 5)
-        ibtf = InverseTF(btf)
-        r = btf.transform(x)
-        y = np.random.rand(2, x.size)
-        coeff = [-1, -1, 2]
-
-        def fx(x):
-            return -1 / x ** 2
-
-        def func(x, y):
-            dy_dx = ODE._rearrange_trans_ode(x, y, coeff, ibtf, fx)
-            return np.vstack((*y[1:], dy_dx))
-
-        def bc(ya, yb):
-            return np.array([ya[0], yb[0]])
-
-        res = solve_bvp(func, bc, x, y)
-
-        def func_ref(x, y):
-            dy_dx = ODE._rearrange_ode(x, y, coeff, fx(x))
-            return np.vstack((*y[1:], dy_dx))
-
-        res_ref = solve_bvp(func_ref, bc, r, y)
-        assert_allclose(res.sol(x)[0], res_ref.sol(r)[0], atol=1e-4)
-
-    def test_solve_ode_bvp(self):
-        """Test result for high level api solve_ode."""
-        x = np.linspace(0, 2, 10)
-
-        def fx(x):
-            return 1 if isinstance(x, Number) else np.ones(x.size)
-
-        coeffs = [0, 0, 1]
-        bd_cond = [[0, 0, 0], [1, 0, 0]]
-
-        res = ODE.solve_ode(x, fx, coeffs, bd_cond)
-
-        assert_almost_equal(res(0)[0], 0)
-        assert_almost_equal(res(1)[0], -0.5)
-        assert_almost_equal(res(2)[0], 0)
-        assert_almost_equal(res(0)[1], -1)
-        assert_almost_equal(res(1)[1], 0)
-        assert_almost_equal(res(2)[1], 1)
-
-    def test_solver_ode_bvp_with_tf(self):
-        """Test result for high level api solve_ode with fx term."""
-        x = np.linspace(-0.999, 0.999, 20)
-        btf = BeckeTF(0.1, 5)
-        r = btf.transform(x)
-        ibtf = InverseTF(btf)
-
-        def fx(x):
-            return 1 / x ** 2
-
-        coeffs = [-1, 1, 1]
-        bd_cond = [(0, 0, 0), (1, 0, 0)]
-        # calculate diff equation wt/w tf.
-        res = ODE.solve_ode(x, fx, coeffs, bd_cond, ibtf)
-        res_ref = ODE.solve_ode(r, fx, coeffs, bd_cond)
-        assert_allclose(res(x)[0], res_ref(r)[0], atol=1e-4)
-
-    def test_construct_coeffs(self):
-        """Test construct coefficients."""
-        # first test
-        x = np.linspace(-0.9, 0.9, 20)
-        coeff = [2, 1.5, lambda x: x ** 2]
-        coeff_a = ODE._construct_coeff_array(x, coeff)
-        assert_allclose(coeff_a[0], np.ones(20) * 2)
-        assert_allclose(coeff_a[1], np.ones(20) * 1.5)
-        assert_allclose(coeff_a[2], x ** 2)
-        # second test
-        coeff = [lambda x: 1 / x, 2, lambda x: x ** 3, lambda x: np.exp(x)]
-        coeff_a = ODE._construct_coeff_array(x, coeff)
-        assert_allclose(coeff_a[0], 1 / x)
-        assert_allclose(coeff_a[1], np.ones(20) * 2)
-        assert_allclose(coeff_a[2], x ** 3)
-        assert_allclose(coeff_a[3], np.exp(x))
-
-    def test_solver_ode_coeff_a_f_x_with_tf(self):
-        """Test ode with a(x) and f(x) involved."""
-        x = np.linspace(-0.999, 0.999, 20)
-        btf = BeckeTF(0.1, 5)
-        r = btf.transform(x)
-        ibtf = InverseTF(btf)
-
-        def fx(x):
-            return 0 * x
-
-        coeffs = [lambda x: x ** 2, lambda x: 1 / x ** 2, 0.5]
-        bd_cond = [(0, 0, 0), (1, 0, 0)]
-        # calculate diff equation wt/w tf.
-        res = ODE.solve_ode(x, fx, coeffs, bd_cond, ibtf)
-        res_ref = ODE.solve_ode(r, fx, coeffs, bd_cond)
-        assert_allclose(res(x)[0], res_ref(r)[0], atol=1e-4)
-
-    def test_error_raises(self):
-        """Test proper error raises."""
-        x = np.linspace(-0.999, 0.999, 20)
-        # r = btf.transform(x)
-
-        def fx(x):
-            return 1 / x ** 2
-
-        coeffs = [-1, -2, 1]
-        bd_cond = [(0, 0, 0), (1, 0, 0), (0, 1, 0), (1, 1, 0)]
-        with self.assertRaises(NotImplementedError):
-            ODE.solve_ode(x, fx, coeffs, bd_cond[3:])
-        with self.assertRaises(NotImplementedError):
-            ODE.solve_ode(x, fx, coeffs, bd_cond)
-        with self.assertRaises(NotImplementedError):
-            test_coeff = [1, 2, 3, 4, 5]
-            ODE.solve_ode(x, fx, test_coeff, bd_cond)
-        with self.assertRaises(ValueError):
-            test_coeff = [1, 2, 3, 3]
-            tf = BeckeTF(0.1, 1)
-
-            def fx(x):
-                return x
-
-            ODE.solve_ode(x, fx, test_coeff, bd_cond[:3], tf)
+def fx_quadratic(x):
+    """Quadratic polynomial example."""
+    return x**2 + 3 * x - 5
 
 
 class SqTF(BaseTransform):
@@ -423,7 +84,7 @@ class SqTF(BaseTransform):
 
     def transform(self, x):
         """Transform given array."""
-        return x ** self._exp + self._extra
+        return x**self._exp + self._extra
 
     def inverse(self, r):
         """Inverse transformed array."""
@@ -440,3 +101,339 @@ class SqTF(BaseTransform):
     def deriv3(self, x):
         """Compute 3rd order deriv of TF."""
         return (self._exp - 2) * (self._exp - 1) * (self._exp) * x ** (self._exp - 3)
+
+
+@pytest.mark.parametrize(
+    "transform, fx, coeffs",
+    [
+        [IdentityRTransform(), fx_ones, [-1, 1, 1]],
+        [SqTF(), fx_ones, np.random.uniform(-100, 100, (3,))],
+        [KnowlesRTransform(0.01, 1, 5), fx_ones, np.random.uniform(-10, 10, (3,))],
+        [BeckeRTransform(0.1, 100.0), fx_ones, np.random.uniform(0, 100, (3,))],
+        [SqTF(1, 3), fx_complicated_example, np.random.uniform(0, 100, (3,))],
+        [SqTF(3, 1), fx_complicated_example, [2, 3, 2]],
+        [SqTF(), fx_quadratic, np.random.uniform(-100, 100, (3,))],
+        [SqTF(1, 4), fx_complicated_example, np.random.uniform(-10, 10, (3,))],
+        [SqTF(1, 4), fx_complicated_example2, [1, -1, 1]],
+    ],
+)
+def test_transform_and_rearrange_to_explicit_ode_with_simple_boundary(
+    transform, fx, coeffs
+):
+    r"""Test transforming second-order ode with simple boundary conditions."""
+    x = np.arange(0.1, 0.99, 0.01)
+    transform_pts = transform.transform(x)
+
+    def bc(ya, yb):
+        # Boundary of y is zero on endpoints
+        return np.array([ya[0], yb[0]])
+
+    # Run with transformation
+    def func_with_transform(r, y):
+        # Transform back to original domain x
+        original = transform.inverse(r)
+        # Apply the ode transfomration
+        dy_dx = _transform_and_rearrange_to_explicit_ode(
+            original, y, coeffs, transform, fx
+        )
+        return np.vstack((*y[1:], dy_dx))
+
+    init_guess = np.zeros((2, x.size))
+    solution_with_transf = solve_bvp(
+        func_with_transform, bc, transform_pts, init_guess, tol=1e-6, max_nodes=10000
+    )
+
+    # Run without transformation
+    def func_without_transform(original_pts, y):
+        coeffs_mt = _evaluate_coeffs_on_points(original_pts, coeffs)
+        dy_dx = _rearrange_to_explicit_ode(y, coeffs_mt, fx(original_pts))
+        return np.vstack((y[1:], dy_dx))
+
+    # Run without transformation
+    solution_without_transf = solve_bvp(
+        func_without_transform,
+        bc,
+        x,
+        solution_with_transf.sol(transform_pts),
+        tol=1e-6,
+        max_nodes=100000,
+    )
+    # Check if the solution at x is the same as the solution (with transform) at r=g(x)
+    assert_allclose(
+        solution_with_transf.sol(transform_pts)[0],
+        solution_without_transf.sol(x)[0],
+        atol=1e-4,
+    )
+    # Check if they're similar at random points on interval with lower accuracy tolerance
+    random_pts = np.random.uniform(np.min(x), np.max(x), transform_pts.shape)
+    transf_pts = transform.transform(random_pts)
+    assert_allclose(
+        solution_with_transf.sol(transf_pts)[0],
+        solution_without_transf.sol(random_pts)[0],
+        atol=1e-4,
+    )
+    # Test the derivative
+    assert_allclose(
+        solution_with_transf.sol(transform_pts)[1],
+        solution_without_transf.sol(x)[1] / transform.deriv(x),
+        atol=1e-4,
+    )
+
+
+@pytest.mark.parametrize(
+    "transform, fx, coeffs, bd_cond",
+    [
+        # Test with ode -y + y` + y``=1/x^2
+        [
+            BeckeRTransform(1.0, 5.0),
+            fx_complicated_example3,
+            [-1, 1, 1],
+            [(0, 0, 3), (1, 0, 3)],
+        ],
+        [
+            InverseRTransform(BeckeRTransform(1.0, 5.0)),
+            fx_complicated_example3,
+            [-1, 1, 1],
+            [(0, 0, 3), (1, 0, 3)],
+        ],
+        [
+            BeckeRTransform(1.0, 5.0),
+            fx_complicated_example3,
+            [-1, 1, 1],
+            [(0, 0, 3), (1, 0, 3)],
+        ],
+        # Test one with boundary conditions on the derivatives
+        [
+            SqTF(1, 3),
+            fx_complicated_example,
+            np.random.uniform(-100, 100, (4,)),
+            [(0, 0, 0), (0, 1, 3), (1, 1, 3)],
+        ],
+    ],
+)
+def test_solve_ode_with_and_without_transormation(transform, fx, coeffs, bd_cond):
+    r"""Test solve_ode with and without transformation with different bd conditions."""
+    x = np.linspace(0.01, 0.999, 20)
+    sol_with_transform = solve_ode(
+        x,
+        fx,
+        coeffs,
+        bd_cond,
+        transform,
+        tol=1e-8,
+        max_nodes=20000,
+        no_derivatives=False,
+    )
+    init_guess = sol_with_transform(x)
+
+    sol_normal = solve_ode(
+        x, fx, coeffs, bd_cond, tol=1e-8, max_nodes=20000, initial_guess_y=init_guess
+    )
+    # Test the function values
+    assert_allclose(sol_with_transform(x)[0], sol_normal(x)[0], atol=1e-5)
+    # Test the boundary condition
+    for bd in bd_cond:
+        bnd, deriv, val = bd
+        assert_allclose(sol_with_transform(x)[deriv][-bnd], val, atol=1e-5)
+    if len(coeffs) >= 3:
+        # Test the first derivative of y.
+        assert_allclose(sol_with_transform(x)[1], sol_normal(x)[1], atol=1e-3)
+        if len(coeffs) >= 4:
+            assert_allclose(sol_with_transform(x)[2], sol_normal(x)[2], atol=1e-3)
+
+
+def test_solve_ode_bvp_against_analytic_example():
+    """Test solve_ode against analytic solution."""
+    x = np.linspace(0, 2, 10)
+
+    def fx(x):
+        return 1 if isinstance(x, Number) else np.ones(x.size)
+
+    # test ode  y^`` = 1
+    coeffs = [0, 0, 1]
+    # lower and upper bound of y is equal to zero.
+    bd_cond = [[0, 0, 0], [1, 0, 0]]
+
+    res = solve_ode(x, fx, coeffs, bd_cond)
+
+    def solution(x):
+        return x**2.0 / 2.0 - x
+
+    def deriv(x):
+        return x - 1.0
+
+    # Test on random points.
+    rand_pts = np.random.uniform(0.0, 2.0, size=10)
+    assert_almost_equal(res(rand_pts)[0], solution(rand_pts))
+    assert_almost_equal(res(rand_pts)[1], deriv(rand_pts))
+
+
+def test_error_raises():
+    """Test proper error raises."""
+    x = np.linspace(-0.999, 0.999, 20)
+    # r = btf.transform(x)
+
+    def fx(x):
+        return 1 / x**2
+
+    coeffs = [-1, -2, 1]
+    bd_cond = [(0, 0, 0), (1, 0, 0), (0, 1, 0), (1, 1, 0)]
+    # Test the error that the number of boundary conditions should be equal to order.
+    assert_raises(ValueError, solve_ode, x, fx, coeffs, bd_cond[3:])
+    assert_raises(ValueError, solve_ode, x, fx, coeffs, bd_cond)
+    test_coeff = [1, 2, 3, 4, 5]
+    assert_raises(ValueError, solve_ode, x, fx, test_coeff, bd_cond)
+
+    test_coeff = [1, 2, 3, 3]
+    tf = BeckeRTransform(0.1, 1)
+    assert_raises(ValueError, solve_ode, x, fx, test_coeff, bd_cond[:3], tf)
+
+
+def test_construct_coeffs_of_ode_over_mesh():
+    """Test construct coefficients over a mesh."""
+    # first test
+    x = np.linspace(-0.9, 0.9, 20)
+    coeff = [2, 1.5, lambda x: x**2]
+    coeff_a = _evaluate_coeffs_on_points(x, coeff)
+    assert_allclose(coeff_a[0], np.ones(20) * 2)
+    assert_allclose(coeff_a[1], np.ones(20) * 1.5)
+    assert_allclose(coeff_a[2], x**2)
+    # second test
+    coeff = [lambda x: 1 / x, 2, lambda x: x**3, lambda x: np.exp(x)]
+    coeff_a = _evaluate_coeffs_on_points(x, coeff)
+    assert_allclose(coeff_a[0], 1 / x)
+    assert_allclose(coeff_a[1], np.ones(20) * 2)
+    assert_allclose(coeff_a[2], x**3)
+    assert_allclose(coeff_a[3], np.exp(x))
+
+
+def test_transform_coeff_with_x_and_r():
+    """Test coefficient transform between x and r."""
+    coeff = np.array([2, 3, 4])
+    ltf = LinearFiniteRTransform(1, 10)  # (-1, 1) -> (r0, rmax)
+    inv_tf = InverseRTransform(ltf)  # (r0, rmax) -> (-1, 1)
+    x = np.linspace(-1, 1, 20)
+    r = ltf.transform(x)
+    assert r[0] == 1
+    assert r[-1] == 10
+    # Transform ODE from [1, 10) to (-1, 1)
+    coeff_transform = _transform_ode_from_rtransform(coeff, inv_tf, x)
+    derivs_fun = [inv_tf.deriv, inv_tf.deriv2, inv_tf.deriv3]
+    coeff_transform_all_pts = _transform_ode_from_derivs(coeff, derivs_fun, r)
+    assert_allclose(coeff_transform, coeff_transform_all_pts)
+
+
+def test_transformation_of_ode_with_identity_transform():
+    """Test transformation of ODE with identity transform."""
+    # Checks that the identity transform x -> x results in the same answer.
+    # Obtain identity trasnform and derivatives.
+    itf = IdentityRTransform()
+    inv_tf = InverseRTransform(itf)
+    derivs_fun = [inv_tf.deriv, inv_tf.deriv2, inv_tf.deriv3]
+    # d^2y / dx^2 = 1
+    coeff = np.array([0, 0, 1])
+    x = np.linspace(0, 1, 10)
+    # compute transformed coeffs
+    coeff_b = _transform_ode_from_derivs(coeff, derivs_fun, x)
+    # f_x = 0 * x + 1  # 1 for every
+    assert_allclose(coeff_b, np.zeros((3, 10), dtype=float) + coeff[:, None])
+
+
+def test_transformation_of_ode_with_linear_transform():
+    """Test transformation of ODE with linear transformation."""
+    x = GaussLaguerre(10).points
+    # Obtain linear transformation with rmin = 1 and rmax = 10.
+    ltf = LinearFiniteRTransform(1, 10)
+    # The inverse is x_i = \frac{r_i - r_{min} - R} {r_i - r_{min} + R}
+    inv_ltf = InverseRTransform(ltf)
+    derivs_fun = [inv_ltf.deriv, inv_ltf.deriv2, inv_ltf.deriv3]
+    # Test with 2y + 3y` + 4y``
+    coeff = np.array([2, 3, 4])
+    coeff_b = _transform_ode_from_derivs(coeff, derivs_fun, x)
+    # assert values
+    assert_allclose(coeff_b[0], np.ones(len(x)) * coeff[0])
+    assert_allclose(coeff_b[1], 1 / 4.5 * coeff[1])
+    assert_allclose(coeff_b[2], (1 / 4.5) ** 2 * coeff[2])
+
+
+def test_high_order_transformations_gives_itself():
+    r"""Test transforming then transforming back gives back the same result."""
+    # Consider the following transformation x^4 and its derivatives
+    def transf(x):
+        return x**4.0
+
+    derivs = [
+        lambda x: 4.0 * x**3.0,
+        lambda x: 4.0 * 3.0 * x**2.0,
+        lambda x: 4.0 * 3.0 * 2.0 * x,
+        lambda x: 4.0 * 3.0 * 2.0 * np.array([1.0] * len(x)),
+    ]
+
+    # Consider ODE 2y + 3y` + 4y`` + 5y``` + 6dy^4/dx^4 and transform it
+    coeffs = np.array([2, 3, 4, 5, 6])
+    x = np.arange(1.0, 2.0, 0.01)
+    coeffs_transf = _transform_ode_from_derivs(coeffs, derivs, x)
+    # Transform it back using the derivative of the inverse transformation x^4
+    derivs_invs = [
+        lambda r: 1.0 / (4.0 * r ** (3.0 / 4.0)),
+        lambda r: -3.0 / (16.0 * r ** (7.0 / 4.0)),
+        lambda r: 21.0 / (64.0 * r ** (11.0 / 4.0)),
+        lambda r: -231.0 / (256.0 * r ** (15.0 / 4.0)),
+    ]
+    x_transformed = transf(x)
+    # Go Through Each Points and grab the new coefficients and transform it back
+    for i in range(0, len(x)):
+        coeffs_original = _transform_ode_from_derivs(
+            np.ravel(coeffs_transf[:, i]), derivs_invs, x_transformed[i : i + 1]
+        )
+        # Check that it is the same as hte original transformation.
+        assert_almost_equal(coeffs, np.ravel(coeffs_original))
+
+
+def test_rearange_ode_coeff():
+    """Test rearange ode coeff and solver result."""
+    coeff_b = [0, 0, 1]
+    x = np.linspace(0, 2, 20)
+    y = np.zeros((2, x.size))  # Initial Guess
+
+    def fx(x):
+        return 1 if isinstance(x, Number) else np.ones(x.size)
+
+    def func(x, y):
+        dy_dx = _rearrange_to_explicit_ode(y, coeff_b, fx(x))
+        return np.vstack((*y[1:], dy_dx))
+
+    def bc(ya, yb):
+        # Boundary conditions: zero at endpoints of y
+        return np.array([ya[0], yb[0]])
+
+    res = solve_bvp(func, bc, x, y)
+    # res = 0.5 * x**2 - x
+    assert_almost_equal(res.sol(0)[0], 0)
+    assert_almost_equal(res.sol(1)[0], -0.5)
+    assert_almost_equal(res.sol(2)[0], 0)
+    assert_almost_equal(res.sol(0)[1], -1)
+    assert_almost_equal(res.sol(1)[1], 0)
+    assert_almost_equal(res.sol(2)[1], 1)
+
+    # 2nd example
+    coeff_b_2 = [-3, 2, 1]
+
+    def fx2(x):
+        return -6 * x**2 - x + 10
+
+    def func2(x, y):
+        dy_dx = _rearrange_to_explicit_ode(y, coeff_b_2, fx2(x))
+        return np.vstack((*y[1:], dy_dx))
+
+    def bc2(ya, yb):
+        return np.array([ya[0], yb[0] - 14])
+
+    res2 = solve_bvp(func2, bc2, x, y)
+    # res2 = 2 * x**2 + 3x
+    assert_almost_equal(res2.sol(0)[0], 0)
+    assert_almost_equal(res2.sol(1)[0], 5)
+    assert_almost_equal(res2.sol(2)[0], 14)
+    assert_almost_equal(res2.sol(0)[1], 3)
+    assert_almost_equal(res2.sol(1)[1], 7)
+    assert_almost_equal(res2.sol(2)[1], 11)
