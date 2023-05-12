@@ -575,9 +575,9 @@ class TestAtomGrid:
     @pytest.mark.parametrize("centers",
         [
             np.array([[0.0, 0.0, 0.0]]),
-            np.array([[0.1, 0.0, 0.0]]),
-            np.array([[0.1, 1.1, 0.0]]),
-            np.array([[1.1, 0.0, -0.1]]),
+            np.array([[0.1, 0.0, 0.0]]),   # Off-centered from AtomGrid
+            np.array([[0.1, 1.1, 0.0]]),   # Off-centered from AtomGrid
+            np.array([[0.1, 0.0, -0.1]]),  # Off-centered from AtomGrid
         ]
      )
     def test_interpolation_of_gaussian(self, centers):
