@@ -106,6 +106,8 @@ class HirshfeldWeights:
         np.ndarray(N,)
             Hirshfeld integration weights evaluated on :math:`N` grid points.
         """
+        if atnums.dtype != int:
+            raise TypeError(f"Parameter atnums dtype {atnums.dtype} should be int.")
         aim_weights = np.zeros(len(points))
         promolecule = np.zeros(len(points))
         # evaluate (neutral) pro-atom densities & pro-molecule density
