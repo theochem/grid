@@ -276,7 +276,7 @@ class CubicProTransform(_HyperRectangleGrid):
         promolecular = self.promol.promolecular(self.points)
         # Integrand is set to zero when promolecular is less than certain value and,
         # When on the boundary (hence when promolecular is nan).
-        cond = (promolecular <= tol) | (np.isnan(promolecular))
+        cond = (promolecular <= tol) | (np.isinf(promolecular))
         promolecular = np.ma.masked_where(cond, promolecular, copy=False)
 
         integrands = []
@@ -719,11 +719,8 @@ class CubicProTransform(_HyperRectangleGrid):
 
         """
         # If it is a boundary point, then return nan. Done by indices.
-        if (
-            0 in indices[: i_var + 1]
-            or (self.shape[i_var] - 1) in indices[: i_var + 1]
-        ):
-            return np.nan, np.nan
+        if is_boundary:
+            return np.inf, np.inf
         # If it is a new point, with no nearby point, get a large initial guess.
         elif indices[i_var] == 1:
             min = (np.min(self.promol.coords[:, i_var]) - 3.0) * 20.0
@@ -982,16 +979,16 @@ def _inverse_coordinate(theta_pt, i_var, transformed, promol, bracket=(-10, 10))
     # Check's if this is a boundary points which is mapped to np.nan
     # These two conditions are added for individual point transformation.
     if np.abs(theta_pt - -1.0) < 1e-10:
-        return np.nan
+        return np.inf
     if np.abs(theta_pt - 1.0) < 1e-10:
-        return np.nan
+        return np.inf
     # This condition is added for transformation of the entire grid.
     # The [:i_var] is needed because of the way I've set-up transforming points in _transform.
     # Likewise for the bracket, see the function `get_bracket`.
-    if np.nan in bracket or np.nan in transformed[:i_var]:
-        return np.nan
+    if np.inf in bracket or np.inf in transformed[:i_var]:
+        return np.inf
 
-    def _dynamic_bracketing(l_bnd, u_bnd, maxiter=50):
+    def _dynamic_bracketing(l_bnd, u_bnd, maxiter=500):
         r"""Dynamically changes the lower (or upper bound) to have different sign values."""
         bounds = [l_bnd, u_bnd]
 

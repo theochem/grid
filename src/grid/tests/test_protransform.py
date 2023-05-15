@@ -191,16 +191,16 @@ class TestTwoGaussianDiffCenters:
         non_boundary_pt_index = num_pt ** 2 + num_pt + 1
         real_pt = obj.points[non_boundary_pt_index]
         # Test that this point is not the boundary.
-        assert real_pt[0] != np.nan
-        assert real_pt[1] != np.nan
-        assert real_pt[2] != np.nan
+        assert real_pt[0] != np.inf
+        assert real_pt[1] != np.inf
+        assert real_pt[2] != np.inf
         # Test that converting the point back to unit cube gives [0.5, 0.5, 0.5].
         for i_var in range(0, 3):
             transf = _transform_coordinate(real_pt, i_var, obj.promol)
             assert np.abs(transf) < 1e-5
         # Test that all other points are indeed boundary points.
         all_nans = np.delete(obj.points, non_boundary_pt_index, axis=0)
-        assert np.all(np.any(np.isnan(all_nans), axis=1))
+        assert np.all(np.any(np.isinf(all_nans), axis=1))
 
     def test_transforming_with_inverse_transformation_is_identity(self):
         r"""Test transforming with inverse transformation is identity."""
