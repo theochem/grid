@@ -192,7 +192,12 @@ class _HyperRectangleGrid(Grid):
             # The `1` and `self.num_puts[1] - 2` is needed because I don't want the boundary.
             # Assumes x_index is in the grid while y, z may not be.
             val = CubicSpline(
-                self.points[np.arange(1, self.shape[1] - 2) * self.shape[2], 1],
+                self.points[
+                    [
+                        self.coordinates_to_index((x_index, j, 0))
+                        for j in np.arange(1, self.shape[1] - 2)],
+                        1
+                    ],
                 [
                     z_spline(z, x_index, y_index, nu_z)
                     for y_index in range(1, self.shape[1] - 2)
@@ -208,8 +213,11 @@ class _HyperRectangleGrid(Grid):
         def x_spline(x, y, z, nu_x):
             val = CubicSpline(
                 self.points[
-                    np.arange(1, self.shape[0] - 2) * self.shape[1] * self.shape[2], 0
-                ],
+                    [
+                        self.coordinates_to_index((i, 0, 0))
+                        for i in np.arange(1, self.shape[0] - 2)],
+                    0
+                    ],
                 [
                     y_splines(y, x_index, z, nu_y)
                     for x_index in range(1, self.shape[0] - 2)
