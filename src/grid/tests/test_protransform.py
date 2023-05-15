@@ -761,14 +761,16 @@ class TestIntegration:
 
 def test_padding_arrays():
     r"""Test different array sizes are correctly padded."""
-    coeff = np.array([[1.0, 2.0], [1.0, 2.0, 3.0, 4.0], [5.0]])
-    exps = np.array([[4.0, 5.0], [5.0, 6.0, 7.0, 8.0], [9.0]])
+    coeff = np.array([[1.0, 2.0], [1.0, 2.0, 3.0, 4.0], [5.0]], dtype=object)
+    exps = np.array([[4.0, 5.0], [5.0, 6.0, 7.0, 8.0], [9.0]], dtype=object)
     coeff_pad, exps_pad = _pad_coeffs_exps_with_zeros(coeff, exps)
     coeff_desired = np.array(
-        [[1.0, 2.0, 0.0, 0.0], [1.0, 2.0, 3.0, 4.0], [5.0, 0.0, 0.0, 0.0]]
+        [[1.0, 2.0, 0.0, 0.0], [1.0, 2.0, 3.0, 4.0], [5.0, 0.0, 0.0, 0.0]],
+        dtype=object
     )
     np.testing.assert_array_equal(coeff_desired, coeff_pad)
     exp_desired = np.array(
-        [[4.0, 5.0, 0.0, 0.0], [5.0, 6.0, 7.0, 8.0], [9.0, 0.0, 0.0, 0.0]]
+        [[4.0, 5.0, 0.0, 0.0], [5.0, 6.0, 7.0, 8.0], [9.0, 0.0, 0.0, 0.0]],
+        dtype=object
     )
     np.testing.assert_array_equal(exp_desired, exps_pad)

@@ -22,6 +22,7 @@ r"""Promolecular Grid Transformation."""
 from dataclasses import astuple, dataclass, field
 
 from grid.basegrid import Grid, OneDGrid
+from grid.cubic import _HyperRectangleGrid
 
 import numpy as np
 
@@ -33,7 +34,7 @@ from scipy.special import erf
 __all__ = ["CubicProTransform"]
 
 
-class CubicProTransform(Grid):
+class CubicProTransform(_HyperRectangleGrid):
     r"""
     Promolecular Grid Transformation of a Cubic Grid in :math:`[-1, 1]^3`.
 
@@ -43,7 +44,7 @@ class CubicProTransform(Grid):
 
     Attributes
     ----------
-    num_pts : (int, int, int)
+    shape : (int, int, int)
         The number of points, including both of the end/boundary points, in x, y, and z direction.
     prointegral : float
         The integration value of the promolecular density over Euclidean space.
@@ -149,28 +150,22 @@ class CubicProTransform(Grid):
                 "There should be three One-Dimensional grids in `oned_grids`."
             )
 
-        self._num_pts = tuple([grid.size for grid in oned_grids])
-        self._dim = len(oned_grids)
+        self._shape = tuple([grid.size for grid in oned_grids])
+        dimension = len(oned_grids)
 
         # pad coefficients and exponents with zeros to have the same size, easier to use numpy.
         coeffs, exps = _pad_coeffs_exps_with_zeros(coeffs, exps)
-        self._promol = _PromolParams(coeffs, exps, coords, self._dim)
+        self._promol = _PromolParams(coeffs, exps, coords, dimension)
         self._prointegral = self._promol.integrate_all()
 
-        empty_pts = np.empty((np.prod(self._num_pts), self._dim), dtype=np.float64)
         weights = np.kron(
             np.kron(oned_grids[0].weights, oned_grids[1].weights), oned_grids[2].weights
         )
+        # Transform Cubic Grid in Theta-Space to Real-space.
+        points = self._transform(oned_grids)
         # The prointegral is needed because of promolecular integration.
         # Divide by 8 needed because the grid is in [-1, 1] rather than [0, 1].
-        super().__init__(empty_pts, weights * self._prointegral / 2.0 ** self._dim)
-        # Transform Cubic Grid in Theta-Space to Real-space.
-        self._transform(oned_grids)
-
-    @property
-    def num_pts(self):
-        r"""Return number of points in each direction."""
-        return self._num_pts
+        super().__init__(points, weights * self._prointegral / 2.0 ** dimension, self._shape)
 
     @property
     def prointegral(self):
@@ -181,11 +176,6 @@ class CubicProTransform(Grid):
     def promol(self):
         r"""Return `PromolParams` data class."""
         return self._promol
-
-    @property
-    def dim(self):
-        r"""Return the dimension of the cubic grid."""
-        return self._dim
 
     def transform(self, real_pt):
         r"""
@@ -404,12 +394,12 @@ class CubicProTransform(Grid):
             # x_index, y_index is assumed to be in the grid while z is not assumed.
             # Get smallest and largest index for selecting func vals on this specific z-slice.
             # The `1` and `self.num_puts[2] - 2` is needed because I don't want the boundary.
-            small_index = self._indices_to_index((x_index, y_index, 1))
-            large_index = self._indices_to_index(
-                (x_index, y_index, self.num_pts[2] - 2)
+            small_index = self.coordinates_to_index((x_index, y_index, 1))
+            large_index = self.coordinates_to_index(
+                (x_index, y_index, self.shape[2] - 2)
             )
             val = CubicSpline(
-                oned_grids[2].points[1 : self.num_pts[2] - 2],
+                oned_grids[2].points[1 : self.shape[2] - 2],
                 func_values[small_index:large_index],
             )(z, nu)
 
@@ -423,10 +413,10 @@ class CubicProTransform(Grid):
             # The `1` and `self.num_puts[1] - 2` is needed because I don't want the boundary.
             # Assumes x_index is in the grid while y, z may not be.
             val = CubicSpline(
-                oned_grids[1].points[1 : self.num_pts[2] - 2],
+                oned_grids[1].points[1 : self.shape[2] - 2],
                 [
                     z_spline(z, x_index, y_index)
-                    for y_index in range(1, self.num_pts[1] - 2)
+                    for y_index in range(1, self.shape[1] - 2)
                 ],
             )(y, nu)
             if nu == 1:
@@ -438,8 +428,8 @@ class CubicProTransform(Grid):
         def x_spline(x, y, z):
             # x, y, z may not be in the grid.
             val = CubicSpline(
-                oned_grids[0].points[1 : self.num_pts[2] - 2],
-                [y_splines(y, x_index, z) for x_index in range(1, self.num_pts[0] - 2)],
+                oned_grids[0].points[1 : self.shape[2] - 2],
+                [y_splines(y, x_index, z) for x_index in range(1, self.shape[0] - 2)],
             )(x, nu)
             if nu == 1:
                 # Derivative in real-space with respect to x.
@@ -539,7 +529,7 @@ class CubicProTransform(Grid):
             (i, j, k) is zero unless j = k = 0.
 
         """
-        hessian = np.zeros((self.dim, self.dim, self.dim), dtype=np.float64)
+        hessian = np.zeros((self.ndim, self.ndim, self.ndim), dtype=np.float64)
 
         c_m, e_m, coords, pi_over_exps, dim = astuple(self.promol)
 
@@ -678,33 +668,35 @@ class CubicProTransform(Grid):
         # Transform the entire grid.
         # Indices (i, j, k) start from bottom, left-most corner of the [-1, 1]^3 cube.
         counter = 0
-        for ix in range(self.num_pts[0]):
+        points = np.empty((np.prod(self.shape), len(oned_grids)), dtype=np.float64)
+        for ix in range(self.shape[0]):
             cart_pt = [None, None, None]
             theta_x = oned_grids[0].points[ix]
 
-            brack_x = self._get_bracket((ix,), 0)
+            brack_x = self._get_bracket((ix,), 0, points)
             cart_pt[0] = _inverse_coordinate(theta_x, 0, cart_pt, self.promol, brack_x)
 
-            for iy in range(self.num_pts[1]):
+            for iy in range(self.shape[1]):
                 theta_y = oned_grids[1].points[iy]
 
-                brack_y = self._get_bracket((ix, iy), 1)
+                brack_y = self._get_bracket((ix, iy), 1, points)
                 cart_pt[1] = _inverse_coordinate(
                     theta_y, 1, cart_pt, self.promol, brack_y
                 )
 
-                for iz in range(self.num_pts[2]):
+                for iz in range(self.shape[2]):
                     theta_z = oned_grids[2].points[iz]
 
-                    brack_z = self._get_bracket((ix, iy, iz), 2)
+                    brack_z = self._get_bracket((ix, iy, iz), 2, points)
                     cart_pt[2] = _inverse_coordinate(
                         theta_z, 2, cart_pt, self.promol, brack_z
                     )
 
-                    self.points[counter] = cart_pt.copy()
+                    points[counter] = cart_pt.copy()
                     counter += 1
+        return points
 
-    def _get_bracket(self, indices, i_var):
+    def _get_bracket(self, indices, i_var, prev_points):
         r"""
         Obtain brackets for root-finder based on the coordinate of the point.
 
@@ -715,6 +707,10 @@ class CubicProTransform(Grid):
             of the cube.
         i_var : int
             Index of point being transformed.
+        prev_points: ndarray(M, 3)
+            Points that are transformed and empty points that haven't been transformed yet.
+            The points that are transformed is used to obtain brackets for this current
+            point that hasn't been transformed yet.
 
         Returns
         -------
@@ -725,7 +721,7 @@ class CubicProTransform(Grid):
         # If it is a boundary point, then return nan. Done by indices.
         if (
             0 in indices[: i_var + 1]
-            or (self.num_pts[i_var] - 1) in indices[: i_var + 1]
+            or (self.shape[i_var] - 1) in indices[: i_var + 1]
         ):
             return np.nan, np.nan
         # If it is a new point, with no nearby point, get a large initial guess.
@@ -735,64 +731,20 @@ class CubicProTransform(Grid):
             return min, max
         # If the previous point has been converted, use that as a initial guess.
         if i_var == 0:
-            index = (indices[0] - 1) * self.num_pts[1] * self.num_pts[2]
+            index = (indices[0] - 1) * self.shape[1] * self.shape[2]
         elif i_var == 1:
-            index = indices[0] * self.num_pts[1] * self.num_pts[2] + self.num_pts[2] * (
+            index = indices[0] * self.shape[1] * self.shape[2] + self.shape[2] * (
                 indices[1] - 1
             )
         elif i_var == 2:
             index = (
-                indices[0] * self.num_pts[1] * self.num_pts[2]
-                + self.num_pts[2] * indices[1]
-                + indices[2]
-                - 1
+                    indices[0] * self.shape[1] * self.shape[2]
+                    + self.shape[2] * indices[1]
+                    + indices[2]
+                    - 1
             )
 
-        return self.points[index, i_var], self.points[index, i_var] + 10.0
-
-    def _index_to_indices(self, index):
-        r"""
-        Convert Index to Indices, ie integer m to (i, j, k) position of the Cubic Grid.
-
-        Cubic Grid has shape (N_x, N_y, N_z) where N_x is the number of points
-        in the x-direction, etc.  Then 0 <= i <= N_x - 1, 0 <= j <= N_y - 1, etc.
-
-        Parameters
-        ----------
-        index : int
-            Index of the grid point.
-
-        Returns
-        -------
-        indices : (int, int, int)
-            The ith, jth, kth position of the grid point.
-
-        """
-        assert index >= 0, "Index should be positive. %r" % index
-        n_1d, n_2d = self.num_pts[2], self.num_pts[1] * self.num_pts[2]
-        i = index // n_2d
-        j = (index - n_2d * i) // n_1d
-        k = index - n_2d * i - n_1d * j
-        return i, j, k
-
-    def _indices_to_index(self, indices):
-        r"""
-        Convert Indices to Index, ie (i, j, k) to a index/integer m.
-
-        Parameters
-        ----------
-        indices : (int, int, int)
-            The ith, jth, kth position of the grid point.
-
-        Returns
-        -------
-        index : int
-            Index of the grid point.
-
-        """
-        n_1d, n_2d = self.num_pts[2], self.num_pts[1] * self.num_pts[2]
-        index = n_2d * indices[0] + n_1d * indices[1] + indices[2]
-        return index
+        return prev_points[index, i_var], prev_points[index, i_var] + 10.0
 
 
 @dataclass
