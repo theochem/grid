@@ -37,7 +37,7 @@ class CubicProTransform(Grid):
     r"""
     Promolecular Grid Transformation of a Cubic Grid in :math:`[-1, 1]^3`.
 
-    Grid is three dimensional and modeled as Tensor Product of Three, one dimensional grids.
+    Grid is three-dimensional and modeled as Tensor Product of Three, one dimensional grids.
     Theta space is defined to be :math:`[-1, 1]^3`.
     Real space is defined to be :math:`\mathbb{R}^3.`
 
@@ -68,7 +68,7 @@ class CubicProTransform(Grid):
         Transform Real point to Theta space :math:`[-1, 1]^3`.
     inverse(bracket=(-10, 10))
         Transform Theta point to Real space :math:`\mathbb{R}^3`.
-    interpolate_function(use_log=False, nu=0)
+    interpolate(use_log=False, nu=0)
         Interpolate a function (or its logarithm) at a real point. Can interpolate its derivative.
 
     Examples
@@ -359,7 +359,7 @@ class CubicProTransform(Grid):
         jacobian = self.jacobian(real_pt)
         return jacobian.dot(real_grad)
 
-    def interpolate_function(
+    def interpolate(
         self, real_pt, func_values, oned_grids, use_log=False, nu=0
     ):
         r"""

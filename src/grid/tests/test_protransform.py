@@ -631,14 +631,14 @@ class TestInterpolation:
             desired = func(real_pt[0], real_pt[1], real_pt[2])
 
             print(desired)
-            actual = obj.interpolate_function(real_pt, func_grid, oned_grids)
+            actual = obj.interpolate(real_pt, func_grid, oned_grids)
             print(actual)
             assert np.abs(desired - actual) < 1e-5
 
         # Test on a exact point in the grid.
         real_pt = obj.points[5001]
         desired = func(real_pt[0], real_pt[1], real_pt[2])
-        actual = obj.interpolate_function(real_pt, func_grid, oned_grids)
+        actual = obj.interpolate(real_pt, func_grid, oned_grids)
         assert np.abs(desired - actual) < 1e-10
 
     def test_interpolate_derivative_cubic_function(self):
@@ -665,7 +665,7 @@ class TestInterpolation:
             # Desired Point
             desired = derivative(real_pt[0], real_pt[1], real_pt[2])
 
-            actual = obj.interpolate_function(real_pt, func_grid, oned_grids, nu=1)
+            actual = obj.interpolate(real_pt, func_grid, oned_grids, nu=1)
             assert np.abs(desired - actual) < 1e-4
 
     def test_interpolate_derivative_cubic_function2(self):
@@ -692,7 +692,7 @@ class TestInterpolation:
             # Desired Point
             desired = derivative(real_pt[0], real_pt[1], real_pt[2])
 
-            actual = obj.interpolate_function(real_pt, func_grid, oned_grids, nu=1)
+            actual = obj.interpolate(real_pt, func_grid, oned_grids, nu=1)
             assert np.abs(desired - actual) < 1e-4
 
     def test_interpolate_derivative_cubic_function3(self):
@@ -719,7 +719,7 @@ class TestInterpolation:
             # Desired Point
             desired = derivative(real_pt[0], real_pt[1], real_pt[2])
 
-            actual = obj.interpolate_function(real_pt, func_grid, oned_grids, nu=1)
+            actual = obj.interpolate(real_pt, func_grid, oned_grids, nu=1)
             assert np.abs(desired - actual) < 1e-4
 
 
