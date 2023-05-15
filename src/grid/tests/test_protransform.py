@@ -17,20 +17,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
-r"""
-Tests for Cubic Promolecular transformation.
-
-Tests
------
-TestTwoGaussianDiffCenters :
-    Test Transformation of Two Gaussian promolecular against different methods both analytical
-    and numerics.
-TestOneGaussianAgainstNumerics :
-    Test a single Gaussian against numerical integration/differentiation.
-
-"""
-
-
 from grid.basegrid import OneDGrid
 from grid.onedgrid import GaussChebyshevLobatto
 from grid.protransform import (
