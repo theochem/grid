@@ -105,61 +105,60 @@ class TestTwoGaussianDiffCenters:
         desired = params.promolecular(grid)
         assert np.all(np.abs(np.array(true_ans) - desired) < 1e-8)
 
-    @pytest.mark.parametrize("pt", np.arange(-5.0, 5.0, 0.5))
-    def test_transforming_x_against_formula(self, pt):
+    @pytest.mark.parametrize("pts", [np.arange(-5.0, 5.0, 0.5)])
+    def test_transforming_x_against_formula(self, pts):
         r"""Test transformming the X-transformation against analytic formula."""
-        true_ans = _transform_coordinate([pt], 0, self.setUp())
+        for pt in pts:
+            true_ans = _transform_coordinate([pt], 0, self.setUp())
 
-        def formula_transforming_x(x):
-            r"""Return closed form formula for transforming x coordinate."""
-            first_factor = (5.0 * np.pi ** 1.5 / (4 * 2 ** 0.5)) * (
-                erf(2 ** 0.5 * (x - 1)) + 1.0
-            )
+            def formula_transforming_x(x):
+                r"""Return closed form formula for transforming x coordinate."""
+                first_factor = (5.0 * np.pi ** 1.5 / (4 * 2 ** 0.5)) * (
+                    erf(2 ** 0.5 * (x - 1)) + 1.0
+                )
 
-            sec_fac = ((10.0 * np.pi ** 1.5) / (6.0 * 3 ** 0.5)) * (
-                erf(3.0 ** 0.5 * (x - 2)) + 1.0
-            )
+                sec_fac = ((10.0 * np.pi ** 1.5) / (6.0 * 3 ** 0.5)) * (
+                    erf(3.0 ** 0.5 * (x - 2)) + 1.0
+                )
 
-            ans = (first_factor + sec_fac) / (
-                5.0 * (np.pi / 2) ** 1.5 + 10.0 * (np.pi / 3.0) ** 1.5
-            )
-            return -1.0 + 2.0 * ans
+                ans = (first_factor + sec_fac) / (
+                    5.0 * (np.pi / 2) ** 1.5 + 10.0 * (np.pi / 3.0) ** 1.5
+                )
+                return -1.0 + 2.0 * ans
 
-        assert np.abs(true_ans - formula_transforming_x(pt)) < 1e-8
+            assert np.abs(true_ans - formula_transforming_x(pt)) < 1e-8
 
-    @pytest.mark.parametrize("x", [-10, -2, 0, 2.2, 1.23])
-    @pytest.mark.parametrize("y", [-3, 2, -10.2321, 20.232109])
-    def test_transforming_y_against_formula(self, x, y):
+    @pytest.mark.parametrize("pts_xy", [np.random.uniform(-10.0, 10.0, size=(100, 2))])
+    def test_transforming_y_against_formula(self, pts_xy):
         r"""Test transforming the Y-transformation against analytic formula."""
-        true_ans = _transform_coordinate([x, y], 1, self.setUp())
+        for x, y in pts_xy:
+            true_ans = _transform_coordinate([x, y], 1, self.setUp())
 
-        def formula_transforming_y(x, y):
-            r"""Return closed form formula for transforming y coordinate."""
-            fac1 = 5.0 * np.sqrt(np.pi / 2.0) * np.exp(-2.0 * (x - 1) ** 2)
-            fac1 *= (
-                np.sqrt(np.pi)
-                * (erf(2.0 ** 0.5 * (y - 2)) + 1.0)
-                / (2.0 * np.sqrt(2.0))
-            )
-            fac2 = 10.0 * np.sqrt(np.pi / 3.0) * np.exp(-3.0 * (x - 2.0) ** 2.0)
-            fac2 *= (
-                np.sqrt(np.pi)
-                * (erf(3.0 ** 0.5 * (y - 2)) + 1.0)
-                / (2.0 * np.sqrt(3.0))
-            )
-            num = fac1 + fac2
+            def formula_transforming_y(x, y):
+                r"""Return closed form formula for transforming y coordinate."""
+                fac1 = 5.0 * np.sqrt(np.pi / 2.0) * np.exp(-2.0 * (x - 1) ** 2)
+                fac1 *= (
+                    np.sqrt(np.pi)
+                    * (erf(2.0 ** 0.5 * (y - 2)) + 1.0)
+                    / (2.0 * np.sqrt(2.0))
+                )
+                fac2 = 10.0 * np.sqrt(np.pi / 3.0) * np.exp(-3.0 * (x - 2.0) ** 2.0)
+                fac2 *= (
+                    np.sqrt(np.pi)
+                    * (erf(3.0 ** 0.5 * (y - 2)) + 1.0)
+                    / (2.0 * np.sqrt(3.0))
+                )
+                num = fac1 + fac2
 
-            dac1 = 5.0 * (np.pi / 2.0) * np.exp(-2.0 * (x - 1.0) ** 2.0)
-            dac2 = 10.0 * (np.pi / 3.0) * np.exp(-3.0 * (x - 2.0) ** 2.0)
-            den = dac1 + dac2
-            return -1.0 + 2.0 * (num / den)
+                dac1 = 5.0 * (np.pi / 2.0) * np.exp(-2.0 * (x - 1.0) ** 2.0)
+                dac2 = 10.0 * (np.pi / 3.0) * np.exp(-3.0 * (x - 2.0) ** 2.0)
+                den = dac1 + dac2
+                return -1.0 + 2.0 * (num / den)
 
-        assert np.abs(true_ans - formula_transforming_y(x, y)) < 1e-8
+            assert np.abs(true_ans - formula_transforming_y(x, y)) < 1e-8
 
-    @pytest.mark.parametrize("x", [-10, -2, 0, 2.2])
-    @pytest.mark.parametrize("y", [-3, 2, -10.2321])
-    @pytest.mark.parametrize("z", [-10, 0, 2.343432])
-    def test_transforming_z_against_formula(self, x, y, z):
+    @pytest.mark.parametrize("pts", [np.random.uniform(-10, 10, size=(100, 3))])
+    def test_transforming_z_against_formula(self, pts):
         r"""Test transforming the Z-transformation against analytic formula."""
         params, obj = self.setUp(ss=0.5, return_obj=True)
 
@@ -187,14 +186,15 @@ class TestTwoGaussianDiffCenters:
             den += 10.0 * (np.pi / 3.0) ** 0.5 * np.exp(-3.0 * (b1 ** 2.0 + b2 ** 2.0))
             return -1.0 + 2.0 * (fac1 + fac2) / den
 
-        true_ans = formula_transforming_z(x, y, z)
-        # Test function
-        actual = _transform_coordinate([x, y, z], 2, params)
-        assert np.abs(true_ans - actual) < 1e-8
+        for x, y, z in pts:
+            true_ans = formula_transforming_z(x, y, z)
+            # Test function
+            actual = _transform_coordinate([x, y, z], 2, params)
+            assert np.abs(true_ans - actual) < 1e-8
 
-        # Test Method
-        actual = obj.transform(np.array([x, y, z]))[2]
-        assert np.abs(true_ans - actual) < 1e-8
+            # Test Method
+            actual = obj.transform(np.array([x, y, z]))[2]
+            assert np.abs(true_ans - actual) < 1e-8
 
     def test_transforming_simple_grid(self):
         r"""Test transforming a grid that only contains one non-boundary point."""
@@ -241,73 +241,71 @@ class TestTwoGaussianDiffCenters:
         actual = obj.integrate(promol, trick=True)
         assert np.abs(actual - desired) < 1e-8
 
-    @pytest.mark.parametrize("pt", np.arange(-5.0, 5.0, 0.75))
-    def test_derivative_tranformation_x_finite_difference(self, pt):
+    @pytest.mark.parametrize("pts", [np.arange(-5.0, 5.0, 0.75)])
+    def test_derivative_tranformation_x_finite_difference(self, pts):
         r"""Test the derivative of X-transformation against finite-difference."""
         params, obj = self.setUp(ss=0.2, return_obj=True)
-        pt = np.array([pt, 2.0, 3.0])
+        for pt in pts:
+            pt = np.array([pt, 2.0, 3.0])
 
-        actual = obj.jacobian(pt)
+            actual = obj.jacobian(pt)
 
-        def tranformation_x(pt):
-            return _transform_coordinate(pt, 0, params)
+            def tranformation_x(pt):
+                return _transform_coordinate(pt, 0, params)
 
-        grad = approx_fprime([pt[0]], tranformation_x, 1e-6)
-        assert np.abs(grad - actual[0, 0]) < 1e-4
+            grad = approx_fprime([pt[0]], tranformation_x, 1e-6)
+            assert np.abs(grad - actual[0, 0]) < 1e-4
 
-    @pytest.mark.parametrize("x", np.arange(-5.0, 5.0, 0.75))
-    @pytest.mark.parametrize("y", [-2.5, -1.5, 0, 1.5])
-    def test_derivative_tranformation_y_finite_difference(self, x, y):
+    @pytest.mark.parametrize("pts_xy", [np.random.uniform(-5.0, 5.0, size=(100, 2))])
+    def test_derivative_tranformation_y_finite_difference(self, pts_xy):
         r"""Test the derivative of Y-transformation against finite-difference."""
         params, obj = self.setUp(ss=0.2, return_obj=True)
-        actual = obj.jacobian(np.array([x, y, 3.0]))
+        for x, y in pts_xy:
+            actual = obj.jacobian(np.array([x, y, 3.0]))
 
-        def tranformation_y(pt):
-            return _transform_coordinate([x, pt[0]], 1, params)
+            def tranformation_y(pt):
+                return _transform_coordinate([x, pt[0]], 1, params)
 
-        grad = approx_fprime([y], tranformation_y, 1e-8)
-        assert np.abs(grad - actual[1, 1]) < 1e-5
+            grad = approx_fprime([y], tranformation_y, 1e-8)
+            assert np.abs(grad - actual[1, 1]) < 1e-5
 
-        def transformation_y_wrt_x(pt):
-            return _transform_coordinate([pt[0], y], 1, params)
+            def transformation_y_wrt_x(pt):
+                return _transform_coordinate([pt[0], y], 1, params)
 
-        h = 1e-8
-        deriv = np.imag(transformation_y_wrt_x([complex(x, h)])) / h
-        assert np.abs(deriv - actual[1, 0]) < 1e-4
+            h = 1e-8
+            deriv = np.imag(transformation_y_wrt_x([complex(x, h)])) / h
+            assert np.abs(deriv - actual[1, 0]) < 1e-4
 
-    @pytest.mark.parametrize("x", [-1.5, -0.5, 0, 2.5])
-    @pytest.mark.parametrize("y", [-3.0, 2.0, -2.2321])
-    @pytest.mark.parametrize("z", [-1.5, 0.0, 2.343432])
-    def test_derivative_tranformation_z_finite_difference(self, x, y, z):
+    @pytest.mark.parametrize("pts", [np.random.uniform(-3.0, 3.0, size=(100, 3))])
+    def test_derivative_tranformation_z_finite_difference(self, pts):
         r"""Test the derivative of Z-transformation against finite-difference."""
         params, obj = self.setUp(ss=0.2, return_obj=True)
-        actual = obj.jacobian(np.array([x, y, z]))
+        for x, y, z in pts:
+            actual = obj.jacobian(np.array([x, y, z]))
 
-        def tranformation_z(pt):
-            return _transform_coordinate([x, y, pt[0]], 2, params)
+            def tranformation_z(pt):
+                return _transform_coordinate([x, y, pt[0]], 2, params)
 
-        grad = approx_fprime([z], tranformation_z, 1e-8)
-        assert np.abs(grad - actual[2, 2]) < 1e-5
+            grad = approx_fprime([z], tranformation_z, 1e-8)
+            assert np.abs(grad - actual[2, 2]) < 1e-5
 
-        def transformation_z_wrt_y(pt):
-            return _transform_coordinate([x, pt[0], z], 2, params)
+            def transformation_z_wrt_y(pt):
+                return _transform_coordinate([x, pt[0], z], 2, params)
 
-        deriv = approx_fprime([y], transformation_z_wrt_y, 1e-8)
-        assert np.abs(deriv - actual[2, 1]) < 1e-4
+            deriv = approx_fprime([y], transformation_z_wrt_y, 1e-8)
+            assert np.abs(deriv - actual[2, 1]) < 1e-4
 
-        def transformation_z_wrt_x(pt):
-            a = _transform_coordinate([pt[0], y, z], 2, params)
-            return a
+            def transformation_z_wrt_x(pt):
+                a = _transform_coordinate([pt[0], y, z], 2, params)
+                return a
 
-        h = 1e-8
-        deriv = np.imag(transformation_z_wrt_x([complex(x, h)])) / h
+            h = 1e-8
+            deriv = np.imag(transformation_z_wrt_x([complex(x, h)])) / h
 
-        assert np.abs(deriv - actual[2, 0]) < 1e-4
+            assert np.abs(deriv - actual[2, 0]) < 1e-4
 
-    @pytest.mark.parametrize("x", [-1.5, -0.5, 0, 2.5])
-    @pytest.mark.parametrize("y", [-3.0, 2.0, -2.2321])
-    @pytest.mark.parametrize("z", [-1.5, 0.0, 2.343432])
-    def test_steepest_ascent_direction_with_numerics(self, x, y, z):
+    @pytest.mark.parametrize("pts", [np.random.uniform(-3.0, 3.0, size=(100, 3))])
+    def test_steepest_ascent_direction_with_numerics(self, pts):
         r"""Test steepest-ascent direction match in real and theta space.
 
         The function to test is x^2 + y^2 + z^2.
@@ -318,20 +316,21 @@ class TestTwoGaussianDiffCenters:
             # Gradient of x^2 + y^2 + z^2.
             return np.array([2.0 * pt[0], 2.0 * pt[1], 2.0 * pt[2]])
 
-        # Take a step in real-space.
-        pt = np.array([x, y, z])
-        grad_pt = grad(pt)
-        step = 1e-8
-        pt_step = pt + grad_pt * step
+        for x, y, z in pts:
+            # Take a step in real-space.
+            pt = np.array([x, y, z])
+            grad_pt = grad(pt)
+            step = 1e-8
+            pt_step = pt + grad_pt * step
 
-        # Convert the steps in theta space and calculate finite-difference gradient.
-        transf = obj.transform(pt)
-        transf_step = obj.transform(pt_step)
-        grad_finite = (transf_step - transf) / step
+            # Convert the steps in theta space and calculate finite-difference gradient.
+            transf = obj.transform(pt)
+            transf_step = obj.transform(pt_step)
+            grad_finite = (transf_step - transf) / step
 
-        # Test the actual actual.
-        actual = obj.steepest_ascent_theta(pt, grad_pt)
-        assert np.all(np.abs(actual - grad_finite) < 1e-4)
+            # Test the actual actual.
+            actual = obj.steepest_ascent_theta(pt, grad_pt)
+            assert np.all(np.abs(actual - grad_finite) < 1e-4)
 
     def test_second_derivative_of_theta_x_dx(self):
         r"""Test the second derivative of d(theta_x)/d(x) ."""
@@ -352,118 +351,116 @@ class TestTwoGaussianDiffCenters:
                 if i != j:
                     assert np.abs(actual[0, i, j]) < 1e-10
 
-    @pytest.mark.parametrize("x", [-1.5, -0.5, 0, 2.5])
-    @pytest.mark.parametrize("y", [-3.0, 2.0, -2.2321])
-    @pytest.mark.parametrize("z", [-1.5, 0.0, 2.343432])
-    def test_second_derivative_of_theta_y(self, x, y, z):
+    @pytest.mark.parametrize("pts", [np.random.uniform(-3.0, 3.0, size=(100, 3))])
+    def test_second_derivative_of_theta_y(self, pts):
         r"""Test the second derivative of d(theta_y)."""
         params, obj = self.setUp(ss=0.2, return_obj=True)
-        actual = obj.hessian(np.array([x, y, z]))
+        for x, y, z in pts:
+            actual = obj.hessian(np.array([x, y, z]))
 
-        # test second derivative of theta_y wrt to dy dy.
-        def dtheta_y_dy(pt):
-            return obj.jacobian([x, pt[0], z])[1, 1]
+            # test second derivative of theta_y wrt to dy dy.
+            def dtheta_y_dy(pt):
+                return obj.jacobian([x, pt[0], z])[1, 1]
 
-        dthetay_dy_dy = approx_fprime([y], dtheta_y_dy, 1e-8)
-        assert np.abs(dthetay_dy_dy - actual[1, 1, 1]) < 1e-5
+            dthetay_dy_dy = approx_fprime([y], dtheta_y_dy, 1e-8)
+            assert np.abs(dthetay_dy_dy - actual[1, 1, 1]) < 1e-5
 
-        # test second derivative of d(theta_y)/d(y) wrt dx.
-        def dtheta_y_dy(pt):
-            return obj.jacobian([pt[0], y, z])[1, 1]
+            # test second derivative of d(theta_y)/d(y) wrt dx.
+            def dtheta_y_dy(pt):
+                return obj.jacobian([pt[0], y, z])[1, 1]
 
-        dthetay_dy_dx = approx_fprime([x], dtheta_y_dy, 1e-8)
-        assert np.abs(dthetay_dy_dx - actual[1, 1, 0]) < 1e-5
+            dthetay_dy_dx = approx_fprime([x], dtheta_y_dy, 1e-8)
+            assert np.abs(dthetay_dy_dx - actual[1, 1, 0]) < 1e-5
 
-        # test second derivative of d(theta_y)/(dx) wrt dy
-        def dtheta_y_dx(pt):
-            return obj.jacobian([x, pt[0], z])[1, 0]
+            # test second derivative of d(theta_y)/(dx) wrt dy
+            def dtheta_y_dx(pt):
+                return obj.jacobian([x, pt[0], z])[1, 0]
 
-        dtheta_y_dx_dy = approx_fprime([y], dtheta_y_dx, 1e-8)
-        assert np.abs(dtheta_y_dx_dy - actual[1, 0, 1]) < 1e-4
+            dtheta_y_dx_dy = approx_fprime([y], dtheta_y_dx, 1e-8)
+            assert np.abs(dtheta_y_dx_dy - actual[1, 0, 1]) < 1e-4
 
-        # test second derivative of d(theta_y)/(dx) wrt dx
-        def dtheta_y_dx(pt):
-            return obj.jacobian([pt[0], y, z])[1, 0]
+            # test second derivative of d(theta_y)/(dx) wrt dx
+            def dtheta_y_dx(pt):
+                return obj.jacobian([pt[0], y, z])[1, 0]
 
-        dtheta_y_dx_dx = approx_fprime([x], dtheta_y_dx, 1e-8)
-        assert np.abs(dtheta_y_dx_dx - actual[1, 0, 0]) < 1e-5
+            dtheta_y_dx_dx = approx_fprime([x], dtheta_y_dx, 1e-8)
+            assert np.abs(dtheta_y_dx_dx - actual[1, 0, 0]) < 1e-5
 
-        # Test other elements are all zeros.
-        for i in range(0, 3):
-            assert np.abs(actual[1, 2, i]) < 1e-10
-        assert np.abs(actual[1, 0, 2]) < 1e-10
-        assert np.abs(actual[1, 1, 2]) < 1e-10
+            # Test other elements are all zeros.
+            for i in range(0, 3):
+                assert np.abs(actual[1, 2, i]) < 1e-10
+            assert np.abs(actual[1, 0, 2]) < 1e-10
+            assert np.abs(actual[1, 1, 2]) < 1e-10
 
-    @pytest.mark.parametrize("x", [-1.5, -0.5, 0, 2.5])
-    @pytest.mark.parametrize("y", [-3.0, 2.0, -2.2321])
-    @pytest.mark.parametrize("z", [-1.5, 0.0, 2.343432])
-    def test_second_derivative_of_theta_z(self, x, y, z):
+    @pytest.mark.parametrize("pts", [np.random.uniform(-3.0, 3.0, size=(100, 3))])
+    def test_second_derivative_of_theta_z(self, pts):
         r"""Test the second derivative of d(theta_z)."""
         params, obj = self.setUp(ss=0.2, return_obj=True)
-        actual = obj.hessian(np.array([x, y, z]))
+        for x, y, z in pts:
+            actual = obj.hessian(np.array([x, y, z]))
 
-        # test second derivative of theta_z wrt to dz dz.
-        def dtheta_z_dz(pt):
-            return obj.jacobian([x, y, pt[0]])[2, 2]
+            # test second derivative of theta_z wrt to dz dz.
+            def dtheta_z_dz(pt):
+                return obj.jacobian([x, y, pt[0]])[2, 2]
 
-        dthetaz_dz_dz = approx_fprime([z], dtheta_z_dz, 1e-8)
-        assert np.abs(dthetaz_dz_dz - actual[2, 2, 2]) < 1e-5
+            dthetaz_dz_dz = approx_fprime([z], dtheta_z_dz, 1e-8)
+            assert np.abs(dthetaz_dz_dz - actual[2, 2, 2]) < 1e-5
 
-        # test second derivative of theta_z wrt to dz dy.
-        def dtheta_z_dz(pt):
-            return obj.jacobian([x, pt[0], z])[2, 2]
+            # test second derivative of theta_z wrt to dz dy.
+            def dtheta_z_dz(pt):
+                return obj.jacobian([x, pt[0], z])[2, 2]
 
-        dthetaz_dz_dy = approx_fprime([y], dtheta_z_dz, 1e-8)
-        assert np.abs(dthetaz_dz_dy - actual[2, 2, 1]) < 1e-5
+            dthetaz_dz_dy = approx_fprime([y], dtheta_z_dz, 1e-8)
+            assert np.abs(dthetaz_dz_dy - actual[2, 2, 1]) < 1e-5
 
-        # test second derivative of theta_z wrt to dz dx.
-        def dtheta_z_dz(pt):
-            return obj.jacobian([pt[0], y, z])[2, 2]
+            # test second derivative of theta_z wrt to dz dx.
+            def dtheta_z_dz(pt):
+                return obj.jacobian([pt[0], y, z])[2, 2]
 
-        dthetaz_dz_dx = approx_fprime([x], dtheta_z_dz, 1e-8)
-        assert np.abs(dthetaz_dz_dx - actual[2, 2, 0]) < 1e-5
+            dthetaz_dz_dx = approx_fprime([x], dtheta_z_dz, 1e-8)
+            assert np.abs(dthetaz_dz_dx - actual[2, 2, 0]) < 1e-5
 
-        # test second derivative of theta_z wrt to dy dz.
-        def dtheta_z_dy(pt):
-            return obj.jacobian([x, y, pt[0]])[2, 1]
+            # test second derivative of theta_z wrt to dy dz.
+            def dtheta_z_dy(pt):
+                return obj.jacobian([x, y, pt[0]])[2, 1]
 
-        dthetaz_dy_dz = approx_fprime([z], dtheta_z_dy, 1e-8)
-        assert np.abs(dthetaz_dy_dz - actual[2, 1, 2]) < 1e-5
+            dthetaz_dy_dz = approx_fprime([z], dtheta_z_dy, 1e-8)
+            assert np.abs(dthetaz_dy_dz - actual[2, 1, 2]) < 1e-5
 
-        # test second derivative of theta_z wrt to dy dy.
-        def dtheta_z_dy(pt):
-            return obj.jacobian([x, pt[0], z])[2, 1]
+            # test second derivative of theta_z wrt to dy dy.
+            def dtheta_z_dy(pt):
+                return obj.jacobian([x, pt[0], z])[2, 1]
 
-        dthetaz_dy_dy = approx_fprime([y], dtheta_z_dy, 1e-8)
-        assert np.abs(dthetaz_dy_dy - actual[2, 1, 1]) < 1e-5
+            dthetaz_dy_dy = approx_fprime([y], dtheta_z_dy, 1e-8)
+            assert np.abs(dthetaz_dy_dy - actual[2, 1, 1]) < 1e-5
 
-        # test second derivative of theta_z wrt to dy dx.
-        def dtheta_z_dy(pt):
-            return obj.jacobian([pt[0], y, z])[2, 1]
+            # test second derivative of theta_z wrt to dy dx.
+            def dtheta_z_dy(pt):
+                return obj.jacobian([pt[0], y, z])[2, 1]
 
-        dthetaz_dy_dx = approx_fprime([x], dtheta_z_dy, 1e-8)
-        assert np.abs(dthetaz_dy_dx - actual[2, 1, 0]) < 1e-5
+            dthetaz_dy_dx = approx_fprime([x], dtheta_z_dy, 1e-8)
+            assert np.abs(dthetaz_dy_dx - actual[2, 1, 0]) < 1e-5
 
-        # test second derivative of theta_z wrt to dx dz.
-        def dtheta_z_dx(pt):
-            return obj.jacobian([x, y, pt[0]])[2, 0]
+            # test second derivative of theta_z wrt to dx dz.
+            def dtheta_z_dx(pt):
+                return obj.jacobian([x, y, pt[0]])[2, 0]
 
-        dthetaz_dx_dz = approx_fprime([z], dtheta_z_dx, 1e-8)
-        assert np.abs(dthetaz_dx_dz - actual[2, 0, 2]) < 1e-5
+            dthetaz_dx_dz = approx_fprime([z], dtheta_z_dx, 1e-8)
+            assert np.abs(dthetaz_dx_dz - actual[2, 0, 2]) < 1e-5
 
-        # test second derivative of theta_z wrt to dx dy.
-        def dtheta_z_dx(pt):
-            return obj.jacobian([x, pt[0], z])[2, 0]
+            # test second derivative of theta_z wrt to dx dy.
+            def dtheta_z_dx(pt):
+                return obj.jacobian([x, pt[0], z])[2, 0]
 
-        dthetaz_dx_dy = approx_fprime([y], dtheta_z_dx, 1e-8)
-        assert np.abs(dthetaz_dx_dy - actual[2, 0, 1]) < 1e-5
+            dthetaz_dx_dy = approx_fprime([y], dtheta_z_dx, 1e-8)
+            assert np.abs(dthetaz_dx_dy - actual[2, 0, 1]) < 1e-5
 
-        # test second derivative of theta_z wrt to dx dx.
-        def dtheta_z_dx(pt):
-            return obj.jacobian([pt[0], y, z])[2, 0]
+            # test second derivative of theta_z wrt to dx dx.
+            def dtheta_z_dx(pt):
+                return obj.jacobian([pt[0], y, z])[2, 0]
 
-        dthetaz_dx_dx = approx_fprime([x], dtheta_z_dx, 1e-8)
-        assert np.abs(dthetaz_dx_dx - actual[2, 0, 0]) < 1e-5
+            dthetaz_dx_dx = approx_fprime([x], dtheta_z_dx, 1e-8)
+            assert np.abs(dthetaz_dx_dx - actual[2, 0, 0]) < 1e-5
 
 
 class TestOneGaussianAgainstNumerics:
@@ -488,32 +485,31 @@ class TestOneGaussianAgainstNumerics:
             return params, obj
         return params
 
-    @pytest.mark.parametrize("pt", np.arange(-5.0, 5.0, 0.5))
-    def test_transforming_x_against_numerics(self, pt):
+    @pytest.mark.parametrize("pts", [np.arange(-5.0, 5.0, 0.5)])
+    def test_transforming_x_against_numerics(self, pts):
         r"""Test transforming X against numerical algorithms."""
-        true_ans = _transform_coordinate([pt], 0, self.setUp())
+        for pt in pts:
+            true_ans = _transform_coordinate([pt], 0, self.setUp())
 
-        def promolecular_in_x(grid, every_grid):
-            r"""Construct the formula of promolecular for integration."""
-            promol_x = 5.0 * np.exp(-2.0 * (grid - 1.0) ** 2.0)
-            promol_x_all = 5.0 * np.exp(-2.0 * (every_grid - 1.0) ** 2.0)
-            return promol_x, promol_x_all
+            def promolecular_in_x(grid, every_grid):
+                r"""Construct the formula of promolecular for integration."""
+                promol_x = 5.0 * np.exp(-2.0 * (grid - 1.0) ** 2.0)
+                promol_x_all = 5.0 * np.exp(-2.0 * (every_grid - 1.0) ** 2.0)
+                return promol_x, promol_x_all
 
-        grid = np.arange(-4.0, pt, 0.000005)  # Integration till a x point
-        every_grid = np.arange(-5.0, 10.0, 0.00001)  # Full Integration
-        promol_x, promol_x_all = promolecular_in_x(grid, every_grid)
+            grid = np.arange(-4.0, pt, 0.000005)  # Integration till a x point
+            every_grid = np.arange(-5.0, 10.0, 0.00001)  # Full Integration
+            promol_x, promol_x_all = promolecular_in_x(grid, every_grid)
 
-        # Integration over y and z cancel out from numerator and denominator.
-        actual = -1.0 + 2.0 * np.trapz(promol_x, grid) / np.trapz(
-            promol_x_all, every_grid
-        )
-        assert np.abs(true_ans - actual) < 1e-5
+            # Integration over y and z cancel out from numerator and denominator.
+            actual = -1.0 + 2.0 * np.trapz(promol_x, grid) / np.trapz(
+                promol_x_all, every_grid
+            )
+            assert np.abs(true_ans - actual) < 1e-5
 
-    @pytest.mark.parametrize("x", [-10.0, -2.0, 0.0, 2.2, 1.23])
-    @pytest.mark.parametrize("y", [-3.0, 2.0, -10.2321, 20.232109])
-    def test_transforming_y_against_numerics(self, x, y):
+    @pytest.mark.parametrize("pts_xy", [np.random.uniform(-10.0, 10.0, size=(100, 2))])
+    def test_transforming_y_against_numerics(self, pts_xy):
         r"""Test transformation y against numerical algorithms."""
-        true_ans = _transform_coordinate([x, y], 1, self.setUp())
 
         def promolecular_in_y(grid, every_grid):
             r"""Construct the formula of promolecular for integration."""
@@ -521,23 +517,23 @@ class TestOneGaussianAgainstNumerics:
             promol_y_all = 5.0 * np.exp(-2.0 * (every_grid - 2.0) ** 2.0)
             return promol_y_all, promol_y
 
-        grid = np.arange(-5.0, y, 0.000001)  # Integration till a x point
-        every_grid = np.arange(-5.0, 10.0, 0.00001)  # Full Integration
-        promol_y_all, promol_y = promolecular_in_y(grid, every_grid)
+        for x, y in pts_xy:
+            true_ans = _transform_coordinate([x, y], 1, self.setUp())
 
-        # Integration over z cancel out from numerator and denominator.
-        # Further, gaussian at a point does too.
-        actual = -1.0 + 2.0 * np.trapz(promol_y, grid) / np.trapz(
-            promol_y_all, every_grid
-        )
-        assert np.abs(true_ans - actual) < 1e-5
+            grid = np.arange(-5.0, y, 0.000001)  # Integration till a x point
+            every_grid = np.arange(-5.0, 10.0, 0.00001)  # Full Integration
+            promol_y_all, promol_y = promolecular_in_y(grid, every_grid)
 
-    @pytest.mark.parametrize("x", [-10.0, -2.0, 0.0, 2.2])
-    @pytest.mark.parametrize("y", [-3.0, 2.0, -10.2321])
-    @pytest.mark.parametrize("z", [-10.0, 0.0, 2.343432])
-    def test_transforming_z_against_numerics(self, x, y, z):
+            # Integration over z cancel out from numerator and denominator.
+            # Further, gaussian at a point does too.
+            actual = -1.0 + 2.0 * np.trapz(promol_y, grid) / np.trapz(
+                promol_y_all, every_grid
+            )
+            assert np.abs(true_ans - actual) < 1e-5
+
+    @pytest.mark.parametrize("pts", [np.random.uniform(-10.0, 10.0, size=(100, 3))])
+    def test_transforming_z_against_numerics(self, pts):
         r"""Test transforming Z against numerical algorithms."""
-        grid = np.arange(-5.0, z, 0.00001)  # Integration till a x point
 
         def promolecular_in_z(grid, every_grid):
             r"""Construct the formula of promolecular for integration."""
@@ -545,48 +541,50 @@ class TestOneGaussianAgainstNumerics:
             promol_z_all = 5.0 * np.exp(-2.0 * (every_grid - 3.0) ** 2.0)
             return promol_z_all, promol_z
 
-        every_grid = np.arange(-5.0, 10.0, 0.00001)  # Full Integration
-        promol_z_all, promol_z = promolecular_in_z(grid, every_grid)
+        for x, y, z in pts:
+            grid = np.arange(-5.0, z, 0.00001)  # Integration till a x point
 
-        actual = -1.0 + 2.0 * np.trapz(promol_z, grid) / np.trapz(
-            promol_z_all, every_grid
-        )
-        true_ans = _transform_coordinate([x, y, z], 2, self.setUp())
-        assert np.abs(true_ans - actual) < 1e-5
+            every_grid = np.arange(-5.0, 10.0, 0.00001)  # Full Integration
+            promol_z_all, promol_z = promolecular_in_z(grid, every_grid)
 
-    @pytest.mark.parametrize("x", [0.0, 0.25, 1.1, 0.5, 1.5])
-    @pytest.mark.parametrize("y", [0.0, 1.25, 2.2, 2.25, 2.5])
-    @pytest.mark.parametrize("z", [0.0, 2.25, 3.2, 3.25, 4.5])
-    def test_jacobian(self, x, y, z):
+            actual = -1.0 + 2.0 * np.trapz(promol_z, grid) / np.trapz(
+                promol_z_all, every_grid
+            )
+            true_ans = _transform_coordinate([x, y, z], 2, self.setUp())
+            assert np.abs(true_ans - actual) < 1e-4
+
+    @pytest.mark.parametrize("pts", [np.random.uniform(-3.0, 3.0, size=(100, 3))])
+    def test_jacobian(self, pts):
         r"""Test that the jacobian of the transformation."""
         params, obj = self.setUp(ss=0.2, return_obj=True)
-        actual = obj.jacobian(np.array([x, y, z]))
+        for x, y, z in pts:
+            actual = obj.jacobian(np.array([x, y, z]))
 
-        # assert lower-triangular component is zero.
-        assert np.abs(actual[1, 0]) < 1e-5
-        assert np.abs(actual[2, 0]) < 1e-5
-        assert np.abs(actual[2, 1]) < 1e-5
+            # assert lower-triangular component is zero.
+            assert np.abs(actual[1, 0]) < 1e-5
+            assert np.abs(actual[2, 0]) < 1e-5
+            assert np.abs(actual[2, 1]) < 1e-5
 
-        # test derivative wrt to x
-        def tranformation_x(pt):
-            return _transform_coordinate([pt[0], y, z], 0, params)
+            # test derivative wrt to x
+            def tranformation_x(pt):
+                return _transform_coordinate([pt[0], y, z], 0, params)
 
-        grad = approx_fprime([x], tranformation_x, 1e-8)
-        assert np.abs(grad - actual[0, 0]) < 1e-5
+            grad = approx_fprime([x], tranformation_x, 1e-8)
+            assert np.abs(grad - actual[0, 0]) < 1e-5
 
-        # test derivative wrt to y
-        def tranformation_y(pt):
-            return _transform_coordinate([x, pt[0]], 1, params)
+            # test derivative wrt to y
+            def tranformation_y(pt):
+                return _transform_coordinate([x, pt[0]], 1, params)
 
-        grad = approx_fprime([y], tranformation_y, 1e-8)
-        assert np.abs(grad - actual[1, 1]) < 1e-5
+            grad = approx_fprime([y], tranformation_y, 1e-8)
+            assert np.abs(grad - actual[1, 1]) < 1e-5
 
-        # Test derivative wrt to z
-        def tranformation_z(pt):
-            return _transform_coordinate([x, y, pt[0]], 2, params)
+            # Test derivative wrt to z
+            def tranformation_z(pt):
+                return _transform_coordinate([x, y, pt[0]], 2, params)
 
-        grad = approx_fprime([z], tranformation_z, 1e-8)
-        assert np.abs(grad - actual[2, 2]) < 1e-5
+            grad = approx_fprime([z], tranformation_z, 1e-8)
+            assert np.abs(grad - actual[2, 2]) < 1e-5
 
 
 class TestInterpolation:
@@ -629,10 +627,7 @@ class TestInterpolation:
         for real_pt in grid:
             # Desired Point
             desired = func(real_pt[0], real_pt[1], real_pt[2])
-
-            print(desired)
             actual = obj.interpolate(real_pt, func_grid, oned_grids)
-            print(actual)
             assert np.abs(desired - actual) < 1e-5
 
         # Test on a exact point in the grid.
