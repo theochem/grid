@@ -27,6 +27,7 @@ from grid.protransform import (
 )
 
 import numpy as np
+from numpy.testing import assert_allclose
 
 import pytest
 
@@ -37,7 +38,7 @@ from scipy.special import erf
 class TestTwoGaussianDiffCenters:
     r"""Test a Sum of Two Gaussian function against analytic formulas and numerical procedures."""
 
-    def setUp(self, ss=0.1, return_obj=False):
+    def setUp(self, ss=0.1, return_obj=False, add_boundary=True):
         r"""Set up a two parameter Gaussian function."""
         c = np.array([[5.0], [10.0]])
         e = np.array([[2.0], [3.0]])
@@ -46,8 +47,14 @@ class TestTwoGaussianDiffCenters:
         if return_obj:
             num_pts = int(2 / ss) + 1
             weights = np.array([(2.0 / (num_pts - 2))] * num_pts)
+            if add_boundary:
+                l_bnd = -1.0
+                end_point = True
+            else:
+                l_bnd = -0.99
+                end_point = False
             oned = OneDGrid(
-                np.linspace(-1, 1, num=num_pts, endpoint=True), weights, domain=(-1, 1),
+                np.linspace(l_bnd, 1, num=num_pts, endpoint=end_point), weights, domain=(-1, 1),
             )
 
             obj = CubicProTransform(
@@ -91,11 +98,12 @@ class TestTwoGaussianDiffCenters:
         desired = params.promolecular(grid)
         assert np.all(np.abs(np.array(true_ans) - desired) < 1e-8)
 
-    @pytest.mark.parametrize("pts", [np.arange(-5.0, 5.0, 0.5)])
-    def test_transforming_x_against_formula(self, pts):
+    @pytest.mark.parametrize("pts, add_boundary", [[np.arange(-5.0, 5.0, 0.5), False],
+                                                   [np.arange(-5.0, 5.0, 0.5), True]])
+    def test_transforming_x_against_formula(self, pts, add_boundary):
         r"""Test transformming the X-transformation against analytic formula."""
         for pt in pts:
-            true_ans = _transform_coordinate([pt], 0, self.setUp())
+            true_ans = _transform_coordinate([pt], 0, self.setUp(add_boundary=add_boundary))
 
             def formula_transforming_x(x):
                 r"""Return closed form formula for transforming x coordinate."""
@@ -114,11 +122,13 @@ class TestTwoGaussianDiffCenters:
 
             assert np.abs(true_ans - formula_transforming_x(pt)) < 1e-8
 
-    @pytest.mark.parametrize("pts_xy", [np.random.uniform(-10.0, 10.0, size=(100, 2))])
-    def test_transforming_y_against_formula(self, pts_xy):
+    @pytest.mark.parametrize("pts_xy, add_boundary",
+                             [[np.random.uniform(-10.0, 10.0, size=(100, 2)), False],
+                              [np.random.uniform(-10.0, 10.0, size=(100, 2)), True]])
+    def test_transforming_y_against_formula(self, pts_xy, add_boundary):
         r"""Test transforming the Y-transformation against analytic formula."""
         for x, y in pts_xy:
-            true_ans = _transform_coordinate([x, y], 1, self.setUp())
+            true_ans = _transform_coordinate([x, y], 1, self.setUp(add_boundary=add_boundary))
 
             def formula_transforming_y(x, y):
                 r"""Return closed form formula for transforming y coordinate."""
@@ -143,10 +153,12 @@ class TestTwoGaussianDiffCenters:
 
             assert np.abs(true_ans - formula_transforming_y(x, y)) < 1e-8
 
-    @pytest.mark.parametrize("pts", [np.random.uniform(-10, 10, size=(100, 3))])
-    def test_transforming_z_against_formula(self, pts):
+    @pytest.mark.parametrize("pts, add_boundary",
+                             [[np.random.uniform(-10.0, 10.0, size=(100, 3)), False],
+                              [np.random.uniform(-10.0, 10.0, size=(100, 3)), True]])
+    def test_transforming_z_against_formula(self, pts, add_boundary):
         r"""Test transforming the Z-transformation against analytic formula."""
-        params, obj = self.setUp(ss=0.5, return_obj=True)
+        params, obj = self.setUp(ss=0.5, return_obj=True, add_boundary=add_boundary)
 
         def formula_transforming_z(x, y, z):
             r"""Return closed form formula for transforming z coordinate."""
@@ -586,7 +598,7 @@ class TestInterpolation:
         num_pts = int(2 / ss) + 1
         weights = np.array([(2.0 / (num_pts - 2))] * num_pts)
         oned_x = OneDGrid(
-            np.linspace(-1, 1, num=num_pts, endpoint=True), weights, domain=(-1, 1)
+            np.linspace(-1.0, 1.0, num=num_pts, endpoint=True), weights, domain=(-1, 1)
         )
 
         obj = CubicProTransform(
