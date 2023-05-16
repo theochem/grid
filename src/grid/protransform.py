@@ -413,8 +413,6 @@ class CubicProTransform(_HyperRectangleGrid):
             If nu is 1: Returns the interpolated derivative of a function at a real point.
 
         """
-        # TODO: Should oned_grids be stored as class attribute when only this method requires it.
-        # TODO: Ask about use_log and derivative.
         if nu not in (0, 1):
             raise ValueError("The parameter nu %d is either zero or one " % nu)
 
