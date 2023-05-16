@@ -381,7 +381,12 @@ class CubicProTransform(_HyperRectangleGrid):
         return jacobian.dot(real_grad)
 
     def interpolate(
-        self, real_pt, func_values, oned_grids, use_log=False, nu=0
+        self,
+        points,
+        values,
+        oned_grids,
+        use_log=False,
+        nu=0,
     ):
         r"""
         Interpolate function at a point.
@@ -390,10 +395,10 @@ class CubicProTransform(_HyperRectangleGrid):
         ----------
         real_pt : np.ndarray(3,)
             Point in :math:`\mathbb{R}^3` that needs to be interpolated.
-        func_values : np.ndarray(N,)
+        values : np.ndarray(N,)
             Function values at each point of the grid `points`.
-        oned_grids = list(3,)
-            List Containing Three One-Dimensional grid corresponding to x, y, z direction.
+        oned_grids = list(OneDGrids)
+            List containing three one-dimensional grid corresponding to x, y, z direction
         use_log : bool
             If true, then logarithm is applied before interpolating to the function values,
             including  `func_values`.
@@ -412,63 +417,39 @@ class CubicProTransform(_HyperRectangleGrid):
         # TODO: Ask about use_log and derivative.
         if nu not in (0, 1):
             raise ValueError("The parameter nu %d is either zero or one " % nu)
-        # Map to theta space.
-        theta_pt = self.transform(real_pt)
 
-        if use_log:
-            func_values = np.log(func_values)
-
-        jac = self.jacobian(real_pt).T
-
-        # Interpolate the Z-Axis based on x, y coordinates in grid.
-        def z_spline(z, x_index, y_index):
-            # x_index, y_index is assumed to be in the grid while z is not assumed.
-            # Get smallest and largest index for selecting func vals on this specific z-slice.
-            # The `1` and `self.num_puts[2] - 2` is needed because I don't want the boundary.
-            small_index = self.coordinates_to_index((x_index, y_index, 1))
-            large_index = self.coordinates_to_index(
-                (x_index, y_index, self.shape[2] - 2)
+        grid_pts = (
+                np.vstack(
+                    np.meshgrid(
+                        oned_grids[0].points,
+                        oned_grids[1].points,
+                        oned_grids[2].points,
+                        indexing="ij",
+                    )
+                )
+                .reshape(3, -1)
+                .T
             )
-            val = CubicSpline(
-                oned_grids[2].points[1 : self.shape[2] - 2],
-                func_values[small_index:large_index],
-            )(z, nu)
+        theta_points = np.array([self.transform(x) for x in points], dtype=float)
 
-            if nu == 1:
-                # Derivative in real-space with respect to z.
-                return (jac[:, 2] * val)[2]
-            return val
+        if nu == 0:
+            interpolation = super()._interpolate(theta_points, values, use_log, 0, 0, 0,
+                                                grid_pts=grid_pts)
+        if nu == 1:
+            # Interpolate in the theta-space and take the derivatives
+            interpolate_x = super()._interpolate(theta_points, values, use_log, 1, 0, 0,
+                                                grid_pts=grid_pts)
+            interpolate_y = super()._interpolate(theta_points, values, use_log, 0, 1, 0,
+                                                grid_pts=grid_pts)
+            interpolate_z = super()._interpolate(theta_points, values, use_log, 0, 0, 1,
+                                                grid_pts=grid_pts)
+            interpolation = np.vstack((interpolate_x.T, interpolate_y.T, interpolate_z.T)).T
+            # Transform the derivatives back to real-space.
+            interpolation = np.array([
+                self.jacobian(points[i]).dot(interpolation[i]) for i in range(len(interpolation))
+            ])
 
-        # Interpolate the Y-Axis based on x coordinate in grid.
-        def y_splines(y, x_index, z):
-            # The `1` and `self.num_puts[1] - 2` is needed because I don't want the boundary.
-            # Assumes x_index is in the grid while y, z may not be.
-            val = CubicSpline(
-                oned_grids[1].points[1 : self.shape[2] - 2],
-                [
-                    z_spline(z, x_index, y_index)
-                    for y_index in range(1, self.shape[1] - 2)
-                ],
-            )(y, nu)
-            if nu == 1:
-                # Derivative in real-space with respect to y.
-                return (jac[:, 1] * val)[1]
-            return val
-
-        # Interpolate the X-Axis.
-        def x_spline(x, y, z):
-            # x, y, z may not be in the grid.
-            val = CubicSpline(
-                oned_grids[0].points[1 : self.shape[2] - 2],
-                [y_splines(y, x_index, z) for x_index in range(1, self.shape[0] - 2)],
-            )(x, nu)
-            if nu == 1:
-                # Derivative in real-space with respect to x.
-                return (jac[:, 0] * val)[0]
-            return val
-
-        interpolated = x_spline(theta_pt[0], theta_pt[1], theta_pt[2])
-        return interpolated
+        return interpolation
 
     def jacobian(self, real_pt):
         r"""
