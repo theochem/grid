@@ -159,6 +159,13 @@ class BeckeWeights:
             mu_p_n_n = n_n_p.transpose([2, 0, 1]) / atomic_dist
         del n_n_p
         # if the radii of an atom is np.nan, use the radii with 1 less atomic number
+        specified_radius = [self._radii[num] for num in atnums]
+        indices = np.where(np.isnan(specified_radius))[0]
+        if len(indices) != 0:
+            warnings.warn(
+                f"Covalent radii for the following atom numbers {atnums[indices]} is nan."
+                f" Instead the radii with 1 less the atomic number is used."
+            )
         radii = np.array(
             [
                 self._radii[num] if not np.isnan(self._radii[num])
@@ -225,6 +232,13 @@ class BeckeWeights:
             mu_p_n_n = n_n_p.transpose([2, 0, 1]) / atomic_dist
         del n_n_p
         # if the radii of an atom is np.nan, use the radii with 1 less atomic number
+        specified_radius = [self._radii[num] for num in atnums]
+        indices = np.where(np.isnan(specified_radius))[0]
+        if len(indices) != 0:
+            warnings.warn(
+                f"Covalent radii for the following atom numbers {atnums[indices]} is nan."
+                f" Instead the radii with 1 less the atomic number is used."
+            )
         radii = np.array(
             [
                 self._radii[num] if not np.isnan(self._radii[num])
