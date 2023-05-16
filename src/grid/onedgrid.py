@@ -1063,6 +1063,10 @@ class ExpSinh(OneDGrid):
         x_k = \exp \left(\frac{\pi}{2}\sinh(k h) \right) \\
         w_k = \exp \left(\frac{\pi}{2}\sinh(k h) \right)\left(\frac{\pi h}{2} \cosh(k h) \right)
 
+    Warnings
+    --------
+    - Using this quadrature requires heavy parameter-tuning in-order to work.
+
     """
     def __init__(self, npoints: int, h: float = 1.0):
         r"""Generate 1D grid on :math:`(0, \infty)` interval based on exp-sinh quadrature.
@@ -1080,6 +1084,9 @@ class ExpSinh(OneDGrid):
             One-dimensional grid instance.
 
         """
+        warnings.warn(
+            "Using this quadrature requires heavy parameter-tuning in-order to be applicable."
+        )
         if h <= 0:
             raise ValueError(f"The value of h must be bigger than 0, given {h}")
         if npoints < 1:
@@ -1105,6 +1112,10 @@ class LogExpSinh(OneDGrid):
         w_k = \frac{\pi h\cosh(kh)\exp(\frac{\pi}{2}\sinh(kh))}
         {2(\exp(\frac{\pi}{2}\sinh(kh))+1)}.
 
+    Warnings
+    --------
+    - Using this quadrature requires heavy parameter-tuning in-order to work.
+
     """
     def __init__(self, npoints: int, h: float = 0.1):
         r"""Generate 1D grid on :math:`(0, \infty)` interval based on log-exp-sinh quadrature.
@@ -1122,6 +1133,9 @@ class LogExpSinh(OneDGrid):
             One-dimensional grid instance.
 
         """
+        warnings.warn(
+            "Using this quadrature requires heavy parameter-tuning in-order to be applicable."
+        )
         if h <= 0:
             raise ValueError(f"The value of h must be bigger than 0, given {h}")
         if npoints < 1:
@@ -1147,6 +1161,10 @@ class ExpExp(OneDGrid):
         x_k = e^{kh} e^{-e^{-kh}} \\
         w_k = h e^{-e^{-kh}}\left( e^{kh} + 1 \right)
 
+    Warnings
+    --------
+    - Using this quadrature requires heavy parameter-tuning in-order to work.
+
     """
     def __init__(self, npoints: int, h: float = 0.1):
         r"""Generate 1D grid on :math:`(0, \infty)` interval based on exp-exp quadrature.
@@ -1164,6 +1182,9 @@ class ExpExp(OneDGrid):
             One-dimensional grid instance.
 
         """
+        warnings.warn(
+            "Using this quadrature requires heavy parameter-tuning in-order to be applicable."
+        )
         if h <= 0:
             raise ValueError(f"The value of h must be bigger than 0, given {h}")
         if npoints < 1:
@@ -1229,6 +1250,10 @@ class SingleExp(OneDGrid):
         x_k = e^{kh}  \\
         w_k = h e^{kh}.
 
+    Warnings
+    --------
+    - Using this quadrature requires heavy parameter-tuning in-order to work.
+
     """
     def __init__(self, npoints: int, h: float = 0.1):
         r"""Generate 1D grid on :math:`(0, \infty)` interval based on exponential quadrature.
@@ -1246,6 +1271,9 @@ class SingleExp(OneDGrid):
             One-dimensional grid instance.
 
         """
+        warnings.warn(
+            "Using this quadrature requires heavy parameter-tuning in-order to be applicable."
+        )
         if h <= 0:
             raise ValueError(f"The value of h must be bigger than 0, given {h}")
         if npoints < 1:
@@ -1270,6 +1298,10 @@ class SingleArcSinhExp(OneDGrid):
         x_k = \mbox{arcsinh}(e^{kh}) \\
         w_k = \frac{h e^{kh}}{\sqrt{e^{2kh} + 1}}
 
+    Warnings
+    --------
+    - Using this quadrature requires heavy parameter-tuning in-order to work.
+
     """
     def __init__(self, npoints: int, h: float = 0.1):
         r"""Generate 1D grid on :math:`(0, \infty)` interval based on tanh-sinh quadrature.
@@ -1287,6 +1319,9 @@ class SingleArcSinhExp(OneDGrid):
             One-dimensional grid instance.
 
         """
+        warnings.warn(
+            "Using this quadrature requires heavy parameter-tuning in-order to be applicable."
+        )
         if h <= 0:
             raise ValueError(f"The value of h must be bigger than 0, given {h}")
         if npoints < 1:
