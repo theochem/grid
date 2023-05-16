@@ -1033,6 +1033,9 @@ def _inverse_coordinate(theta_pt, i_var, transformed, promol, bracket=(-10, 10))
             same_sign = is_same_sign(f_l_bnd, f_u_bnd)
             counter += 1
 
+        if counter == maxiter:
+            raise RuntimeError(f"Couldn't find correct bounds {bracket} for the root-solver "
+                               f"to solve for the inverse.")
         return tuple(bounds)
 
     # Set up Arguments for root_equation with dynamic bracketing.
