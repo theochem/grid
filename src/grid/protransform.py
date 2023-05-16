@@ -138,7 +138,25 @@ class CubicProTransform(_HyperRectangleGrid):
 
     """
 
-    def __init__(self, oned_grids, coeffs, exps, coords):
+    def __init__(self, oned_grids, coeffs, exps, coords, cut_off=1e-8):
+        r"""
+        Construct CubicProTransform object.
+
+        Parameters
+        ----------
+        oned_grids: List[OneDGrid]
+            List of three one-dimensional grid representing the grids along x-axis.
+        coeffs: List[List[float]]
+            Coefficients of the promolecular transformation over :math:`M` centers.
+        exps: List[List[float]]
+            Exponents of the promolecular transformation over :math:`M` centers.
+        coords: ndarray(M, 3)
+            The coordinates of the promolecular expansion.
+        cut_off: float
+            If the distance between a point in theta-space to the boundary is less than the
+            cut_off, then the point is considered to be part of the boundary.
+
+        """
         if not isinstance(oned_grids, list):
             raise TypeError("oned_grid should be of type list.")
         if not np.all([isinstance(grid, OneDGrid) for grid in oned_grids]):
@@ -162,7 +180,7 @@ class CubicProTransform(_HyperRectangleGrid):
             np.kron(oned_grids[0].weights, oned_grids[1].weights), oned_grids[2].weights
         )
         # Transform Cubic Grid in Theta-Space to Real-space.
-        points = self._transform(oned_grids)
+        points = self._transform(oned_grids, cut_off)
         # The prointegral is needed because of promolecular integration.
         # Divide by 8 needed because the grid is in [-1, 1] rather than [0, 1].
         super().__init__(points, weights * self._prointegral / 2.0 ** dimension, self._shape)
@@ -988,7 +1006,7 @@ def _inverse_coordinate(theta_pt, i_var, transformed, promol, bracket=(-10, 10))
     if np.inf in bracket or np.inf in transformed[:i_var]:
         return np.inf
 
-    def _dynamic_bracketing(l_bnd, u_bnd, maxiter=500):
+    def _dynamic_bracketing(l_bnd, u_bnd, maxiter=5000):
         r"""Dynamically changes the lower (or upper bound) to have different sign values."""
         bounds = [l_bnd, u_bnd]
 
