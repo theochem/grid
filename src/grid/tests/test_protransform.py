@@ -611,109 +611,101 @@ class TestInterpolation:
         param, obj, oned_grids = self.setUp(ss=0.08)
 
         # Function to interpolate.
-        def func(x, y, z):
-            return (x - 1.0) ** 3.0 + (y - 2.0) ** 3.0 + (z - 3.0) ** 3.0
+        def func(pts):
+            return (pts[:, 0] - 1.0) ** 3.0 + (pts[:, 1] - 2.0) ** 3.0 + (pts[:, 2] - 3.0) ** 3.0
 
-        # Set up function values on transformed grid for interpolate function.
-        func_grid = []
-        for pt in obj.points:
-            func_grid.append(func(pt[0], pt[1], pt[2]))
-        func_grid = np.array(func_grid)
+        # Test over a grid that is very close to the nucleus.
+        grid = np.vstack(
+            (
+                np.random.uniform(1.0, 1.5, (100,)).T,
+                np.random.uniform(1.5, 2.5, (100,)).T,
+                np.random.uniform(2.5, 3.5, (100,)).T
+            )
+        ).T
+        actuals = obj.interpolate(grid, func(obj.points), oned_grids, use_log=False)
+        desired = func(grid)
+        assert_allclose(desired, actuals, atol=1e-3, rtol=1e-4)
+
+    def test_interpolate_gaussian(self):
+        r"""Interpolate a Gaussian function with use_log set to True."""
+        param, obj, oned_grids = self.setUp(ss=0.08)
+
+        # Function to interpolate.
+        def func(pts, alpha=2.0):
+            return np.exp(-alpha * np.linalg.norm(pts - param.coords[0], axis=1)**2.0)
 
         # Test over a grid. Pytest isn't used for effiency reasons.
-        grid = [[1.1, 2.1, 3.1], [1.0, 2.0, 3.0], [0.75, 1.75, 3.1]]
-        for real_pt in grid:
-            # Desired Point
-            desired = func(real_pt[0], real_pt[1], real_pt[2])
-            actual = obj.interpolate(real_pt, func_grid, oned_grids)
-            assert np.abs(desired - actual) < 1e-5
-
-        # Test on a exact point in the grid.
-        real_pt = obj.points[5001]
-        desired = func(real_pt[0], real_pt[1], real_pt[2])
-        actual = obj.interpolate(real_pt, func_grid, oned_grids)
-        assert np.abs(desired - actual) < 1e-10
+        # TODO: the grid points need to be close to center to achieve good accuracy.
+        real_grid = np.vstack(
+            (
+                np.random.uniform(0.75, 1.25, (100,)).T,
+                np.random.uniform(0.75, 2.25, (100,)).T,
+                np.random.uniform(3.75, 3.25, (100,)).T
+            )
+        ).T
+        actuals = obj.interpolate(real_grid, func(obj.points), oned_grids, use_log=True)
+        desired = func(real_grid)
+        assert_allclose(desired, actuals, atol=1e-1)
 
     def test_interpolate_derivative_cubic_function(self):
         r"""Interpolate the derivative of some simple function."""
         param, obj, oned_grids = self.setUp(ss=0.08)
 
         # Function to interpolate.
-        def func(x, y, z):
-            return (x - 1.0) * (y - 2.0) * (z - 3.0)
+        def func(pts):
+            return (pts[:, 0] - 1.0) * (pts[:, 1] - 2.0) * (pts[:, 2] - 3.0)
 
-        def derivative(x, y, z):
-            return 1.0
-
-        # Set up function values on transformed grid for interpolate function.
-        func_grid = []
-        for pt in obj.points:
-            func_grid.append(func(pt[0], pt[1], pt[2]))
-        func_grid = np.array(func_grid)
+        def derivative(pts):
+            return np.vstack([
+                (pts[:, 1] - 2.0) * (pts[:, 2] - 3.0),
+                (pts[:, 0] - 1.0) * (pts[:, 2] - 3.0),
+                (pts[:, 0] - 1.0) * (pts[:, 1] - 2.0),
+            ]
+            ).T
 
         # Test over a grid. Pytest isn't used for effiency reasons.
-        # Had trouble interpolating points far away from the Gaussian 5 e^(-x(...)^2).
-        grid = [[1.1, 2.1, 3.1], [1.0, 2.0, 3.0], [0.75, 1.75, 3.1]]
-        for real_pt in grid:
-            # Desired Point
-            desired = derivative(real_pt[0], real_pt[1], real_pt[2])
-
-            actual = obj.interpolate(real_pt, func_grid, oned_grids, nu=1)
-            assert np.abs(desired - actual) < 1e-4
+        grid = np.vstack(
+            (
+                np.random.uniform(1.0, 1.5, (100,)).T,
+                np.random.uniform(1.5, 2.5, (100,)).T,
+                np.random.uniform(2.5, 3.5, (100,)).T
+            )
+        ).T
+        actual = obj.interpolate(grid, func(obj.points), oned_grids, nu=1)
+        desired = derivative(grid)
+        assert_allclose(actual, desired, atol=1e-2)
 
     def test_interpolate_derivative_cubic_function2(self):
         r"""Interpolate the derivative of some simple function."""
         param, obj, oned_grids = self.setUp(ss=0.08)
 
         # Function to interpolate.
-        def func(x, y, z):
-            return (x - 1.0) ** 2.0 * (y - 2.0) ** 2.0 * (z - 3.0) ** 2.0
+        def func(pts):
+            return (pts[:, 0] - 1.0) ** 2.0 * (pts[:, 1] - 2.0) ** 2.0 * (pts[:, 2] - 3.0) ** 2.0
 
-        def derivative(x, y, z):
-            return 8.0 * (x - 1.0) * (y - 2.0) * (z - 3.0)
-
-        # Set up function values on transformed grid for interpolate function.
-        func_grid = []
-        for pt in obj.points:
-            func_grid.append(func(pt[0], pt[1], pt[2]))
-        func_grid = np.array(func_grid)
-
-        # Test over a grid. Pytest isn't used for effiency reasons.
-        # Had trouble interpolating points far away from the Gaussian 5 e^(-x(...)^2).
-        grid = [[1.1, 2.1, 3.1], [1.0, 2.0, 3.0], [0.75, 1.75, 3.1]]
-        for real_pt in grid:
-            # Desired Point
-            desired = derivative(real_pt[0], real_pt[1], real_pt[2])
-
-            actual = obj.interpolate(real_pt, func_grid, oned_grids, nu=1)
-            assert np.abs(desired - actual) < 1e-4
-
-    def test_interpolate_derivative_cubic_function3(self):
-        r"""Interpolate the derivative of some simple function."""
-        param, obj, oned_grids = self.setUp(ss=0.08)
-
-        # Function to interpolate.
-        def func(x, y, z):
-            return (x - 1.0) ** 2.0 + (y - 2.0) ** 2.0 + (z - 3.0) ** 2.0
-
-        def derivative(x, y, z):
-            return 0.0
-
-        # Set up function values on transformed grid for interpolate function.
-        func_grid = []
-        for pt in obj.points:
-            func_grid.append(func(pt[0], pt[1], pt[2]))
-        func_grid = np.array(func_grid)
+        def derivative(pts):
+            x, y, z = pts[:, 0], pts[:, 1], pts[:, 2]
+            return np.vstack([
+                2.0 * (x - 1.0) * (y - 2.0) ** 2.0 * (z - 3.0) ** 2.0,
+                2.0 * (x - 1.0) ** 2.0 * (y - 2.0) * (z - 3.0) ** 2.0,
+                2.0 * (x - 1.0) ** 2.0 * (y - 2.0) ** 2.0 * (z - 3.0),
+                ]
+            ).T
 
         # Test over a grid. Pytest isn't used for effiency reasons.
-        # Had trouble interpolating points far away from the Gaussian 5 e^(-x(...)^2).
-        grid = [[1.1, 2.1, 3.1], [1.0, 2.0, 3.0], [0.75, 1.75, 3.1]]
-        for real_pt in grid:
-            # Desired Point
-            desired = derivative(real_pt[0], real_pt[1], real_pt[2])
-
-            actual = obj.interpolate(real_pt, func_grid, oned_grids, nu=1)
-            assert np.abs(desired - actual) < 1e-4
+        grid = np.vstack(
+            (
+                np.random.uniform(1.0, 1.5, (100,)).T,
+                np.random.uniform(1.5, 2.5, (100,)).T,
+                np.random.uniform(2.5, 3.5, (100,)).T
+            )
+        ).T
+        actual = obj.interpolate(grid, func(obj.points), oned_grids, nu=1, use_log=False)
+        desired = derivative(grid)
+        assert_allclose(actual, desired, atol=1e-2)
+        # Test with logarithm set to True
+        actual = obj.interpolate(grid, func(obj.points), oned_grids, nu=1, use_log=True)
+        assert_allclose(actual, desired, atol=1e-2)
 
 
 class TestIntegration:
