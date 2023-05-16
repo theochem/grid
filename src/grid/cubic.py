@@ -339,6 +339,7 @@ class _HyperRectangleGrid(Grid):
         """
         if self.ndim == 3:
             n_1d, n_2d = self.shape[2], self.shape[1] * self.shape[2]
+            # TODO Change this so that indices can be multi-dimensional
             index = n_2d * indices[0] + n_1d * indices[1] + indices[2]
             return index
         # Case of two-dimensions
@@ -453,6 +454,23 @@ class Tensor1DGrids(_HyperRectangleGrid):
         r"""Cartesian coordinates of the grid origin."""
         # Bottom, Left-Most, Down-most point of the hyper-rectangular grid.
         return self.points[0]
+
+    def save(self, filename):
+        r"""
+        Save tensor product of three one-dimensional grids attributes as a npz file.
+
+        Parameters
+        ----------
+        filename: str
+           The path/name of the .npz file.
+
+        """
+        dict_save = {
+            "points": self.points,
+            "weights": self.weights,
+            "origin": self.origin,
+        }
+        np.savez(filename, **dict_save)
 
 
 class UniformGrid(_HyperRectangleGrid):
@@ -730,6 +748,24 @@ class UniformGrid(_HyperRectangleGrid):
     def origin(self):
         """Return the Cartesian coordinates of the uniform grid origin."""
         return self._origin
+
+    def save(self, filename):
+        r"""
+        Save uniform cubic grid attributes as a npz file.
+
+        Parameters
+        ----------
+        filename: str
+           The path/name of the .npz file.
+
+        """
+        dict_save = {
+            "points": self.points,
+            "weights": self.weights,
+            "origin": self.origin,
+            "axes": self.axes,
+        }
+        np.savez(filename, **dict_save)
 
     def _calculate_volume(self, shape):
         r"""Return the volume of the Uniform Grid."""

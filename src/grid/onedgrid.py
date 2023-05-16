@@ -70,6 +70,11 @@ class GaussLaguerre(OneDGrid):
             raise ValueError(f"Argument alpha must be larger than -1, given {alpha}")
         # compute points and weights for Generalized Gauss-Laguerre quadrature
         points, weights = roots_genlaguerre(npoints, alpha)
+        if np.any(np.isnan(weights)):
+            raise RuntimeError(
+                "Generation of the weights for Gauss-generalized Laguerre quadrature contains "
+                "nans. This issue is related to SciPy."
+            )
         weights *= np.exp(points) * np.power(points, -alpha)
         super().__init__(points, weights, (0, np.inf))
 
@@ -327,7 +332,6 @@ class Trapezoidal(OneDGrid):
 
         super().__init__(points, weights, (-1, 1))
 
-
 class RectangleRuleSineEndPoints(OneDGrid):
     r"""
     Rectangle-Rule Sine end points integral quadrature class.
@@ -386,66 +390,67 @@ class RectangleRuleSineEndPoints(OneDGrid):
         super().__init__(points, weights, (-1, 1))
 
 
-class RectangleRuleSine(OneDGrid):
-    r"""
-    Rectangle-Rule Sine integral quadrature class.
-
-    .. math::
-        \int_{-1}^{1} f(x) dx \approx& \sum_{i=1}^n w_i f(x_i) \\
-        x_i =& \frac{2 i - 1}{2 n} \\
-        w_i =& \frac{2}{n^2 \pi} \sin(n\pi x_i) \sin^2(n\pi /2) +
-                \frac{4}{n \pi} \sum_{m=1}^{n-1} \frac{\sin(m \pi x_i)\sin^2(m\pi /2)}{m}
-
-    For consistency with other 1-D grids, the integration range is modified
-    by :math:`q=2x-1` to the interval :math:`[-1, 1]`, such that
-
-    .. math::
-        2 \int_{0}^{1} f(x) dx = \int_{-1}^{1} f(q) dq
-
-    References
-    ----------
-    .. [1] Boyd, John P. Chebyshev and Fourier spectral methods. Courier Corporation, 2001.
-
-    """
-
-    def __init__(self, npoints: int):
-        r"""Generate grid on :math:`[-1, 1]` interval using Interior Rectangle Rule for Sines.
-
-        Parameters
-        ----------
-        npoints : int
-            Number of grid points.
-
-        Returns
-        -------
-        OneDGrid
-            One-dimensional grid instance containing points and weights.
-
-        """
-        if npoints <= 1:
-            raise ValueError(
-                f"Argument npoints must be an integer > 1, given {npoints}"
-            )
-
-        points = (2 * np.arange(1, npoints + 1, 1) - 1) / (2 * npoints)
-
-        weights = (
-            (2 / (npoints * np.pi**2))
-            * np.sin(npoints * np.pi * points)
-            * np.sin(npoints * np.pi / 2) ** 2
-        )
-
-        m = np.arange(npoints - 1) + 1
-        bm = np.sin(m * np.pi / 2) ** 2 / m
-        sim = np.sin(np.outer(m * np.pi, points))
-        wi = bm @ sim
-        weights += (4 / (npoints * np.pi)) * wi
-
-        # change integration range using variable q = 2x - 1
-        points = 2 * points - 1
-        weights *= 2
-
-        super().__init__(points, weights, (-1, 1))
+# Developer Note: This is depreciated, the points/weights seems to be incorrect from the book.
+# class RectangleRuleSine(OneDGrid):
+#     r"""
+#     Rectangle-Rule Sine integral quadrature class.
+#
+#     .. math::
+#         \int_{-1}^{1} f(x) dx \approx& \sum_{i=1}^n w_i f(x_i) \\
+#         x_i =& \frac{2 i - 1}{2 n} \\
+#         w_i =& \frac{2}{n^2 \pi} \sin(n\pi x_i) \sin^2(n\pi /2) +
+#                 \frac{4}{n \pi} \sum_{m=1}^{n-1} \frac{\sin(m \pi x_i)\sin^2(m\pi /2)}{m}
+#
+#     For consistency with other 1-D grids, the integration range is modified
+#     by :math:`q=2x-1` to the interval :math:`[-1, 1]`, such that
+#
+#     .. math::
+#         2 \int_{0}^{1} f(x) dx = \int_{-1}^{1} f(q) dq
+#
+#     References
+#     ----------
+#     .. [1] Boyd, John P. Chebyshev and Fourier spectral methods. Courier Corporation, 2001.
+#
+#     """
+#
+#     def __init__(self, npoints: int):
+#         r"""Generate grid on :math:`[-1, 1]` interval using Interior Rectangle Rule for Sines.
+#
+#         Parameters
+#         ----------
+#         npoints : int
+#             Number of grid points.
+#
+#         Returns
+#         -------
+#         OneDGrid
+#             One-dimensional grid instance containing points and weights.
+#
+#         """
+#         if npoints <= 1:
+#             raise ValueError(
+#                 f"Argument npoints must be an integer > 1, given {npoints}"
+#             )
+#
+#         points = (2 * np.arange(1, npoints + 1, 1) - 1) / (2 * npoints)
+#
+#         weights = (
+#             (2 / (npoints * np.pi**2))
+#             * np.sin(npoints * np.pi * points)
+#             * np.sin(npoints * np.pi / 2) ** 2
+#         )
+#
+#         m = np.arange(npoints - 1) + 1
+#         bm = np.sin(m * np.pi / 2) ** 2 / m
+#         sim = np.sin(np.outer(m * np.pi, points))
+#         wi = bm @ sim
+#         weights += (4 / (npoints * np.pi)) * wi
+#
+#         # change integration range using variable q = 2x - 1
+#         points = 2 * points - 1
+#         weights *= 2
+#
+#         super().__init__(points, weights, (-1, 1))
 
 
 class TanhSinh(OneDGrid):
