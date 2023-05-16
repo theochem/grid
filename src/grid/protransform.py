@@ -167,7 +167,8 @@ class CubicProTransform(_HyperRectangleGrid):
             raise ValueError(
                 "There should be three One-Dimensional grids in `oned_grids`."
             )
-
+        self._l_bnd = -1.0
+        self._u_bnd = 1.0
         self._shape = tuple([grid.size for grid in oned_grids])
         dimension = len(oned_grids)
 
@@ -184,6 +185,18 @@ class CubicProTransform(_HyperRectangleGrid):
         # The prointegral is needed because of promolecular integration.
         # Divide by 8 needed because the grid is in [-1, 1] rather than [0, 1].
         super().__init__(points, weights * self._prointegral / 2.0 ** dimension, self._shape)
+
+    @property
+    def l_bnd(self):
+        r"""float: Lower bound in theta-space. Any point in theta-space that contains this point
+         gets mapped to infinity."""
+        return self._l_bnd
+
+    @property
+    def u_bnd(self):
+        r"""float: Upper bound in theta-space. Any point in theta-space that contains this point
+         gets mapped to infinity."""
+        return self._u_bnd
 
     @property
     def prointegral(self):
@@ -682,39 +695,43 @@ class CubicProTransform(_HyperRectangleGrid):
 
         return hessian
 
-    def _transform(self, oned_grids):
+    def _transform(self, oned_grids, cut_off=1e-8):
         # Transform the entire grid.
         # Indices (i, j, k) start from bottom, left-most corner of the [-1, 1]^3 cube.
+        def _is_boundary_pt(theta_pt):
+            if np.abs(theta_pt - self.l_bnd) < cut_off or np.abs(theta_pt - self.u_bnd) < cut_off:
+                return True
+            return False
+
         counter = 0
         points = np.empty((np.prod(self.shape), len(oned_grids)), dtype=np.float64)
         for ix in range(self.shape[0]):
             cart_pt = [None, None, None]
             theta_x = oned_grids[0].points[ix]
-
-            brack_x = self._get_bracket((ix,), 0, points)
+            is_boundary = _is_boundary_pt(theta_x)
+            brack_x = self._get_bracket((ix,), 0, points, is_boundary)
             cart_pt[0] = _inverse_coordinate(theta_x, 0, cart_pt, self.promol, brack_x)
 
             for iy in range(self.shape[1]):
                 theta_y = oned_grids[1].points[iy]
-
-                brack_y = self._get_bracket((ix, iy), 1, points)
+                is_boundary = _is_boundary_pt(theta_y)
+                brack_y = self._get_bracket((ix, iy), 1, points, is_boundary)
                 cart_pt[1] = _inverse_coordinate(
                     theta_y, 1, cart_pt, self.promol, brack_y
                 )
 
                 for iz in range(self.shape[2]):
                     theta_z = oned_grids[2].points[iz]
-
-                    brack_z = self._get_bracket((ix, iy, iz), 2, points)
+                    is_boundary = _is_boundary_pt(theta_z)
+                    brack_z = self._get_bracket((ix, iy, iz), 2, points, is_boundary)
                     cart_pt[2] = _inverse_coordinate(
                         theta_z, 2, cart_pt, self.promol, brack_z
                     )
-
                     points[counter] = cart_pt.copy()
                     counter += 1
         return points
 
-    def _get_bracket(self, indices, i_var, prev_points):
+    def _get_bracket(self, indices, i_var, prev_points, is_boundary):
         r"""
         Obtain brackets for root-finder based on the coordinate of the point.
 
@@ -729,6 +746,8 @@ class CubicProTransform(_HyperRectangleGrid):
             Points that are transformed and empty points that haven't been transformed yet.
             The points that are transformed is used to obtain brackets for this current
             point that hasn't been transformed yet.
+        is_boundary: bool
+            If the current indices is a boundary point, then returns inf, as it maps to infinity.
 
         Returns
         -------
