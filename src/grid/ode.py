@@ -17,38 +17,164 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
-r"""Linear ordinary differential equation solver with boundary conditions.
+r"""Linear ordinary differential equation solver.
 
 Solves a linear ordinary differential equation of order :math:`K` of the form
 
 .. math::
     \sum_{k=0}^{K} a_k(x) \frac{d^k y(x)}{dx^k} = f(x)
 
-with boundary conditions on the two end-points for some unknown function
-:math:`y(x)` with independent variable :math:`x`.
+with either boundary conditions on the two end-points for some unknown function
+:math:`y(x)` with independent variable :math:`x` or as an initial value
+problem on a interval.
 
 It also supports the ability to transform the independent variable :math:`x`
 to another domain :math:`g(x)` for some :math:`K`-th differentiable transformation
 :math:`g(x)`.  This is particularly useful to convert infinite domains, e.g.
-:math:`[0, \infty)`, to a finite interval. module.
+:math:`[0, \infty)`, to a finite interval.
 """
 
 import warnings
-from numbers import Number
+from numbers import Number, Real
 from typing import Union
 
 from grid.rtransform import BaseTransform
 
 import numpy as np
 
-from scipy.integrate import solve_bvp
+from scipy.integrate import solve_bvp, solve_ivp
+from scipy.linalg import solve
 
 from sympy import bell
 
-__all__ = ["solve_ode"]
+__all__ = ["solve_ode_bvp", "solve_ode_ivp"]
 
 
-def solve_ode(
+def solve_ode_ivp(
+    x_span: tuple,
+    fx: callable,
+    coeffs: Union[list, np.ndarray],
+    y0: Union[list, np.ndarray],
+    transform: BaseTransform = None,
+    method: str = "DOP853",
+    no_derivatives: bool = False,
+    rtol: float = 1e-8,
+    atol: float = 1e-6,
+):
+    r"""
+    Solve a linear ODE as an initial value problem.
+
+    Parameters
+    ----------
+    x_span : (int, int)
+        The interval of integration :math:`(t_0, t_1)` from the first point to the second point.
+    fx : callable
+        Right-hand function :math:`f(x)`.
+    coeffs : list[callable or float] or ndarray(K + 1,)
+        Coefficients :math:`a_k` of each term :math:`\frac{d^k y(x)}{d x^k}`
+        ordered from 0 to K. Either a list of callable functions :math:`a_k(x)` that depends
+        on :math:`x` or array of constants :math:`\{a_k\}_{k=0}^{K}`.
+    y0 : list[K] or ndarray(K)
+        The initial value conditions :math:`\frac{d^k y(t_0)}{d x^k} = c_k` at the initial point
+        :math:`t_0` from :math:`k=0,\cdots,K-1`.
+    transform : BaseTransform, optional
+        Transformation from one domain :math:`x` to another :math:`r := g(x)`.
+    method : str
+        The method used to solve the ode by scipy.
+        See `scipy.integrate.solve_ivp` function for more info.
+    no_derivatives : bool, optional
+        If true, when transform is used then it only returns the solution :math:`y(x)` rather
+        than its derivative. If false, it includes the derivatives up to :math:`P-1`.
+    rtol, atol : (float, float), optional
+        The relative and absolute tolerance. See `scipy.integrate.solve_ivp` for more info.
+
+    Returns
+    -------
+    callable :
+        Interpolate function (scipy.interpolate.PPoly) instance whose input is the
+        original domain :math:`x` and output is an array of the function :math:`y(x)` evaluated
+        on the points and its derivatives wrt to :math:`x` up to :math:`K - 1`.
+
+    """
+    order = len(coeffs) - 1
+    if len(y0) != order:
+        raise ValueError(
+            "Number of boundary condition need to be the same as ODE order."
+            f"Expect: {order}, got: {len(y0)}."
+        )
+
+    if transform is not None and order > 3:
+        raise NotImplementedError(
+            "Only support 3rd order ODE or less when using `transform`."
+        )
+
+    def func(x, y):
+        # x has shape (1,) and y has shape (K+1,1), output has shape (K+1,1)
+        x = np.array([x])
+        if transform:
+            # Transform the points back to the original domain.
+            orig_dom = transform.inverse(x)
+            dy_dx = _transform_and_rearrange_to_explicit_ode(
+                orig_dom, y, coeffs, transform, fx
+            )
+        else:
+            coeffs_mt = _evaluate_coeffs_on_points(x, coeffs)
+            dy_dx = _rearrange_to_explicit_ode(y, coeffs_mt, fx(x))
+        # (*y[1:, :],) returns a tuple of all rows excluding the first row.
+        #    This is due to conversion to system of first-order ODE form.
+        return np.vstack((*y[1:, :], dy_dx))
+
+    if transform:
+        # first check if the bounds are in the domain
+        if min(x_span) < transform.domain[0] or max(x_span) > transform.domain[1]:
+            raise ValueError(
+                f"The x_span {min(x_span), max(x_span)} is not within the transform "
+                f"domain {transform.domain}."
+            )
+        # Convert the initial value problem to the new derivative space, only transform up to K-1
+        # e.g. the first derivative dV/dx = dV/dr * dr/dx = dV/dr / (dx/dr)
+        deriv = _derivative_transformation_matrix(
+            [transform.deriv, transform.deriv2, transform.deriv3],
+            x_span[0],
+            order - 1,  # Only need derivatives up to K-1.
+        )
+        # If transform is used, then transform (x_0, x_1) that it integrates up to.
+        x_span = transform.transform(np.array(list(x_span)))
+        # Solve for derivatives in original domain by solving A(original derivs) = new derivs
+        y_derivs = solve(deriv, np.array(y0[1:]))
+        if np.any(np.isinf(y_derivs)):
+            raise ValueError(
+                f"The initial value of the derivative {y_derivs} "
+                f"when using transform is infinity."
+            )
+        y0 = np.hstack(([y0[0]], y_derivs))
+
+    res = solve_ivp(
+        func,
+        x_span,
+        y0=y0,
+        dense_output=True,
+        vectorized=True,
+        rtol=rtol,
+        atol=atol,
+        method=method,
+    )
+
+    # raise error if didn't converge
+    if res.status != 0:
+        raise ValueError(f"The ode solver didn't converge, got status: {res.status}")
+
+    if transform is not None:
+        # Transform the function so that it's input is the original variable and
+        #   derivative is with respect to the original variable as well.
+        return _transform_solution_to_original_domain(
+            res, transform, no_derivatives, order
+        )
+
+    return res.sol
+
+
+def solve_ode_bvp(
     x: np.ndarray,
     fx: callable,
     coeffs: Union[list, np.ndarray],
@@ -91,7 +217,7 @@ def solve_ode(
         See `scipy.integrate.solve_bvp` function for more info.
     initial_guess_y : ndarray(K, N), optional
         Initial guess for :math:`y(x), \cdots, \frac{d^{K} y}{d x^{K}}` at the points `x`.
-        If not provided, then random set of points from 0 to 1..
+        If not provided, then random set of points from 0 to 1.
     no_derivatives : bool, optional
         If true, when transform is used then it only returns the solution :math:`y(x)` rather
         than its derivative. If false, it includes the derivatives up to :math:`P-1`.
@@ -161,26 +287,35 @@ def solve_ode(
     if transform is not None:
         # Transform the function so that it's input is the original variable and
         #   derivative is with respect to the original variable as well.
-        def interpolate_wrt_original_var(pt):
-            transf_pts = transform.transform(pt)
-            # Row is which func/deriv and Col is points.
-            interpolated = res.sol(transf_pts)
-            # If derivatives are not wanted then only return y(x).
-            if no_derivatives:
-                if interpolated.ndim == 1:
-                    return interpolated
-                return interpolated[0, :]
-            deriv_funcs = [transform.deriv, transform.deriv2, transform.deriv3]
-            new_interpolate = np.zeros(interpolated.shape)
-            new_interpolate[0, :] = interpolated[0, :]
-            for i in range(interpolated.shape[1]):
-                deriv = _derivative_transformation_matrix(deriv_funcs, pt[i], order - 1)
-                new_interpolate[1:, i] = deriv.dot(interpolated[1:, i])
-            return new_interpolate
-
-        return interpolate_wrt_original_var
+        return _transform_solution_to_original_domain(
+            res, transform, no_derivatives, order
+        )
 
     return res.sol
+
+
+def _transform_solution_to_original_domain(result, tf, no_derivs, order):
+    r"""Transform interpolate solution to the original domains and its derivatives."""
+    # Note this is it's own function becuase it is used twice for solve_ode_ivp and bv.
+    def interpolate_wrt_original_var(pt):
+        transf_pts = tf.transform(pt)
+        # Row is which func/deriv and Col is points.
+        interpolated = result.sol(transf_pts)
+        # If derivatives are not wanted then only return y(x).
+        if no_derivs:
+            if interpolated.ndim == 1:
+                return interpolated
+            return interpolated[0, :]
+        deriv_funcs = [tf.deriv, tf.deriv2, tf.deriv3]
+        new_interpolate = np.zeros(interpolated.shape)
+        new_interpolate[0, :] = interpolated[0, :]
+        for i in range(interpolated.shape[1]):
+            # Calculate the jacobian dr/dx of the original domain.
+            deriv = _derivative_transformation_matrix(deriv_funcs, pt[i], order - 1)
+            new_interpolate[1:, i] = deriv.dot(interpolated[1:, i])
+        return new_interpolate
+
+    return interpolate_wrt_original_var
 
 
 def _transform_ode_from_derivs(
@@ -221,7 +356,7 @@ def _transform_ode_from_derivs(
 
     """
     # `derivs` has shape (K, N), calculate d^j g/ dr^j
-    derivs = np.array([dev(x) for dev in deriv_transformation], dtype=np.float64)
+    derivs = np.array([dev(x) for dev in deriv_transformation], dtype=float)
     total = len(coeffs)  # Should be K+1, K is the order of the ODE
     # coeff_a_mtr has shape (K+1, N)
     coeff_a_mtr = _evaluate_coeffs_on_points(x, coeffs)  # a_k(x)
@@ -336,9 +471,9 @@ def _derivative_transformation_matrix(deriv_func_list: list, point: float, order
     Suppose there is a function :math:`f(x)` and a :math:`N`-th differentiable
     transformation :math:`g(x) = r` from variable :math:`x` to variable :math:`r`.
     This function returns a matrix that converts the derivatives
-    :math:`[\frac{df}{dx}, \cdots, \frac{d^N f}{dx^N}]^T` by matrix multiplication
-    to the derivatives of the new transformation
-    :math:`[\frac{df}{dr}, \cdots, \frac{d^Nf}{dr^N}]^T`.
+    :math:`[\frac{df}{dr}, \cdots, \frac{d^N f}{dr^N}]^T` by matrix multiplication
+    to the derivatives of the old domain
+    :math:`[\frac{df}{dx}, \cdots, \frac{d^Nf}{dx^N}]^T`.
 
     It is a matrix with (i,j)-th entries:
 
@@ -365,11 +500,16 @@ def _derivative_transformation_matrix(deriv_func_list: list, point: float, order
         Returns the matrix that converts derivatives of one domain to another.
 
     """
+    if not isinstance(point, (Real, float)):
+        raise TypeError(f"Point {type(point)} should be of type float.")
     numb_derivs = len(deriv_func_list)
     if order > numb_derivs:
-        raise ValueError("TODO")
+        raise ValueError(
+            f"Order {order} should not be greater than number of derivatives"
+            f"functions {len(deriv_func_list)} provided."
+        )
     # Calculate derivatives of transformation evaluated at the point
-    derivs_at_pt = np.array([dev(point) for dev in deriv_func_list], dtype=np.float64)
+    derivs_at_pt = np.array([dev(point) for dev in deriv_func_list], dtype=float)
     deriv_transf = np.zeros((order, order))
     for i in range(0, order):
         for j in range(0, i + 1):

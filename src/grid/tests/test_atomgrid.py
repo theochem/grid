@@ -370,8 +370,8 @@ class TestAtomGrid:
         return dxf + dyf + dzf
 
     @pytest.mark.parametrize("use_spherical", [False, True])
-    def test_integrating_angular_components(self, use_spherical):
-        """Test radial points that contain zero."""
+    def test_integrating_angular_components_spherical(self, use_spherical):
+        """Test integrating angular components of a spherical harmonics of maximum degree 3."""
         odg = OneDGrid(
             np.array([0.0, 1e-16, 1e-8, 1e-4, 1e-2]), np.ones(5), (0, np.inf)
         )
@@ -399,6 +399,49 @@ class TestAtomGrid:
         assert_almost_equal(integral[0, 0, :], np.sqrt(4.0 * np.pi))
         assert_almost_equal(integral[0, 1:, :], 0.0)
         assert_almost_equal(integral[1:, :, :], 0.0)
+
+    @pytest.mark.parametrize("numb_rads, degs", [(10, 2), (10, 5), (10, 10)])
+    def test_integrating_angular_components_with_gaussian_projected_to_spherical_harmonic(
+        self, numb_rads, degs
+    ):
+        r"""Test integrating angular components of a Gaussian projected to spherical harmonic."""
+        odg = OneDGrid(np.linspace(0.0, 1.0, numb_rads), np.ones(numb_rads), (0, np.inf))
+        atom_grid = AtomGrid(odg, degrees=[degs])
+        func_vals = self.helper_func_gauss(atom_grid.points)
+        # Generate spherical harmonic basis
+        theta, phi = atom_grid.convert_cartesian_to_spherical().T[1:]
+        basis = generate_real_spherical_harmonics(degs // 2, theta, phi)
+        # Multiply spherical harmonic basis with the Gaussian function values to project.
+        values = np.einsum("ln,n->ln", basis, func_vals)
+        # Take the integral of the projection of the Gaussian onto spherical harmonic basis.
+        integrals = atom_grid.integrate_angular_coordinates(values)
+        # Since the Gaussian is spherical, then this is just the integral of a spherical harmonic
+        #  thus whenever l!= 0, we have it is zero everywhere.
+        assert_allclose(integrals[1:, :], 0.0, atol=1e-6)
+        # Integral of e^(-r^2) * int sin(theta) dtheta dphi / (sqrt(4 pi))
+        assert_allclose(integrals[0, :], np.exp(-atom_grid.rgrid.points**2.0) * (4.0 * np.pi)**0.5)
+
+    @pytest.mark.parametrize("numb_rads, degs", [(50, 10)])
+    def test_integrating_angular_components_with_offcentered_gaussian(
+        self, numb_rads, degs
+    ):
+        r"""Test integrating angular components off-centered Gaussian is non-zero due symmetry."""
+        # Go from 1e-3, since it is zero
+        odg = OneDGrid(np.linspace(1e-3, 1.0, numb_rads), np.ones(numb_rads), (0, np.inf))
+        atom_grid = AtomGrid(odg, degrees=[degs])
+        # Since it is off-centered, one of the l=1, (p-z orbital) would be non-zero
+        func_vals = self.helper_func_gauss(atom_grid.points, center=np.array([0.0, 0.0, 0.1]))
+        # Generate spherical harmonic basis
+        theta, phi = atom_grid.convert_cartesian_to_spherical().T[1:]
+        basis = generate_real_spherical_harmonics(degs // 2, theta, phi)
+        # Multiply spherical harmonic basis with the Gaussian function values to project.
+        values = np.einsum("ln,n->ln", basis, func_vals)
+        # Take the integral of the projection of the Gaussian onto spherical harmonic basis.
+        integrals = atom_grid.integrate_angular_coordinates(values)
+        # Integral of e^(-r^2) * int sin(\theta) d\theta d\phi / (sqrt(4 pi))
+        assert np.all(integrals[1, :] > 1e-5)  # pz-orbital should be non-zero
+        assert np.all(integrals[2, :] < 1e-5)  # px, py-orbital should be zero
+        assert np.all(integrals[3, :] < 1e-5)
 
     @pytest.mark.parametrize("use_spherical", [False, True])
     def test_fitting_spherical_harmonics(self, use_spherical):
@@ -469,6 +512,42 @@ class TestAtomGrid:
                     assert_almost_equal(fit[i](radial_pts), radial_pts**2.0)
                 i += 1
 
+    def test_radial_component_spherical_harmonic_degree_6(self):
+        r"""Test fitting the radial components of spherical harmonic of l=6,m=0."""
+        max_degree = 6 * 2 + 2  # Maximum degree
+        rad = OneDGrid(np.linspace(0.0, 1.0, num=10), np.ones(10), (0, np.inf))
+        atom_grid = AtomGrid.from_pruned(rad, 1, sectors_r=[], sectors_degree=[max_degree])
+        max_degree = atom_grid.l_max
+        spherical = atom_grid.convert_cartesian_to_spherical()
+
+        def func(sph_points):
+            # Spherical harmonic of degree 6 and order 0
+            r, phi, theta = sph_points.T
+            return np.sqrt(2.0) * np.sqrt(13) / (np.sqrt(np.pi) * 32) * (
+                    231 * np.cos(theta) ** 6.0 - 315 * np.cos(theta) ** 4.0 + 105 * np.cos(
+                theta) ** 2.0 - 5.0
+            )
+
+        # Test on the function Y^0_6
+        func_vals = func(spherical)
+        # Fit radial components
+        fit = atom_grid.radial_component_splines(func_vals)
+        radial_pts = np.arange(0.0, 1.0, 0.01)
+        counter = 0
+        for l in range(0, max_degree // 2):
+            for m in [0] + [x for x in range(1, l + 1)] + [x for x in range(-l, 0)]:
+                if counter == 36:
+                    # Test that on the right spherical harmonic the function r* Y^1_3 projects
+                    # to \rho^{1,3}(r) = r
+                    assert_almost_equal(fit[counter](radial_pts), np.sqrt(2.0))
+                else:
+                    assert_almost_equal(fit[counter](radial_pts), 0.0, decimal=8)
+
+                # Test the derivatives are all zero
+                assert_almost_equal(fit[counter](radial_pts, 1), 0.0)
+                assert_almost_equal(fit[counter](radial_pts, 2), 0.0)
+                counter += 1
+
     @pytest.mark.parametrize("use_spherical", [False, True])
     def test_value_fitting(self, use_spherical):
         """Test spline projection the same as spherical harmonics."""
@@ -493,9 +572,17 @@ class TestAtomGrid:
             )
             assert_allclose(r_sph_proj, [spl(shell) for spl in spls], atol=1e-10)
 
-    def test_cubicspline_and_interp_gauss(self):
-        """Test cubicspline interpolation values."""
-        oned = GaussLegendre(30)
+    @pytest.mark.parametrize("centers",
+        [
+            np.array([[0.0, 0.0, 0.0]]),
+            np.array([[0.1, 0.0, 0.0]]),
+            np.array([[0.1, 1.1, 0.0]]),
+            np.array([[1.1, 0.0, -0.1]]),
+        ]
+     )
+    def test_interpolation_of_gaussian(self, centers):
+        """Test cubicspline interpolation values on a Gaussian."""
+        oned = GaussLegendre(200)
         btf = BeckeRTransform(0.0001, 1.5)
         rad = btf.transform_1d_grid(oned)
         atgrid = AtomGrid.from_pruned(
@@ -503,18 +590,18 @@ class TestAtomGrid:
         )
         value_array = self.helper_func_gauss(atgrid.points)
         # random test points on gauss function
-        for _ in range(20):
-            r = np.random.rand(1)[0] * 2
-            theta = np.random.rand(10)
-            phi = np.random.rand(10)
-            x = r * np.sin(phi) * np.cos(theta)
-            y = r * np.sin(phi) * np.sin(theta)
-            z = r * np.cos(phi)
-            input_points = np.array((x, y, z)).T
-            interfunc = atgrid.interpolate(value_array)
-            assert_allclose(
-                self.helper_func_gauss(input_points), interfunc(input_points), atol=1e-4
-            )
+        size = 2000
+        r= np.random.uniform(0.0, np.max(rad.points), size=size)
+        theta = np.random.uniform(0.0, np.pi, size=size)
+        phi = np.random.uniform(0.0, 2.0 * np.pi, size=size)
+        x = r * np.sin(phi) * np.cos(theta)
+        y = r * np.sin(phi) * np.sin(theta)
+        z = r * np.cos(phi)
+        input_points = np.array((x, y, z)).T
+        interfunc = atgrid.interpolate(value_array)
+        assert_allclose(
+            self.helper_func_gauss(input_points, centers), interfunc(input_points), atol=1e-5
+        )
 
     @pytest.mark.parametrize("use_spherical", [False, True])
     def test_cubicspline_and_interp_mol(self, use_spherical):
@@ -637,7 +724,7 @@ class TestAtomGrid:
         assert_allclose(spherical_avg2, 0.0, atol=1e-4)
 
     @pytest.mark.parametrize("use_spherical", [False, True])
-    def test_interpolate_and_its_derivatives(self, use_spherical):
+    def test_interpolate_and_its_derivatives_on_polynomial(self, use_spherical):
         """Test interpolation of derivative of polynomial function."""
         odg = OneDGrid(np.linspace(0.01, 10, num=50), np.ones(50), (0, np.inf))
         rad = IdentityRTransform().transform_1d_grid(odg)
@@ -680,71 +767,184 @@ class TestAtomGrid:
                 # Raise error since it can't do derivative beyond one.
                 interp_func(xyz, deriv=3)
 
-    def test_interpolation_of_laplacian_with_spherical_harmonic(self):
-        r"""Test the interpolation of Laplacian of spherical harmonic is eigenvector."""
-        odg = OneDGrid(np.linspace(0.0, 10, num=2000), np.ones(2000), (0, np.inf))
-        rad = IdentityRTransform().transform_1d_grid(odg)
-        degree = 6 * 2 + 2
-        atgrid = AtomGrid.from_pruned(rad, 1, sectors_r=[], sectors_degree=[degree])
+    def test_cartesian_moment_integral_with_gaussian_upto_order_1(self):
+        r"""Test Cartesian moment integral of Gaussian up to order 1."""
+        # The moment integral is computed analytically with wolframalpha in one-dimension.
+        # Generate atomic grid.
+        oned = GaussLegendre(10000)
+        btf = BeckeRTransform(0.0001, 0.1)
+        rad = btf.transform_1d_grid(oned)
+        atgrid = AtomGrid.from_pruned(rad, 1, sectors_r=[], sectors_degree=[7])
 
-        def func(sph_points):
-            # Spherical harmonic of order 6 and magnetic 0
-            r, phi, theta = sph_points.T
-            return (
-                np.sqrt(2.0)
-                * np.sqrt(13)
-                / (np.sqrt(np.pi) * 32)
-                * (
-                    231 * np.cos(theta) ** 6.0
-                    - 315 * np.cos(theta) ** 4.0
-                    + 105 * np.cos(theta) ** 2.0
-                    - 5.0
-                )
+        # Create Gaussian function
+        func_vals = self.helper_func_gauss(atgrid.points, np.array([0.175, 0.25, 0.15]))
+
+        # Consider two centers.
+        orders = 1
+        centers = np.array([[0.0, 0.0, 0.0], [0.1, 0.1, 0.3]])
+        true = atgrid.moments(orders, centers, func_vals)
+        # Test Cartesian order: (0, 0, 0), which is integral e^{-(x - c)^2} in x-dim
+        assert_allclose(true[0, 0], np.sqrt(np.pi) ** 3.0, atol=1e-4)
+        assert_allclose(true[0, 1], np.sqrt(np.pi) ** 3.0, atol=1e-4)
+
+        # Test Cartesian order: (1, 0, 0), which is integral (x - X_c) e^{-(x-c)^2}
+        #  Wolfram: integral (x - c) e^(-(x - d)^2)  = sqrt(pi) (d - c)
+        assert_allclose(true[1, 0], np.sqrt(np.pi) ** 3.0 * 0.175, atol=1e-5)
+        assert_allclose(true[1, 1], np.sqrt(np.pi) ** 3.0 * (0.175 - 0.1), atol=1e-5)
+
+        # # Test (0, 0, 1)
+        assert_allclose(true[3, 0], np.sqrt(np.pi) ** 3.0 * 0.15, atol=1e-3)
+        assert_allclose(true[3, 1], np.sqrt(np.pi) ** 3.0 * (0.15 - 0.3), atol=1e-3)
+
+        with self.assertRaises(TypeError):
+            # orders should be integer
+            atgrid.moments(np.array([1, 1]), centers, func_vals)
+        with self.assertRaises(ValueError):
+            multidim_f = np.array([func_vals, func_vals])
+            atgrid.moments(1, centers, multidim_f)  # func_vals should be ndim = 1
+            # centers should be ndim =2
+            atgrid.moments(1, np.array([1, 1, 1]), func_vals)
+            atgrid.moments(1, np.array([[1, 1]]), func_vals)  # centers should be dim=3
+            atgrid.moments(0, centers, func_vals, type_mom="pure_radial")  # l>0
+            # func_vals too little points
+            atgrid.moments(1, centers, np.array([1, 2, 3]))
+
+    def test_pure_moment_integral_with_identity_function(self):
+        r"""Test pure moment integral with identify function is mostly all zeros."""
+        center = np.array([[0.0, 0.0, 0.0]])
+        oned = GaussLaguerre(15)
+        atgrid = AtomGrid(oned, degrees=[50])
+        func_vals = np.ones(atgrid.points.shape[0])
+        true = atgrid.moments(
+            orders=2, centers=center, func_vals=func_vals, type_mom="pure"
+        )
+        assert_allclose(true[range(1, len(true))], 0.0, atol=1e-3)
+
+    def test_pure_moment_integrals_with_gaussian_upto_order_5(self):
+        r"""Test pure multipole moment integral with Gaussian upto order 5."""
+        center = np.array([[0.0, 0.5, 1.0]])
+        # Obtained this from Horton on atomgrid
+        horton_answer = np.array(
+            [
+                5.56832800,
+                -5.56832800,
+                8.75535482e-18,
+                -2.78416400,
+                4.87228700,
+                1.96316697e-18,
+                4.82231350,
+                -1.20557838,
+                -1.26575073e-17,
+                -3.48020500,
+                1.19286145e-16,
+                -6.39354483,
+                2.69575520,
+                5.23442037e-17,
+                -4.68564343e-17,
+                5.50268726e-01,
+                1.52258969,
+                -3.26136843e-13,
+                7.15349344,
+                -4.47463560,
+                -2.80536246e-13,
+                -1.40807305e-12,
+                -1.45587420,
+                2.57364630e-01,
+                -1.56214452e-13,
+                7.39543562e-01,
+                1.35462566e-12,
+                -6.82363035,
+                6.24076062,
+                2.67670790e-12,
+                5.05401764e-12,
+                2.82075627,
+                -7.72093891e-01,
+                3.45622696e-12,
+                -3.70252405e-13,
+                -1.22078763e-01,
+            ]
+        )
+        # Generate atomic grid.
+        oned = GaussLaguerre(50)
+        atgrid = AtomGrid(oned, degrees=[50])
+        order = 5
+        gaussian = np.exp(-np.linalg.norm(atgrid.points, axis=1) ** 2.0)
+        true = atgrid.moments(
+            orders=order, centers=center, func_vals=gaussian, type_mom="pure"
+        )
+        assert_allclose(np.ravel(true), horton_answer, atol=1e-6)
+
+    def test_radial_moments_of_gaussian_against_horton(self):
+        r"""Test radial moments of Gausian against theochem/horton."""
+        center = np.array([[0.0, 0.5, 0.0]])
+        # Generate atomic grid.
+        oned = GaussLaguerre(100)
+        atgrid = AtomGrid(oned, degrees=[50])
+        horton_answer = np.array([5.568328, 6.79414003, 9.744574, 15.78558743])
+        order = 3
+        gaussian = np.exp(-np.linalg.norm(atgrid.points, axis=1) ** 2.0)
+        true = atgrid.moments(
+            orders=order, centers=center, func_vals=gaussian, type_mom="radial"
+        )
+        assert_allclose(true[:, 0], horton_answer, atol=1e-4)
+
+    def test_pure_radial_moments_of_identity_function_against_pure_moments(self):
+        r"""Test pure-radial multipole moments with identity function against pure moments."""
+        center = np.array([[0.0, 0.0, 0.0]])
+        # Generate atomic grid.
+        oned = GaussLaguerre(100)
+        atgrid = AtomGrid(oned, degrees=[50])
+        order = 3
+        ident_func = np.ones(atgrid.points.shape[0])
+        true, orders = atgrid.moments(
+            order, center, ident_func, "pure-radial", return_orders=True
+        )
+
+        ident_func = atgrid.convert_cartesian_to_spherical(
+            atgrid.points, center=center[0]
+        )[:, 0]
+        # Go through each (n, _, m)
+        for i, (n, l, m) in enumerate(orders):
+            index = l**2 + 2 * m - 1 if m > 0 else l**2 - 2 * m
+            # Integrate Y_l^m r^l f(x) where f(x)=r^n
+            desired = atgrid.moments(l, center, ident_func**n, "pure")
+            assert_allclose(desired[index], true[i])
+
+    def test_pure_radial_moments_of_spherical_harmonics(self):
+        r"""Test pure-radial multipole moments with spherical harmonics."""
+        center = np.array([[0.0, 0.0, 0.0]])
+        # Generate atomic grid.
+        oned = GaussLaguerre(20)
+        atgrid = AtomGrid(oned, degrees=[50])
+        order = 5
+        _, theta, phi = atgrid.convert_cartesian_to_spherical().T
+        spherical = generate_real_spherical_harmonics(order, theta, phi)
+
+        i_sph = 0
+        for l_sph, m_sph in [
+            (0, 0),
+            (1, 0),
+            (1, 1),
+            (1, -1),
+            (2, 0),
+            (2, 1),
+            (2, -1),
+            (2, 2),
+            (2, -2),
+        ]:
+            true, orders = atgrid.moments(
+                order // 2, center, spherical[i_sph], "pure-radial", return_orders=True
             )
-
-        # Get spherical points from atomic grid
-        spherical_pts = atgrid.convert_cartesian_to_spherical(atgrid.points)
-        func_values = func(spherical_pts)
-
-        laplacian = atgrid.interpolate_laplacian(func_values)
-
-        # Test on the same points used for interpolation and random points.
-        for grid in [atgrid.points, np.random.uniform(-0.75, 0.75, (250, 3))]:
-            actual = laplacian(grid)
-            spherical_pts = atgrid.convert_cartesian_to_spherical(grid)
-            # Eigenvector spherical harmonic times l(l + 1) / r^2
-            with np.errstate(divide="ignore", invalid="ignore"):
-                desired = (
-                    -func(spherical_pts) * 6 * (6 + 1) / spherical_pts[:, 0] ** 2.0
-                )
-            desired[spherical_pts[:, 0] ** 2.0 < 1e-10] = 0.0
-            assert_almost_equal(actual, desired, decimal=3)
-
-    def test_interpolation_of_laplacian_of_exponential(self):
-        r"""Test the interpolation of Laplacian of exponential."""
-        odg = OneDGrid(np.linspace(0.01, 1, num=1000), np.ones(1000), (0, np.inf))
-        degree = 10
-        atgrid = AtomGrid.from_pruned(odg, 1, sectors_r=[], sectors_degree=[degree])
-
-        def func(cart_pts):
-            radius = np.linalg.norm(cart_pts, axis=1)
-            return np.exp(-radius)
-
-        func_values = func(atgrid.points)
-
-        laplacian = atgrid.interpolate_laplacian(func_values)
-
-        # Test on the same points used for interpolation and random points.
-        for grid in [atgrid.points, np.random.uniform(-0.5, 0.5, (250, 3))]:
-            actual = laplacian(grid)
-            spherical_pts = atgrid.convert_cartesian_to_spherical(grid)
-            # Laplacian of exponential is e^-x (x - 2) / x
-            desired = (
-                np.exp(-spherical_pts[:, 0])
-                * (spherical_pts[:, 0] - 2.0)
-                / spherical_pts[:, 0]
-            )
-            assert_almost_equal(actual, desired, decimal=3)
+            for i_mom, (n_mom, l_mom, m_mom) in enumerate(orders):
+                # If the spherical harmonics match, then the integral over sph_coords is one
+                # then we are left with a diverging integral.
+                if l_mom == l_sph and m_sph == m_mom:
+                    assert true[i_mom] > 1000
+                else:
+                    # If the spherical  harmonics don't match, then the integral over sph coords
+                    # is zero.
+                    assert_allclose(true[i_mom], 0.0, atol=1e-5)
+            i_sph += 1
 
     def test_cartesian_moment_integral_with_gaussian_upto_order_1(self):
         r"""Test Cartesian moment integral of Gaussian up to order 1."""
