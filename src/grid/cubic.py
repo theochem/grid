@@ -268,6 +268,7 @@ class _HyperRectangleGrid(Grid):
             elif one_var_deriv:
                 # Taking the k-th derivative wrt to only one variable (x, y, z)
                 # Interpolate d^k ln(f) d"deriv_var" for all k from 1 to "deriv_var"
+                #  Each entry of `derivs` is the interpolation of the derivative eval on points.
                 if nu_x > 0:
                     derivs = [
                         self._interpolate(
@@ -292,19 +293,24 @@ class _HyperRectangleGrid(Grid):
                         for i in range(1, nu_z + 1)
                     ]
                     deriv_var = nu_z
-                # Sympy symbols and dictionary of symbols pointing to the derivative values
-                sympy_symbols = symbols("x:" + str(deriv_var))
-                symbol_values = {
-                    "x" + str(i): float(derivs[i]) for i in range(0, deriv_var)
-                }
-                return interpolated * float(
-                    sum(
-                        [
-                            bell(deriv_var, i, sympy_symbols).evalf(subs=symbol_values)
-                            for i in range(1, deriv_var + 1)
-                        ]
+                    
+                deriv_interpolated = []
+                for i_pt in range(len(points)):
+                    # Sympy symbols and dictionary of symbols pointing to the derivative values
+                    sympy_symbols = symbols("x:" + str(deriv_var))
+                    symbol_values = {
+                        "x" + str(i): float(derivs[i][i_pt]) for i in range(0, deriv_var)
+                    }
+                    value = interpolated[i_pt] * float(
+                        sum(
+                            [
+                                bell(deriv_var, i, sympy_symbols).evalf(subs=symbol_values)
+                                for i in range(1, deriv_var + 1)
+                            ]
+                        )
                     )
-                )
+                    deriv_interpolated.append(value)
+                return np.array(deriv_interpolated)
             else:
                 raise NotImplementedError(
                     "Taking mixed derivative while applying the logarithm is not supported."

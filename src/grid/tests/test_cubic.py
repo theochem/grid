@@ -189,7 +189,7 @@ class TestTensor1DGrids(TestCase):
                     assert_allclose(actual_weight, cubic.weights[index])
                     index += 1
 
-    def test_interpolation_of_gaussian_vertorized(self):
+    def test_interpolation_of_gaussian_vectorized(self):
         r"""Test interpolation of a Gaussian function with vectorization."""
         oned = MidPoint(50)
         cubic = Tensor1DGrids(oned, oned, oned)
@@ -250,49 +250,49 @@ class TestTensor1DGrids(TestCase):
         def gaussian(points):
             return np.exp(-3 * np.linalg.norm(points, axis=1) ** 2.0)
 
-        def derivative_wrt_one_var(point, i_var_deriv):
+        def derivative_wrt_one_var(points, i_var_deriv):
             return (
-                np.exp(-3 * np.linalg.norm(point) ** 2.0)
-                * point[i_var_deriv]
+                np.exp(-3 * np.linalg.norm(points, axis=1) ** 2.0)
+                * points[:, i_var_deriv]
                 * (-3 * 2.0)
             )
 
-        def derivative_second_x(point):
-            return np.exp(-3 * np.linalg.norm(point) ** 2.0) * point[0] ** 2.0 * (
+        def derivative_second_x(points):
+            return np.exp(-3 * np.linalg.norm(points, axis=1) ** 2.0) * points[:, 0] ** 2.0 * (
                 -3 * 2.0
-            ) ** 2.0 + np.exp(-3 * np.linalg.norm(point) ** 2.0) * (-3 * 2.0)
+            ) ** 2.0 + np.exp(-3 * np.linalg.norm(points, axis=1) ** 2.0) * (-3 * 2.0)
 
         gaussian_pts = gaussian(cubic.points)
 
-        pt = np.random.uniform(-0.5, 0.5, (3,))
+        pt = np.random.uniform(-0.5, 0.5, (100,3))
         # Test taking derivative in x-direction
         interpolated = cubic.interpolate(
-            pt[np.newaxis, :], gaussian_pts, use_log=True, nu_x=1
+            pt, gaussian_pts, use_log=True, nu_x=1
         )
         assert_allclose(interpolated, derivative_wrt_one_var(pt, 0), rtol=1e-4)
 
         # Test taking derivative in y-direction
         interpolated = cubic.interpolate(
-            pt[np.newaxis, :], gaussian_pts, use_log=True, nu_y=1
+            pt, gaussian_pts, use_log=True, nu_y=1
         )
         assert_allclose(interpolated, derivative_wrt_one_var(pt, 1), rtol=1e-4)
 
         # Test taking derivative in z-direction
         interpolated = cubic.interpolate(
-            pt[np.newaxis, :], gaussian_pts, use_log=True, nu_z=1
+            pt, gaussian_pts, use_log=True, nu_z=1
         )
         assert_allclose(interpolated, derivative_wrt_one_var(pt, 2), rtol=1e-4)
 
         # Test taking second-derivative in x-direction
         interpolated = cubic.interpolate(
-            pt[np.newaxis, :], gaussian_pts, use_log=True, nu_x=2, nu_y=0, nu_z=0
+            pt, gaussian_pts, use_log=True, nu_x=2, nu_y=0, nu_z=0
         )
         assert_allclose(interpolated, derivative_second_x(pt), rtol=1e-4)
 
         # Test raises error
         with self.assertRaises(NotImplementedError):
             cubic.interpolate(
-                pt[np.newaxis, :], gaussian_pts, use_log=True, nu_x=2, nu_y=2
+                pt, gaussian_pts, use_log=True, nu_x=2, nu_y=2
             )
 
     def test_integration_of_gaussian(self):
