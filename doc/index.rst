@@ -82,10 +82,10 @@ Modules
     :caption: Example Tutorials
 
     ./notebooks/Molecular_Grid.ipynb
-    ./notebooks/Molecular_Integration.ipynb
+    ./notebooks/Molecular_Grid_Construction.ipynb
     ./notebooks/Interpolation_and_Poisson.ipynb
-    ./notebooks/Cubic_Grids.ipynb
     ./notebooks/Multipole_Moments.ipynb
+    ./notebooks/Cubic_Grids.ipynb
 
 
 .. toctree::
