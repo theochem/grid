@@ -108,7 +108,18 @@ class _HyperRectangleGrid(Grid):
         return x, y
 
     def interpolate(
-        self, points, values, use_log=False, nu_x=0, nu_y=0, nu_z=0, method="cubic"
+        self, points, values, use_log=False, nu_x=0, nu_y=0, nu_z=0, method="cubic", grid_pts=None
+    ):
+        r"""Core of the Interpolate Algorithm."""
+        # Needed because CubicProTransform is a subclass of this method and has its own
+        #  interpolate function.  Since interpolate references itself, it chooses
+        #  CubicProTransform rather than _HyperRectangleGrid class.
+        return self._interpolate(
+            points, values, use_log, nu_x, nu_y, nu_z, method, grid_pts
+        )
+
+    def _interpolate(
+        self, points, values, use_log=False, nu_x=0, nu_y=0, nu_z=0, method="cubic", grid_pts=None
     ):
         r"""Interpolate function value at a given point.
 
@@ -137,10 +148,14 @@ class _HyperRectangleGrid(Grid):
             If zero, then the function in z-direction is interpolated.
             If greater than zero, then the "nu_z"th-order derivative in the z-direction is
             interpolated.
-        method : str, optional
+        method: str, optional
             The method of interpolation to perform. Supported are "cubic" (most accurate but
             computationally expensive), "linear", or "nearest" (least accurate but cheap
             computationally). The last two methods use SciPy's RegularGridInterpolator function.
+        grid_pts: list[OneDGrids], optional
+            If provided, then uses `grid_pts` rather than the points of the HyperRectangle class
+            `self.points` to construct interpolation.  Useful when doing a promolecular
+            transformation.
 
         Returns
         -------
@@ -161,6 +176,10 @@ class _HyperRectangleGrid(Grid):
                 f"Number of function values {values.shape[0]} does not match number of "
                 f"grid points {np.prod(self.shape)}."
             )
+        if grid_pts is not None and not isinstance(grid_pts, np.ndarray):
+            raise TypeError(
+                f"The grid points {type(grid_pts)} should have type None or numpy array."
+            )
 
         if use_log:
             values = np.log(values)
@@ -172,6 +191,10 @@ class _HyperRectangleGrid(Grid):
             interpolate = RegularGridInterpolator((x, y, z), values, method=method)
             return interpolate(points)
 
+        # If grid_pts isn't specified, then use the grid stored as the class attribute.
+        if grid_pts is None:
+            grid_pts = self.points
+
         # Interpolate the Z-Axis.
         def z_spline(z, x_index, y_index, nu_z=nu_z):
             # x_index, y_index is assumed to be in the grid while z is not assumed.
@@ -182,7 +205,7 @@ class _HyperRectangleGrid(Grid):
                 (x_index, y_index, self.shape[2] - 2)
             )
             val = CubicSpline(
-                self.points[small_index:large_index, 2],
+                grid_pts[small_index:large_index, 2],
                 values[small_index:large_index],
             )(z, nu_z)
             return val
@@ -192,7 +215,12 @@ class _HyperRectangleGrid(Grid):
             # The `1` and `self.num_puts[1] - 2` is needed because I don't want the boundary.
             # Assumes x_index is in the grid while y, z may not be.
             val = CubicSpline(
-                self.points[np.arange(1, self.shape[1] - 2) * self.shape[2], 1],
+                grid_pts[
+                    [
+                        self.coordinates_to_index((x_index, j, 0))
+                        for j in np.arange(1, self.shape[1] - 2)],
+                        1
+                    ],
                 [
                     z_spline(z, x_index, y_index, nu_z)
                     for y_index in range(1, self.shape[1] - 2)
@@ -207,9 +235,12 @@ class _HyperRectangleGrid(Grid):
         # Interpolate the point (x, y, z) from a list of interpolated points on x,y-axis.
         def x_spline(x, y, z, nu_x):
             val = CubicSpline(
-                self.points[
-                    np.arange(1, self.shape[0] - 2) * self.shape[1] * self.shape[2], 0
-                ],
+                grid_pts[
+                    [
+                        self.coordinates_to_index((i, 0, 0))
+                        for i in np.arange(1, self.shape[0] - 2)],
+                    0
+                    ],
                 [
                     y_splines(y, x_index, z, nu_y)
                     for x_index in range(1, self.shape[0] - 2)
@@ -224,7 +255,9 @@ class _HyperRectangleGrid(Grid):
         if use_log:
             # All derivatives require the interpolation of f at (x,y,z)
             interpolated = np.exp(
-                self.interpolate(points, values, use_log=False, nu_x=0, nu_y=0, nu_z=0)
+                self._interpolate(
+                    points, values, use_log=False, nu_x=0, nu_y=0, nu_z=0, grid_pts=grid_pts
+                )
             )
             # Only consider taking the derivative in only one direction
             one_var_deriv = sum([nu_x == 0, nu_y == 0, nu_z == 0]) == 2
@@ -235,43 +268,49 @@ class _HyperRectangleGrid(Grid):
             elif one_var_deriv:
                 # Taking the k-th derivative wrt to only one variable (x, y, z)
                 # Interpolate d^k ln(f) d"deriv_var" for all k from 1 to "deriv_var"
+                #  Each entry of `derivs` is the interpolation of the derivative eval on points.
                 if nu_x > 0:
                     derivs = [
-                        self.interpolate(
-                            points, values, use_log=False, nu_x=i, nu_y=0, nu_z=0
+                        self._interpolate(
+                            points, values, use_log=False, nu_x=i, nu_y=0, nu_z=0, grid_pts=grid_pts
                         )
                         for i in range(1, nu_x + 1)
                     ]
                     deriv_var = nu_x
                 elif nu_y > 0:
                     derivs = [
-                        self.interpolate(
-                            points, values, use_log=False, nu_x=0, nu_y=i, nu_z=0
+                        self._interpolate(
+                            points, values, use_log=False, nu_x=0, nu_y=i, nu_z=0, grid_pts=grid_pts
                         )
                         for i in range(1, nu_y + 1)
                     ]
                     deriv_var = nu_y
                 else:
                     derivs = [
-                        self.interpolate(
-                            points, values, use_log=False, nu_x=0, nu_y=0, nu_z=i
+                        self._interpolate(
+                            points, values, use_log=False, nu_x=0, nu_y=0, nu_z=i, grid_pts=grid_pts
                         )
                         for i in range(1, nu_z + 1)
                     ]
                     deriv_var = nu_z
-                # Sympy symbols and dictionary of symbols pointing to the derivative values
-                sympy_symbols = symbols("x:" + str(deriv_var))
-                symbol_values = {
-                    "x" + str(i): float(derivs[i]) for i in range(0, deriv_var)
-                }
-                return interpolated * float(
-                    sum(
-                        [
-                            bell(deriv_var, i, sympy_symbols).evalf(subs=symbol_values)
-                            for i in range(1, deriv_var + 1)
-                        ]
+                    
+                deriv_interpolated = []
+                for i_pt in range(len(points)):
+                    # Sympy symbols and dictionary of symbols pointing to the derivative values
+                    sympy_symbols = symbols("x:" + str(deriv_var))
+                    symbol_values = {
+                        "x" + str(i): float(derivs[i][i_pt]) for i in range(0, deriv_var)
+                    }
+                    value = interpolated[i_pt] * float(
+                        sum(
+                            [
+                                bell(deriv_var, i, sympy_symbols).evalf(subs=symbol_values)
+                                for i in range(1, deriv_var + 1)
+                            ]
+                        )
                     )
-                )
+                    deriv_interpolated.append(value)
+                return np.array(deriv_interpolated)
             else:
                 raise NotImplementedError(
                     "Taking mixed derivative while applying the logarithm is not supported."

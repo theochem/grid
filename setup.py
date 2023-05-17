@@ -69,6 +69,7 @@ setup(
         "scipy>=1.4",
         "importlib_resources",
         "sympy",
+        "dataclasses,
         "numpydoc", "sphinx_copybutton", "sphinx-autoapi", "nbsphinx", "sphinx_rtd_theme"
     ],
     classifiers=[
