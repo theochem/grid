@@ -624,8 +624,8 @@ class AtomGrid(Grid):
         # so if shell_degree < l_max, the f_{lm} should be set to zero for l > shell_degree // 2.
         # Instead, one could set truncate the basis of a given shell.
         for i in range(self.n_shells):
-            # if self.degrees[i] != self.l_max:
-            if self.degrees[i] > self.l_max // 2:
+            if self.degrees[i] != self.l_max:
+            # if self.degrees[i] > self.l_max // 2:
                 num_nonzero_sph = (self.degrees[i] // 2 + 1) ** 2
                 radial_components[num_nonzero_sph:, i] = 0.0
 
