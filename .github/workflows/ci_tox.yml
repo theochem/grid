@@ -1,6 +1,5 @@
 name: CI Tox
 on:
-  workflow_dispatch:  # Needed to manually run github actions
   push:
   pull_request:
     branches: [ master ]
