@@ -67,7 +67,7 @@ Modules
 
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
     :caption: User Documentation
 
     ./installation.rst

@@ -33,7 +33,7 @@ extensions = [
     'sphinx_autodoc_typehints',
     'sphinx.ext.autosummary',
     'sphinx.ext.mathjax',
-    'nbsphinx'
+    'nbsphinx',
 ]
 
 # List of arguments to be passed to the kernel that executes the notebooks:
