@@ -22,9 +22,11 @@
 # flake8: noqa
 
 
+from grid.angular import *
 from grid.atomgrid import *
 from grid.basegrid import *
 from grid.becke import *
+from grid.cubic import *
 from grid.hirshfeld import *
 from grid.angular import *
 from grid.molgrid import *
