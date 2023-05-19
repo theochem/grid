@@ -83,8 +83,6 @@ Modules
 
     ./notebooks/Molecular_Grid.ipynb
     ./notebooks/Molecular_Grid_Construction.ipynb
-    ./notebooks/Interpolation_and_Poisson.ipynb
-    ./notebooks/Multipole_Moments.ipynb
     ./notebooks/Cubic_Grids.ipynb
 
 
@@ -92,7 +90,7 @@ Modules
    :maxdepth: 2
    :caption: API Documentation
 
-   pyapi/modules
+   pyapi/modules.rst
 
 
 Indices and tables

@@ -20,7 +20,7 @@ Particularly, the radius :math:`r \in [0, \infty)`, azumuthal :math:`\theta \in 
 
 such that when the radius is zero :math:`r=0`, then the angles are zero :math:`\theta,\phi = 0`.
 
-Grid offers a utility function to convert to spherical coordinates
+Grid offers a :class:`utility<grid.utils.convert_cart_to_sph>` function to convert to spherical coordinates
 
 .. code-block::
     python
@@ -36,7 +36,7 @@ Grid offers a utility function to convert to spherical coordinates
     spher_pts = convert_cart_to_sph(cart_pts, center=np.array([1.0, 1.0, 1.0]))
 
 
-The atomic grid class can also be used to convert it's points to spherical coordinates
+The :class:`atomic grid<grid.atomgrid.AtomGrid>` class can also be used to convert it's points to spherical coordinates
 
 .. code-block::
     python
@@ -77,7 +77,8 @@ Alternatively, it can be written using the associated Legendre polynomials :math
         \sqrt{\frac{(2l + 1) (l - m)!}{4 \pi (l + m)!}}  \sqrt{2}\sin(m \theta) P_l^m(\cos(\theta))  & \text{if } m > 0
     \end{cases}
 
-Grid offers an utility function to generate the real spherical harmonics:
+Grid offers :func:`generate_real_spherical_harmonics<grid.utils.generate_real_spherical_harmonics>` function
+to generate the real spherical harmonics:
 
 .. code-block::
     python
@@ -100,3 +101,10 @@ For each degree :math:`l`, the orders :math:`m` are in HORTON2 order defined as:
 
 .. math::
    m = [0, 1, -1, 2, -2, \cdots, l, -l].
+
+
+Angular Grids
+=============
+
+The :class:`angular grids<grid.angular.AngularGrid>` is responsible for integrating functions over the unit-sphere. The quadrature weights are
+specifically chosen so that it integrates the identity function to obtain :math:`4 \pi`.
