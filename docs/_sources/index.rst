@@ -84,6 +84,8 @@ Modules
     ./notebooks/Molecular_Grid.ipynb
     ./notebooks/Molecular_Grid_Construction.ipynb
     ./notebooks/Cubic_Grids.ipynb
+    ./notebooks/Interpolation_and_Poisson.ipynb
+    ./notebooks/Multipole_Moments.ipynb
 
 
 .. toctree::

@@ -43,7 +43,9 @@
 
     
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Multipole Moments (In Progress)" href="Multipole_Moments.html" />
+    <link rel="prev" title="Cubic Grids" href="Cubic_Grids.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -109,7 +111,7 @@
 </li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Example Tutorials</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Molecular_Grid.html">Molecular Grids</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="Molecular_Grid.html#Integration">Integration</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="Molecular_Grid.html#Example:-Electron-Density">Example: Electron Density</a></li>
@@ -148,6 +150,13 @@
 <li class="toctree-l2"><a class="reference internal" href="Cubic_Grids.html#Uniform-Grid">Uniform Grid</a></li>
 </ul>
 </li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Interpolation and Solving Poisson’s Equation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Details">Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Example:-Unit-charge-distribution">Example: Unit-charge distribution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Multipole_Moments.html">Multipole Moments (In Progress)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
 <ul>
@@ -272,7 +281,7 @@
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[43]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Construct Atomic Grid</span>
@@ -281,7 +290,7 @@
 <span class="kn">from</span> <span class="nn">grid.atomgrid</span> <span class="kn">import</span> <span class="n">AtomGrid</span>
 
 <span class="n">oned</span> <span class="o">=</span> <span class="n">GaussLegendre</span><span class="p">(</span><span class="n">npoints</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
-<span class="n">btf</span> <span class="o">=</span> <span class="n">BeckeRTransform</span><span class="p">(</span><span class="n">rmin</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
+<span class="n">btf</span> <span class="o">=</span> <span class="n">BeckeRTransform</span><span class="p">(</span><span class="n">rmin</span><span class="o">=</span><span class="mf">1e-30</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
 <span class="n">radial</span> <span class="o">=</span> <span class="n">btf</span><span class="o">.</span><span class="n">transform_1d_grid</span><span class="p">(</span><span class="n">oned</span><span class="p">)</span>
 <span class="n">degree</span> <span class="o">=</span> <span class="mi">29</span>
 <span class="n">atgrid</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="o">.</span><span class="n">from_pruned</span><span class="p">(</span><span class="n">radial</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">sectors_r</span><span class="o">=</span><span class="p">[],</span> <span class="n">sectors_degree</span><span class="o">=</span><span class="p">[</span><span class="n">degree</span><span class="p">],</span> <span class="n">center</span><span class="o">=</span><span class="n">center</span><span class="p">)</span>
@@ -289,7 +298,7 @@
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[44]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Construct the interpolation of the charge distribution.</span>
@@ -327,11 +336,11 @@
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 Error difference between interpolation and true:
-[4.83430136e-13 7.17211186e-12 2.10379804e-12 6.92154667e-16
- 3.43160222e-12 1.16079195e-12 2.04087008e-12 1.86075981e-12
- 3.49286312e-12 2.37329895e-11 6.01723619e-12 2.63031949e-11
- 2.52326545e-12 2.14349953e-11 1.13147616e-11 2.27958537e-12
- 4.93207905e-12 8.34018618e-12 3.21936488e-12 3.43518616e-14]
+[2.03885450e-11 5.64345203e-11 1.09432265e-10 6.12496338e-11
+ 9.15886811e-12 5.53942031e-11 1.82077388e-10 7.62214354e-11
+ 1.08020218e-10 1.26516332e-11 6.38427089e-11 1.36835335e-12
+ 2.29083766e-12 1.07915340e-10 1.61463135e-11 8.81852612e-11
+ 4.39340925e-12 6.39232084e-10 7.09602863e-12 7.00513605e-12]
 </pre></div></div>
 </div>
 </div>
@@ -340,7 +349,7 @@ Error difference between interpolation and true:
 <p>The Poisson equation is defined as <span class="math notranslate nohighlight">\(\nabla^2 V = - 4\pi f(\vec{\textbf{r}})\)</span>, where <span class="math notranslate nohighlight">\(V\)</span> is the unknown potential, <span class="math notranslate nohighlight">\(\nabla^2\)</span> is the Laplacian and <span class="math notranslate nohighlight">\(f\)</span> is the charge distribution. It is well-known that the solution to this is given by <span class="math notranslate nohighlight">\(V(\vec{\textbf{r}}) = \int \frac{f(\vec{\textbf{r}}^\prime)}{|\vec{\textbf{r}} - \vec{\textbf{r}}^\prime| } d\vec{\textbf{r}}^\prime\)</span>. For the unit-charge distribution given above, the solution is given by
 <span class="math notranslate nohighlight">\(V(r, \theta, \phi) = \frac{\text{erf} \bigg[ \sqrt{\alpha} r_A \bigg]}{r_A},\)</span> where ERF is the error function. Grid offers two methods of solving the Poisson equation over an atomic grid. The recommended method is the <code class="docutils literal notranslate"><span class="pre">solve_poisson_bvp</span></code> and is used in this example.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[46]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">grid.rtransform</span> <span class="kn">import</span> <span class="n">InverseRTransform</span>
@@ -351,7 +360,7 @@ Error difference between interpolation and true:
 <span class="k">def</span> <span class="nf">actual_potential</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.25</span><span class="p">):</span>
     <span class="n">r_PC</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">desired</span> <span class="o">=</span> <span class="n">erf</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span> <span class="o">*</span> <span class="n">r_PC</span><span class="p">)</span> <span class="o">/</span> <span class="n">r_PC</span>
-    <span class="n">desired</span><span class="p">[</span><span class="n">r_PC</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">alpha</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+    <span class="n">desired</span><span class="p">[</span><span class="n">r_PC</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
     <span class="k">return</span> <span class="n">desired</span>
 
 <span class="c1">#Set the charge distribution to be unit-charge density and evaluate on atomic grid points.</span>
@@ -373,475 +382,12 @@ Error difference between interpolation and true:
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: divide by zero encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: divide by zero encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: divide by zero encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: divide by zero encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: divide by zero encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: divide by zero encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: divide by zero encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: divide by zero encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: divide by zero encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: divide by zero encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: divide by zero encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: divide by zero encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: divide by zero encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: divide by zero encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: divide by zero encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: divide by zero encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: divide by zero encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: divide by zero encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: divide by zero encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: divide by zero encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: divide by zero encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: divide by zero encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: divide by zero encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: divide by zero encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: divide by zero encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: divide by zero encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: divide by zero encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: divide by zero encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: divide by zero encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: divide by zero encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: divide by zero encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: divide by zero encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: divide by zero encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: divide by zero encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: divide by zero encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: divide by zero encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: divide by zero encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: divide by zero encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: divide by zero encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: divide by zero encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: divide by zero encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: divide by zero encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: divide by zero encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: divide by zero encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:1093: RuntimeWarning: invalid value encountered in true_divide
-  r_middle = 1.5 * col_res / h
-/home/pally/miniconda3/envs/p37/lib/python3.7/site-packages/scipy/integrate/_bvp.py:592: RuntimeWarning: invalid value encountered in true_divide
-  slope = (y[:, 1:] - y[:, :-1]) / h
-</pre></div></div>
-</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-0.2084002323096446 0.09674183923060209 0.07736065005234984
+0.10495702872626828 0.030589794409081324 0.02550959949900786
 </pre></div></div>
 </div>
 </div>
@@ -852,6 +398,15 @@ Error difference between interpolation and true:
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Multipole_Moments.html" class="btn btn-neutral float-right" title="Multipole Moments (In Progress)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Cubic_Grids.html" class="btn btn-neutral float-left" title="Cubic Grids" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>
