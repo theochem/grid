@@ -69,7 +69,8 @@ setup(
         "scipy>=1.4",
         "importlib_resources",
         "sympy",
-        "numpydoc", "sphinx_copybutton", "sphinx-autoapi", "nbsphinx", "sphinx_rtd_theme"
+        "numpydoc", "sphinx_copybutton", "sphinx-autoapi", "nbsphinx", "sphinx_rtd_theme",
+        "sphinx_autodoc_typehints",
     ],
     classifiers=[
         'Development Status :: 0 - Released',

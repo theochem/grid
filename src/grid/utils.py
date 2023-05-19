@@ -735,7 +735,7 @@ def generate_orders_horton_order(order: int, type_ord: str, dim: int = 3):
     For radial, the orders is just the order :math:`l`.
 
     For pure, the orders :math:`(l, m)` following the order
-     :math:`[(l, 0), (l, 1), (l, -1), \cdots, (l, l), (l, -l)]`.
+    :math:`[(l, 0), (l, 1), (l, -1), \cdots, (l, l), (l, -l)]`.
 
     Parameters
     ----------

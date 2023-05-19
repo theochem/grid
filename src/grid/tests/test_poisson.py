@@ -75,7 +75,7 @@ def poisson_solution_to_charge_distribution(x, alpha=0.1, centers=np.array([[0.0
     for cent in centers:
         r_PC = np.linalg.norm(x - cent, axis=1)
         desired = erf(np.sqrt(alpha) * r_PC) / r_PC
-        desired[r_PC == 0.0] = 0.0  # TODO: Take H`poital rule to calculate it
+        desired[r_PC == 0.0] = 0.0
         result += desired
     return result
 

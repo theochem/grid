@@ -101,10 +101,11 @@ class Grid:
     def integrate(self, *value_arrays):
         r"""Integrate over the whole grid for given multiple value arrays.
 
-        Product of all value_arrays will be computed element-wise then
-        integrated on the grid with its weights.
+        Product of all value_arrays will be computed element-wise then integrated on the grid
+        with its weights:
+
         .. math::
-            Integral = \int w(x) \prod_i f_i(x) dx
+            \int w(x) \prod_i f_i(x) dx.
 
         Parameters
         ----------
@@ -113,7 +114,7 @@ class Grid:
 
         Returns
         -------
-        float
+        float:
             The calculated integral over given integrand or function
 
         """
@@ -225,7 +226,7 @@ class Grid:
             The type of multipole moments: "cartesian", "pure", "radial" and "pure-radial".
         return_orders : bool
             If true, it will also return a list of size :math:`L` of the orders
-             corresponding to each integral/row of the output.
+            corresponding to each integral/row of the output.
 
         Returns
         -------

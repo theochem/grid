@@ -349,7 +349,8 @@ class RectangleRuleSineEndPoints(OneDGrid):
 
     References
     ----------
-    .. [1] Boyd, John P. Chebyshev and Fourier spectral methods. Courier Corporation, 2001.
+    .. [#] Boyd, John P. Chebyshev and Fourier spectral methods. Courier Corporation, 2001.
+
     """
 
     def __init__(self, npoints: int):
@@ -409,7 +410,7 @@ class RectangleRuleSineEndPoints(OneDGrid):
 #
 #     References
 #     ----------
-#     .. [1] Boyd, John P. Chebyshev and Fourier spectral methods. Courier Corporation, 2001.
+#     .. [#] Boyd, John P. Chebyshev and Fourier spectral methods. Courier Corporation, 2001.
 #
 #     """
 #
@@ -600,17 +601,17 @@ class ClenshawCurtis(OneDGrid):
         \theta_i &= \pi (i - 1) / (n - 1) \\
         x_i &= \cos (\theta_i) \\
         w_i &= \frac{c_k}{n} \bigg(1 - \sum_{j=1}^{\lfloor n/2 \rfloor}
-            \frac{b_j}{4j^2 - 1} \cos(2j\theta_i) \bigg)
-        b_j = \begin{cases}
+            \frac{b_j}{4j^2 - 1} \cos(2j\theta_i) \bigg) \\
+        b_j &= \begin{cases}
             1 & \text{if } j = n/2 \\
             2 & \text{if } j < n/2
         \end{cases} \\
-        c_j = \begin{cases}
+        c_j &= \begin{cases}
             1 & \text{if } k = 0, n\\
             2 & else
         \end{cases}
 
-    where :math:k`=0,\cdots,n.
+    where :math:`k=0,\cdots,n`.
 
     If discontinuous, it is recommended to break the intervals at the discontinuities
     and handled separately.
@@ -662,8 +663,8 @@ class FejerFirst(OneDGrid):
     The definition of this quadrature is:
 
     .. math::
-        \theta_i &= \frac{(2i - 1)\pi}{2n},
-        x_i &= \cos(\theta_i),
+        \theta_i &= \frac{(2i - 1)\pi}{2n}, \\
+        x_i &= \cos(\theta_i), \\
         w_i &= \frac{2}{n}\bigg(1 - 2 \sum_{j=1}^{\lfloor n/2 \rfloor}
             \frac{\cos(2j \theta_j)}{4 j^2 - 1} \bigg),
 
@@ -714,7 +715,7 @@ class FejerSecond(OneDGrid):
     The definition of this quadrature is:
 
     .. math::
-        theta_i &= k \pi / n \\
+        \theta_i &= k \pi / n \\
         x_i &= \cos(\theta_i) \\
         w_i &= \frac{4 \sin(\theta_i)}{n} \sum_{j=1}^{\lfloor n/2 \rfloor}
             \frac{\sin(2j - 1)\theta_i}{2j - 1}\\
@@ -794,8 +795,9 @@ class TrefethenCC(OneDGrid):
 
     References
     ----------
-    .. [1] Hale, Nicholas, and Lloyd N. Trefethen. "New quadrature formulas from conformal maps."
+    .. [#] Hale, Nicholas, and Lloyd N. Trefethen. "New quadrature formulas from conformal maps."
        SIAM Journal on Numerical Analysis 46.2 (2008): 930-948.
+
     """
 
     def __init__(self, npoints: int, d: int = 9):
@@ -837,8 +839,9 @@ class TrefethenGC2(OneDGrid):
 
     References
     ----------
-    .. [1] Hale, Nicholas, and Lloyd N. Trefethen. "New quadrature formulas from conformal maps."
+    .. [#] Hale, Nicholas, and Lloyd N. Trefethen. "New quadrature formulas from conformal maps."
        SIAM Journal on Numerical Analysis 46.2 (2008): 930-948.
+
     """
 
     def __init__(self, npoints: int, d: int = 9):
@@ -880,8 +883,9 @@ class TrefethenGeneral(OneDGrid):
 
     References
     ----------
-    .. [1] Hale, Nicholas, and Lloyd N. Trefethen. "New quadrature formulas from conformal maps."
+    .. [#] Hale, Nicholas, and Lloyd N. Trefethen. "New quadrature formulas from conformal maps."
        SIAM Journal on Numerical Analysis 46.2 (2008): 930-948.
+
     """
 
     def __init__(self, npoints: int, quadrature: OneDGrid, d=9):
@@ -970,10 +974,11 @@ def _dergstrip(rho, s):
 class TrefethenStripCC(OneDGrid):
     """Trefethen strip transformation of Clenshaw-Curtis quadrature.
 
-     References
+    References
     ----------
-    .. [1] Hale, Nicholas, and Lloyd N. Trefethen. "New quadrature formulas from conformal maps."
+    .. [#] Hale, Nicholas, and Lloyd N. Trefethen. "New quadrature formulas from conformal maps."
        SIAM Journal on Numerical Analysis 46.2 (2008): 930-948.
+
     """
 
     def __init__(self, npoints: int, rho=1.1):
@@ -999,10 +1004,11 @@ class TrefethenStripCC(OneDGrid):
 class TrefethenStripGC2(OneDGrid):
     """Trefethen strip transformation of the Gauss-Chebyshev of the second kind quadrature.
 
-     References
+    References
     ----------
-    .. [1] Hale, Nicholas, and Lloyd N. Trefethen. "New quadrature formulas from conformal maps."
+    .. [#] Hale, Nicholas, and Lloyd N. Trefethen. "New quadrature formulas from conformal maps."
        SIAM Journal on Numerical Analysis 46.2 (2008): 930-948.
+
     """
 
     def __init__(self, npoints: int, rho=1.1):
@@ -1029,10 +1035,11 @@ class TrefethenStripGC2(OneDGrid):
 class TrefethenStripGeneral(OneDGrid):
     """Trefethen Strip General integral quadrature class.
 
-     References
+    References
     ----------
-    .. [1] Hale, Nicholas, and Lloyd N. Trefethen. "New quadrature formulas from conformal maps."
+    .. [#] Hale, Nicholas, and Lloyd N. Trefethen. "New quadrature formulas from conformal maps."
        SIAM Journal on Numerical Analysis 46.2 (2008): 930-948.
+
     """
 
     def __init__(self, npoints: int, quadrature, rho=1.1):

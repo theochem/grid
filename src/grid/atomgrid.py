@@ -151,7 +151,7 @@ class AtomGrid(Grid):
 
         Examples
         --------
-        # construct an atomic grid for H with fine grid setting
+        >>> # construct an atomic grid for H with fine grid setting
         >>> atgrid = AtomGrid.from_preset(rgrid, atnum=1, preset="fine")
 
         Parameters
@@ -548,7 +548,7 @@ class AtomGrid(Grid):
 
         Examples
         --------
-        # Define a Gaussian function that takes Cartesian coordinates as input
+        >>> # Define a Gaussian function that takes Cartesian coordinates as input
         >>> func = lambda cart_pts: np.exp(-np.linalg.norm(cart_pts, axis=1)**2.0)
         # Construct atomic grid with degree 10 on a radial grid on [0, \infty)
         >>> radial_grid = GaussLaguerre(100, alpha=1.0)
@@ -600,9 +600,9 @@ class AtomGrid(Grid):
         Returns
         -------
         list[scipy.PPoly]
-            A list of size :math:`(l_{max}//2 + 1)**2` of  CubicSpline object for interpolating the
+            A list of size :math:`(l_{max}/2 + 1)^2` of  CubicSpline object for interpolating the
             coefficients :math:`\rho^{lm}(r)`. The input of spline is array
-            of :math:`N` points on :math:`[0, \infty)` and the output is :\{math:`\rho^{lm}(r_i)\}`.
+            of :math:`N` points on :math:`[0, \infty)` and the output is :math:`\{\rho^{lm}(r_i)\}`.
             The list starts with degrees :math:`l=0,\cdots l_{max}`, and the for each degree,
             the zeroth order spline is first, followed by positive orders then negative.
 
@@ -654,9 +654,10 @@ class AtomGrid(Grid):
 
         Returns
         -------
-        Callable[[ndarray(M, 3), int] -> ndarray(M)]
+        Callable[[ndarray(M, 3), int] -> ndarray(M)]:
             Callable function that interpolates the function and its derivative provided.
             The function takes the following attributes:
+
                 points : ndarray(N, 3)
                     Cartesian coordinates of :math:`N` points to evaluate the splines on.
                 deriv : int, optional
@@ -669,15 +670,17 @@ class AtomGrid(Grid):
                     :math:`(r, \theta, \phi)`. Default False.
                 only_radial_deriv : bool
                     If true, then the derivative wrt to radius :math:`r` is returned.
-            and returns:
-                ndarray(M,...) :
+
+            This function returns the following.
+
+                ndarray(M,...):
                     The interpolated function values or its derivatives with respect to Cartesian
                     :math:`(x,y,z)` or if `deriv_spherical` then :math:`(r, \theta, \phi)` or
                     if `only_radial_derivs` then derivative wrt to :math:`r` is only returned.
 
         Examples
         --------
-        # First generate a atomic grid with raidal points that have all degree 10.
+        >>> # First generate a atomic grid with raidal points that have all degree 10.
         >>> from grid.basegrid import OneDGrid
         >>> radial_grid = OneDGrid(np.linspace(0.01, 10, num=100), np.ones(100), (0, np.inf))
         >>> atom_grid = AtomGrid(radial_grid, degrees=[10])

@@ -467,6 +467,7 @@ class UniformGrid(_HyperRectangleGrid):
             Number of grid points along each axis.
         weight : str
             String indicating weighting function. This can be:
+
             Rectangle :
                 The weights are the standard Riemannian weights,
 
@@ -483,7 +484,6 @@ class UniformGrid(_HyperRectangleGrid):
 
                  .. math::
                     \begin{align*}
-
                         w_{ij} &= \frac{V}{(M_x + 1) \cdot (M_y + 1)}  \tag{Two-Dimensions} \\
                         w_{ijk} &= \frac{V}{(M_x + 1) \cdot (M_y + 1) \cdot (M_z + 1)}
                         \tag{Three-Dimensions}
@@ -520,10 +520,10 @@ class UniformGrid(_HyperRectangleGrid):
                 boundary of the cube.
 
                 .. math::
-                    w_{ijk} = V^\prime \cdot w_i w_j w_k,
+                    w_{ijk} &= V^\prime \cdot w_i w_j w_k, \\
                     w_i &= \bigg(\frac{2\sin((j - 0.5)\pi) \sin^2(M_x\pi/2)}{M_x^2 \pi} +
                      \frac{4}{M_x \pi} \sum_{p=1}^{M_x - 1}
-                     \frac{\sin((2j-1)p\pi /n_x) sin^2(p \pi)\}{\pi}bigg)
+                     \frac{\sin((2j-1)p\pi /n_x) sin^2(p \pi)}{\pi} \bigg)
 
             Alternative :
                 This does not assume function is zero at the boundary.
@@ -620,6 +620,7 @@ class UniformGrid(_HyperRectangleGrid):
         weight : str, optional
             String indicating weighting function. Denoting the volume/area of the uniform grid
             by :math:`V`, the weighting function can be:
+
             Rectangle :
                 The weights are the standard Riemannian weights,
 
@@ -651,10 +652,10 @@ class UniformGrid(_HyperRectangleGrid):
                 boundary of the cube.
 
                 .. math::
-                    w_{ijk} = V^\prime \cdot w_i w_j w_k,
+                    w_{ijk} &= V^\prime \cdot w_i w_j w_k,\\
                     w_i &= \bigg(\frac{2\sin((j - 0.5)\pi) \sin^2(M_x\pi/2)}{M_x^2 \pi} +
                      \frac{4}{M_x \pi} \sum_{p=1}^{M_x - 1}
-                     \frac{\sin((2j-1)p\pi /n_x) sin^2(p \pi)\}{\pi}bigg)
+                     \frac{\sin((2j-1)p\pi /n_x) sin^2(p \pi)}{\pi} \bigg)
 
             Alternative :
                 This does not assume function is zero at the boundary.

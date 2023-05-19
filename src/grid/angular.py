@@ -25,16 +25,16 @@ Their calculations were based on F77 translation by Dr. Christoph van Wuellen
 and these are the comments from that translation.
 
 This subroutine is part of a set of subroutines that generate
-Lebedev grids [1-6] for integration on a sphere. The original
-C-code [1] was kindly provided by Dr. Dmitri N. Laikov and
+Lebedev grids [1-6]_ for integration on a sphere. The original
+C-code [1]_ was kindly provided by Dr. Dmitri N. Laikov and
 translated into fortran by Dr. Christoph van Wuellen.
 This subroutine was translated from C to fortran77 by hand.
-Users of this code are asked to include reference [1] in their
+Users of this code are asked to include reference [1]_ in their
 publications, and in the user- and programmers-manuals
 describing their codes.
 This code was distributed through CCL (http://www.ccl.net/).
 
-The symmetric spherical t-design were obtained from reference [7].
+The symmetric spherical t-design were obtained from reference [7]_.
 
 References
 ----------
@@ -55,13 +55,12 @@ The following references are for the Lebedev grid points.
    quadrature formulae invariant under the octahedron group with inversion" Computational
    Mathematics and Mathematical Physics, Vol. 15, 1975, pp. 44-51.
 
-
 The following is references for the symmetric spherical t-design points:
 
 .. [7] R. S. Womersley, Efficient Spherical Designs with Good Geometric Properties.
-       In: Dick J., Kuo F., Wozniakowski H. (eds) Contemporary Computational Mathematics -
-       A Celebration of the 80th Birthday of Ian Sloan. Springer (2018) pp. 1243-1285
-       https://doi.org/10.1007/978-3-319-72456-0_57
+   In: Dick J., Kuo F., Wozniakowski H. (eds) Contemporary Computational Mathematics -
+   A Celebration of the 80th Birthday of Ian Sloan. Springer (2018) pp. 1243-1285
+   https://doi.org/10.1007/978-3-319-72456-0_57
 
 """
 
@@ -290,7 +289,7 @@ class AngularGrid(Grid):
     :math:`f: S^2 \rightarrow \mathbb{R}` on the unit-sphere as follows:
 
     .. math::
-        4 \pi \int_{S^2} f d\Sigma  = 4\pi \int_0^\pi \int_0^{2\pi} f(\theta, \phi) \sin(\theta)
+        4 \pi \int_{S^2} f   = 4\pi \int_0^\pi \int_0^{2\pi} f(\theta, \phi) \sin(\theta)
          d\theta d\phi \approx \sum w_i f(\phi_i, \theta_i),
 
     where :math:`S^2` is the unit-sphere,
@@ -373,8 +372,8 @@ class AngularGrid(Grid):
         Notes
         -----
         - Sometimes the weights for Lebedev-Laikov grids can be negative. Choosing degrees that have
-            positive weights can mitigate round-off errors. Degrees equal to 13, 25 or 27 have
-            negative weights.
+          positive weights can mitigate round-off errors. Degrees equal to 13, 25 or 27 have
+          negative weights.
 
         """
         if not isinstance(use_spherical, bool):

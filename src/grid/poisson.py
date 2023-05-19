@@ -20,7 +20,7 @@
 r"""
 Poisson solver module.
 
-This module solves the following Poisson equations:
+This module solves the following Poisson equation:
 
 .. math::
     \nabla^2 V(r) = -4\pi \rho(r),
@@ -179,9 +179,9 @@ def solve_poisson_ivp(
     The Poisson equation solves for function :math:`g` of the following:
 
     .. math::
-        \Delta g = (-4\pi) f,
+        \nabla^2 g = (-4\pi) f,
 
-    for a fixed function :math:`f`, where :math:`\Delta` is the Laplacian.  This
+    for a fixed function :math:`f`, where :math:`\nabla^2` is the Laplacian.  This
     is transformed to a set of ODE problems as an initial value problem.
 
     Ihe initial value problem is chosen so that the boundary of :math:`g` for large r is set to
@@ -197,7 +197,7 @@ def solve_poisson_ivp(
     func_vals : ndarray(N,)
         The function values evaluated on all :math:`N` points on the molecular grid.
     transform : BaseTransform, optional
-        Transformation from infinite domain :math:`r` (:math:`[0, \infty)` to another
+        Transformation from infinite domain :math:`r \in [0, \infty)` to another
         domain that is a finite.
     r_interval : tuple, optional
         The interval :math:`(b, a)` of :math:`r` for which the ODE solver will start from and end,
@@ -214,18 +214,18 @@ def solve_poisson_ivp(
 
     Examples
     --------
-    Set up of the radial grid
+    >>> # Set up of the radial grid
     >>> oned_grid = Trapezoidal(10000)
     >>> tf = LinearFiniteRTransform(0.0, 1000)
     >>> radial_grid = tf.transform_1d_grid(oned)
-    Set up the atomic grid with degree 10 at each radial point. Molecular grid works as well.
+    >>> # Set up the atomic grid with degree 10 at each radial point. Molecular grid works as well.
     >>> atomic_grid = AtomGrid(radial_grid, degrees=[10])
-    Set the charge distribution to be unit-charge density and evaluate on atomic grid points.
+    >>> # Set the charge distribution to be unit-charge density and evaluate on atomic grid points.
     >>> def charge_distribution(x, alpha=0.1):
     >>>    r = np.linalg.norm(x, axis=1)
     >>>    return (alpha / np.pi)**(3.0 / 2.0) * np.exp(-alpha * r**2.0)
     >>> func_vals = charge_distribution(atomic_grid.points)
-    Solve for the potential as an initial value problem and evaluate it over the atomic grid.
+    >>> # Solve for the potential as an initial value problem and evaluate it over the atomic grid.
     >>> potential = solve_poisson_ivp(
     >>>      atgrid, func_vals, InverseRTransform(tf), r_interval=(1000, 1e-3),
     >>>      ode_params={"method" : "DOP853", "atol": 1e-8},
@@ -356,9 +356,9 @@ def solve_poisson_bvp(
     The Poisson equation solves for function :math:`g` of the following:
 
     .. math::
-        \Delta g = (-4\pi) f,
+        \nabla^2 g = (-4\pi) f,
 
-    for a fixed function :math:`f`, where :math:`\Delta` is the Laplacian.  This
+    for a fixed function :math:`f`, where :math:`\nabla^2` is the Laplacian.  This
     is transformed to an set of ODE problems as a boundary value problem.
 
     If boundary is not provided, then the boundary of :math:`g` for large r is set to
@@ -372,7 +372,7 @@ def solve_poisson_bvp(
     func_vals : ndarray(N,)
         The function values evaluated on all :math:`N` points on the molecular grid.
     transform : BaseTransform, optional
-        Transformation from infinite domain :math:`r` (:math:`[0, \infty)` to another
+        Transformation from infinite domain :math:`r \in [0, \infty)` to another
         domain that is a finite.
     boundary : float, optional
         The boundary value of :math:`g` in the limit of r to infinity.
@@ -392,17 +392,17 @@ def solve_poisson_bvp(
 
     Examples
     --------
-    Set up of the radial grid
+    >>> # Set up of the radial grid
     >>> radial_grid = Trapezoidal(10000)
-    Set up the atomic grid with degree 10 at each radial point. Molecular grid works as well.
+    >>> # Set up the atomic grid with degree 10 at each radial point. Molecular grid works as well.
     >>> degree = 10
     >>> atomic_grid = AtomGrid(radial, degrees=[degree])
-    Set the charge distribution to be unit-charge density and evaluate on atomic grid points.
+    >>> # Set the charge distribution to be unit-charge density and evaluate on atomic grid points.
     >>> def charge_distribution(x, alpha=0.1):
     >>>    r = np.linalg.norm(x, axis=1)
     >>>    return (alpha / np.pi)**(3.0 / 2.0) * np.exp(-alpha * r**2.0)
     >>> func_vals = charge_distribution(atomic_grid.points)
-    Solve the Poisson equation with Becke transformation
+    >>> # Solve the Poisson equation with Becke transformation
     >>> transform = BeckeRTransform(1e-6, 1.5, trim_inf=True)
     >>> potential = solve_poisson_bvp(
     >>>      atgrid, func_vals, InverseRTransform(tf), include_origin=True,
@@ -436,13 +436,13 @@ def interpolate_laplacian(molgrid: Union[MolGrid, AtomGrid], func_vals: np.ndarr
     Return a function that interpolates the Laplacian of a function.
 
     .. math::
-        \Delta f = \frac{1}{r}\frac{\partial^2 rf}{\partial r^2} - \frac{\hat{L}}{r^2},
+        \nabla^2 f = \frac{1}{r}\frac{\partial^2 rf}{\partial r^2} - \frac{\hat{L}}{r^2},
 
     such that the angular momentum operator satisfies :math:`\hat{L}(Y_l^m) = l (l + 1) Y_l^m`.
     Expanding f in terms of spherical harmonic expansion, we get that
 
     .. math::
-        \Delta f = \sum_l \sum_m \bigg[ \frac{\partial^2 \rho_{lm}(r)}{\partial r^2}
+        \nabla^2 f = \sum_l \sum_m \bigg[ \frac{\partial^2 \rho_{lm}(r)}{\partial r^2}
         + \frac{2}{r} \frac{\partial \rho_{lm}(r)}{\partial r} - \frac{l(l+1)}{r^2}\rho_{lm}(r)
          \bigg] Y_l^m,
 
