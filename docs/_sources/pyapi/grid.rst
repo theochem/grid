@@ -7,12 +7,12 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
+   grid.angular
    grid.atomgrid
    grid.basegrid
    grid.becke
+   grid.cubic
    grid.hirshfeld
-   grid.interpolate
-   grid.lebedev
    grid.molgrid
    grid.ode
    grid.onedgrid

@@ -13,17 +13,20 @@ intervals.
    :align: center
 
 Grid also includes popular quadrature grids that can integrate polynomials up to
-degree :math:`2n - 1` on :math:`[-1, 1]`: :func:`Gauss-Laguerre<grid.onedgrid.GaussLaguerre>` (domain :math:`[0, \infty)`),
-:func:`Gauss-Legendre<grid.onedgrid.GaussLegendre>`, and :func:`Gauss-Chebyshev<grid.onedgrid.GaussChebyshev>`.
+degree :math:`2n - 1`:
 
-FInally, the Trefethen grid class on :math:`[-1, 1]` is also included TODO: Include information about this.
+- :func:`Gauss-Legendre<grid.onedgrid.GaussLegendre>` (domain :math:`[-1, 1]`),
+- :func:`Gauss-Chebyshev<grid.onedgrid.GaussChebyshev>` (domain :math:`[-1, 1]`),
+- :func:`Gauss-Laguerre<grid.onedgrid.GaussLaguerre>` (domain :math:`[0, \infty)`).
 
-- :func:`Trefethen (Clenshaw-Curtis)<grid.onedgrid.TrefethenCC>`
-- :func:`Trefethen (Gauss-Chebyshev)<grid.onedgrid.TrefethenGC2>`
-- :func:`Trefethen (General)<grid.onedgrid.TrefethenGeneral>`
-- :func:`Trefethen Strip (Clenshaw-Curtis)<grid.onedgrid.TrefethenStripCC>`
-- :func:`Trefethen Strip (Gauss-Chebyshev)<grid.onedgrid.TrefethenStripGC2>`
-- :func:`Trefethen Strip (General)<grid.onedgrid.TrefethenStripGeneral>`
+The Trefethen polynomial transformation of various grids on :math:`[-1, 1]` is also included:
+
+- :func:`Trefethen (Clenshaw-Curtis)<grid.onedgrid.TrefethenCC>`,
+- :func:`Trefethen (Gauss-Chebyshev)<grid.onedgrid.TrefethenGC2>`,
+- :func:`Trefethen (General)<grid.onedgrid.TrefethenGeneral>`,
+- :func:`Trefethen Strip (Clenshaw-Curtis)<grid.onedgrid.TrefethenStripCC>`,
+- :func:`Trefethen Strip (Gauss-Chebyshev)<grid.onedgrid.TrefethenStripGC2>`,
+- :func:`Trefethen Strip (General)<grid.onedgrid.TrefethenStripGeneral>`.
 
 
 

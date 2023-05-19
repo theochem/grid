@@ -13,6 +13,8 @@
   
   <link rel="stylesheet" href="_static/css/override.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/override.css" type="text/css" />
 
   
   
@@ -26,20 +28,22 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "tex2jax_ignore|mathjax_ignore|document", "processClass": "tex2jax_process|mathjax_process|math|output_area"}})</script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Molecular Integration" href="notebooks/Molecular_Integration.html" />
+    <link rel="next" title="Conventions" href="conventions.html" />
     <link rel="prev" title="One-Dimensional Grids" href="onedgrids.html" /> 
 </head>
 
@@ -85,7 +89,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">User Documentation</span></p>
+              <p class="caption" role="heading"><span class="caption-text">User Documentation</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#downloading-code">Downloading Code</a></li>
@@ -95,22 +99,46 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="onedgrids.html">One-Dimensional Grids</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Radial Transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conventions.html">Conventions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="conventions.html#spherical-coordinates">Spherical Coordinates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conventions.html#spherical-harmonics">Spherical Harmonics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="conventions.html#ordering">Ordering</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Example Tutorials</span></p>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="conventions.html#angular-grids">Angular Grids</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Tutorials</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="notebooks/Molecular_Integration.html">Molecular Integration</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/Molecular_Integration.html#Construction-of-Molecular-Grid">Construction of Molecular Grid</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Integration.html#Initailizor-Method">Initailizor Method</a></li>
-<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Integration.html#from_preset-method">from_preset method</a></li>
-<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Integration.html#from_size-method">from_size method</a></li>
-<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Integration.html#from_pruned-method">from_pruned method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/Molecular_Grid.html">Molecular Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/Molecular_Grid.html#Integration">Integration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Grid.html#Example:-Electron-Density">Example: Electron Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/Molecular_Grid.html#Interpolation">Interpolation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Grid.html#id1">Example: Electron Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/Molecular_Grid.html#Derivative-Interpolation">Derivative Interpolation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Grid.html#Example:-Weizsacker-Kinetic-Energy-Density">Example: Weizsacker Kinetic Energy Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/Molecular_Grid.html#Solving-Poisson-Equation">Solving Poisson Equation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Grid.html#Example:-Electrostatic-Potential">Example: Electrostatic Potential</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="notebooks/Interpolation_and_Poisson.html">Interpolation and Solving Poisson’s Equation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/Interpolation_and_Poisson.html#Interpolation">Interpolation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/Interpolation_and_Poisson.html#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/Molecular_Grid_Construction.html">Constructing Molecular Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/Molecular_Grid_Construction.html#Molecular-Grid-Details">Molecular Grid Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/Molecular_Grid_Construction.html#Construction-of-Molecular-Grid">Construction of Molecular Grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Grid_Construction.html#Constructor">Constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Grid_Construction.html#from_preset-method">from_preset method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Grid_Construction.html#from_size-method">from_size method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Grid_Construction.html#from_pruned-method">from_pruned method</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="notebooks/Cubic_Grids.html">Cubic Grids</a><ul>
@@ -121,19 +149,18 @@
 <li class="toctree-l2"><a class="reference internal" href="notebooks/Cubic_Grids.html#Uniform-Grid">Uniform Grid</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="notebooks/Multipole_Moments.html">Multipole Moments</a></li>
 </ul>
-<p class="caption"><span class="caption-text">API Documentation</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="pyapi/modules.html">grid</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="pyapi/grid.html">grid package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="pyapi/grid.html#submodules">Submodules</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.angular.html">grid.angular module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pyapi/grid.atomgrid.html">grid.atomgrid module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pyapi/grid.basegrid.html">grid.basegrid module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pyapi/grid.becke.html">grid.becke module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.cubic.html">grid.cubic module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pyapi/grid.hirshfeld.html">grid.hirshfeld module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.interpolate.html">grid.interpolate module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.lebedev.html">grid.lebedev module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pyapi/grid.molgrid.html">grid.molgrid module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pyapi/grid.ode.html">grid.ode module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pyapi/grid.onedgrid.html">grid.onedgrid module</a></li>
@@ -213,32 +240,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  
-<style>
-/* CSS overrides for sphinx_rtd_theme */
-
-/* 24px margin */
-.nbinput.nblast.container,
-.nboutput.nblast.container {
-    margin-bottom: 19px;  /* padding has already 5px */
-}
-
-/* ... except between code cells! */
-.nblast.container + .nbinput.container {
-    margin-top: -19px;
-}
-
-.admonition > p:before {
-    margin-right: 4px;  /* make room for the exclamation icon */
-}
-
-/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
-.math {
-    text-align: unset;
-}
-</style>
-<div class="section" id="radial-transformations">
-<h1>Radial Transformations<a class="headerlink" href="#radial-transformations" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="radial-transformations">
+<h1>Radial Transformations<a class="headerlink" href="#radial-transformations" title="Permalink to this heading">¶</a></h1>
 <p>These one-dimensional grids can be transformed to other kinds of intervals using the
 <a class="reference internal" href="pyapi/grid.rtransform.html#module-grid.rtransform" title="grid.rtransform"><code class="xref py py-func docutils literal notranslate"><span class="pre">radial</span> <span class="pre">transform</span></code></a> module.</p>
 <table class="colwidths-given docutils align-center" id="id1">
@@ -329,7 +332,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="notebooks/Molecular_Integration.html" class="btn btn-neutral float-right" title="Molecular Integration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="conventions.html" class="btn btn-neutral float-right" title="Conventions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="onedgrids.html" class="btn btn-neutral float-left" title="One-Dimensional Grids" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -342,7 +345,7 @@
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2023, QC-Devs
+        &copy; Copyright 2021, QC-Devs
 
     </p>
   </div>

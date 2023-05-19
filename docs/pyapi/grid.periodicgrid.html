@@ -13,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/override.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/override.css" type="text/css" />
 
   
   
@@ -26,17 +28,15 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-<<<<<<< HEAD
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-=======
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
-        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "tex2jax_ignore|mathjax_ignore|document", "processClass": "tex2jax_process|mathjax_process|math|output_area"}})</script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -89,8 +89,7 @@
               
             
             
-<<<<<<< HEAD
-              <p class="caption"><span class="caption-text">User Documentation</span></p>
+              <p class="caption" role="heading"><span class="caption-text">User Documentation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../installation.html#downloading-code">Downloading Code</a></li>
@@ -100,25 +99,46 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../onedgrids.html">One-Dimensional Grids</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../radial_transf.html">Radial Transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../conventions.html">Conventions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../conventions.html#spherical-coordinates">Spherical Coordinates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../conventions.html#spherical-harmonics">Spherical Harmonics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../conventions.html#ordering">Ordering</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Example Tutorials</span></p>
-=======
-              <p class="caption"><span class="caption-text">Example Tutorials</span></p>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../conventions.html#angular-grids">Angular Grids</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Tutorials</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/Molecular_Integration.html">Molecular Integration</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/Molecular_Integration.html#Construction-of-Molecular-Grid">Construction of Molecular Grid</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Integration.html#Initailizor-Method">Initailizor Method</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Integration.html#from_preset-method">from_preset method</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Integration.html#from_size-method">from_size method</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Integration.html#from_pruned-method">from_pruned method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/Molecular_Grid.html">Molecular Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/Molecular_Grid.html#Integration">Integration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Grid.html#Example:-Electron-Density">Example: Electron Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/Molecular_Grid.html#Interpolation">Interpolation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Grid.html#id1">Example: Electron Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/Molecular_Grid.html#Derivative-Interpolation">Derivative Interpolation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Grid.html#Example:-Weizsacker-Kinetic-Energy-Density">Example: Weizsacker Kinetic Energy Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/Molecular_Grid.html#Solving-Poisson-Equation">Solving Poisson Equation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Grid.html#Example:-Electrostatic-Potential">Example: Electrostatic Potential</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/Interpolation_and_Poisson.html">Interpolation and Solving Poisson’s Equation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/Interpolation_and_Poisson.html#Interpolation">Interpolation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/Interpolation_and_Poisson.html#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/Molecular_Grid_Construction.html">Constructing Molecular Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/Molecular_Grid_Construction.html#Molecular-Grid-Details">Molecular Grid Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/Molecular_Grid_Construction.html#Construction-of-Molecular-Grid">Construction of Molecular Grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Grid_Construction.html#Constructor">Constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Grid_Construction.html#from_preset-method">from_preset method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Grid_Construction.html#from_size-method">from_size method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Grid_Construction.html#from_pruned-method">from_pruned method</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/Cubic_Grids.html">Cubic Grids</a><ul>
@@ -129,23 +149,18 @@
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/Cubic_Grids.html#Uniform-Grid">Uniform Grid</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/Multipole_Moments.html">Multipole Moments</a></li>
 </ul>
-<<<<<<< HEAD
-<p class="caption"><span class="caption-text">API Documentation</span></p>
-=======
-<p class="caption"><span class="caption-text">Grid Modules</span></p>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
+<p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">grid</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="grid.html">grid package</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="grid.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="grid.angular.html">grid.angular module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="grid.atomgrid.html">grid.atomgrid module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="grid.basegrid.html">grid.basegrid module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="grid.becke.html">grid.becke module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.cubic.html">grid.cubic module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="grid.hirshfeld.html">grid.hirshfeld module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="grid.interpolate.html">grid.interpolate module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="grid.lebedev.html">grid.lebedev module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="grid.molgrid.html">grid.molgrid module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="grid.ode.html">grid.ode module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="grid.onedgrid.html">grid.onedgrid module</a></li>
@@ -229,35 +244,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  
-<style>
-/* CSS overrides for sphinx_rtd_theme */
-
-/* 24px margin */
-.nbinput.nblast.container,
-.nboutput.nblast.container {
-    margin-bottom: 19px;  /* padding has already 5px */
-}
-
-/* ... except between code cells! */
-.nblast.container + .nbinput.container {
-    margin-top: -19px;
-}
-
-.admonition > p:before {
-    margin-right: 4px;  /* make room for the exclamation icon */
-}
-
-/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
-.math {
-    text-align: unset;
-}
-</style>
-<div class="section" id="module-grid.periodicgrid">
-<span id="grid-periodicgrid-module"></span><h1>grid.periodicgrid module<a class="headerlink" href="#module-grid.periodicgrid" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-grid.periodicgrid">
+<span id="grid-periodicgrid-module"></span><h1>grid.periodicgrid module<a class="headerlink" href="#module-grid.periodicgrid" title="Permalink to this heading">¶</a></h1>
 <p>Grids with periodic boundary conditions.</p>
 <div class="section" id="algorithm">
-<h2>Algorithm<a class="headerlink" href="#algorithm" title="Permalink to this headline">¶</a></h2>
+<h2>Algorithm<a class="headerlink" href="#algorithm" title="Permalink to this heading">¶</a></h2>
 <p>To understand how the algorithm in <code class="docutils literal notranslate"><span class="pre">get_localgrid</span></code> works, it may be useful
 review a few basic crystallographic concepts:</p>
 <ul class="simple">
@@ -364,16 +355,11 @@ each lattice vector:</p>
 fractional coordinate of grid point <span class="math notranslate nohighlight">\(i\)</span>, <span class="math notranslate nohighlight">\(\tilde{c}\)</span> is the
 fractional coordinate of the center and <span class="math notranslate nohighlight">\(s_k\)</span> is the spacing between
 adjacent crystal planes along the :math:<a href="#id1"><span class="problematic" id="id2">`</span></a>k`th lattice vector.</p>
-<<<<<<< HEAD
-<dl class="class">
-<dt id="grid.periodicgrid.PeriodicGrid">
-<em class="property">class </em><code class="sig-name descname">PeriodicGrid</code><span class="sig-paren">(</span><em class="sig-param">points</em>, <em class="sig-param">weights</em>, <em class="sig-param">realvecs=None</em>, <em class="sig-param">wrap=False</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid" title="Permalink to this definition">¶</a></dt>
-=======
+</div>
 <dl class="py class">
-<dt id="grid.periodicgrid.PeriodicGrid">
-<em class="property">class </em><code class="sig-name descname">PeriodicGrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">points</span></em>, <em class="sig-param"><span class="n">weights</span></em>, <em class="sig-param"><span class="n">realvecs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">wrap</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid" title="Permalink to this definition">¶</a></dt>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
-<dd><p>Bases: <a class="reference internal" href="grid.basegrid.html#grid.basegrid.Grid" title="grid.basegrid.Grid"><code class="xref py py-class docutils literal notranslate"><span class="pre">grid.basegrid.Grid</span></code></a></p>
+<dt class="sig sig-object py" id="grid.periodicgrid.PeriodicGrid">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PeriodicGrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">realvecs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="grid.basegrid.html#grid.basegrid.Grid" title="grid.basegrid.Grid"><code class="xref py py-class docutils literal notranslate"><span class="pre">Grid</span></code></a></p>
 <p>Grid with support for periodic boundary conditions.</p>
 <p>The purpose of this class is to support certain operations on integration
 grids with periodic boundary conditions. It does not construct such grids
@@ -412,15 +398,9 @@ points fall within one primitive cell, e.g. the fractional coordinates
 should lie in [0, 1[ or [-0.5, 0.5[. The algorithm will also work when the
 grid points of the primitive cell accidentally overflow into neighboring
 images, but in this case it becomes less efficient.</p>
-<<<<<<< HEAD
-<dl class="method">
-<dt id="grid.periodicgrid.PeriodicGrid.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">points</em>, <em class="sig-param">weights</em>, <em class="sig-param">realvecs=None</em>, <em class="sig-param">wrap=False</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.__init__" title="Permalink to this definition">¶</a></dt>
-=======
 <dl class="py method">
-<dt id="grid.periodicgrid.PeriodicGrid.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">points</span></em>, <em class="sig-param"><span class="n">weights</span></em>, <em class="sig-param"><span class="n">realvecs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">wrap</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.__init__" title="Permalink to this definition">¶</a></dt>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
+<dt class="sig sig-object py" id="grid.periodicgrid.PeriodicGrid.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">realvecs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct a PeriodicGrid instance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -444,13 +424,9 @@ wider than 1.1, because this implies a degradation of efficiency of
 </dl>
 </dd></dl>
 
-<<<<<<< HEAD
-<dl class="method">
-=======
-<dl class="py method">
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
-<dt id="grid.periodicgrid.PeriodicGrid.frac_intvls">
-<em class="property">property </em><code class="sig-name descname">frac_intvls</code><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.frac_intvls" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="grid.periodicgrid.PeriodicGrid.frac_intvls">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">frac_intvls</span></span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.frac_intvls" title="Permalink to this definition">¶</a></dt>
 <dd><p>Intervals containing the grid points in fractional coordinates.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -459,15 +435,9 @@ wider than 1.1, because this implies a degradation of efficiency of
 </dl>
 </dd></dl>
 
-<<<<<<< HEAD
-<dl class="method">
-<dt id="grid.periodicgrid.PeriodicGrid.get_localgrid">
-<code class="sig-name descname">get_localgrid</code><span class="sig-paren">(</span><em class="sig-param">center</em>, <em class="sig-param">radius</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.get_localgrid" title="Permalink to this definition">¶</a></dt>
-=======
 <dl class="py method">
-<dt id="grid.periodicgrid.PeriodicGrid.get_localgrid">
-<code class="sig-name descname">get_localgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">radius</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.get_localgrid" title="Permalink to this definition">¶</a></dt>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
+<dt class="sig sig-object py" id="grid.periodicgrid.PeriodicGrid.get_localgrid">
+<span class="sig-name descname"><span class="pre">get_localgrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.get_localgrid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a non-peroidic local grid within the given distance from the center.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -485,22 +455,14 @@ wider than 1.1, because this implies a degradation of efficiency of
 </dl>
 </dd></dl>
 
-<<<<<<< HEAD
-<dl class="method">
-<dt id="grid.periodicgrid.PeriodicGrid.integrate">
-<code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param">*value_arrays</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.integrate" title="Permalink to this definition">¶</a></dt>
-=======
 <dl class="py method">
-<dt id="grid.periodicgrid.PeriodicGrid.integrate">
-<code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">value_arrays</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.integrate" title="Permalink to this definition">¶</a></dt>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
+<dt class="sig sig-object py" id="grid.periodicgrid.PeriodicGrid.integrate">
+<span class="sig-name descname"><span class="pre">integrate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">value_arrays</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.integrate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Integrate over the whole grid for given multiple value arrays.</p>
-<p>Product of all value_arrays will be computed element-wise then
-integrated on the grid with its weights.
-.. math:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Integral</span> <span class="o">=</span> \<span class="nb">int</span> <span class="n">w</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> \<span class="n">prod_i</span> <span class="n">f_i</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="n">dx</span>
-</pre></div>
-</div>
+<p>Product of all value_arrays will be computed element-wise then integrated on the grid
+with its weights:</p>
+<div class="math notranslate nohighlight">
+\[\int w(x) \prod_i f_i(x) dx.\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>*value_arrays</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>, </em><em>)</em>) – One or multiple value array to integrate.</p>
@@ -514,10 +476,9 @@ integrated on the grid with its weights.
 </dl>
 </dd></dl>
 
-<<<<<<< HEAD
-<dl class="method">
-<dt id="grid.periodicgrid.PeriodicGrid.moments">
-<code class="sig-name descname">moments</code><span class="sig-paren">(</span><em class="sig-param">orders</em>, <em class="sig-param">centers</em>, <em class="sig-param">func_vals</em>, <em class="sig-param">type_mom='cartesian'</em>, <em class="sig-param">return_orders=False</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.moments" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="grid.periodicgrid.PeriodicGrid.moments">
+<span class="sig-name descname"><span class="pre">moments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orders</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_mom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cartesian'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_orders</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.moments" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the multipole moment integral of a function over centers.</p>
 <p>The Cartesian type moments are:</p>
 <div class="math notranslate nohighlight">
@@ -545,11 +506,8 @@ moment <cite>type_mom</cite>.</p></li>
 <li><p><strong>func_vals</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – The function <span class="math notranslate nohighlight">\(f\)</span> values evaluated on all <span class="math notranslate nohighlight">\(N\)</span> points on the integration
 grid.</p></li>
 <li><p><strong>type_mom</strong> (<em>str</em>) – The type of multipole moments: “cartesian”, “pure”, “radial” and “pure-radial”.</p></li>
-<li><p><strong>return_orders</strong> (<em>bool</em>) – <dl class="simple">
-<dt>If true, it will also return a list of size <span class="math notranslate nohighlight">\(L\)</span> of the orders</dt><dd><p>corresponding to each integral/row of the output.</p>
-</dd>
-</dl>
-</p></li>
+<li><p><strong>return_orders</strong> (<em>bool</em>) – If true, it will also return a list of size <span class="math notranslate nohighlight">\(L\)</span> of the orders
+corresponding to each integral/row of the output.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -563,12 +521,9 @@ each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
-=======
-<dl class="py method">
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
-<dt id="grid.periodicgrid.PeriodicGrid.points">
-<em class="property">property </em><code class="sig-name descname">points</code><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.points" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="grid.periodicgrid.PeriodicGrid.points">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">points</span></span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.points" title="Permalink to this definition">¶</a></dt>
 <dd><p>Positions of the grid points.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -577,13 +532,9 @@ each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 </dl>
 </dd></dl>
 
-<<<<<<< HEAD
-<dl class="method">
-=======
-<dl class="py method">
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
-<dt id="grid.periodicgrid.PeriodicGrid.realvecs">
-<em class="property">property </em><code class="sig-name descname">realvecs</code><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.realvecs" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="grid.periodicgrid.PeriodicGrid.realvecs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">realvecs</span></span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.realvecs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Real-space lattice vectors.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -592,13 +543,9 @@ each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 </dl>
 </dd></dl>
 
-<<<<<<< HEAD
-<dl class="method">
-=======
-<dl class="py method">
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
-<dt id="grid.periodicgrid.PeriodicGrid.recivecs">
-<em class="property">property </em><code class="sig-name descname">recivecs</code><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.recivecs" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="grid.periodicgrid.PeriodicGrid.recivecs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">recivecs</span></span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.recivecs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reciprocal-space lattice vectors.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -607,10 +554,9 @@ each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 </dl>
 </dd></dl>
 
-<<<<<<< HEAD
-<dl class="method">
-<dt id="grid.periodicgrid.PeriodicGrid.save">
-<code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param">filename</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.save" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="grid.periodicgrid.PeriodicGrid.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.save" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save the points and weights as a npz file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -619,12 +565,9 @@ each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
-=======
-<dl class="py method">
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
-<dt id="grid.periodicgrid.PeriodicGrid.size">
-<em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.size" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="grid.periodicgrid.PeriodicGrid.size">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">size</span></span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.size" title="Permalink to this definition">¶</a></dt>
 <dd><p>the total number of points on the grid.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -633,13 +576,9 @@ each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 </dl>
 </dd></dl>
 
-<<<<<<< HEAD
-<dl class="method">
-=======
-<dl class="py method">
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
-<dt id="grid.periodicgrid.PeriodicGrid.spacings">
-<em class="property">property </em><code class="sig-name descname">spacings</code><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.spacings" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="grid.periodicgrid.PeriodicGrid.spacings">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">spacings</span></span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.spacings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Spacings between adjacent primitive crystal planes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -648,13 +587,9 @@ each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 </dl>
 </dd></dl>
 
-<<<<<<< HEAD
-<dl class="method">
-=======
-<dl class="py method">
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
-<dt id="grid.periodicgrid.PeriodicGrid.weights">
-<em class="property">property </em><code class="sig-name descname">weights</code><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.weights" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="grid.periodicgrid.PeriodicGrid.weights">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">weights</span></span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.weights" title="Permalink to this definition">¶</a></dt>
 <dd><p>the weights of each grid point.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -665,50 +600,30 @@ each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 
 </dd></dl>
 
-<<<<<<< HEAD
-<dl class="exception">
-=======
 <dl class="py exception">
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
-<dt id="grid.periodicgrid.PeriodicGridWarning">
-<em class="property">exception </em><code class="sig-name descname">PeriodicGridWarning</code><a class="headerlink" href="#grid.periodicgrid.PeriodicGridWarning" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="grid.periodicgrid.PeriodicGridWarning">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PeriodicGridWarning</span></span><a class="headerlink" href="#grid.periodicgrid.PeriodicGridWarning" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Warning</span></code></p>
 <p>Raised when the fractional coordinates span an interval wider than 1.1.</p>
-<<<<<<< HEAD
-<dl class="method">
-<dt id="grid.periodicgrid.PeriodicGridWarning.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#grid.periodicgrid.PeriodicGridWarning.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
-</dd></dl>
-
-<dl class="attribute">
-=======
 <dl class="py method">
-<dt id="grid.periodicgrid.PeriodicGridWarning.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.periodicgrid.PeriodicGridWarning.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
-</dd></dl>
-
-<dl class="py attribute">
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
-<dt id="grid.periodicgrid.PeriodicGridWarning.args">
-<code class="sig-name descname">args</code><a class="headerlink" href="#grid.periodicgrid.PeriodicGridWarning.args" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="grid.periodicgrid.PeriodicGridWarning.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.periodicgrid.PeriodicGridWarning.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<<<<<<< HEAD
-<dl class="method">
-=======
+<dl class="py attribute">
+<dt class="sig sig-object py" id="grid.periodicgrid.PeriodicGridWarning.args">
+<span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#grid.periodicgrid.PeriodicGridWarning.args" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
-<dt id="grid.periodicgrid.PeriodicGridWarning.with_traceback">
-<code class="sig-name descname">with_traceback</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#grid.periodicgrid.PeriodicGridWarning.with_traceback" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="grid.periodicgrid.PeriodicGridWarning.with_traceback">
+<span class="sig-name descname"><span class="pre">with_traceback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#grid.periodicgrid.PeriodicGridWarning.with_traceback" title="Permalink to this definition">¶</a></dt>
 <dd><p>Exception.with_traceback(tb) –
 set self.__traceback__ to tb and return self.</p>
 </dd></dl>
 
 </dd></dl>
 
-</div>
 </div>
 
 
@@ -732,11 +647,7 @@ set self.__traceback__ to tb and return self.</p>
   <div role="contentinfo">
     <p>
         
-<<<<<<< HEAD
-        &copy; Copyright 2023, QC-Devs
-=======
         &copy; Copyright 2021, QC-Devs
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 
     </p>
   </div>

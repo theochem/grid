@@ -1,9 +1,5 @@
 
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
@@ -17,6 +13,8 @@
   
   <link rel="stylesheet" href="_static/css/override.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/override.css" type="text/css" />
 
   
   
@@ -30,17 +28,13 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-<<<<<<< HEAD
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-=======
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
-        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "tex2jax_ignore|mathjax_ignore|document", "processClass": "tex2jax_process|mathjax_process|math|output_area"}})</script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -91,8 +85,7 @@
               
             
             
-<<<<<<< HEAD
-              <p class="caption"><span class="caption-text">User Documentation</span></p>
+              <p class="caption" role="heading"><span class="caption-text">User Documentation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#downloading-code">Downloading Code</a></li>
@@ -102,25 +95,46 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="onedgrids.html">One-Dimensional Grids</a></li>
 <li class="toctree-l1"><a class="reference internal" href="radial_transf.html">Radial Transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conventions.html">Conventions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="conventions.html#spherical-coordinates">Spherical Coordinates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conventions.html#spherical-harmonics">Spherical Harmonics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="conventions.html#ordering">Ordering</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Example Tutorials</span></p>
-=======
-              <p class="caption"><span class="caption-text">Example Tutorials</span></p>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
+</li>
+<li class="toctree-l2"><a class="reference internal" href="conventions.html#angular-grids">Angular Grids</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Tutorials</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="notebooks/Molecular_Integration.html">Molecular Integration</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/Molecular_Integration.html#Construction-of-Molecular-Grid">Construction of Molecular Grid</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Integration.html#Initailizor-Method">Initailizor Method</a></li>
-<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Integration.html#from_preset-method">from_preset method</a></li>
-<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Integration.html#from_size-method">from_size method</a></li>
-<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Integration.html#from_pruned-method">from_pruned method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/Molecular_Grid.html">Molecular Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/Molecular_Grid.html#Integration">Integration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Grid.html#Example:-Electron-Density">Example: Electron Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/Molecular_Grid.html#Interpolation">Interpolation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Grid.html#id1">Example: Electron Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/Molecular_Grid.html#Derivative-Interpolation">Derivative Interpolation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Grid.html#Example:-Weizsacker-Kinetic-Energy-Density">Example: Weizsacker Kinetic Energy Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/Molecular_Grid.html#Solving-Poisson-Equation">Solving Poisson Equation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Grid.html#Example:-Electrostatic-Potential">Example: Electrostatic Potential</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="notebooks/Interpolation_and_Poisson.html">Interpolation and Solving Poisson’s Equation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/Interpolation_and_Poisson.html#Interpolation">Interpolation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/Interpolation_and_Poisson.html#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/Molecular_Grid_Construction.html">Constructing Molecular Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/Molecular_Grid_Construction.html#Molecular-Grid-Details">Molecular Grid Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/Molecular_Grid_Construction.html#Construction-of-Molecular-Grid">Construction of Molecular Grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Grid_Construction.html#Constructor">Constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Grid_Construction.html#from_preset-method">from_preset method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Grid_Construction.html#from_size-method">from_size method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Grid_Construction.html#from_pruned-method">from_pruned method</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="notebooks/Cubic_Grids.html">Cubic Grids</a><ul>
@@ -131,23 +145,18 @@
 <li class="toctree-l2"><a class="reference internal" href="notebooks/Cubic_Grids.html#Uniform-Grid">Uniform Grid</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="notebooks/Multipole_Moments.html">Multipole Moments</a></li>
 </ul>
-<<<<<<< HEAD
-<p class="caption"><span class="caption-text">API Documentation</span></p>
-=======
-<p class="caption"><span class="caption-text">Grid Modules</span></p>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
+<p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="pyapi/modules.html">grid</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="pyapi/grid.html">grid package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="pyapi/grid.html#submodules">Submodules</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.angular.html">grid.angular module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pyapi/grid.atomgrid.html">grid.atomgrid module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pyapi/grid.basegrid.html">grid.basegrid module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pyapi/grid.becke.html">grid.becke module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.cubic.html">grid.cubic module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pyapi/grid.hirshfeld.html">grid.hirshfeld module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.interpolate.html">grid.interpolate module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.lebedev.html">grid.lebedev module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pyapi/grid.molgrid.html">grid.molgrid module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pyapi/grid.ode.html">grid.ode module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pyapi/grid.onedgrid.html">grid.onedgrid module</a></li>
@@ -255,11 +264,7 @@
 <h2 id="_">_</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-<<<<<<< HEAD
       <li><a href="pyapi/grid.angular.html#grid.angular.AngularGrid.__init__">__init__() (AngularGrid method)</a>
-=======
-      <li><a href="pyapi/grid.lebedev.html#grid.lebedev.AngularGrid.__init__">__init__() (AngularGrid method)</a>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 
       <ul>
         <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.__init__">(AtomGrid method)</a>
@@ -324,11 +329,6 @@
 </li>
         <li><a href="pyapi/grid.rtransform.html#grid.rtransform.PowerRTransform.__init__">(PowerRTransform method)</a>
 </li>
-<<<<<<< HEAD
-=======
-        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.RectangleRuleSine.__init__">(RectangleRuleSine method)</a>
-</li>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
         <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.RectangleRuleSineEndPoints.__init__">(RectangleRuleSineEndPoints method)</a>
 </li>
         <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.Simpson.__init__">(Simpson method)</a>
@@ -362,36 +362,25 @@
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HyperbolicRTransform.a">a() (HyperbolicRTransform property)</a>
+      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HyperbolicRTransform.a">a (HyperbolicRTransform property)</a>
 </li>
-      <li><a href="pyapi/grid.molgrid.html#grid.molgrid.MolGrid.aim_weights">aim_weights() (MolGrid property)</a>
+      <li><a href="pyapi/grid.molgrid.html#grid.molgrid.MolGrid.aim_weights">aim_weights (MolGrid property)</a>
 </li>
-<<<<<<< HEAD
       <li><a href="pyapi/grid.angular.html#grid.angular.AngularGrid">AngularGrid (class in grid.angular)</a>
 </li>
       <li><a href="pyapi/grid.periodicgrid.html#grid.periodicgrid.PeriodicGridWarning.args">args (PeriodicGridWarning attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="pyapi/grid.molgrid.html#grid.molgrid.MolGrid.atcoords">atcoords() (MolGrid property)</a>
+      <li><a href="pyapi/grid.molgrid.html#grid.molgrid.MolGrid.atcoords">atcoords (MolGrid property)</a>
 </li>
-      <li><a href="pyapi/grid.molgrid.html#grid.molgrid.MolGrid.atgrids">atgrids() (MolGrid property)</a>
-</li>
-      <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid">AtomGrid (class in grid.atomgrid)</a>
-</li>
-      <li><a href="pyapi/grid.molgrid.html#grid.molgrid.MolGrid.atweights">atweights() (MolGrid property)</a>
-</li>
-=======
-      <li><a href="pyapi/grid.lebedev.html#grid.lebedev.AngularGrid">AngularGrid (class in grid.lebedev)</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="pyapi/grid.periodicgrid.html#grid.periodicgrid.PeriodicGridWarning.args">args (PeriodicGridWarning attribute)</a>
+      <li><a href="pyapi/grid.molgrid.html#grid.molgrid.MolGrid.atgrids">atgrids (MolGrid property)</a>
 </li>
       <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid">AtomGrid (class in grid.atomgrid)</a>
 </li>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
-      <li><a href="pyapi/grid.cubic.html#grid.cubic.UniformGrid.axes">axes() (UniformGrid property)</a>
+      <li><a href="pyapi/grid.molgrid.html#grid.molgrid.MolGrid.atweights">atweights (MolGrid property)</a>
+</li>
+      <li><a href="pyapi/grid.cubic.html#grid.cubic.UniformGrid.axes">axes (UniformGrid property)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -399,12 +388,22 @@
 <h2 id="B">B</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HyperbolicRTransform.b">b() (HyperbolicRTransform property)</a>
+      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.ExpRTransform.b">b (ExpRTransform property)</a>
+
+      <ul>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HyperbolicRTransform.b">(HyperbolicRTransform property)</a>
 </li>
-      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BaseTransform">BaseTransform (class in grid.rtransform)</a>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.LinearInfiniteRTransform.b">(LinearInfiniteRTransform property)</a>
 </li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.PowerRTransform.b">(PowerRTransform property)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BaseTransform">BaseTransform (class in grid.rtransform)</a>
+</li>
+      <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.basis">basis (AtomGrid property)</a>
+</li>
       <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BeckeRTransform">BeckeRTransform (class in grid.rtransform)</a>
 </li>
       <li><a href="pyapi/grid.becke.html#grid.becke.BeckeWeights">BeckeWeights (class in grid.becke)</a>
@@ -415,7 +414,7 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.center">center() (AtomGrid property)</a>
+      <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.center">center (AtomGrid property)</a>
 
       <ul>
         <li><a href="pyapi/grid.basegrid.html#grid.basegrid.LocalGrid.center">(LocalGrid property)</a>
@@ -425,7 +424,7 @@
 </li>
       <li><a href="pyapi/grid.cubic.html#grid.cubic.UniformGrid.closest_point">closest_point() (UniformGrid method)</a>
 </li>
-      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BaseTransform.codomain">codomain() (BaseTransform property)</a>
+      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BaseTransform.codomain">codomain (BaseTransform property)</a>
 
       <ul>
         <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BeckeRTransform.codomain">(BeckeRTransform property)</a>
@@ -459,22 +458,14 @@
 </li>
       <li><a href="pyapi/grid.becke.html#grid.becke.BeckeWeights.compute_weights">compute_weights() (BeckeWeights method)</a>
 </li>
-<<<<<<< HEAD
       <li><a href="pyapi/grid.angular.html#grid.angular.AngularGrid.convert_angular_sizes_to_degrees">convert_angular_sizes_to_degrees() (AngularGrid static method)</a>
 </li>
-=======
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
       <li><a href="pyapi/grid.utils.html#grid.utils.convert_cart_to_sph">convert_cart_to_sph() (in module grid.utils)</a>
 </li>
       <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.convert_cartesian_to_spherical">convert_cartesian_to_spherical() (AtomGrid method)</a>
 </li>
       <li><a href="pyapi/grid.utils.html#grid.utils.convert_derivative_from_spherical_to_cartesian">convert_derivative_from_spherical_to_cartesian() (in module grid.utils)</a>
 </li>
-<<<<<<< HEAD
-=======
-      <li><a href="pyapi/grid.lebedev.html#grid.lebedev.AngularGrid.convert_lebedev_sizes_to_degrees">convert_lebedev_sizes_to_degrees() (AngularGrid static method)</a>
-</li>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
       <li><a href="pyapi/grid.cubic.html#grid.cubic.Tensor1DGrids.coordinates_to_index">coordinates_to_index() (Tensor1DGrids method)</a>
 
       <ul>
@@ -487,13 +478,9 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-<<<<<<< HEAD
-      <li><a href="pyapi/grid.angular.html#grid.angular.AngularGrid.degree">degree() (AngularGrid property)</a>
-=======
-      <li><a href="pyapi/grid.lebedev.html#grid.lebedev.AngularGrid.degree">degree() (AngularGrid property)</a>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
+      <li><a href="pyapi/grid.angular.html#grid.angular.AngularGrid.degree">degree (AngularGrid property)</a>
 </li>
-      <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.degrees">degrees() (AtomGrid property)</a>
+      <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.degrees">degrees (AtomGrid property)</a>
 </li>
       <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BaseTransform.deriv">deriv() (BaseTransform method)</a>
 
@@ -581,7 +568,7 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BaseTransform.domain">domain() (BaseTransform property)</a>
+      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BaseTransform.domain">domain (BaseTransform property)</a>
 
       <ul>
         <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BeckeRTransform.domain">(BeckeRTransform property)</a>
@@ -628,11 +615,6 @@
 </li>
         <li><a href="pyapi/grid.rtransform.html#grid.rtransform.PowerRTransform.domain">(PowerRTransform property)</a>
 </li>
-<<<<<<< HEAD
-=======
-        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.RectangleRuleSine.domain">(RectangleRuleSine property)</a>
-</li>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
         <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.RectangleRuleSineEndPoints.domain">(RectangleRuleSineEndPoints property)</a>
 </li>
         <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.Simpson.domain">(Simpson property)</a>
@@ -676,19 +658,12 @@
 </li>
       <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BeckeRTransform.find_parameter">find_parameter() (BeckeRTransform static method)</a>
 </li>
-      <li><a href="pyapi/grid.periodicgrid.html#grid.periodicgrid.PeriodicGrid.frac_intvls">frac_intvls() (PeriodicGrid property)</a>
+      <li><a href="pyapi/grid.periodicgrid.html#grid.periodicgrid.PeriodicGrid.frac_intvls">frac_intvls (PeriodicGrid property)</a>
 </li>
-<<<<<<< HEAD
       <li><a href="pyapi/grid.cubic.html#grid.cubic.UniformGrid.from_molecule">from_molecule() (UniformGrid class method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-=======
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="pyapi/grid.cubic.html#grid.cubic.UniformGrid.from_molecule">from_molecule() (UniformGrid class method)</a>
-</li>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
       <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.from_preset">from_preset() (AtomGrid class method)</a>
 
       <ul>
@@ -696,15 +671,11 @@
 </li>
       </ul></li>
       <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.from_pruned">from_pruned() (AtomGrid class method)</a>
-<<<<<<< HEAD
 
       <ul>
         <li><a href="pyapi/grid.molgrid.html#grid.molgrid.MolGrid.from_pruned">(MolGrid class method)</a>
 </li>
       </ul></li>
-=======
-</li>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
       <li><a href="pyapi/grid.molgrid.html#grid.molgrid.MolGrid.from_size">from_size() (MolGrid class method)</a>
 </li>
   </ul></td>
@@ -725,31 +696,21 @@
 </li>
       <li><a href="pyapi/grid.utils.html#grid.utils.generate_derivative_real_spherical_harmonics">generate_derivative_real_spherical_harmonics() (in module grid.utils)</a>
 </li>
-<<<<<<< HEAD
       <li><a href="pyapi/grid.utils.html#grid.utils.generate_orders_horton_order">generate_orders_horton_order() (in module grid.utils)</a>
 </li>
-=======
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
       <li><a href="pyapi/grid.hirshfeld.html#grid.hirshfeld.HirshfeldWeights.generate_proatom">generate_proatom() (HirshfeldWeights static method)</a>
 </li>
       <li><a href="pyapi/grid.utils.html#grid.utils.generate_real_spherical_harmonics">generate_real_spherical_harmonics() (in module grid.utils)</a>
 </li>
-<<<<<<< HEAD
       <li><a href="pyapi/grid.utils.html#grid.utils.generate_real_spherical_harmonics_scipy">generate_real_spherical_harmonics_scipy() (in module grid.utils)</a>
 </li>
-=======
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
       <li><a href="pyapi/grid.becke.html#grid.becke.BeckeWeights.generate_weights">generate_weights() (BeckeWeights method)</a>
 </li>
       <li><a href="pyapi/grid.molgrid.html#grid.molgrid.MolGrid.get_atomic_grid">get_atomic_grid() (MolGrid method)</a>
 </li>
       <li><a href="pyapi/grid.utils.html#grid.utils.get_cov_radii">get_cov_radii() (in module grid.utils)</a>
 </li>
-<<<<<<< HEAD
       <li><a href="pyapi/grid.angular.html#grid.angular.AngularGrid.get_localgrid">get_localgrid() (AngularGrid method)</a>
-=======
-      <li><a href="pyapi/grid.lebedev.html#grid.lebedev.AngularGrid.get_localgrid">get_localgrid() (AngularGrid method)</a>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 
       <ul>
         <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.get_localgrid">(AtomGrid method)</a>
@@ -782,11 +743,6 @@
 </li>
         <li><a href="pyapi/grid.periodicgrid.html#grid.periodicgrid.PeriodicGrid.get_localgrid">(PeriodicGrid method)</a>
 </li>
-<<<<<<< HEAD
-=======
-        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.RectangleRuleSine.get_localgrid">(RectangleRuleSine method)</a>
-</li>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
         <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.RectangleRuleSineEndPoints.get_localgrid">(RectangleRuleSineEndPoints method)</a>
 </li>
         <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.Simpson.get_localgrid">(Simpson method)</a>
@@ -824,36 +780,6 @@
       </ul></li>
       <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.get_shell_grid">get_shell_grid() (AtomGrid method)</a>
 </li>
-<<<<<<< HEAD
-      <li><a href="pyapi/grid.basegrid.html#grid.basegrid.Grid">Grid (class in grid.basegrid)</a>
-</li>
-      <li><a href="pyapi/grid.html#module-grid">grid (module)</a>
-</li>
-      <li><a href="pyapi/grid.angular.html#module-grid.angular">grid.angular (module)</a>
-</li>
-      <li><a href="pyapi/grid.atomgrid.html#module-grid.atomgrid">grid.atomgrid (module)</a>
-</li>
-      <li><a href="pyapi/grid.basegrid.html#module-grid.basegrid">grid.basegrid (module)</a>
-</li>
-      <li><a href="pyapi/grid.becke.html#module-grid.becke">grid.becke (module)</a>
-</li>
-      <li><a href="pyapi/grid.cubic.html#module-grid.cubic">grid.cubic (module)</a>
-</li>
-      <li><a href="pyapi/grid.hirshfeld.html#module-grid.hirshfeld">grid.hirshfeld (module)</a>
-</li>
-      <li><a href="pyapi/grid.molgrid.html#module-grid.molgrid">grid.molgrid (module)</a>
-</li>
-      <li><a href="pyapi/grid.ode.html#module-grid.ode">grid.ode (module)</a>
-</li>
-      <li><a href="pyapi/grid.onedgrid.html#module-grid.onedgrid">grid.onedgrid (module)</a>
-</li>
-      <li><a href="pyapi/grid.periodicgrid.html#module-grid.periodicgrid">grid.periodicgrid (module)</a>
-</li>
-      <li><a href="pyapi/grid.rtransform.html#module-grid.rtransform">grid.rtransform (module)</a>
-</li>
-      <li><a href="pyapi/grid.utils.html#module-grid.utils">grid.utils (module)</a>
-</li>
-=======
       <li>
     grid
 
@@ -863,6 +789,13 @@
       </ul></li>
       <li><a href="pyapi/grid.basegrid.html#grid.basegrid.Grid">Grid (class in grid.basegrid)</a>
 </li>
+      <li>
+    grid.angular
+
+      <ul>
+        <li><a href="pyapi/grid.angular.html#module-grid.angular">module</a>
+</li>
+      </ul></li>
       <li>
     grid.atomgrid
 
@@ -899,13 +832,6 @@
 </li>
       </ul></li>
       <li>
-    grid.lebedev
-
-      <ul>
-        <li><a href="pyapi/grid.lebedev.html#module-grid.lebedev">module</a>
-</li>
-      </ul></li>
-      <li>
     grid.molgrid
 
       <ul>
@@ -934,6 +860,13 @@
 </li>
       </ul></li>
       <li>
+    grid.poisson
+
+      <ul>
+        <li><a href="pyapi/grid.poisson.html#module-grid.poisson">module</a>
+</li>
+      </ul></li>
+      <li>
     grid.rtransform
 
       <ul>
@@ -947,7 +880,6 @@
         <li><a href="pyapi/grid.utils.html#module-grid.utils">module</a>
 </li>
       </ul></li>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
   </ul></td>
 </tr></table>
 
@@ -978,20 +910,15 @@
         <li><a href="pyapi/grid.cubic.html#grid.cubic.UniformGrid.index_to_coordinates">(UniformGrid method)</a>
 </li>
       </ul></li>
-      <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.indices">indices() (AtomGrid property)</a>
+      <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.indices">indices (AtomGrid property)</a>
 
       <ul>
         <li><a href="pyapi/grid.basegrid.html#grid.basegrid.LocalGrid.indices">(LocalGrid property)</a>
 </li>
-<<<<<<< HEAD
         <li><a href="pyapi/grid.molgrid.html#grid.molgrid.MolGrid.indices">(MolGrid property)</a>
 </li>
       </ul></li>
       <li><a href="pyapi/grid.angular.html#grid.angular.AngularGrid.integrate">integrate() (AngularGrid method)</a>
-=======
-      </ul></li>
-      <li><a href="pyapi/grid.lebedev.html#grid.lebedev.AngularGrid.integrate">integrate() (AngularGrid method)</a>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 
       <ul>
         <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.integrate">(AtomGrid method)</a>
@@ -1024,11 +951,6 @@
 </li>
         <li><a href="pyapi/grid.periodicgrid.html#grid.periodicgrid.PeriodicGrid.integrate">(PeriodicGrid method)</a>
 </li>
-<<<<<<< HEAD
-=======
-        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.RectangleRuleSine.integrate">(RectangleRuleSine method)</a>
-</li>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
         <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.RectangleRuleSineEndPoints.integrate">(RectangleRuleSineEndPoints method)</a>
 </li>
         <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.Simpson.integrate">(Simpson method)</a>
@@ -1063,17 +985,14 @@
       <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.interpolate">interpolate() (AtomGrid method)</a>
 
       <ul>
-<<<<<<< HEAD
         <li><a href="pyapi/grid.molgrid.html#grid.molgrid.MolGrid.interpolate">(MolGrid method)</a>
 </li>
-=======
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
         <li><a href="pyapi/grid.cubic.html#grid.cubic.Tensor1DGrids.interpolate">(Tensor1DGrids method)</a>
 </li>
         <li><a href="pyapi/grid.cubic.html#grid.cubic.UniformGrid.interpolate">(UniformGrid method)</a>
 </li>
       </ul></li>
-      <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.interpolate_laplacian">interpolate_laplacian() (AtomGrid method)</a>
+      <li><a href="pyapi/grid.poisson.html#grid.poisson.interpolate_laplacian">interpolate_laplacian() (in module grid.poisson)</a>
 </li>
       <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BaseTransform.inverse">inverse() (BaseTransform method)</a>
 
@@ -1111,7 +1030,7 @@
 <h2 id="K">K</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.KnowlesRTransform.k">k() (KnowlesRTransform property)</a>
+      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.KnowlesRTransform.k">k (KnowlesRTransform property)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -1123,7 +1042,7 @@
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.l_max">l_max() (AtomGrid property)</a>
+      <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.l_max">l_max (AtomGrid property)</a>
 </li>
       <li><a href="pyapi/grid.rtransform.html#grid.rtransform.LinearFiniteRTransform">LinearFiniteRTransform (class in grid.rtransform)</a>
 </li>
@@ -1139,7 +1058,7 @@
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HandyModRTransform.m">m() (HandyModRTransform property)</a>
+      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HandyModRTransform.m">m (HandyModRTransform property)</a>
 
       <ul>
         <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HandyRTransform.m">(HandyRTransform property)</a>
@@ -1147,7 +1066,39 @@
       </ul></li>
       <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.MidPoint">MidPoint (class in grid.onedgrid)</a>
 </li>
-<<<<<<< HEAD
+      <li>
+    module
+
+      <ul>
+        <li><a href="pyapi/grid.html#module-grid">grid</a>
+</li>
+        <li><a href="pyapi/grid.angular.html#module-grid.angular">grid.angular</a>
+</li>
+        <li><a href="pyapi/grid.atomgrid.html#module-grid.atomgrid">grid.atomgrid</a>
+</li>
+        <li><a href="pyapi/grid.basegrid.html#module-grid.basegrid">grid.basegrid</a>
+</li>
+        <li><a href="pyapi/grid.becke.html#module-grid.becke">grid.becke</a>
+</li>
+        <li><a href="pyapi/grid.cubic.html#module-grid.cubic">grid.cubic</a>
+</li>
+        <li><a href="pyapi/grid.hirshfeld.html#module-grid.hirshfeld">grid.hirshfeld</a>
+</li>
+        <li><a href="pyapi/grid.molgrid.html#module-grid.molgrid">grid.molgrid</a>
+</li>
+        <li><a href="pyapi/grid.ode.html#module-grid.ode">grid.ode</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#module-grid.onedgrid">grid.onedgrid</a>
+</li>
+        <li><a href="pyapi/grid.periodicgrid.html#module-grid.periodicgrid">grid.periodicgrid</a>
+</li>
+        <li><a href="pyapi/grid.poisson.html#module-grid.poisson">grid.poisson</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#module-grid.rtransform">grid.rtransform</a>
+</li>
+        <li><a href="pyapi/grid.utils.html#module-grid.utils">grid.utils</a>
+</li>
+      </ul></li>
       <li><a href="pyapi/grid.molgrid.html#grid.molgrid.MolGrid">MolGrid (class in grid.molgrid)</a>
 </li>
       <li><a href="pyapi/grid.angular.html#grid.angular.AngularGrid.moments">moments() (AngularGrid method)</a>
@@ -1208,46 +1159,10 @@
         <li><a href="pyapi/grid.cubic.html#grid.cubic.UniformGrid.moments">(UniformGrid method)</a>
 </li>
         <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.UniformInteger.moments">(UniformInteger method)</a>
-=======
-      <li>
-    module
-
-      <ul>
-        <li><a href="pyapi/grid.html#module-grid">grid</a>
-</li>
-        <li><a href="pyapi/grid.atomgrid.html#module-grid.atomgrid">grid.atomgrid</a>
-</li>
-        <li><a href="pyapi/grid.basegrid.html#module-grid.basegrid">grid.basegrid</a>
-</li>
-        <li><a href="pyapi/grid.becke.html#module-grid.becke">grid.becke</a>
-</li>
-        <li><a href="pyapi/grid.cubic.html#module-grid.cubic">grid.cubic</a>
-</li>
-        <li><a href="pyapi/grid.hirshfeld.html#module-grid.hirshfeld">grid.hirshfeld</a>
-</li>
-        <li><a href="pyapi/grid.lebedev.html#module-grid.lebedev">grid.lebedev</a>
-</li>
-        <li><a href="pyapi/grid.molgrid.html#module-grid.molgrid">grid.molgrid</a>
-</li>
-        <li><a href="pyapi/grid.ode.html#module-grid.ode">grid.ode</a>
-</li>
-        <li><a href="pyapi/grid.onedgrid.html#module-grid.onedgrid">grid.onedgrid</a>
-</li>
-        <li><a href="pyapi/grid.periodicgrid.html#module-grid.periodicgrid">grid.periodicgrid</a>
-</li>
-        <li><a href="pyapi/grid.rtransform.html#module-grid.rtransform">grid.rtransform</a>
-</li>
-        <li><a href="pyapi/grid.utils.html#module-grid.utils">grid.utils</a>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-<<<<<<< HEAD
-=======
-      <li><a href="pyapi/grid.molgrid.html#grid.molgrid.MolGrid">MolGrid (class in grid.molgrid)</a>
-</li>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
       <li><a href="pyapi/grid.rtransform.html#grid.rtransform.MultiExpRTransform">MultiExpRTransform (class in grid.rtransform)</a>
 </li>
   </ul></td>
@@ -1256,11 +1171,11 @@
 <h2 id="N">N</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.n_shells">n_shells() (AtomGrid property)</a>
+      <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.n_shells">n_shells (AtomGrid property)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="pyapi/grid.cubic.html#grid.cubic.Tensor1DGrids.ndim">ndim() (Tensor1DGrids property)</a>
+      <li><a href="pyapi/grid.cubic.html#grid.cubic.Tensor1DGrids.ndim">ndim (Tensor1DGrids property)</a>
 
       <ul>
         <li><a href="pyapi/grid.cubic.html#grid.cubic.UniformGrid.ndim">(UniformGrid property)</a>
@@ -1276,7 +1191,7 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="pyapi/grid.cubic.html#grid.cubic.Tensor1DGrids.origin">origin() (Tensor1DGrids property)</a>
+      <li><a href="pyapi/grid.cubic.html#grid.cubic.Tensor1DGrids.origin">origin (Tensor1DGrids property)</a>
 
       <ul>
         <li><a href="pyapi/grid.cubic.html#grid.cubic.UniformGrid.origin">(UniformGrid property)</a>
@@ -1292,11 +1207,7 @@
 </li>
       <li><a href="pyapi/grid.periodicgrid.html#grid.periodicgrid.PeriodicGridWarning">PeriodicGridWarning</a>
 </li>
-<<<<<<< HEAD
-      <li><a href="pyapi/grid.angular.html#grid.angular.AngularGrid.points">points() (AngularGrid property)</a>
-=======
-      <li><a href="pyapi/grid.lebedev.html#grid.lebedev.AngularGrid.points">points() (AngularGrid property)</a>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
+      <li><a href="pyapi/grid.angular.html#grid.angular.AngularGrid.points">points (AngularGrid property)</a>
 
       <ul>
         <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.points">(AtomGrid property)</a>
@@ -1329,11 +1240,6 @@
 </li>
         <li><a href="pyapi/grid.periodicgrid.html#grid.periodicgrid.PeriodicGrid.points">(PeriodicGrid property)</a>
 </li>
-<<<<<<< HEAD
-=======
-        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.RectangleRuleSine.points">(RectangleRuleSine property)</a>
-</li>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
         <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.RectangleRuleSineEndPoints.points">(RectangleRuleSineEndPoints property)</a>
 </li>
         <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.Simpson.points">(Simpson property)</a>
@@ -1371,7 +1277,7 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BeckeRTransform.R">R() (BeckeRTransform property)</a>
+      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BeckeRTransform.R">R (BeckeRTransform property)</a>
 
       <ul>
         <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HandyRTransform.R">(HandyRTransform property)</a>
@@ -1383,20 +1289,15 @@
       </ul></li>
       <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.radial_component_splines">radial_component_splines() (AtomGrid method)</a>
 </li>
-      <li><a href="pyapi/grid.periodicgrid.html#grid.periodicgrid.PeriodicGrid.realvecs">realvecs() (PeriodicGrid property)</a>
+      <li><a href="pyapi/grid.periodicgrid.html#grid.periodicgrid.PeriodicGrid.realvecs">realvecs (PeriodicGrid property)</a>
 </li>
-      <li><a href="pyapi/grid.periodicgrid.html#grid.periodicgrid.PeriodicGrid.recivecs">recivecs() (PeriodicGrid property)</a>
+      <li><a href="pyapi/grid.periodicgrid.html#grid.periodicgrid.PeriodicGrid.recivecs">recivecs (PeriodicGrid property)</a>
 </li>
-<<<<<<< HEAD
-=======
-      <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.RectangleRuleSine">RectangleRuleSine (class in grid.onedgrid)</a>
-</li>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
       <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.RectangleRuleSineEndPoints">RectangleRuleSineEndPoints (class in grid.onedgrid)</a>
 </li>
-      <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.rgrid">rgrid() (AtomGrid property)</a>
+      <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.rgrid">rgrid (AtomGrid property)</a>
 </li>
-      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.ExpRTransform.rmax">rmax() (ExpRTransform property)</a>
+      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.ExpRTransform.rmax">rmax (ExpRTransform property)</a>
 
       <ul>
         <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HandyModRTransform.rmax">(HandyModRTransform property)</a>
@@ -1408,7 +1309,7 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BeckeRTransform.rmin">rmin() (BeckeRTransform property)</a>
+      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BeckeRTransform.rmin">rmin (BeckeRTransform property)</a>
 
       <ul>
         <li><a href="pyapi/grid.rtransform.html#grid.rtransform.ExpRTransform.rmin">(ExpRTransform property)</a>
@@ -1426,7 +1327,7 @@
         <li><a href="pyapi/grid.rtransform.html#grid.rtransform.PowerRTransform.rmin">(PowerRTransform property)</a>
 </li>
       </ul></li>
-      <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.rotate">rotate() (AtomGrid property)</a>
+      <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.rotate">rotate (AtomGrid property)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1434,7 +1335,6 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-<<<<<<< HEAD
       <li><a href="pyapi/grid.angular.html#grid.angular.AngularGrid.save">save() (AngularGrid method)</a>
 
       <ul>
@@ -1495,9 +1395,15 @@
         <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.UniformInteger.save">(UniformInteger method)</a>
 </li>
       </ul></li>
-=======
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
-      <li><a href="pyapi/grid.cubic.html#grid.cubic.Tensor1DGrids.shape">shape() (Tensor1DGrids property)</a>
+      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.ExpRTransform.set_maximum_parameter_b">set_maximum_parameter_b() (ExpRTransform method)</a>
+
+      <ul>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.LinearInfiniteRTransform.set_maximum_parameter_b">(LinearInfiniteRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.PowerRTransform.set_maximum_parameter_b">(PowerRTransform method)</a>
+</li>
+      </ul></li>
+      <li><a href="pyapi/grid.cubic.html#grid.cubic.Tensor1DGrids.shape">shape (Tensor1DGrids property)</a>
 
       <ul>
         <li><a href="pyapi/grid.cubic.html#grid.cubic.UniformGrid.shape">(UniformGrid property)</a>
@@ -1505,13 +1411,9 @@
       </ul></li>
       <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.Simpson">Simpson (class in grid.onedgrid)</a>
 </li>
-<<<<<<< HEAD
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="pyapi/grid.angular.html#grid.angular.AngularGrid.size">size() (AngularGrid property)</a>
-=======
-      <li><a href="pyapi/grid.lebedev.html#grid.lebedev.AngularGrid.size">size() (AngularGrid property)</a>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
+      <li><a href="pyapi/grid.angular.html#grid.angular.AngularGrid.size">size (AngularGrid property)</a>
 
       <ul>
         <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.size">(AtomGrid property)</a>
@@ -1544,11 +1446,6 @@
 </li>
         <li><a href="pyapi/grid.periodicgrid.html#grid.periodicgrid.PeriodicGrid.size">(PeriodicGrid property)</a>
 </li>
-<<<<<<< HEAD
-=======
-        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.RectangleRuleSine.size">(RectangleRuleSine property)</a>
-</li>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
         <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.RectangleRuleSineEndPoints.size">(RectangleRuleSineEndPoints property)</a>
 </li>
         <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.Simpson.size">(Simpson property)</a>
@@ -1576,16 +1473,17 @@
         <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.UniformInteger.size">(UniformInteger property)</a>
 </li>
       </ul></li>
-<<<<<<< HEAD
       <li><a href="pyapi/grid.utils.html#grid.utils.solid_harmonics">solid_harmonics() (in module grid.utils)</a>
 </li>
-=======
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
-      <li><a href="pyapi/grid.ode.html#grid.ode.solve_ode">solve_ode() (in module grid.ode)</a>
+      <li><a href="pyapi/grid.ode.html#grid.ode.solve_ode_bvp">solve_ode_bvp() (in module grid.ode)</a>
 </li>
-      <li><a href="pyapi/grid.periodicgrid.html#grid.periodicgrid.PeriodicGrid.spacings">spacings() (PeriodicGrid property)</a>
+      <li><a href="pyapi/grid.ode.html#grid.ode.solve_ode_ivp">solve_ode_ivp() (in module grid.ode)</a>
+</li>
+      <li><a href="pyapi/grid.poisson.html#grid.poisson.solve_poisson_bvp">solve_poisson_bvp() (in module grid.poisson)</a>
+</li>
+      <li><a href="pyapi/grid.poisson.html#grid.poisson.solve_poisson_ivp">solve_poisson_ivp() (in module grid.poisson)</a>
+</li>
+      <li><a href="pyapi/grid.periodicgrid.html#grid.periodicgrid.PeriodicGrid.spacings">spacings (PeriodicGrid property)</a>
 </li>
       <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.spherical_average">spherical_average() (AtomGrid method)</a>
 </li>
@@ -1679,34 +1577,23 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="pyapi/grid.cubic.html#grid.cubic.UniformGrid">UniformGrid (class in grid.cubic)</a>
 </li>
-<<<<<<< HEAD
       <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.UniformInteger">UniformInteger (class in grid.onedgrid)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="pyapi/grid.angular.html#grid.angular.AngularGrid.use_spherical">use_spherical() (AngularGrid property)</a>
+      <li><a href="pyapi/grid.angular.html#grid.angular.AngularGrid.use_spherical">use_spherical (AngularGrid property)</a>
 
       <ul>
         <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.use_spherical">(AtomGrid property)</a>
 </li>
       </ul></li>
-=======
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.UniformInteger">UniformInteger (class in grid.onedgrid)</a>
-</li>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
   </ul></td>
 </tr></table>
 
 <h2 id="W">W</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-<<<<<<< HEAD
-      <li><a href="pyapi/grid.angular.html#grid.angular.AngularGrid.weights">weights() (AngularGrid property)</a>
-=======
-      <li><a href="pyapi/grid.lebedev.html#grid.lebedev.AngularGrid.weights">weights() (AngularGrid property)</a>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
+      <li><a href="pyapi/grid.angular.html#grid.angular.AngularGrid.weights">weights (AngularGrid property)</a>
 
       <ul>
         <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.weights">(AtomGrid property)</a>
@@ -1739,11 +1626,6 @@
 </li>
         <li><a href="pyapi/grid.periodicgrid.html#grid.periodicgrid.PeriodicGrid.weights">(PeriodicGrid property)</a>
 </li>
-<<<<<<< HEAD
-=======
-        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.RectangleRuleSine.weights">(RectangleRuleSine property)</a>
-</li>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
         <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.RectangleRuleSineEndPoints.weights">(RectangleRuleSineEndPoints property)</a>
 </li>
         <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.Simpson.weights">(Simpson property)</a>
@@ -1791,11 +1673,7 @@
   <div role="contentinfo">
     <p>
         
-<<<<<<< HEAD
-        &copy; Copyright 2023, QC-Devs
-=======
         &copy; Copyright 2021, QC-Devs
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 
     </p>
   </div>

@@ -1,0 +1,383 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Conventions &mdash; grid  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/override.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/override.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Molecular Grids" href="notebooks/Molecular_Grid.html" />
+    <link rel="prev" title="Radial Transformations" href="radial_transf.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> grid
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">User Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#downloading-code">Downloading Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#id1">Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="onedgrids.html">One-Dimensional Grids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="radial_transf.html">Radial Transformations</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Conventions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#spherical-coordinates">Spherical Coordinates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#spherical-harmonics">Spherical Harmonics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ordering">Ordering</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#angular-grids">Angular Grids</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/Molecular_Grid.html">Molecular Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/Molecular_Grid.html#Integration">Integration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Grid.html#Example:-Electron-Density">Example: Electron Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/Molecular_Grid.html#Interpolation">Interpolation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Grid.html#id1">Example: Electron Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/Molecular_Grid.html#Derivative-Interpolation">Derivative Interpolation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Grid.html#Example:-Weizsacker-Kinetic-Energy-Density">Example: Weizsacker Kinetic Energy Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/Molecular_Grid.html#Solving-Poisson-Equation">Solving Poisson Equation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Grid.html#Example:-Electrostatic-Potential">Example: Electrostatic Potential</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/Molecular_Grid_Construction.html">Constructing Molecular Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/Molecular_Grid_Construction.html#Molecular-Grid-Details">Molecular Grid Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/Molecular_Grid_Construction.html#Construction-of-Molecular-Grid">Construction of Molecular Grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Grid_Construction.html#Constructor">Constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Grid_Construction.html#from_preset-method">from_preset method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Grid_Construction.html#from_size-method">from_size method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Grid_Construction.html#from_pruned-method">from_pruned method</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/Cubic_Grids.html">Cubic Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/Cubic_Grids.html#Tensor-1D-Grids">Tensor 1D Grids</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/Cubic_Grids.html#Interpolation">Interpolation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/Cubic_Grids.html#Uniform-Grid">Uniform Grid</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pyapi/modules.html">grid</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pyapi/grid.html">grid package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pyapi/grid.html#submodules">Submodules</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.angular.html">grid.angular module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.atomgrid.html">grid.atomgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.basegrid.html">grid.basegrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.becke.html">grid.becke module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.cubic.html">grid.cubic module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.hirshfeld.html">grid.hirshfeld module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.molgrid.html">grid.molgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.ode.html">grid.ode module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.onedgrid.html">grid.onedgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.periodicgrid.html">grid.periodicgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.poisson.html">grid.poisson module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.rtransform.html">grid.rtransform module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.utils.html">grid.utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pyapi/grid.html#module-grid">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">grid</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Conventions</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/conventions.rst" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="conventions">
+<span id="id1"></span><h1>Conventions<a class="headerlink" href="#conventions" title="Permalink to this heading">¶</a></h1>
+<div class="section" id="spherical-coordinates">
+<h2>Spherical Coordinates<a class="headerlink" href="#spherical-coordinates" title="Permalink to this heading">¶</a></h2>
+<p>Spherical coordinates <span class="math notranslate nohighlight">\((r, \theta, \phi)\)</span> is used extensively throughout the molecular, atomic,
+and angular grid modules.
+Particularly, the radius <span class="math notranslate nohighlight">\(r \in [0, \infty)\)</span>, azumuthal <span class="math notranslate nohighlight">\(\theta \in [-\pi, \pi]\)</span> and polar
+<span class="math notranslate nohighlight">\(\phi \in [0, \pi)\)</span> angles are defined from Cartesian coordinates as:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+    r &amp;= \sqrt{x^2 + y^2 + z^2}\\
+    \theta &amp;= \text{arctan2} \bigg(\frac{y}{x}\bigg)\\
+    \phi &amp;= arc\cos \bigg(\frac{z}{r}\bigg)
+\end{align}\end{split}\]</div>
+<p>such that when the radius is zero <span class="math notranslate nohighlight">\(r=0\)</span>, then the angles are zero <span class="math notranslate nohighlight">\(\theta,\phi = 0\)</span>.</p>
+<p>Grid offers a <a class="reference internal" href="pyapi/grid.utils.html#grid.utils.convert_cart_to_sph" title="grid.utils.convert_cart_to_sph"><code class="xref py py-class docutils literal notranslate"><span class="pre">utility</span></code></a> function to convert to spherical coordinates</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">grid.utils</span> <span class="kn">import</span> <span class="n">convert_cart_to_sph</span>
+
+<span class="c1"># Generate random set of points</span>
+<span class="n">cart_pts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">((</span><span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="c1"># Convert to spherical coordinates</span>
+<span class="n">spher_pts</span> <span class="o">=</span> <span class="n">convert_cart_to_sph</span><span class="p">(</span><span class="n">cart_pts</span><span class="p">)</span>
+<span class="c1"># Convert to spherical coordinates, centered at [1, 1, 1]</span>
+<span class="n">spher_pts</span> <span class="o">=</span> <span class="n">convert_cart_to_sph</span><span class="p">(</span><span class="n">cart_pts</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]))</span>
+</pre></div>
+</div>
+<p>The <a class="reference internal" href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid" title="grid.atomgrid.AtomGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">atomic</span> <span class="pre">grid</span></code></a> class can also be used to convert it’s points to spherical coordinates</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">grid.atomgrid</span> <span class="kn">import</span> <span class="n">AtomGrid</span>
+
+<span class="c1"># Construct atomic grid object</span>
+<span class="n">atom_grid</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+
+<span class="c1"># Convert atomic grid points centered at the nucleus to spherical coordinates</span>
+<span class="n">spher_pts</span> <span class="o">=</span> <span class="n">atom_grid</span><span class="o">.</span><span class="n">convert_cartesian_to_spherical</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>With the convention that when <span class="math notranslate nohighlight">\(r=0\)</span>, then the points <span class="math notranslate nohighlight">\((0, \theta_j, \phi_j)\)</span> in that shell arises
+from a angular grid <span class="math notranslate nohighlight">\((\theta_j, \phi_j)\)</span> with some degree.</p>
+</div>
+<div class="section" id="spherical-harmonics">
+<h2>Spherical Harmonics<a class="headerlink" href="#spherical-harmonics" title="Permalink to this heading">¶</a></h2>
+<p>The real spherical harmonics are defined using complex spherical harmonics:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}Y_{lm}(\theta, \phi) = \begin{cases}
+    i(Y^m_l(\theta, \phi) - (-1)^m Y_l^{-m}(\theta, \phi) &amp; \text{if } m &lt; 0 \\
+    Y_l^0 &amp; \text{if } m = 0 \\
+    (Y^{-|m|}_{l}(\theta, \phi) + (-1)^m Y_l^m(\theta, \phi)) &amp; \text{if } m &gt; 0
+\end{cases},\end{split}\]</div>
+<p>where the degree <span class="math notranslate nohighlight">\(l \in \mathbb{N}\)</span>, order <span class="math notranslate nohighlight">\(m \in \{-l, \cdots, l \}\)</span> and
+<span class="math notranslate nohighlight">\(Y^m_l\)</span> is the complex spherical harmonic.   The Conway phase is not included to the spherical harmonics in grid.</p>
+<p>Alternatively, it can be written using the associated Legendre polynomials <span class="math notranslate nohighlight">\(P_l^m\)</span> (without the Conway phase):</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}Y_{lm}(\theta, \phi) = \begin{cases}
+    \sqrt{\frac{(2l + 1) (l - m)!}{4 \pi (l + m)!}} \sqrt{2} \cos(m \theta) P_l^m(\cos(\theta)) &amp; \text{if } m &lt; 0 \\
+    \frac{1}{2} \sqrt{\frac{1}{\pi}} &amp; \text{if } m = 0 \\
+    \sqrt{\frac{(2l + 1) (l - m)!}{4 \pi (l + m)!}}  \sqrt{2}\sin(m \theta) P_l^m(\cos(\theta))  &amp; \text{if } m &gt; 0
+\end{cases}\end{split}\]</div>
+<p>Grid offers <a class="reference internal" href="pyapi/grid.utils.html#grid.utils.generate_real_spherical_harmonics" title="grid.utils.generate_real_spherical_harmonics"><code class="xref py py-func docutils literal notranslate"><span class="pre">generate_real_spherical_harmonics</span></code></a> function
+to generate the real spherical harmonics:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">grid.utils</span> <span class="kn">import</span> <span class="n">generate_real_spherical_harmonics</span>
+
+<span class="n">spher_pts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="n">theta</span> <span class="o">=</span> <span class="n">spher_pts</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">phi</span> <span class="o">=</span> <span class="n">spher_pts</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span>
+<span class="c1"># Generate all degrees up to l=2</span>
+<span class="n">spherical_harmonics</span> <span class="o">=</span> <span class="n">generate_real_spherical_harmonics</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="ordering">
+<h3>Ordering<a class="headerlink" href="#ordering" title="Permalink to this heading">¶</a></h3>
+<p>The spherical harmonics are first ordered by the degree <span class="math notranslate nohighlight">\(l\)</span> in ascending order.</p>
+<p>For each degree <span class="math notranslate nohighlight">\(l\)</span>, the orders <span class="math notranslate nohighlight">\(m\)</span> are in HORTON2 order defined as:</p>
+<div class="math notranslate nohighlight">
+\[m = [0, 1, -1, 2, -2, \cdots, l, -l].\]</div>
+</div>
+</div>
+<div class="section" id="angular-grids">
+<h2>Angular Grids<a class="headerlink" href="#angular-grids" title="Permalink to this heading">¶</a></h2>
+<p>The <a class="reference internal" href="pyapi/grid.angular.html#grid.angular.AngularGrid" title="grid.angular.AngularGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">angular</span> <span class="pre">grids</span></code></a> is responsible for integrating functions over the unit-sphere. The quadrature weights are
+specifically chosen so that it integrates the identity function to obtain <span class="math notranslate nohighlight">\(4 \pi\)</span>.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="notebooks/Molecular_Grid.html" class="btn btn-neutral float-right" title="Molecular Grids" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="radial_transf.html" class="btn btn-neutral float-left" title="Radial Transformations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2021, QC-Devs
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

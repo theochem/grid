@@ -13,6 +13,8 @@
   
   <link rel="stylesheet" href="_static/css/override.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/override.css" type="text/css" />
 
   
   
@@ -26,13 +28,15 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "tex2jax_ignore|mathjax_ignore|document", "processClass": "tex2jax_process|mathjax_process|math|output_area"}})</script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -85,7 +89,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">User Documentation</span></p>
+              <p class="caption" role="heading"><span class="caption-text">User Documentation</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#downloading-code">Downloading Code</a></li>
@@ -95,22 +99,46 @@
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">One-Dimensional Grids</a></li>
 <li class="toctree-l1"><a class="reference internal" href="radial_transf.html">Radial Transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conventions.html">Conventions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="conventions.html#spherical-coordinates">Spherical Coordinates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conventions.html#spherical-harmonics">Spherical Harmonics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="conventions.html#ordering">Ordering</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Example Tutorials</span></p>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="conventions.html#angular-grids">Angular Grids</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Tutorials</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="notebooks/Molecular_Integration.html">Molecular Integration</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/Molecular_Integration.html#Construction-of-Molecular-Grid">Construction of Molecular Grid</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Integration.html#Initailizor-Method">Initailizor Method</a></li>
-<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Integration.html#from_preset-method">from_preset method</a></li>
-<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Integration.html#from_size-method">from_size method</a></li>
-<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Integration.html#from_pruned-method">from_pruned method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/Molecular_Grid.html">Molecular Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/Molecular_Grid.html#Integration">Integration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Grid.html#Example:-Electron-Density">Example: Electron Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/Molecular_Grid.html#Interpolation">Interpolation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Grid.html#id1">Example: Electron Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/Molecular_Grid.html#Derivative-Interpolation">Derivative Interpolation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Grid.html#Example:-Weizsacker-Kinetic-Energy-Density">Example: Weizsacker Kinetic Energy Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/Molecular_Grid.html#Solving-Poisson-Equation">Solving Poisson Equation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Grid.html#Example:-Electrostatic-Potential">Example: Electrostatic Potential</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="notebooks/Interpolation_and_Poisson.html">Interpolation and Solving Poisson’s Equation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/Interpolation_and_Poisson.html#Interpolation">Interpolation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/Interpolation_and_Poisson.html#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/Molecular_Grid_Construction.html">Constructing Molecular Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/Molecular_Grid_Construction.html#Molecular-Grid-Details">Molecular Grid Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/Molecular_Grid_Construction.html#Construction-of-Molecular-Grid">Construction of Molecular Grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Grid_Construction.html#Constructor">Constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Grid_Construction.html#from_preset-method">from_preset method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Grid_Construction.html#from_size-method">from_size method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/Molecular_Grid_Construction.html#from_pruned-method">from_pruned method</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="notebooks/Cubic_Grids.html">Cubic Grids</a><ul>
@@ -121,19 +149,18 @@
 <li class="toctree-l2"><a class="reference internal" href="notebooks/Cubic_Grids.html#Uniform-Grid">Uniform Grid</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="notebooks/Multipole_Moments.html">Multipole Moments</a></li>
 </ul>
-<p class="caption"><span class="caption-text">API Documentation</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="pyapi/modules.html">grid</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="pyapi/grid.html">grid package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="pyapi/grid.html#submodules">Submodules</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.angular.html">grid.angular module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pyapi/grid.atomgrid.html">grid.atomgrid module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pyapi/grid.basegrid.html">grid.basegrid module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pyapi/grid.becke.html">grid.becke module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.cubic.html">grid.cubic module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pyapi/grid.hirshfeld.html">grid.hirshfeld module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.interpolate.html">grid.interpolate module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.lebedev.html">grid.lebedev module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pyapi/grid.molgrid.html">grid.molgrid module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pyapi/grid.ode.html">grid.ode module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pyapi/grid.onedgrid.html">grid.onedgrid module</a></li>
@@ -213,32 +240,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  
-<style>
-/* CSS overrides for sphinx_rtd_theme */
-
-/* 24px margin */
-.nbinput.nblast.container,
-.nboutput.nblast.container {
-    margin-bottom: 19px;  /* padding has already 5px */
-}
-
-/* ... except between code cells! */
-.nblast.container + .nbinput.container {
-    margin-top: -19px;
-}
-
-.admonition > p:before {
-    margin-right: 4px;  /* make room for the exclamation icon */
-}
-
-/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
-.math {
-    text-align: unset;
-}
-</style>
-<div class="section" id="one-dimensional-grids">
-<h1>One-Dimensional Grids<a class="headerlink" href="#one-dimensional-grids" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="one-dimensional-grids">
+<h1>One-Dimensional Grids<a class="headerlink" href="#one-dimensional-grids" title="Permalink to this heading">¶</a></h1>
 <p>There are various choices of one dimensional grid for integrating functions over some finite or infinite
 intervals.</p>
 <table class="colwidths-given docutils align-center" id="id1">
@@ -270,12 +273,12 @@ intervals.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussChebyshevLobatto" title="grid.onedgrid.GaussChebyshevLobatto"><code class="xref py py-func docutils literal notranslate"><span class="pre">Gauss-Chebyshev</span> <span class="pre">Lobatto</span></code></a></p></td>
 <td><p><span class="math notranslate nohighlight">\([-1,1]\)</span></p></td>
 <td><p><span class="math notranslate nohighlight">\(\cos\left( \frac{(i-1)}{n-1}\pi \right)\)</span></p></td>
-<td><p><span class="math notranslate nohighlight">\(w_{1} = w_{n} =&amp; \frac{\pi}{2(n-1)} \\ w_{i\neq 1,n} =&amp; \frac{\pi}{n-1}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(w_{1} = w_{n} = \frac{\pi}{2(n-1)}, \quad w_{i\neq 1,n} = \frac{\pi}{n-1}\)</span></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="pyapi/grid.onedgrid.html#grid.onedgrid.Trapezoidal" title="grid.onedgrid.Trapezoidal"><code class="xref py py-func docutils literal notranslate"><span class="pre">Trapezoidal</span> <span class="pre">Lobatto</span></code></a></p></td>
 <td><p><span class="math notranslate nohighlight">\([-1,1]\)</span></p></td>
 <td><p><span class="math notranslate nohighlight">\(-1 + 2 \left(\frac{i-1}{n-1}\right)\)</span></p></td>
-<td><p><span class="math notranslate nohighlight">\(w_1 = w_n =&amp; \frac{1}{n} \\ w_{i\neq 1,n} =&amp; \frac{2}{n}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(w_1 = w_n = \frac{1}{n}, \quad w_{i\neq 1,n} = \frac{2}{n}\)</span></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="pyapi/grid.onedgrid.html#grid.onedgrid.RectangleRuleSineEndPoints" title="grid.onedgrid.RectangleRuleSineEndPoints"><code class="xref py py-func docutils literal notranslate"><span class="pre">Rectangle-Rule</span> <span class="pre">Sine</span> <span class="pre">End</span> <span class="pre">Points</span></code></a></p></td>
 <td><p><span class="math notranslate nohighlight">\([-1,1]\)</span></p></td>
@@ -295,7 +298,7 @@ intervals.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="pyapi/grid.onedgrid.html#grid.onedgrid.Simpson" title="grid.onedgrid.Simpson"><code class="xref py py-func docutils literal notranslate"><span class="pre">Simpson</span></code></a></p></td>
 <td><p><span class="math notranslate nohighlight">\([-1,1]\)</span></p></td>
 <td><p><span class="math notranslate nohighlight">\(-1 + 2 \left(\frac{i-1}{N_{pts}-1}\right)\)</span></p></td>
-<td><p><span class="math notranslate nohighlight">\(w_i &amp;= \begin{cases} 2 / (3(N - 1)) &amp; i = 0 \\ 8 / (3(N - 1)) &amp; i \geq 1 \text{and is odd}, \\ 4 / (3(N - 1)) &amp; i \geq 2 \text{and is even}. \end{cases}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(w_i = 2 / (3(N - 1)) \text{ if } i = 0, \quad  8 / (3(N - 1)) \text{ if } i \geq 1 \text{ and is odd}, \quad 4 / (3(N - 1)) \text{ if } i \geq 2 \text{ and is even}.\)</span></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="pyapi/grid.onedgrid.html#grid.onedgrid.MidPoint" title="grid.onedgrid.MidPoint"><code class="xref py py-func docutils literal notranslate"><span class="pre">MidPoint</span></code></a></p></td>
 <td><p><span class="math notranslate nohighlight">\([-1,1]\)</span></p></td>
@@ -305,7 +308,7 @@ intervals.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="pyapi/grid.onedgrid.html#grid.onedgrid.ClenshawCurtis" title="grid.onedgrid.ClenshawCurtis"><code class="xref py py-func docutils literal notranslate"><span class="pre">Clenshow-Curtis</span></code></a></p></td>
 <td><p><span class="math notranslate nohighlight">\([-1,1]\)</span></p></td>
 <td><p><span class="math notranslate nohighlight">\(\cos (\pi (i - 1) / (N_{pts} - 1))\)</span></p></td>
-<td><p><span class="math notranslate nohighlight">\(w_i &amp;= \frac{c_k}{n} \bigg(1 - \sum_{j=1}^{\lfloor n/2 \rfloor} \frac{b_j}{4j^2 - 1} \cos(2j\theta_i) \bigg) b_j = \begin{cases} 1 &amp; \text{if } j = n/2 \\ 2 &amp; \text{if } j &lt; n/2 \end{cases} \\ c_j = \begin{cases} 1 &amp; \text{if } k = 0, n\\ 2 &amp; else \end{cases}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(w_i = \frac{c_k}{n} \bigg(1 - \sum_{j=1}^{\lfloor n/2 \rfloor} \frac{b_j}{4j^2 - 1} \cos(2j\theta_i) \bigg), \quad  b_j =  1 \text{ if } j = n/2, \quad 2  \text{ if } j &lt; n/2, \quad  c_j = 1  \text{ if } k \in \{0, n\}, \quad  2  \text{ else}\)</span></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="pyapi/grid.onedgrid.html#grid.onedgrid.FejerFirst" title="grid.onedgrid.FejerFirst"><code class="xref py py-func docutils literal notranslate"><span class="pre">Fejer</span> <span class="pre">First</span></code></a></p></td>
 <td><p><span class="math notranslate nohighlight">\((-1,1)\)</span></p></td>
@@ -320,16 +323,20 @@ intervals.</p>
 </tbody>
 </table>
 <p>Grid also includes popular quadrature grids that can integrate polynomials up to
-degree <span class="math notranslate nohighlight">\(2n - 1\)</span> on <span class="math notranslate nohighlight">\([-1, 1]\)</span>: <a class="reference internal" href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussLaguerre" title="grid.onedgrid.GaussLaguerre"><code class="xref py py-func docutils literal notranslate"><span class="pre">Gauss-Laguerre</span></code></a> (domain <span class="math notranslate nohighlight">\([0, \infty)\)</span>),
-<a class="reference internal" href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussLegendre" title="grid.onedgrid.GaussLegendre"><code class="xref py py-func docutils literal notranslate"><span class="pre">Gauss-Legendre</span></code></a>, and <a class="reference internal" href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussChebyshev" title="grid.onedgrid.GaussChebyshev"><code class="xref py py-func docutils literal notranslate"><span class="pre">Gauss-Chebyshev</span></code></a>.</p>
-<p>FInally, the Trefethen grid class on <span class="math notranslate nohighlight">\([-1, 1]\)</span> is also included TODO: Include information about this.</p>
+degree <span class="math notranslate nohighlight">\(2n - 1\)</span>:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenCC" title="grid.onedgrid.TrefethenCC"><code class="xref py py-func docutils literal notranslate"><span class="pre">Trefethen</span> <span class="pre">(Clenshaw-Curtis)</span></code></a></p></li>
-<li><p><a class="reference internal" href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenGC2" title="grid.onedgrid.TrefethenGC2"><code class="xref py py-func docutils literal notranslate"><span class="pre">Trefethen</span> <span class="pre">(Gauss-Chebyshev)</span></code></a></p></li>
-<li><p><a class="reference internal" href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenGeneral" title="grid.onedgrid.TrefethenGeneral"><code class="xref py py-func docutils literal notranslate"><span class="pre">Trefethen</span> <span class="pre">(General)</span></code></a></p></li>
-<li><p><a class="reference internal" href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenStripCC" title="grid.onedgrid.TrefethenStripCC"><code class="xref py py-func docutils literal notranslate"><span class="pre">Trefethen</span> <span class="pre">Strip</span> <span class="pre">(Clenshaw-Curtis)</span></code></a></p></li>
-<li><p><a class="reference internal" href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenStripGC2" title="grid.onedgrid.TrefethenStripGC2"><code class="xref py py-func docutils literal notranslate"><span class="pre">Trefethen</span> <span class="pre">Strip</span> <span class="pre">(Gauss-Chebyshev)</span></code></a></p></li>
-<li><p><a class="reference internal" href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenStripGeneral" title="grid.onedgrid.TrefethenStripGeneral"><code class="xref py py-func docutils literal notranslate"><span class="pre">Trefethen</span> <span class="pre">Strip</span> <span class="pre">(General)</span></code></a></p></li>
+<li><p><a class="reference internal" href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussLegendre" title="grid.onedgrid.GaussLegendre"><code class="xref py py-func docutils literal notranslate"><span class="pre">Gauss-Legendre</span></code></a> (domain <span class="math notranslate nohighlight">\([-1, 1]\)</span>),</p></li>
+<li><p><a class="reference internal" href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussChebyshev" title="grid.onedgrid.GaussChebyshev"><code class="xref py py-func docutils literal notranslate"><span class="pre">Gauss-Chebyshev</span></code></a> (domain <span class="math notranslate nohighlight">\([-1, 1]\)</span>),</p></li>
+<li><p><a class="reference internal" href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussLaguerre" title="grid.onedgrid.GaussLaguerre"><code class="xref py py-func docutils literal notranslate"><span class="pre">Gauss-Laguerre</span></code></a> (domain <span class="math notranslate nohighlight">\([0, \infty)\)</span>).</p></li>
+</ul>
+<p>The Trefethen polynomial transformation of various grids on <span class="math notranslate nohighlight">\([-1, 1]\)</span> is also included:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenCC" title="grid.onedgrid.TrefethenCC"><code class="xref py py-func docutils literal notranslate"><span class="pre">Trefethen</span> <span class="pre">(Clenshaw-Curtis)</span></code></a>,</p></li>
+<li><p><a class="reference internal" href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenGC2" title="grid.onedgrid.TrefethenGC2"><code class="xref py py-func docutils literal notranslate"><span class="pre">Trefethen</span> <span class="pre">(Gauss-Chebyshev)</span></code></a>,</p></li>
+<li><p><a class="reference internal" href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenGeneral" title="grid.onedgrid.TrefethenGeneral"><code class="xref py py-func docutils literal notranslate"><span class="pre">Trefethen</span> <span class="pre">(General)</span></code></a>,</p></li>
+<li><p><a class="reference internal" href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenStripCC" title="grid.onedgrid.TrefethenStripCC"><code class="xref py py-func docutils literal notranslate"><span class="pre">Trefethen</span> <span class="pre">Strip</span> <span class="pre">(Clenshaw-Curtis)</span></code></a>,</p></li>
+<li><p><a class="reference internal" href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenStripGC2" title="grid.onedgrid.TrefethenStripGC2"><code class="xref py py-func docutils literal notranslate"><span class="pre">Trefethen</span> <span class="pre">Strip</span> <span class="pre">(Gauss-Chebyshev)</span></code></a>,</p></li>
+<li><p><a class="reference internal" href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenStripGeneral" title="grid.onedgrid.TrefethenStripGeneral"><code class="xref py py-func docutils literal notranslate"><span class="pre">Trefethen</span> <span class="pre">Strip</span> <span class="pre">(General)</span></code></a>.</p></li>
 </ul>
 </div>
 
@@ -354,7 +361,7 @@ degree <span class="math notranslate nohighlight">\(2n - 1\)</span> on <span cla
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2023, QC-Devs
+        &copy; Copyright 2021, QC-Devs
 
     </p>
   </div>

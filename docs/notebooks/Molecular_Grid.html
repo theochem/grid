@@ -1,0 +1,576 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Molecular Grids &mdash; grid  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/override.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/override.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/nbsphinx-code-cells.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Constructing Molecular Grids" href="Molecular_Grid_Construction.html" />
+    <link rel="prev" title="Conventions" href="../conventions.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> grid
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">User Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#downloading-code">Downloading Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#id1">Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../onedgrids.html">One-Dimensional Grids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../radial_transf.html">Radial Transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../conventions.html">Conventions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../conventions.html#spherical-coordinates">Spherical Coordinates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../conventions.html#spherical-harmonics">Spherical Harmonics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../conventions.html#ordering">Ordering</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../conventions.html#angular-grids">Angular Grids</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Molecular Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Integration">Integration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Example:-Electron-Density">Example: Electron Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Interpolation">Interpolation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Example: Electron Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Derivative-Interpolation">Derivative Interpolation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Example:-Weizsacker-Kinetic-Energy-Density">Example: Weizsacker Kinetic Energy Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Solving-Poisson-Equation">Solving Poisson Equation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Example:-Electrostatic-Potential">Example: Electrostatic Potential</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Molecular_Grid_Construction.html">Constructing Molecular Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Molecular_Grid_Construction.html#Molecular-Grid-Details">Molecular Grid Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Molecular_Grid_Construction.html#Construction-of-Molecular-Grid">Construction of Molecular Grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Molecular_Grid_Construction.html#Constructor">Constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Molecular_Grid_Construction.html#from_preset-method">from_preset method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Molecular_Grid_Construction.html#from_size-method">from_size method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Molecular_Grid_Construction.html#from_pruned-method">from_pruned method</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Cubic_Grids.html">Cubic Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Cubic_Grids.html#Tensor-1D-Grids">Tensor 1D Grids</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Cubic_Grids.html#Interpolation">Interpolation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Cubic_Grids.html#Uniform-Grid">Uniform Grid</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pyapi/modules.html">grid</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.html">grid package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../pyapi/grid.html#submodules">Submodules</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.angular.html">grid.angular module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.atomgrid.html">grid.atomgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.basegrid.html">grid.basegrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.becke.html">grid.becke module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.cubic.html">grid.cubic module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.hirshfeld.html">grid.hirshfeld module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.molgrid.html">grid.molgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.ode.html">grid.ode module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.onedgrid.html">grid.onedgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.periodicgrid.html">grid.periodicgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.poisson.html">grid.poisson module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.rtransform.html">grid.rtransform module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.utils.html">grid.utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../pyapi/grid.html#module-grid">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">grid</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Molecular Grids</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/notebooks/Molecular_Grid.ipynb" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="Molecular-Grids">
+<h1>Molecular Grids<a class="headerlink" href="#Molecular-Grids" title="Permalink to this heading">¶</a></h1>
+<p>This example on Formaldehyde illustates all the features of using molecular grids.</p>
+<p>The format checkpoint file wavefunction is included in “doc/notebooks/ch2o_q+0.fchk” and is read using the <a class="reference external" href="https://github.com/theochem/iodata">IOData</a> package.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">iodata</span> <span class="kn">import</span> <span class="n">load_one</span>
+
+<span class="n">mol</span> <span class="o">=</span> <span class="n">load_one</span><span class="p">(</span><span class="s2">&quot;ch2o_q+0.fchk&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Coordinates of the atoms </span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">mol</span><span class="o">.</span><span class="n">atcoords</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Atomic numbers of the atom </span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">mol</span><span class="o">.</span><span class="n">atnums</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Coordinates of the atoms
+ [[ 2.27823914e+00  4.13899085e-07  3.12033662e-07]
+ [ 1.01154892e-02  1.09802629e-07 -6.99333116e-07]
+ [-1.09577141e+00  1.77311416e+00  1.42544321e-07]
+ [-1.09577166e+00 -1.77311468e+00  2.44755133e-07]]
+Atomic numbers of the atom
+ [8 6 1 1]
+</pre></div></div>
+</div>
+<p>The first step to constructing a molecular grid is to define a radial grid to integrate over the radial coordinate. This is done by first defining a GaussLegendre grid over <span class="math notranslate nohighlight">\([-1, 1]\)</span> and transforming it to <span class="math notranslate nohighlight">\([0, \infty)\)</span> using a Becke Transformation.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">grid.onedgrid</span> <span class="kn">import</span> <span class="n">GaussLegendre</span>
+<span class="kn">from</span> <span class="nn">grid.rtransform</span> <span class="kn">import</span> <span class="n">BeckeRTransform</span>
+
+<span class="n">oned_grid</span> <span class="o">=</span> <span class="n">GaussLegendre</span><span class="p">(</span><span class="n">npoints</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;One-dimesional points </span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">oned_grid</span><span class="o">.</span><span class="n">points</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">radial_grid</span> <span class="o">=</span> <span class="n">BeckeRTransform</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span><span class="o">.</span><span class="n">transform_1d_grid</span><span class="p">(</span><span class="n">oned_grid</span><span class="p">)</span>  <span class="c1">#BeckeRTransform(0.0, R=2.0).transform_1d_grid(oned_grid)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Transformed points </span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">radial_grid</span><span class="o">.</span><span class="n">points</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+One-dimesional points
+ [-0.9988664  -0.99403197 -0.98535408 -0.97286439 -0.95661096 -0.93665662
+ -0.91307856 -0.88596798 -0.85542977 -0.82158207 -0.78455583 -0.7444943
+ -0.70155247 -0.65589647 -0.60770293 -0.5571583  -0.50445814 -0.44980633
+ -0.39341431 -0.33550025 -0.27628819 -0.21600724 -0.15489059 -0.0931747
+ -0.03109834  0.03109834  0.0931747   0.15489059  0.21600724  0.27628819
+  0.33550025  0.39341431  0.44980633  0.50445814  0.5571583   0.60770293
+  0.65589647  0.70155247  0.7444943   0.78455583  0.82158207  0.85542977
+  0.88596798  0.91307856  0.93665662  0.95661096  0.97286439  0.98535408
+  0.99403197  0.9988664 ]
+Transformed points
+ [8.50678848e-04 4.48941942e-03 1.10654689e-02 2.06316373e-02
+ 3.32634175e-02 4.90613930e-02 6.81530638e-02 9.06950874e-02
+ 1.16876073e-01 1.46920031e-01 1.81090580e-01 2.19696072e-01
+ 2.63095794e-01 3.11707472e-01 3.66016382e-01 4.26586392e-01
+ 4.94073421e-01 5.69241890e-01 6.52984919e-01 7.46349269e-01
+ 8.50566286e-01 9.67090581e-01 1.09764867e+00 1.24430061e+00
+ 1.40951880e+00 1.59628946e+00 1.80824471e+00 2.04983623e+00
+ 2.32656593e+00 2.64529648e+00 3.01467435e+00 3.44571510e+00
+ 3.95262549e+00 4.55397903e+00 5.27442985e+00 6.14726583e+00
+ 7.21830627e+00 8.55201815e+00 1.02414211e+01 1.24247214e+01
+ 1.53144537e+01 1.92511601e+01 2.48083999e+01 3.30139230e+01
+ 4.58609073e+01 6.76418771e+01 1.09055814e+02 2.03335260e+02
+ 5.01178390e+02 2.64494645e+03]
+</pre></div></div>
+</div>
+<p>Once a radial grid is defined, there are several methods to constructing a molecular grid. The simplest of such method is used. Here, Becke weights are used as an atom in molecule weights.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">grid.becke</span> <span class="kn">import</span> <span class="n">BeckeWeights</span>
+<span class="kn">from</span> <span class="nn">grid.molgrid</span> <span class="kn">import</span> <span class="n">MolGrid</span>
+
+<span class="n">mol_grid</span> <span class="o">=</span> <span class="n">MolGrid</span><span class="o">.</span><span class="n">from_preset</span><span class="p">(</span>
+    <span class="n">atnums</span><span class="o">=</span><span class="n">mol</span><span class="o">.</span><span class="n">atnums</span><span class="p">,</span>          <span class="c1"># The atomic numbers of Formaldehyde</span>
+    <span class="n">atcoords</span><span class="o">=</span><span class="n">mol</span><span class="o">.</span><span class="n">atcoords</span><span class="p">,</span>      <span class="c1"># The atomic coordinates of Formaldehyde</span>
+    <span class="n">rgrid</span><span class="o">=</span><span class="n">radial_grid</span><span class="p">,</span>          <span class="c1"># Radial grid used to construct atomic grids over each carbon, and hydrogen.</span>
+    <span class="n">preset</span><span class="o">=</span><span class="s2">&quot;fine&quot;</span><span class="p">,</span>              <span class="c1"># Controls the angular degree. Can be &quot;coarse&quot;, &quot;medium&quot;, &quot;fine&quot;, &quot;veryfine&quot;, &quot;ultrafine&quot;, &quot;insane&quot;.</span>
+    <span class="n">aim_weights</span><span class="o">=</span><span class="n">BeckeWeights</span><span class="p">(),</span> <span class="c1"># Atom-in molecular weights: Becke weights</span>
+    <span class="n">store</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>                 <span class="c1"># Stores the individual atomic grids, used for interpolation.</span>
+<span class="p">)</span>
+
+<span class="c1"># Alternative construction includes:</span>
+<span class="c1"># mol_grid = MolGrid.from_size(</span>
+<span class="c1">#     atnums=mol.atnums,          # The atomic numbers of Formaldehyde</span>
+<span class="c1">#     atcoords=mol.atcoords,      # The atomic coordinates of Formaldehyde</span>
+<span class="c1">#     rgrid=radial_grid,          # Radial grid used to construct atomic grids over each carbon, and hydrogen.</span>
+<span class="c1">#     size=50,                    # The angular degree of the atomic grid over each carbon, and hydrogen.</span>
+<span class="c1">#     aim_weights=BeckeWeights(), # Atom-in molecular weights: Becke weights</span>
+<span class="c1"># )</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="Integration">
+<h2>Integration<a class="headerlink" href="#Integration" title="Permalink to this heading">¶</a></h2>
+<div class="section" id="Example:-Electron-Density">
+<h3>Example: Electron Density<a class="headerlink" href="#Example:-Electron-Density" title="Permalink to this heading">¶</a></h3>
+<p>This example shows how to use molecular grids to integrate the electron density <span class="math notranslate nohighlight">\(\rho(\textbf{r})\)</span>. This should equal to the number of electrons 16 of Formaldehyde. This is calculated using the <a class="reference external" href="https://github.com/theochem/gbasis">gbasis</a> package</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.wrappers</span> <span class="kn">import</span> <span class="n">from_iodata</span>
+<span class="kn">from</span> <span class="nn">gbasis.evals.density</span> <span class="kn">import</span> <span class="n">evaluate_density</span>
+
+<span class="c1"># Construct molecular basis from wave-function information read by IOData</span>
+<span class="n">basis</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="n">from_iodata</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
+
+<span class="c1"># Compute the electron density</span>
+<span class="n">rdm</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">one_rdms</span><span class="p">[</span><span class="s2">&quot;scf&quot;</span><span class="p">]</span>
+<span class="n">electron_density</span> <span class="o">=</span> <span class="n">evaluate_density</span><span class="p">(</span><span class="n">rdm</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">mol_grid</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="n">coord_type</span><span class="o">=</span><span class="nb">type</span><span class="p">)</span>
+
+<span class="c1"># Integrate using the molecular grid</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Integration of the electron density: </span><span class="si">{</span><span class="n">mol_grid</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">electron_density</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Integration of the electron density: 15.999987778747279.
+</pre></div></div>
+</div>
+</div>
+</div>
+<div class="section" id="Interpolation">
+<h2>Interpolation<a class="headerlink" href="#Interpolation" title="Permalink to this heading">¶</a></h2>
+<div class="section" id="id1">
+<h3>Example: Electron Density<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h3>
+<p>This example shows how to interpolate any function using molecular grids. The electron density is used again here as the example.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Construct interpolate function</span>
+<span class="n">interpolate</span> <span class="o">=</span> <span class="n">mol_grid</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span>
+    <span class="n">func_vals</span><span class="o">=</span><span class="n">electron_density</span>
+<span class="p">)</span>
+
+<span class="c1"># Construct 100 random-set of points between [-5, 5]^3</span>
+<span class="n">random_grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+
+<span class="c1"># Evalaute using the interpolate</span>
+<span class="n">inter_vals</span> <span class="o">=</span> <span class="n">interpolate</span><span class="p">(</span><span class="n">random_grid</span><span class="p">)</span>
+<span class="n">actual_vals</span> <span class="o">=</span> <span class="n">evaluate_density</span><span class="p">(</span><span class="n">rdm</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">random_grid</span><span class="p">,</span> <span class="n">coord_type</span><span class="o">=</span><span class="nb">type</span><span class="p">)</span>
+
+<span class="c1"># Look at the error-difference</span>
+<span class="n">err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">inter_vals</span> <span class="o">-</span> <span class="n">actual_vals</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max Error </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">}</span><span class="s2">,  Mean Error </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">}</span><span class="s2">,  Std Dev </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Max Error 0.001302904658059434,  Mean Error 3.500902876292755e-05,  Std Dev 0.0001483415813999016
+</pre></div></div>
+</div>
+</div>
+</div>
+<div class="section" id="Derivative-Interpolation">
+<h2>Derivative Interpolation<a class="headerlink" href="#Derivative-Interpolation" title="Permalink to this heading">¶</a></h2>
+<div class="section" id="Example:-Weizsacker-Kinetic-Energy-Density">
+<h3>Example: Weizsacker Kinetic Energy Density<a class="headerlink" href="#Example:-Weizsacker-Kinetic-Energy-Density" title="Permalink to this heading">¶</a></h3>
+<p>The Weizsacker kinetic energy density is defined as:</p>
+<div class="math notranslate nohighlight">
+\[\tau_W (\textbf{r}) = \frac{1}{8} \frac{|\nabla \rho(\textbf{r}) |^2}{\rho(\textbf{r})}.\]</div>
+<p>This example will show how to interpolate the Weizsacker kinetic energy density using the interpolation of the electron density <span class="math notranslate nohighlight">\(\rho(\textbf{r})\)</span>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.evals.density</span> <span class="kn">import</span> <span class="n">evaluate_density_gradient</span>
+
+<span class="c1"># Computing the Weizsacker kinetic energy density</span>
+<span class="n">actual_deriv</span> <span class="o">=</span> <span class="n">evaluate_density_gradient</span><span class="p">(</span><span class="n">rdm</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">random_grid</span><span class="p">,</span> <span class="n">coord_type</span><span class="o">=</span><span class="nb">type</span><span class="p">)</span>
+<span class="n">actual_dens</span> <span class="o">=</span> <span class="n">evaluate_density</span><span class="p">(</span><span class="n">rdm</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">random_grid</span><span class="p">,</span> <span class="n">coord_type</span><span class="o">=</span><span class="nb">type</span><span class="p">)</span>
+<span class="n">norm_squared</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">actual_deriv</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mf">2.0</span>  <span class="c1"># Take the norm-square of the gradient</span>
+<span class="n">kinetic_dens</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="mf">8.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">norm_squared</span> <span class="o">/</span> <span class="n">actual_dens</span>
+
+<span class="c1"># Evaluate the interpolation of the derivative and the actual derivative.</span>
+<span class="n">dens_interp</span> <span class="o">=</span> <span class="n">interpolate</span><span class="p">(</span><span class="n">random_grid</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">deriv_interp</span> <span class="o">=</span> <span class="n">interpolate</span><span class="p">(</span><span class="n">random_grid</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">deriv_norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">deriv_interp</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mf">2.0</span>
+<span class="n">kinetic_interp</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="mf">8.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">deriv_norm</span> <span class="o">/</span> <span class="n">dens_interp</span>
+
+<span class="n">err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">kinetic_dens</span> <span class="o">-</span> <span class="n">kinetic_interp</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max Error </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">}</span><span class="s2">,  Mean Error </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">}</span><span class="s2">,  Std Dev </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Max Error 0.0015169498269268777,  Mean Error 7.528647116405785e-05,  Std Dev 0.00023846069080800918
+</pre></div></div>
+</div>
+</div>
+</div>
+<div class="section" id="Solving-Poisson-Equation">
+<h2>Solving Poisson Equation<a class="headerlink" href="#Solving-Poisson-Equation" title="Permalink to this heading">¶</a></h2>
+<div class="section" id="Example:-Electrostatic-Potential">
+<h3>Example: Electrostatic Potential<a class="headerlink" href="#Example:-Electrostatic-Potential" title="Permalink to this heading">¶</a></h3>
+<p>The Poisson equation is defined as:</p>
+<div class="math notranslate nohighlight">
+\[\nabla^2 V(\textbf{r}) = - 4\pi \rho(\textbf{r}),\]</div>
+<p>where <span class="math notranslate nohighlight">\(\nabla^2\)</span> is the Laplacian operator, <span class="math notranslate nohighlight">\(V\)</span> is the Couloumb potential and <span class="math notranslate nohighlight">\(\rho\)</span> is the electron density. This example will show how to use molecular grids to solve the Poisson equation for a given electron density. The solution is equivalent to the integral:</p>
+<div class="math notranslate nohighlight">
+\[V(\textbf{r}_1) = \int \frac{\rho(\textbf{r}_2)}{| \textbf{r}_1 - \textbf{r}_2 | } d\textbf{r}_2.\]</div>
+<p>This can be used to calculate the electrostatic potential of a molecule with coordinates <span class="math notranslate nohighlight">\(\{R_A\}\)</span> and charge <span class="math notranslate nohighlight">\(\{Z_A\}\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\Phi(\textbf{r}_1) = -\int \frac{\rho(\textbf{r}_2)}{| \textbf{r}_1 - \textbf{r}_2 | } d\textbf{r}_2 + \sum_{A} \frac{Z_A}{|\textbf{r}_1 - R_A|}\]</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">grid.rtransform</span> <span class="kn">import</span> <span class="n">InverseRTransform</span><span class="p">,</span> <span class="n">BeckeRTransform</span>
+<span class="kn">from</span> <span class="nn">grid.poisson</span> <span class="kn">import</span> <span class="n">solve_poisson_bvp</span>
+<span class="kn">from</span> <span class="nn">gbasis.evals.electrostatic_potential</span> <span class="kn">import</span> <span class="n">electrostatic_potential</span>
+
+<span class="c1"># Compute the electron density</span>
+<span class="n">dens</span> <span class="o">=</span> <span class="n">evaluate_density</span><span class="p">(</span><span class="n">rdm</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">mol_grid</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="n">coord_type</span><span class="o">=</span><span class="nb">type</span><span class="p">)</span>
+
+<span class="c1"># Define a transformation from [0, \infty) to finite interval [-1, 1]</span>
+<span class="n">inverse_transf</span> <span class="o">=</span> <span class="n">InverseRTransform</span><span class="p">(</span><span class="n">BeckeRTransform</span><span class="p">(</span><span class="mf">1e-30</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+
+<span class="n">potential</span> <span class="o">=</span> <span class="n">solve_poisson_bvp</span><span class="p">(</span>
+    <span class="n">molgrid</span><span class="o">=</span><span class="n">mol_grid</span><span class="p">,</span>                      <span class="c1"># Provide the molecular density</span>
+    <span class="n">func_vals</span><span class="o">=</span><span class="n">dens</span><span class="p">,</span>                        <span class="c1"># The charge distribution</span>
+    <span class="n">transform</span><span class="o">=</span><span class="n">inverse_transf</span><span class="p">,</span>              <span class="c1"># Transformation to finite-interval</span>
+    <span class="n">include_origin</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>                  <span class="c1"># Don&#39;t include the origin r=0</span>
+    <span class="n">remove_large_pts</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span>                 <span class="c1"># Remove points with radius larger than 10</span>
+<span class="p">)</span>
+
+<span class="c1"># Calculate electrostatic potential with nuclear charges all set to zero.</span>
+<span class="n">desired_potential</span> <span class="o">=</span> <span class="o">-</span><span class="n">electrostatic_potential</span><span class="p">(</span>
+    <span class="n">basis</span><span class="p">,</span> <span class="n">rdm</span><span class="p">,</span> <span class="n">random_grid</span><span class="p">,</span> <span class="n">nuclear_coords</span><span class="o">=</span><span class="n">mol</span><span class="o">.</span><span class="n">atcoords</span><span class="p">,</span> <span class="n">nuclear_charges</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span> <span class="n">coord_type</span><span class="o">=</span><span class="nb">type</span>
+<span class="p">)</span>
+<span class="n">actual_potential</span> <span class="o">=</span> <span class="n">potential</span><span class="p">(</span><span class="n">random_grid</span><span class="p">)</span>
+
+<span class="n">err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">desired_potential</span> <span class="o">-</span> <span class="n">actual_potential</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max Error </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">}</span><span class="s2">,  Mean Error </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">}</span><span class="s2">,  Std Dev </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Max Error 0.015115750096519776,  Mean Error 0.0038874435708785506,  Std Dev 0.0032290409703695498
+</pre></div></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Molecular_Grid_Construction.html" class="btn btn-neutral float-right" title="Constructing Molecular Grids" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../conventions.html" class="btn btn-neutral float-left" title="Conventions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2021, QC-Devs
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

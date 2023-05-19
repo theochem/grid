@@ -13,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/override.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/override.css" type="text/css" />
 
   
   
@@ -26,23 +28,23 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-<<<<<<< HEAD
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-=======
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
-        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "tex2jax_ignore|mathjax_ignore|document", "processClass": "tex2jax_process|mathjax_process|math|output_area"}})</script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
     
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="grid.hirshfeld module" href="grid.hirshfeld.html" />
+    <link rel="prev" title="grid.becke module" href="grid.becke.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -87,8 +89,7 @@
               
             
             
-<<<<<<< HEAD
-              <p class="caption"><span class="caption-text">User Documentation</span></p>
+              <p class="caption" role="heading"><span class="caption-text">User Documentation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../installation.html#downloading-code">Downloading Code</a></li>
@@ -98,25 +99,46 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../onedgrids.html">One-Dimensional Grids</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../radial_transf.html">Radial Transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../conventions.html">Conventions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../conventions.html#spherical-coordinates">Spherical Coordinates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../conventions.html#spherical-harmonics">Spherical Harmonics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../conventions.html#ordering">Ordering</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Example Tutorials</span></p>
-=======
-              <p class="caption"><span class="caption-text">Example Tutorials</span></p>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../conventions.html#angular-grids">Angular Grids</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Tutorials</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/Molecular_Integration.html">Molecular Integration</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/Molecular_Integration.html#Construction-of-Molecular-Grid">Construction of Molecular Grid</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Integration.html#Initailizor-Method">Initailizor Method</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Integration.html#from_preset-method">from_preset method</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Integration.html#from_size-method">from_size method</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Integration.html#from_pruned-method">from_pruned method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/Molecular_Grid.html">Molecular Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/Molecular_Grid.html#Integration">Integration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Grid.html#Example:-Electron-Density">Example: Electron Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/Molecular_Grid.html#Interpolation">Interpolation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Grid.html#id1">Example: Electron Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/Molecular_Grid.html#Derivative-Interpolation">Derivative Interpolation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Grid.html#Example:-Weizsacker-Kinetic-Energy-Density">Example: Weizsacker Kinetic Energy Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/Molecular_Grid.html#Solving-Poisson-Equation">Solving Poisson Equation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Grid.html#Example:-Electrostatic-Potential">Example: Electrostatic Potential</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/Interpolation_and_Poisson.html">Interpolation and Solving Poisson’s Equation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/Interpolation_and_Poisson.html#Interpolation">Interpolation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/Interpolation_and_Poisson.html#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/Molecular_Grid_Construction.html">Constructing Molecular Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/Molecular_Grid_Construction.html#Molecular-Grid-Details">Molecular Grid Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/Molecular_Grid_Construction.html#Construction-of-Molecular-Grid">Construction of Molecular Grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Grid_Construction.html#Constructor">Constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Grid_Construction.html#from_preset-method">from_preset method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Grid_Construction.html#from_size-method">from_size method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Grid_Construction.html#from_pruned-method">from_pruned method</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/Cubic_Grids.html">Cubic Grids</a><ul>
@@ -127,23 +149,18 @@
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/Cubic_Grids.html#Uniform-Grid">Uniform Grid</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/Multipole_Moments.html">Multipole Moments</a></li>
 </ul>
-<<<<<<< HEAD
-<p class="caption"><span class="caption-text">API Documentation</span></p>
-=======
-<p class="caption"><span class="caption-text">Grid Modules</span></p>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">grid</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="grid.html">grid package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="grid.html#submodules">Submodules</a><ul>
+<p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">grid</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="grid.html">grid package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="grid.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="grid.angular.html">grid.angular module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="grid.atomgrid.html">grid.atomgrid module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="grid.basegrid.html">grid.basegrid module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="grid.becke.html">grid.becke module</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">grid.cubic module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="grid.hirshfeld.html">grid.hirshfeld module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="grid.interpolate.html">grid.interpolate module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="grid.lebedev.html">grid.lebedev module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="grid.molgrid.html">grid.molgrid module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="grid.ode.html">grid.ode module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="grid.onedgrid.html">grid.onedgrid module</a></li>
@@ -204,6 +221,10 @@
     
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
+          <li><a href="modules.html">grid</a> &raquo;</li>
+        
+          <li><a href="grid.html">grid package</a> &raquo;</li>
+        
       <li>grid.cubic module</li>
     
     
@@ -223,52 +244,17 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  
-<style>
-/* CSS overrides for sphinx_rtd_theme */
-
-/* 24px margin */
-.nbinput.nblast.container,
-.nboutput.nblast.container {
-    margin-bottom: 19px;  /* padding has already 5px */
-}
-
-/* ... except between code cells! */
-.nblast.container + .nbinput.container {
-    margin-top: -19px;
-}
-
-.admonition > p:before {
-    margin-right: 4px;  /* make room for the exclamation icon */
-}
-
-/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
-.math {
-    text-align: unset;
-}
-</style>
-<div class="section" id="module-grid.cubic">
-<span id="grid-cubic-module"></span><h1>grid.cubic module<a class="headerlink" href="#module-grid.cubic" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-grid.cubic">
+<span id="grid-cubic-module"></span><h1>grid.cubic module<a class="headerlink" href="#module-grid.cubic" title="Permalink to this heading">¶</a></h1>
 <p>Hyper Rectangular Grid In Either Two or Three Dimensions.</p>
-<<<<<<< HEAD
-<dl class="class">
-<dt id="grid.cubic.Tensor1DGrids">
-<em class="property">class </em><code class="sig-name descname">Tensor1DGrids</code><span class="sig-paren">(</span><em class="sig-param">oned_x</em>, <em class="sig-param">oned_y</em>, <em class="sig-param">oned_z=None</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.Tensor1DGrids" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">grid.cubic._HyperRectangleGrid</span></code></p>
-<p>Tensor product of two/three one-dimensional grids.</p>
-<dl class="method">
-<dt id="grid.cubic.Tensor1DGrids.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">oned_x</em>, <em class="sig-param">oned_y</em>, <em class="sig-param">oned_z=None</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.Tensor1DGrids.__init__" title="Permalink to this definition">¶</a></dt>
-=======
 <dl class="py class">
-<dt id="grid.cubic.Tensor1DGrids">
-<em class="property">class </em><code class="sig-name descname">Tensor1DGrids</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">oned_x</span></em>, <em class="sig-param"><span class="n">oned_y</span></em>, <em class="sig-param"><span class="n">oned_z</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.Tensor1DGrids" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">grid.cubic._HyperRectangleGrid</span></code></p>
+<dt class="sig sig-object py" id="grid.cubic.Tensor1DGrids">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Tensor1DGrids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oned_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oned_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oned_z</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.Tensor1DGrids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_HyperRectangleGrid</span></code></p>
 <p>Tensor product of two/three one-dimensional grids.</p>
 <dl class="py method">
-<dt id="grid.cubic.Tensor1DGrids.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">oned_x</span></em>, <em class="sig-param"><span class="n">oned_y</span></em>, <em class="sig-param"><span class="n">oned_z</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.Tensor1DGrids.__init__" title="Permalink to this definition">¶</a></dt>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
+<dt class="sig sig-object py" id="grid.cubic.Tensor1DGrids.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oned_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oned_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oned_z</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.Tensor1DGrids.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct Tensor1DGrids by tensor product of two (or three) one-dimensional grids.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -281,15 +267,9 @@
 </dl>
 </dd></dl>
 
-<<<<<<< HEAD
-<dl class="method">
-<dt id="grid.cubic.Tensor1DGrids.coordinates_to_index">
-<code class="sig-name descname">coordinates_to_index</code><span class="sig-paren">(</span><em class="sig-param">indices</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.Tensor1DGrids.coordinates_to_index" title="Permalink to this definition">¶</a></dt>
-=======
 <dl class="py method">
-<dt id="grid.cubic.Tensor1DGrids.coordinates_to_index">
-<code class="sig-name descname">coordinates_to_index</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indices</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.Tensor1DGrids.coordinates_to_index" title="Permalink to this definition">¶</a></dt>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
+<dt class="sig sig-object py" id="grid.cubic.Tensor1DGrids.coordinates_to_index">
+<span class="sig-name descname"><span class="pre">coordinates_to_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indices</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.Tensor1DGrids.coordinates_to_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert (i, j) or (i, j, k) integer coordinates to the grid point index.</p>
 <p>Assumes the grid is ordered moving in the last-coordinate (with other coordinates fixed,
 e.g. k) followed by the next coordinate to the left (e.g. j), continuing to the first
@@ -307,15 +287,9 @@ coordinate (e.g. i) (i.e., lexicographical ordering).</p>
 </dl>
 </dd></dl>
 
-<<<<<<< HEAD
-<dl class="method">
-<dt id="grid.cubic.Tensor1DGrids.get_localgrid">
-<code class="sig-name descname">get_localgrid</code><span class="sig-paren">(</span><em class="sig-param">center</em>, <em class="sig-param">radius</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.Tensor1DGrids.get_localgrid" title="Permalink to this definition">¶</a></dt>
-=======
 <dl class="py method">
-<dt id="grid.cubic.Tensor1DGrids.get_localgrid">
-<code class="sig-name descname">get_localgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">radius</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.Tensor1DGrids.get_localgrid" title="Permalink to this definition">¶</a></dt>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
+<dt class="sig sig-object py" id="grid.cubic.Tensor1DGrids.get_localgrid">
+<span class="sig-name descname"><span class="pre">get_localgrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.Tensor1DGrids.get_localgrid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a grid contain points within the given radius of center.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -335,13 +309,9 @@ debugging.</p></li>
 </dl>
 </dd></dl>
 
-<<<<<<< HEAD
-<dl class="method">
-=======
 <dl class="py method">
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
-<dt id="grid.cubic.Tensor1DGrids.get_points_along_axes">
-<code class="sig-name descname">get_points_along_axes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.Tensor1DGrids.get_points_along_axes" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="grid.cubic.Tensor1DGrids.get_points_along_axes">
+<span class="sig-name descname"><span class="pre">get_points_along_axes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.Tensor1DGrids.get_points_along_axes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the points along each axes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -354,15 +324,9 @@ where <span class="math notranslate nohighlight">\(M_i\)</span> is the number of
 </dl>
 </dd></dl>
 
-<<<<<<< HEAD
-<dl class="method">
-<dt id="grid.cubic.Tensor1DGrids.index_to_coordinates">
-<code class="sig-name descname">index_to_coordinates</code><span class="sig-paren">(</span><em class="sig-param">index</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.Tensor1DGrids.index_to_coordinates" title="Permalink to this definition">¶</a></dt>
-=======
 <dl class="py method">
-<dt id="grid.cubic.Tensor1DGrids.index_to_coordinates">
-<code class="sig-name descname">index_to_coordinates</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">index</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.Tensor1DGrids.index_to_coordinates" title="Permalink to this definition">¶</a></dt>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
+<dt class="sig sig-object py" id="grid.cubic.Tensor1DGrids.index_to_coordinates">
+<span class="sig-name descname"><span class="pre">index_to_coordinates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.Tensor1DGrids.index_to_coordinates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert grid point index to its (i, j) or (i, j, k) integer coordinates in the grid.</p>
 <p>For 3D grid it has a shape of <span class="math notranslate nohighlight">\((N_x, N_y, N_z)\)</span> denoting the number of points in
 <span class="math notranslate nohighlight">\(x\)</span>, <span class="math notranslate nohighlight">\(y\)</span>, and <span class="math notranslate nohighlight">\(z\)</span> directions. So, each grid point has a <span class="math notranslate nohighlight">\((i, j, k)\)</span>
@@ -383,22 +347,14 @@ next coordinate to the left (i.e., lexicographical ordering).</p>
 </dl>
 </dd></dl>
 
-<<<<<<< HEAD
-<dl class="method">
-<dt id="grid.cubic.Tensor1DGrids.integrate">
-<code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param">*value_arrays</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.Tensor1DGrids.integrate" title="Permalink to this definition">¶</a></dt>
-=======
 <dl class="py method">
-<dt id="grid.cubic.Tensor1DGrids.integrate">
-<code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">value_arrays</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.Tensor1DGrids.integrate" title="Permalink to this definition">¶</a></dt>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
+<dt class="sig sig-object py" id="grid.cubic.Tensor1DGrids.integrate">
+<span class="sig-name descname"><span class="pre">integrate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">value_arrays</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.Tensor1DGrids.integrate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Integrate over the whole grid for given multiple value arrays.</p>
-<p>Product of all value_arrays will be computed element-wise then
-integrated on the grid with its weights.
-.. math:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Integral</span> <span class="o">=</span> \<span class="nb">int</span> <span class="n">w</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> \<span class="n">prod_i</span> <span class="n">f_i</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="n">dx</span>
-</pre></div>
-</div>
+<p>Product of all value_arrays will be computed element-wise then integrated on the grid
+with its weights:</p>
+<div class="math notranslate nohighlight">
+\[\int w(x) \prod_i f_i(x) dx.\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>*value_arrays</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>, </em><em>)</em>) – One or multiple value array to integrate.</p>
@@ -412,15 +368,9 @@ integrated on the grid with its weights.
 </dl>
 </dd></dl>
 
-<<<<<<< HEAD
-<dl class="method">
-<dt id="grid.cubic.Tensor1DGrids.interpolate">
-<code class="sig-name descname">interpolate</code><span class="sig-paren">(</span><em class="sig-param">points</em>, <em class="sig-param">values</em>, <em class="sig-param">use_log=False</em>, <em class="sig-param">nu_x=0</em>, <em class="sig-param">nu_y=0</em>, <em class="sig-param">nu_z=0</em>, <em class="sig-param">method='cubic'</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.Tensor1DGrids.interpolate" title="Permalink to this definition">¶</a></dt>
-=======
 <dl class="py method">
-<dt id="grid.cubic.Tensor1DGrids.interpolate">
-<code class="sig-name descname">interpolate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">points</span></em>, <em class="sig-param"><span class="n">values</span></em>, <em class="sig-param"><span class="n">use_log</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">nu_x</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">nu_y</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">nu_z</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">method</span><span class="o">=</span><span class="default_value">'cubic'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.Tensor1DGrids.interpolate" title="Permalink to this definition">¶</a></dt>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
+<dt class="sig sig-object py" id="grid.cubic.Tensor1DGrids.interpolate">
+<span class="sig-name descname"><span class="pre">interpolate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nu_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nu_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nu_z</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cubic'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.Tensor1DGrids.interpolate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Interpolate function value at a given point.</p>
 <p>Only implemented in three-dimensions.</p>
 <dl class="field-list simple">
@@ -455,10 +405,9 @@ computationally). The last two methods use SciPy’s RegularGridInterpolator fun
 </dl>
 </dd></dl>
 
-<<<<<<< HEAD
-<dl class="method">
-<dt id="grid.cubic.Tensor1DGrids.moments">
-<code class="sig-name descname">moments</code><span class="sig-paren">(</span><em class="sig-param">orders</em>, <em class="sig-param">centers</em>, <em class="sig-param">func_vals</em>, <em class="sig-param">type_mom='cartesian'</em>, <em class="sig-param">return_orders=False</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.Tensor1DGrids.moments" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="grid.cubic.Tensor1DGrids.moments">
+<span class="sig-name descname"><span class="pre">moments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orders</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_mom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cartesian'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_orders</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.Tensor1DGrids.moments" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the multipole moment integral of a function over centers.</p>
 <p>The Cartesian type moments are:</p>
 <div class="math notranslate nohighlight">
@@ -486,11 +435,8 @@ moment <cite>type_mom</cite>.</p></li>
 <li><p><strong>func_vals</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – The function <span class="math notranslate nohighlight">\(f\)</span> values evaluated on all <span class="math notranslate nohighlight">\(N\)</span> points on the integration
 grid.</p></li>
 <li><p><strong>type_mom</strong> (<em>str</em>) – The type of multipole moments: “cartesian”, “pure”, “radial” and “pure-radial”.</p></li>
-<li><p><strong>return_orders</strong> (<em>bool</em>) – <dl class="simple">
-<dt>If true, it will also return a list of size <span class="math notranslate nohighlight">\(L\)</span> of the orders</dt><dd><p>corresponding to each integral/row of the output.</p>
-</dd>
-</dl>
-</p></li>
+<li><p><strong>return_orders</strong> (<em>bool</em>) – If true, it will also return a list of size <span class="math notranslate nohighlight">\(L\)</span> of the orders
+corresponding to each integral/row of the output.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -504,32 +450,21 @@ each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
-=======
-<dl class="py method">
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
-<dt id="grid.cubic.Tensor1DGrids.ndim">
-<em class="property">property </em><code class="sig-name descname">ndim</code><a class="headerlink" href="#grid.cubic.Tensor1DGrids.ndim" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="grid.cubic.Tensor1DGrids.ndim">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ndim</span></span><a class="headerlink" href="#grid.cubic.Tensor1DGrids.ndim" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the dimension of the grid.</p>
 </dd></dl>
 
-<<<<<<< HEAD
-<dl class="method">
-=======
-<dl class="py method">
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
-<dt id="grid.cubic.Tensor1DGrids.origin">
-<em class="property">property </em><code class="sig-name descname">origin</code><a class="headerlink" href="#grid.cubic.Tensor1DGrids.origin" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="grid.cubic.Tensor1DGrids.origin">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">origin</span></span><a class="headerlink" href="#grid.cubic.Tensor1DGrids.origin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cartesian coordinates of the grid origin.</p>
 </dd></dl>
 
-<<<<<<< HEAD
-<dl class="method">
-=======
-<dl class="py method">
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
-<dt id="grid.cubic.Tensor1DGrids.points">
-<em class="property">property </em><code class="sig-name descname">points</code><a class="headerlink" href="#grid.cubic.Tensor1DGrids.points" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="grid.cubic.Tensor1DGrids.points">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">points</span></span><a class="headerlink" href="#grid.cubic.Tensor1DGrids.points" title="Permalink to this definition">¶</a></dt>
 <dd><p>Positions of the grid points.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -538,10 +473,9 @@ each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 </dl>
 </dd></dl>
 
-<<<<<<< HEAD
-<dl class="method">
-<dt id="grid.cubic.Tensor1DGrids.save">
-<code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param">filename</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.Tensor1DGrids.save" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="grid.cubic.Tensor1DGrids.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.Tensor1DGrids.save" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save tensor product of three one-dimensional grids attributes as a npz file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -550,22 +484,15 @@ each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
-=======
-<dl class="py method">
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
-<dt id="grid.cubic.Tensor1DGrids.shape">
-<em class="property">property </em><code class="sig-name descname">shape</code><a class="headerlink" href="#grid.cubic.Tensor1DGrids.shape" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="grid.cubic.Tensor1DGrids.shape">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shape</span></span><a class="headerlink" href="#grid.cubic.Tensor1DGrids.shape" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return number of grid points in the <span class="math notranslate nohighlight">\((x, y)\)</span> or <span class="math notranslate nohighlight">\((x, y, z)\)</span> directions.</p>
 </dd></dl>
 
-<<<<<<< HEAD
-<dl class="method">
-=======
-<dl class="py method">
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
-<dt id="grid.cubic.Tensor1DGrids.size">
-<em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#grid.cubic.Tensor1DGrids.size" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="grid.cubic.Tensor1DGrids.size">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">size</span></span><a class="headerlink" href="#grid.cubic.Tensor1DGrids.size" title="Permalink to this definition">¶</a></dt>
 <dd><p>the total number of points on the grid.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -574,13 +501,9 @@ each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 </dl>
 </dd></dl>
 
-<<<<<<< HEAD
-<dl class="method">
-=======
-<dl class="py method">
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
-<dt id="grid.cubic.Tensor1DGrids.weights">
-<em class="property">property </em><code class="sig-name descname">weights</code><a class="headerlink" href="#grid.cubic.Tensor1DGrids.weights" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="grid.cubic.Tensor1DGrids.weights">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">weights</span></span><a class="headerlink" href="#grid.cubic.Tensor1DGrids.weights" title="Permalink to this definition">¶</a></dt>
 <dd><p>the weights of each grid point.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -591,25 +514,14 @@ each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 
 </dd></dl>
 
-<<<<<<< HEAD
-<dl class="class">
-<dt id="grid.cubic.UniformGrid">
-<em class="property">class </em><code class="sig-name descname">UniformGrid</code><span class="sig-paren">(</span><em class="sig-param">origin</em>, <em class="sig-param">axes</em>, <em class="sig-param">shape</em>, <em class="sig-param">weight='Trapezoid'</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.UniformGrid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">grid.cubic._HyperRectangleGrid</span></code></p>
-<p>Uniform grid (a.k.a. rectilinear grid) with evenly-spaced points in each axes.</p>
-<dl class="method">
-<dt id="grid.cubic.UniformGrid.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">origin</em>, <em class="sig-param">axes</em>, <em class="sig-param">shape</em>, <em class="sig-param">weight='Trapezoid'</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.UniformGrid.__init__" title="Permalink to this definition">¶</a></dt>
-=======
 <dl class="py class">
-<dt id="grid.cubic.UniformGrid">
-<em class="property">class </em><code class="sig-name descname">UniformGrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">origin</span></em>, <em class="sig-param"><span class="n">axes</span></em>, <em class="sig-param"><span class="n">shape</span></em>, <em class="sig-param"><span class="n">weight</span><span class="o">=</span><span class="default_value">'Trapezoid'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.UniformGrid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">grid.cubic._HyperRectangleGrid</span></code></p>
+<dt class="sig sig-object py" id="grid.cubic.UniformGrid">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">UniformGrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">origin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Trapezoid'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.UniformGrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_HyperRectangleGrid</span></code></p>
 <p>Uniform grid (a.k.a. rectilinear grid) with evenly-spaced points in each axes.</p>
 <dl class="py method">
-<dt id="grid.cubic.UniformGrid.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">origin</span></em>, <em class="sig-param"><span class="n">axes</span></em>, <em class="sig-param"><span class="n">shape</span></em>, <em class="sig-param"><span class="n">weight</span><span class="o">=</span><span class="default_value">'Trapezoid'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.UniformGrid.__init__" title="Permalink to this definition">¶</a></dt>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
+<dt class="sig sig-object py" id="grid.cubic.UniformGrid.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">origin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Trapezoid'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.UniformGrid.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct the UniformGrid object in either two or three dimensions.</p>
 <p>Three dimensions is presented below, but similarly will work in two-dimensions.
 Grid whose points in each (x, y, z) direction has a constant step-size/evenly
@@ -631,25 +543,24 @@ define the Cartesian coordinate system used to build the
 cubic grid, i.e. the directions of the “(x,y)(x,y,z)”-axis
 whose norm tells us the distance between points in that direction.</p></li>
 <li><p><strong>shape</strong> (<em>np.ndarray</em><em>, </em><em>shape</em><em> (</em><em>D</em><em>,</em><em>)</em>) – Number of grid points along each axis.</p></li>
-<li><p><strong>weight</strong> (<em>str</em>) – <p>String indicating weighting function. This can be:
-Rectangle :</p>
-<blockquote>
-<div><p>The weights are the standard Riemannian weights,</p>
+<li><p><strong>weight</strong> (<em>str</em>) – <p>String indicating weighting function. This can be:</p>
+<dl>
+<dt>Rectangle :</dt><dd><p>The weights are the standard Riemannian weights,</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{align*}
     w_{ij} &amp;= \frac{V}{M_x \cdot M_y} \tag{Two-Dimensions} \\
      w_{ijk} &amp;= \frac{V}{M_x\cdot M_y \cdot M_z}  \tag{Three-Dimensions}
 \end{align*}\end{split}\]</div>
 <p>where <span class="math notranslate nohighlight">\(V\)</span> is the volume or area of the uniform grid.</p>
-</div></blockquote>
-<dl>
+</dd>
 <dt>Trapezoid :</dt><dd><p>Equivalent to rectangle rule with the assumption function is zero on the boundaries.</p>
 <blockquote>
 <div><div class="math notranslate nohighlight">
-\[ \begin{align}\begin{aligned}\begin{align*}\\\begin{split}    w_{ij} &amp;= \frac{V}{(M_x + 1) \cdot (M_y + 1)}  \tag{Two-Dimensions} \\
+\[\begin{split}\begin{align*}
+    w_{ij} &amp;= \frac{V}{(M_x + 1) \cdot (M_y + 1)}  \tag{Two-Dimensions} \\
     w_{ijk} &amp;= \frac{V}{(M_x + 1) \cdot (M_y + 1) \cdot (M_z + 1)}
     \tag{Three-Dimensions}
-\end{align*}\end{split}\end{aligned}\end{align} \]</div>
+\end{align*}\end{split}\]</div>
 </div></blockquote>
 <p>where <span class="math notranslate nohighlight">\(V\)</span> is the volume or area of the uniform grid.</p>
 </dd>
@@ -677,10 +588,10 @@ In three-dimensions it is</p>
 <dt>Fourier2 :</dt><dd><p>Alternative weights based on Fourier series. Assumes the function is zero at the
 boundary of the cube.</p>
 <div class="math notranslate nohighlight">
-\[w_{ijk} = V^\prime \cdot w_i w_j w_k,
+\[\begin{split}w_{ijk} &amp;= V^\prime \cdot w_i w_j w_k, \\
 w_i &amp;= \bigg(\frac{2\sin((j - 0.5)\pi) \sin^2(M_x\pi/2)}{M_x^2 \pi} +
  \frac{4}{M_x \pi} \sum_{p=1}^{M_x - 1}
- \frac{\sin((2j-1)p\pi /n_x) sin^2(p \pi)\}{\pi}bigg)\]</div>
+ \frac{\sin((2j-1)p\pi /n_x) sin^2(p \pi)}{\pi} \bigg)\end{split}\]</div>
 </dd>
 <dt>Alternative :</dt><dd><p>This does not assume function is zero at the boundary.</p>
 </dd>
@@ -698,25 +609,15 @@ w_i &amp;= \bigg(\frac{2\sin((j - 0.5)\pi) \sin^2(M_x\pi/2)}{M_x^2 \pi} +
 </dl>
 </dd></dl>
 
-<<<<<<< HEAD
-<dl class="method">
-=======
-<dl class="py method">
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
-<dt id="grid.cubic.UniformGrid.axes">
-<em class="property">property </em><code class="sig-name descname">axes</code><a class="headerlink" href="#grid.cubic.UniformGrid.axes" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="grid.cubic.UniformGrid.axes">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">axes</span></span><a class="headerlink" href="#grid.cubic.UniformGrid.axes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the axes of the uniform grid.</p>
 </dd></dl>
 
-<<<<<<< HEAD
-<dl class="method">
-<dt id="grid.cubic.UniformGrid.closest_point">
-<code class="sig-name descname">closest_point</code><span class="sig-paren">(</span><em class="sig-param">point</em>, <em class="sig-param">which='closest'</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.UniformGrid.closest_point" title="Permalink to this definition">¶</a></dt>
-=======
 <dl class="py method">
-<dt id="grid.cubic.UniformGrid.closest_point">
-<code class="sig-name descname">closest_point</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">point</span></em>, <em class="sig-param"><span class="n">which</span><span class="o">=</span><span class="default_value">'closest'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.UniformGrid.closest_point" title="Permalink to this definition">¶</a></dt>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
+<dt class="sig sig-object py" id="grid.cubic.UniformGrid.closest_point">
+<span class="sig-name descname"><span class="pre">closest_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">which</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'closest'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.UniformGrid.closest_point" title="Permalink to this definition">¶</a></dt>
 <dd><p>Identify the index of the closest grid point to a given point.</p>
 <p>Imagine a point inside a small sub-cube. If <cite>closest</cite> is selected, it will
 pick the corner in the sub-cube that is closest to that point.
@@ -739,15 +640,9 @@ If “origin”, return the left-most, down-most closest index of the grid point
 </dl>
 </dd></dl>
 
-<<<<<<< HEAD
-<dl class="method">
-<dt id="grid.cubic.UniformGrid.coordinates_to_index">
-<code class="sig-name descname">coordinates_to_index</code><span class="sig-paren">(</span><em class="sig-param">indices</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.UniformGrid.coordinates_to_index" title="Permalink to this definition">¶</a></dt>
-=======
 <dl class="py method">
-<dt id="grid.cubic.UniformGrid.coordinates_to_index">
-<code class="sig-name descname">coordinates_to_index</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indices</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.UniformGrid.coordinates_to_index" title="Permalink to this definition">¶</a></dt>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
+<dt class="sig sig-object py" id="grid.cubic.UniformGrid.coordinates_to_index">
+<span class="sig-name descname"><span class="pre">coordinates_to_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indices</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.UniformGrid.coordinates_to_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert (i, j) or (i, j, k) integer coordinates to the grid point index.</p>
 <p>Assumes the grid is ordered moving in the last-coordinate (with other coordinates fixed,
 e.g. k) followed by the next coordinate to the left (e.g. j), continuing to the first
@@ -765,15 +660,9 @@ coordinate (e.g. i) (i.e., lexicographical ordering).</p>
 </dl>
 </dd></dl>
 
-<<<<<<< HEAD
-<dl class="method">
-<dt id="grid.cubic.UniformGrid.from_molecule">
-<em class="property">classmethod </em><code class="sig-name descname">from_molecule</code><span class="sig-paren">(</span><em class="sig-param">atcorenums</em>, <em class="sig-param">atcoords</em>, <em class="sig-param">spacing=0.2</em>, <em class="sig-param">extension=5.0</em>, <em class="sig-param">rotate=True</em>, <em class="sig-param">weight='Trapezoid'</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.UniformGrid.from_molecule" title="Permalink to this definition">¶</a></dt>
-=======
 <dl class="py method">
-<dt id="grid.cubic.UniformGrid.from_molecule">
-<em class="property">classmethod </em><code class="sig-name descname">from_molecule</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">atcorenums</span></em>, <em class="sig-param"><span class="n">atcoords</span></em>, <em class="sig-param"><span class="n">spacing</span><span class="o">=</span><span class="default_value">0.2</span></em>, <em class="sig-param"><span class="n">extension</span><span class="o">=</span><span class="default_value">5.0</span></em>, <em class="sig-param"><span class="n">rotate</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">weight</span><span class="o">=</span><span class="default_value">'Trapezoid'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.UniformGrid.from_molecule" title="Permalink to this definition">¶</a></dt>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
+<dt class="sig sig-object py" id="grid.cubic.UniformGrid.from_molecule">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_molecule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atcorenums</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atcoords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spacing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Trapezoid'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.UniformGrid.from_molecule" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct a uniform grid given the molecular pseudo-numbers and coordinates.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -787,14 +676,12 @@ aligned with the principle axes of rotation of the molecule.
 If False, generates axes based on the x,y,z-axis and the spacing parameter, and
 the origin is defined by the maximum/minimum of the atomic coordinates.</p></li>
 <li><p><strong>weight</strong> (<em>str</em><em>, </em><em>optional</em>) – <p>String indicating weighting function. Denoting the volume/area of the uniform grid
-by <span class="math notranslate nohighlight">\(V\)</span>, the weighting function can be:
-Rectangle :</p>
-<blockquote>
-<div><p>The weights are the standard Riemannian weights,</p>
+by <span class="math notranslate nohighlight">\(V\)</span>, the weighting function can be:</p>
+<dl>
+<dt>Rectangle :</dt><dd><p>The weights are the standard Riemannian weights,</p>
 <div class="math notranslate nohighlight">
 \[w_{ijk} = \frac{V}{M_x\cdot M_y \cdot M_z}\]</div>
-</div></blockquote>
-<dl>
+</dd>
 <dt>Trapezoid :</dt><dd><p>Equivalent to rectangle rule with the assumption function is zero on the boundaries.</p>
 <blockquote>
 <div><div class="math notranslate nohighlight">
@@ -816,10 +703,10 @@ quadrature. Assumes the function is zero at the boundary of the cube.</p>
 <dt>Fourier2 :</dt><dd><p>Alternative weights based on Fourier series. Assumes the function is zero at the
 boundary of the cube.</p>
 <div class="math notranslate nohighlight">
-\[w_{ijk} = V^\prime \cdot w_i w_j w_k,
+\[\begin{split}w_{ijk} &amp;= V^\prime \cdot w_i w_j w_k,\\
 w_i &amp;= \bigg(\frac{2\sin((j - 0.5)\pi) \sin^2(M_x\pi/2)}{M_x^2 \pi} +
  \frac{4}{M_x \pi} \sum_{p=1}^{M_x - 1}
- \frac{\sin((2j-1)p\pi /n_x) sin^2(p \pi)\}{\pi}bigg)\]</div>
+ \frac{\sin((2j-1)p\pi /n_x) sin^2(p \pi)}{\pi} \bigg)\end{split}\]</div>
 </dd>
 <dt>Alternative :</dt><dd><p>This does not assume function is zero at the boundary.</p>
 </dd>
@@ -832,15 +719,9 @@ w_i &amp;= \bigg(\frac{2\sin((j - 0.5)\pi) \sin^2(M_x\pi/2)}{M_x^2 \pi} +
 </dl>
 </dd></dl>
 
-<<<<<<< HEAD
-<dl class="method">
-<dt id="grid.cubic.UniformGrid.get_localgrid">
-<code class="sig-name descname">get_localgrid</code><span class="sig-paren">(</span><em class="sig-param">center</em>, <em class="sig-param">radius</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.UniformGrid.get_localgrid" title="Permalink to this definition">¶</a></dt>
-=======
 <dl class="py method">
-<dt id="grid.cubic.UniformGrid.get_localgrid">
-<code class="sig-name descname">get_localgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">radius</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.UniformGrid.get_localgrid" title="Permalink to this definition">¶</a></dt>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
+<dt class="sig sig-object py" id="grid.cubic.UniformGrid.get_localgrid">
+<span class="sig-name descname"><span class="pre">get_localgrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.UniformGrid.get_localgrid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a grid contain points within the given radius of center.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -860,13 +741,9 @@ debugging.</p></li>
 </dl>
 </dd></dl>
 
-<<<<<<< HEAD
-<dl class="method">
-=======
 <dl class="py method">
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
-<dt id="grid.cubic.UniformGrid.get_points_along_axes">
-<code class="sig-name descname">get_points_along_axes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.UniformGrid.get_points_along_axes" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="grid.cubic.UniformGrid.get_points_along_axes">
+<span class="sig-name descname"><span class="pre">get_points_along_axes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.UniformGrid.get_points_along_axes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the points along each axes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -879,15 +756,9 @@ where <span class="math notranslate nohighlight">\(M_i\)</span> is the number of
 </dl>
 </dd></dl>
 
-<<<<<<< HEAD
-<dl class="method">
-<dt id="grid.cubic.UniformGrid.index_to_coordinates">
-<code class="sig-name descname">index_to_coordinates</code><span class="sig-paren">(</span><em class="sig-param">index</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.UniformGrid.index_to_coordinates" title="Permalink to this definition">¶</a></dt>
-=======
 <dl class="py method">
-<dt id="grid.cubic.UniformGrid.index_to_coordinates">
-<code class="sig-name descname">index_to_coordinates</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">index</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.UniformGrid.index_to_coordinates" title="Permalink to this definition">¶</a></dt>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
+<dt class="sig sig-object py" id="grid.cubic.UniformGrid.index_to_coordinates">
+<span class="sig-name descname"><span class="pre">index_to_coordinates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.UniformGrid.index_to_coordinates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert grid point index to its (i, j) or (i, j, k) integer coordinates in the grid.</p>
 <p>For 3D grid it has a shape of <span class="math notranslate nohighlight">\((N_x, N_y, N_z)\)</span> denoting the number of points in
 <span class="math notranslate nohighlight">\(x\)</span>, <span class="math notranslate nohighlight">\(y\)</span>, and <span class="math notranslate nohighlight">\(z\)</span> directions. So, each grid point has a <span class="math notranslate nohighlight">\((i, j, k)\)</span>
@@ -908,22 +779,14 @@ next coordinate to the left (i.e., lexicographical ordering).</p>
 </dl>
 </dd></dl>
 
-<<<<<<< HEAD
-<dl class="method">
-<dt id="grid.cubic.UniformGrid.integrate">
-<code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param">*value_arrays</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.UniformGrid.integrate" title="Permalink to this definition">¶</a></dt>
-=======
 <dl class="py method">
-<dt id="grid.cubic.UniformGrid.integrate">
-<code class="sig-name descname">integrate</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">value_arrays</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.UniformGrid.integrate" title="Permalink to this definition">¶</a></dt>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
+<dt class="sig sig-object py" id="grid.cubic.UniformGrid.integrate">
+<span class="sig-name descname"><span class="pre">integrate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">value_arrays</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.UniformGrid.integrate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Integrate over the whole grid for given multiple value arrays.</p>
-<p>Product of all value_arrays will be computed element-wise then
-integrated on the grid with its weights.
-.. math:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Integral</span> <span class="o">=</span> \<span class="nb">int</span> <span class="n">w</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> \<span class="n">prod_i</span> <span class="n">f_i</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="n">dx</span>
-</pre></div>
-</div>
+<p>Product of all value_arrays will be computed element-wise then integrated on the grid
+with its weights:</p>
+<div class="math notranslate nohighlight">
+\[\int w(x) \prod_i f_i(x) dx.\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>*value_arrays</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>, </em><em>)</em>) – One or multiple value array to integrate.</p>
@@ -937,15 +800,9 @@ integrated on the grid with its weights.
 </dl>
 </dd></dl>
 
-<<<<<<< HEAD
-<dl class="method">
-<dt id="grid.cubic.UniformGrid.interpolate">
-<code class="sig-name descname">interpolate</code><span class="sig-paren">(</span><em class="sig-param">points</em>, <em class="sig-param">values</em>, <em class="sig-param">use_log=False</em>, <em class="sig-param">nu_x=0</em>, <em class="sig-param">nu_y=0</em>, <em class="sig-param">nu_z=0</em>, <em class="sig-param">method='cubic'</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.UniformGrid.interpolate" title="Permalink to this definition">¶</a></dt>
-=======
 <dl class="py method">
-<dt id="grid.cubic.UniformGrid.interpolate">
-<code class="sig-name descname">interpolate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">points</span></em>, <em class="sig-param"><span class="n">values</span></em>, <em class="sig-param"><span class="n">use_log</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">nu_x</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">nu_y</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">nu_z</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">method</span><span class="o">=</span><span class="default_value">'cubic'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.UniformGrid.interpolate" title="Permalink to this definition">¶</a></dt>
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
+<dt class="sig sig-object py" id="grid.cubic.UniformGrid.interpolate">
+<span class="sig-name descname"><span class="pre">interpolate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nu_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nu_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nu_z</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cubic'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.UniformGrid.interpolate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Interpolate function value at a given point.</p>
 <p>Only implemented in three-dimensions.</p>
 <dl class="field-list simple">
@@ -980,10 +837,9 @@ computationally). The last two methods use SciPy’s RegularGridInterpolator fun
 </dl>
 </dd></dl>
 
-<<<<<<< HEAD
-<dl class="method">
-<dt id="grid.cubic.UniformGrid.moments">
-<code class="sig-name descname">moments</code><span class="sig-paren">(</span><em class="sig-param">orders</em>, <em class="sig-param">centers</em>, <em class="sig-param">func_vals</em>, <em class="sig-param">type_mom='cartesian'</em>, <em class="sig-param">return_orders=False</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.UniformGrid.moments" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="grid.cubic.UniformGrid.moments">
+<span class="sig-name descname"><span class="pre">moments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orders</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_mom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cartesian'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_orders</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.UniformGrid.moments" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the multipole moment integral of a function over centers.</p>
 <p>The Cartesian type moments are:</p>
 <div class="math notranslate nohighlight">
@@ -1011,11 +867,8 @@ moment <cite>type_mom</cite>.</p></li>
 <li><p><strong>func_vals</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – The function <span class="math notranslate nohighlight">\(f\)</span> values evaluated on all <span class="math notranslate nohighlight">\(N\)</span> points on the integration
 grid.</p></li>
 <li><p><strong>type_mom</strong> (<em>str</em>) – The type of multipole moments: “cartesian”, “pure”, “radial” and “pure-radial”.</p></li>
-<li><p><strong>return_orders</strong> (<em>bool</em>) – <dl class="simple">
-<dt>If true, it will also return a list of size <span class="math notranslate nohighlight">\(L\)</span> of the orders</dt><dd><p>corresponding to each integral/row of the output.</p>
-</dd>
-</dl>
-</p></li>
+<li><p><strong>return_orders</strong> (<em>bool</em>) – If true, it will also return a list of size <span class="math notranslate nohighlight">\(L\)</span> of the orders
+corresponding to each integral/row of the output.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1029,32 +882,21 @@ each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
-=======
-<dl class="py method">
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
-<dt id="grid.cubic.UniformGrid.ndim">
-<em class="property">property </em><code class="sig-name descname">ndim</code><a class="headerlink" href="#grid.cubic.UniformGrid.ndim" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="grid.cubic.UniformGrid.ndim">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ndim</span></span><a class="headerlink" href="#grid.cubic.UniformGrid.ndim" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the dimension of the grid.</p>
 </dd></dl>
 
-<<<<<<< HEAD
-<dl class="method">
-=======
-<dl class="py method">
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
-<dt id="grid.cubic.UniformGrid.origin">
-<em class="property">property </em><code class="sig-name descname">origin</code><a class="headerlink" href="#grid.cubic.UniformGrid.origin" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="grid.cubic.UniformGrid.origin">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">origin</span></span><a class="headerlink" href="#grid.cubic.UniformGrid.origin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the Cartesian coordinates of the uniform grid origin.</p>
 </dd></dl>
 
-<<<<<<< HEAD
-<dl class="method">
-=======
-<dl class="py method">
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
-<dt id="grid.cubic.UniformGrid.points">
-<em class="property">property </em><code class="sig-name descname">points</code><a class="headerlink" href="#grid.cubic.UniformGrid.points" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="grid.cubic.UniformGrid.points">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">points</span></span><a class="headerlink" href="#grid.cubic.UniformGrid.points" title="Permalink to this definition">¶</a></dt>
 <dd><p>Positions of the grid points.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -1063,10 +905,9 @@ each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 </dl>
 </dd></dl>
 
-<<<<<<< HEAD
-<dl class="method">
-<dt id="grid.cubic.UniformGrid.save">
-<code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param">filename</em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.UniformGrid.save" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="grid.cubic.UniformGrid.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.UniformGrid.save" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save uniform cubic grid attributes as a npz file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1075,22 +916,15 @@ each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
-=======
-<dl class="py method">
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
-<dt id="grid.cubic.UniformGrid.shape">
-<em class="property">property </em><code class="sig-name descname">shape</code><a class="headerlink" href="#grid.cubic.UniformGrid.shape" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="grid.cubic.UniformGrid.shape">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shape</span></span><a class="headerlink" href="#grid.cubic.UniformGrid.shape" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return number of grid points in the <span class="math notranslate nohighlight">\((x, y)\)</span> or <span class="math notranslate nohighlight">\((x, y, z)\)</span> directions.</p>
 </dd></dl>
 
-<<<<<<< HEAD
-<dl class="method">
-=======
-<dl class="py method">
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
-<dt id="grid.cubic.UniformGrid.size">
-<em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#grid.cubic.UniformGrid.size" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="grid.cubic.UniformGrid.size">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">size</span></span><a class="headerlink" href="#grid.cubic.UniformGrid.size" title="Permalink to this definition">¶</a></dt>
 <dd><p>the total number of points on the grid.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -1099,13 +933,9 @@ each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 </dl>
 </dd></dl>
 
-<<<<<<< HEAD
-<dl class="method">
-=======
-<dl class="py method">
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
-<dt id="grid.cubic.UniformGrid.weights">
-<em class="property">property </em><code class="sig-name descname">weights</code><a class="headerlink" href="#grid.cubic.UniformGrid.weights" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="grid.cubic.UniformGrid.weights">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">weights</span></span><a class="headerlink" href="#grid.cubic.UniformGrid.weights" title="Permalink to this definition">¶</a></dt>
 <dd><p>the weights of each grid point.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -1124,17 +954,22 @@ each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
           </div>
           <footer>
   
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="grid.hirshfeld.html" class="btn btn-neutral float-right" title="grid.hirshfeld module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="grid.becke.html" class="btn btn-neutral float-left" title="grid.becke module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
         
-<<<<<<< HEAD
-        &copy; Copyright 2023, QC-Devs
-=======
         &copy; Copyright 2021, QC-Devs
->>>>>>> 32d8e9f8cd2fea5028d677bd401d7ca7dbc35a4d
 
     </p>
   </div>
