@@ -113,8 +113,8 @@ specifically chosen so that it integrates the identity function to obtain :math:
 Nested Grids
 -------------
 Angular grids of different degrees can be very close to one another. The following shows the mean with
-standard deviation and maximum distance between an angular grid of one degree and the following grid of the
-closest, highest degree.
+standard deviation and maximum distance between an angular grid of one degree and the consequent
+angular grid with higher degree.
 
 .. csv-table:: Lebedev-Laikov Grids
    :file: ./table_angular_lebedev.csv

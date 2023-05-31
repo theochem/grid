@@ -2,7 +2,7 @@
 One-Dimensional Grids
 ======================
 
-There are various choices of one dimensional grid for integrating functions over some finite or infinite
+There are various choices of one dimensional grids for integrating functions over some finite or infinite
 intervals.
 
 .. csv-table:: One-Dimensional Quadrature Grids With Explicit Solutions
