@@ -362,7 +362,9 @@ def solve_poisson_bvp(
     is transformed to an set of ODE problems as a boundary value problem.
 
     If boundary is not provided, then the boundary of :math:`g` for large r is set to
-    :math:`\int \int \int f(r, \theta, \phi) / r`.
+    :math:`\int \int \int f(r, \theta, \phi) / r`.  The solution :math:`g` is assumed to be
+    zero at the origin :math:`g(0, \theta, \phi) = 0`.  Use `solve_poisson_ivp` if this assumption
+    isn't needed.
 
     Parameters
     ----------
