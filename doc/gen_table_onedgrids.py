@@ -60,7 +60,7 @@ def generate_one_dimensional_grid_table_csv():
                 # Get the name of the Grid
                 line_document = f.readline()
                 print("linedoc", line_document.strip())
-                if line_document.strip() == "r\"\"\"":
+                if line_document.strip() == 'r"""':
                     line_document = f.readline()
                     print("linedoc rev", line_document)
                 if "integral" in line_document:
@@ -68,8 +68,8 @@ def generate_one_dimensional_grid_table_csv():
                     line_name = line_document[0].strip()
                     # Remove triple quotation marks: """
                     line_name = line_name[:]
-                    line_name = line_name.replace("r\"\"\"", "")
-                    line_name = line_name.replace("\"\"\"", "")
+                    line_name = line_name.replace('r"""', "")
+                    line_name = line_name.replace('"""', "")
 
                     if "HORTON" in line_name:
                         line_name = line_name.replace("HORTON", "Horton")
@@ -94,10 +94,10 @@ def generate_one_dimensional_grid_table_csv():
                     line_domain = f.readline()
                     print(line_domain)
 
-                    if line_domain.strip() == "r\"\"\"":
+                    if line_domain.strip() == 'r"""':
                         line_domain = f.readline()
                         print(line_domain)
-                    if "on" not in line_domain: #or "interval" not in line_domain:
+                    if "on" not in line_domain:  # or "interval" not in line_domain:
                         raise RuntimeError(
                             f"The words 'on' and 'interval' needs to be in {line_domain} for this to parse correctly."
                         )

@@ -165,14 +165,13 @@ class BeckeWeights:
             warnings.warn(
                 f"Covalent radii for the following atom numbers {atnums[indices]} is nan."
                 f" Instead the radii with 1 less the atomic number is used.",
-                stacklevel=2
+                stacklevel=2,
             )
         radii = np.array(
             [
                 self._radii[num] if not np.isnan(self._radii[num])
                 # if n-1 radii is nan, use the n-2 instead
-                else np.nan_to_num(self._radii[num - 1])
-                or np.nan_to_num(self._radii[num - 2])
+                else np.nan_to_num(self._radii[num - 1]) or np.nan_to_num(self._radii[num - 2])
                 for num in atnums
             ]
         )
@@ -239,14 +238,13 @@ class BeckeWeights:
             warnings.warn(
                 f"Covalent radii for the following atom numbers {atnums[indices]} is nan."
                 f" Instead the radii with 1 less the atomic number is used.",
-                stacklevel=2
+                stacklevel=2,
             )
         radii = np.array(
             [
                 self._radii[num] if not np.isnan(self._radii[num])
                 # if n-1 radii is nan, use the n-2 instead
-                else np.nan_to_num(self._radii[num - 1])
-                or np.nan_to_num(self._radii[num - 2])
+                else np.nan_to_num(self._radii[num - 1]) or np.nan_to_num(self._radii[num - 2])
                 for num in atnums
             ]
         )

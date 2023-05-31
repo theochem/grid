@@ -127,9 +127,7 @@ class MolGrid(Grid):
             self._atweights[start:end] = atom_grid.weights
 
         if callable(aim_weights):
-            self._aim_weights = aim_weights(
-                self._points, self._atcoords, atnums, self._indices
-            )
+            self._aim_weights = aim_weights(self._points, self._atcoords, atnums, self._indices)
 
         elif isinstance(aim_weights, np.ndarray):
             if aim_weights.size != size:
@@ -304,13 +302,9 @@ class MolGrid(Grid):
             start_index = self.indices[i]
             final_index = self.indices[i + 1]
             atom_grid = self[i]
-            intepolate_funcs.append(
-                atom_grid.interpolate(func_vals_atom[start_index:final_index])
-            )
+            intepolate_funcs.append(atom_grid.interpolate(func_vals_atom[start_index:final_index]))
 
-        def interpolate_low(
-            points, deriv=0, deriv_spherical=False, only_radial_derivs=False
-        ):
+        def interpolate_low(points, deriv=0, deriv_spherical=False, only_radial_derivs=False):
             r"""Construct a spline like callable for intepolation.
 
             Parameters
@@ -336,13 +330,9 @@ class MolGrid(Grid):
                 if `only_radial_derivs` then derivative wrt to :math:`r` is only returned.
 
             """
-            output = intepolate_funcs[0](
-                points, deriv, deriv_spherical, only_radial_derivs
-            )
+            output = intepolate_funcs[0](points, deriv, deriv_spherical, only_radial_derivs)
             for interpolate in intepolate_funcs[1:]:
-                output += interpolate(
-                    points, deriv, deriv_spherical, only_radial_derivs
-                )
+                output += interpolate(points, deriv, deriv_spherical, only_radial_derivs)
             return output
 
         return interpolate_low
@@ -388,8 +378,7 @@ class MolGrid(Grid):
         # construct for a atom molecule
         if atcoords.ndim != 2:
             raise ValueError(
-                "The dimension of coordinates need to be 2\n"
-                f"got shape: {atcoords.ndim}"
+                "The dimension of coordinates need to be 2\n" f"got shape: {atcoords.ndim}"
             )
         if len(atnums) != atcoords.shape[0]:
             raise ValueError(
@@ -407,9 +396,7 @@ class MolGrid(Grid):
             elif isinstance(rgrid, dict):
                 rad = rgrid[atnums[i]]
             else:
-                raise TypeError(
-                    f"not supported radial grid input; got input type: {type(rgrid)}"
-                )
+                raise TypeError(f"not supported radial grid input; got input type: {type(rgrid)}")
             # get proper grid type
             if isinstance(preset, str):
                 gd_type = preset
@@ -474,9 +461,7 @@ class MolGrid(Grid):
         """
         at_grids = []
         for i in range(len(atcoords)):
-            at_grids.append(
-                AtomGrid(rgrid, sizes=[size], center=atcoords[i], rotate=rotate)
-            )
+            at_grids.append(AtomGrid(rgrid, sizes=[size], center=atcoords[i], rotate=rotate))
         return cls(atnums, at_grids, aim_weights, store=store)
 
     @classmethod
@@ -539,20 +524,15 @@ class MolGrid(Grid):
         """
         if atcoords.ndim != 2:
             raise ValueError(
-                "The dimension of coordinates need to be 2\n"
-                f"got shape: {atcoords.ndim}"
+                "The dimension of coordinates need to be 2\n" f"got shape: {atcoords.ndim}"
             )
 
         at_grids = []
         num_atoms = len(atcoords)
         # List of None is created, so that indexing is possible in the for-loop.
-        sectors_degree = (
-            [None] * num_atoms if sectors_degree is None else sectors_degree
-        )
+        sectors_degree = [None] * num_atoms if sectors_degree is None else sectors_degree
         sectors_size = [None] * num_atoms if sectors_size is None else sectors_size
-        radius_atom = (
-            [radius] * num_atoms if isinstance(radius, (float, np.float64)) else radius
-        )
+        radius_atom = [radius] * num_atoms if isinstance(radius, (float, np.float64)) else radius
         for i in range(num_atoms):
             # get proper radial grid
             if isinstance(rgrid, OneDGrid):
@@ -562,9 +542,7 @@ class MolGrid(Grid):
             elif isinstance(rgrid, dict):
                 rad = rgrid[atnums[i]]
             else:
-                raise TypeError(
-                    f"not supported radial grid input; got input type: {type(rgrid)}"
-                )
+                raise TypeError(f"not supported radial grid input; got input type: {type(rgrid)}")
 
             at_grids.append(
                 AtomGrid.from_pruned(

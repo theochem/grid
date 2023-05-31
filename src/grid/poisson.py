@@ -53,12 +53,10 @@ def _interpolate_molgrid_helper(molgrid, func_vals, interpolate_callable):
             atnums=np.array([1.0]),
             atgrids=[molgrid],
             aim_weights=np.array([1.0] * molgrid.size),
-            store=True
+            store=True,
         )
     if molgrid.atgrids is None:
-        raise ValueError(
-            "Molecular grid (MolGrid) attribute `store` should be set to True."
-        )
+        raise ValueError("Molecular grid (MolGrid) attribute `store` should be set to True.")
 
     # Multiply f by the nuclear weight function w_n(r) for each atom grid segment.
     func_vals_atom = func_vals * molgrid.aim_weights
@@ -117,6 +115,7 @@ def _solve_poisson_ivp_atomgrid(
     i_spline = 0
     for l_deg in range(0, atomgrid.l_max // 2 + 1):
         for m_ord in [x for x in range(0, l_deg + 1)] + [-x for x in range(-l_deg, 0)]:
+
             def f_x(r, i_spline=i_spline):
                 return radial_components[i_spline](r) * -4 * np.pi
 
@@ -171,7 +170,6 @@ def solve_poisson_ivp(
     r_interval: tuple = (1000, 1e-5),
     ode_params: Union[dict, type(None)] = None,
 ):
-
     r"""
     Return interpolation of the solution to the Poisson equation solved as an initial value problem.
 
@@ -236,12 +234,8 @@ def solve_poisson_ivp(
         molgrid,
         func_vals,
         lambda atom_grid, func_vals: _solve_poisson_ivp_atomgrid(
-            atom_grid,
-            func_vals,
-            transform=transform,
-            r_interval=r_interval,
-            ode_params=ode_params
-        )
+            atom_grid, func_vals, transform=transform, r_interval=r_interval, ode_params=ode_params
+        ),
     )
 
 
@@ -272,9 +266,7 @@ def _solve_poisson_bvp_atomgrid(
     # Check if the domain of transform is in [0, \infty)
     domain = transform.domain
     if domain[0] < 0.0:
-        raise ValueError(
-            f"The domain of the transform {domain} should be in [0, infinity)."
-        )
+        raise ValueError(f"The domain of the transform {domain} should be in [0, infinity).")
 
     # Get the radial components from expanding func into real spherical harmonics.
     radial_components = atomgrid.radial_component_splines(func_vals)
@@ -421,15 +413,9 @@ def solve_poisson_bvp(
         molgrid,
         func_vals,
         lambda atom_grid, func_vals: _solve_poisson_bvp_atomgrid(
-                atom_grid,
-                func_vals,
-                transform,
-                boundary,
-                include_origin,
-                remove_large_pts,
-                ode_params
-            )
-        )
+            atom_grid, func_vals, transform, boundary, include_origin, remove_large_pts, ode_params
+        ),
+    )
 
 
 def interpolate_laplacian(molgrid: Union[MolGrid, AtomGrid], func_vals: np.ndarray):
@@ -476,12 +462,10 @@ def interpolate_laplacian(molgrid: Union[MolGrid, AtomGrid], func_vals: np.ndarr
             atnums=np.array([1.0]),
             atgrids=[molgrid],
             aim_weights=np.array([1.0] * molgrid.size),
-            store=True
+            store=True,
         )
     if molgrid.atgrids is None:
-        raise ValueError(
-            "Molecular grid (MolGrid) attribute `store` should be set to True."
-        )
+        raise ValueError("Molecular grid (MolGrid) attribute `store` should be set to True.")
 
     # Multiply f by the nuclear weight function w_n(r) for each atom grid segment.
     func_vals_atom = func_vals * molgrid.aim_weights
@@ -532,13 +516,14 @@ def interpolate_laplacian(molgrid: Union[MolGrid, AtomGrid], func_vals: np.ndarr
             )
             third_component = np.einsum("ln,l,ln -> n", r_values_f, degrees, r_sph_harm)
             with np.errstate(divide="ignore", invalid="ignore"):
-                third_component /= r_pts ** 2.0
+                third_component /= r_pts**2.0
 
             return first_component + second_component - third_component
 
         interpolate_funcs.append(
-            lambda points, cut_off, atom_grid=atom_grid:
-                interpolate_laplacian_atom_grid(points, atom_grid, cut_off)
+            lambda points, cut_off, atom_grid=atom_grid: interpolate_laplacian_atom_grid(
+                points, atom_grid, cut_off
+            )
         )
 
     def sum_of_interpolation_funcs(points, cut_off: float = 1e-6):

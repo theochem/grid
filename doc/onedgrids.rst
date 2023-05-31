@@ -27,6 +27,3 @@ The Trefethen polynomial transformation of various grids on :math:`[-1, 1]` is a
 - :func:`Trefethen Strip (Clenshaw-Curtis)<grid.onedgrid.TrefethenStripCC>`,
 - :func:`Trefethen Strip (Gauss-Chebyshev)<grid.onedgrid.TrefethenStripGC2>`,
 - :func:`Trefethen Strip (General)<grid.onedgrid.TrefethenStripGeneral>`.
-
-
-

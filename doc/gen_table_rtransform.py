@@ -55,18 +55,31 @@ def generate_rtransform_grid_table_csv():
             line = line.rstrip()  # strip trailing spaces and newline
             print("line: ", line)
             # If you found a class that is a child of BaseTransform, then explore further.
-            if "InverseRTransform" in line and "BaseTransform" in line :
+            if "InverseRTransform" in line and "BaseTransform" in line:
                 row_result = []
-                row_result += [":func:`InverseRTransform<grid.rtransform.InverseRTransform>`",
-                               "Co-Domain", "Domain", ":math:`x_i(r_i)"]
+                row_result += [
+                    ":func:`InverseRTransform<grid.rtransform.InverseRTransform>`",
+                    "Co-Domain",
+                    "Domain",
+                    ":math:`x_i(r_i)",
+                ]
                 print(row_result)
                 df.loc[len(df.index)] = row_result
-            elif "IdentityRTransform" in line and  "BaseTransform" in line :
+            elif "IdentityRTransform" in line and "BaseTransform" in line:
                 row_result = []
-                row_result += [":func:`IdentityRTransform<grid.rtransform.IdentityRTransform>`",
-                               "Domain", "Domain", ":math:`x_i`"]
+                row_result += [
+                    ":func:`IdentityRTransform<grid.rtransform.IdentityRTransform>`",
+                    "Domain",
+                    "Domain",
+                    ":math:`x_i`",
+                ]
                 df.loc[len(df.index)] = row_result
-            elif "class" in line and "BaseTransform" in line and "issubclass" not in line and "ABC" not in line:
+            elif (
+                "class" in line
+                and "BaseTransform" in line
+                and "issubclass" not in line
+                and "ABC" not in line
+            ):
                 row_result = []
                 # Get the class name, by looking at what's after class
                 class_name = line.split("class")[1]
@@ -76,7 +89,7 @@ def generate_rtransform_grid_table_csv():
                 # Get the name of the RTransform
                 line_document = f.readline()
                 print("linedoc", line_document.strip())
-                if line_document.strip() == "r\"\"\"":
+                if line_document.strip() == 'r"""':
                     line_document = f.readline()
                     print("linedoc rev", line_document)
                 print(class_name, line_document)
@@ -93,9 +106,9 @@ def generate_rtransform_grid_table_csv():
 
                 # Get the domain and codomain information.
                 # The next line should contain the domain information
-                line_start = line_document#f.readline()
+                line_start = line_document  # f.readline()
                 print(line_start)
-                if line_start.strip() == "r\"\"\"":
+                if line_start.strip() == 'r"""':
                     line_start = f.readline()
                     print(line_start)
                 if "from" not in line_start or "to" not in line_start:

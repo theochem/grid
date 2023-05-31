@@ -317,7 +317,7 @@ class PeriodicGrid(Grid):
                     f"Interval spanned by fractional coordinates: {intvl_max} > 1.1. \n"
                     " ``get_localgrid`` will be inefficient.",
                     PeriodicGridWarning,
-                    stacklevel=2
+                    stacklevel=2,
                 )
         # Call the constructor of the base class
         super().__init__(points, weights)
@@ -415,12 +415,12 @@ class PeriodicGrid(Grid):
         # Minimal and maximal values of the integer coefficients used in
         # to construct all relevant integer linear combinations (``ilc``) of
         # lattice vectors to translate the center.
-        ilc_min = np.ceil(
-            self._frac_intvls[:, 0] - frac_center - radius / self._spacings
-        ).astype(int)
-        ilc_max = np.floor(
-            self._frac_intvls[:, 1] - frac_center + radius / self._spacings
-        ).astype(int)
+        ilc_min = np.ceil(self._frac_intvls[:, 0] - frac_center - radius / self._spacings).astype(
+            int
+        )
+        ilc_max = np.floor(self._frac_intvls[:, 1] - frac_center + radius / self._spacings).astype(
+            int
+        )
         assert (ilc_min <= ilc_max).all()
 
         # C) Loop over all possible translations of the center
@@ -445,9 +445,7 @@ class PeriodicGrid(Grid):
             _displaced_center = (
                 np.array([displaced_center]) if center.ndim == 0 else displaced_center
             )
-            indices = np.array(
-                self._kdtree.query_ball_point(_displaced_center, radius, p=2.0)
-            )
+            indices = np.array(self._kdtree.query_ball_point(_displaced_center, radius, p=2.0))
             # The following line avoids some_array[indices] when indices == [].
             if len(indices) == 0:
                 continue
