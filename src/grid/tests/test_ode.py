@@ -340,6 +340,44 @@ def test_solve_ode_bvp_against_analytic_example():
 
 
 @pytest.mark.parametrize(
+    "fx, coeffs, bvp, solutions",
+    [
+        # Test ode  y^`` = 1 with y(0) = 0, y`(0) = -1
+        [
+            lambda x: 1 if isinstance(x, Number) else np.ones(x.size),
+            [0, 0, 1],
+            [[0, 0, 0.0], [0, 1, -1.0]],
+            lambda x: (x**2.0 / 2.0 - x, x - 1.0),
+        ],
+        # Test ode y′+ y cos(t) =0,
+        [
+            lambda x: 0 if isinstance(x, Number) else np.zeros(x.size),
+            [lambda x: np.cos(x), 1],
+            [[0, 0, 0.5]],
+            lambda x: np.array([np.exp(-np.sin(x)) / 2.0]),
+        ],
+        # # Test ode y`` - y` = 2 sin(x) with y(0) = 1 and y`(0)=-1
+        [
+            lambda x: 2.0 * np.sin(x),
+            [0, -1, 1],
+            [[0, 0, 1.0], [0, 1, -1.0]],
+            lambda x: (np.cos(x) - np.sin(x), -np.sin(x) - np.cos(x)),
+        ],
+    ],
+)
+def test_solve_ode_bvp_against_analytic_example(fx, coeffs, bvp, solutions):
+    """Test solve_ode_ivp against analytic solution."""
+    # res = solve_ode_ivp((0, 2), fx, coeffs, ivp)
+    x = np.arange(0.0, 2.0, 0.1)
+    res = solve_ode_bvp(x, fx, coeffs, bvp)
+
+    # Test on random points.
+    # rand_pts = np.random.uniform(0.0, 2.0, size=100)
+    rand_pts = np.arange(0, 2, 0.5)
+    assert_allclose(res(rand_pts), solutions(rand_pts), atol=1e-5)
+
+
+@pytest.mark.parametrize(
     "fx, coeffs, ivp, solutions",
     [
         # Test ode  y^`` = 1 with y(0) = 0, y`(0) = -1
