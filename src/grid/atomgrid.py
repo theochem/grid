@@ -21,6 +21,11 @@
 import warnings
 from typing import Union
 
+import numpy as np
+from importlib_resources import path
+from scipy.interpolate import CubicSpline
+from scipy.spatial.transform import Rotation as R
+
 from grid.angular import AngularGrid
 from grid.basegrid import Grid, OneDGrid
 from grid.utils import (
@@ -29,13 +34,6 @@ from grid.utils import (
     generate_derivative_real_spherical_harmonics,
     generate_real_spherical_harmonics,
 )
-
-from importlib_resources import path
-
-import numpy as np
-
-from scipy.interpolate import CubicSpline
-from scipy.spatial.transform import Rotation as R
 
 
 class AtomGrid(Grid):
@@ -734,7 +732,8 @@ class AtomGrid(Grid):
             if deriv_spherical and only_radial_deriv:
                 warnings.warn(
                     "Since `only_radial_derivs` is true, then only the derivative wrt to"
-                    "radius is returned and `deriv_spherical` value is ignored."
+                    "radius is returned and `deriv_spherical` value is ignored.",
+                    stacklevel=2
                 )
             r_pts, theta, phi = self.convert_cartesian_to_spherical(points).T
             r_values = np.array([spline(r_pts, deriv) for spline in splines])

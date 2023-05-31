@@ -67,11 +67,10 @@ The following is references for the symmetric spherical t-design points:
 import warnings
 from bisect import bisect_left
 
-from grid.basegrid import Grid
-
+import numpy as np
 from importlib_resources import path
 
-import numpy as np
+from grid.basegrid import Grid
 
 # Lebedev dictionary for converting number of grid points (keys) to grid's degrees (values)
 LEBEDEV_NPOINTS = {
@@ -389,6 +388,7 @@ class AngularGrid(Grid):
                     "degree or size are not used for generating grids "
                     "because points and weights are provided",
                     RuntimeWarning,
+                    stacklevel=2
                 )
         else:
             # map degree and size to the supported (i.e., pre-computed) degree and size
@@ -412,7 +412,8 @@ class AngularGrid(Grid):
             # Lebedev degrees 13, 25, 27 have negative weights. Symmetric spherical t-design
             # have positive weights.
             warnings.warn(
-                f"Lebedev weights are negative which can introduce round-off errors."
+                "Lebedev weights are negative which can introduce round-off errors.",
+                stacklevel=2
             )
 
         self._use_spherical = use_spherical
@@ -500,6 +501,7 @@ class AngularGrid(Grid):
             warnings.warn(
                 "Both degree and size arguments are given, so only degree is used!",
                 RuntimeWarning,
+                stacklevel=2
             )
         if degree is not None:
             ang_degs = list(degrees.keys())

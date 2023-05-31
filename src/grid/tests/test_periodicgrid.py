@@ -18,14 +18,12 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
 """PeriodicGrid tests file."""
-from grid.basegrid import Grid
-from grid.periodicgrid import PeriodicGrid, PeriodicGridWarning
-
 import numpy as np
+import pytest
 from numpy.testing import assert_allclose
 
-import pytest
-
+from grid.basegrid import Grid
+from grid.periodicgrid import PeriodicGrid, PeriodicGridWarning
 
 # a small selection of displacement vectors to parametrize tests
 DELTAS_1D = [0.0, 0.5, 40.0, -5.0]
@@ -35,7 +33,7 @@ DELTAS_2D = [[0.0, 0.0], [0.5, -0.2], [40.0, -60.0]]
 # text formatting for the deltas
 def format_1d(d):
     """Format the ID of a DELTA."""
-    return "'{:.1f}'".format(d)
+    return f"'{d:.1f}'"
 
 
 def format_nd(ds):
@@ -253,7 +251,7 @@ def assert_equal_localgrids(localgrid1, localgrid2):
         # without too much ambiguity. Either they overlap or either they
         # differ by an integer linear combination of lattice vectors.
         found = set([])
-        for i1, point1 in enumerate(points1):
+        for _i1, point1 in enumerate(points1):
             if localgrid1.points.ndim == 1:
                 dists = abs(points2 - point1)
             else:

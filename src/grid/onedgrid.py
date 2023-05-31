@@ -20,11 +20,10 @@
 """1D integration grid."""
 
 
-from grid.basegrid import OneDGrid
-
 import numpy as np
-
 from scipy.special import roots_chebyu, roots_genlaguerre
+
+from grid.basegrid import OneDGrid
 
 
 class GaussLaguerre(OneDGrid):

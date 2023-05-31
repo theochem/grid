@@ -20,6 +20,10 @@
 """Utils function test file."""
 from unittest import TestCase
 
+import numpy as np
+import pytest
+from numpy.testing import assert_allclose, assert_almost_equal, assert_equal
+
 from grid.angular import AngularGrid
 from grid.utils import (
     convert_cart_to_sph,
@@ -29,11 +33,6 @@ from grid.utils import (
     get_cov_radii,
     solid_harmonics,
 )
-
-import numpy as np
-from numpy.testing import assert_allclose, assert_almost_equal, assert_equal
-
-import pytest
 
 
 class TestUtils(TestCase):
@@ -138,7 +137,7 @@ class TestUtils(TestCase):
         assert sph_h.shape == (1 + 3 + 5 + 7, 26)
         counter = 0
         for l_value in range(0, lmax + 1):
-            for m in (
+            for _m in (
                 [0]
                 + [x for x in range(1, l_value + 1)]
                 + [-x for x in range(1, l_value + 1)]
@@ -276,7 +275,7 @@ def test_solid_harmonics_for_few_degrees(numb_pts, max_degree):
     r_solid = np.ones((numb_pts,))  # r^0 = 1
     for l_deg in range(0, max_degree + 1):
         factor = np.sqrt(4.0 * np.pi / (2.0 * l_deg + 1.0))
-        for i_order in range(0, (2 * l_deg + 1)):
+        for _i_order in range(0, (2 * l_deg + 1)):
             assert_allclose(true[i_sph], sph_harm[i_sph] * r_solid * factor)
             i_sph += 1
         r_solid *= r  # Update r^l

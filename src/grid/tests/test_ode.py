@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # GRID is a numerical integration module for quantum chemistry.
 #
 # Copyright (C) 2011-2019 The GRID Development Team
@@ -21,6 +20,10 @@
 """ODE test module."""
 from numbers import Number
 
+import numpy as np
+import pytest
+from numpy.testing import assert_allclose, assert_almost_equal, assert_raises
+from scipy.integrate import solve_bvp
 
 from grid.ode import (
     _derivative_transformation_matrix,
@@ -41,13 +44,6 @@ from grid.rtransform import (
     KnowlesRTransform,
     LinearFiniteRTransform,
 )
-
-import numpy as np
-from numpy.testing import assert_allclose, assert_almost_equal, assert_raises
-
-import pytest
-
-from scipy.integrate import solve_bvp
 
 
 # List of constant right-hand side terms
@@ -313,32 +309,6 @@ def test_solve_ode_ivp_with_and_without_transformation(transform, fx, coeffs, iv
             assert_allclose(sol_with_transform(x)[2], sol_normal(x)[2], atol=1e-3)
 
 
-def test_solve_ode_bvp_against_analytic_example():
-    """Test solve_ode_bvp against analytic solution."""
-    x = np.linspace(0, 2, 10)
-
-    def fx(x):
-        return 1 if isinstance(x, Number) else np.ones(x.size)
-
-    # test ode  y^`` = 1
-    coeffs = [0, 0, 1]
-    # lower and upper bound of y is equal to zero.
-    bd_cond = [[0, 0, 0], [1, 0, 0]]
-
-    res = solve_ode_bvp(x, fx, coeffs, bd_cond)
-
-    def solution(x):
-        return x**2.0 / 2.0 - x
-
-    def deriv(x):
-        return x - 1.0
-
-    # Test on random points.
-    rand_pts = np.random.uniform(0.0, 2.0, size=10)
-    assert_almost_equal(res(rand_pts)[0], solution(rand_pts))
-    assert_almost_equal(res(rand_pts)[1], deriv(rand_pts))
-
-
 @pytest.mark.parametrize(
     "fx, coeffs, bvp, solutions",
     [
@@ -349,7 +319,7 @@ def test_solve_ode_bvp_against_analytic_example():
             [[0, 0, 0.0], [0, 1, -1.0]],
             lambda x: (x**2.0 / 2.0 - x, x - 1.0),
         ],
-        # Test ode y′+ y cos(t) =0,
+        # Test ode y`+ y cos(t) =0,
         [
             lambda x: 0 if isinstance(x, Number) else np.zeros(x.size),
             [lambda x: np.cos(x), 1],
@@ -387,7 +357,7 @@ def test_solve_ode_bvp_against_analytic_example(fx, coeffs, bvp, solutions):
             [0.0, -1.0],
             lambda x: (x**2.0 / 2.0 - x, x - 1.0),
         ],
-        # Test ode y′+ y cos(t) =0,
+        # Test ode y`+ y cos(t) =0,
         [
             lambda x: 0 if isinstance(x, Number) else np.zeros(x.size),
             [lambda x: np.cos(x), 1],
@@ -587,7 +557,8 @@ def test_rearange_ode_coeff():
 def test_first_and_second_derivative_transformation_with_Becke_transform():
     r"""Test derivative transformation of cubic function with Becke transform."""
     transform = BeckeRTransform(0.0, 5.0)
-    func = lambda x: x**3.0
+    def func(x):
+        return x ** 3.0
     origin_domain = np.arange(0.0, 10, 0.1)  # r \in [0, \infty)
     new_domain = transform.inverse(origin_domain)  # x \in [-1, 1]
 
@@ -595,14 +566,16 @@ def test_first_and_second_derivative_transformation_with_Becke_transform():
     deriv_tranfs = [transform.deriv, transform.deriv2, transform.deriv3]
 
     # derivative g(r) := r^3 wrt to r in [0, \infty)
-    deriv_func_old = lambda x: 3.0 * x**2.0
-    sec_deriv_func_old = lambda x: 6.0 * x
+    def deriv_func_old(x):
+        return 3.0 * x ** 2.0
+    def sec_deriv_func_old(x):
+        return 6.0 * x
 
     # derivative g(r(x)) wrt to x in [-1, 1]
-    desired_deriv_new = lambda x: 6 * 5.0**3.0 * (1 + x) ** 2.0 / (1 - x) ** 4.0
-    desired_sec_deriv_new = (
-        lambda x: -12 * 5.0**3.0 * (1 + x) * (x + 3) / (x - 1.0) ** 5.0
-    )
+    def desired_deriv_new(x):
+        return 6 * 5.0 ** 3.0 * (1 + x) ** 2.0 / (1 - x) ** 4.0
+    def desired_sec_deriv_new(x):
+        return -12 * 5.0 ** 3.0 * (1 + x) * (x + 3) / (x - 1.0) ** 5.0
 
     # Go through each pt, calculate the jacobian, calculate the derivative g(r(x)) and compare
     for i, pt_x in enumerate(new_domain):

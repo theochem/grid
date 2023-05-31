@@ -30,16 +30,15 @@ over a centered atomic grid. It is recommended to use the boundary value problem
 for handing singularities near the origin of the atomic grid.
 
 """
-from grid.atomgrid import AtomGrid
-from grid.molgrid import MolGrid
-from grid.ode import solve_ode_bvp, solve_ode_ivp
-from grid.rtransform import BaseTransform
-from grid.utils import convert_cart_to_sph, generate_real_spherical_harmonics
-
 from typing import Union
 
 import numpy as np
 
+from grid.atomgrid import AtomGrid
+from grid.molgrid import MolGrid
+from grid.ode import solve_ode_bvp, solve_ode_ivp
+from grid.rtransform import BaseTransform
+from grid.utils import generate_real_spherical_harmonics
 
 __all__ = ["solve_poisson_bvp", "solve_poisson_ivp"]
 
@@ -118,10 +117,10 @@ def _solve_poisson_ivp_atomgrid(
     i_spline = 0
     for l_deg in range(0, atomgrid.l_max // 2 + 1):
         for m_ord in [x for x in range(0, l_deg + 1)] + [-x for x in range(-l_deg, 0)]:
-            def f_x(r):
+            def f_x(r, i_spline=i_spline):
                 return radial_components[i_spline](r) * -4 * np.pi
 
-            def coeff_0(r):
+            def coeff_0(r, l_deg=l_deg):
                 a = -l_deg * (l_deg + 1) / r**2
                 return a
 
@@ -304,10 +303,10 @@ def _solve_poisson_bvp_atomgrid(
     for l_deg in range(0, atomgrid.l_max // 2 + 1):
         for m_ord in [x for x in range(0, l_deg + 1)] + [-x for x in range(-l_deg, 0)]:
 
-            def f_x(r):
+            def f_x(r, i_spline=i_spline):
                 return radial_components[i_spline](r) * -4 * np.pi * r
 
-            def coeff_0(r):
+            def coeff_0(r, l_deg=l_deg):
                 with np.errstate(divide="ignore", invalid="ignore"):
                     a = -l_deg * (l_deg + 1) / r**2
                 # Note that this assumes the boundary condition that y(0) = 0.
@@ -414,7 +413,7 @@ def solve_poisson_bvp(
 
     References
     ----------
-    .. [1] Becke, A. D., & Dickson, R. M. (1988). Numerical solution of Poisson’s equation in
+    .. [1] Becke, A. D., & Dickson, R. M. (1988). Numerical solution of Poisson`s equation in
            polyatomic molecules. The Journal of chemical physics, 89(5), 2993-2997.
 
     """
@@ -496,7 +495,9 @@ def interpolate_laplacian(molgrid: Union[MolGrid, AtomGrid], func_vals: np.ndarr
         def interpolate_laplacian_atom_grid(
             points: np.ndarray,
             atom_grid: AtomGrid,
-            cutoff: float = 1e-6
+            cutoff: float = 1e-6,
+            start_index=start_index,
+            final_index=final_index,
         ):
             # compute spline for the radial components for f
             radial_comps_f = atom_grid.radial_component_splines(
@@ -536,7 +537,8 @@ def interpolate_laplacian(molgrid: Union[MolGrid, AtomGrid], func_vals: np.ndarr
             return first_component + second_component - third_component
 
         interpolate_funcs.append(
-            lambda points, cut_off: interpolate_laplacian_atom_grid(points, atom_grid, cut_off)
+            lambda points, cut_off, atom_grid=atom_grid:
+                interpolate_laplacian_atom_grid(points, atom_grid, cut_off)
         )
 
     def sum_of_interpolation_funcs(points, cut_off: float = 1e-6):

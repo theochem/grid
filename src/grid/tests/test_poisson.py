@@ -18,10 +18,15 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
 """Poisson test module."""
+import numpy as np
+import pytest
+from numpy.testing import assert_allclose
+from scipy.special import erf
+
 from grid.atomgrid import AtomGrid
 from grid.becke import BeckeWeights
-from grid.onedgrid import GaussLegendre, GaussLaguerre, OneDGrid, Trapezoidal
 from grid.molgrid import MolGrid
+from grid.onedgrid import GaussLaguerre, GaussLegendre, OneDGrid, Trapezoidal
 from grid.poisson import interpolate_laplacian, solve_poisson_bvp, solve_poisson_ivp
 from grid.rtransform import (
     BeckeRTransform,
@@ -31,21 +36,16 @@ from grid.rtransform import (
 )
 from grid.utils import convert_cart_to_sph, generate_real_spherical_harmonics
 
-import numpy as np
-from numpy.testing import assert_allclose
-
-import pytest
-
-from scipy.special import erf
-
 
 def zero_func(pts, centers=None):
     """Zero function for test."""
     return np.array([0.0] * pts.shape[0])
 
 
-def gauss(pts, centers=np.zeros((1, 3)), alpha=1000.0):
+def gauss(pts, centers=None, alpha=1000.0):
     """Gaussian function for test."""
+    if centers is None:
+        centers = np.zeros((1, 3))
     output = np.zeros(len(pts))
     for cent in centers:
         r = np.linalg.norm(pts - cent, axis=1)
@@ -62,7 +62,9 @@ def spherical_harmonic(pts, centers=None):
     return -1 * spherical_harmonic[0, :] / (4.0 * np.pi * spherical[:, 0] ** 2.0)
 
 
-def charge_distribution(x, alpha=0.1, centers=np.array([[0.0, 0.0, 0.0]])):
+def charge_distribution(x, alpha=0.1, centers=None):
+    if centers is None:
+        centers = np.array([[0.0, 0.0, 0.0]])
     result = np.zeros(len(x))
     for cent in centers:
         r = np.linalg.norm(x - cent, axis=1)
@@ -70,7 +72,9 @@ def charge_distribution(x, alpha=0.1, centers=np.array([[0.0, 0.0, 0.0]])):
     return result
 
 
-def poisson_solution_to_charge_distribution(x, alpha=0.1, centers=np.array([[0.0, 0.0, 0.0]])):
+def poisson_solution_to_charge_distribution(x, alpha=0.1, centers=None):
+    if centers is None:
+        centers = np.array([[0.0, 0.0, 0.0]])
     result = np.zeros(len(x))
     for cent in centers:
         r_PC = np.linalg.norm(x - cent, axis=1)
@@ -313,7 +317,12 @@ def test_poisson_ivp_gives_the_correct_laplacian(func, centers):
         molgrids = atgrids[0]
     else:
         becke = BeckeWeights(order=3)
-        molgrids = MolGrid(atnums=[1] * len(centers), atgrids=atgrids, aim_weights=becke, store=True)
+        molgrids = MolGrid(
+            atnums=[1] * len(centers),
+            atgrids=atgrids,
+            aim_weights=becke,
+            store=True
+        )
 
     potential = solve_poisson_ivp(
         molgrids,
@@ -330,7 +339,7 @@ def test_poisson_ivp_gives_the_correct_laplacian(func, centers):
 
     # Check it is the same as func on atomic grid points.
     np.set_printoptions(threshold=np.inf)
-    err = np.abs(desired +func(molgrids.points) * 4.0 * np.pi)
+    np.abs(desired +func(molgrids.points) * 4.0 * np.pi)
     # TODO: Improve accuracy from one decimal place
     assert_allclose(desired, -func(molgrids.points) * 4.0 * np.pi, atol=1e-1)
 
@@ -388,7 +397,7 @@ def test_poisson_ivp_on_unit_charge_distribution(centers):
     pts = np.delete(pts, i_pts_zero, axis=0)  # Delete at those indices
     actual = potential(pts)
     desired = poisson_solution_to_charge_distribution(pts, centers=centers)
-    err = np.abs(desired - actual)
+    np.abs(desired - actual)
     assert_allclose(actual, desired, atol=1e-2)
 
     # Choose random points that are not zero

@@ -21,6 +21,8 @@
 
 from unittest import TestCase
 
+import numpy as np
+
 from grid.onedgrid import GaussLegendre
 from grid.rtransform import (
     ExpRTransform,
@@ -29,8 +31,6 @@ from grid.rtransform import (
     LinearInfiniteRTransform,
     PowerRTransform,
 )
-
-import numpy as np
 
 
 class TestRTransform(TestCase):

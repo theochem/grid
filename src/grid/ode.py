@@ -38,14 +38,12 @@ import warnings
 from numbers import Number, Real
 from typing import Union
 
-from grid.rtransform import BaseTransform
-
 import numpy as np
-
 from scipy.integrate import solve_bvp, solve_ivp
 from scipy.linalg import solve
-
 from sympy import bell
+
+from grid.rtransform import BaseTransform
 
 __all__ = ["solve_ode_bvp", "solve_ode_ivp"]
 
@@ -589,7 +587,8 @@ def _rearrange_to_explicit_ode(y: np.ndarray, coeff_b: np.ndarray, fx: np.ndarra
     if np.any(np.abs(coeff_b[-1]) < 1e-10):
         warnings.warn(
             "The coefficient of the leading Kth term is zero at some point."
-            "It is recommended to split into intervals and solve separately."
+            "It is recommended to split into intervals and solve separately.",
+            stacklevel=2
         )
 
     result = fx

@@ -19,9 +19,7 @@
 # --
 """Utils function module."""
 import numpy as np
-
 from scipy.special import sph_harm
-
 
 _bragg = np.array(
     [
@@ -418,7 +416,7 @@ def generate_real_spherical_harmonics_scipy(l_max: int, theta: np.ndarray, phi: 
         # Convert to horton 2 order
         horton_ord = [[pos_real_sph[i], neg_real_sph[i]] for i in range(0, l_val)]
         horton_ord = tuple(x for sublist in horton_ord for x in sublist)
-        total_sph = np.vstack((total_sph, zero_real_sph) + horton_ord)
+        total_sph = np.vstack((total_sph, zero_real_sph, *horton_ord))
     return total_sph
 
 
@@ -490,9 +488,12 @@ def generate_real_spherical_harmonics(l_max: int, theta: np.ndarray, phi: np.nda
     p_leg[0, :, :] = 1.0  # Initial conditions: P_0^0 = 1.0
 
     # the coefficients of the forward recursions and initial factor of spherical harmonic.
-    a_k = lambda l, m: (2.0 * (l - 1.0) + 1) / ((l - 1.0) - m + 1.0)
-    b_k = lambda l, m: (l - 1.0 + m) / (l - m)
-    fac_sph = lambda l, m: np.sqrt((2.0 * l + 1) / (4.0 * np.pi))  # Note (l-m)!/(l+m)! is moved
+    def a_k(deg, ord):
+        return (2.0 * (deg - 1.0) + 1) / (deg - 1.0 - ord + 1.0)
+    def b_k(deg, ord):
+        return (deg - 1.0 + ord) / (deg - ord)
+    def fac_sph(deg, ord):
+        return np.sqrt((2.0 * deg + 1) / (4.0 * np.pi))  # Note (l-m)!/(l+m)! is moved
 
     # Go through each degree and then order and fill out
     spherical_harm[0, :] = fac_sph(0, 0)  # Compute Y_0^0
@@ -579,7 +580,7 @@ def generate_derivative_real_spherical_harmonics(l_max: int, theta: np.ndarray, 
     sph_harm_vals = generate_real_spherical_harmonics(l_max, theta, phi)
     i_output = 0
     for l_val in l_list:
-        for m in [0] + sum([[x, -x] for x in range(1, l_val + 1)], []):
+        for m in [0, *sum([[x, -x] for x in range(1, l_val + 1)], [])]:
             # Take all spherical harmonics at degree l_val
             sph_harm_degree = sph_harm_vals[(l_val) ** 2 : (l_val + 1) ** 2, :]
 
@@ -588,7 +589,8 @@ def generate_derivative_real_spherical_harmonics(l_max: int, theta: np.ndarray, 
             # Note ie^(i |m| x) = -sin(|m| x) + i cos(|m| x), then take real/imaginery component.
             # hence why the negative is in (-m).
             # index_m maps m to index where (l, m)  is located in `sph_harm_degree`.
-            index_m = lambda m: 2 * m - 1 if m > 0 else int(2 * np.fabs(m))
+            def index_m(m):
+                return 2 * m - 1 if m > 0 else int(2 * np.fabs(m))
             output[0, i_output, :] = -m * sph_harm_degree[index_m(-m), :]
 
             # Take derivative wrt to phi:

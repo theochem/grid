@@ -19,15 +19,14 @@
 # --
 """Construct basic grid data structure."""
 
+import numpy as np
+from scipy.spatial import cKDTree
+
 from grid.utils import (
     convert_cart_to_sph,
     generate_orders_horton_order,
     solid_harmonics,
 )
-
-import numpy as np
-
-from scipy.spatial import cKDTree
 
 
 class Grid:

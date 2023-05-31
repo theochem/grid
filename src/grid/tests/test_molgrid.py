@@ -20,6 +20,10 @@
 """MolGrid test file."""
 from unittest import TestCase
 
+# from importlib_resources import path
+import numpy as np
+from numpy.testing import assert_allclose, assert_almost_equal
+
 from grid.atomgrid import AtomGrid
 from grid.basegrid import LocalGrid
 from grid.becke import BeckeWeights
@@ -27,10 +31,6 @@ from grid.hirshfeld import HirshfeldWeights
 from grid.molgrid import MolGrid
 from grid.onedgrid import GaussLaguerre, Trapezoidal, UniformInteger
 from grid.rtransform import ExpRTransform, LinearFiniteRTransform
-
-# from importlib_resources import path
-import numpy as np
-from numpy.testing import assert_allclose, assert_almost_equal
 
 
 class TestMolGrid(TestCase):

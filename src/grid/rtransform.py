@@ -24,9 +24,9 @@ import warnings
 from abc import ABC, abstractmethod
 from numbers import Number
 
-from grid.basegrid import OneDGrid
-
 import numpy as np
+
+from grid.basegrid import OneDGrid
 
 
 class BaseTransform(ABC):
@@ -1135,7 +1135,8 @@ class PowerRTransform(BaseTransform):
         power = (np.log(self._rmax) - np.log(self._rmin)) / np.log(self.b + 1)
         if power < 2:
             warnings.warn(
-                f"power need to be larger than 2\n  power: {power}", RuntimeWarning
+                f"power need to be larger than 2\n  power: {power}", RuntimeWarning,
+                stacklevel=2,
             )
         return self._rmin * np.power(x + 1, power)
 
@@ -1395,7 +1396,7 @@ class MultiExpRTransform(BaseTransform):
 
     References
     ----------
-    .. [1] Gill, Peter MW, and Siu‐Hung Chien. "Radial quadrature for multiexponential integrands."
+    .. [1] Gill, Peter MW, and Siu-Hung Chien. "Radial quadrature for multiexponential integrands."
        Journal of computational chemistry 24.6 (2003): 732-740.
 
     """

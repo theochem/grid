@@ -21,10 +21,10 @@
 
 from typing import Union
 
+import numpy as np
+
 from grid.atomgrid import AtomGrid
 from grid.basegrid import Grid, LocalGrid, OneDGrid
-
-import numpy as np
 
 
 class MolGrid(Grid):

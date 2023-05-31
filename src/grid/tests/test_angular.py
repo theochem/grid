@@ -22,23 +22,22 @@
 
 from unittest import TestCase
 
-from grid.angular import (
-    AngularGrid,
-    LEBEDEV_CACHE,
-    LEBEDEV_DEGREES,
-    LEBEDEV_NPOINTS,
-    SPHERICAL_DEGREES,
-)
-from grid.utils import generate_real_spherical_harmonics
-
 import numpy as np
+import pytest
 from numpy.testing import (
     assert_almost_equal,
     assert_array_equal,
     assert_equal,
 )
 
-import pytest
+from grid.angular import (
+    LEBEDEV_CACHE,
+    LEBEDEV_DEGREES,
+    LEBEDEV_NPOINTS,
+    SPHERICAL_DEGREES,
+    AngularGrid,
+)
+from grid.utils import generate_real_spherical_harmonics
 
 
 class TestLebedev(TestCase):

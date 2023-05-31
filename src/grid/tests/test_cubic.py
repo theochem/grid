@@ -21,11 +21,11 @@ r"""Rectangular Grid Testing."""
 
 from unittest import TestCase
 
-from grid.cubic import Tensor1DGrids, UniformGrid, _HyperRectangleGrid
-from grid.onedgrid import GaussLaguerre, MidPoint
-
 import numpy as np
 from numpy.testing import assert_allclose
+
+from grid.cubic import Tensor1DGrids, UniformGrid, _HyperRectangleGrid
+from grid.onedgrid import GaussLaguerre, MidPoint
 
 
 class TestHyperRectangleGrid(TestCase):
@@ -230,7 +230,7 @@ class TestTensor1DGrids(TestCase):
         def linear_func(points):
             return (
                 np.array([1.0] * points.shape[0])
-                + np.random.random((points.shape[0])) * 1.0e-6
+                + np.random.random(points.shape[0]) * 1.0e-6
             )
 
         gaussian_pts = linear_func(cubic.points)

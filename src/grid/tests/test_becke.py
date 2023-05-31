@@ -22,10 +22,10 @@
 
 from unittest import TestCase
 
-from grid.becke import BeckeWeights
-
 import numpy as np
 from numpy.testing import assert_allclose
+
+from grid.becke import BeckeWeights
 
 
 class TestBecke(TestCase):

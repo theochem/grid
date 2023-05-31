@@ -19,14 +19,12 @@
 # --
 r"""Hyper Rectangular Grid In Either Two or Three Dimensions."""
 
-from grid.basegrid import Grid, OneDGrid
-
 import numpy as np
-
 from scipy.interpolate import CubicSpline, RegularGridInterpolator
-
 from sympy import symbols
 from sympy.functions.combinatorial.numbers import bell
+
+from grid.basegrid import Grid, OneDGrid
 
 
 class _HyperRectangleGrid(Grid):

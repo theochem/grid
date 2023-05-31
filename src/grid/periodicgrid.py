@@ -157,11 +157,10 @@ adjacent crystal planes along the :math:`k`th lattice vector.
 import itertools
 import warnings
 
-from grid.basegrid import Grid, LocalGrid
-
 import numpy as np
-
 from scipy.spatial import cKDTree
+
+from grid.basegrid import Grid, LocalGrid
 
 
 class PeriodicGridWarning(Warning):
@@ -318,6 +317,7 @@ class PeriodicGrid(Grid):
                     f"Interval spanned by fractional coordinates: {intvl_max} > 1.1. \n"
                     " ``get_localgrid`` will be inefficient.",
                     PeriodicGridWarning,
+                    stacklevel=2
                 )
         # Call the constructor of the base class
         super().__init__(points, weights)
