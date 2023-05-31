@@ -1,0 +1,40 @@
+name: pytest
+
+on:
+  push:
+    branches:
+     - main
+    tags-ignore:
+      - '**'
+  pull_request:
+
+jobs:
+  tests:
+    name: "Python ${{ matrix.py }}"
+    runs-on: "ubuntu-latest"
+
+    strategy:
+      matrix:
+        py: ["3.6", "3.7", "3.10", "3.11"]
+
+    steps:
+      - uses: "actions/checkout@v3"
+      - name: Setup python for test ${{ matrix.py }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.py }}
+      - name: Install dependencies for testing
+        run: |
+          pip install --upgrade pip
+          pip install pytest pytest-md pytest-emoji
+      - name: Install development version
+        run: |
+          pip install -e .
+      - name: Run pytest
+        uses: pavelzw/pytest-action@v2
+        with:
+          verbose: true
+          emoji: true
+          job-summary: true
+          click-to-expand: true
+          report-title: 'Test Report'
