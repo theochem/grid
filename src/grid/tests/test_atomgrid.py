@@ -857,8 +857,6 @@ class TestAtomGrid:
         print(orders)
 
         radial = atgrid.convert_cartesian_to_spherical(atgrid.points, center=center[0])[:, 0]
-        print(radial)
-        print(np.mean(radial), np.std(radial), np.max(radial), np.min(radial))
         # Go through each (n, deg, m)
         for i, (n, deg, ord) in enumerate(orders):
             index = deg**2 + 2 * ord - 1 if ord > 0 else deg**2 - 2 * ord
@@ -868,6 +866,7 @@ class TestAtomGrid:
             print(orders)
             print(f"i_pure: {index}, i_pure_radial: {i}, n: {n}")
             print(desired[index], true[i])
+            print("")
             assert_allclose(desired[index], true[i])
 
     def test_radial_moments_of_gaussian_against_horton(self):
