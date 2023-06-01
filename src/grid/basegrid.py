@@ -307,7 +307,7 @@ class Grid:
                             np.std(solid_harm, axis=0),
                             np.mean(np.mean(solid_harm, axis=0)),
                             np.mean(np.std(solid_harm, axis=0)),
-                            np.max(np.mean(solid_harm, axis=0))
+                            np.max(np.mean(solid_harm, axis=0)),
                         )
                         print("Final Integral ", integral)
                     elif type_mom == "pure-radial":
