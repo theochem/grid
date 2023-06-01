@@ -567,7 +567,9 @@ class TestAtomGrid:
         oned = GaussLegendre(200)
         btf = BeckeRTransform(0.0001, 1.5)
         rad = btf.transform_1d_grid(oned)
-        atgrid = AtomGrid.from_pruned(rad, 1, sectors_r=[], sectors_degree=[10], use_spherical=False)
+        atgrid = AtomGrid.from_pruned(
+            rad, 1, sectors_r=[], sectors_degree=[10], use_spherical=False
+        )
         value_array = self.helper_func_gauss(atgrid.points)
         # random test points on gauss function
         size = 2000
