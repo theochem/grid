@@ -858,6 +858,7 @@ class TestAtomGrid:
 
         radial = atgrid.convert_cartesian_to_spherical(atgrid.points, center=center[0])[:, 0]
         from grid.utils import convert_cart_to_sph
+
         radial = convert_cart_to_sph(atgrid.points, center=center[0])[:, 0]
         # Go through each (n, deg, m)
         for i, (n, deg, ord) in enumerate(orders):
