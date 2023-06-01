@@ -489,19 +489,19 @@ def generate_real_spherical_harmonics(l_max: int, theta: np.ndarray, phi: np.nda
 
     # the coefficients of the forward recursions and initial factor of spherical harmonic.
     def a_k(deg, ord):
-        return (2.0 * (deg - 1.0) + 1) / (deg - 1.0 - ord + 1.0)
+        return (2.0 * (float(deg) - 1.0) + 1) / (float(deg) - 1.0 - float(ord) + 1.0)
 
     def b_k(deg, ord):
-        return (deg - 1.0 + ord) / (deg - ord)
+        return (float(deg) - 1.0 + float(ord)) / (float(deg) - float(ord))
 
     def fac_sph(deg, ord):
-        return np.sqrt((2.0 * deg + 1) / (4.0 * np.pi))  # Note (l-m)!/(l+m)! is moved
+        return np.sqrt((2.0 * float(deg) + 1) / (4.0 * np.pi))  # Note (l-m)!/(l+m)! is moved
 
     # Go through each degree and then order and fill out
     spherical_harm[0, :] = fac_sph(0.0, 0.0)  # Compute Y_0^0
     i_sph = 1  # Index to start of spherical_harm
-    for l_deg in np.arange(1, l_max + 1, dtype=float):
-        for m_ord in np.arange(0, l_deg + 1, dtype=float):
+    for l_deg in np.arange(1, l_max + 1, dtype=int):
+        for m_ord in np.arange(0, l_deg + 1, dtype=int):
             if l_deg == m_ord:
                 # Do diagonal spherical harmonic Y_l^m, when l=m.
                 # Diagonal recursion: P_m^m = sin(phi) * P_{m-1}^{m-1} * (2 (l - 1) + 1)
