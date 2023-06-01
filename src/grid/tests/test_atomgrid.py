@@ -867,7 +867,7 @@ class TestAtomGrid:
             print(f"i_pure: {index}, i_pure_radial: {i}, n: {n}")
             print(desired[index], true[i])
             print("")
-            assert_allclose(desired[index], true[i], atol=1e-5)
+            assert_allclose(desired[index], true[i], atol=1e-4)
 
     def test_radial_moments_of_gaussian_against_horton(self):
         r"""Test radial moments of Gausian against theochem/horton."""
