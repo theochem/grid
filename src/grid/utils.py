@@ -645,7 +645,7 @@ def solid_harmonics(l_max: int, sph_pts: np.ndarray):
     spherical_harm = generate_real_spherical_harmonics(l_max, theta, phi)
     degrees = np.array(
         sum([[float(l_deg)] * (2 * l_deg + 1) for l_deg in np.arange(l_max + 1, dtype=int)], []),
-        dtype=np.longdouble
+        dtype=np.longdouble,
     )
     return (
         spherical_harm * r ** degrees[:, None] * np.sqrt(4.0 * np.pi / (2 * degrees[:, None] + 1))
