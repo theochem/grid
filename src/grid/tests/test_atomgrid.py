@@ -27,6 +27,7 @@ from numpy.testing import (
     assert_almost_equal,
     assert_array_equal,
     assert_equal,
+    assert_raises,
 )
 from scipy.spatial.transform import Rotation as R
 
@@ -556,9 +557,9 @@ class TestAtomGrid:
         "centers",
         [
             np.array([[0.0, 0.0, 0.0]]),
-            np.array([[0.1, 0.0, 0.0]]),  # Off-centered from AtomGrid
-            np.array([[0.1, 1.1, 0.0]]),  # Off-centered from AtomGrid
-            np.array([[0.1, 0.0, -0.1]]),  # Off-centered from AtomGrid
+            np.array([[1e-2, 0.0, 0.0]]),  # Off-centered from AtomGrid
+            np.array([[1e-2, 1.1, 0.0]]),  # Off-centered from AtomGrid
+            np.array([[1e-2, 0.0, -1e-2]]),  # Off-centered from AtomGrid
         ],
     )
     def test_interpolation_of_gaussian(self, centers):
@@ -566,7 +567,7 @@ class TestAtomGrid:
         oned = GaussLegendre(200)
         btf = BeckeRTransform(0.0001, 1.5)
         rad = btf.transform_1d_grid(oned)
-        atgrid = AtomGrid.from_pruned(rad, 1, sectors_r=[], sectors_degree=[7], use_spherical=False)
+        atgrid = AtomGrid.from_pruned(rad, 1, sectors_r=[], sectors_degree=[10], use_spherical=False)
         value_array = self.helper_func_gauss(atgrid.points)
         # random test points on gauss function
         size = 2000
@@ -767,10 +768,10 @@ class TestAtomGrid:
         assert_allclose(true[3, 0], np.sqrt(np.pi) ** 3.0 * 0.15, atol=1e-3)
         assert_allclose(true[3, 1], np.sqrt(np.pi) ** 3.0 * (0.15 - 0.3), atol=1e-3)
 
-        with self.assertRaises(TypeError):
+        with assert_raises(TypeError):
             # orders should be integer
             atgrid.moments(np.array([1, 1]), centers, func_vals)
-        with self.assertRaises(ValueError):
+        with assert_raises(ValueError):
             multidim_f = np.array([func_vals, func_vals])
             atgrid.moments(1, centers, multidim_f)  # func_vals should be ndim = 1
             # centers should be ndim =2
@@ -852,7 +853,7 @@ class TestAtomGrid:
         true, orders = atgrid.moments(order, center, ident_func, "pure-radial", return_orders=True)
 
         ident_func = atgrid.convert_cartesian_to_spherical(atgrid.points, center=center[0])[:, 0]
-        # Go through each (n, _, m)
+        # Go through each (n, deg, m)
         for i, (n, deg, ord) in enumerate(orders):
             index = deg**2 + 2 * ord - 1 if ord > 0 else deg**2 - 2 * ord
             # Integrate Y_l^m r^l f(x) where f(x)=r^n
