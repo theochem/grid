@@ -480,7 +480,7 @@ def generate_real_spherical_harmonics(l_max: int, theta: np.ndarray, phi: np.nda
     numb_pts = len(theta)
     sin_phi = np.sin(phi)
     cos_phi = np.cos(phi)
-    spherical_harm = np.zeros(((l_max + 1) ** 2, numb_pts))
+    spherical_harm = np.zeros(((l_max + 1) ** 2, numb_pts), dtype=np.longdouble)
 
     # Forward recursion requires P_{l-1}^m, P_{l-2}^m, these are the two columns, respectively
     # the rows are the order m which ranges from 0 to l_max and p_leg[:l, :] gets updated every l
@@ -498,10 +498,10 @@ def generate_real_spherical_harmonics(l_max: int, theta: np.ndarray, phi: np.nda
         return np.sqrt((2.0 * deg + 1) / (4.0 * np.pi))  # Note (l-m)!/(l+m)! is moved
 
     # Go through each degree and then order and fill out
-    spherical_harm[0, :] = fac_sph(0, 0)  # Compute Y_0^0
+    spherical_harm[0, :] = fac_sph(0.0, 0.0)  # Compute Y_0^0
     i_sph = 1  # Index to start of spherical_harm
-    for l_deg in range(1, l_max + 1):
-        for m_ord in range(0, l_deg + 1):
+    for l_deg in np.arange(1, l_max + 1, dtype=float):
+        for m_ord in np.arange(0, l_deg + 1, dtype=float):
             if l_deg == m_ord:
                 # Do diagonal spherical harmonic Y_l^m, when l=m.
                 # Diagonal recursion: P_m^m = sin(phi) * P_{m-1}^{m-1} * (2 (l - 1) + 1)
