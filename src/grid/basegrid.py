@@ -279,6 +279,9 @@ class Grid:
                     # the solid harmonics for all
                     sph_pts = convert_cart_to_sph(centered_pts)
                     solid_harm = solid_harmonics(orders[-1], sph_pts)
+                    print("Solid harmonics ")
+                    print(solid_harm)
+                    print(solid_harm.shape)
 
                     if type_mom == "pure":
                         # Take the integral |r - R_c|^l S_l^m(theta, phi) f(r, theta, phi) weights
