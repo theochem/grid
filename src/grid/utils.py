@@ -478,8 +478,8 @@ def generate_real_spherical_harmonics(l_max: int, theta: np.ndarray, phi: np.nda
 
     """
     numb_pts = len(theta)
-    sin_phi = np.sin(phi)
-    cos_phi = np.cos(phi)
+    sin_phi = np.sin(phi, dtype=np.longdouble)
+    cos_phi = np.cos(phi, dtype=np.longdouble)
     spherical_harm = np.zeros(((l_max + 1) ** 2, numb_pts), dtype=np.longdouble)
 
     # Forward recursion requires P_{l-1}^m, P_{l-2}^m, these are the two columns, respectively
@@ -509,7 +509,7 @@ def generate_real_spherical_harmonics(l_max: int, theta: np.ndarray, phi: np.nda
             else:
                 # Do forward recursion here and fill out Y_l^m and Y_l^{-m}
                 # Compute b_k P_{l-2}^m,  since m < l, then m < l - 2
-                second_fac = b_k(l_deg, m_ord) * p_leg[m_ord, 1] if m_ord <= l_deg - 2 else 0
+                second_fac = b_k(l_deg, m_ord) * p_leg[m_ord, 1] if m_ord <= l_deg - 2 else 0.0
                 # Update/re-define P_{l-2}^m to be equal to P_{l-1}^m
                 p_leg[m_ord, 1, :] = p_leg[m_ord, 0]
                 # Then update P_{l-1}^m := P_l^m := a_k cos(\phi) P_{l-1}^m - b_k P_{l, -2}^m
