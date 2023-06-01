@@ -10,7 +10,7 @@ on:
 
 jobs:
   tests:
-    name: "Python ${{ matrix.py }}"
+    name: "Python ${{ matrix.py }} on OS ${{ matrix.os }}"
     runs-on: ${{ matrix.os }}
 
     strategy:
