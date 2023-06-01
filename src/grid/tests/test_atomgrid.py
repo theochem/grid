@@ -564,10 +564,10 @@ class TestAtomGrid:
     )
     def test_interpolation_of_gaussian(self, centers):
         """Test cubicspline interpolation values on a Gaussian."""
-        oned = GaussLegendre(200)
+        oned = GaussLegendre(250)
         btf = BeckeRTransform(0.0001, 1.5)
         rad = btf.transform_1d_grid(oned)
-        atgrid = AtomGrid.from_pruned(rad, 1, sectors_r=[], sectors_degree=[10], use_spherical=False)
+        atgrid = AtomGrid.from_pruned(rad, 1, sectors_r=[], sectors_degree=[25], use_spherical=False)
         value_array = self.helper_func_gauss(atgrid.points)
         # random test points on gauss function
         size = 2000
@@ -851,13 +851,18 @@ class TestAtomGrid:
         order = 3
         ident_func = np.ones(atgrid.points.shape[0])
         true, orders = atgrid.moments(order, center, ident_func, "pure-radial", return_orders=True)
+        print("Orders for pure-radial")
+        print(orders)
 
-        ident_func = atgrid.convert_cartesian_to_spherical(atgrid.points, center=center[0])[:, 0]
+        radial = atgrid.convert_cartesian_to_spherical(atgrid.points, center=center[0])[:, 0]
         # Go through each (n, deg, m)
         for i, (n, deg, ord) in enumerate(orders):
             index = deg**2 + 2 * ord - 1 if ord > 0 else deg**2 - 2 * ord
             # Integrate Y_l^m r^l f(x) where f(x)=r^n
-            desired = atgrid.moments(deg, center, ident_func**n, "pure")
+            desired, orders = atgrid.moments(deg, center, radial**n, "pure", return_orders=True)
+            print("Pure Orders")
+            print(orders)
+            print("Index, i, n", index, i, n)
             assert_allclose(desired[index], true[i])
 
     def test_radial_moments_of_gaussian_against_horton(self):
