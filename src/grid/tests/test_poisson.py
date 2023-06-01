@@ -145,11 +145,7 @@ def test_interpolation_of_laplacian_of_exponential():
         spherical_pts = atgrid.convert_cartesian_to_spherical(grid)
         spherical_pts[:, 0][spherical_pts[:, 0] < 1e-6] = 1e-6
         # Laplacian of exponential is e^-x (x - 2) / x
-        desired = (
-            np.exp(-spherical_pts[:, 0])
-            * (spherical_pts[:, 0] - 2.0)
-            / spherical_pts[:, 0]
-        )
+        desired = np.exp(-spherical_pts[:, 0]) * (spherical_pts[:, 0] - 2.0) / spherical_pts[:, 0]
         assert_allclose(actual, desired, atol=1e-4, rtol=1e-6)
 
 
@@ -164,9 +160,7 @@ def test_interpolation_of_laplacian_with_unit_charge_distribution():
 
     laplace = interpolate_laplacian(atgrid, poisson_solution_to_charge_distribution(atgrid.points))
     true = laplace(atgrid.points)
-    assert_allclose(
-        -4.0 * np.pi * charge_distribution(atgrid.points), true, atol=1e-4, rtol=1e-7
-    )
+    assert_allclose(-4.0 * np.pi * charge_distribution(atgrid.points), true, atol=1e-4, rtol=1e-7)
 
 
 @pytest.mark.parametrize(
@@ -177,30 +171,24 @@ def test_interpolation_of_laplacian_with_unit_charge_distribution():
             Trapezoidal(250),
             BeckeRTransform(0.0, 1.5, trim_inf=True),
             1e6,
-            np.array([[0.0, 0.0, 0.0]])
+            np.array([[0.0, 0.0, 0.0]]),
         ],
         # Don't include the origin, instead minimum is at 1e-6
         [
             Trapezoidal(250),
             BeckeRTransform(1e-6, 1.5, trim_inf=True),
             1e6,
-            np.array([[0.0, 0.0, 0.0]])
+            np.array([[0.0, 0.0, 0.0]]),
         ],
         # Try out the Identity Transformation.
-        [
-            GaussLaguerre(100),
-            IdentityRTransform(),
-            None,
-            np.array([[0.0, 0.0, 0.0]])
-        ],
+        [GaussLaguerre(100), IdentityRTransform(), None, np.array([[0.0, 0.0, 0.0]])],
         # Multi-center example
         [
             GaussLegendre(100),
             BeckeRTransform(1e-5, R=1.5),
             10.0,
-            np.array([[0.0, 0.0, 0.0],
-                      [10.0, 0.0, 0.0]])
-        ]
+            np.array([[0.0, 0.0, 0.0], [10.0, 0.0, 0.0]]),
+        ],
     ],
 )
 def test_poisson_bvp_on_unit_charge_distribution(oned, tf, remove_large_pts, centers):
@@ -217,10 +205,7 @@ def test_poisson_bvp_on_unit_charge_distribution(oned, tf, remove_large_pts, cen
     else:
         becke = BeckeWeights(order=3)
         molgrids = MolGrid(
-            atnums=np.array([1] * len(centers)),
-            atgrids=atgrids,
-            aim_weights=becke,
-            store=True
+            atnums=np.array([1] * len(centers)), atgrids=atgrids, aim_weights=becke, store=True
         )
 
     potential = solve_poisson_bvp(
@@ -228,7 +213,7 @@ def test_poisson_bvp_on_unit_charge_distribution(oned, tf, remove_large_pts, cen
         charge_distribution(molgrids.points, centers=centers),
         InverseRTransform(tf),
         remove_large_pts=remove_large_pts,
-        include_origin=True
+        include_origin=True,
     )
     actual = potential(molgrids.points)
     desired = poisson_solution_to_charge_distribution(molgrids.points, centers=centers)
@@ -263,15 +248,16 @@ def test_poisson_bvp_gives_the_correct_laplacian(func, centers):
         molgrids = atgrids[0]
     else:
         becke = BeckeWeights(order=3)
-        molgrids = MolGrid(atnums=[1] * len(centers), atgrids=atgrids, aim_weights=becke,
-                           store=True)
+        molgrids = MolGrid(
+            atnums=[1] * len(centers), atgrids=atgrids, aim_weights=becke, store=True
+        )
 
     potential = solve_poisson_bvp(
         molgrids,
         func(molgrids.points, centers),
         InverseRTransform(btf),
         include_origin=True,
-        remove_large_pts=10.0
+        remove_large_pts=10.0,
     )
 
     # Get Laplacian of the potential
@@ -318,10 +304,7 @@ def test_poisson_ivp_gives_the_correct_laplacian(func, centers):
     else:
         becke = BeckeWeights(order=3)
         molgrids = MolGrid(
-            atnums=[1] * len(centers),
-            atgrids=atgrids,
-            aim_weights=becke,
-            store=True
+            atnums=[1] * len(centers), atgrids=atgrids, aim_weights=becke, store=True
         )
 
     potential = solve_poisson_ivp(
@@ -339,7 +322,7 @@ def test_poisson_ivp_gives_the_correct_laplacian(func, centers):
 
     # Check it is the same as func on atomic grid points.
     np.set_printoptions(threshold=np.inf)
-    np.abs(desired +func(molgrids.points) * 4.0 * np.pi)
+    np.abs(desired + func(molgrids.points) * 4.0 * np.pi)
     # TODO: Improve accuracy from one decimal place
     assert_allclose(desired, -func(molgrids.points) * 4.0 * np.pi, atol=1e-1)
 
@@ -379,10 +362,7 @@ def test_poisson_ivp_on_unit_charge_distribution(centers):
     else:
         becke = BeckeWeights(order=3)
         molgrids = MolGrid(
-            atnums=np.array([1] * ncenters),
-            atgrids=atgrids,
-            aim_weights=becke,
-            store=True
+            atnums=np.array([1] * ncenters), atgrids=atgrids, aim_weights=becke, store=True
         )
     potential = solve_poisson_ivp(
         molgrids,

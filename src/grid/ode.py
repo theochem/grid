@@ -102,9 +102,7 @@ def solve_ode_ivp(
         )
 
     if transform is not None and order > 3:
-        raise NotImplementedError(
-            "Only support 3rd order ODE or less when using `transform`."
-        )
+        raise NotImplementedError("Only support 3rd order ODE or less when using `transform`.")
 
     def func(x, y):
         # x has shape (1,) and y has shape (K+1,1), output has shape (K+1,1)
@@ -112,9 +110,7 @@ def solve_ode_ivp(
         if transform:
             # Transform the points back to the original domain.
             orig_dom = transform.inverse(x)
-            dy_dx = _transform_and_rearrange_to_explicit_ode(
-                orig_dom, y, coeffs, transform, fx
-            )
+            dy_dx = _transform_and_rearrange_to_explicit_ode(orig_dom, y, coeffs, transform, fx)
         else:
             coeffs_mt = _evaluate_coeffs_on_points(x, coeffs)
             dy_dx = _rearrange_to_explicit_ode(y, coeffs_mt, fx(x))
@@ -165,9 +161,7 @@ def solve_ode_ivp(
     if transform is not None:
         # Transform the function so that it's input is the original variable and
         #   derivative is with respect to the original variable as well.
-        return _transform_solution_to_original_domain(
-            res, transform, no_derivatives, order
-        )
+        return _transform_solution_to_original_domain(res, transform, no_derivatives, order)
 
     return res.sol
 
@@ -235,9 +229,7 @@ def solve_ode_bvp(
             f"Expect: {order}, got: {len(bd_cond)}."
         )
     if transform is not None and order > 3:
-        raise NotImplementedError(
-            "Only support 3rd order ODE or less when using `transform`."
-        )
+        raise NotImplementedError("Only support 3rd order ODE or less when using `transform`.")
 
     # define first order ODE for solver, needs to be in explicit form for scipy solver.
     def func(x, y):
@@ -245,9 +237,7 @@ def solve_ode_bvp(
         if transform:
             # Transform the points back to the original domain.
             orig_dom = transform.inverse(x)
-            dy_dx = _transform_and_rearrange_to_explicit_ode(
-                orig_dom, y, coeffs, transform, fx
-            )
+            dy_dx = _transform_and_rearrange_to_explicit_ode(orig_dom, y, coeffs, transform, fx)
         else:
             coeffs_mt = _evaluate_coeffs_on_points(x, coeffs)
             dy_dx = _rearrange_to_explicit_ode(y, coeffs_mt, fx(x))
@@ -272,9 +262,7 @@ def solve_ode_bvp(
     # Solve the ODE
     if transform:
         pts_tf = transform.transform(x)
-        res = solve_bvp(
-            func, bc, pts_tf, y=initial_guess_y, tol=tol, max_nodes=max_nodes
-        )
+        res = solve_bvp(func, bc, pts_tf, y=initial_guess_y, tol=tol, max_nodes=max_nodes)
     else:
         res = solve_bvp(func, bc, x, y=initial_guess_y, tol=tol, max_nodes=max_nodes)
 
@@ -285,15 +273,14 @@ def solve_ode_bvp(
     if transform is not None:
         # Transform the function so that it's input is the original variable and
         #   derivative is with respect to the original variable as well.
-        return _transform_solution_to_original_domain(
-            res, transform, no_derivatives, order
-        )
+        return _transform_solution_to_original_domain(res, transform, no_derivatives, order)
 
     return res.sol
 
 
 def _transform_solution_to_original_domain(result, tf, no_derivs, order):
     r"""Transform interpolate solution to the original domains and its derivatives."""
+
     # Note this is it's own function becuase it is used twice for solve_ode_ivp and bv.
     def interpolate_wrt_original_var(pt):
         transf_pts = tf.transform(pt)
@@ -382,9 +369,7 @@ def _transform_ode_from_derivs(
                 # Go through the sum to calculate Bell's polynomial
                 for k in range(j, total):
                     all_derivs_at_pt = derivs[:, i_pt]
-                    coeff_b[j, i_pt] += (
-                        float(bell(k, j, all_derivs_at_pt)) * coeff_a_mtr[k, i_pt]
-                    )
+                    coeff_b[j, i_pt] += float(bell(k, j, all_derivs_at_pt)) * coeff_a_mtr[k, i_pt]
     return coeff_b
 
 
@@ -546,9 +531,7 @@ def _evaluate_coeffs_on_points(x: np.ndarray, coeff: Union[list, np.ndarray]):
         elif callable(val):
             coeff_mtr[i] += val(x)
         else:
-            raise TypeError(
-                f"Coefficient value {type(val)} is either a number or a function."
-            )
+            raise TypeError(f"Coefficient value {type(val)} is either a number or a function.")
     return coeff_mtr
 
 
@@ -588,7 +571,7 @@ def _rearrange_to_explicit_ode(y: np.ndarray, coeff_b: np.ndarray, fx: np.ndarra
         warnings.warn(
             "The coefficient of the leading Kth term is zero at some point."
             "It is recommended to split into intervals and solve separately.",
-            stacklevel=2
+            stacklevel=2,
         )
 
     result = fx

@@ -55,9 +55,7 @@ def test_tutorial_periodic_repetition(delta_p, delta_c):
     # is raised. To fix this issue, any may simply add the ``wrap=True``
     # argument to the constructor. (This modifies the grid points.)
     with pytest.warns(PeriodicGridWarning):
-        grid = PeriodicGrid(
-            np.linspace(-1, 1, 21) + delta_p, np.full(21, 0.1), np.array([a])
-        )
+        grid = PeriodicGrid(np.linspace(-1, 1, 21) + delta_p, np.full(21, 0.1), np.array([a]))
     # The local grid is wider than one primitive cell, such that there will be
     # more points in the local grid than in the periodic grid. The test is repeated
     # with two displacements of the center by an integer multiple of the
@@ -288,9 +286,7 @@ class PeriodicGridTester:
         """Initialize an unwrapped and a wrapped version of the grid."""
         self.define_reference_data()
         with pytest.warns(None if self._ref_realvecs is None else PeriodicGridWarning):
-            self.grid = PeriodicGrid(
-                self._ref_points, self._ref_weights, self._ref_realvecs
-            )
+            self.grid = PeriodicGrid(self._ref_points, self._ref_weights, self._ref_realvecs)
         with pytest.warns(None) as record:
             self.wrapped_grid = PeriodicGrid(
                 self._ref_points, self._ref_weights, self._ref_realvecs, True
@@ -416,9 +412,7 @@ class PeriodicGridTester:
             assert localgrid.points.ndim == self.grid.points.ndim
             assert localgrid.weights.ndim == self.grid.weights.ndim
             if self._ref_points.ndim == 2:
-                assert (
-                    np.linalg.norm(localgrid.points - center, axis=1) <= radius
-                ).all()
+                assert (np.linalg.norm(localgrid.points - center, axis=1) <= radius).all()
             else:
                 assert (abs(localgrid.points - center) <= radius).all()
 
@@ -461,9 +455,7 @@ class PeriodicGridTester:
             assert localgrid.points.ndim == self.grid.points.ndim
             assert localgrid.weights.ndim == self.grid.weights.ndim
             if self._ref_points.ndim == 2:
-                assert (
-                    np.linalg.norm(localgrid.points - center, axis=1) <= radius
-                ).all()
+                assert (np.linalg.norm(localgrid.points - center, axis=1) <= radius).all()
             else:
                 assert (abs(localgrid.points - center) <= radius).all()
 
@@ -599,9 +591,7 @@ class TestPeriodicGrid3D2CV(PeriodicGridTester):
         self._ref_recivecs = np.linalg.pinv(self._ref_realvecs).T
         self._ref_spacings = 1 / np.sqrt((self._ref_recivecs**2).sum(axis=1))
         frac_edges = np.dot(self._ref_points[[0, -1]], self._ref_recivecs.T)
-        self._ref_frac_intvls = np.array(
-            [frac_edges.min(axis=0), frac_edges.max(axis=0)]
-        ).T
+        self._ref_frac_intvls = np.array([frac_edges.min(axis=0), frac_edges.max(axis=0)]).T
 
     def test_init_grid(self):
         """Test the __init__ method."""

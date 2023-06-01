@@ -119,9 +119,7 @@ class SqTF(BaseTransform):
         [SqTF(1, 4), fx_complicated_example2, [1, -1, 1]],
     ],
 )
-def test_transform_and_rearrange_to_explicit_ode_with_simple_boundary(
-    transform, fx, coeffs
-):
+def test_transform_and_rearrange_to_explicit_ode_with_simple_boundary(transform, fx, coeffs):
     r"""Test transforming second-order ode with simple boundary conditions."""
     x = np.arange(0.1, 0.99, 0.01)
     transform_pts = transform.transform(x)
@@ -135,9 +133,7 @@ def test_transform_and_rearrange_to_explicit_ode_with_simple_boundary(
         # Transform back to original domain x
         original = transform.inverse(r)
         # Apply the ode transfomration
-        dy_dx = _transform_and_rearrange_to_explicit_ode(
-            original, y, coeffs, transform, fx
-        )
+        dy_dx = _transform_and_rearrange_to_explicit_ode(original, y, coeffs, transform, fx)
         return np.vstack((*y[1:], dy_dx))
 
     init_guess = np.zeros((2, x.size))
@@ -557,8 +553,10 @@ def test_rearange_ode_coeff():
 def test_first_and_second_derivative_transformation_with_Becke_transform():
     r"""Test derivative transformation of cubic function with Becke transform."""
     transform = BeckeRTransform(0.0, 5.0)
+
     def func(x):
-        return x ** 3.0
+        return x**3.0
+
     origin_domain = np.arange(0.0, 10, 0.1)  # r \in [0, \infty)
     new_domain = transform.inverse(origin_domain)  # x \in [-1, 1]
 
@@ -567,15 +565,17 @@ def test_first_and_second_derivative_transformation_with_Becke_transform():
 
     # derivative g(r) := r^3 wrt to r in [0, \infty)
     def deriv_func_old(x):
-        return 3.0 * x ** 2.0
+        return 3.0 * x**2.0
+
     def sec_deriv_func_old(x):
         return 6.0 * x
 
     # derivative g(r(x)) wrt to x in [-1, 1]
     def desired_deriv_new(x):
-        return 6 * 5.0 ** 3.0 * (1 + x) ** 2.0 / (1 - x) ** 4.0
+        return 6 * 5.0**3.0 * (1 + x) ** 2.0 / (1 - x) ** 4.0
+
     def desired_sec_deriv_new(x):
-        return -12 * 5.0 ** 3.0 * (1 + x) * (x + 3) / (x - 1.0) ** 5.0
+        return -12 * 5.0**3.0 * (1 + x) * (x + 3) / (x - 1.0) ** 5.0
 
     # Go through each pt, calculate the jacobian, calculate the derivative g(r(x)) and compare
     for i, pt_x in enumerate(new_domain):
@@ -587,6 +587,4 @@ def test_first_and_second_derivative_transformation_with_Becke_transform():
         jacobian = _derivative_transformation_matrix(deriv_tranfs, pt_x, 2)
         actual_deriv_new = jacobian.dot(actual_deriv_origin)
 
-        assert_allclose(
-            actual_deriv_new, [desired_deriv_new(pt_x), desired_sec_deriv_new(pt_x)]
-        )
+        assert_allclose(actual_deriv_new, [desired_deriv_new(pt_x), desired_sec_deriv_new(pt_x)])

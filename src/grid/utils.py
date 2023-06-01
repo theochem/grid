@@ -490,8 +490,10 @@ def generate_real_spherical_harmonics(l_max: int, theta: np.ndarray, phi: np.nda
     # the coefficients of the forward recursions and initial factor of spherical harmonic.
     def a_k(deg, ord):
         return (2.0 * (deg - 1.0) + 1) / (deg - 1.0 - ord + 1.0)
+
     def b_k(deg, ord):
         return (deg - 1.0 + ord) / (deg - ord)
+
     def fac_sph(deg, ord):
         return np.sqrt((2.0 * deg + 1) / (4.0 * np.pi))  # Note (l-m)!/(l+m)! is moved
 
@@ -591,6 +593,7 @@ def generate_derivative_real_spherical_harmonics(l_max: int, theta: np.ndarray, 
             # index_m maps m to index where (l, m)  is located in `sph_harm_degree`.
             def index_m(m):
                 return 2 * m - 1 if m > 0 else int(2 * np.fabs(m))
+
             output[0, i_output, :] = -m * sph_harm_degree[index_m(-m), :]
 
             # Take derivative wrt to phi:

@@ -346,9 +346,7 @@ class TestOneDGrid(TestCase):
                 else:
                     b = 2
 
-                weights[i] = weights[i] - b * np.cos(2 * (j + 1) * theta[i]) / (
-                    4 * j * (j + 2) + 3
-                )
+                weights[i] = weights[i] - b * np.cos(2 * (j + 1) * theta[i]) / (4 * j * (j + 2) + 3)
 
         for i in range(1, 9):
             weights[i] = 2 * weights[i] / 9

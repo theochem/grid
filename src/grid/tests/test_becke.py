@@ -79,14 +79,10 @@ class TestBecke(TestCase):
         weights = becke.generate_weights(centers, centers, nums, pt_ind=[0, 1, 2, 3])
         assert_allclose(weights, [1, 1, 1])
 
-        weights = becke.generate_weights(
-            centers, centers, nums, select=[0, 1], pt_ind=[0, 1, 3]
-        )
+        weights = becke.generate_weights(centers, centers, nums, select=[0, 1], pt_ind=[0, 1, 3])
         assert_allclose(weights, [1, 1, 0])
 
-        weights = becke.generate_weights(
-            centers, centers, nums, select=[2, 0], pt_ind=[0, 2, 3]
-        )
+        weights = becke.generate_weights(centers, centers, nums, select=[2, 0], pt_ind=[0, 2, 3])
         assert_allclose(weights, [0, 0, 0])
 
     def test_becke_compute_atom_weight(self):
@@ -161,9 +157,7 @@ class TestBecke(TestCase):
         with self.assertRaises(ValueError):
             becke.generate_weights(points, centers, nums, select=[], pt_ind=[])
         with self.assertRaises(ValueError):
-            becke.generate_weights(
-                points, centers, nums, select=[0, 1], pt_ind=[0, 10, 50, 99]
-            )
+            becke.generate_weights(points, centers, nums, select=[0, 1], pt_ind=[0, 10, 50, 99])
         with self.assertRaises(ValueError):
             becke.compute_weights(points, centers, nums, select=[])
         with self.assertRaises(ValueError):
@@ -173,9 +167,7 @@ class TestBecke(TestCase):
         with self.assertRaises(ValueError):
             becke.compute_weights(points, centers, nums, select=[], pt_ind=[])
         with self.assertRaises(ValueError):
-            becke.compute_weights(
-                points, centers, nums, select=[0, 1], pt_ind=[0, 10, 50, 99]
-            )
+            becke.compute_weights(points, centers, nums, select=[0, 1], pt_ind=[0, 10, 50, 99])
         # error of order
         with self.assertRaises(ValueError):
             BeckeWeights({1: 0.5, 2: 0.8}, order=3.0)

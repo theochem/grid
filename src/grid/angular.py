@@ -377,8 +377,7 @@ class AngularGrid(Grid):
         """
         if not isinstance(use_spherical, bool):
             raise TypeError(
-                f"use_spherical {use_spherical, type(use_spherical)} should be of type "
-                f"boolean."
+                f"use_spherical {use_spherical, type(use_spherical)} should be of type " f"boolean."
             )
         # construct grid from pts and wts given directly
         if points is not None and weights is not None:
@@ -388,7 +387,7 @@ class AngularGrid(Grid):
                     "degree or size are not used for generating grids "
                     "because points and weights are provided",
                     RuntimeWarning,
-                    stacklevel=2
+                    stacklevel=2,
                 )
         else:
             # map degree and size to the supported (i.e., pre-computed) degree and size
@@ -398,9 +397,7 @@ class AngularGrid(Grid):
             # load pre-computed angular points & weights and make angular grid
             cache_dict = SPHERICAL_CACHE if use_spherical else LEBEDEV_CACHE
             if degree not in cache_dict:
-                points, weights = self._load_precomputed_angular_grid(
-                    degree, size, use_spherical
-                )
+                points, weights = self._load_precomputed_angular_grid(degree, size, use_spherical)
                 if cache:
                     cache_dict[degree] = points, weights
             else:
@@ -412,8 +409,7 @@ class AngularGrid(Grid):
             # Lebedev degrees 13, 25, 27 have negative weights. Symmetric spherical t-design
             # have positive weights.
             warnings.warn(
-                "Lebedev weights are negative which can introduce round-off errors.",
-                stacklevel=2
+                "Lebedev weights are negative which can introduce round-off errors.", stacklevel=2
             )
 
         self._use_spherical = use_spherical
@@ -429,9 +425,7 @@ class AngularGrid(Grid):
         return self._use_spherical
 
     @staticmethod
-    def convert_angular_sizes_to_degrees(
-        sizes: np.ndarray, use_spherical: bool = False
-    ):
+    def convert_angular_sizes_to_degrees(sizes: np.ndarray, use_spherical: bool = False):
         """
         Convert given Lebedev/Spherical design grid sizes to degrees.
 
@@ -462,9 +456,7 @@ class AngularGrid(Grid):
         return degrees
 
     @staticmethod
-    def _get_size_and_degree(
-        *, degree: int = None, size: int = None, use_spherical: bool = False
-    ):
+    def _get_size_and_degree(*, degree: int = None, size: int = None, use_spherical: bool = False):
         """
         Map the given degree and/or size to the degree and size of a supported angular grid.
 
@@ -501,7 +493,7 @@ class AngularGrid(Grid):
             warnings.warn(
                 "Both degree and size arguments are given, so only degree is used!",
                 RuntimeWarning,
-                stacklevel=2
+                stacklevel=2,
             )
         if degree is not None:
             ang_degs = list(degrees.keys())
@@ -511,9 +503,7 @@ class AngularGrid(Grid):
                     f"Argument degree should be a positive integer <= {max_degree}, got {degree}"
                 )
             # match the given degree to the existing angular degree or the next largest degree
-            degree = (
-                degree if degree in degrees else ang_degs[bisect_left(ang_degs, degree)]
-            )
+            degree = degree if degree in degrees else ang_degs[bisect_left(ang_degs, degree)]
             return degree, degrees[degree]
         elif size:
             ang_npts = list(npoints.keys())
@@ -559,19 +549,13 @@ class AngularGrid(Grid):
         degrees = SPHERICAL_DEGREES if use_spherical else LEBEDEV_DEGREES
         npoints = SPHERICAL_NPOINTS if use_spherical else LEBEDEV_NPOINTS
         type = "spherical" if use_spherical else "lebedev"
-        file_path = (
-            "grid.data.spherical_design" if use_spherical else "grid.data.lebedev"
-        )
+        file_path = "grid.data.spherical_design" if use_spherical else "grid.data.lebedev"
 
         # check given degree & size
         if degree not in degrees:
-            raise ValueError(
-                f"Given degree={degree} is not supported, choose from {degrees}"
-            )
+            raise ValueError(f"Given degree={degree} is not supported, choose from {degrees}")
         if size not in npoints:
-            raise ValueError(
-                f"Given size={size} is not supported, choose from {npoints}"
-            )
+            raise ValueError(f"Given size={size} is not supported, choose from {npoints}")
         # load npz file corresponding to the given degree & size
         filename = f"{type}_{degree}_{size}.npz"
         with path(file_path, filename) as npz_file:
