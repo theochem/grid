@@ -305,6 +305,38 @@ If <span class="math notranslate nohighlight">\(\phi\)</span> is zero, then the 
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="grid.utils.dipole_moment_of_molecule">
+<span class="sig-name descname"><span class="pre">dipole_moment_of_molecule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">charges</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.utils.dipole_moment_of_molecule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the dipole of a molecule.</p>
+<p>This is defined as the observable form a wavefunction <span class="math notranslate nohighlight">\(\Psi\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\vec{\mu} = \int \Psi \hat{\mu} \Psi \vec{r}\]</div>
+<p>which results in</p>
+<div class="math notranslate nohighlight">
+\[\vec{\mu} = \sum_{i=1}^{N_{atoms}} Z_i (\vec{R_i} - \vec{R_c}) -
+\int ((\vec{r} - \vec{R_c})) \rho(\vec{r}) dr,\]</div>
+<p>where <span class="math notranslate nohighlight">\(N_{atoms}\)</span> is the number of atoms, <span class="math notranslate nohighlight">\(Z_i\)</span> is the atomic charge of the
+ith atom, <span class="math notranslate nohighlight">\(\vec{R_i}\)</span> is the ith coordinate of the atom, <span class="math notranslate nohighlight">\(\vec{R_c}\)</span> is the
+center of the molecule and <span class="math notranslate nohighlight">\(\rho\)</span> is the electron density of the molecule.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>grid</strong> (<a class="reference internal" href="grid.basegrid.html#grid.basegrid.Grid" title="grid.basegrid.Grid"><em>Grid</em></a>) – The grid used to perform the integration.</p></li>
+<li><p><strong>density</strong> (<em>ndarray</em>) – The electron density evaluated on points on <cite>grid</cite> object.</p></li>
+<li><p><strong>coords</strong> (<em>ndarray</em><em>[</em><em>M</em><em>, </em><em>3</em><em>]</em>) – The coordinates of the atoms.</p></li>
+<li><p><strong>charges</strong> (<em>ndarray</em><em>[</em><em>M</em><em>]</em>) – The atomic charge of each atom.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns array of size three corresponding to the dipole moment of a molecule.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="grid.utils.generate_derivative_real_spherical_harmonics">
 <span class="sig-name descname"><span class="pre">generate_derivative_real_spherical_harmonics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.utils.generate_derivative_real_spherical_harmonics" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate derivatives of real spherical harmonics.</p>
