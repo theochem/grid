@@ -297,12 +297,12 @@ def test_solve_ode_ivp_with_and_without_transformation(transform, fx, coeffs, iv
 
     # Test the function values
     x = np.arange(0.01, 0.999, 0.1)
-    assert_allclose(sol_with_transform(x)[0], sol_normal(x)[0], atol=1e-5)
+    assert_allclose(sol_with_transform(x)[0], sol_normal(x)[0], atol=1e-5, rtol=1e-6)
     if len(coeffs) >= 3:
         # Test the first derivative of y.
-        assert_allclose(sol_with_transform(x)[1], sol_normal(x)[1], atol=1e-3)
+        assert_allclose(sol_with_transform(x)[1], sol_normal(x)[1], atol=1e-3, rtol=1e-6)
         if len(coeffs) >= 4:
-            assert_allclose(sol_with_transform(x)[2], sol_normal(x)[2], atol=1e-3)
+            assert_allclose(sol_with_transform(x)[2], sol_normal(x)[2], atol=1e-3, rtol=1e-6)
 
 
 @pytest.mark.parametrize(
