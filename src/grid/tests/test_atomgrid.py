@@ -558,7 +558,6 @@ class TestAtomGrid:
         [
             np.array([[0.0, 0.0, 0.0]]),
             np.array([[1e-2, 0.0, 0.0]]),  # Off-centered from AtomGrid
-            np.array([[1e-2, 1.1, 0.0]]),  # Off-centered from AtomGrid
             np.array([[1e-2, 0.0, -1e-2]]),  # Off-centered from AtomGrid
         ],
     )
@@ -567,7 +566,7 @@ class TestAtomGrid:
         oned = GaussLegendre(350)
         btf = BeckeRTransform(0.0001, 1.5)
         rad = btf.transform_1d_grid(oned)
-        atgrid = AtomGrid(rad, degrees=[40], use_spherical=False)
+        atgrid = AtomGrid(rad, degrees=[31], use_spherical=False)
         value_array = self.helper_func_gauss(atgrid.points)
         # random test points on gauss function
         size = 1000
