@@ -2,7 +2,7 @@
 One-Dimensional Grids
 ======================
 
-There are various choices of one dimensional grid for integrating functions over some finite or infinite
+There are various choices of one dimensional grids for integrating functions over some finite or infinite
 intervals.
 
 .. csv-table:: One-Dimensional Quadrature Grids With Explicit Solutions
@@ -27,6 +27,3 @@ The Trefethen polynomial transformation of various grids on :math:`[-1, 1]` is a
 - :func:`Trefethen Strip (Clenshaw-Curtis)<grid.onedgrid.TrefethenStripCC>`,
 - :func:`Trefethen Strip (Gauss-Chebyshev)<grid.onedgrid.TrefethenStripGC2>`,
 - :func:`Trefethen Strip (General)<grid.onedgrid.TrefethenStripGeneral>`.
-
-
-

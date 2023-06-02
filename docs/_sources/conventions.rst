@@ -36,7 +36,7 @@ Grid offers a :class:`utility<grid.utils.convert_cart_to_sph>` function to conve
     spher_pts = convert_cart_to_sph(cart_pts, center=np.array([1.0, 1.0, 1.0]))
 
 
-The :class:`atomic grid<grid.atomgrid.AtomGrid>` class can also be used to convert it's points to spherical coordinates
+The :class:`atomic grid<grid.atomgrid.AtomGrid>` class can also be used to convert its points to spherical coordinates
 
 .. code-block::
     python
@@ -49,8 +49,8 @@ The :class:`atomic grid<grid.atomgrid.AtomGrid>` class can also be used to conve
     # Convert atomic grid points centered at the nucleus to spherical coordinates
     spher_pts = atom_grid.convert_cartesian_to_spherical()
 
-With the convention that when :math:`r=0`, then the points :math:`(0, \theta_j, \phi_j)` in that shell arises
-from a angular grid :math:`(\theta_j, \phi_j)` with some degree.
+With the convention that when :math:`r=0`, then the angles within :math:`\{(0, \theta_j, \phi_j)\}` in that shell is
+obtained from a angular grid :math:`\{(\theta_j, \phi_j)\}` with some degree.
 
 Spherical Harmonics
 ===================
@@ -65,7 +65,7 @@ The real spherical harmonics are defined using complex spherical harmonics:
     \end{cases},
 
 where the degree :math:`l \in \mathbb{N}`, order :math:`m \in \{-l, \cdots, l \}` and
-:math:`Y^m_l` is the complex spherical harmonic.   The Conway phase is not included to the spherical harmonics in grid.
+:math:`Y^m_l` is the complex spherical harmonic.   The Conway phase is not included.
 
 
 Alternatively, it can be written using the associated Legendre polynomials :math:`P_l^m` (without the Conway phase):
@@ -108,3 +108,25 @@ Angular Grids
 
 The :class:`angular grids<grid.angular.AngularGrid>` is responsible for integrating functions over the unit-sphere. The quadrature weights are
 specifically chosen so that it integrates the identity function to obtain :math:`4 \pi`.
+
+
+Nested Grids
+-------------
+Angular grids of different degrees can be very close to one another. The following shows the mean with
+standard deviation and maximum distance between an angular grid of one degree and the consequent
+angular grid with higher degree.
+
+.. csv-table:: Lebedev-Laikov Grids
+   :file: ./table_angular_lebedev.csv
+   :widths: 11,11,11,11
+   :delim: ;
+   :header-rows: 1
+   :align: center
+
+
+.. csv-table:: Symmetric Spherical t-Design Grids
+   :file: ./table_angular_spherical.csv
+   :widths: 11,11,11,11
+   :delim: ;
+   :header-rows: 1
+   :align: center

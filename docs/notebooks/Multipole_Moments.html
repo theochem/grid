@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Multipole Moments (In Progress) &mdash; grid  documentation</title>
+  <title>Multipole Moments &mdash; grid  documentation</title>
   
 
   
@@ -106,7 +106,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../conventions.html#ordering">Ordering</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../conventions.html#angular-grids">Angular Grids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../conventions.html#angular-grids">Angular Grids</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../conventions.html#nested-grids">Nested Grids</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -156,7 +159,7 @@
 <li class="toctree-l2"><a class="reference internal" href="Interpolation_and_Poisson.html#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Multipole Moments (In Progress)</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Multipole Moments</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
 <ul>
@@ -229,7 +232,7 @@
     
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Multipole Moments (In Progress)</li>
+      <li>Multipole Moments</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -248,26 +251,30 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="Multipole-Moments-(In-Progress)">
-<h1>Multipole Moments (In Progress)<a class="headerlink" href="#Multipole-Moments-(In-Progress)" title="Permalink to this heading">¶</a></h1>
-<p>Every grid class has the ability to compute the multipole moment integral of a function over cente Grid can compute various multipole moments of different types:</p>
+  <div class="section" id="Multipole-Moments">
+<h1>Multipole Moments<a class="headerlink" href="#Multipole-Moments" title="Permalink to this heading">¶</a></h1>
+<p>Every grid class has the ability to compute the multipole moment integral of a function over various centers. It can compute the following types:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{align*}
     m_{n_x, n_y, n_z} &amp;= \int (x - X_c)^{n_x} (y - Y_c)^{n_y} (z - Z_c)^{n_z} f(r) dr \qquad \qquad &amp;\text{Cartesian moments}\\
-    m_{lm} &amp;= \int | \textbf{r} - \textbf{R}_c|^l S_{l}^m(\theta, \phi) f(\textbf{r}) d\textbf{r} \qquad \qquad &amp;\text{spherical moments} \\
-    m_n &amp;= \int | \textbf{r} - \textbf{R}_c|^{n} f(\textbf{r}) d\textbf{r} \qquad \qquad &amp;\text{radial moments}\\
-    m_{nlm} &amp;= \int | \textbf{r} - \textbf{R}_c|^{n+1} S_l^m(\theta, \phi) f(\textbf{r}) d\textbf{r} \qquad \qquad &amp;\text{radial with spherical moments}
+    m_{lm} &amp;= \int | \textbf{r} - \textbf{R}_c|^l S_{l}^m(\theta, \phi) f(\textbf{r}) d\textbf{r} \qquad \qquad &amp;\text{Spherical moments} \\
+    m_n &amp;= \int | \textbf{r} - \textbf{R}_c|^{n} f(\textbf{r}) d\textbf{r} \qquad \qquad &amp;\text{Radial moments}\\
+    m_{nlm} &amp;= \int | \textbf{r} - \textbf{R}_c|^{n+1} S_l^m(\theta, \phi) f(\textbf{r}) d\textbf{r} \qquad \qquad &amp;\text{Radial with spherical moments}
 \end{align*}\end{split}\]</div>
 <p>for some function <span class="math notranslate nohighlight">\(f : \mathbb{R}^3\rightarrow \mathbb{R}\)</span>, where <span class="math notranslate nohighlight">\(S_l^m\)</span> is the regular, real solid harmonics, <span class="math notranslate nohighlight">\((n_x, n_y, n_z)\)</span> are the Cartesian orders over some center <span class="math notranslate nohighlight">\((X_c, Y_c, Z_c)\)</span> and <span class="math notranslate nohighlight">\((l, m)\)</span> are the angular order and degree.</p>
-<p>This example illustrates how to compute the dipole moment of Formaldehyde.</p>
+<p>This example illustrates how to compute the dipole moment of water. This is defined as the observable form a wavefunction <span class="math notranslate nohighlight">\(\Psi\)</span>: <span class="math notranslate nohighlight">\(\vec{\mu} = \int \Psi \hat{\mu} \Psi \vec{r}\)</span> which results in</p>
+<div class="math notranslate nohighlight">
+\[\vec{\mu} = \sum_{i=1}^{N_{atoms}} Z_i (\vec{R_i} - \vec{R_c}) -
+\int (\vec{r} - \vec{R_c}) \rho(\vec{r}) dr,\]</div>
+<p>where <span class="math notranslate nohighlight">\(N_{atoms}\)</span> is the number of atoms, <span class="math notranslate nohighlight">\(Z_i\)</span> is the atomic charge of the ith atom, <span class="math notranslate nohighlight">\(\vec{R_i}\)</span> is the ith coordinate of the atom, <span class="math notranslate nohighlight">\(\vec{R_c}\)</span> is the center of the molecule and <span class="math notranslate nohighlight">\(\rho\)</span> is the electron density of the molecule.</p>
 <p>IOData is used to first read the wavefunction information of Formaldehyde.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">iodata</span> <span class="kn">import</span> <span class="n">load_one</span>
 
-<span class="n">mol</span> <span class="o">=</span> <span class="n">load_one</span><span class="p">(</span><span class="s2">&quot;./ch2o_q+0.fchk&quot;</span><span class="p">)</span>
+<span class="n">mol</span> <span class="o">=</span> <span class="n">load_one</span><span class="p">(</span><span class="s2">&quot;./h2o.fchk&quot;</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Dipole Moments &quot;</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">moments</span><span class="p">)</span>
 </pre></div>
@@ -278,12 +285,12 @@
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Dipole Moments  {(1, &#39;c&#39;): array([-9.39793529e-01,  2.44832724e-08, -2.02253053e-07])}
+Dipole Moments  {(1, &#39;c&#39;): array([0.16176897, 0.58865022, 0.39905597])}
 </pre></div></div>
 </div>
 <p>In order to compute the moment integral, a molecular grid class is constructed.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">grid.becke</span> <span class="kn">import</span> <span class="n">BeckeWeights</span>
@@ -292,7 +299,7 @@ Dipole Moments  {(1, &#39;c&#39;): array([-9.39793529e-01,  2.44832724e-08, -2.0
 <span class="kn">from</span> <span class="nn">grid.rtransform</span> <span class="kn">import</span> <span class="n">BeckeRTransform</span>
 
 <span class="c1"># Construct a radial grid</span>
-<span class="n">oned_grid</span> <span class="o">=</span> <span class="n">GaussLegendre</span><span class="p">(</span><span class="n">npoints</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">oned_grid</span> <span class="o">=</span> <span class="n">GaussLegendre</span><span class="p">(</span><span class="n">npoints</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
 <span class="n">radial_grid</span> <span class="o">=</span> <span class="n">BeckeRTransform</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span><span class="o">.</span><span class="n">transform_1d_grid</span><span class="p">(</span><span class="n">oned_grid</span><span class="p">)</span>  <span class="c1">#BeckeRTransform(0.0, R=2.0).transform_1d_grid(oned_grid)</span>
 
 <span class="c1"># Construct Molecular grid with angular degree of 50 for each atom.</span>
@@ -300,20 +307,22 @@ Dipole Moments  {(1, &#39;c&#39;): array([-9.39793529e-01,  2.44832724e-08, -2.0
     <span class="n">atnums</span><span class="o">=</span><span class="n">mol</span><span class="o">.</span><span class="n">atnums</span><span class="p">,</span>          <span class="c1"># The atomic numbers of Formaldehyde</span>
     <span class="n">atcoords</span><span class="o">=</span><span class="n">mol</span><span class="o">.</span><span class="n">atcoords</span><span class="p">,</span>      <span class="c1"># The atomic coordinates of Formaldehyde</span>
     <span class="n">rgrid</span><span class="o">=</span><span class="n">radial_grid</span><span class="p">,</span>          <span class="c1"># Radial grid used to construct atomic grids over each carbon, and hydrogen.</span>
-    <span class="n">size</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>                    <span class="c1"># The angular degree of the atomic grid over each carbon, and hydrogen.</span>
-    <span class="n">aim_weights</span><span class="o">=</span><span class="n">BeckeWeights</span><span class="p">(),</span> <span class="c1"># Atom-in molecular weights: Becke weights</span>
+    <span class="n">size</span><span class="o">=</span><span class="mi">130</span><span class="p">,</span>                    <span class="c1"># The angular degree of the atomic grid over each carbon, and hydrogen.</span>
+    <span class="n">aim_weights</span><span class="o">=</span><span class="n">BeckeWeights</span><span class="p">(),</span> <span class="c1"># Atom-in molecular weights: Becke weights,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <p>The moment integrals can be calculated.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[55]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">gbasis.wrappers</span> <span class="kn">import</span> <span class="n">from_iodata</span>
 <span class="kn">from</span> <span class="nn">gbasis.evals.density</span> <span class="kn">import</span> <span class="n">evaluate_density</span>
+
+<span class="kn">from</span> <span class="nn">grid.utils</span> <span class="kn">import</span> <span class="n">dipole_moment_of_molecule</span>
 
 <span class="c1"># Construct molecular basis from wave-function information read by IOData</span>
 <span class="n">basis</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="n">from_iodata</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
@@ -321,18 +330,16 @@ Dipole Moments  {(1, &#39;c&#39;): array([-9.39793529e-01,  2.44832724e-08, -2.0
 <span class="c1"># Compute the electron density</span>
 <span class="n">rdm</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">one_rdms</span><span class="p">[</span><span class="s2">&quot;scf&quot;</span><span class="p">]</span>
 <span class="n">electron_density</span> <span class="o">=</span> <span class="n">evaluate_density</span><span class="p">(</span><span class="n">rdm</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">mol_grid</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="n">coord_type</span><span class="o">=</span><span class="nb">type</span><span class="p">)</span>
+<span class="c1"># electron_density[np.all(mol_grid.points &lt; 1e-10, axis=1)] += 36.0</span>
 
+<span class="n">true</span> <span class="o">=</span> <span class="n">dipole_moment_of_molecule</span><span class="p">(</span><span class="n">mol_grid</span><span class="p">,</span> <span class="n">electron_density</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">atcoords</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">atnums</span><span class="p">)</span>
+<span class="n">desired</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">moments</span><span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">)]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Dipole moment calculated </span><span class="si">{</span><span class="n">true</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Dipole moment true </span><span class="si">{</span><span class="n">desired</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-<span class="n">center_atom</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mol</span><span class="o">.</span><span class="n">atcoords</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">mol</span><span class="o">.</span><span class="n">atcoords</span><span class="p">)])</span>
-<span class="n">a</span> <span class="o">=</span> <span class="n">mol_grid</span><span class="o">.</span><span class="n">moments</span><span class="p">(</span>
-    <span class="mi">3</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]]),</span> <span class="n">electron_density</span><span class="p">,</span> <span class="n">type_mom</span><span class="o">=</span><span class="s2">&quot;cartesian&quot;</span><span class="p">,</span> <span class="n">return_orders</span><span class="o">=</span><span class="kc">True</span>
-<span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">6</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mol</span><span class="o">.</span><span class="n">atnums</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span> <span class="o">*</span> <span class="n">mol</span><span class="o">.</span><span class="n">atcoords</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">6</span><span class="p">]</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mol</span><span class="o">.</span><span class="n">atnums</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span> <span class="o">*</span> <span class="n">mol</span><span class="o">.</span><span class="n">atcoords</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
-<span class="c1"># (2, &#39;c&#39;): array([ 1.24344979e-14, -4.79884555e-15,  4.53864177e-15, -1.77635684e-15, 3.25806694e-15, -5.32907052e-15])}</span>
-<span class="c1"># Dipole Moments  {(1, &#39;c&#39;): array([-9.39793529e-01,  2.44832724e-08, -2.02253053e-07])}</span>
-</pre></div>
+<span class="n">err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">true</span> <span class="o">-</span> <span class="n">desired</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mean error </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">}</span><span class="s2"> with maximum error </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<br/></pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -340,9 +347,9 @@ Dipole Moments  {(1, &#39;c&#39;): array([-9.39793529e-01,  2.44832724e-08, -2.0
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-[-0.00395472]
-[ 1.60950630e+01  3.45000845e-06 -1.31242995e-06]
-[ 1.60911083e+01 -3.95126670e-03 -3.95602914e-03]
+Dipole moment calculated [0.1617419  0.58865474 0.39904899]
+Dipole moment true [0.16176897 0.58865022 0.39905597]
+Mean error 1.285537519197614e-05 with maximum error 2.7064523889591685e-05
 </pre></div></div>
 </div>
 </div>
