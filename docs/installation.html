@@ -93,6 +93,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#downloading-code">Downloading Code</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#dependencies">Dependencies</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id1">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#building-documentation">Building Documentation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="onedgrids.html">One-Dimensional Grids</a></li>
@@ -286,6 +287,17 @@
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pytest<span class="w"> </span>--pyargs<span class="w"> </span>grid
 </pre></div>
 </div>
+</div>
+<div class="section" id="building-documentation">
+<h2>Building Documentation<a class="headerlink" href="#building-documentation" title="Permalink to this heading">¶</a></h2>
+<p>The following shows how to build the documentation using sphinx to the folder <cite>_build</cite>.</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>./doc
+./gen_api.sh
+sphinx-build<span class="w"> </span>-b<span class="w"> </span>html<span class="w"> </span>.<span class="w"> </span>_build
+</pre></div>
+</div>
+</div></blockquote>
 </div>
 </div>
 
