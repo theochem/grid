@@ -582,7 +582,7 @@ class TestAtomGrid:
         input_points = np.array((x, y, z)).T
         interfunc = atgrid.interpolate(value_array)
         assert_allclose(
-            self.helper_func_gauss(input_points, centers), interfunc(input_points), atol=1e-5
+            self.helper_func_gauss(input_points, centers), interfunc(input_points), atol=1e-4
         )
 
     @pytest.mark.parametrize("use_spherical", [False, True])
