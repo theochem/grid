@@ -1,0 +1,13 @@
+Transform;Domain;Co-Domain;:math:`r(x)`
+:func:`BeckeRTransform<grid.rtransform.BeckeRTransform>`;:math:`[-1,1]`;:math:`[r_{min},\infty)`;:math:`r_i = R \frac{1 + x_i}{1 - x_i} + r_{min}`
+:func:`LinearFiniteRTransform<grid.rtransform.LinearFiniteRTransform>`;:math:`[-1,1]`;:math:`[r_{min},r_{max}]`;:math:`r_i = \frac{r_{max} - r_{min}}{2} (1 + x_i) + r_{min}.`
+:func:`InverseRTransform<grid.rtransform.InverseRTransform>`;Co-Domain;Domain;:math:`x_i(r_i)`
+:func:`IdentityRTransform<grid.rtransform.IdentityRTransform>`;Domain;Domain;:math:`x_i`
+:func:`LinearInfiniteRTransform<grid.rtransform.LinearInfiniteRTransform>`;:math:`[0,\infty)`;:math:`[r_{min},r_{max})`;:math:`r_i = \frac{(r_{max} - r_{min})}{N - 1} x_i + r_{min},`
+:func:`ExpRTransform<grid.rtransform.ExpRTransform>`;:math:`[0,\infty)`;:math:`[r_{min},r_{max}]`;:math:`r = r_{min} e^{x \log\bigg(\frac{r_{max}}{r_{min} / (N - 1)}  \bigg)},`
+:func:`PowerRTransform<grid.rtransform.PowerRTransform>`;:math:`[0,\infty)`;:math:`[r_{min},r_{max}]`;:math:`r = r_{min}  (x + 1)^{\frac{\log(r_{max}) - \log(r_{min})}{N}},`
+:func:`HyperbolicRTransform<grid.rtransform.HyperbolicRTransform>`;:math:`[0,\infty)`;:math:`[0,\infty)`;:math:`r_i = \frac{a x_i}{(1 - bx_i)},`
+:func:`MultiExpRTransform<grid.rtransform.MultiExpRTransform>`;:math:`[-1,1]`;:math:`[r_{min},\infty)`;:math:`r_i = -R \log \left( \frac{x_i + 1}{2} \right) + r_{min}`
+:func:`KnowlesRTransform<grid.rtransform.KnowlesRTransform>`;:math:`[-1,1]`;:math:`[r_{min},\infty)`;:math:`r_i = r_{min} - R \log \left( 1 - 2^{-k} (x_i + 1)^k \right)`
+:func:`HandyRTransform<grid.rtransform.HandyRTransform>`;:math:`[-1,1]`;:math:`[r_{min},\infty)`;:math:`r_i = R \left( \frac{1+x_i}{1-x_i} \right)^m + r_{min}`
+:func:`HandyModRTransform<grid.rtransform.HandyModRTransform>`;:math:`[-1,1]`;:math:`[r_{min},r_{max}]`;:math:`r_i = \frac{(1+x_i)^m (r_{max} - r_{min})} { 2^m (1 - 2^m + r_{max} - r_{min}) - (1 + x_i)^m (r_{max} - r_{min} - 2^m )} + r_{min}`

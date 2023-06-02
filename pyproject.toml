@@ -1,0 +1,81 @@
+[build-system]
+requires = ["setuptools>=65.0", "setuptools_scm[toml]>=7.1.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qc-grid"
+authors = [
+  { name="QC-Devs Community", email="qcdevs@gmail.com" },
+]
+description = "Grid performs numerical integration, interpolation and differentiation."
+readme = "README.md"
+license = {text = "GPL-3.0-or-later"}
+requires-python = ">=3.6"
+classifiers = [
+   'Development Status :: 0 - Released',
+    'Environment :: Console',
+    'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
+    'Operating System :: POSIX :: Linux',
+    'Topic :: Scientific/Engineering :: Physics',
+    'Topic :: Scientific/Engineering :: Chemistry',
+    'Intended Audience :: Science/Research',
+    "Intended Audience :: Education",
+    "Natural Language :: English",
+    'Programming Language :: Python :: 3.6',
+    'Programming Language :: Python :: 3.7',
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+dependencies = [
+    "numpy>=1.16",
+    "pytest >=2.6",
+    "scipy>=1.4",
+    "importlib_resources",
+    "sympy",
+]
+dynamic = ["version"]
+
+[project.urls]
+Documentation = "https://grid.qcdevs.org"
+Issues = "https://github.com/theochem/grid/issues"
+Source = "https://github.com/theochem/grid/"
+Changelog = "https://github.com/theochem/grid/blob/main/CHANGELOG.md"
+
+[project.optional-dependencies]
+doc = [
+    "numpydoc",
+    "sphinx_copybutton",
+    "sphinx-autoapi",
+    "nbsphinx",
+    "sphinx_rtd_theme",
+    "sphinx_autodoc_typehints"
+]
+
+[tool.black]
+line-length = 100
+
+[tool.ruff]
+# E is pycodestyle
+# F is pyflakes
+# UP is pyupgrade - automatically updates syntax
+# B is flake8-bugbear
+# I is sort imports alphabetically
+# PGH is pygrep-hooks
+# PL is pylint
+# RUF is Ruff-specific rules
+select = ["E", "F", "UP", "B", "I", "PGH", "PL", "RUF"]
+line-length = 100
+ignore = ["PLR2004", "PLR0913", "PLR0912", "PLW2901", "PLR0915"]
+extend-exclude = ["doc/*", "doc/*/*"]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests"]
+addopts = "-v"
+
+[tool.setuptools_scm]
+write_to = "src/grid/_version.py"
+version_scheme = "post-release"
+local_scheme = "no-local-version"

@@ -18,14 +18,12 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
 """PeriodicGrid tests file."""
-from grid.basegrid import Grid
-from grid.periodicgrid import PeriodicGrid, PeriodicGridWarning
-
 import numpy as np
+import pytest
 from numpy.testing import assert_allclose
 
-import pytest
-
+from grid.basegrid import Grid
+from grid.periodicgrid import PeriodicGrid, PeriodicGridWarning
 
 # a small selection of displacement vectors to parametrize tests
 DELTAS_1D = [0.0, 0.5, 40.0, -5.0]
@@ -35,7 +33,7 @@ DELTAS_2D = [[0.0, 0.0], [0.5, -0.2], [40.0, -60.0]]
 # text formatting for the deltas
 def format_1d(d):
     """Format the ID of a DELTA."""
-    return "'{:.1f}'".format(d)
+    return f"'{d:.1f}'"
 
 
 def format_nd(ds):
@@ -57,9 +55,7 @@ def test_tutorial_periodic_repetition(delta_p, delta_c):
     # is raised. To fix this issue, any may simply add the ``wrap=True``
     # argument to the constructor. (This modifies the grid points.)
     with pytest.warns(PeriodicGridWarning):
-        grid = PeriodicGrid(
-            np.linspace(-1, 1, 21) + delta_p, np.full(21, 0.1), np.array([a])
-        )
+        grid = PeriodicGrid(np.linspace(-1, 1, 21) + delta_p, np.full(21, 0.1), np.array([a]))
     # The local grid is wider than one primitive cell, such that there will be
     # more points in the local grid than in the periodic grid. The test is repeated
     # with two displacements of the center by an integer multiple of the
@@ -253,7 +249,7 @@ def assert_equal_localgrids(localgrid1, localgrid2):
         # without too much ambiguity. Either they overlap or either they
         # differ by an integer linear combination of lattice vectors.
         found = set([])
-        for i1, point1 in enumerate(points1):
+        for _i1, point1 in enumerate(points1):
             if localgrid1.points.ndim == 1:
                 dists = abs(points2 - point1)
             else:
@@ -290,9 +286,7 @@ class PeriodicGridTester:
         """Initialize an unwrapped and a wrapped version of the grid."""
         self.define_reference_data()
         with pytest.warns(None if self._ref_realvecs is None else PeriodicGridWarning):
-            self.grid = PeriodicGrid(
-                self._ref_points, self._ref_weights, self._ref_realvecs
-            )
+            self.grid = PeriodicGrid(self._ref_points, self._ref_weights, self._ref_realvecs)
         with pytest.warns(None) as record:
             self.wrapped_grid = PeriodicGrid(
                 self._ref_points, self._ref_weights, self._ref_realvecs, True
@@ -418,9 +412,7 @@ class PeriodicGridTester:
             assert localgrid.points.ndim == self.grid.points.ndim
             assert localgrid.weights.ndim == self.grid.weights.ndim
             if self._ref_points.ndim == 2:
-                assert (
-                    np.linalg.norm(localgrid.points - center, axis=1) <= radius
-                ).all()
+                assert (np.linalg.norm(localgrid.points - center, axis=1) <= radius).all()
             else:
                 assert (abs(localgrid.points - center) <= radius).all()
 
@@ -463,9 +455,7 @@ class PeriodicGridTester:
             assert localgrid.points.ndim == self.grid.points.ndim
             assert localgrid.weights.ndim == self.grid.weights.ndim
             if self._ref_points.ndim == 2:
-                assert (
-                    np.linalg.norm(localgrid.points - center, axis=1) <= radius
-                ).all()
+                assert (np.linalg.norm(localgrid.points - center, axis=1) <= radius).all()
             else:
                 assert (abs(localgrid.points - center) <= radius).all()
 
@@ -601,9 +591,7 @@ class TestPeriodicGrid3D2CV(PeriodicGridTester):
         self._ref_recivecs = np.linalg.pinv(self._ref_realvecs).T
         self._ref_spacings = 1 / np.sqrt((self._ref_recivecs**2).sum(axis=1))
         frac_edges = np.dot(self._ref_points[[0, -1]], self._ref_recivecs.T)
-        self._ref_frac_intvls = np.array(
-            [frac_edges.min(axis=0), frac_edges.max(axis=0)]
-        ).T
+        self._ref_frac_intvls = np.array([frac_edges.min(axis=0), frac_edges.max(axis=0)]).T
 
     def test_init_grid(self):
         """Test the __init__ method."""
