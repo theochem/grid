@@ -114,3 +114,14 @@ Successful installation can be checked by running the tests,
 
         # install Procrustes from source
         pip install .
+
+Building Documentation
+======================
+
+The following shows how to build the documentation using sphinx to the folder `_build`.
+
+    .. code-block:: bash
+
+        cd ./doc
+        ./gen_api.sh
+        sphinx-build -b html . _build
