@@ -805,3 +805,65 @@ def generate_orders_horton_order(order: int, type_ord: str, dim: int = 3):
         raise ValueError(f"Type {type_ord} is not recognized.")
     orders = np.array(orders, dtype=int)
     return orders
+
+
+def dipole_moment_of_molecule(
+    grid, density: np.ndarray, coords: np.ndarray, charges: np.ndarray
+):
+    r"""
+    Calculate the dipole of a molecule.
+
+    This is defined as the observable form a wavefunction :math:`\Psi`:
+
+    .. math::
+        \vec{\mu} = \int \Psi \hat{\mu} \Psi \vec{r}
+
+    which results in
+
+    .. math::
+        \vec{\mu} = \sum_{i=1}^{N_{atoms}} Z_i (\vec{R_i} - \vec{R_c}) -
+        \int ((\vec{r} - \vec{R_c})) \rho(\vec{r}) dr,
+
+    where :math:`N_{atoms}` is the number of atoms, :math:`Z_i` is the atomic charge of the
+    ith atom, :math:`\vec{R_i}` is the ith coordinate of the atom, :math:`\vec{R_c}` is the
+    center of the molecule and :math:`\rho` is the electron density of the molecule.
+
+    Parameters
+    ----------
+    grid: Grid
+        The grid used to perform the integration.
+    density: ndarray
+        The electron density evaluated on points on `grid` object.
+    coords: ndarray[M, 3]
+        The coordinates of the atoms.
+    charges: ndarray[M]
+        The atomic charge of each atom.
+
+    Returns
+    -------
+    ndarray:
+        Returns array of size three corresponding to the dipole moment of a molecule.
+
+    """
+    # Calcualte the center of the molecule
+    center_mol = np.array([np.sum(coords, axis=0) / len(coords)])
+
+    # Calculate the Cartesian moments of the electron density
+    #     orders should be [[n_x, n_y, n_z]] = [[0, 0, 0], [1, 0, 0], [0, 1, 0], [0, 0, 1]]
+    #     integrals is \int \rho (x - X_c)^{n_x} (y - y_C) ^{n_y} (z - Z_c)^{n_x} dx dy dz
+    integrals, orders = grid.moments(
+        1, center_mol, density, type_mom="cartesian", return_orders=True
+    )
+
+    result = -integrals
+    # Go through each atom a
+    for i in range(len(coords)):
+        coord = coords[i]
+        charge = charges[i]
+
+        # Calculate Z_a * (X_a - X_c)^{n_x} (Y_a - Y_c)^{n_y} (Z_a - Z_c)^{n_z}
+        cent_pts_with_order = (coord - center_mol) ** orders[:, None]
+        cent_pts_with_order = np.prod(cent_pts_with_order, axis=2)
+        result += cent_pts_with_order * charge
+
+    return np.ravel(result[1:])
