@@ -1087,7 +1087,8 @@ class ExpSinh(OneDGrid):
 
         """
         warnings.warn(
-            "Using this quadrature requires heavy parameter-tuning in-order to be applicable."
+            "Using this quadrature requires heavy parameter-tuning in-order to be applicable.",
+            stacklevel=2,
         )
         if h <= 0:
             raise ValueError(f"The value of h must be bigger than 0, given {h}")
@@ -1137,7 +1138,8 @@ class LogExpSinh(OneDGrid):
 
         """
         warnings.warn(
-            "Using this quadrature requires heavy parameter-tuning in-order to be applicable."
+            "Using this quadrature requires heavy parameter-tuning in-order to be applicable.",
+            stacklevel=2,
         )
         if h <= 0:
             raise ValueError(f"The value of h must be bigger than 0, given {h}")
@@ -1187,7 +1189,8 @@ class ExpExp(OneDGrid):
 
         """
         warnings.warn(
-            "Using this quadrature requires heavy parameter-tuning in-order to be applicable."
+            "Using this quadrature requires heavy parameter-tuning in-order to be applicable.",
+            stacklevel=2,
         )
         if h <= 0:
             raise ValueError(f"The value of h must be bigger than 0, given {h}")
@@ -1278,7 +1281,8 @@ class SingleExp(OneDGrid):
 
         """
         warnings.warn(
-            "Using this quadrature requires heavy parameter-tuning in-order to be applicable."
+            "Using this quadrature requires heavy parameter-tuning in-order to be applicable.",
+            stacklevel=2,
         )
         if h <= 0:
             raise ValueError(f"The value of h must be bigger than 0, given {h}")
@@ -1327,7 +1331,8 @@ class SingleArcSinhExp(OneDGrid):
 
         """
         warnings.warn(
-            "Using this quadrature requires heavy parameter-tuning in-order to be applicable."
+            "Using this quadrature requires heavy parameter-tuning in-order to be applicable.",
+            stacklevel=2,
         )
         if h <= 0:
             raise ValueError(f"The value of h must be bigger than 0, given {h}")
