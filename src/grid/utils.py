@@ -605,10 +605,10 @@ def generate_derivative_real_spherical_harmonics(l_max: int, theta: np.ndarray, 
             output[1, i_output, :] = np.abs(float(m)) * cot_tangent * sph_harm_degree[index_m(m), :]
             # Compute it using SciPy, removing conway phase (-1)^m and multiply by 2^0.5.
             sph_harm_m = (
-                fac *
-                sph_harm(np.abs(float(m)) + 1, l_val, theta, phi) *
-                np.sqrt(2) *
-                (-1.0) ** float(m)
+                fac
+                * sph_harm(np.abs(float(m)) + 1, l_val, theta, phi)
+                * np.sqrt(2)
+                * (-1.0) ** float(m)
             )
             if m >= 0:
                 if m < l_val:  # When m == l_val, then fac = 0
@@ -807,9 +807,7 @@ def generate_orders_horton_order(order: int, type_ord: str, dim: int = 3):
     return orders
 
 
-def dipole_moment_of_molecule(
-    grid, density: np.ndarray, coords: np.ndarray, charges: np.ndarray
-):
+def dipole_moment_of_molecule(grid, density: np.ndarray, coords: np.ndarray, charges: np.ndarray):
     r"""
     Calculate the dipole of a molecule.
 
