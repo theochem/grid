@@ -19,9 +19,7 @@
 # --
 """Utils function module."""
 import numpy as np
-
 from scipy.special import sph_harm
-
 
 _bragg = np.array(
     [
@@ -418,7 +416,7 @@ def generate_real_spherical_harmonics_scipy(l_max: int, theta: np.ndarray, phi: 
         # Convert to horton 2 order
         horton_ord = [[pos_real_sph[i], neg_real_sph[i]] for i in range(0, l_val)]
         horton_ord = tuple(x for sublist in horton_ord for x in sublist)
-        total_sph = np.vstack((total_sph, zero_real_sph) + horton_ord)
+        total_sph = np.vstack((total_sph, zero_real_sph, *horton_ord))
     return total_sph
 
 
@@ -480,9 +478,9 @@ def generate_real_spherical_harmonics(l_max: int, theta: np.ndarray, phi: np.nda
 
     """
     numb_pts = len(theta)
-    sin_phi = np.sin(phi)
-    cos_phi = np.cos(phi)
-    spherical_harm = np.zeros(((l_max + 1) ** 2, numb_pts))
+    sin_phi = np.sin(phi, dtype=np.longdouble)
+    cos_phi = np.cos(phi, dtype=np.longdouble)
+    spherical_harm = np.zeros(((l_max + 1) ** 2, numb_pts), dtype=np.longdouble)
 
     # Forward recursion requires P_{l-1}^m, P_{l-2}^m, these are the two columns, respectively
     # the rows are the order m which ranges from 0 to l_max and p_leg[:l, :] gets updated every l
@@ -490,15 +488,20 @@ def generate_real_spherical_harmonics(l_max: int, theta: np.ndarray, phi: np.nda
     p_leg[0, :, :] = 1.0  # Initial conditions: P_0^0 = 1.0
 
     # the coefficients of the forward recursions and initial factor of spherical harmonic.
-    a_k = lambda l, m: (2.0 * (l - 1.0) + 1) / ((l - 1.0) - m + 1.0)
-    b_k = lambda l, m: (l - 1.0 + m) / (l - m)
-    fac_sph = lambda l, m: np.sqrt((2.0 * l + 1) / (4.0 * np.pi))  # Note (l-m)!/(l+m)! is moved
+    def a_k(deg, ord):
+        return (2.0 * (float(deg) - 1.0) + 1) / (float(deg) - 1.0 - float(ord) + 1.0)
+
+    def b_k(deg, ord):
+        return (float(deg) - 1.0 + float(ord)) / (float(deg) - float(ord))
+
+    def fac_sph(deg, ord):
+        return np.sqrt((2.0 * float(deg) + 1) / (4.0 * np.pi))  # Note (l-m)!/(l+m)! is moved
 
     # Go through each degree and then order and fill out
-    spherical_harm[0, :] = fac_sph(0, 0)  # Compute Y_0^0
+    spherical_harm[0, :] = fac_sph(0.0, 0.0)  # Compute Y_0^0
     i_sph = 1  # Index to start of spherical_harm
-    for l_deg in range(1, l_max + 1):
-        for m_ord in range(0, l_deg + 1):
+    for l_deg in np.arange(1, l_max + 1, dtype=int):
+        for m_ord in np.arange(0, l_deg + 1, dtype=int):
             if l_deg == m_ord:
                 # Do diagonal spherical harmonic Y_l^m, when l=m.
                 # Diagonal recursion: P_m^m = sin(phi) * P_{m-1}^{m-1} * (2 (l - 1) + 1)
@@ -506,7 +509,7 @@ def generate_real_spherical_harmonics(l_max: int, theta: np.ndarray, phi: np.nda
             else:
                 # Do forward recursion here and fill out Y_l^m and Y_l^{-m}
                 # Compute b_k P_{l-2}^m,  since m < l, then m < l - 2
-                second_fac = b_k(l_deg, m_ord) * p_leg[m_ord, 1] if m_ord <= l_deg - 2 else 0
+                second_fac = b_k(l_deg, m_ord) * p_leg[m_ord, 1] if m_ord <= l_deg - 2 else 0.0
                 # Update/re-define P_{l-2}^m to be equal to P_{l-1}^m
                 p_leg[m_ord, 1, :] = p_leg[m_ord, 0]
                 # Then update P_{l-1}^m := P_l^m := a_k cos(\phi) P_{l-1}^m - b_k P_{l, -2}^m
@@ -520,11 +523,11 @@ def generate_real_spherical_harmonics(l_max: int, theta: np.ndarray, phi: np.nda
                 common_fact = (
                     (p_leg[m_ord, 0] / np.sqrt(factorial)) * fac_sph(l_deg, m_ord) * np.sqrt(2.0)
                 )
-                spherical_harm[i_sph, :] = common_fact * np.cos(m_ord * theta)
+                spherical_harm[i_sph, :] = common_fact * np.cos(float(m_ord) * theta)
                 i_sph += 1
-                spherical_harm[i_sph, :] = common_fact * np.sin(m_ord * theta)
+                spherical_harm[i_sph, :] = common_fact * np.sin(float(m_ord) * theta)
                 # Update (l-m)!/(l+m)!
-                factorial *= (l_deg + m_ord + 1.0) * (l_deg - m_ord)
+                factorial *= (float(l_deg) + float(m_ord) + 1.0) * (float(l_deg) - float(m_ord))
             i_sph += 1
     return spherical_harm
 
@@ -572,14 +575,14 @@ def generate_derivative_real_spherical_harmonics(l_max: int, theta: np.ndarray, 
     """
     num_pts = len(theta)
     # Shape (Derivs, Spherical, Pts)
-    output = np.zeros((2, int((l_max + 1) ** 2), num_pts))
+    output = np.zeros((2, int((l_max + 1) ** 2), num_pts), dtype=np.longdouble)
 
     complex_expon = np.exp(-theta * 1.0j)  # Needed for derivative wrt to phi
     l_list = np.arange(l_max + 1)
     sph_harm_vals = generate_real_spherical_harmonics(l_max, theta, phi)
     i_output = 0
     for l_val in l_list:
-        for m in [0] + sum([[x, -x] for x in range(1, l_val + 1)], []):
+        for m in [0, *sum([[x, -x] for x in range(1, l_val + 1)], [])]:
             # Take all spherical harmonics at degree l_val
             sph_harm_degree = sph_harm_vals[(l_val) ** 2 : (l_val + 1) ** 2, :]
 
@@ -588,18 +591,25 @@ def generate_derivative_real_spherical_harmonics(l_max: int, theta: np.ndarray, 
             # Note ie^(i |m| x) = -sin(|m| x) + i cos(|m| x), then take real/imaginery component.
             # hence why the negative is in (-m).
             # index_m maps m to index where (l, m)  is located in `sph_harm_degree`.
-            index_m = lambda m: 2 * m - 1 if m > 0 else int(2 * np.fabs(m))
-            output[0, i_output, :] = -m * sph_harm_degree[index_m(-m), :]
+            def index_m(m):
+                return 2 * m - 1 if m > 0 else int(2 * np.fabs(m))
+
+            output[0, i_output, :] = -float(m) * sph_harm_degree[index_m(-m), :]
 
             # Take derivative wrt to phi:
             with np.errstate(divide="ignore", invalid="ignore"):
                 cot_tangent = 1.0 / np.tan(phi)
             cot_tangent[np.abs(np.tan(phi)) < 1e-10] = 0.0
             # Calculate the derivative in two pieces:
-            fac = np.sqrt((l_val - np.abs(m)) * (l_val + np.abs(m) + 1))
-            output[1, i_output, :] = np.abs(m) * cot_tangent * sph_harm_degree[index_m(m), :]
+            fac = np.sqrt((l_val - np.abs(float(m))) * (l_val + np.abs(m) + 1))
+            output[1, i_output, :] = np.abs(float(m)) * cot_tangent * sph_harm_degree[index_m(m), :]
             # Compute it using SciPy, removing conway phase (-1)^m and multiply by 2^0.5.
-            sph_harm_m = fac * sph_harm(np.abs(m) + 1, l_val, theta, phi) * np.sqrt(2) * (-1) ** m
+            sph_harm_m = (
+                fac
+                * sph_harm(np.abs(float(m)) + 1, l_val, theta, phi)
+                * np.sqrt(2)
+                * (-1.0) ** float(m)
+            )
             if m >= 0:
                 if m < l_val:  # When m == l_val, then fac = 0
                     output[1, i_output, :] += np.real(complex_expon * sph_harm_m)
@@ -638,7 +648,10 @@ def solid_harmonics(l_max: int, sph_pts: np.ndarray):
     """
     r, theta, phi = sph_pts.T
     spherical_harm = generate_real_spherical_harmonics(l_max, theta, phi)
-    degrees = np.array(sum([[l_deg] * (2 * l_deg + 1) for l_deg in range(l_max + 1)], []))
+    degrees = np.array(
+        sum([[float(l_deg)] * (2 * l_deg + 1) for l_deg in np.arange(l_max + 1, dtype=int)], []),
+        dtype=np.longdouble,
+    )
     return (
         spherical_harm * r ** degrees[:, None] * np.sqrt(4.0 * np.pi / (2 * degrees[:, None] + 1))
     )
@@ -735,7 +748,7 @@ def generate_orders_horton_order(order: int, type_ord: str, dim: int = 3):
     For radial, the orders is just the order :math:`l`.
 
     For pure, the orders :math:`(l, m)` following the order
-     :math:`[(l, 0), (l, 1), (l, -1), \cdots, (l, l), (l, -l)]`.
+    :math:`[(l, 0), (l, 1), (l, -1), \cdots, (l, l), (l, -l)]`.
 
     Parameters
     ----------
@@ -792,3 +805,63 @@ def generate_orders_horton_order(order: int, type_ord: str, dim: int = 3):
         raise ValueError(f"Type {type_ord} is not recognized.")
     orders = np.array(orders, dtype=int)
     return orders
+
+
+def dipole_moment_of_molecule(grid, density: np.ndarray, coords: np.ndarray, charges: np.ndarray):
+    r"""
+    Calculate the dipole of a molecule.
+
+    This is defined as the observable form a wavefunction :math:`\Psi`:
+
+    .. math::
+        \vec{\mu} = \int \Psi \hat{\mu} \Psi \vec{r}
+
+    which results in
+
+    .. math::
+        \vec{\mu} = \sum_{i=1}^{N_{atoms}} Z_i (\vec{R_i} - \vec{R_c}) -
+        \int ((\vec{r} - \vec{R_c})) \rho(\vec{r}) dr,
+
+    where :math:`N_{atoms}` is the number of atoms, :math:`Z_i` is the atomic charge of the
+    ith atom, :math:`\vec{R_i}` is the ith coordinate of the atom, :math:`\vec{R_c}` is the
+    center of the molecule and :math:`\rho` is the electron density of the molecule.
+
+    Parameters
+    ----------
+    grid: Grid
+        The grid used to perform the integration.
+    density: ndarray
+        The electron density evaluated on points on `grid` object.
+    coords: ndarray[M, 3]
+        The coordinates of the atoms.
+    charges: ndarray[M]
+        The atomic charge of each atom.
+
+    Returns
+    -------
+    ndarray:
+        Returns array of size three corresponding to the dipole moment of a molecule.
+
+    """
+    # Calcualte the center of the molecule
+    center_mol = np.array([np.sum(coords, axis=0) / len(coords)])
+
+    # Calculate the Cartesian moments of the electron density
+    #     orders should be [[n_x, n_y, n_z]] = [[0, 0, 0], [1, 0, 0], [0, 1, 0], [0, 0, 1]]
+    #     integrals is \int \rho (x - X_c)^{n_x} (y - y_C) ^{n_y} (z - Z_c)^{n_x} dx dy dz
+    integrals, orders = grid.moments(
+        1, center_mol, density, type_mom="cartesian", return_orders=True
+    )
+
+    result = -integrals
+    # Go through each atom a
+    for i in range(len(coords)):
+        coord = coords[i]
+        charge = charges[i]
+
+        # Calculate Z_a * (X_a - X_c)^{n_x} (Y_a - Y_c)^{n_y} (Z_a - Z_c)^{n_z}
+        cent_pts_with_order = (coord - center_mol) ** orders[:, None]
+        cent_pts_with_order = np.prod(cent_pts_with_order, axis=2)
+        result += cent_pts_with_order * charge
+
+    return np.ravel(result[1:])

@@ -24,9 +24,9 @@ import warnings
 from abc import ABC, abstractmethod
 from numbers import Number
 
-from grid.basegrid import OneDGrid
-
 import numpy as np
+
+from grid.basegrid import OneDGrid
 
 
 class BaseTransform(ABC):
@@ -452,9 +452,7 @@ class InverseRTransform(BaseTransform):
 
         """
         if not isinstance(transform, BaseTransform):
-            raise TypeError(
-                f"Input need to be a transform instance, got {type(transform)}."
-            )
+            raise TypeError(f"Input need to be a transform instance, got {type(transform)}.")
         self._tfm = transform
         self._domain = transform.codomain
         self._codomain = transform.domain
@@ -513,9 +511,7 @@ class InverseRTransform(BaseTransform):
         """
         d1 = self._tfm.deriv(r)
         if np.any(d1 == 0):
-            raise ZeroDivisionError(
-                "First derivative of original transformation has 0 value"
-            )
+            raise ZeroDivisionError("First derivative of original transformation has 0 value")
         return d1
 
     def deriv(self, r: np.ndarray):
@@ -740,9 +736,7 @@ class LinearInfiniteRTransform(BaseTransform):
 
         """
         if rmin >= rmax:
-            raise ValueError(
-                f"rmin need to be larger than rmax.\n  rmin: {rmin}, rmax: {rmax}"
-            )
+            raise ValueError(f"rmin need to be larger than rmax.\n  rmin: {rmin}, rmax: {rmax}")
         self._rmin = rmin
         self._rmax = rmax
         self._domain = (0, np.inf)
@@ -769,8 +763,10 @@ class LinearInfiniteRTransform(BaseTransform):
         if self.b is None:
             self._b = np.max(x)
             if np.abs(self.b) < 1e-16:
-                raise ValueError(f"The parameter b {self.b} is taken from the maximum of the grid"
-                                 f"and can't be zero.")
+                raise ValueError(
+                    f"The parameter b {self.b} is taken from the maximum of the grid"
+                    f"and can't be zero."
+                )
 
     def transform(self, x: np.ndarray):
         r"""Transform from interval :math:`[0, \infty)` to :math:`[r_{min}, r_{max}]`.
@@ -905,13 +901,9 @@ class ExpRTransform(BaseTransform):
 
         """
         if rmin < 0 or rmax < 0:
-            raise ValueError(
-                f"rmin or rmax need to be positive\n  rmin: {rmin}, rmax: {rmax}"
-            )
+            raise ValueError(f"rmin or rmax need to be positive\n  rmin: {rmin}, rmax: {rmax}")
         if rmin >= rmax:
-            raise ValueError(
-                f"rmin need to be smaller than rmax\n  rmin: {rmin}, rmax: {rmax}"
-            )
+            raise ValueError(f"rmin need to be smaller than rmax\n  rmin: {rmin}, rmax: {rmax}")
         self._rmin = rmin
         self._rmax = rmax
         self._domain = (0, np.inf)
@@ -938,8 +930,10 @@ class ExpRTransform(BaseTransform):
         if self.b is None:
             self._b = np.max(x)
             if np.abs(self.b) < 1e-16:
-                raise ValueError(f"The parameter b {self.b} is taken from the maximum of the grid"
-                                 f"and can't be zero.")
+                raise ValueError(
+                    f"The parameter b {self.b} is taken from the maximum of the grid"
+                    f"and can't be zero."
+                )
 
     def transform(self, x: np.ndarray):
         r"""
@@ -1099,8 +1093,11 @@ class PowerRTransform(BaseTransform):
         if self.b is None:
             self._b = np.max(x)
             if np.abs(self.b) < 1e-16:
-                raise ValueError(f"The parameter b {self.b} is taken from the maximum of the grid"
-                                 f"and can't be zero.")
+                raise ValueError(
+                    f"The parameter b {self.b} is taken from the maximum of the grid"
+                    f"and can't be zero."
+                )
+
     @property
     def rmin(self):
         r"""float: the value of rmin."""
@@ -1135,7 +1132,9 @@ class PowerRTransform(BaseTransform):
         power = (np.log(self._rmax) - np.log(self._rmin)) / np.log(self.b + 1)
         if power < 2:
             warnings.warn(
-                f"power need to be larger than 2\n  power: {power}", RuntimeWarning
+                f"power need to be larger than 2\n  power: {power}",
+                RuntimeWarning,
+                stacklevel=2,
             )
         return self._rmin * np.power(x + 1, power)
 
@@ -1195,9 +1194,7 @@ class PowerRTransform(BaseTransform):
         """
         self.set_maximum_parameter_b(x)
         power = (np.log(self._rmax) - np.log(self._rmin)) / np.log(self.b + 1)
-        return (
-            power * (power - 1) * (power - 2) * self._rmin * np.power(x + 1, power - 3)
-        )
+        return power * (power - 1) * (power - 2) * self._rmin * np.power(x + 1, power - 3)
 
     def inverse(self, r: np.ndarray):
         r"""
@@ -1395,7 +1392,7 @@ class MultiExpRTransform(BaseTransform):
 
     References
     ----------
-    .. [1] Gill, Peter MW, and Siu‐Hung Chien. "Radial quadrature for multiexponential integrands."
+    .. [1] Gill, Peter MW, and Siu-Hung Chien. "Radial quadrature for multiexponential integrands."
        Journal of computational chemistry 24.6 (2003): 732-740.
 
     """
@@ -1606,9 +1603,7 @@ class KnowlesRTransform(BaseTransform):
             One dimensional array in :math:`[r_{min},\infty)`.
 
         """
-        rf_array = (
-            -self._R * np.log(1 - (2**-self._k) * (x + 1) ** self._k) + self._rmin
-        )
+        rf_array = -self._R * np.log(1 - (2**-self._k) * (x + 1) ** self._k) + self._rmin
         if self.trim_inf:
             rf_array = self._convert_inf(rf_array)
         return rf_array
@@ -1650,9 +1645,7 @@ class KnowlesRTransform(BaseTransform):
 
         """
         qi = 1 + x
-        deriv = (
-            self._R * self._k * (qi ** (self._k - 1)) / (2**self._k - qi**self._k)
-        )
+        deriv = self._R * self._k * (qi ** (self._k - 1)) / (2**self._k - qi**self._k)
         if self.trim_inf:
             deriv = self._convert_inf(deriv)
         return deriv
@@ -1943,9 +1936,7 @@ class HandyModRTransform(BaseTransform):
             raise ValueError(f"m needs to be greater than 0, got m = {m}")
 
         if rmax < rmin:
-            raise ValueError(
-                f"rmax needs to be greater than rmin. rmax : {rmax}, rmin : {rmin}."
-            )
+            raise ValueError(f"rmax needs to be greater than rmin. rmax : {rmax}, rmin : {rmin}.")
         self._rmin = rmin
         self._rmax = rmax
         self._m = m
@@ -2022,9 +2013,7 @@ class HandyModRTransform(BaseTransform):
         size_r = self._rmax - self._rmin
 
         tmp_r = (
-            (r - self._rmin)
-            * (size_r - two_m + 1)
-            / ((r - self._rmin) * (size_r - two_m) + size_r)
+            (r - self._rmin) * (size_r - two_m + 1) / ((r - self._rmin) * (size_r - two_m) + size_r)
         )
 
         return 2 * (tmp_r) ** (1 / self._m) - 1
@@ -2052,15 +2041,8 @@ class HandyModRTransform(BaseTransform):
         two_m = 2**self._m
         size_r = self._rmax - self._rmin
         deriv = (
-            -(
-                self._m
-                * two_m
-                * (two_m - size_r - 1)
-                * size_r
-                * (1 + x) ** (self._m - 1)
-            )
-            / (two_m * (1 - two_m + size_r) + (two_m - size_r) * (1 + x) ** self._m)
-            ** 2
+            -(self._m * two_m * (two_m - size_r - 1) * size_r * (1 + x) ** (self._m - 1))
+            / (two_m * (1 - two_m + size_r) + (two_m - size_r) * (1 + x) ** self._m) ** 2
         )
         if self.trim_inf:
             deriv = self._convert_inf(deriv)
@@ -2093,8 +2075,7 @@ class HandyModRTransform(BaseTransform):
                     - (self._m + 1) * (two_m - size_r) * (1 + x) ** (self._m)
                 )
             )
-            / (two_m * (1 - two_m + size_r) + (two_m - size_r) * (1 + x) ** self._m)
-            ** 3
+            / (two_m * (1 - two_m + size_r) + (two_m - size_r) * (1 + x) ** self._m) ** 3
         )
 
     def deriv3(self, x: np.ndarray):
@@ -2120,11 +2101,7 @@ class HandyModRTransform(BaseTransform):
                 * (two_m - size_r - 1)
                 * (1 + x) ** (self._m - 3)
                 * (
-                    2
-                    * two_m
-                    * (self._m - 2)
-                    * (self._m - 1)
-                    * (1 - two_m + size_r) ** 2
+                    2 * two_m * (self._m - 2) * (self._m - 1) * (1 - two_m + size_r) ** 2
                     + 2 ** (self._m + 2)
                     * (self._m - 1)
                     * (self._m + 1)
@@ -2137,6 +2114,5 @@ class HandyModRTransform(BaseTransform):
                     * (x + 1) ** (2 * self._m)
                 )
             )
-            / (two_m * (1 - two_m + size_r) + (two_m - size_r) * (1 + x) ** self._m)
-            ** 4
+            / (two_m * (1 - two_m + size_r) + (two_m - size_r) * (1 + x) ** self._m) ** 4
         )

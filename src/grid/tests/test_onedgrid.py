@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # GRID is a numerical integration module for quantum chemistry.
 #
 # Copyright (C) 2011-2019 The GRID Development Team
@@ -21,6 +20,10 @@
 """Tests one-dimensional grids."""
 
 from unittest import TestCase
+
+import numpy as np
+from numpy.testing import assert_allclose, assert_almost_equal
+from scipy.special import roots_chebyu, roots_legendre
 
 from grid.onedgrid import (
     ClenshawCurtis,
@@ -50,11 +53,6 @@ from grid.onedgrid import (
     _g3,
     _gstrip,
 )
-
-import numpy as np
-from numpy.testing import assert_allclose, assert_almost_equal
-
-from scipy.special import roots_chebyu, roots_legendre
 
 
 class TestOneDGrid(TestCase):
@@ -348,9 +346,7 @@ class TestOneDGrid(TestCase):
                 else:
                     b = 2
 
-                weights[i] = weights[i] - b * np.cos(2 * (j + 1) * theta[i]) / (
-                    4 * j * (j + 2) + 3
-                )
+                weights[i] = weights[i] - b * np.cos(2 * (j + 1) * theta[i]) / (4 * j * (j + 2) + 3)
 
         for i in range(1, 9):
             weights[i] = 2 * weights[i] / 9

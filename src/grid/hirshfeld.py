@@ -20,10 +20,8 @@
 """Hirshfeld Weights Module."""
 
 
-from importlib_resources import path
-
 import numpy as np
-
+from importlib_resources import path
 from scipy.interpolate import CubicSpline
 
 

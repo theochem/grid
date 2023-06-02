@@ -25,16 +25,16 @@ Their calculations were based on F77 translation by Dr. Christoph van Wuellen
 and these are the comments from that translation.
 
 This subroutine is part of a set of subroutines that generate
-Lebedev grids [1-6] for integration on a sphere. The original
-C-code [1] was kindly provided by Dr. Dmitri N. Laikov and
+Lebedev grids [1-6]_ for integration on a sphere. The original
+C-code [1]_ was kindly provided by Dr. Dmitri N. Laikov and
 translated into fortran by Dr. Christoph van Wuellen.
 This subroutine was translated from C to fortran77 by hand.
-Users of this code are asked to include reference [1] in their
+Users of this code are asked to include reference [1]_ in their
 publications, and in the user- and programmers-manuals
 describing their codes.
 This code was distributed through CCL (http://www.ccl.net/).
 
-The symmetric spherical t-design were obtained from reference [7].
+The symmetric spherical t-design were obtained from reference [7]_.
 
 References
 ----------
@@ -55,24 +55,22 @@ The following references are for the Lebedev grid points.
    quadrature formulae invariant under the octahedron group with inversion" Computational
    Mathematics and Mathematical Physics, Vol. 15, 1975, pp. 44-51.
 
-
 The following is references for the symmetric spherical t-design points:
 
 .. [7] R. S. Womersley, Efficient Spherical Designs with Good Geometric Properties.
-       In: Dick J., Kuo F., Wozniakowski H. (eds) Contemporary Computational Mathematics -
-       A Celebration of the 80th Birthday of Ian Sloan. Springer (2018) pp. 1243-1285
-       https://doi.org/10.1007/978-3-319-72456-0_57
+   In: Dick J., Kuo F., Wozniakowski H. (eds) Contemporary Computational Mathematics -
+   A Celebration of the 80th Birthday of Ian Sloan. Springer (2018) pp. 1243-1285
+   https://doi.org/10.1007/978-3-319-72456-0_57
 
 """
 
 import warnings
 from bisect import bisect_left
 
-from grid.basegrid import Grid
-
+import numpy as np
 from importlib_resources import path
 
-import numpy as np
+from grid.basegrid import Grid
 
 # Lebedev dictionary for converting number of grid points (keys) to grid's degrees (values)
 LEBEDEV_NPOINTS = {
@@ -290,7 +288,7 @@ class AngularGrid(Grid):
     :math:`f: S^2 \rightarrow \mathbb{R}` on the unit-sphere as follows:
 
     .. math::
-        4 \pi \int_{S^2} f d\Sigma  = 4\pi \int_0^\pi \int_0^{2\pi} f(\theta, \phi) \sin(\theta)
+        4 \pi \int_{S^2} f   = 4\pi \int_0^\pi \int_0^{2\pi} f(\theta, \phi) \sin(\theta)
          d\theta d\phi \approx \sum w_i f(\phi_i, \theta_i),
 
     where :math:`S^2` is the unit-sphere,
@@ -373,14 +371,13 @@ class AngularGrid(Grid):
         Notes
         -----
         - Sometimes the weights for Lebedev-Laikov grids can be negative. Choosing degrees that have
-            positive weights can mitigate round-off errors. Degrees equal to 13, 25 or 27 have
-            negative weights.
+          positive weights can mitigate round-off errors. Degrees equal to 13, 25 or 27 have
+          negative weights.
 
         """
         if not isinstance(use_spherical, bool):
             raise TypeError(
-                f"use_spherical {use_spherical, type(use_spherical)} should be of type "
-                f"boolean."
+                f"use_spherical {use_spherical, type(use_spherical)} should be of type " f"boolean."
             )
         # construct grid from pts and wts given directly
         if points is not None and weights is not None:
@@ -390,6 +387,7 @@ class AngularGrid(Grid):
                     "degree or size are not used for generating grids "
                     "because points and weights are provided",
                     RuntimeWarning,
+                    stacklevel=2,
                 )
         else:
             # map degree and size to the supported (i.e., pre-computed) degree and size
@@ -399,9 +397,7 @@ class AngularGrid(Grid):
             # load pre-computed angular points & weights and make angular grid
             cache_dict = SPHERICAL_CACHE if use_spherical else LEBEDEV_CACHE
             if degree not in cache_dict:
-                points, weights = self._load_precomputed_angular_grid(
-                    degree, size, use_spherical
-                )
+                points, weights = self._load_precomputed_angular_grid(degree, size, use_spherical)
                 if cache:
                     cache_dict[degree] = points, weights
             else:
@@ -413,7 +409,7 @@ class AngularGrid(Grid):
             # Lebedev degrees 13, 25, 27 have negative weights. Symmetric spherical t-design
             # have positive weights.
             warnings.warn(
-                f"Lebedev weights are negative which can introduce round-off errors."
+                "Lebedev weights are negative which can introduce round-off errors.", stacklevel=2
             )
 
         self._use_spherical = use_spherical
@@ -429,9 +425,7 @@ class AngularGrid(Grid):
         return self._use_spherical
 
     @staticmethod
-    def convert_angular_sizes_to_degrees(
-        sizes: np.ndarray, use_spherical: bool = False
-    ):
+    def convert_angular_sizes_to_degrees(sizes: np.ndarray, use_spherical: bool = False):
         """
         Convert given Lebedev/Spherical design grid sizes to degrees.
 
@@ -462,9 +456,7 @@ class AngularGrid(Grid):
         return degrees
 
     @staticmethod
-    def _get_size_and_degree(
-        *, degree: int = None, size: int = None, use_spherical: bool = False
-    ):
+    def _get_size_and_degree(*, degree: int = None, size: int = None, use_spherical: bool = False):
         """
         Map the given degree and/or size to the degree and size of a supported angular grid.
 
@@ -501,6 +493,7 @@ class AngularGrid(Grid):
             warnings.warn(
                 "Both degree and size arguments are given, so only degree is used!",
                 RuntimeWarning,
+                stacklevel=2,
             )
         if degree is not None:
             ang_degs = list(degrees.keys())
@@ -510,9 +503,7 @@ class AngularGrid(Grid):
                     f"Argument degree should be a positive integer <= {max_degree}, got {degree}"
                 )
             # match the given degree to the existing angular degree or the next largest degree
-            degree = (
-                degree if degree in degrees else ang_degs[bisect_left(ang_degs, degree)]
-            )
+            degree = degree if degree in degrees else ang_degs[bisect_left(ang_degs, degree)]
             return degree, degrees[degree]
         elif size:
             ang_npts = list(npoints.keys())
@@ -558,19 +549,13 @@ class AngularGrid(Grid):
         degrees = SPHERICAL_DEGREES if use_spherical else LEBEDEV_DEGREES
         npoints = SPHERICAL_NPOINTS if use_spherical else LEBEDEV_NPOINTS
         type = "spherical" if use_spherical else "lebedev"
-        file_path = (
-            "grid.data.spherical_design" if use_spherical else "grid.data.lebedev"
-        )
+        file_path = "grid.data.spherical_design" if use_spherical else "grid.data.lebedev"
 
         # check given degree & size
         if degree not in degrees:
-            raise ValueError(
-                f"Given degree={degree} is not supported, choose from {degrees}"
-            )
+            raise ValueError(f"Given degree={degree} is not supported, choose from {degrees}")
         if size not in npoints:
-            raise ValueError(
-                f"Given size={size} is not supported, choose from {npoints}"
-            )
+            raise ValueError(f"Given size={size} is not supported, choose from {npoints}")
         # load npz file corresponding to the given degree & size
         filename = f"{type}_{degree}_{size}.npz"
         with path(file_path, filename) as npz_file:

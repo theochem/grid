@@ -21,10 +21,10 @@
 
 from typing import Union
 
+import numpy as np
+
 from grid.atomgrid import AtomGrid
 from grid.basegrid import Grid, LocalGrid, OneDGrid
-
-import numpy as np
 
 
 class MolGrid(Grid):
@@ -42,33 +42,43 @@ class MolGrid(Grid):
     This example chooses Becke weights as the atom in molecule/nuclear weights and the
     radial grid is the same for all atoms.  Two atoms are considered with charges [1, 2],
     respectively.
+
     >>> from grid.becke BeckeWeights
     >>> from grid.onedgrid import GaussLaguerre
     >>> becke = BeckeWeights(order=3)
     >>> rgrid = GaussLaguerre(100)
     >>> charges = [1, 2]
     >>> coords = np.array([[-1.0, 0.0, 0.0], [1.0, 0.0, 0.0]])
+
     The default method is based on explicitly specifing the atomic grids (AtomGrids) for each atom.
+
     >>> from grid.atomgrid import AtomGrid
     >>> atgrid1 = AtomGrid(rgrid, degrees=5, center=coords[0])
     >>> atgrid2 = AtomGrid(rgrid, degrees=10, center=coords[1])
     >>> molgrid = MolGrid(charges, [atgrid1, atgrid2], aim_weights=becke)
+
     The `from_size` method constructs AtomGrids with degree_size specified from integer size.
+
     >>> size = 100  # Number of angular points used in each shell in the atomic grid.
     >>> molgrid = MolGrid.from_size(charges, coords, rgrid, size=5, aim_weights=becke)
+
     The `from_pruned` method is based on `AtomGrid.from_pruned` method on the idea
     of spliting radial grid points into sectors that have the same angular degrees.
+
     >>> sectors_r = [[0.5, 1., 1.5], [0.25, 0.5]]
     >>> sectors_deg = [[3, 7, 5, 3], [3, 2, 2]]
     >>> radius = 1.0
     >>> mol_grid = MolGrid.from_pruned(charges, coords, rgrid, radius, becke,
     >>>                                sectors_r=sectors_r, sectors_degree=sectors_deg)
+
     The `from_preset` method is based on `AtomGrid.from_preset` method based on a string
     specifying the size of each Levedev grid at each radial points.
+
     >>> preset = "fine"  # Many choices available.
     >>> molgrid = MolGrid.from_preset(charges, coords, rgrid, preset, aim_weights=becke)
 
     The general way to integrate is the following.
+
     >>> integrand = integrand_func(molgrid.points)
     >>> integrate = molgrid.integrate(integrand)
 
@@ -117,9 +127,7 @@ class MolGrid(Grid):
             self._atweights[start:end] = atom_grid.weights
 
         if callable(aim_weights):
-            self._aim_weights = aim_weights(
-                self._points, self._atcoords, atnums, self._indices
-            )
+            self._aim_weights = aim_weights(self._points, self._atcoords, atnums, self._indices)
 
         elif isinstance(aim_weights, np.ndarray):
             if aim_weights.size != size:
@@ -235,16 +243,17 @@ class MolGrid(Grid):
 
         Parameters
         ----------
-        func_vals : ndarray(\sum_i N_i ,)
+        func_vals: ndarray(\sum_i N_i,)
             The function values evaluated on all :math:`N_i` points on the :math:`i`th atomic grid.
 
         Returns
         -------
-        Callable[[ndarray(M, 3), int] -> ndarray(M)]
+        Callable[[ndarray(M, 3), int] -> ndarray(M)]:
             Callable function that interpolates the function and its derivative provided.
             The function takes the following attributes:
+
                 points : ndarray(N, 3)
-                Cartesian coordinates of :math:`N` points to evaluate the splines on.
+                    Cartesian coordinates of :math:`N` points to evaluate the splines on.
                 deriv : int, optional
                     If deriv is zero, then only returns function values. If it is one, then
                     returns the first derivative of the interpolated function with respect to either
@@ -253,28 +262,30 @@ class MolGrid(Grid):
                 deriv_spherical : bool
                     If True, then returns the derivatives with respect to spherical coordinates
                     :math:`(r, \theta, \phi)`. Default False.
-                only_radial_derivs : bool
+                only_radial_deriv : bool
                     If true, then the derivative wrt to radius :math:`r` is returned.
-            and returns:
-                ndarray(M,...) :
+
+            This function returns the following.
+
+                ndarray(M,...):
                     The interpolated function values or its derivatives with respect to Cartesian
                     :math:`(x,y,z)` or if `deriv_spherical` then :math:`(r, \theta, \phi)` or
                     if `only_radial_derivs` then derivative wrt to :math:`r` is only returned.
 
         Examples
         --------
-        Consider the function (3x^2 + 4y^2 + 5z^2)
+        >>> # Consider the function (3x^2 + 4y^2 + 5z^2)
         >>> def polynomial_func(pts) :
         >>>     return 3.0 * points[:, 0]**2.0 + 4.0 * points[:, 1]**2.0 + 5.0 * points[:, 2]**2.0
-        Evaluate the polynomial over the molecular grid points and construct interpolation func.
+        >>> # Evaluate the polynomial over the molecular grid points and interpolate
         >>> polynomial_vals = polynomial_func(molgrid.points)
         >>> interpolate_func = molgrid.interpolate(polynomial_vals)
-        Use it to interpolate at new points.
+        >>> # Use it to interpolate at new points.
         >>> interpolate_vals = interpolate_func(new_pts)
-         # Can calculate first derivative wrt to Cartesian or spherical
+        >>> # Can calculate first derivative wrt to Cartesian or spherical
         >>> interpolate_derivs = interpolate_func(new_pts, deriv=1)
         >>> interpolate_derivs_sph = interpolate_func(new_pts, deriv=1, deriv_spherical=True)
-        # Only higher-order derivatives are supported for the radius coordinate r.
+        >>> # Only higher-order derivatives are supported for the radius coordinate r.
         >>> interpolated_derivs_radial = interpolate_func(new_pts, deriv=2, only_radial_derivs=True)
 
         """
@@ -291,13 +302,9 @@ class MolGrid(Grid):
             start_index = self.indices[i]
             final_index = self.indices[i + 1]
             atom_grid = self[i]
-            intepolate_funcs.append(
-                atom_grid.interpolate(func_vals_atom[start_index:final_index])
-            )
+            intepolate_funcs.append(atom_grid.interpolate(func_vals_atom[start_index:final_index]))
 
-        def interpolate_low(
-            points, deriv=0, deriv_spherical=False, only_radial_derivs=False
-        ):
+        def interpolate_low(points, deriv=0, deriv_spherical=False, only_radial_derivs=False):
             r"""Construct a spline like callable for intepolation.
 
             Parameters
@@ -323,13 +330,9 @@ class MolGrid(Grid):
                 if `only_radial_derivs` then derivative wrt to :math:`r` is only returned.
 
             """
-            output = intepolate_funcs[0](
-                points, deriv, deriv_spherical, only_radial_derivs
-            )
+            output = intepolate_funcs[0](points, deriv, deriv_spherical, only_radial_derivs)
             for interpolate in intepolate_funcs[1:]:
-                output += interpolate(
-                    points, deriv, deriv_spherical, only_radial_derivs
-                )
+                output += interpolate(points, deriv, deriv_spherical, only_radial_derivs)
             return output
 
         return interpolate_low
@@ -375,8 +378,7 @@ class MolGrid(Grid):
         # construct for a atom molecule
         if atcoords.ndim != 2:
             raise ValueError(
-                "The dimension of coordinates need to be 2\n"
-                f"got shape: {atcoords.ndim}"
+                "The dimension of coordinates need to be 2\n" f"got shape: {atcoords.ndim}"
             )
         if len(atnums) != atcoords.shape[0]:
             raise ValueError(
@@ -394,9 +396,7 @@ class MolGrid(Grid):
             elif isinstance(rgrid, dict):
                 rad = rgrid[atnums[i]]
             else:
-                raise TypeError(
-                    f"not supported radial grid input; got input type: {type(rgrid)}"
-                )
+                raise TypeError(f"not supported radial grid input; got input type: {type(rgrid)}")
             # get proper grid type
             if isinstance(preset, str):
                 gd_type = preset
@@ -461,9 +461,7 @@ class MolGrid(Grid):
         """
         at_grids = []
         for i in range(len(atcoords)):
-            at_grids.append(
-                AtomGrid(rgrid, sizes=[size], center=atcoords[i], rotate=rotate)
-            )
+            at_grids.append(AtomGrid(rgrid, sizes=[size], center=atcoords[i], rotate=rotate))
         return cls(atnums, at_grids, aim_weights, store=store)
 
     @classmethod
@@ -526,20 +524,15 @@ class MolGrid(Grid):
         """
         if atcoords.ndim != 2:
             raise ValueError(
-                "The dimension of coordinates need to be 2\n"
-                f"got shape: {atcoords.ndim}"
+                "The dimension of coordinates need to be 2\n" f"got shape: {atcoords.ndim}"
             )
 
         at_grids = []
         num_atoms = len(atcoords)
         # List of None is created, so that indexing is possible in the for-loop.
-        sectors_degree = (
-            [None] * num_atoms if sectors_degree is None else sectors_degree
-        )
+        sectors_degree = [None] * num_atoms if sectors_degree is None else sectors_degree
         sectors_size = [None] * num_atoms if sectors_size is None else sectors_size
-        radius_atom = (
-            [radius] * num_atoms if isinstance(radius, (float, np.float64)) else radius
-        )
+        radius_atom = [radius] * num_atoms if isinstance(radius, (float, np.float64)) else radius
         for i in range(num_atoms):
             # get proper radial grid
             if isinstance(rgrid, OneDGrid):
@@ -549,9 +542,7 @@ class MolGrid(Grid):
             elif isinstance(rgrid, dict):
                 rad = rgrid[atnums[i]]
             else:
-                raise TypeError(
-                    f"not supported radial grid input; got input type: {type(rgrid)}"
-                )
+                raise TypeError(f"not supported radial grid input; got input type: {type(rgrid)}")
 
             at_grids.append(
                 AtomGrid.from_pruned(

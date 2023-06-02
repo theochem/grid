@@ -19,14 +19,12 @@
 # --
 r"""Hyper Rectangular Grid In Either Two or Three Dimensions."""
 
-from grid.basegrid import Grid, OneDGrid
-
 import numpy as np
-
 from scipy.interpolate import CubicSpline, RegularGridInterpolator
-
 from sympy import symbols
 from sympy.functions.combinatorial.numbers import bell
+
+from grid.basegrid import Grid, OneDGrid
 
 
 class _HyperRectangleGrid(Grid):
@@ -92,13 +90,9 @@ class _HyperRectangleGrid(Grid):
         # assume the points have a specific structure.
         if self.ndim == 3:
             z = self.points[: self.shape[2], 2]
-            coords_y = [
-                self.coordinates_to_index((0, j, 0)) for j in range(self.shape[1])
-            ]
+            coords_y = [self.coordinates_to_index((0, j, 0)) for j in range(self.shape[1])]
             y = self.points[coords_y, 1]
-            coords_x = [
-                self.coordinates_to_index((j, 0, 0)) for j in range(self.shape[0])
-            ]
+            coords_x = [self.coordinates_to_index((j, 0, 0)) for j in range(self.shape[0])]
             x = self.points[coords_x, 0]
             return x, y, z
         # Case of two-dimensions
@@ -107,9 +101,7 @@ class _HyperRectangleGrid(Grid):
         x = self.points[coords_x, 0]
         return x, y
 
-    def interpolate(
-        self, points, values, use_log=False, nu_x=0, nu_y=0, nu_z=0, method="cubic"
-    ):
+    def interpolate(self, points, values, use_log=False, nu_x=0, nu_y=0, nu_z=0, method="cubic"):
         r"""Interpolate function value at a given point.
 
         Only implemented in three-dimensions.
@@ -178,9 +170,7 @@ class _HyperRectangleGrid(Grid):
             # Get smallest and largest index for selecting func vals on this specific z-slice.
             # The `1` and `self.num_puts[2] - 2` is needed because I don't want the boundary.
             small_index = self.coordinates_to_index((x_index, y_index, 1))
-            large_index = self.coordinates_to_index(
-                (x_index, y_index, self.shape[2] - 2)
-            )
+            large_index = self.coordinates_to_index((x_index, y_index, self.shape[2] - 2))
             val = CubicSpline(
                 self.points[small_index:large_index, 2],
                 values[small_index:large_index],
@@ -193,10 +183,7 @@ class _HyperRectangleGrid(Grid):
             # Assumes x_index is in the grid while y, z may not be.
             val = CubicSpline(
                 self.points[np.arange(1, self.shape[1] - 2) * self.shape[2], 1],
-                [
-                    z_spline(z, x_index, y_index, nu_z)
-                    for y_index in range(1, self.shape[1] - 2)
-                ],
+                [z_spline(z, x_index, y_index, nu_z) for y_index in range(1, self.shape[1] - 2)],
             )(y, nu_y)
             # Trying to vectorize over z-axis and y-axis, this computes the interpolation for every
             #      pair of (y,z) pair when we're only interested in the diagonal. This is faster
@@ -207,13 +194,8 @@ class _HyperRectangleGrid(Grid):
         # Interpolate the point (x, y, z) from a list of interpolated points on x,y-axis.
         def x_spline(x, y, z, nu_x):
             val = CubicSpline(
-                self.points[
-                    np.arange(1, self.shape[0] - 2) * self.shape[1] * self.shape[2], 0
-                ],
-                [
-                    y_splines(y, x_index, z, nu_y)
-                    for x_index in range(1, self.shape[0] - 2)
-                ],
+                self.points[np.arange(1, self.shape[0] - 2) * self.shape[1] * self.shape[2], 0],
+                [y_splines(y, x_index, z, nu_y) for x_index in range(1, self.shape[0] - 2)],
             )(x, nu_x)
             # Trying to vectorize over x-axis, this computes the interpolation for every
             #      pair of (x, (y, z)) pair when we're only interested in the diagonal. This is
@@ -237,33 +219,25 @@ class _HyperRectangleGrid(Grid):
                 # Interpolate d^k ln(f) d"deriv_var" for all k from 1 to "deriv_var"
                 if nu_x > 0:
                     derivs = [
-                        self.interpolate(
-                            points, values, use_log=False, nu_x=i, nu_y=0, nu_z=0
-                        )
+                        self.interpolate(points, values, use_log=False, nu_x=i, nu_y=0, nu_z=0)
                         for i in range(1, nu_x + 1)
                     ]
                     deriv_var = nu_x
                 elif nu_y > 0:
                     derivs = [
-                        self.interpolate(
-                            points, values, use_log=False, nu_x=0, nu_y=i, nu_z=0
-                        )
+                        self.interpolate(points, values, use_log=False, nu_x=0, nu_y=i, nu_z=0)
                         for i in range(1, nu_y + 1)
                     ]
                     deriv_var = nu_y
                 else:
                     derivs = [
-                        self.interpolate(
-                            points, values, use_log=False, nu_x=0, nu_y=0, nu_z=i
-                        )
+                        self.interpolate(points, values, use_log=False, nu_x=0, nu_y=0, nu_z=i)
                         for i in range(1, nu_z + 1)
                     ]
                     deriv_var = nu_z
                 # Sympy symbols and dictionary of symbols pointing to the derivative values
                 sympy_symbols = symbols("x:" + str(deriv_var))
-                symbol_values = {
-                    "x" + str(i): float(derivs[i]) for i in range(0, deriv_var)
-                }
+                symbol_values = {"x" + str(i): float(derivs[i]) for i in range(0, deriv_var)}
                 return interpolated * float(
                     sum(
                         [
@@ -329,9 +303,7 @@ class _HyperRectangleGrid(Grid):
 
         """
         if not index >= 0:
-            raise ValueError(
-                f"Argument index should be a positive integer, got {index}"
-            )
+            raise ValueError(f"Argument index should be a positive integer, got {index}")
         if self.ndim == 3:
             n_1d, n_2d = self.shape[2], self.shape[1] * self.shape[2]
             i = index // n_2d
@@ -467,6 +439,7 @@ class UniformGrid(_HyperRectangleGrid):
             Number of grid points along each axis.
         weight : str
             String indicating weighting function. This can be:
+
             Rectangle :
                 The weights are the standard Riemannian weights,
 
@@ -483,7 +456,6 @@ class UniformGrid(_HyperRectangleGrid):
 
                  .. math::
                     \begin{align*}
-
                         w_{ij} &= \frac{V}{(M_x + 1) \cdot (M_y + 1)}  \tag{Two-Dimensions} \\
                         w_{ijk} &= \frac{V}{(M_x + 1) \cdot (M_y + 1) \cdot (M_z + 1)}
                         \tag{Three-Dimensions}
@@ -520,10 +492,10 @@ class UniformGrid(_HyperRectangleGrid):
                 boundary of the cube.
 
                 .. math::
-                    w_{ijk} = V^\prime \cdot w_i w_j w_k,
+                    w_{ijk} &= V^\prime \cdot w_i w_j w_k, \\
                     w_i &= \bigg(\frac{2\sin((j - 0.5)\pi) \sin^2(M_x\pi/2)}{M_x^2 \pi} +
                      \frac{4}{M_x \pi} \sum_{p=1}^{M_x - 1}
-                     \frac{\sin((2j-1)p\pi /n_x) sin^2(p \pi)\}{\pi}bigg)
+                     \frac{\sin((2j-1)p\pi /n_x) sin^2(p \pi)}{\pi} \bigg)
 
             Alternative :
                 This does not assume function is zero at the boundary.
@@ -538,23 +510,15 @@ class UniformGrid(_HyperRectangleGrid):
 
         """
         if not isinstance(origin, np.ndarray):
-            raise TypeError(
-                f"Argument origin should be a numpy array, got {type(origin)}"
-            )
+            raise TypeError(f"Argument origin should be a numpy array, got {type(origin)}")
         if not isinstance(axes, np.ndarray):
             raise TypeError(f"Argument axes should be a numpy array, got {type(axes)}")
         if not isinstance(shape, np.ndarray):
-            raise TypeError(
-                f"Argument shape should be a numpy array, got {type(shape)}"
-            )
+            raise TypeError(f"Argument shape should be a numpy array, got {type(shape)}")
         if origin.size != 3 and origin.size != 2:
-            raise ValueError(
-                f"Arguments origin should have size 2 or 3, got {origin.shape}"
-            )
+            raise ValueError(f"Arguments origin should have size 2 or 3, got {origin.shape}")
         if shape.size != origin.size:
-            raise ValueError(
-                f"Shape {shape.size} should be the same size {origin.size}."
-            )
+            raise ValueError(f"Shape {shape.size} should be the same size {origin.size}.")
         if axes.shape != (origin.size, origin.size):
             raise ValueError(
                 f"Axes {axes.shape} should be the same shape {origin.size}, {origin.size}."
@@ -575,9 +539,7 @@ class UniformGrid(_HyperRectangleGrid):
         self._points = np.zeros((np.prod(shape), dim))
         if dim == 3:
             coords = np.array(
-                np.meshgrid(
-                    np.arange(shape[0]), np.arange(shape[1]), np.arange(shape[2])
-                )
+                np.meshgrid(np.arange(shape[0]), np.arange(shape[1]), np.arange(shape[2]))
             )
             coords = np.swapaxes(coords, 1, 2)
             coords = coords.reshape(3, -1)
@@ -620,6 +582,7 @@ class UniformGrid(_HyperRectangleGrid):
         weight : str, optional
             String indicating weighting function. Denoting the volume/area of the uniform grid
             by :math:`V`, the weighting function can be:
+
             Rectangle :
                 The weights are the standard Riemannian weights,
 
@@ -651,10 +614,10 @@ class UniformGrid(_HyperRectangleGrid):
                 boundary of the cube.
 
                 .. math::
-                    w_{ijk} = V^\prime \cdot w_i w_j w_k,
+                    w_{ijk} &= V^\prime \cdot w_i w_j w_k,\\
                     w_i &= \bigg(\frac{2\sin((j - 0.5)\pi) \sin^2(M_x\pi/2)}{M_x^2 \pi} +
                      \frac{4}{M_x \pi} \sum_{p=1}^{M_x - 1}
-                     \frac{\sin((2j-1)p\pi /n_x) sin^2(p \pi)\}{\pi}bigg)
+                     \frac{\sin((2j-1)p\pi /n_x) sin^2(p \pi)}{\pi} \bigg)
 
             Alternative :
                 This does not assume function is zero at the boundary.
@@ -740,9 +703,7 @@ class UniformGrid(_HyperRectangleGrid):
             )
         else:
             # Two-Dims: Volume of a parallelogram is the absolute value of the determinant |a x b|
-            volume = np.linalg.det(
-                np.array([shape[0] * self.axes[0], shape[1] * self.axes[1]])
-            )
+            volume = np.linalg.det(np.array([shape[0] * self.axes[0], shape[1] * self.axes[1]]))
         return np.abs(volume)
 
     def _calculate_alternative_volume(self, shape):
@@ -836,10 +797,7 @@ class UniformGrid(_HyperRectangleGrid):
             weight_x = _fourier2(shape, 0)
             weight_y = _fourier2(shape, 1)
             weight_z = _fourier2(shape, 2)
-            weight = (
-                np.einsum("ijk,i,j,k->ijk", weight, weight_x, weight_y, weight_z)
-                * alt_volume
-            )
+            weight = np.einsum("ijk,i,j,k->ijk", weight, weight_x, weight_y, weight_z) * alt_volume
             return np.ravel(weight)
         else:
             raise ValueError(f"The weight type parameter is not known, got {weight}")
@@ -876,9 +834,7 @@ class UniformGrid(_HyperRectangleGrid):
 
         # Calculate step-size of the cube.
         step_sizes = np.array([np.linalg.norm(axis) for axis in self.axes])
-        coord = np.array(
-            [(point[i] - self.origin[i]) / step_sizes[i] for i in range(self.ndim)]
-        )
+        coord = np.array([(point[i] - self.origin[i]) / step_sizes[i] for i in range(self.ndim)])
 
         if which == "origin":
             # Round to smallest integer.

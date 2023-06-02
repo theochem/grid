@@ -22,10 +22,10 @@
 
 from unittest import TestCase
 
-from grid.basegrid import Grid, LocalGrid, OneDGrid
-
 import numpy as np
 from numpy.testing import assert_allclose
+
+from grid.basegrid import Grid, LocalGrid, OneDGrid
 
 
 class TestGrid(TestCase):

@@ -12,8 +12,8 @@ Grid is a simple, free, and open-source Python library for numerical integration
 Primarly intended for the quantum chemistry community to assist in density-functional (DFT) theory calculations,
 including support for periodic boundary conditions.
 
-Please visit [**Grid Documentation**](https://grid.qcdevs.org/) for more information with 
-examples about the software. 
+Please visit [**Grid Documentation**](https://grid.qcdevs.org/) for more information with
+examples about the software.
 
 To report any issues or ask questions, either [open an issue](
 https://github.com/theochem/grid/issues/new) or email [qcdevs@gmail.com]().
@@ -23,7 +23,7 @@ https://github.com/theochem/grid/issues/new) or email [qcdevs@gmail.com]().
 Please use the following citation in any publication using BFit library:
 
 > **"Grid: A Python Library for Molecular Integration, Interpolation, and More"**,
-> X.D. Yang, A. Tehrani, L. Pujal, R. Hernández-Esparza, 
+> X.D. Yang, A. Tehrani, L. Pujal, R. Hernández-Esparza,
 > M. Chan, E. Vöhringer-Martinez, T. Verstraelen, F. Heidar-Zadeh, P. W. Ayers
 > `REFERENCE <https://doi.org/TODO>`__.
 

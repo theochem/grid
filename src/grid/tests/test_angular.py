@@ -22,23 +22,22 @@
 
 from unittest import TestCase
 
-from grid.angular import (
-    AngularGrid,
-    LEBEDEV_CACHE,
-    LEBEDEV_DEGREES,
-    LEBEDEV_NPOINTS,
-    SPHERICAL_DEGREES,
-)
-from grid.utils import generate_real_spherical_harmonics
-
 import numpy as np
+import pytest
 from numpy.testing import (
     assert_almost_equal,
     assert_array_equal,
     assert_equal,
 )
 
-import pytest
+from grid.angular import (
+    LEBEDEV_CACHE,
+    LEBEDEV_DEGREES,
+    LEBEDEV_NPOINTS,
+    SPHERICAL_DEGREES,
+    AngularGrid,
+)
+from grid.utils import generate_real_spherical_harmonics
 
 
 class TestLebedev(TestCase):
@@ -100,13 +99,9 @@ class TestLebedev(TestCase):
             AngularGrid._get_size_and_degree(degree=5, size=10)
         # load lebedev grid npz file
         with self.assertRaises(ValueError):
-            AngularGrid._load_precomputed_angular_grid(
-                degree=2, size=6, use_spherical=False
-            )
+            AngularGrid._load_precomputed_angular_grid(degree=2, size=6, use_spherical=False)
         with self.assertRaises(ValueError):
-            AngularGrid._load_precomputed_angular_grid(
-                degree=3, size=2, use_spherical=False
-            )
+            AngularGrid._load_precomputed_angular_grid(degree=3, size=2, use_spherical=False)
         # high level function tests
         with self.assertRaises(ValueError):
             AngularGrid()
@@ -180,18 +175,12 @@ def test_orthogonality_of_spherical_harmonic_up_to_degree_three(use_spherical):
     #   Returns a three dimensional array where [order m, degree l, points]
     sph_harm = generate_real_spherical_harmonics(degree, theta, phi)
     for l_deg in range(0, 4):
-        for m_ord in (
-            [0] + [x for x in range(1, l_deg + 1)] + [-x for x in range(1, l_deg + 1)]
-        ):
+        for m_ord in [0] + [x for x in range(1, l_deg + 1)] + [-x for x in range(1, l_deg + 1)]:
             for l2 in range(0, 4):
-                for m2 in (
-                    [0] + [x for x in range(1, l2 + 1)] + [-x for x in range(1, l2 + 1)]
-                ):
+                for m2 in [0] + [x for x in range(1, l2 + 1)] + [-x for x in range(1, l2 + 1)]:
                     sph_harm_one = sph_harm[l_deg**2 : (l_deg + 1) ** 2, :]
                     sph_harm_two = sph_harm[l2**2 : (l2 + 1) ** 2, :]
-                    integral = grid.integrate(
-                        sph_harm_one[m_ord, :] * sph_harm_two[m2, :]
-                    )
+                    integral = grid.integrate(sph_harm_one[m_ord, :] * sph_harm_two[m2, :])
                     if l2 != l_deg or m2 != m_ord:
                         assert np.abs(integral) < 1e-8
                     else:

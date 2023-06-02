@@ -20,11 +20,10 @@
 """1D integration grid."""
 
 
-from grid.basegrid import OneDGrid
-
 import numpy as np
-
 from scipy.special import roots_chebyu, roots_genlaguerre
+
+from grid.basegrid import OneDGrid
 
 
 class GaussLaguerre(OneDGrid):
@@ -63,9 +62,7 @@ class GaussLaguerre(OneDGrid):
 
         """
         if npoints <= 1:
-            raise ValueError(
-                f"Argument npoints must be an integer > 1, given {npoints}"
-            )
+            raise ValueError(f"Argument npoints must be an integer > 1, given {npoints}")
         if alpha <= -1:
             raise ValueError(f"Argument alpha must be larger than -1, given {alpha}")
         # compute points and weights for Generalized Gauss-Laguerre quadrature
@@ -113,9 +110,7 @@ class GaussLegendre(OneDGrid):
 
         """
         if npoints <= 1:
-            raise ValueError(
-                f"Argument npoints must be an integer > 1, given {npoints}"
-            )
+            raise ValueError(f"Argument npoints must be an integer > 1, given {npoints}")
         # compute points and weights for Gauss-Legendre quadrature
         # according to numpy's leggauss, the accuracy is only known up to `npoints=100`.
         points, weights = np.polynomial.legendre.leggauss(npoints)
@@ -156,9 +151,7 @@ class GaussChebyshev(OneDGrid):
 
         """
         if npoints <= 1:
-            raise ValueError(
-                f"Argument npoints must be an integer > 1, given {npoints}"
-            )
+            raise ValueError(f"Argument npoints must be an integer > 1, given {npoints}")
         # compute points and weights for Gauss-Chebyshev quadrature (Type 1)
         # points are generated in decreasing order (from +1 to -1), so the order is reversed to
         # correctly traverse [-1, 1] when making an instance of OneDGrid
@@ -193,9 +186,7 @@ class UniformInteger(OneDGrid):
 
         """
         if npoints <= 1:
-            raise ValueError(
-                f"Argument npoints must be an integer > 1, given {npoints}"
-            )
+            raise ValueError(f"Argument npoints must be an integer > 1, given {npoints}")
         points = np.arange(npoints)
         weights = np.ones(npoints)
         super().__init__(points, weights, (0, np.inf))
@@ -235,9 +226,7 @@ class GaussChebyshevType2(OneDGrid):
 
         """
         if npoints < 1:
-            raise ValueError(
-                f"Argument npoints must be an integer > 1, given {npoints}"
-            )
+            raise ValueError(f"Argument npoints must be an integer > 1, given {npoints}")
         # compute points and weights for Gauss-Chebyshev quadrature (Type 2)
         points, weights = roots_chebyu(npoints)
         weights /= np.sqrt(1 - np.power(points, 2))
@@ -278,9 +267,7 @@ class GaussChebyshevLobatto(OneDGrid):
 
         """
         if npoints <= 1:
-            raise ValueError(
-                f"Argument npoints must be an integer > 1, given {npoints}"
-            )
+            raise ValueError(f"Argument npoints must be an integer > 1, given {npoints}")
 
         # generate points in ascending order, and then compute weights
         points = np.cos(np.arange(npoints) * np.pi / (npoints - 1))
@@ -321,9 +308,7 @@ class Trapezoidal(OneDGrid):
 
         """
         if npoints <= 1:
-            raise ValueError(
-                f"Argument npoints must be an integer > 1, given {npoints}"
-            )
+            raise ValueError(f"Argument npoints must be an integer > 1, given {npoints}")
 
         points = -1 + (2 * np.arange(npoints) / (npoints - 1))
         weights = 2 * np.ones(npoints) / (npoints - 1)
@@ -331,6 +316,7 @@ class Trapezoidal(OneDGrid):
         weights[npoints - 1] /= 2
 
         super().__init__(points, weights, (-1, 1))
+
 
 class RectangleRuleSineEndPoints(OneDGrid):
     r"""
@@ -349,7 +335,8 @@ class RectangleRuleSineEndPoints(OneDGrid):
 
     References
     ----------
-    .. [1] Boyd, John P. Chebyshev and Fourier spectral methods. Courier Corporation, 2001.
+    .. [#] Boyd, John P. Chebyshev and Fourier spectral methods. Courier Corporation, 2001.
+
     """
 
     def __init__(self, npoints: int):
@@ -368,9 +355,7 @@ class RectangleRuleSineEndPoints(OneDGrid):
 
         """
         if npoints <= 1:
-            raise ValueError(
-                f"Argument npoints must be an integer > 1, given {npoints}"
-            )
+            raise ValueError(f"Argument npoints must be an integer > 1, given {npoints}")
 
         points = np.arange(1, npoints + 1, 1) / (npoints + 1)
 
@@ -409,7 +394,7 @@ class RectangleRuleSineEndPoints(OneDGrid):
 #
 #     References
 #     ----------
-#     .. [1] Boyd, John P. Chebyshev and Fourier spectral methods. Courier Corporation, 2001.
+#     .. [#] Boyd, John P. Chebyshev and Fourier spectral methods. Courier Corporation, 2001.
 #
 #     """
 #
@@ -486,13 +471,9 @@ class TanhSinh(OneDGrid):
 
         """
         if npoints <= 1:
-            raise ValueError(
-                f"Argument npoints must be an integer > 1, given {npoints}"
-            )
+            raise ValueError(f"Argument npoints must be an integer > 1, given {npoints}")
         if npoints % 2 == 0:
-            raise ValueError(
-                f"Argument npoints must be an odd integer, given {npoints}"
-            )
+            raise ValueError(f"Argument npoints must be an odd integer, given {npoints}")
 
         # compute summation indices & angle values
         j = int((1 - npoints) / 2) + np.arange(npoints)
@@ -581,9 +562,7 @@ class MidPoint(OneDGrid):
 
         """
         if npoints <= 1:
-            raise ValueError(
-                f"Argument npoints must be an integer > 1, given {npoints}"
-            )
+            raise ValueError(f"Argument npoints must be an integer > 1, given {npoints}")
 
         points = -1 + (2 * np.arange(npoints) + 1) / npoints
         weights = 2 * np.ones(npoints) / npoints
@@ -600,17 +579,17 @@ class ClenshawCurtis(OneDGrid):
         \theta_i &= \pi (i - 1) / (n - 1) \\
         x_i &= \cos (\theta_i) \\
         w_i &= \frac{c_k}{n} \bigg(1 - \sum_{j=1}^{\lfloor n/2 \rfloor}
-            \frac{b_j}{4j^2 - 1} \cos(2j\theta_i) \bigg)
-        b_j = \begin{cases}
+            \frac{b_j}{4j^2 - 1} \cos(2j\theta_i) \bigg) \\
+        b_j &= \begin{cases}
             1 & \text{if } j = n/2 \\
             2 & \text{if } j < n/2
         \end{cases} \\
-        c_j = \begin{cases}
+        c_j &= \begin{cases}
             1 & \text{if } k = 0, n\\
             2 & else
         \end{cases}
 
-    where :math:k`=0,\cdots,n.
+    where :math:`k=0,\cdots,n`.
 
     If discontinuous, it is recommended to break the intervals at the discontinuities
     and handled separately.
@@ -662,8 +641,8 @@ class FejerFirst(OneDGrid):
     The definition of this quadrature is:
 
     .. math::
-        \theta_i &= \frac{(2i - 1)\pi}{2n},
-        x_i &= \cos(\theta_i),
+        \theta_i &= \frac{(2i - 1)\pi}{2n}, \\
+        x_i &= \cos(\theta_i), \\
         w_i &= \frac{2}{n}\bigg(1 - 2 \sum_{j=1}^{\lfloor n/2 \rfloor}
             \frac{\cos(2j \theta_j)}{4 j^2 - 1} \bigg),
 
@@ -714,7 +693,7 @@ class FejerSecond(OneDGrid):
     The definition of this quadrature is:
 
     .. math::
-        theta_i &= k \pi / n \\
+        \theta_i &= k \pi / n \\
         x_i &= \cos(\theta_i) \\
         w_i &= \frac{4 \sin(\theta_i)}{n} \sum_{j=1}^{\lfloor n/2 \rfloor}
             \frac{\sin(2j - 1)\theta_i}{2j - 1}\\
@@ -776,16 +755,12 @@ def _derg2(x):
 
 def _g3(x):
     r"""Return an auxiliary function g3(x) for Trefethen transformation."""
-    return (1 / 53089) * (
-        40320 * x + 6720 * x**3 + 3024 * x**5 + 1800 * x**7 + 1225 * x**9
-    )
+    return (1 / 53089) * (40320 * x + 6720 * x**3 + 3024 * x**5 + 1800 * x**7 + 1225 * x**9)
 
 
 def _derg3(x):
     r"""Return the derivative function g3(x) for Trefethen transformation."""
-    return (1 / 53089) * (
-        40320 + 20160 * x**2 + 15120 * x**4 + 12600 * x**6 + 11025 * x**8
-    )
+    return (1 / 53089) * (40320 + 20160 * x**2 + 15120 * x**4 + 12600 * x**6 + 11025 * x**8)
 
 
 class TrefethenCC(OneDGrid):
@@ -794,8 +769,9 @@ class TrefethenCC(OneDGrid):
 
     References
     ----------
-    .. [1] Hale, Nicholas, and Lloyd N. Trefethen. "New quadrature formulas from conformal maps."
+    .. [#] Hale, Nicholas, and Lloyd N. Trefethen. "New quadrature formulas from conformal maps."
        SIAM Journal on Numerical Analysis 46.2 (2008): 930-948.
+
     """
 
     def __init__(self, npoints: int, d: int = 9):
@@ -837,8 +813,9 @@ class TrefethenGC2(OneDGrid):
 
     References
     ----------
-    .. [1] Hale, Nicholas, and Lloyd N. Trefethen. "New quadrature formulas from conformal maps."
+    .. [#] Hale, Nicholas, and Lloyd N. Trefethen. "New quadrature formulas from conformal maps."
        SIAM Journal on Numerical Analysis 46.2 (2008): 930-948.
+
     """
 
     def __init__(self, npoints: int, d: int = 9):
@@ -880,8 +857,9 @@ class TrefethenGeneral(OneDGrid):
 
     References
     ----------
-    .. [1] Hale, Nicholas, and Lloyd N. Trefethen. "New quadrature formulas from conformal maps."
+    .. [#] Hale, Nicholas, and Lloyd N. Trefethen. "New quadrature formulas from conformal maps."
        SIAM Journal on Numerical Analysis 46.2 (2008): 930-948.
+
     """
 
     def __init__(self, npoints: int, quadrature: OneDGrid, d=9):
@@ -970,10 +948,11 @@ def _dergstrip(rho, s):
 class TrefethenStripCC(OneDGrid):
     """Trefethen strip transformation of Clenshaw-Curtis quadrature.
 
-     References
+    References
     ----------
-    .. [1] Hale, Nicholas, and Lloyd N. Trefethen. "New quadrature formulas from conformal maps."
+    .. [#] Hale, Nicholas, and Lloyd N. Trefethen. "New quadrature formulas from conformal maps."
        SIAM Journal on Numerical Analysis 46.2 (2008): 930-948.
+
     """
 
     def __init__(self, npoints: int, rho=1.1):
@@ -999,10 +978,11 @@ class TrefethenStripCC(OneDGrid):
 class TrefethenStripGC2(OneDGrid):
     """Trefethen strip transformation of the Gauss-Chebyshev of the second kind quadrature.
 
-     References
+    References
     ----------
-    .. [1] Hale, Nicholas, and Lloyd N. Trefethen. "New quadrature formulas from conformal maps."
+    .. [#] Hale, Nicholas, and Lloyd N. Trefethen. "New quadrature formulas from conformal maps."
        SIAM Journal on Numerical Analysis 46.2 (2008): 930-948.
+
     """
 
     def __init__(self, npoints: int, rho=1.1):
@@ -1029,10 +1009,11 @@ class TrefethenStripGC2(OneDGrid):
 class TrefethenStripGeneral(OneDGrid):
     """Trefethen Strip General integral quadrature class.
 
-     References
+    References
     ----------
-    .. [1] Hale, Nicholas, and Lloyd N. Trefethen. "New quadrature formulas from conformal maps."
+    .. [#] Hale, Nicholas, and Lloyd N. Trefethen. "New quadrature formulas from conformal maps."
        SIAM Journal on Numerical Analysis 46.2 (2008): 930-948.
+
     """
 
     def __init__(self, npoints: int, quadrature, rho=1.1):

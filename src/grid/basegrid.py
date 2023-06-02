@@ -19,15 +19,14 @@
 # --
 """Construct basic grid data structure."""
 
+import numpy as np
+from scipy.spatial import cKDTree
+
 from grid.utils import (
     convert_cart_to_sph,
     generate_orders_horton_order,
     solid_harmonics,
 )
-
-import numpy as np
-
-from scipy.spatial import cKDTree
 
 
 class Grid:
@@ -50,9 +49,7 @@ class Grid:
                 f"Number of points: {len(points)}, Number of weights: {len(weights)}."
             )
         if weights.ndim != 1:
-            raise ValueError(
-                f"Argument weights should be a 1-D array. weights.ndim={weights.ndim}"
-            )
+            raise ValueError(f"Argument weights should be a 1-D array. weights.ndim={weights.ndim}")
         if points.ndim not in [1, 2]:
             raise ValueError(
                 f"Argument points should be a 1D or 2D array. points.ndim={points.ndim}"
@@ -90,21 +87,18 @@ class Grid:
             Return a new Grid object with selected points
         """
         if isinstance(index, int):
-            return self.__class__(
-                np.array([self.points[index]]), np.array([self.weights[index]])
-            )
+            return self.__class__(np.array([self.points[index]]), np.array([self.weights[index]]))
         else:
-            return self.__class__(
-                np.array(self.points[index]), np.array(self.weights[index])
-            )
+            return self.__class__(np.array(self.points[index]), np.array(self.weights[index]))
 
     def integrate(self, *value_arrays):
         r"""Integrate over the whole grid for given multiple value arrays.
 
-        Product of all value_arrays will be computed element-wise then
-        integrated on the grid with its weights.
+        Product of all value_arrays will be computed element-wise then integrated on the grid
+        with its weights:
+
         .. math::
-            Integral = \int w(x) \prod_i f_i(x) dx
+            \int w(x) \prod_i f_i(x) dx.
 
         Parameters
         ----------
@@ -113,7 +107,7 @@ class Grid:
 
         Returns
         -------
-        float
+        float:
             The calculated integral over given integrand or function
 
         """
@@ -169,9 +163,7 @@ class Grid:
             if self._kdtree is None:
                 self._kdtree = cKDTree(_points)
             indices = np.array(self._kdtree.query_ball_point(_center, radius, p=2.0))
-            return LocalGrid(
-                self._points[indices], self._weights[indices], center, indices
-            )
+            return LocalGrid(self._points[indices], self._weights[indices], center, indices)
 
     def moments(
         self,
@@ -225,7 +217,7 @@ class Grid:
             The type of multipole moments: "cartesian", "pure", "radial" and "pure-radial".
         return_orders : bool
             If true, it will also return a list of size :math:`L` of the orders
-             corresponding to each integral/row of the output.
+            corresponding to each integral/row of the output.
 
         Returns
         -------
@@ -238,9 +230,7 @@ class Grid:
         if func_vals.ndim > 1:
             raise ValueError(f"`func_vals` {func_vals.ndim} should have dimension one.")
         if centers.ndim != 2:
-            raise ValueError(
-                f"`centers` {centers.ndim} should have dimension one or two."
-            )
+            raise ValueError(f"`centers` {centers.ndim} should have dimension one or two.")
         if self.points.shape[1] != centers.shape[1]:
             raise ValueError(
                 f"The dimension of the grid {self.points.shape[1]} should"
@@ -259,21 +249,13 @@ class Grid:
 
         # Generate all orders, e.g. cartesian it is (m_x, m_y, m_z) in Horton 2 order.
         if isinstance(orders, (int, np.int32, np.int64)):
-            orders = (
-                range(0, orders + 1)
-                if type_mom != "pure-radial"
-                else range(1, orders + 1)
-            )
+            orders = range(0, orders + 1) if type_mom != "pure-radial" else range(1, orders + 1)
         else:
-            raise TypeError(
-                f"Orders {type(orders)} should be either integer, list or numpy array."
-            )
+            raise TypeError(f"Orders {type(orders)} should be either integer, list or numpy array.")
         dim = self.points.shape[1]
         all_orders = generate_orders_horton_order(orders[0], type_mom, dim)
         for l_ord in orders[1:]:
-            all_orders = np.vstack(
-                (all_orders, generate_orders_horton_order(l_ord, type_mom, dim))
-            )
+            all_orders = np.vstack((all_orders, generate_orders_horton_order(l_ord, type_mom, dim)))
 
         integrals = []
         for center in centers:
@@ -287,12 +269,8 @@ class Grid:
                 # Take the product: [(X-c)^_mx (Y-c)^my (Z-c)^mz], has shape (L, N)
                 cent_pts_with_order = np.prod(cent_pts_with_order, axis=2)
                 # Calculate integral (X-c)^mx (Y-c)^my (Z-c)^mz by the function values and weights
-                integral = np.einsum(
-                    "ln,n,n->l", cent_pts_with_order, func_vals, self.weights
-                )
-            elif (
-                type_mom == "radial" or type_mom == "pure" or type_mom == "pure-radial"
-            ):
+                integral = np.einsum("ln,n,n->l", cent_pts_with_order, func_vals, self.weights)
+            elif type_mom == "radial" or type_mom == "pure" or type_mom == "pure-radial":
                 # Take the norm |r - R_c|
                 cent_pts_with_order = np.linalg.norm(centered_pts, axis=1)
 
@@ -304,9 +282,7 @@ class Grid:
 
                     if type_mom == "pure":
                         # Take the integral |r - R_c|^l S_l^m(theta, phi) f(r, theta, phi) weights
-                        integral = np.einsum(
-                            "ln,n,n->l", solid_harm, func_vals, self.weights
-                        )
+                        integral = np.einsum("ln,n,n->l", solid_harm, func_vals, self.weights)
                     elif type_mom == "pure-radial":
                         # Get the correct indices in solid_harm associated to l_degree and m_orders.
                         n_princ, l_degrees, m_orders = all_orders.T
@@ -324,13 +300,9 @@ class Grid:
                         )
 
                 elif type_mom == "radial":
-                    cent_pts_with_order = (
-                        cent_pts_with_order ** np.ravel(all_orders)[:, None]
-                    )
+                    cent_pts_with_order = cent_pts_with_order ** np.ravel(all_orders)[:, None]
                     # Take the integral |r - R_c|^l  f(r, theta, phi) weights
-                    integral = np.einsum(
-                        "ln,n,n->l", cent_pts_with_order, func_vals, self.weights
-                    )
+                    integral = np.einsum("ln,n,n->l", cent_pts_with_order, func_vals, self.weights)
 
             integrals.append(integral)
         if return_orders:
@@ -433,9 +405,7 @@ class OneDGrid(Grid):
         """
         # check points & weights
         if points.ndim != 1:
-            raise ValueError(
-                f"Argument points should be a 1-D array. points.ndim={points.ndim}"
-            )
+            raise ValueError(f"Argument points should be a 1-D array. points.ndim={points.ndim}")
 
         # check domain
         if domain is not None:
