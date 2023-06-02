@@ -27,6 +27,8 @@ from scipy.special import roots_chebyu, roots_legendre
 
 from grid.onedgrid import (
     ClenshawCurtis,
+    ExpExp,
+    ExpSinh,
     FejerFirst,
     FejerSecond,
     GaussChebyshev,
@@ -34,9 +36,13 @@ from grid.onedgrid import (
     GaussChebyshevType2,
     GaussLaguerre,
     GaussLegendre,
+    LogExpSinh,
     MidPoint,
     RectangleRuleSineEndPoints,
     Simpson,
+    SingleArcSinhExp,
+    SingleExp,
+    SingleTanh,
     TanhSinh,
     Trapezoidal,
     TrefethenCC,
@@ -241,6 +247,42 @@ class TestOneDGrid(TestCase):
             FejerFirst(-10)
         with self.assertRaises(ValueError):
             FejerSecond(-10)
+        with self.assertRaises(ValueError):
+            ExpSinh(11, -0.1)
+        with self.assertRaises(ValueError):
+            ExpSinh(-11, 0.1)
+        with self.assertRaises(ValueError):
+            ExpSinh(10, 0.1)
+        with self.assertRaises(ValueError):
+            LogExpSinh(11, -0.1)
+        with self.assertRaises(ValueError):
+            LogExpSinh(-11, 0.1)
+        with self.assertRaises(ValueError):
+            LogExpSinh(10, 0.1)
+        with self.assertRaises(ValueError):
+            ExpExp(11, -0.1)
+        with self.assertRaises(ValueError):
+            ExpExp(-11, 0.1)
+        with self.assertRaises(ValueError):
+            ExpExp(10, 0.1)
+        with self.assertRaises(ValueError):
+            SingleTanh(11, -0.1)
+        with self.assertRaises(ValueError):
+            SingleTanh(-11, 0.1)
+        with self.assertRaises(ValueError):
+            SingleTanh(10, 0.1)
+        with self.assertRaises(ValueError):
+            SingleExp(11, -0.1)
+        with self.assertRaises(ValueError):
+            SingleExp(-11, 0.1)
+        with self.assertRaises(ValueError):
+            SingleExp(10, 0.1)
+        with self.assertRaises(ValueError):
+            SingleArcSinhExp(11, -0.1)
+        with self.assertRaises(ValueError):
+            SingleArcSinhExp(-11, 0.1)
+        with self.assertRaises(ValueError):
+            SingleArcSinhExp(10, 0.1)
 
     @staticmethod
     def helper_gaussian(x):
@@ -275,6 +317,13 @@ class TestOneDGrid(TestCase):
             TrefethenGC2: 30,
             TrefethenStripCC: 20,
             TrefethenStripGC2: 70,
+            # SingleTanh: 75,           # TODO: The following grids don't work
+            # ExpSinh: 11,              # TODO: The following grids don't work
+            # LogExpSinh: 75,           # TODO: The following grids don't work
+            # ExpExp: 75,               # TODO: The following grids don't work
+            SingleTanh: 75,
+            # SingleExp: 75,            # TODO: The following grids don't work
+            # SingleArcSinhExp: 75,     # TODO: The following grids don't work
         }
         # loop each pair to create pts instance
         for quadrature, n_points in candidates_quadratures.items():
@@ -554,3 +603,70 @@ class TestOneDGrid(TestCase):
 
         assert_allclose(grid.points, new.points)
         assert_allclose(grid.weights, new.weights)
+
+    def test_ExpSinh(self):
+        """Test for ExpSinh rule."""
+        grid = ExpSinh(11, 0.1)
+
+        k = np.arange(-5, 6)
+        points = np.exp(np.pi * np.sinh(k * 0.1) / 2)
+        weights = points * np.pi * 0.1 * np.cosh(k * 0.1) / 2
+
+        assert_allclose(grid.points, points)
+        assert_allclose(grid.weights, weights)
+
+    def test_LogExpSinh(self):
+        """Test for LogExpSinh rule."""
+        grid = LogExpSinh(11, 0.1)
+
+        k = np.arange(-5, 6)
+        points = np.log(np.exp(np.pi * np.sinh(k * 0.1) / 2) + 1)
+        weights = np.exp(np.pi * np.sinh(k * 0.1) / 2) * np.pi * 0.1 * np.cosh(k * 0.1) / 2
+        weights /= np.exp(np.pi * np.sinh(k * 0.1) / 2) + 1
+
+        assert_allclose(grid.points, points)
+        assert_allclose(grid.weights, weights)
+
+    def test_ExpExp(self):
+        """Test for ExpExp rule."""
+        grid = ExpExp(11, 0.1)
+
+        k = np.arange(-5, 6)
+        points = np.exp(k * 0.1) * np.exp(-np.exp(-k * 0.1))
+        weights = 0.1 * np.exp(-np.exp(-k * 0.1)) * (np.exp(k * 0.1) + 1)
+
+        assert_allclose(grid.points, points)
+        assert_allclose(grid.weights, weights)
+
+    def test_SingleTanh(self):
+        """Test for singleTanh rule."""
+        grid = SingleTanh(11, 0.1)
+
+        k = np.arange(-5, 6)
+        points = np.tanh(k * 0.1)
+        weights = 0.1 / np.cosh(k * 0.1) ** 2
+
+        assert_allclose(grid.points, points)
+        assert_allclose(grid.weights, weights)
+
+    def test_SingleExp(self):
+        """Test for Single Exp rule."""
+        grid = SingleExp(11, 0.1)
+
+        k = np.arange(-5, 6)
+        points = np.exp(k * 0.1)
+        weights = 0.1 * points
+
+        assert_allclose(grid.points, points)
+        assert_allclose(grid.weights, weights)
+
+    def test_SingleArcSinhExp(self):
+        """Test for SingleArcSinhExp rule."""
+        grid = SingleArcSinhExp(11, 0.1)
+
+        k = np.arange(-5, 6)
+        points = np.arcsinh(np.exp(k * 0.1))
+        weights = 0.1 * np.exp(k * 0.1) / np.sqrt(np.exp(2 * 0.1 * k) + 1)
+
+        assert_allclose(grid.points, points)
+        assert_allclose(grid.weights, weights)

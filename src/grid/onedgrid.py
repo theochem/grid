@@ -20,6 +20,8 @@
 """1D integration grid."""
 
 
+import warnings
+
 import numpy as np
 from scipy.special import roots_chebyu, roots_genlaguerre
 
@@ -955,7 +957,7 @@ class TrefethenStripCC(OneDGrid):
 
     """
 
-    def __init__(self, npoints: int, rho=1.1):
+    def __init__(self, npoints: int, rho: float = 1.1):
         r"""Generate grid on :math:`[-1,1]` interval based on Trefethen-Clenshaw-Curtis.
 
         Parameters
@@ -985,7 +987,7 @@ class TrefethenStripGC2(OneDGrid):
 
     """
 
-    def __init__(self, npoints: int, rho=1.1):
+    def __init__(self, npoints: int, rho: float = 1.1):
         r"""Generate grid on :math:`[-1,1]` interval based on Trefethen-Gauss-Chebyshev.
 
         Parameters
@@ -1016,7 +1018,7 @@ class TrefethenStripGeneral(OneDGrid):
 
     """
 
-    def __init__(self, npoints: int, quadrature, rho=1.1):
+    def __init__(self, npoints: int, quadrature, rho: float = 1.1):
         r"""Generate grid on :math:`[-1,1]` interval based on Trefethen-General.
 
         Parameters
@@ -1035,3 +1037,297 @@ class TrefethenStripGeneral(OneDGrid):
         weights = _dergstrip(rho, grid.points) * grid.weights
 
         super().__init__(points, weights, (-1, 1))
+
+
+class ExpSinh(OneDGrid):
+    r"""Exponential-Hyperbolic Sine quadrature class.
+
+    The definition of this quadrature is:
+
+    .. math::
+        \int_{0}^{\infty} f(x) dx \approx
+        \sum_{k=-n}^n w_k f(x_k). \\
+        x_k = \exp \left(\frac{\pi}{2}\sinh(k h) \right) \\
+        w_k = \exp \left(\frac{\pi}{2}\sinh(k h) \right)\left(\frac{\pi h}{2} \cosh(k h) \right)
+
+    Warnings
+    --------
+    - Using this quadrature requires heavy parameter-tuning in-order to work.
+
+    """
+
+    def __init__(self, npoints: int, h: float = 1.0):
+        r"""Generate 1D grid on :math:`(0, \infty)` interval based on exp-sinh quadrature.
+
+        Parameters
+        ----------
+        npoints : int
+            Number of grid points.
+        h : float
+            Value of parameter :math: `h` wich control the quadrature.
+
+        Returns
+        -------
+        OneDGrid
+            One-dimensional grid instance.
+
+        """
+        warnings.warn(
+            "Using this quadrature requires heavy parameter-tuning in-order to be applicable.",
+            stacklevel=2,
+        )
+        if h <= 0:
+            raise ValueError(f"The value of h must be bigger than 0, given {h}")
+        if npoints < 1:
+            raise ValueError(f"npoints must be bigger than 1, given {npoints}")
+        if npoints % 2 == 0:
+            raise ValueError(f"npoints must be odd, given {npoints}")
+        m = int((npoints - 1) / 2)
+        k = np.arange(-m, m + 1)
+        points = np.exp(np.pi * np.sinh(k * h) / 2)
+        weights = points * np.pi * h * np.cosh(k * h) / 2
+        super().__init__(points, weights, (0, np.inf))
+
+
+class LogExpSinh(OneDGrid):
+    r"""Logarithm-Exponential-Hyperbolic Sine quadrature class.
+
+    The definition of this quadrature is:
+
+    .. math::
+        \int_{0}^{\infty} f(x) dx \approx
+        \sum_{k=-n}^n w_k f(x_k). \\
+        x_k = \log \left( \exp \left(\frac{\pi}{2}\sinh(kh) \right) + 1\right) \\
+        w_k = \frac{\pi h\cosh(kh)\exp(\frac{\pi}{2}\sinh(kh))}
+        {2(\exp(\frac{\pi}{2}\sinh(kh))+1)}.
+
+    Warnings
+    --------
+    - Using this quadrature requires heavy parameter-tuning in-order to work.
+
+    """
+
+    def __init__(self, npoints: int, h: float = 0.1):
+        r"""Generate 1D grid on :math:`(0, \infty)` interval based on log-exp-sinh quadrature.
+
+        Parameters
+        ----------
+        npoints : int
+            Number of grid points.
+        h : float
+            Value of parameter :math: `h` wich control the quadrature.
+
+        Returns
+        -------
+        OneDGrid
+            One-dimensional grid instance.
+
+        """
+        warnings.warn(
+            "Using this quadrature requires heavy parameter-tuning in-order to be applicable.",
+            stacklevel=2,
+        )
+        if h <= 0:
+            raise ValueError(f"The value of h must be bigger than 0, given {h}")
+        if npoints < 1:
+            raise ValueError(f"npoints must be bigger than 1, given {npoints}")
+        if npoints % 2 == 0:
+            raise ValueError(f"npoints must be odd, given {npoints}")
+        m = int((npoints - 1) / 2)
+        k = np.arange(-m, m + 1)
+        points = np.log(np.exp(np.pi * np.sinh(k * h) / 2) + 1)
+        weights = np.exp(np.pi * np.sinh(k * h) / 2) * np.pi * h * np.cosh(k * h) / 2
+        weights /= np.exp(np.pi * np.sinh(k * h) / 2) + 1
+        super().__init__(points, weights, (0, np.inf))
+
+
+class ExpExp(OneDGrid):
+    r"""Exponential-Exponential quadrature class.
+
+    The definition of this quadrature is:
+
+    .. math::
+        \int_{0}^{\infty} f(x) dx \approx
+        \sum_{k=-n}^n w_k f(x_k).  \\
+        x_k = e^{kh} e^{-e^{-kh}} \\
+        w_k = h e^{-e^{-kh}}\left( e^{kh} + 1 \right)
+
+    Warnings
+    --------
+    - Using this quadrature requires heavy parameter-tuning in-order to work.
+
+    """
+
+    def __init__(self, npoints: int, h: float = 0.1):
+        r"""Generate 1D grid on :math:`(0, \infty)` interval based on exp-exp quadrature.
+
+        Parameters
+        ----------
+        npoints : int
+            Number of grid points.
+        h : float
+            Value of parameter :math: `h` which control the quadrature.
+
+        Returns
+        -------
+        OneDGrid
+            One-dimensional grid instance.
+
+        """
+        warnings.warn(
+            "Using this quadrature requires heavy parameter-tuning in-order to be applicable.",
+            stacklevel=2,
+        )
+        if h <= 0:
+            raise ValueError(f"The value of h must be bigger than 0, given {h}")
+        if npoints < 1:
+            raise ValueError(f"npoints must be bigger than 1, given {npoints}")
+        if npoints % 2 == 0:
+            raise ValueError(f"npoints must be odd, given {npoints}")
+        m = int((npoints - 1) / 2)
+        k = np.arange(-m, m + 1)
+        points = np.exp(k * h) * np.exp(-np.exp(-k * h))
+        weights = h * np.exp(-np.exp(-k * h)) * (np.exp(k * h) + 1)
+        super().__init__(points, weights, (0, np.inf))
+
+
+class SingleTanh(OneDGrid):
+    r"""Hyperbolic Tan quadrature class.
+
+    The definition of this quadrature is:
+
+    .. math::
+        \int_{-1}^{1} f(x) dx \approx
+        \sum_{k=-n}^n w_k f(x_k). \\
+        x_k = \tanh{kh}  \\
+        w_k = \frac{h}{\cosh^2(kh)}
+
+    """
+
+    def __init__(self, npoints: int, h: float = 0.1):
+        r"""Generate 1D grid on :math:`(-1, +1)` interval based on tanh-sinh quadrature.
+
+        Parameters
+        ----------
+        npoints : int
+            Number of grid points.
+        h : float
+            Value of parameter :math: `h` which control the quadrature.
+
+        Returns
+        -------
+        OneDGrid
+            One-dimensional grid instance.
+
+        """
+        if h <= 0:
+            raise ValueError(f"The value of h must be bigger than 0, given {h}")
+        if npoints < 1:
+            raise ValueError(f"npoints must be bigger than 1, given {npoints}")
+        if npoints % 2 == 0:
+            raise ValueError(f"npoints must be odd, given {npoints}")
+        m = int((npoints - 1) / 2)
+        k = np.arange(-m, m + 1)
+        points = np.tanh(k * h)
+        weights = h / np.cosh(k * h) ** 2
+        super().__init__(points, weights, (-1, 1))
+
+
+class SingleExp(OneDGrid):
+    r"""Single exponential quadrature class.
+
+    The definition of this quadrature is:
+
+    .. math::
+        \int_{0}^{\infty} f(x) dx \approx
+        \sum_{k=-n}^n w_k f(x_k). \\
+        x_k = e^{kh}  \\
+        w_k = h e^{kh}.
+
+    Warnings
+    --------
+    - Using this quadrature requires heavy parameter-tuning in-order to work.
+
+    """
+
+    def __init__(self, npoints: int, h: float = 0.1):
+        r"""Generate 1D grid on :math:`(0, \infty)` interval based on exponential quadrature.
+
+        Parameters
+        ----------
+        npoints : int
+            Number of grid points.
+        h : float
+            Value of parameter :math: `h` which control the quadrature.
+
+        Returns
+        -------
+        OneDGrid
+            One-dimensional grid instance.
+
+        """
+        warnings.warn(
+            "Using this quadrature requires heavy parameter-tuning in-order to be applicable.",
+            stacklevel=2,
+        )
+        if h <= 0:
+            raise ValueError(f"The value of h must be bigger than 0, given {h}")
+        if npoints < 1:
+            raise ValueError(f"npoints must be bigger than 1, given {npoints}")
+        if npoints % 2 == 0:
+            raise ValueError(f"npoints must be odd, given {npoints}")
+        m = int((npoints - 1) / 2)
+        k = np.arange(-m, m + 1)
+        points = np.exp(k * h)
+        weights = h * np.exp(k * h)
+        super().__init__(points, weights, (0, np.inf))
+
+
+class SingleArcSinhExp(OneDGrid):
+    r"""Single Arc Hyperbolic Sine-Exponential quadrature class.
+
+    The definition of this quadrature is:
+
+    .. math::
+        \int_{0}^{\infty} f(x) dx \approx
+        \sum_{k=-n}^n w_k f(x_k). \\
+        x_k = \mbox{arcsinh}(e^{kh}) \\
+        w_k = \frac{h e^{kh}}{\sqrt{e^{2kh} + 1}}
+
+    Warnings
+    --------
+    - Using this quadrature requires heavy parameter-tuning in-order to work.
+
+    """
+
+    def __init__(self, npoints: int, h: float = 0.1):
+        r"""Generate 1D grid on :math:`(0, \infty)` interval based on tanh-sinh quadrature.
+
+        Parameters
+        ----------
+        npoints : int
+            Number of grid points.
+        h : float
+            Value of parameter :math: `h` which control the quadrature.
+
+        Returns
+        -------
+        OneDGrid
+            One-dimensional grid instance.
+
+        """
+        warnings.warn(
+            "Using this quadrature requires heavy parameter-tuning in-order to be applicable.",
+            stacklevel=2,
+        )
+        if h <= 0:
+            raise ValueError(f"The value of h must be bigger than 0, given {h}")
+        if npoints < 1:
+            raise ValueError(f"npoints must be bigger than 1, given {npoints}")
+        if npoints % 2 == 0:
+            raise ValueError(f"npoints must be odd, given {npoints}")
+        m = int((npoints - 1) / 2)
+        k = np.arange(-m, m + 1)
+        points = np.arcsinh(np.exp(k * h))
+        weights = h * np.exp(k * h) / np.sqrt(np.exp(2 * h * k) + 1)
+        super().__init__(points, weights, (0, np.inf))
