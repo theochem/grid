@@ -68,7 +68,7 @@ line-length = 100
 select = ["E", "F", "UP", "B", "I", "PGH", "PL", "RUF"]
 line-length = 100
 ignore = ["PLR2004", "PLR0913", "PLR0912", "PLW2901", "PLR0915"]
-extend-exclude = ["doc/*"]
+extend-exclude = ["doc/*", "doc/*/*"]
 
 [tool.pytest.ini_options]
 minversion = "7.0"
