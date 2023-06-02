@@ -1,1 +1,0 @@
-"""Initialize tests data folder."""
