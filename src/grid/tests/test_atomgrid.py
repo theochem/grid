@@ -853,8 +853,6 @@ class TestAtomGrid:
         order = 3
         ident_func = np.ones(atgrid.points.shape[0])
         true, orders = atgrid.moments(order, center, ident_func, "pure-radial", return_orders=True)
-        print("Orders for pure-radial")
-        print(orders)
 
         radial = atgrid.convert_cartesian_to_spherical(atgrid.points, center=center[0])[:, 0]
         # Go through each (n, deg, m)
@@ -862,11 +860,6 @@ class TestAtomGrid:
             index = deg**2 + 2 * ord - 1 if ord > 0 else deg**2 - 2 * ord
             # Integrate Y_l^m r^l f(x) where f(x)=r^n
             desired, orders = atgrid.moments(deg, center, radial**n, "pure", return_orders=True)
-            print("Pure Orders")
-            print(orders)
-            print(f"i_pure: {index}, i_pure_radial: {i}, n: {n}")
-            print(desired[index], true[i])
-            print("")
             assert_allclose(desired[index], true[i], atol=1e-4)
 
     def test_radial_moments_of_gaussian_against_horton(self):

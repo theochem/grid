@@ -575,7 +575,7 @@ def generate_derivative_real_spherical_harmonics(l_max: int, theta: np.ndarray, 
     """
     num_pts = len(theta)
     # Shape (Derivs, Spherical, Pts)
-    output = np.zeros((2, int((l_max + 1) ** 2), num_pts))
+    output = np.zeros((2, int((l_max + 1) ** 2), num_pts), dtype=np.longdouble)
 
     complex_expon = np.exp(-theta * 1.0j)  # Needed for derivative wrt to phi
     l_list = np.arange(l_max + 1)
@@ -594,7 +594,7 @@ def generate_derivative_real_spherical_harmonics(l_max: int, theta: np.ndarray, 
             def index_m(m):
                 return 2 * m - 1 if m > 0 else int(2 * np.fabs(m))
 
-            output[0, i_output, :] = -m * sph_harm_degree[index_m(-m), :]
+            output[0, i_output, :] = -float(m) * sph_harm_degree[index_m(-m), :]
 
             # Take derivative wrt to phi:
             with np.errstate(divide="ignore", invalid="ignore"):

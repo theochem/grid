@@ -279,37 +279,10 @@ class Grid:
                     # the solid harmonics for all
                     sph_pts = convert_cart_to_sph(centered_pts)
                     solid_harm = solid_harmonics(orders[-1], sph_pts)
-                    print("Solid harmonics ")
-                    print(solid_harm)
-                    print(solid_harm.shape)
 
                     if type_mom == "pure":
                         # Take the integral |r - R_c|^l S_l^m(theta, phi) f(r, theta, phi) weights
                         integral = np.einsum("ln,n,n->l", solid_harm, func_vals, self.weights)
-                        print("Pure")
-                        print(
-                            "Func vals ",
-                            func_vals,
-                            np.mean(func_vals),
-                            np.std(func_vals),
-                            np.max(func_vals),
-                        )
-                        print(
-                            "Weights ",
-                            self.weights,
-                            np.mean(self.weights),
-                            np.std(self.weights),
-                            np.max(self.weights),
-                        )
-                        print(
-                            "Solid harmonic ",
-                            np.mean(solid_harm, axis=0),
-                            np.std(solid_harm, axis=0),
-                            np.mean(np.mean(solid_harm, axis=0)),
-                            np.mean(np.std(solid_harm, axis=0)),
-                            np.max(np.mean(solid_harm, axis=0)),
-                        )
-                        print("Final Integral ", integral)
                     elif type_mom == "pure-radial":
                         # Get the correct indices in solid_harm associated to l_degree and m_orders.
                         n_princ, l_degrees, m_orders = all_orders.T
