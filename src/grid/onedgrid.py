@@ -20,9 +20,9 @@
 """1D integration grid."""
 
 
-import numpy as np
 import warnings
 
+import numpy as np
 from scipy.special import roots_chebyu, roots_genlaguerre
 
 from grid.basegrid import OneDGrid
