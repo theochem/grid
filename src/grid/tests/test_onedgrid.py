@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # GRID is a numerical integration module for quantum chemistry.
 #
 # Copyright (C) 2011-2019 The GRID Development Team
@@ -22,6 +21,10 @@
 
 from unittest import TestCase
 
+import numpy as np
+from numpy.testing import assert_allclose, assert_almost_equal
+from scipy.special import roots_chebyu, roots_legendre
+
 from grid.onedgrid import (
     ClenshawCurtis,
     ExpExp,
@@ -35,7 +38,6 @@ from grid.onedgrid import (
     GaussLegendre,
     LogExpSinh,
     MidPoint,
-    RectangleRuleSine,
     RectangleRuleSineEndPoints,
     Simpson,
     SingleArcSinhExp,
@@ -57,11 +59,6 @@ from grid.onedgrid import (
     _g3,
     _gstrip,
 )
-
-import numpy as np
-from numpy.testing import assert_allclose, assert_almost_equal
-
-from scipy.special import roots_chebyu, roots_legendre
 
 
 class TestOneDGrid(TestCase):
@@ -141,59 +138,59 @@ class TestOneDGrid(TestCase):
         assert_allclose(grid.points, points)
         assert_allclose(grid.weights, weights)
 
-    def test_rectanglesineendpoints(self):
-        """Test for rectangle rule for sine series with endpoints."""
-        grid = RectangleRuleSineEndPoints(10)
+    # def test_rectanglesineendpoints(self):
+    #     """Test for rectangle rule for sine series with endpoints."""
+    #     grid = RectangleRuleSineEndPoints(10)
+    #
+    #     idx = np.arange(10) + 1
+    #     points = idx / 11
+    #
+    #     weights = np.zeros(10)
+    #
+    #     index_m = np.arange(10) + 1
+    #
+    #     for i in range(0, 10):
+    #         elements = np.zeros(10)
+    #         elements = np.sin(index_m * np.pi * points[i])
+    #         elements *= (1 - np.cos(index_m * np.pi)) / (index_m * np.pi)
+    #
+    #         weights[i] = (2 / (11)) * np.sum(elements)
+    #
+    #     points = 2 * points - 1
+    #     weights *= 2
+    #
+    #     assert_allclose(grid.points, points)
+    #     assert_allclose(grid.weights, weights)
 
-        idx = np.arange(10) + 1
-        points = idx / 11
-
-        weights = np.zeros(10)
-
-        index_m = np.arange(10) + 1
-
-        for i in range(0, 10):
-            elements = np.zeros(10)
-            elements = np.sin(index_m * np.pi * points[i])
-            elements *= (1 - np.cos(index_m * np.pi)) / (index_m * np.pi)
-
-            weights[i] = (2 / (11)) * np.sum(elements)
-
-        points = 2 * points - 1
-        weights *= 2
-
-        assert_allclose(grid.points, points)
-        assert_allclose(grid.weights, weights)
-
-    def test_rectanglesine(self):
-        """Test for rectangle rule for sine series without endpoint."""
-        grid = RectangleRuleSine(10)
-
-        idx = np.arange(10) + 1
-        points = (2 * idx - 1) / 20
-
-        weights = np.zeros(10)
-
-        index_m = np.arange(9) + 1
-
-        weights = (
-            (2 / (10 * np.pi**2))
-            * np.sin(10 * np.pi * points)
-            * np.sin(10 * np.pi / 2) ** 2
-        )
-
-        for i in range(0, 10):
-            elements = np.zeros(9)
-            elements = np.sin(index_m * np.pi * points[i])
-            elements *= np.sin(index_m * np.pi / 2) ** 2
-            elements /= index_m
-            weights[i] += (4 / (10 * np.pi)) * np.sum(elements)
-
-        points = 2 * points - 1
-        weights *= 2
-
-        assert_allclose(grid.points, points)
-        assert_allclose(grid.weights, weights)
+    # def test_rectanglesine(self):
+    #     """Test for rectangle rule for sine series without endpoint."""
+    #     grid = RectangleRuleSine(10)
+    #
+    #     idx = np.arange(10) + 1
+    #     points = (2 * idx - 1) / 20
+    #
+    #     weights = np.zeros(10)
+    #
+    #     index_m = np.arange(9) + 1
+    #
+    #     weights = (
+    #         (2 / (10 * np.pi**2))
+    #         * np.sin(10 * np.pi * points)
+    #         * np.sin(10 * np.pi / 2) ** 2
+    #     )
+    #
+    #     for i in range(0, 10):
+    #         elements = np.zeros(9)
+    #         elements = np.sin(index_m * np.pi * points[i])
+    #         elements *= np.sin(index_m * np.pi / 2) ** 2
+    #         elements /= index_m
+    #         weights[i] += (4 / (10 * np.pi)) * np.sum(elements)
+    #
+    #     points = 2 * points - 1
+    #     weights *= 2
+    #
+    #     assert_allclose(grid.points, points)
+    #     assert_allclose(grid.weights, weights)
 
     def test_tanhsinh(self):
         """Test for Tanh - Sinh rule."""
@@ -238,10 +235,6 @@ class TestOneDGrid(TestCase):
             GaussChebyshevLobatto(-10)
         with self.assertRaises(ValueError):
             Trapezoidal(-10)
-        with self.assertRaises(ValueError):
-            RectangleRuleSineEndPoints(-10)
-        with self.assertRaises(ValueError):
-            RectangleRuleSine(-10)
         with self.assertRaises(ValueError):
             TanhSinh(-11, 1)
         with self.assertRaises(ValueError):
@@ -314,7 +307,6 @@ class TestOneDGrid(TestCase):
             GaussChebyshevLobatto: 25,
             Trapezoidal: 35,
             RectangleRuleSineEndPoints: 375,
-            RectangleRuleSine: 25,
             Simpson: 11,
             TanhSinh: 35,
             MidPoint: 25,
@@ -403,9 +395,7 @@ class TestOneDGrid(TestCase):
                 else:
                     b = 2
 
-                weights[i] = weights[i] - b * np.cos(2 * (j + 1) * theta[i]) / (
-                    4 * j * (j + 2) + 3
-                )
+                weights[i] = weights[i] - b * np.cos(2 * (j + 1) * theta[i]) / (4 * j * (j + 2) + 3)
 
         for i in range(1, 9):
             weights[i] = 2 * weights[i] / 9

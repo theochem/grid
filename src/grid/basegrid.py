@@ -19,10 +19,14 @@
 # --
 """Construct basic grid data structure."""
 
-
 import numpy as np
-
 from scipy.spatial import cKDTree
+
+from grid.utils import (
+    convert_cart_to_sph,
+    generate_orders_horton_order,
+    solid_harmonics,
+)
 
 
 class Grid:
@@ -45,9 +49,7 @@ class Grid:
                 f"Number of points: {len(points)}, Number of weights: {len(weights)}."
             )
         if weights.ndim != 1:
-            raise ValueError(
-                f"Argument weights should be a 1-D array. weights.ndim={weights.ndim}"
-            )
+            raise ValueError(f"Argument weights should be a 1-D array. weights.ndim={weights.ndim}")
         if points.ndim not in [1, 2]:
             raise ValueError(
                 f"Argument points should be a 1D or 2D array. points.ndim={points.ndim}"
@@ -85,21 +87,18 @@ class Grid:
             Return a new Grid object with selected points
         """
         if isinstance(index, int):
-            return self.__class__(
-                np.array([self.points[index]]), np.array([self.weights[index]])
-            )
+            return self.__class__(np.array([self.points[index]]), np.array([self.weights[index]]))
         else:
-            return self.__class__(
-                np.array(self.points[index]), np.array(self.weights[index])
-            )
+            return self.__class__(np.array(self.points[index]), np.array(self.weights[index]))
 
     def integrate(self, *value_arrays):
         r"""Integrate over the whole grid for given multiple value arrays.
 
-        Product of all value_arrays will be computed element-wise then
-        integrated on the grid with its weights.
+        Product of all value_arrays will be computed element-wise then integrated on the grid
+        with its weights:
+
         .. math::
-            Integral = \int w(x) \prod_i f_i(x) dx
+            \int w(x) \prod_i f_i(x) dx.
 
         Parameters
         ----------
@@ -108,7 +107,7 @@ class Grid:
 
         Returns
         -------
-        float
+        float:
             The calculated integral over given integrand or function
 
         """
@@ -164,9 +163,164 @@ class Grid:
             if self._kdtree is None:
                 self._kdtree = cKDTree(_points)
             indices = np.array(self._kdtree.query_ball_point(_center, radius, p=2.0))
-            return LocalGrid(
-                self._points[indices], self._weights[indices], center, indices
+            return LocalGrid(self._points[indices], self._weights[indices], center, indices)
+
+    def moments(
+        self,
+        orders: int,
+        centers: np.ndarray,
+        func_vals: np.ndarray,
+        type_mom: str = "cartesian",
+        return_orders: bool = False,
+    ):
+        r"""
+        Compute the multipole moment integral of a function over centers.
+
+        The Cartesian type moments are:
+
+        .. math::
+            m_{n_x, n_y, n_z} = \int (x - X_c)^{n_x} (y - Y_c)^{n_y} (z - Z_c)^{n_z} f(r) dr,
+
+        where :math:`\textbf{R}_c = (X_c, Y_c, Z_c)` is the center of the moment,
+        :math:`\f(r)` is the density, and :math:`(n_x, n_y, n_z)` are the Cartesian orders.
+
+        The spherical/pure moments with :math:`(l, m)` parameter are:
+
+        .. math::
+            m_{lm} = \int | \textbf{r} - \textbf{R}_c|^l S_l^m(\theta, \phi) f(\textbf{r})
+            d\textbf{r},
+
+        where :math:`S_l^m` is a regular, real solid harmonic.
+
+        The radial moments with :math:`n` parameter are:
+
+        .. math::
+            m_n = \int | \textbf{r} - \textbf{R}_c|^{n} f(\textbf{r}) d\textbf{r}
+
+        The radial combined with spherical/pure moments :math:`(n, l, m)` are:
+
+        .. math::
+            m_{nlm} = \int | \textbf{r} - \textbf{R}_c|^{n+1} S_l^m(\theta, \phi) f(\textbf{r})
+            d\textbf{r}
+
+        Parameters
+        ----------
+        orders : int
+            Generates all orders with Horton order depending on the type of the multipole
+            moment `type_mom`.
+        centers : ndarray(M,  3)
+            The centers :math:`\textbf{R}_c` of the moments to compute from.
+        func_vals : ndarray(N,)
+            The function :math:`f` values evaluated on all :math:`N` points on the integration
+            grid.
+        type_mom : str
+            The type of multipole moments: "cartesian", "pure", "radial" and "pure-radial".
+        return_orders : bool
+            If true, it will also return a list of size :math:`L` of the orders
+            corresponding to each integral/row of the output.
+
+        Returns
+        -------
+        ndarray(L, M), or (ndarray(L, M), list)
+            Computes the moment integral of the function on the `m`th center for all orders.
+            If `return_orders` is true, then this also returns a list that describes what
+            each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,...].
+
+        """
+        if func_vals.ndim > 1:
+            raise ValueError(f"`func_vals` {func_vals.ndim} should have dimension one.")
+        if centers.ndim != 2:
+            raise ValueError(f"`centers` {centers.ndim} should have dimension one or two.")
+        if self.points.shape[1] != centers.shape[1]:
+            raise ValueError(
+                f"The dimension of the grid {self.points.shape[1]} should"
+                f"match the dimension of the centers {centers.shape[1]}."
             )
+        if len(func_vals) != self.points.shape[0]:
+            raise ValueError(
+                f"The length of function values {len(func_vals)} should match "
+                f"the number of points in the grid {self.points.shape[0]}."
+            )
+        if type_mom == "pure-radial" and orders == 0:
+            raise ValueError(
+                f"The n/order parameter {orders} for pure-radial multipole moments"
+                f"should be positive"
+            )
+
+        # Generate all orders, e.g. cartesian it is (m_x, m_y, m_z) in Horton 2 order.
+        if isinstance(orders, (int, np.int32, np.int64)):
+            orders = range(0, orders + 1) if type_mom != "pure-radial" else range(1, orders + 1)
+        else:
+            raise TypeError(f"Orders {type(orders)} should be either integer, list or numpy array.")
+        dim = self.points.shape[1]
+        all_orders = generate_orders_horton_order(orders[0], type_mom, dim)
+        for l_ord in orders[1:]:
+            all_orders = np.vstack((all_orders, generate_orders_horton_order(l_ord, type_mom, dim)))
+
+        integrals = []
+        for center in centers:
+            # Calculate centered pts: [(X-c), (Y-c), (Z-c)]
+            centered_pts = self.points - center
+
+            if type_mom == "cartesian":
+                # Take the powers to get [(X-c)^mx, (Y-c)^my, (Z-c)^mz]
+                # This has shape [L, N, 3], where L = (l+1)^2 number of orders, N=number points
+                cent_pts_with_order = centered_pts ** all_orders[:, None]
+                # Take the product: [(X-c)^_mx (Y-c)^my (Z-c)^mz], has shape (L, N)
+                cent_pts_with_order = np.prod(cent_pts_with_order, axis=2)
+                # Calculate integral (X-c)^mx (Y-c)^my (Z-c)^mz by the function values and weights
+                integral = np.einsum("ln,n,n->l", cent_pts_with_order, func_vals, self.weights)
+            elif type_mom == "radial" or type_mom == "pure" or type_mom == "pure-radial":
+                # Take the norm |r - R_c|
+                cent_pts_with_order = np.linalg.norm(centered_pts, axis=1)
+
+                if type_mom == "pure" or type_mom == "pure-radial":
+                    # Calculate the spherical coordinates of the centered points and calculate
+                    # the solid harmonics for all
+                    sph_pts = convert_cart_to_sph(centered_pts)
+                    solid_harm = solid_harmonics(orders[-1], sph_pts)
+
+                    if type_mom == "pure":
+                        # Take the integral |r - R_c|^l S_l^m(theta, phi) f(r, theta, phi) weights
+                        integral = np.einsum("ln,n,n->l", solid_harm, func_vals, self.weights)
+                    elif type_mom == "pure-radial":
+                        # Get the correct indices in solid_harm associated to l_degree and m_orders.
+                        n_princ, l_degrees, m_orders = all_orders.T
+                        indices = l_degrees**2
+                        indices[m_orders > 0] += 2 * m_orders[m_orders > 0] - 1
+                        indices[m_orders <= 0] += 2 * np.abs(m_orders[m_orders <= 0])
+                        # Take the power to get |r - R_c|^{n}
+                        cent_pts_with_order = cent_pts_with_order ** n_princ[:, None]
+                        integral = np.einsum(
+                            "ln,ln,n,n->l",
+                            cent_pts_with_order,
+                            solid_harm[indices],
+                            func_vals,
+                            self.weights,
+                        )
+
+                elif type_mom == "radial":
+                    cent_pts_with_order = cent_pts_with_order ** np.ravel(all_orders)[:, None]
+                    # Take the integral |r - R_c|^l  f(r, theta, phi) weights
+                    integral = np.einsum("ln,n,n->l", cent_pts_with_order, func_vals, self.weights)
+
+            integrals.append(integral)
+        if return_orders:
+            return np.array(integrals).T, all_orders
+        return np.array(integrals).T  # output has shape (L, Number of centers)
+
+    def save(self, filename):
+        r"""
+        Save the points and weights as a npz file.
+
+        Parameters
+        ----------
+        filename : str
+            The path/name of the .npz file.
+
+        """
+        save_dict = {"points": self.points, "weights": self.weights}
+        np.savez(filename, **save_dict)
 
 
 class LocalGrid(Grid):
@@ -211,6 +365,24 @@ class LocalGrid(Grid):
         """np.ndarray(N,): Indices of grid points and weights in the parent grid."""
         return self._indices
 
+    def save(self, filename):
+        r"""
+        Save the points, indices and weights as a npz file.
+
+        Parameters
+        ----------
+        filename : str
+           The path/name of the .npz file.
+
+        """
+        save_dict = {
+            "points": self.points,
+            "weights": self.weights,
+            "center": self.center,
+            "indices": self.indices,
+        }
+        np.savez(filename, **save_dict)
+
 
 class OneDGrid(Grid):
     """One-Dimensional Grid."""
@@ -233,9 +405,7 @@ class OneDGrid(Grid):
         """
         # check points & weights
         if points.ndim != 1:
-            raise ValueError(
-                f"Argument points should be a 1-D array. points.ndim={points.ndim}"
-            )
+            raise ValueError(f"Argument points should be a 1-D array. points.ndim={points.ndim}")
 
         # check domain
         if domain is not None:
