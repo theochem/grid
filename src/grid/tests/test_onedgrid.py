@@ -325,13 +325,13 @@ class TestOneDGrid(TestCase):
             TrefethenGC2: 30,
             TrefethenStripCC: 20,
             TrefethenStripGC2: 70,
-            # SingleTanh: 75,
-            # ExpSinh: 11,
-            # LogExpSinh: 75,
-            # ExpExp: 75,
+            # SingleTanh: 75,           # TODO: The following grids don't work
+            # ExpSinh: 11,              # TODO: The following grids don't work
+            # LogExpSinh: 75,           # TODO: The following grids don't work
+            # ExpExp: 75,               # TODO: The following grids don't work
             SingleTanh: 75,
-            # SingleExp: 75,
-            # SingleArcSinhExp: 75,
+            # SingleExp: 75,            # TODO: The following grids don't work
+            # SingleArcSinhExp: 75,     # TODO: The following grids don't work
         }
         # loop each pair to create pts instance
         for quadrature, n_points in candidates_quadratures.items():
