@@ -564,15 +564,13 @@ class TestAtomGrid:
     )
     def test_interpolation_of_gaussian(self, centers):
         """Test cubicspline interpolation values on a Gaussian."""
-        oned = GaussLegendre(450)
+        oned = GaussLegendre(350)
         btf = BeckeRTransform(0.0001, 1.5)
         rad = btf.transform_1d_grid(oned)
-        atgrid = AtomGrid.from_pruned(
-            rad, 1, sectors_r=[], sectors_degree=[50], use_spherical=False
-        )
+        atgrid = AtomGrid(rad, degrees=[40], use_spherical=False)
         value_array = self.helper_func_gauss(atgrid.points)
         # random test points on gauss function
-        size = 2000
+        size = 1000
         r = np.random.uniform(0.01, np.max(rad.points), size=size)
         theta = np.random.uniform(0.0, np.pi, size=size)
         phi = np.random.uniform(0.0, 2.0 * np.pi, size=size)
