@@ -631,9 +631,7 @@ class TestOneDGrid(TestCase):
 
         k = np.arange(-5, 6)
         points = np.log(np.exp(np.pi * np.sinh(k * 0.1) / 2) + 1)
-        weights = (
-            np.exp(np.pi * np.sinh(k * 0.1) / 2) * np.pi * 0.1 * np.cosh(k * 0.1) / 2
-        )
+        weights = np.exp(np.pi * np.sinh(k * 0.1) / 2) * np.pi * 0.1 * np.cosh(k * 0.1) / 2
         weights /= np.exp(np.pi * np.sinh(k * 0.1) / 2) + 1
 
         assert_allclose(grid.points, points)
