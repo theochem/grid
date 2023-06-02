@@ -601,10 +601,15 @@ def generate_derivative_real_spherical_harmonics(l_max: int, theta: np.ndarray, 
                 cot_tangent = 1.0 / np.tan(phi)
             cot_tangent[np.abs(np.tan(phi)) < 1e-10] = 0.0
             # Calculate the derivative in two pieces:
-            fac = np.sqrt((l_val - np.abs(m)) * (l_val + np.abs(m) + 1))
-            output[1, i_output, :] = np.abs(m) * cot_tangent * sph_harm_degree[index_m(m), :]
+            fac = np.sqrt((l_val - np.abs(float(m))) * (l_val + np.abs(m) + 1))
+            output[1, i_output, :] = np.abs(float(m)) * cot_tangent * sph_harm_degree[index_m(m), :]
             # Compute it using SciPy, removing conway phase (-1)^m and multiply by 2^0.5.
-            sph_harm_m = fac * sph_harm(np.abs(m) + 1, l_val, theta, phi) * np.sqrt(2) * (-1) ** m
+            sph_harm_m = (
+                fac *
+                sph_harm(np.abs(float(m)) + 1, l_val, theta, phi) *
+                np.sqrt(2) *
+                (-1.0) ** float(m)
+            )
             if m >= 0:
                 if m < l_val:  # When m == l_val, then fac = 0
                     output[1, i_output, :] += np.real(complex_expon * sph_harm_m)
