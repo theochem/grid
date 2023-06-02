@@ -1069,6 +1069,7 @@ class ExpSinh(OneDGrid):
     - Using this quadrature requires heavy parameter-tuning in-order to work.
 
     """
+
     def __init__(self, npoints: int, h: float = 1.0):
         r"""Generate 1D grid on :math:`(0, \infty)` interval based on exp-sinh quadrature.
 
@@ -1118,6 +1119,7 @@ class LogExpSinh(OneDGrid):
     - Using this quadrature requires heavy parameter-tuning in-order to work.
 
     """
+
     def __init__(self, npoints: int, h: float = 0.1):
         r"""Generate 1D grid on :math:`(0, \infty)` interval based on log-exp-sinh quadrature.
 
@@ -1167,6 +1169,7 @@ class ExpExp(OneDGrid):
     - Using this quadrature requires heavy parameter-tuning in-order to work.
 
     """
+
     def __init__(self, npoints: int, h: float = 0.1):
         r"""Generate 1D grid on :math:`(0, \infty)` interval based on exp-exp quadrature.
 
@@ -1211,6 +1214,7 @@ class SingleTanh(OneDGrid):
         w_k = \frac{h}{\cosh^2(kh)}
 
     """
+
     def __init__(self, npoints: int, h: float = 0.1):
         r"""Generate 1D grid on :math:`(-1, +1)` interval based on tanh-sinh quadrature.
 
@@ -1256,6 +1260,7 @@ class SingleExp(OneDGrid):
     - Using this quadrature requires heavy parameter-tuning in-order to work.
 
     """
+
     def __init__(self, npoints: int, h: float = 0.1):
         r"""Generate 1D grid on :math:`(0, \infty)` interval based on exponential quadrature.
 
@@ -1304,6 +1309,7 @@ class SingleArcSinhExp(OneDGrid):
     - Using this quadrature requires heavy parameter-tuning in-order to work.
 
     """
+
     def __init__(self, npoints: int, h: float = 0.1):
         r"""Generate 1D grid on :math:`(0, \infty)` interval based on tanh-sinh quadrature.
 
