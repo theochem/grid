@@ -1,3 +1,7 @@
+.. image:: grid_logo.png
+  :width: 450
+|
+
 Welcome to grid's documentation!
 ================================
 
@@ -86,6 +90,7 @@ Modules
     ./notebooks/Cubic_Grids.ipynb
     ./notebooks/Interpolation_and_Poisson.ipynb
     ./notebooks/Multipole_Moments.ipynb
+    ./notebooks/Angular_grid.ipynb
 
 
 .. toctree::

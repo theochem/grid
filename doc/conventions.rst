@@ -112,6 +112,8 @@ The quadrature weights are specifically chosen so that the spherical harmonics a
 .. math::
     \int_{-\pi}^{\pi} \int_0^{\pi} Y_{l_1}^{m_1} Y_{l_2}^{m_2} \sin(\phi) d\theta d\phi = \delta_{l_1, l_2} \delta_{m_1, m_2}
 
+Further, the quadrature weights are all chosen that the weights sum up to :math:`4 \pi`.
+
 
 Nested Grids
 -------------
