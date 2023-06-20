@@ -65,7 +65,7 @@ The real spherical harmonics are defined using complex spherical harmonics:
     \end{cases},
 
 where the degree :math:`l \in \mathbb{N}`, order :math:`m \in \{-l, \cdots, l \}` and
-:math:`Y^m_l` is the complex spherical harmonic.   The Conway phase is not included.
+:math:`Y^m_l` is the complex spherical harmonic.  The Condon-Shortley phase is not included.
 
 
 Alternatively, it can be written using the associated Legendre polynomials :math:`P_l^m` (without the Conway phase):
@@ -106,15 +106,18 @@ For each degree :math:`l`, the orders :math:`m` are in HORTON2 order defined as:
 Angular Grids
 =============
 
-The :class:`angular grids<grid.angular.AngularGrid>` is responsible for integrating functions over the unit-sphere. The quadrature weights are
-specifically chosen so that it integrates the identity function to obtain :math:`4 \pi`.
+The :class:`angular grids<grid.angular.AngularGrid>` is responsible for integrating functions over the unit-sphere.
+The quadrature weights are specifically chosen so that the spherical harmonics are orthonormal:
+
+.. math::
+    \int_{-\pi}^{\pi} \int_0^{\pi} Y_{l_1}^{m_1} Y_{l_2}^{m_2} \sin(\phi) d\theta d\phi = \delta_{l_1, l_2} \delta_{m_1, m_2}
 
 
 Nested Grids
 -------------
 Angular grids of different degrees can be very close to one another. The following shows the mean with
 standard deviation and maximum distance between an angular grid of one degree and the consequent
-angular grid with higher degree.
+angular grid with higher degree.  The * indicates Lebedev-Laikov grids with negative weights.
 
 .. csv-table:: Lebedev-Laikov Grids
    :file: ./table_angular_lebedev.csv
