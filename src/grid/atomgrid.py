@@ -454,7 +454,7 @@ class AtomGrid(Grid):
         Given a series of functions :math:`f_k \in L^2(\mathbb{R}^3)`, this returns the values
 
         .. math::
-            f_k(r_i) = \int \int f(r_i, \theta, \phi) sin(\theta) d\theta d\phi
+            f_k(r_i) = \int \int f(r_i, \theta, \phi) sin(\phi) d\theta d\phi
 
         on each radial point :math:`r_i` in the atomic grid.
 
@@ -470,7 +470,7 @@ class AtomGrid(Grid):
             The function :math:`f_{...}(r_i)` on each :math:`M` radial points.
 
         """
-        # Integrate f(r, \theta, \phi) sin(\theta) d\theta d\phi by multiplying against its weights
+        # Integrate f(r, \theta, \phi) sin(\phi) d\theta d\phi by multiplying against its weights
         prod_value = func_vals * self.weights  # Multiply weights to the last axis.
         # [..., indices] means only take the last axis, this is due func_vals being
         #  multi-dimensional, take a sum over the last axis only and swap axes so that it
@@ -505,7 +505,7 @@ class AtomGrid(Grid):
         the spherical average of it defined as:
 
         .. math::
-            f_{avg}(r) := \frac{\int \int f(r, \theta, \phi) \sin(\theta) d\theta d\phi}{4 \pi}.
+            f_{avg}(r) := \frac{\int \int f(r, \theta, \phi) \sin(\phi) d\theta d\phi}{4 \pi}.
 
         The definition is chosen such that :math:`\int f_{avg}(r) 4\pi r^2 dr`
         matches the full integral :math:`\int \int \int f(x,y,z)dxdydz`.
@@ -537,7 +537,7 @@ class AtomGrid(Grid):
         >>> assert np.all(abs(evals - np.exp(- points ** 2)) < 1.0e-3)
 
         """
-        # Integrate f(r, theta, phi) sin(theta) d\theta d\phi
+        # Integrate f(r, theta, phi) sin(phi) d\theta d\phi
         f_radial = self.integrate_angular_coordinates(func_vals)
         f_radial /= 4.0 * np.pi
         # Construct spline of f_{avg}(r)
@@ -561,7 +561,7 @@ class AtomGrid(Grid):
         the :math:`i`th Lebedev/angular grid of the atomic grid:
 
         .. math::
-            \rho^{lm}(r_i) = \int \int f(r_i, \theta, \phi) Y^m_l(\theta, \phi) \sin(\theta)
+            \rho^{lm}(r_i) = \int \int f(r_i, \theta, \phi) Y^m_l(\theta, \phi) \sin(\phi)
              d\theta d\phi,
 
         and then interpolated using a cubic spline over all radial points of the atomic grid.

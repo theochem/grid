@@ -75,7 +75,7 @@ from grid.basegrid import Grid
 # Lebedev dictionary for converting number of grid points (keys) to grid's degrees (values)
 LEBEDEV_NPOINTS = {
     6: 3,
-    14: 5,
+    18: 5,
     26: 7,
     38: 9,
     50: 11,
@@ -288,21 +288,16 @@ class AngularGrid(Grid):
     :math:`f: S^2 \rightarrow \mathbb{R}` on the unit-sphere as follows:
 
     .. math::
-        4 \pi \int_{S^2} f   = 4\pi \int_0^\pi \int_0^{2\pi} f(\theta, \phi) \sin(\theta)
+        \int_{S^2} f   = \int_0^{2\pi} \int_0^\pi f(\theta, \phi) \sin(\phi)
          d\theta d\phi \approx \sum w_i f(\phi_i, \theta_i),
 
-    where :math:`S^2` is the unit-sphere,
-    :math:`w^{ang}_i` are the quadrature weights that includes :math:`4\pi`.
+    where :math:`S^2` is the unit-sphere, :math:`\theta \in [0, 2\pi]` and :math:`\phi \in [0, \pi)`
+    and :math:`w^{ang}_i` are the quadrature weights.
 
     Two types of angular grids are provided: Lebedev-Laikov grid (default) or the
     symmetric spherical t-design. Specifically, for spherical t-design, the weights are constant
-    value of :math:`4 \pi / N`,
-    where :math:`N` is the number of points in the grid.
-
-    The weights are chosen so that the spherical harmonics integrate to :math:`4\pi`:
-
-    .. math::
-        \int_0^\pi \int_0^{2\pi} Y^l_m(\theta, \phi) \sin(\theta) d\theta d\phi = 4\pi.
+    value of :math:`4 \pi / N`, where :math:`N` is the number of points in the grid. The weights
+    are chosen so that the spherical harmonics are normalized.
 
     """
 
@@ -335,11 +330,11 @@ class AngularGrid(Grid):
             The weights of each point on the integral quadrature grid. The attribute
             `points` should also be applied.
         degree : int, optional
-            Maximum angular degree :math:`l` of spherical harmonics that the Lebedev grid
-            can integrate accurately. If the Lebedev grid corresponding to the given angular
+            Maximum angular degree :math:`l` of spherical harmonics that the grid
+            can integrate accurately. If the grid corresponding to the given angular
             degree is not supported, the next largest degree is used.
         size : int, optional
-            Number of Lebedev grid points. If the Lebedev grid corresponding to the given size is
+            Number of grid points. If the grid corresponding to the given size is
             not supported, the next largest size is used. If both degree and size are given,
             degree is used for constructing the grid.
         cache : bool, optional
@@ -352,8 +347,7 @@ class AngularGrid(Grid):
         Returns
         -------
         AngularGrid
-            An angular grid with points and weights (including :math:`4\pi`) on
-            a unit sphere.
+            An angular grid with points and weights on a unit sphere.
 
         Examples
         --------
@@ -403,6 +397,8 @@ class AngularGrid(Grid):
             else:
                 points, weights = cache_dict[degree]
             self._degree = degree
+            # Multiply weights by 4 pi, so that the spherical harmonics are orthonormalized,
+            #   etc. \int Y_l1 Y_l2 = \delta_{l1, l2}
             super().__init__(points, weights * 4 * np.pi)
 
         if not use_spherical and np.any(weights < 0.0):

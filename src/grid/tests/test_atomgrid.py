@@ -81,7 +81,7 @@ class TestAtomGrid:
         rad_grid = tf.transform_1d_grid(pts)
         atgrid = AtomGrid.from_preset(rad_grid, atnum=1, preset="coarse")
         # 604 points for coarse H atom
-        assert_equal(atgrid.size, 604)
+        assert_equal(atgrid.size, 616)
         assert_almost_equal(
             np.sum(np.exp(-np.sum(atgrid.points**2, axis=1)) * atgrid.weights),
             5.56840953,
@@ -93,7 +93,7 @@ class TestAtomGrid:
         rad_grid = tf.transform_1d_grid(pts)
         atgrid = AtomGrid.from_preset(rad_grid, atnum=1, preset="medium")
         # 928 points for coarse H atom
-        assert_equal(atgrid.size, 928)
+        assert_equal(atgrid.size, 940)
         assert_almost_equal(
             np.sum(np.exp(-np.sum(atgrid.points**2, axis=1)) * atgrid.weights),
             5.56834559,
@@ -104,7 +104,7 @@ class TestAtomGrid:
         rad_grid = tf.transform_1d_grid(pts)
         atgrid = AtomGrid.from_preset(rad_grid, atnum=1, preset="fine")
         # 1984 points for coarse H atom
-        assert_equal(atgrid.size, 1984)
+        assert_equal(atgrid.size, 1984 + 4 * 4)
         assert_almost_equal(
             np.sum(np.exp(-np.sum(atgrid.points**2, axis=1)) * atgrid.weights),
             5.56832800,
@@ -115,7 +115,7 @@ class TestAtomGrid:
         rad_grid = tf.transform_1d_grid(pts)
         atgrid = AtomGrid.from_preset(rad_grid, atnum=1, preset="veryfine")
         # 3154 points for coarse H atom
-        assert_equal(atgrid.size, 3154)
+        assert_equal(atgrid.size, 3154 + 4 * 6)
         assert_almost_equal(
             np.sum(np.exp(-np.sum(atgrid.points**2, axis=1)) * atgrid.weights),
             5.56832800,
@@ -126,7 +126,7 @@ class TestAtomGrid:
         rad_grid = tf.transform_1d_grid(pts)
         atgrid = AtomGrid.from_preset(rad_grid, atnum=1, preset="ultrafine")
         # 4546 points for coarse H atom
-        assert_equal(atgrid.size, 4546)
+        assert_equal(atgrid.size, 4546 + 4 * 6)
         assert_almost_equal(
             np.sum(np.exp(-np.sum(atgrid.points**2, axis=1)) * atgrid.weights),
             5.56832800,
@@ -137,7 +137,7 @@ class TestAtomGrid:
         rad_grid = tf.transform_1d_grid(pts)
         atgrid = AtomGrid.from_preset(rad_grid, atnum=1, preset="insane")
         # 6622 points for coarse H atom
-        assert_equal(atgrid.size, 6622)
+        assert_equal(atgrid.size, 6622 + 4 * 7)
         assert_almost_equal(
             np.sum(np.exp(-np.sum(atgrid.points**2, axis=1)) * atgrid.weights),
             5.56832800,
@@ -180,8 +180,8 @@ class TestAtomGrid:
         rad_grid = OneDGrid(rad_pts, rad_wts)
         degs = np.array([2, 5, 7])
         pts, wts, ind, degrees = AtomGrid._generate_atomic_grid(rad_grid, degs)
-        assert len(pts) == 46
-        assert_equal(ind, [0, 6, 20, 46])
+        assert len(pts) == 50
+        assert_equal(ind, [0, 6, 24, 50])
         # set tests for slicing grid from atomic grid
         for i in range(3):
             # set each layer of points
