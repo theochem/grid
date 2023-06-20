@@ -330,11 +330,11 @@ class AngularGrid(Grid):
             The weights of each point on the integral quadrature grid. The attribute
             `points` should also be applied.
         degree : int, optional
-            Maximum angular degree :math:`l` of spherical harmonics that the Lebedev grid
-            can integrate accurately. If the Lebedev grid corresponding to the given angular
+            Maximum angular degree :math:`l` of spherical harmonics that the grid
+            can integrate accurately. If the grid corresponding to the given angular
             degree is not supported, the next largest degree is used.
         size : int, optional
-            Number of Lebedev grid points. If the Lebedev grid corresponding to the given size is
+            Number of grid points. If the grid corresponding to the given size is
             not supported, the next largest size is used. If both degree and size are given,
             degree is used for constructing the grid.
         cache : bool, optional
