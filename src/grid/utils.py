@@ -705,6 +705,9 @@ def convert_derivative_from_spherical_to_cartesian(deriv_r, deriv_theta, deriv_p
 def convert_cart_to_sph(points, center=None):
     r"""Convert a set of points from cartesian to spherical coordinates.
 
+    The convention that :math:`\theta \in [-\pi, \pi]` and :math:`\phi \in [0, \pi)`
+    is chosen.
+
     Parameters
     ----------
     points : np.ndarray(n, 3)
@@ -718,6 +721,7 @@ def convert_cart_to_sph(points, center=None):
     np.ndarray(N, 3)
         Spherical coordinates of atoms respect to the center
         [radius :math:`r`, azumuthal :math:`\theta`, polar :math:`\phi`]
+
     """
     if points.ndim != 2 or points.shape[1] != 3:
         raise ValueError(f"points array requires shape (N, 3), got: {points.ndim}")
