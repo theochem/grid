@@ -22,7 +22,7 @@ import warnings
 from typing import Union
 
 import numpy as np
-from importlib_resources import path
+from importlib_resources import files
 from scipy.interpolate import CubicSpline
 from scipy.spatial.transform import Rotation as R
 
@@ -173,11 +173,10 @@ class AtomGrid(Grid):
         center = np.zeros(3, dtype=float) if center is None else np.asarray(center, dtype=float)
         cls._input_type_check(rgrid, center)
         # load radial points and
-        with path("grid.data.prune_grid", f"prune_grid_{preset}.npz") as npz_file:
-            data = np.load(npz_file)
-            # load predefined_radial sectors and num_of_points in each sectors
-            rad = data[f"{atnum}_rad"]
-            npt = data[f"{atnum}_npt"]
+        data = np.load(files("grid.data.prune_grid").joinpath(f"prune_grid_{preset}.npz"))
+        # load predefined_radial sectors and num_of_points in each sectors
+        rad = data[f"{atnum}_rad"]
+        npt = data[f"{atnum}_npt"]
 
         degs = AngularGrid.convert_angular_sizes_to_degrees(npt, use_spherical)
         rad_degs = AtomGrid._find_l_for_rad_list(rgrid.points, rad, degs)

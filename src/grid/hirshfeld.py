@@ -21,7 +21,7 @@
 
 
 import numpy as np
-from importlib_resources import path
+from importlib_resources import files
 from scipy.interpolate import CubicSpline
 
 
@@ -34,8 +34,7 @@ class HirshfeldWeights:
     @staticmethod
     def _load_npz_proatom(num):
         """Return radial grid points and neutral density for a given atomic number."""
-        with path("grid.data.proatoms", f"a{num:03d}.npz") as fname:
-            data = np.load(fname)
+        data = np.load(files("grid.data.proatoms").joinpath(f"a{num:03d}.npz"))
         return data["r"], data["dn"]
 
     @staticmethod

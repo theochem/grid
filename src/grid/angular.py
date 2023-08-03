@@ -68,7 +68,7 @@ import warnings
 from bisect import bisect_left
 
 import numpy as np
-from importlib_resources import path
+from importlib_resources import files
 
 from grid.basegrid import Grid
 
@@ -554,8 +554,7 @@ class AngularGrid(Grid):
             raise ValueError(f"Given size={size} is not supported, choose from {npoints}")
         # load npz file corresponding to the given degree & size
         filename = f"{type}_{degree}_{size}.npz"
-        with path(file_path, filename) as npz_file:
-            data = np.load(npz_file)
+        data = np.load(files(file_path).joinpath(filename)) 
         if len(data["weights"]) == 1:
             return data["points"], np.ones(len(data["points"])) * data["weights"]
         return data["points"], data["weights"]
