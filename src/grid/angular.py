@@ -554,7 +554,7 @@ class AngularGrid(Grid):
             raise ValueError(f"Given size={size} is not supported, choose from {npoints}")
         # load npz file corresponding to the given degree & size
         filename = f"{type}_{degree}_{size}.npz"
-        data = np.load(files(file_path).joinpath(filename)) 
+        data = np.load(files(file_path).joinpath(filename))
         if len(data["weights"]) == 1:
             return data["points"], np.ones(len(data["points"])) * data["weights"]
         return data["points"], data["weights"]
