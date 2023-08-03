@@ -32,7 +32,7 @@ dependencies = [
     "numpy>=1.16",
     "pytest >=2.6",
     "scipy>=1.4",
-    "importlib_resources",
+    "importlib_resources<6.0",
     "sympy",
 ]
 dynamic = ["version"]
