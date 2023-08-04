@@ -43,7 +43,7 @@ class MolGrid(Grid):
     radial grid is the same for all atoms.  Two atoms are considered with charges [1, 2],
     respectively.
 
-    >>> from grid.becke BeckeWeights
+    >>> from grid.becke import BeckeWeights
     >>> from grid.onedgrid import GaussLaguerre
     >>> becke = BeckeWeights(order=3)
     >>> rgrid = GaussLaguerre(100)
