@@ -21,7 +21,7 @@ repos:
       args: ["--autofix", "--no-sort-keys"]
     - id: trailing-whitespace                       # Trims trailing whitespace.
 - repo: https://github.com/Lucas-C/pre-commit-hooks
-  rev: v1.5.1
+  rev: v1.5.3
   hooks:
     - id: remove-crlf
 - repo: https://github.com/psf/black
@@ -29,7 +29,7 @@ repos:
   hooks:
     - id: black
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: 'v0.0.281'
+  rev: 'v0.0.282'
   hooks:
     - id: ruff
 - repo: https://github.com/python-jsonschema/check-jsonschema
