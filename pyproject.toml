@@ -10,7 +10,7 @@ authors = [
 description = "Grid performs numerical integration, interpolation and differentiation."
 readme = "README.md"
 license = {text = "GPL-3.0-or-later"}
-requires-python = ">=3.6"
+requires-python = ">=3.7"
 classifiers = [
    'Development Status :: 0 - Released',
     'Environment :: Console',
@@ -21,7 +21,6 @@ classifiers = [
     'Intended Audience :: Science/Research',
     "Intended Audience :: Education",
     "Natural Language :: English",
-    'Programming Language :: Python :: 3.6',
     'Programming Language :: Python :: 3.7',
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
