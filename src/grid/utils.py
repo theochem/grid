@@ -917,7 +917,8 @@ def dipole_moment_of_molecule(grid, density: np.ndarray, coords: np.ndarray, cha
 
     where :math:`N_{atoms}` is the number of atoms, :math:`Z_i` is the atomic charge of the
     ith atom, :math:`\vec{R_i}` is the ith coordinate of the atom, :math:`\vec{R_c}` is the
-    center of the molecule and :math:`\rho` is the electron density of the molecule.
+    center of mass of the molecule in atomic units and :math:`\rho` is the electron density
+    of the molecule.
 
     Parameters
     ----------
