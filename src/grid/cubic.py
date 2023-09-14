@@ -515,7 +515,7 @@ class UniformGrid(_HyperRectangleGrid):
             raise TypeError(f"Argument axes should be a numpy array, got {type(axes)}")
         if not isinstance(shape, np.ndarray):
             raise TypeError(f"Argument shape should be a numpy array, got {type(shape)}")
-        if origin.size != 3 and origin.size != 2:
+        if origin.size not in (3, 2):
             raise ValueError(f"Arguments origin should have size 2 or 3, got {origin.shape}")
         if shape.size != origin.size:
             raise ValueError(f"Shape {shape.size} should be the same size {origin.size}.")

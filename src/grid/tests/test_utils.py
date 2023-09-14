@@ -27,6 +27,7 @@ from numpy.testing import assert_allclose, assert_almost_equal, assert_equal
 from grid.angular import AngularGrid
 from grid.utils import (
     convert_cart_to_sph,
+    dipole_moment_of_molecule,
     generate_derivative_real_spherical_harmonics,
     generate_real_spherical_harmonics,
     generate_real_spherical_harmonics_scipy,
