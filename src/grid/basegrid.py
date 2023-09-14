@@ -270,11 +270,11 @@ class Grid:
                 cent_pts_with_order = np.prod(cent_pts_with_order, axis=2)
                 # Calculate integral (X-c)^mx (Y-c)^my (Z-c)^mz by the function values and weights
                 integral = np.einsum("ln,n,n->l", cent_pts_with_order, func_vals, self.weights)
-            elif type_mom == "radial" or type_mom == "pure" or type_mom == "pure-radial":
+            elif type_mom in ("radial", "pure", "pure-radial"):
                 # Take the norm |r - R_c|
                 cent_pts_with_order = np.linalg.norm(centered_pts, axis=1)
 
-                if type_mom == "pure" or type_mom == "pure-radial":
+                if type_mom in ("pure", "pure-radial"):
                     # Calculate the spherical coordinates of the centered points and calculate
                     # the solid harmonics for all
                     sph_pts = convert_cart_to_sph(centered_pts)

@@ -308,6 +308,95 @@ _alvarez = np.array(
 )
 
 
+# Obtained from https://www.chem.ualberta.ca/~massspec/atomic_mass_abund.pdf in atomic units
+# [1] G. Audi, A. H. Wapstra Nucl. Phys A. 1993, 565, 1-65
+# [2] G. Audi, A. H. Wapstra Nucl. Phys A. 1995, 595, 409-480.
+isotopic_masses = {
+    1: 1.007825,
+    2: 4.002603,
+    3: 7.016004,
+    4: 9.012182,
+    5: 11.009305,
+    6: 12.0,
+    7: 14.003074,
+    8: 15.994915,
+    9: 18.998403,
+    10: 19.992440,
+    11: 22.989770,
+    12: 23.985042,
+    13: 26.981538,
+    14: 27.976927,
+    15: 30.973762,
+    16: 31.972071,
+    17: 34.968853,
+    18: 39.962383,
+    19: 38.963707,
+    20: 39.962591,
+    21: 44.955910,
+    22: 47.947947,
+    23: 50.943964,
+    24: 51.940512,
+    25: 54.938050,
+    26: 55.934942,
+    27: 58.933200,
+    28: 57.935348,
+    29: 62.929601,
+    30: 63.929147,
+    31: 68.925581,
+    32: 73.921178,
+    33: 74.921596,
+    34: 79.916522,
+    35: 78.918338,
+    36: 83.911507,
+    37: 84.911789,
+    38: 87.905614,
+    39: 88.905848,
+    40: 89.904704,
+    41: 92.906378,
+    42: 97.905408,
+    43: 97.907216,
+    44: 101.904350,
+    45: 102.905504,
+    46: 105.903483,
+    47: 106.905093,
+    48: 113.903358,
+    49: 114.903878,
+    50: 119.902197,
+    51: 120.903818,
+    52: 129.906223,
+    53: 126.904468,
+    54: 131.904154,
+    55: 132.905447,
+    56: 137.905241,
+    57: 138.906348,
+    58: 139.905434,
+    59: 140.907648,
+    60: 141.907719,
+    61: 144.912744,
+    62: 151.919728,
+    63: 152.921226,
+    64: 157.924101,
+    65: 158.925343,
+    66: 161.926795,
+    67: 164.930319,
+    68: 165.930290,
+    69: 168.934211,
+    70: 173.938858,
+    71: 174.940768,
+    72: 179.946549,
+    73: 183.950933,
+    74: 186.955751,
+    75: 186.955751,
+    76: 191.961479,
+    77: 192.962924,
+    78: 194.964774,
+    79: 196.966552,
+    80: 201.970626,
+    81: 204.974412,
+    82: 207.976636,
+}
+
+
 def get_cov_radii(atnums, type="bragg"):
     """Get the covalent radii for given atomic number(s).
 
@@ -828,7 +917,8 @@ def dipole_moment_of_molecule(grid, density: np.ndarray, coords: np.ndarray, cha
 
     where :math:`N_{atoms}` is the number of atoms, :math:`Z_i` is the atomic charge of the
     ith atom, :math:`\vec{R_i}` is the ith coordinate of the atom, :math:`\vec{R_c}` is the
-    center of the molecule and :math:`\rho` is the electron density of the molecule.
+    center of mass of the molecule in atomic units and :math:`\rho` is the electron density
+    of the molecule.
 
     Parameters
     ----------
@@ -847,8 +937,9 @@ def dipole_moment_of_molecule(grid, density: np.ndarray, coords: np.ndarray, cha
         Returns array of size three corresponding to the dipole moment of a molecule.
 
     """
-    # Calcualte the center of the molecule
-    center_mol = np.array([np.sum(coords, axis=0) / len(coords)])
+    # Calculate the center of mass of the molecule
+    masses = np.array([isotopic_masses[charge] for charge in charges])
+    center_mol = np.array([np.sum(coords * masses[:, None], axis=0) / np.sum(masses)])
 
     # Calculate the Cartesian moments of the electron density
     #     orders should be [[n_x, n_y, n_z]] = [[0, 0, 0], [1, 0, 0], [0, 1, 0], [0, 0, 1]]
