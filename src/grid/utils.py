@@ -936,8 +936,9 @@ def dipole_moment_of_molecule(grid, density: np.ndarray, coords: np.ndarray, cha
         Returns array of size three corresponding to the dipole moment of a molecule.
 
     """
-    # Calcualte the center of the molecule
-    center_mol = np.array([np.sum(coords, axis=0) / len(coords)])
+    # Calculate the center of the molecule
+    masses = np.array([isotopic_masses[charge] for charge in charges])
+    center_mol = np.array([np.sum(coords * masses[:, None], axis=0) / np.sum(masses)])
 
     # Calculate the Cartesian moments of the electron density
     #     orders should be [[n_x, n_y, n_z]] = [[0, 0, 0], [1, 0, 0], [0, 1, 0], [0, 0, 1]]
