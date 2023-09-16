@@ -27,23 +27,37 @@ import itertools
 class Ngrid(Grid):
     r"""
     Grid class for integration of N particle functions.
+
+    The function to integrate must be a function of the form
+    f((x1,y1,z1), (x2,y2,z2), ..., (xn, yn, zn)) -> float where (xi, yi, zi) are the coordinates
+    of the i-th particle and n is the number of particles. Internally, one Grid is created for
+    each particle and the integration is performed by integrating the function over the space spanned
+    by the domain union of all the grids.
     """
 
     def __init__(self, grid_list=None, n=None, **kwargs):
         r"""
         Initialize n particle grid.
 
+        At least one grid must be specified. If only one grid is specified, and a value for n bigger
+        than one is specified, the same grid will copied n times and one grid will used for each
+        particle. If more than one grid is specified, n will be ignored. In all cases, the function
+        to integrate must be a function of the form f((x1,y1,z1), (x2,y2,z2), ..., (xn, yn, zn)) ->
+        float where (xi, yi, zi) are the coordinates of the i-th particle and the function must
+        depend on a number of particles equal to the number of grids.
+
         Parameters
         ----------
         grid_list : list of Grid
-            List of grids for each particle.
+            List of grids, one Grid for each particle.
         n : int
             Number of particles.
         """
         # check that grid_list is defined
         if grid_list is None:
             raise ValueError("The list must be specified")
-        # TODO check that grid_list is a list of grids
+        if not all(isinstance(grid, Grid) for grid in grid_list):
+            raise ValueError("The Grid list must contain only Grid objects")
 
         self.grid_list = grid_list
         self.n = n
