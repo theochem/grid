@@ -34,3 +34,4 @@ from grid.ode import *
 from grid.onedgrid import *
 from grid.periodicgrid import *
 from grid.rtransform import *
+from grid.ngrid import *
