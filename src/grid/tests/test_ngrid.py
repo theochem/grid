@@ -62,3 +62,57 @@ class TestNgrid(TestCase):
         # case 5: n and the grid list have different lengths
         with self.assertRaises(ValueError):
             Ngrid(grid_list=[self.linear_grid] * 3, n=2)
+
+    def test_init(self):
+        """Assert that the init works as expected."""
+        # case 1: the grid list is given and n is None
+        ngrid = Ngrid(grid_list=[self.linear_grid, self.linear_grid, self.linear_grid])
+        self.assertEqual(len(ngrid.grid_list), 3)
+        self.assertEqual(ngrid.n, None)
+
+        # case 2: the grid list is given (length 1) and n is not None
+        ngrid = Ngrid(grid_list=[self.linear_grid], n=3)
+        self.assertEqual(len(ngrid.grid_list), 1)
+        self.assertEqual(ngrid.n, 3)
+
+    def test_single_grid_integration(self):
+        """Assert that the integration works as expected for a single grid."""
+
+        # define a function to integrate (x**2)
+        def f(x):
+            return x**2
+
+        # define a Ngrid with only one grid
+        ngrid = Ngrid(grid_list=[self.linear_grid])
+        # integrate it
+        result = ngrid.integrate(f)
+        # check that the result is correct
+        self.assertAlmostEqual(result, 1.0 / 3.0, places=2)
+
+    def test_2_grid_integration(self):
+        """Assert that the integration works as expected for two grids."""
+
+        # define a function to integrate (x**2+y**2)
+        def f(x, y):
+            return x**2 + y**2
+
+        # define a Ngrid with two grids
+        ngrid = Ngrid(grid_list=[self.linear_grid], n=2)
+        # integrate it
+        result = ngrid.integrate(f)
+        # check that the result is correct
+        self.assertAlmostEqual(result, 2.0 / 3.0, places=2)
+
+    def test_3_grid_integration(self):
+        """Assert that the integration works as expected for three grids."""
+
+        # define a function to integrate (x**2+y**2+z**2)
+        def f(x, y, z):
+            return x * y * z
+
+        # define a Ngrid with three grids
+        ngrid = Ngrid(grid_list=[self.linear_grid], n=3)
+        # integrate it
+        result = ngrid.integrate(f)
+        # check that the result is correct
+        self.assertAlmostEqual(result, 1.0 / 8.0, places=2)
