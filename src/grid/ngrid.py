@@ -56,8 +56,25 @@ class Ngrid(Grid):
         # check that grid_list is defined
         if grid_list is None:
             raise ValueError("The list must be specified")
+
+        # check that grid_list is not empty
+        if len(grid_list) == 0:
+            raise ValueError("The list must contain at least one grid")
+
+        # check that grid_list contains only Grid objects
         if not all(isinstance(grid, Grid) for grid in grid_list):
             raise ValueError("The Grid list must contain only Grid objects")
+
+        if n is not None:
+            # check that n is non negative
+            if n < 0:
+                raise ValueError("n must be non negative")
+            # check that for n > 1, the number of grids is equal to n or 1
+            if len(grid_list) > 1 and len(grid_list) != n:
+                raise ValueError(
+                    "Conflicting values for n and the number of grids. \n"
+                    "If n is specified, the number of grids must be equal to n or 1."
+                )
 
         self.grid_list = grid_list
         self.n = n
@@ -80,10 +97,11 @@ class Ngrid(Grid):
         float
             Integral of callable.
         """
+        # check that grid_list is not empty
         if len(self.grid_list) == 0:
             raise ValueError("The list must contain at least one grid")
 
-        if len(self.grid_list) == 1 and self.n > 1:
+        if len(self.grid_list) == 1 and self.n is not None and self.n > 1:
             return self._n_integrate(self.grid_list * self.n, callable, **call_kwargs)
         else:
             return self._n_integrate(self.grid_list, callable, **call_kwargs)
@@ -100,7 +118,7 @@ class Ngrid(Grid):
             Callable to integrate. It must take a list of N three dimensional tuples as argument
             (one for each particle) and return a float (e.g. a function of the form
             f((x1,y1,z1), (x2,y2,z2)) -> float).
-        kwcallargs : dict
+        call_kwargs : dict
             Keyword arguments for callable.
 
         Returns
@@ -111,7 +129,7 @@ class Ngrid(Grid):
 
         # if there is only one grid, perform the integration using the integrate method of the Grid
         if len(grid_list) == 1:
-            vals = callable(grid_list[0].points, **kwcallargs)
+            vals = callable(grid_list[0].points, **call_kwargs)
             return grid_list[0].integrate(vals)
         else:
             # The integration is performed by integrating the function over the last grid with all
@@ -137,7 +155,7 @@ class Ngrid(Grid):
                 # value of the n particle function at that point (i.e. the value of the n particle
                 # function at the point defined by the last grid point and the other coordinates
                 # fixed by i[0])
-                aux_func = lambda x: callable(*i[0], x, **kwcallargs)
+                aux_func = lambda x: callable(*i[0], x, **call_kwargs)
 
                 # calculate the value of the n particle function at each point of the last grid
                 vals = aux_func(grid_list[-1].points)
