@@ -349,19 +349,6 @@ class AngularGrid(Grid):
         AngularGrid
             An angular grid with points and weights on a unit sphere.
 
-        Examples
-        --------
-        >>> # Initialize with degree
-        >>> AngularGrid(degree=3)
-        >>>
-        >>> # Initialize with size
-        >>> AngularGrid(size=6)
-        >>>
-        >>> # Initialize with points and weights
-        >>> pts = np.array([[0, 1, 0], [1, 0, 1], [0, 1, 1]], dtype=float)
-        >>> wts = np.array([0.5, 0.4, 0.3])
-        >>> AngularGrid(pts, wts)
-
         Notes
         -----
         - Sometimes the weights for Lebedev-Laikov grids can be negative. Choosing degrees that have
