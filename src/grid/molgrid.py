@@ -381,6 +381,8 @@ class MolGrid(Grid):
 
         Notes
         -----
+        - The standard and Ochsenfeld presets were not designed with symmetric spherical t-design
+          in mind.
         - The "standard grids" [1]_ "SG-0" and "SG-1" are designed for large molecules with LDA
           (GGA) functionals, whereas "SG-2" and "SG-3" are designed for Meta-GGA functionals and
           B95/Minnesota functionals, respectively.

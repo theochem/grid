@@ -170,6 +170,7 @@ class AtomGrid(Grid):
 
         Notes
         -----
+        - The standard and Ochsenfeld presets were not designed with symmetric spherical t-design in mind.
         - The "standard grids" [1]_ "SG-0" and "SG-1" are designed for large molecules with
           LDA (GGA) functionals, whereas "SG-2" and "SG-3" are designed for Meta-GGA functionals
           and B95/Minnesota functionals, respectively.
@@ -198,17 +199,17 @@ class AtomGrid(Grid):
         npt = data[f"{atnum}_npt"]
 
         if preset in ["sg_0", "sg_2", "sg_3", "g1", "g2", "g3", "g4", "g5", "g6", "g7"]:
-            sector_sizes = [npt[idx] for idx in range(len(rad)) for r_p in range(rad[idx])]
+            sector_sizes = [npt[idx] for idx in range(len(rad)) for _ in range(rad[idx])]
             return cls(
                 rgrid, sizes=sector_sizes, center=center, rotate=rotate, use_spherical=use_spherical
             )
         elif preset == "sg_1" and atnum > 19:
-            sector_sizes = [npt[idx] for idx in range(len(rad)) for r_p in range(rad[idx])]
+            sector_sizes = [npt[idx] for idx in range(len(rad)) for _ in range(rad[idx])]
             return cls(
                 rgrid, sizes=sector_sizes, center=center, rotate=rotate, use_spherical=use_spherical
             )
         else:
-            degs = AngularGrid.convert_lebedev_sizes_to_degrees(npt)
+            degs = AngularGrid.convert_angular_sizes_to_degrees(npt, use_spherical=use_spherical)
             rad_degs = AtomGrid._find_l_for_rad_list(rgrid.points, rad, degs)
             return cls(
                 rgrid, degrees=rad_degs, center=center, rotate=rotate, use_spherical=use_spherical
