@@ -170,7 +170,8 @@ class AtomGrid(Grid):
 
         Notes
         -----
-        - The standard and Ochsenfeld presets were not designed with symmetric spherical t-design in mind.
+        - The standard and Ochsenfeld presets were not designed with symmetric spherical t-design
+          in mind.
         - The "standard grids" [1]_ "SG-0" and "SG-1" are designed for large molecules with
           LDA (GGA) functionals, whereas "SG-2" and "SG-3" are designed for Meta-GGA functionals
           and B95/Minnesota functionals, respectively.
@@ -179,7 +180,7 @@ class AtomGrid(Grid):
         References
         ----------
         .. [1] Y. Shao, et al. Advances in molecular quantum chemistry contained in the Q-Chem 4
-               program package. Mol. Phys. 113, 184–215 (2015)
+               program package. Mol. Phys. 113, 184-215 (2015)
         .. [2] Laqua, H., Kussmann, J., & Ochsenfeld, C. (2018). An improved molecular partitioning
                scheme for numerical quadratures in density functional theory. The Journal of
                Chemical Physics, 149(20).
