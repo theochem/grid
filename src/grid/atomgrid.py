@@ -167,7 +167,7 @@ class AtomGrid(Grid):
         use_spherical: bool, optional
             If true, loads the symmetric spherical t-design grid rather than the Lebedev-Laikov
             grid for the angular grid.
-            
+
         Notes
         -----
         - The "standard grids" [1]_ "SG-0" and "SG-1" are designed for large molecules with LDA (GGA) functionals,
@@ -194,17 +194,23 @@ class AtomGrid(Grid):
         # load predefined_radial sectors and num_of_points in each sectors
         rad = data[f"{atnum}_rad"]
         npt = data[f"{atnum}_npt"]
-        
-        if preset in ['sg_0', 'sg_2', 'sg_3', 'g1', 'g2', 'g3', 'g4', 'g5', 'g6', 'g7']:
+
+        if preset in ["sg_0", "sg_2", "sg_3", "g1", "g2", "g3", "g4", "g5", "g6", "g7"]:
             sector_sizes = [npt[idx] for idx in range(len(rad)) for r_p in range(rad[idx])]
-            return cls(rgrid, sizes=sector_sizes, center=center, rotate=rotate, use_spherical=use_spherical)
-        elif preset == 'sg_1' and atnum > 19:
+            return cls(
+                rgrid, sizes=sector_sizes, center=center, rotate=rotate, use_spherical=use_spherical
+            )
+        elif preset == "sg_1" and atnum > 19:
             sector_sizes = [npt[idx] for idx in range(len(rad)) for r_p in range(rad[idx])]
-            return cls(rgrid, sizes=sector_sizes, center=center, rotate=rotate, use_spherical=use_spherical)
+            return cls(
+                rgrid, sizes=sector_sizes, center=center, rotate=rotate, use_spherical=use_spherical
+            )
         else:
             degs = AngularGrid.convert_lebedev_sizes_to_degrees(npt)
             rad_degs = AtomGrid._find_l_for_rad_list(rgrid.points, rad, degs)
-            return cls(rgrid, degrees=rad_degs, center=center, rotate=rotate, use_spherical=use_spherical)
+            return cls(
+                rgrid, degrees=rad_degs, center=center, rotate=rotate, use_spherical=use_spherical
+            )
 
     @classmethod
     def from_pruned(
@@ -932,7 +938,7 @@ class AtomGrid(Grid):
 
 
 def get_rgrid_size(preset_grid, atnums=None):
-    """ Get the predefined radial points for available pruned grids
+    """Get the predefined radial points for available pruned grids
 
     Parameters
     ----------
@@ -942,8 +948,19 @@ def get_rgrid_size(preset_grid, atnums=None):
         Atomic numbers for which to retrieve number of radial points.
 
     """
-    if preset_grid not in ['sg_0', 'sg_1', 'sg_2', 'sg_3',
-                           'g1', 'g2', 'g3', 'g4', 'g5', 'g6', 'g7']:
+    if preset_grid not in [
+        "sg_0",
+        "sg_1",
+        "sg_2",
+        "sg_3",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "g5",
+        "g6",
+        "g7",
+    ]:
         raise ValueError(f"type_pruned {preset_grid} not recognized as a valid pruned grid")
     elif atnums is None:
         raise ValueError(f"At least one atomic number must be specified. Got {atnums}")
@@ -955,8 +972,8 @@ def get_rgrid_size(preset_grid, atnums=None):
         with path("grid.data.prune_grid", f"prune_grid_{preset_grid}.npz") as npz_file:
             data = np.load(npz_file)
         for idx, at_num in enumerate(atnums):
-            if preset_grid == 'sg_1':
-                rad = data['r_points']
+            if preset_grid == "sg_1":
+                rad = data["r_points"]
                 radial_pts.append(sum(rad))
             else:
                 rad = data[f"{at_num}_rad"]
