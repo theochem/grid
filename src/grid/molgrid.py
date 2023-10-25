@@ -99,14 +99,33 @@ class MolGrid(Grid):
         rgrid : OneDGrid
             one dimension grid  to construct spherical grid
         preset : str
-            preset grid accuracy scheme, support "coarse", "medium", "fine",
-            "veryfine", "ultrafine", "insane"
+            The name of predefined grid specifying the radial sectors and their corresponding
+            number of Lebedev grid points. Supported preset options include:
+            'coarse', 'medium', 'fine', 'veryfine', 'ultrafine', and 'insane'.
+            Other options include the "standard grids":
+            'sg_0', 'sg_1', 'sg_2', and 'sg_3', and the Ochsenfeld grids:
+            'g1', 'g2', 'g3', 'g4', 'g5', 'g6', and 'g7', with higher number indicating
+            greater accuracy but denser grid. See `Notes` for more information.
         aim_weights : Callable or np.ndarray(K,)
             Atoms in molecule weights.
         rotate : bool, optional
             Random rotate for each shell of atomic grid
         store : bool, optional
             Store atomic grid separately
+
+        Notes
+        -----
+        - The "standard grids" [1]_ "SG-0" and "SG-1" are designed for large molecules with LDA (GGA) functionals,
+          whereas "SG-2" and "SG-3" are designed for Meta-GGA functionals and B95/Minnesota functionals, respectively.
+        - The Ochsenfeld pruned grids [2]_ are obtained based on the paper.
+
+        References
+        ----------
+        .. [1] Y. Shao, et al. Advances in molecular quantum chemistry contained in the Q-Chem 4 program package.
+               [Mol. Phys. 113, 184–215 (2015)]
+        .. [2] Laqua, H., Kussmann, J., & Ochsenfeld, C. (2018). An improved molecular partitioning scheme for
+               numerical quadratures in density functional theory. The Journal of Chemical Physics, 149(20).
+
         """
         # construct for a atom molecule
         if atcoords.ndim != 2:
