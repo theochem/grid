@@ -98,9 +98,11 @@ class MolGrid(Grid):
             atomic coordinates of atoms
         rgrid : OneDGrid
             one dimension grid  to construct spherical grid
-        preset : str
-            The name of predefined grid specifying the radial sectors and their corresponding
-            number of Lebedev grid points. Supported preset options include:
+        preset : Union[str,dict]
+            Either string indicated the name of the predefined grid that is used for
+            all atoms or a dictionary whose keys are atomic number and values are a string
+            of the predined grid. These predefined grid specify the radial sectors and
+            their corresponding number of Lebedev grid points. Supported preset options include:
             'coarse', 'medium', 'fine', 'veryfine', 'ultrafine', and 'insane'.
             Other options include the "standard grids":
             'sg_0', 'sg_1', 'sg_2', and 'sg_3', and the Ochsenfeld grids:
