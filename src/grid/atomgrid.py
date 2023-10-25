@@ -154,6 +154,10 @@ class AtomGrid(Grid):
             The name of predefined grid specifying the radial sectors and their corresponding
             number of angular grid points. Supported preset options include:
             'coarse', 'medium', 'fine', 'veryfine', 'ultrafine', and 'insane'.
+            Other options include the "standard grids":
+            'sg_0', 'sg_1', 'sg_2', and 'sg_3', and the Ochsenfeld grids:
+            'g1', 'g2', 'g3', 'g4', 'g5', 'g6', and 'g7', with higher number indicating
+            greater accuracy but denser grid. See `Notes` for more information.
         center : ndarray(3,), optional, keyword-only argument
             Cartesian coordinates of the grid center. If `None`, the origin is used.
         rotate : int, optional
@@ -163,6 +167,23 @@ class AtomGrid(Grid):
         use_spherical: bool, optional
             If true, loads the symmetric spherical t-design grid rather than the Lebedev-Laikov
             grid for the angular grid.
+
+        Notes
+        -----
+        - The standard and Ochsenfeld presets were not designed with symmetric spherical t-design
+          in mind.
+        - The "standard grids" [1]_ "SG-0" and "SG-1" are designed for large molecules with
+          LDA (GGA) functionals, whereas "SG-2" and "SG-3" are designed for Meta-GGA functionals
+          and B95/Minnesota functionals, respectively.
+        - The Ochsenfeld pruned grids [2]_ are obtained based on the paper.
+
+        References
+        ----------
+        .. [1] Y. Shao, et al. Advances in molecular quantum chemistry contained in the Q-Chem 4
+               program package. Mol. Phys. 113, 184-215 (2015)
+        .. [2] Laqua, H., Kussmann, J., & Ochsenfeld, C. (2018). An improved molecular partitioning
+               scheme for numerical quadratures in density functional theory. The Journal of
+               Chemical Physics, 149(20).
 
         """
         if not isinstance(use_spherical, bool):
@@ -178,15 +199,22 @@ class AtomGrid(Grid):
         rad = data[f"{atnum}_rad"]
         npt = data[f"{atnum}_npt"]
 
-        degs = AngularGrid.convert_angular_sizes_to_degrees(npt, use_spherical)
-        rad_degs = AtomGrid._find_l_for_rad_list(rgrid.points, rad, degs)
-        return cls(
-            rgrid,
-            degrees=rad_degs,
-            center=center,
-            rotate=rotate,
-            use_spherical=use_spherical,
-        )
+        if preset in ["sg_0", "sg_2", "sg_3", "g1", "g2", "g3", "g4", "g5", "g6", "g7"]:
+            sector_sizes = [npt[idx] for idx in range(len(rad)) for _ in range(rad[idx])]
+            return cls(
+                rgrid, sizes=sector_sizes, center=center, rotate=rotate, use_spherical=use_spherical
+            )
+        elif preset == "sg_1" and atnum > 19:
+            sector_sizes = [npt[idx] for idx in range(len(rad)) for _ in range(rad[idx])]
+            return cls(
+                rgrid, sizes=sector_sizes, center=center, rotate=rotate, use_spherical=use_spherical
+            )
+        else:
+            degs = AngularGrid.convert_angular_sizes_to_degrees(npt, use_spherical=use_spherical)
+            rad_degs = AtomGrid._find_l_for_rad_list(rgrid.points, rad, degs)
+            return cls(
+                rgrid, degrees=rad_degs, center=center, rotate=rotate, use_spherical=use_spherical
+            )
 
     @classmethod
     def from_pruned(
@@ -911,3 +939,46 @@ class AtomGrid(Grid):
         points = np.vstack(all_points)
         weights = np.hstack(all_weights)
         return points, weights, indices, actual_degrees
+
+
+def get_rgrid_size(preset_grid, atnums=None):
+    """Get the predefined radial points for available pruned grids
+
+    Parameters
+    ----------
+    preset_grid : str
+        String specifiying type of pruned grid to access radial points data.
+    atnums : int or list/array of ints
+        Atomic numbers for which to retrieve number of radial points.
+
+    """
+    if preset_grid not in [
+        "sg_0",
+        "sg_1",
+        "sg_2",
+        "sg_3",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "g5",
+        "g6",
+        "g7",
+    ]:
+        raise ValueError(f"type_pruned {preset_grid} not recognized as a valid pruned grid")
+    elif atnums is None:
+        raise ValueError(f"At least one atomic number must be specified. Got {atnums}")
+    else:
+        if isinstance(atnums, int):
+            atnums = [atnums]
+
+        radial_pts = []
+        data = np.load(files("grid.data.prune_grid").joinpath(f"prune_grid_{preset_grid}.npz"))
+        for at_num in atnums:
+            if preset_grid == "sg_1":
+                rad = data["r_points"]
+                radial_pts.append(sum(rad))
+            else:
+                rad = data[f"{at_num}_rad"]
+                radial_pts.append(sum(rad))
+        return radial_pts

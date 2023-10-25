@@ -362,10 +362,15 @@ class MolGrid(Grid):
             all atoms. If a list is provided,then ith grid correspond to the ith atom.  If
             dictionary is provided, then the keys correspond to the `atnums[i]`attribute.
         preset : (str, list[str], dict[int: str])
-            Preset grid accuracy scheme, support "coarse", "medium", "fine",
-            "veryfine", "ultrafine", "insane".  If string is provided ,then preset is used
+            Preset grid accuracy scheme. If string is provided, then preset is used
             for all atoms, either it is specified by a list, or a dictionary whose keys
-            are from `atnums`.
+            are from `atnums`. These predefined grid specify the radial sectors and
+            their corresponding number of Lebedev grid points. Supported preset options include:
+            'coarse', 'medium', 'fine', 'veryfine', 'ultrafine', and 'insane'.
+            Other options include the "standard grids":
+            'sg_0', 'sg_1', 'sg_2', and 'sg_3', and the Ochsenfeld grids:
+            'g1', 'g2', 'g3', 'g4', 'g5', 'g6', and 'g7', with higher number indicating
+            greater accuracy but denser grid. See `Notes` for more information.
         aim_weights : Callable or np.ndarray(K,)
             Atoms in molecule weights.
         rotate : bool or int, optional
@@ -373,6 +378,23 @@ class MolGrid(Grid):
             will be used as a seed to generate rantom matrix.
         store : bool, optional
             Store atomic grid as a class attribute.
+
+        Notes
+        -----
+        - The standard and Ochsenfeld presets were not designed with symmetric spherical t-design
+          in mind.
+        - The "standard grids" [1]_ "SG-0" and "SG-1" are designed for large molecules with LDA
+          (GGA) functionals, whereas "SG-2" and "SG-3" are designed for Meta-GGA functionals and
+          B95/Minnesota functionals, respectively.
+        - The Ochsenfeld pruned grids [2]_ are obtained based on the paper.
+
+        References
+        ----------
+        .. [1] Y. Shao, et al. Advances in molecular quantum chemistry contained in the Q-Chem 4
+               program package. Mol. Phys. 113, 184-215 (2015)
+        .. [2] Laqua, H., Kussmann, J., & Ochsenfeld, C. (2018). An improved molecular partitioning
+               scheme for numerical quadratures in density functional theory. The Journal of
+               Chemical Physics, 149(20).
 
         """
         # construct for a atom molecule
