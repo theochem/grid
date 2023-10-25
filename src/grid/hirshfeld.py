@@ -20,10 +20,8 @@
 """Hirshfeld Weights Module."""
 
 
-from importlib_resources import path
-
 import numpy as np
-
+from importlib_resources import files
 from scipy.interpolate import CubicSpline
 
 
@@ -36,8 +34,7 @@ class HirshfeldWeights:
     @staticmethod
     def _load_npz_proatom(num):
         """Return radial grid points and neutral density for a given atomic number."""
-        with path("grid.data.proatoms", f"a{num:03d}.npz") as fname:
-            data = np.load(fname)
+        data = np.load(files("grid.data.proatoms").joinpath(f"a{num:03d}.npz"))
         return data["r"], data["dn"]
 
     @staticmethod
@@ -106,6 +103,8 @@ class HirshfeldWeights:
         np.ndarray(N,)
             Hirshfeld integration weights evaluated on :math:`N` grid points.
         """
+        if atnums.dtype != int:
+            raise TypeError(f"Parameter atnums dtype {atnums.dtype} should be int.")
         aim_weights = np.zeros(len(points))
         promolecule = np.zeros(len(points))
         # evaluate (neutral) pro-atom densities & pro-molecule density

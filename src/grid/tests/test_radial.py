@@ -19,12 +19,12 @@
 # --
 """Radial grid test."""
 
+import numpy as np
+from numpy.testing import assert_almost_equal
+
 from grid.basegrid import OneDGrid
 from grid.onedgrid import UniformInteger
 from grid.rtransform import ExpRTransform, PowerRTransform
-
-import numpy as np
-from numpy.testing import assert_almost_equal
 
 
 def test_basics1():
@@ -64,8 +64,8 @@ def test_integrate_gauss():
     grid = rtf.transform_1d_grid(oned)
     assert isinstance(grid, OneDGrid)
 
-    y = np.exp(-0.5 * grid.points ** 2)
+    y = np.exp(-0.5 * grid.points**2)
     # time 4 \pi and r^2 to accommodate old horton test
-    grid._weights = grid.weights * 4 * np.pi * grid.points ** 2
+    grid._weights = grid.weights * 4 * np.pi * grid.points**2
     assert_almost_equal(grid.integrate(y), (2 * np.pi) ** 1.5)
     # assert abs(grid.integrate(y) - (2*np.pi)**1.5) < 1e-9

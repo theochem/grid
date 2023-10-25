@@ -24,9 +24,9 @@ import warnings
 from abc import ABC, abstractmethod
 from numbers import Number
 
-from grid.basegrid import OneDGrid
-
 import numpy as np
+
+from grid.basegrid import OneDGrid
 
 
 class BaseTransform(ABC):
@@ -117,7 +117,7 @@ class BaseTransform(ABC):
 
 
 class BeckeRTransform(BaseTransform):
-    """
+    r"""
     Becke Transformation.
 
     The Becke transformation transforms from :math:`[-1, 1]` to :math:`[r_{min}, \infty)`
@@ -269,7 +269,10 @@ class BeckeRTransform(BaseTransform):
         np.ndarray(N,)
             First derivative of Becke transformation at each point.
         """
-        return 2 * self._R / ((1 - x) ** 2)
+        deriv = 2 * self._R / ((1 - x) ** 2)
+        if self.trim_inf:
+            deriv = self._convert_inf(deriv)
+        return deriv
 
     def deriv2(self, x: np.ndarray):
         r"""Compute the second derivative of Becke transformation.
@@ -309,7 +312,7 @@ class BeckeRTransform(BaseTransform):
 
 
 class LinearFiniteRTransform(BaseTransform):
-    """
+    r"""
     Linear finite transformation from :math:`[-1, 1]` to :math:`[r_{min}, r_{max}]`.
 
     The Linear transformation from finite interval :math:`[-1, 1]` to finite interval
@@ -358,7 +361,7 @@ class LinearFiniteRTransform(BaseTransform):
         float or np.ndarray
             Transformed points between :math:`[r_{min}, r_{max}]`
         """
-        return (self._rmax - self._rmin) / 2 * (1 + x) + self._rmin
+        return (1 + x) * (self._rmax - self._rmin) / 2 + self._rmin
 
     def deriv(self, x: np.ndarray):
         r"""Compute the 1st order derivative.
@@ -449,9 +452,7 @@ class InverseRTransform(BaseTransform):
 
         """
         if not isinstance(transform, BaseTransform):
-            raise TypeError(
-                f"Input need to be a transform instance, got {type(transform)}."
-            )
+            raise TypeError(f"Input need to be a transform instance, got {type(transform)}.")
         self._tfm = transform
         self._domain = transform.codomain
         self._codomain = transform.domain
@@ -510,9 +511,7 @@ class InverseRTransform(BaseTransform):
         """
         d1 = self._tfm.deriv(r)
         if np.any(d1 == 0):
-            raise ZeroDivisionError(
-                "First derivative of original transformation has 0 value"
-            )
+            raise ZeroDivisionError("First derivative of original transformation has 0 value")
         return d1
 
     def deriv(self, r: np.ndarray):
@@ -588,7 +587,7 @@ class InverseRTransform(BaseTransform):
 
 
 class IdentityRTransform(BaseTransform):
-    """
+    r"""
     Identity Transform class.
 
     The identity transform class trivially transforms from :math:`[0, \infty)` to
@@ -705,16 +704,23 @@ class LinearInfiniteRTransform(BaseTransform):
     interval :math:`[r_{min}, r_{max}]` given by
 
     .. math::
-        r(x) = \frac{(r_{max} - r_{min})}{N - 1} x + r_{min},
+        r(x) = \frac{(r_{max} - r_{min})}{b} x + r_{min},
+
+    where :math:`r(b) = r_{max}`.  If None, then the :math:`b` is taken to be the maximum
+    from the first grid that is being transformed. This transformation always maps zero to
+    :math:`r_{min}`.
+
+    The original goal is to transform the `UniformGrid`, equally-spaced integers from 0 to N-1,
+    to :math:`[r_{min}, r_{max}]`.
 
     The inverse is given by
 
     .. math::
-        x(r) = (r - r_{min}) \frac{N - 1}{r_{max} - r_{min}}
+        x(r) = (r - r_{min}) \frac{\max_i (r_i)}{r_{max} - r_{min}}
 
     """
 
-    def __init__(self, rmin: float, rmax: float):
+    def __init__(self, rmin: float, rmax: float, b: float = None):
         r"""Initialize linear transform class.
 
         Parameters
@@ -723,16 +729,19 @@ class LinearInfiniteRTransform(BaseTransform):
             Define the lower end of the linear transform
         rmax : float
             Define the upper end of the linear transform
+        b: float
+            Maximum :math:`b` of a prespecified radial grid :math:`[0, b]` such that
+            :math:`b` maps to `rmax`. If None, then the maximum is taken and stored from the
+            grid that is transformed initially.
 
         """
         if rmin >= rmax:
-            raise ValueError(
-                f"rmin need to be larger than rmax.\n  rmin: {rmin}, rmax: {rmax}"
-            )
+            raise ValueError(f"rmin need to be larger than rmax.\n  rmin: {rmin}, rmax: {rmax}")
         self._rmin = rmin
         self._rmax = rmax
         self._domain = (0, np.inf)
         self._codomain = (rmin, rmax)
+        self._b = b
 
     @property
     def rmin(self):
@@ -744,11 +753,26 @@ class LinearInfiniteRTransform(BaseTransform):
         r"""float: rmax value of the tf."""
         return self._rmax
 
+    @property
+    def b(self):
+        r"""float: Parameter such that :math:`r(b) = r_{max}`."""
+        return self._b
+
+    def set_maximum_parameter_b(self, x):
+        r"""Sets up the parameter b from taken the maximum over some grid x."""
+        if self.b is None:
+            self._b = np.max(x)
+            if np.abs(self.b) < 1e-16:
+                raise ValueError(
+                    f"The parameter b {self.b} is taken from the maximum of the grid"
+                    f"and can't be zero."
+                )
+
     def transform(self, x: np.ndarray):
         r"""Transform from interval :math:`[0, \infty)` to :math:`[r_{min}, r_{max}]`.
 
         .. math::
-            r_i = \frac{(r_{max} - r_{min})}{N - 1} x_i + r_{min},
+            r_i = \frac{(r_{max} - r_{min})}{\max_i x_i} x_i + r_{min},
 
         where :math:`N` is the number of points. The goal is to transform
         equally-spaced integers from 0 to N-1, to :math:`[r_{min}, r_{max}]`.
@@ -764,7 +788,8 @@ class LinearInfiniteRTransform(BaseTransform):
             Transformed points between :math:`[r_{min}, r_{max}]`.
 
         """
-        alpha = (self._rmax - self._rmin) / (x.size - 1)
+        self.set_maximum_parameter_b(x)
+        alpha = (self._rmax - self._rmin) / self.b
         return alpha * x + self._rmin
 
     def deriv(self, x: np.ndarray):
@@ -782,7 +807,8 @@ class LinearInfiniteRTransform(BaseTransform):
             First derivative of transformation at x.
 
         """
-        alpha = (self._rmax - self._rmin) / (x.size - 1)
+        self.set_maximum_parameter_b(x)
+        alpha = (self._rmax - self._rmin) / self.b
         return np.ones(x.size) * alpha
 
     def deriv2(self, x: np.ndarray):
@@ -821,7 +847,7 @@ class LinearInfiniteRTransform(BaseTransform):
         r"""Compute the inverse of linear transformation.
 
         .. math::
-            x_i = (r - r_{min}) \frac{N - 1}{r_{max} - r_{min}}
+            x_i = (r - r_{min}) / frac{b}{r_{max} - r_{min}}
 
         Parameters
         ----------
@@ -834,7 +860,8 @@ class LinearInfiniteRTransform(BaseTransform):
             Inverse of transformation from coordinate :math:`r` to :math:`x`.
 
         """
-        alpha = (self._rmax - self._rmin) / (r.size - 1)
+        self.set_maximum_parameter_b(r)
+        alpha = (self._rmax - self._rmin) / self.b
         return (r - self._rmin) / alpha
 
 
@@ -845,15 +872,20 @@ class ExpRTransform(BaseTransform):
     This transformation is given by
 
     .. math::
-        r(x) = r_{min} e^{x \log\bigg(\frac{r_{max}}{r_{min} / (N - 1)}  \bigg)}.
+        r(x) = r_{min} e^{x \log\bigg(\frac{r_{max}}{r_{min} / b}  \bigg)},
+
+
+    where :math:`b` maps to `rmax`. If None, then the :math:`b` is taken to be the maximum
+     from the first grid that is being transformed. This transformation always maps zero to
+     :math:`r_{min}`.
 
     The inverse transformation is given by
 
     .. math::
-        x(r) = \frac{\log\big(\frac{r}{r_{min}} \big) (N - 1)}{\log(\frac{r_{max}}{r_{min}})}
+        x(r) = \frac{\log\big(\frac{r}{r_{min}} \big) b}{\log(\frac{r_{max}}{r_{min}})}
     """
 
-    def __init__(self, rmin: float, rmax: float):
+    def __init__(self, rmin: float, rmax: float, b: float = None):
         r"""Initialize exp transform instance.
 
         Parameters
@@ -862,20 +894,21 @@ class ExpRTransform(BaseTransform):
             Minimum value for transformed points.
         rmax : float
             Maximum value for transformed points.
+        b: float
+            Maximum :math:`b` of a prespecified radial grid :math:`[0, b]` such that
+            :math:`b` maps to `rmax`. If None, then the maximum is taken and stored from the
+            grid that is transformed initially.
 
         """
         if rmin < 0 or rmax < 0:
-            raise ValueError(
-                f"rmin or rmax need to be positive\n  rmin: {rmin}, rmax: {rmax}"
-            )
+            raise ValueError(f"rmin or rmax need to be positive\n  rmin: {rmin}, rmax: {rmax}")
         if rmin >= rmax:
-            raise ValueError(
-                f"rmin need to be smaller than rmax\n  rmin: {rmin}, rmax: {rmax}"
-            )
+            raise ValueError(f"rmin need to be smaller than rmax\n  rmin: {rmin}, rmax: {rmax}")
         self._rmin = rmin
         self._rmax = rmax
         self._domain = (0, np.inf)
         self._codomain = (rmin, rmax)
+        self._b = b
 
     @property
     def rmin(self):
@@ -887,14 +920,29 @@ class ExpRTransform(BaseTransform):
         r"""float: the value of rmax."""
         return self._rmax
 
+    @property
+    def b(self):
+        r"""float: Parameter :math:`b` that maps/transforms to :math:`r_{max}`."""
+        return self._b
+
+    def set_maximum_parameter_b(self, x):
+        r"""Sets up the parameter b from taken the maximum over x."""
+        if self.b is None:
+            self._b = np.max(x)
+            if np.abs(self.b) < 1e-16:
+                raise ValueError(
+                    f"The parameter b {self.b} is taken from the maximum of the grid"
+                    f"and can't be zero."
+                )
+
     def transform(self, x: np.ndarray):
         r"""
         Perform exponential transform.
 
         .. math::
-            r = r_{min} e^{x \log\bigg(\frac{r_{max}}{r_{min} / (N - 1)}  \bigg)},
+            r = r_{min} e^{x \log\bigg(\frac{r_{max}}{r_{min} / b}  \bigg)},
 
-        where :math:`N` is the number of points in grid.
+        where :math:`b` is a prespecified parameter that maps to :math:`r_{max}`.
 
         Parameters
         ----------
@@ -907,7 +955,8 @@ class ExpRTransform(BaseTransform):
             The transformation of x in the co-domain of the transformation.
 
         """
-        alpha = np.log(self._rmax / self._rmin) / (x.size - 1)
+        self.set_maximum_parameter_b(x)
+        alpha = np.log(self._rmax / self._rmin) / self.b
         return self._rmin * np.exp(x * alpha)
 
     def deriv(self, x: np.ndarray):
@@ -925,7 +974,8 @@ class ExpRTransform(BaseTransform):
             First derivative of transformation at x.
 
         """
-        alpha = np.log(self._rmax / self._rmin) / (x.size - 1)
+        self.set_maximum_parameter_b(x)
+        alpha = np.log(self._rmax / self._rmin) / self.b
         return self.transform(x) * alpha
 
     def deriv2(self, x: np.ndarray):
@@ -943,7 +993,8 @@ class ExpRTransform(BaseTransform):
             Second derivative of transformation at x.
 
         """
-        alpha = np.log(self._rmax / self._rmin) / (x.size - 1)
+        self.set_maximum_parameter_b(x)
+        alpha = np.log(self._rmax / self._rmin) / self.b
         return self.deriv(x) * alpha
 
     def deriv3(self, x: np.ndarray):
@@ -961,7 +1012,8 @@ class ExpRTransform(BaseTransform):
             Third derivative of transformation at x.
 
         """
-        alpha = np.log(self._rmax / self._rmin) / (x.size - 1)
+        self.set_maximum_parameter_b(x)
+        alpha = np.log(self._rmax / self._rmin) / self.b
         return self.deriv2(x) * alpha
 
     def inverse(self, r: np.ndarray):
@@ -969,7 +1021,9 @@ class ExpRTransform(BaseTransform):
         Compute the inverse of exponential transform.
 
         .. math::
-            x(r_i) = \frac{\log\big(\frac{r}{r_{min}} \big) (N - 1)}{\log(\frac{r_{max}}{r_{min}})}
+            x(r_i) = \frac{\log\big(\frac{r}{r_{min}} \big) b}{\log(\frac{r_{max}}{r_{min}})},
+
+        where :math:`b` is a prespecified parameter
 
         Parameters
         ----------
@@ -982,7 +1036,8 @@ class ExpRTransform(BaseTransform):
             Inverse transformation at r.
 
         """
-        alpha = np.log(self._rmax / self._rmin) / (r.size - 1)
+        self.set_maximum_parameter_b(r)
+        alpha = np.log(self._rmax / self._rmin) / self.b
         return np.log(r / self._rmin) / alpha
 
 
@@ -993,7 +1048,9 @@ class PowerRTransform(BaseTransform):
     This transformations is given by
 
     .. math::
-        r(x) = r_{min}  (x + 1)^{\frac{\log(r_{max} - \log(r_{min}}{N}}.
+        r(x) = r_{min}  (x + 1)^{\frac{\log(r_{max} - \log(r_{min}}{\log(b + 1)}},
+
+    such that :math:`r(b) = r_{max}`.
 
     The inverse of the transformation is given by
 
@@ -1002,7 +1059,7 @@ class PowerRTransform(BaseTransform):
 
     """
 
-    def __init__(self, rmin: float, rmax: float):
+    def __init__(self, rmin: float, rmax: float, b: float = None):
         r"""Initialize power transform instance.
 
         Parameters
@@ -1011,6 +1068,9 @@ class PowerRTransform(BaseTransform):
             Minimum value for transformed points
         rmax : float
             Maximum value for transformed points
+        b: float
+            The parameter b that maps to :math:`r_{max}`.
+
 
         """
         if rmin >= rmax:
@@ -1021,6 +1081,22 @@ class PowerRTransform(BaseTransform):
         self._rmax = rmax
         self._domain = (0, np.inf)
         self._codomain = (rmin, rmax)
+        self._b = b
+
+    @property
+    def b(self):
+        r"""float: Parameter :math:`b` that maps/transforms to :math:`r_{max}`."""
+        return self._b
+
+    def set_maximum_parameter_b(self, x):
+        r"""Sets up the parameter b from taken the maximum over x."""
+        if self.b is None:
+            self._b = np.max(x)
+            if np.abs(self.b) < 1e-16:
+                raise ValueError(
+                    f"The parameter b {self.b} is taken from the maximum of the grid"
+                    f"and can't be zero."
+                )
 
     @property
     def rmin(self):
@@ -1037,9 +1113,9 @@ class PowerRTransform(BaseTransform):
         Perform power transform.
 
         .. math::
-            r = r_{min}  (x + 1)^{\frac{\log(r_{max} - \log(r_{min}}{N}},
+            r = r_{min}  (x + 1)^{\frac{\log(r_{max} - \log(r_{min}}{b + 1}},
 
-        where :math:`N` is the number of points in x.
+        such that :math:`r(b) = r_{max}`.
 
         Parameters
         ----------
@@ -1052,10 +1128,13 @@ class PowerRTransform(BaseTransform):
             The transformation of x to the co-domain of the transformation.
 
         """
-        power = (np.log(self._rmax) - np.log(self._rmin)) / np.log(x.size)
+        self.set_maximum_parameter_b(x)
+        power = (np.log(self._rmax) - np.log(self._rmin)) / np.log(self.b + 1)
         if power < 2:
             warnings.warn(
-                f"power need to be larger than 2\n  power: {power}", RuntimeWarning
+                f"power need to be larger than 2\n  power: {power}",
+                RuntimeWarning,
+                stacklevel=2,
             )
         return self._rmin * np.power(x + 1, power)
 
@@ -1074,7 +1153,8 @@ class PowerRTransform(BaseTransform):
             First derivative of transformation at x.
 
         """
-        power = (np.log(self._rmax) - np.log(self._rmin)) / np.log(x.size)
+        self.set_maximum_parameter_b(x)
+        power = (np.log(self._rmax) - np.log(self._rmin)) / np.log(self.b + 1)
         return power * self._rmin * np.power(x + 1, power - 1)
 
     def deriv2(self, x: np.ndarray):
@@ -1092,7 +1172,9 @@ class PowerRTransform(BaseTransform):
             Second derivative of transformation at x.
 
         """
-        power = (np.log(self._rmax) - np.log(self._rmin)) / np.log(x.size)
+
+        self.set_maximum_parameter_b(x)
+        power = (np.log(self._rmax) - np.log(self._rmin)) / np.log(self.b + 1)
         return power * (power - 1) * self._rmin * np.power(x + 1, power - 2)
 
     def deriv3(self, x: np.ndarray):
@@ -1110,17 +1192,19 @@ class PowerRTransform(BaseTransform):
             Third derivative of transformation at x.
 
         """
-        power = (np.log(self._rmax) - np.log(self._rmin)) / np.log(x.size)
-        return (
-            power * (power - 1) * (power - 2) * self._rmin * np.power(x + 1, power - 3)
-        )
+        self.set_maximum_parameter_b(x)
+        power = (np.log(self._rmax) - np.log(self._rmin)) / np.log(self.b + 1)
+        return power * (power - 1) * (power - 2) * self._rmin * np.power(x + 1, power - 3)
 
     def inverse(self, r: np.ndarray):
         r"""
         Compute the inverse of power transform.
 
         .. math::
-            x(r) = \frac{r}{r_{min}}^{\frac{\log(N)}{\log(r_{max}) - \log(r_{min})}} - 1
+            x(r) = \frac{r}{r_{min}}^{\frac{\log(b + 1)}{\log(r_{max}) - \log(r_{min})}} - 1
+
+        such that :math:`r(b) = r_{max}`.
+
 
         Parameters
         ----------
@@ -1133,7 +1217,8 @@ class PowerRTransform(BaseTransform):
             Inverse of transformation at r.
 
         """
-        power = (np.log(self._rmax) - np.log(self._rmin)) / np.log(r.size)
+        self.set_maximum_parameter_b(r)
+        power = (np.log(self._rmax) - np.log(self._rmin)) / np.log(self.b + 1)
         return np.power(r / self._rmin, 1.0 / power) - 1
 
 
@@ -1307,7 +1392,7 @@ class MultiExpRTransform(BaseTransform):
 
     References
     ----------
-    .. [1] Gill, Peter MW, and Siu‐Hung Chien. "Radial quadrature for multiexponential integrands."
+    .. [1] Gill, Peter MW, and Siu-Hung Chien. "Radial quadrature for multiexponential integrands."
        Journal of computational chemistry 24.6 (2003): 732-740.
 
     """
@@ -1518,9 +1603,7 @@ class KnowlesRTransform(BaseTransform):
             One dimensional array in :math:`[r_{min},\infty)`.
 
         """
-        rf_array = (
-            -self._R * np.log(1 - (2**-self._k) * (x + 1) ** self._k) + self._rmin
-        )
+        rf_array = -self._R * np.log(1 - (2**-self._k) * (x + 1) ** self._k) + self._rmin
         if self.trim_inf:
             rf_array = self._convert_inf(rf_array)
         return rf_array
@@ -1562,9 +1645,10 @@ class KnowlesRTransform(BaseTransform):
 
         """
         qi = 1 + x
-        return (
-            self._R * self._k * (qi ** (self._k - 1)) / (2**self._k - qi**self._k)
-        )
+        deriv = self._R * self._k * (qi ** (self._k - 1)) / (2**self._k - qi**self._k)
+        if self.trim_inf:
+            deriv = self._convert_inf(deriv)
+        return deriv
 
     def deriv2(self, x: np.ndarray):
         r"""Compute the second derivative of Knowles transformation.
@@ -1703,7 +1787,7 @@ class HandyRTransform(BaseTransform):
         """
         rf_array = self._R * ((1 + x) / (1 - x)) ** self._m + self._rmin
         if self.trim_inf:
-            self._convert_inf(rf_array)
+            rf_array = self._convert_inf(rf_array)
         return rf_array
 
     def inverse(self, r: np.ndarray):
@@ -1747,7 +1831,7 @@ class HandyRTransform(BaseTransform):
         """
         dr = 2 * self._m * self._R * (1 + x) ** (self._m - 1) / (1 - x) ** (self._m + 1)
         if self.trim_inf:
-            self._convert_inf(dr)
+            dr = self._convert_inf(dr)
         return dr
 
     def deriv2(self, x: np.ndarray):
@@ -1776,7 +1860,7 @@ class HandyRTransform(BaseTransform):
         )
 
         if self.trim_inf:
-            self._convert_inf(dr)
+            dr = self._convert_inf(dr)
         return dr
 
     def deriv3(self, x: np.ndarray):
@@ -1806,7 +1890,7 @@ class HandyRTransform(BaseTransform):
         )
 
         if self.trim_inf:
-            self._convert_inf(dr)
+            dr = self._convert_inf(dr)
         return dr
 
 
@@ -1852,9 +1936,7 @@ class HandyModRTransform(BaseTransform):
             raise ValueError(f"m needs to be greater than 0, got m = {m}")
 
         if rmax < rmin:
-            raise ValueError(
-                f"rmax needs to be greater than rmin. rmax : {rmax}, rmin : {rmin}."
-            )
+            raise ValueError(f"rmax needs to be greater than rmin. rmax : {rmax}, rmin : {rmin}.")
         self._rmin = rmin
         self._rmax = rmax
         self._m = m
@@ -1904,7 +1986,7 @@ class HandyModRTransform(BaseTransform):
         rf_array += self._rmin
 
         if self.trim_inf:
-            self._convert_inf(rf_array)
+            rf_array = self._convert_inf(rf_array)
         return rf_array
 
     def inverse(self, r: np.ndarray):
@@ -1931,9 +2013,7 @@ class HandyModRTransform(BaseTransform):
         size_r = self._rmax - self._rmin
 
         tmp_r = (
-            (r - self._rmin)
-            * (size_r - two_m + 1)
-            / ((r - self._rmin) * (size_r - two_m) + size_r)
+            (r - self._rmin) * (size_r - two_m + 1) / ((r - self._rmin) * (size_r - two_m) + size_r)
         )
 
         return 2 * (tmp_r) ** (1 / self._m) - 1
@@ -1960,17 +2040,13 @@ class HandyModRTransform(BaseTransform):
         """
         two_m = 2**self._m
         size_r = self._rmax - self._rmin
-        return (
-            -(
-                self._m
-                * two_m
-                * (two_m - size_r - 1)
-                * size_r
-                * (1 + x) ** (self._m - 1)
-            )
-            / (two_m * (1 - two_m + size_r) + (two_m - size_r) * (1 + x) ** self._m)
-            ** 2
+        deriv = (
+            -(self._m * two_m * (two_m - size_r - 1) * size_r * (1 + x) ** (self._m - 1))
+            / (two_m * (1 - two_m + size_r) + (two_m - size_r) * (1 + x) ** self._m) ** 2
         )
+        if self.trim_inf:
+            deriv = self._convert_inf(deriv)
+        return deriv
 
     def deriv2(self, x: np.ndarray):
         r"""Compute the second derivative of modified Handy transformation.
@@ -1999,8 +2075,7 @@ class HandyModRTransform(BaseTransform):
                     - (self._m + 1) * (two_m - size_r) * (1 + x) ** (self._m)
                 )
             )
-            / (two_m * (1 - two_m + size_r) + (two_m - size_r) * (1 + x) ** self._m)
-            ** 3
+            / (two_m * (1 - two_m + size_r) + (two_m - size_r) * (1 + x) ** self._m) ** 3
         )
 
     def deriv3(self, x: np.ndarray):
@@ -2026,11 +2101,7 @@ class HandyModRTransform(BaseTransform):
                 * (two_m - size_r - 1)
                 * (1 + x) ** (self._m - 3)
                 * (
-                    2
-                    * two_m
-                    * (self._m - 2)
-                    * (self._m - 1)
-                    * (1 - two_m + size_r) ** 2
+                    2 * two_m * (self._m - 2) * (self._m - 1) * (1 - two_m + size_r) ** 2
                     + 2 ** (self._m + 2)
                     * (self._m - 1)
                     * (self._m + 1)
@@ -2043,6 +2114,5 @@ class HandyModRTransform(BaseTransform):
                     * (x + 1) ** (2 * self._m)
                 )
             )
-            / (two_m * (1 - two_m + size_r) + (two_m - size_r) * (1 + x) ** self._m)
-            ** 4
+            / (two_m * (1 - two_m + size_r) + (two_m - size_r) * (1 + x) ** self._m) ** 4
         )

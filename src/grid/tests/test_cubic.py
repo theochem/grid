@@ -21,11 +21,11 @@ r"""Rectangular Grid Testing."""
 
 from unittest import TestCase
 
-from grid.cubic import Tensor1DGrids, UniformGrid, _HyperRectangleGrid
-from grid.onedgrid import GaussLaguerre, MidPoint
-
 import numpy as np
 from numpy.testing import assert_allclose
+
+from grid.cubic import Tensor1DGrids, UniformGrid, _HyperRectangleGrid
+from grid.onedgrid import GaussLaguerre, MidPoint
 
 
 class TestHyperRectangleGrid(TestCase):
@@ -181,9 +181,7 @@ class TestTensor1DGrids(TestCase):
         for i in range(oned.size):
             for j in range(oned.size):
                 for k in range(oned.size):
-                    actual_pt = np.array(
-                        [oned.points[i], oned.points[j], oned.points[k]]
-                    )
+                    actual_pt = np.array([oned.points[i], oned.points[j], oned.points[k]])
                     assert_allclose(actual_pt, cubic.points[index, :])
                     actual_weight = oned.weights[i] * oned.weights[j] * oned.weights[k]
                     assert_allclose(actual_weight, cubic.weights[index])
@@ -217,9 +215,7 @@ class TestTensor1DGrids(TestCase):
         gaussian_pts = linear_func(cubic.points)
         num_pts = 50
         random_pts = np.random.uniform(-0.9, 0.9, (num_pts, 3))
-        interpolated = cubic.interpolate(
-            random_pts, gaussian_pts, use_log=False, method="linear"
-        )
+        interpolated = cubic.interpolate(random_pts, gaussian_pts, use_log=False, method="linear")
         assert_allclose(interpolated, linear_func(random_pts))
 
     def test_interpolation_of_constant_function_using_scipy_nearest_method(self):
@@ -228,18 +224,13 @@ class TestTensor1DGrids(TestCase):
         cubic = Tensor1DGrids(oned, oned, oned)
 
         def linear_func(points):
-            return (
-                np.array([1.0] * points.shape[0])
-                + np.random.random((points.shape[0])) * 1.0e-6
-            )
+            return np.array([1.0] * points.shape[0]) + np.random.random(points.shape[0]) * 1.0e-6
 
         gaussian_pts = linear_func(cubic.points)
         num_pts = 5
         random_pts = np.random.uniform(-0.9, 0.9, (num_pts, 3))
         for pt in random_pts:
-            interpolated = cubic.interpolate(
-                pt, gaussian_pts, use_log=False, method="nearest"
-            )
+            interpolated = cubic.interpolate(pt, gaussian_pts, use_log=False, method="nearest")
             assert_allclose(interpolated, linear_func(np.array([pt]))[0], rtol=1e-6)
 
     def test_interpolation_of_various_derivative_gaussian_using_logarithm(self):
@@ -251,11 +242,7 @@ class TestTensor1DGrids(TestCase):
             return np.exp(-3 * np.linalg.norm(points, axis=1) ** 2.0)
 
         def derivative_wrt_one_var(point, i_var_deriv):
-            return (
-                np.exp(-3 * np.linalg.norm(point) ** 2.0)
-                * point[i_var_deriv]
-                * (-3 * 2.0)
-            )
+            return np.exp(-3 * np.linalg.norm(point) ** 2.0) * point[i_var_deriv] * (-3 * 2.0)
 
         def derivative_second_x(point):
             return np.exp(-3 * np.linalg.norm(point) ** 2.0) * point[0] ** 2.0 * (
@@ -266,21 +253,15 @@ class TestTensor1DGrids(TestCase):
 
         pt = np.random.uniform(-0.5, 0.5, (3,))
         # Test taking derivative in x-direction
-        interpolated = cubic.interpolate(
-            pt[np.newaxis, :], gaussian_pts, use_log=True, nu_x=1
-        )
+        interpolated = cubic.interpolate(pt[np.newaxis, :], gaussian_pts, use_log=True, nu_x=1)
         assert_allclose(interpolated, derivative_wrt_one_var(pt, 0), rtol=1e-4)
 
         # Test taking derivative in y-direction
-        interpolated = cubic.interpolate(
-            pt[np.newaxis, :], gaussian_pts, use_log=True, nu_y=1
-        )
+        interpolated = cubic.interpolate(pt[np.newaxis, :], gaussian_pts, use_log=True, nu_y=1)
         assert_allclose(interpolated, derivative_wrt_one_var(pt, 1), rtol=1e-4)
 
         # Test taking derivative in z-direction
-        interpolated = cubic.interpolate(
-            pt[np.newaxis, :], gaussian_pts, use_log=True, nu_z=1
-        )
+        interpolated = cubic.interpolate(pt[np.newaxis, :], gaussian_pts, use_log=True, nu_z=1)
         assert_allclose(interpolated, derivative_wrt_one_var(pt, 2), rtol=1e-4)
 
         # Test taking second-derivative in x-direction
@@ -291,9 +272,7 @@ class TestTensor1DGrids(TestCase):
 
         # Test raises error
         with self.assertRaises(NotImplementedError):
-            cubic.interpolate(
-                pt[np.newaxis, :], gaussian_pts, use_log=True, nu_x=2, nu_y=2
-            )
+            cubic.interpolate(pt[np.newaxis, :], gaussian_pts, use_log=True, nu_x=2, nu_y=2)
 
     def test_integration_of_gaussian(self):
         r"""Test integration of a rapidly-decreasing Gaussian."""
@@ -325,9 +304,7 @@ class TestTensor1DGrids(TestCase):
 
         # Convert back
         index = 9
-        assert_allclose(
-            index, cubic.coordinates_to_index(cubic.index_to_coordinates(index))
-        )
+        assert_allclose(index, cubic.coordinates_to_index(cubic.index_to_coordinates(index)))
 
         # Test raises error when index isn't positive
         with self.assertRaises(ValueError):
@@ -350,9 +327,7 @@ class TestTensor1DGrids(TestCase):
 
         # Convert back
         index = 1
-        assert_allclose(
-            index, cubic.coordinates_to_index(cubic.index_to_coordinates(index))
-        )
+        assert_allclose(index, cubic.coordinates_to_index(cubic.index_to_coordinates(index)))
 
 
 class TestUniformGrid(TestCase):
@@ -407,9 +382,7 @@ class TestUniformGrid(TestCase):
         )
         # Test that axes is linearly independent
         with self.assertRaises(ValueError) as err:
-            UniformGrid(
-                proper_origin, np.array([[5, 5, 5], [5, 5, 5], [0, 0, 1]]), proper_shape
-            )
+            UniformGrid(proper_origin, np.array([[5, 5, 5], [5, 5, 5], [0, 0, 1]]), proper_shape)
         self.assertEqual(
             "The axes are not linearly independent, got det(axes)=0.0",
             str(err.exception),
@@ -423,9 +396,7 @@ class TestUniformGrid(TestCase):
         )
         # Test the weights are correct
         with self.assertRaises(ValueError) as err:
-            UniformGrid(
-                proper_origin, proper_axes, proper_shape, weight="not trapezoid"
-            )
+            UniformGrid(proper_origin, proper_axes, proper_shape, weight="not trapezoid")
         self.assertEqual(
             "The weight type parameter is not known, got not trapezoid",
             str(err.exception),
@@ -464,7 +435,7 @@ class TestUniformGrid(TestCase):
         r"""Test volume of a cube is the same as multiplying by length of axes."""
         origin = np.array([0.0, 0.0, 0.0])
         axes = np.eye(3)
-        shape = np.array([5, 6, 7], dtype=np.int)
+        shape = np.array([5, 6, 7], dtype=int)
         uniform = UniformGrid(origin, axes, shape=shape)
         volume = 5 * 6 * 7
         assert_allclose(volume, uniform._calculate_volume(shape))
@@ -473,7 +444,7 @@ class TestUniformGrid(TestCase):
         r"""Test area of a rectangle is the same as multiplying the length of axes."""
         origin = np.array([0.0, 0.0])
         axes = np.eye(2)
-        shape = np.array([5, 6], dtype=np.int)
+        shape = np.array([5, 6], dtype=int)
         uniform = UniformGrid(origin, axes, shape=shape)
         volume = 5 * 6
         assert_allclose(volume, uniform._calculate_volume(shape))
@@ -482,10 +453,8 @@ class TestUniformGrid(TestCase):
         r"""Test Fourier1 weights are correct against brute force."""
         origin = np.array([0.0, 0.0, 0.0])
         axes = np.eye(3)
-        shape = np.array([5, 6, 7], dtype=np.int)
-        volume = (
-            5 * 6 * 7
-        )  # Volume of cube centered at zero, moves in one step at a time (axes)
+        shape = np.array([5, 6, 7], dtype=int)
+        volume = 5 * 6 * 7  # Volume of cube centered at zero, moves in one step at a time (axes)
         uniform = UniformGrid(origin, axes, shape=shape, weight="Fourier1")
 
         index = 0  # Index to iterate through uniform.weights.
@@ -497,7 +466,6 @@ class TestUniformGrid(TestCase):
                 / (grid_x * np.pi)
             )
             for k in range(1, shape[1] + 1):
-
                 grid_y = np.arange(1, shape[1] + 1)
                 desired_y = np.sum(
                     np.sin(k * np.pi * grid_y / (shape[1] + 1))
@@ -511,9 +479,7 @@ class TestUniformGrid(TestCase):
                         * (1 - np.cos(grid_z * np.pi))
                         / (grid_z * np.pi)
                     )
-                    desired = (
-                        8 * desired_x * desired_y * desired_z * volume / (6 * 7 * 8)
-                    )
+                    desired = 8 * desired_x * desired_y * desired_z * volume / (6 * 7 * 8)
                     assert_allclose(uniform.weights[index], desired)
                     index += 1
 
@@ -521,21 +487,15 @@ class TestUniformGrid(TestCase):
         r"""Test that the Fourier2 weights are correct against brute force."""
         origin = np.array([0.0, 0.0, 0.0])
         axes = np.eye(3)
-        shape = np.array([5, 6, 7], dtype=np.int)
-        volume = (
-            5 * 6 * 7
-        )  # Volume of cube centered at zero, moves in one step at a time (axes)
-        volume *= (
-            (4.0 / 5.0) * (5.0 / 6) * (6.0 / 7)
-        )  # Alternative volume is used here.
+        shape = np.array([5, 6, 7], dtype=int)
+        volume = 5 * 6 * 7  # Volume of cube centered at zero, moves in one step at a time (axes)
+        volume *= (4.0 / 5.0) * (5.0 / 6) * (6.0 / 7)  # Alternative volume is used here.
         uniform = UniformGrid(origin, axes, shape=shape, weight="Fourier2")
         index = 0  # Index to iterate through uniform.weights.
         for j in range(1, shape[0] + 1):
             # Calculate weight in the x-direction
             grid_x = np.arange(1, shape[0])
-            desired_x = (
-                2.0 * np.sin((j - 0.5) * np.pi) * np.sin(shape[0] * np.pi / 2) ** 2.0
-            )
+            desired_x = 2.0 * np.sin((j - 0.5) * np.pi) * np.sin(shape[0] * np.pi / 2) ** 2.0
             desired_x /= shape[0] ** 2.0 * np.pi
             desired_x += (
                 4.0
@@ -549,11 +509,7 @@ class TestUniformGrid(TestCase):
             for k in range(1, shape[1] + 1):
                 # Calculate weight in the y-direction
                 grid_y = np.arange(1, shape[1])
-                desired_y = (
-                    2.0
-                    * np.sin((k - 0.5) * np.pi)
-                    * np.sin(shape[1] * np.pi / 2) ** 2.0
-                )
+                desired_y = 2.0 * np.sin((k - 0.5) * np.pi) * np.sin(shape[1] * np.pi / 2) ** 2.0
                 desired_y /= shape[1] ** 2.0 * np.pi
                 desired_y += (
                     4.0
@@ -568,9 +524,7 @@ class TestUniformGrid(TestCase):
                     # Calculate weight in the z-direction
                     grid_z = np.arange(1, shape[2])
                     desired_z = (
-                        2.0
-                        * np.sin((m - 0.5) * np.pi)
-                        * np.sin(shape[2] * np.pi / 2) ** 2.0
+                        2.0 * np.sin((m - 0.5) * np.pi) * np.sin(shape[2] * np.pi / 2) ** 2.0
                     )
                     desired_z /= shape[2] ** 2.0 * np.pi
                     desired_z += (
@@ -591,7 +545,7 @@ class TestUniformGrid(TestCase):
         # Set up the grid with easy examples but axes that form a cube.
         origin = np.array([0.0, 0.0, 0.0])
         axes = np.array([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]])
-        shape = np.array([3, 3, 3], dtype=np.int)
+        shape = np.array([3, 3, 3], dtype=int)
         uniform = UniformGrid(origin, axes, shape, weight="Rectangle")
         volume = 3 * 3 * 3  # Volume of cube.
         desired_wghts = np.ones(uniform.size) * volume / np.prod(shape)
@@ -602,7 +556,7 @@ class TestUniformGrid(TestCase):
         # Set up the grid with easy examples but axes that form a cube.
         origin = np.array([0.0, 0.0, 0.0])
         axes = np.array([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]])
-        shape = np.array([3, 3, 3], dtype=np.int)
+        shape = np.array([3, 3, 3], dtype=int)
         uniform = UniformGrid(origin, axes, shape, weight="Trapezoid")
         volume = 3 * 3 * 3  # Volume of cube.
         desired_wghts = np.ones(uniform.size) * volume / np.prod(shape + 1)
@@ -613,19 +567,17 @@ class TestUniformGrid(TestCase):
         # Set up the grid with easy examples but axes that form a cube.
         origin = np.array([0.0, 0.0, 0.0])
         axes = np.array([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]])
-        shape = np.array([3, 3, 3], dtype=np.int)
+        shape = np.array([3, 3, 3], dtype=int)
         uniform = UniformGrid(origin, axes, shape, weight="Alternative")
         volume = 3 * 3 * 3  # Volume of cube.
-        desired_wghts = (
-            np.ones(uniform.size) * volume * np.prod(shape - 1) / np.prod(shape) ** 2.0
-        )
+        desired_wghts = np.ones(uniform.size) * volume * np.prod(shape - 1) / np.prod(shape) ** 2.0
         assert_allclose(uniform.weights, desired_wghts)
 
     def test_integration_with_gaussian_with_cubic_grid(self):
         r"""Test integration against a Gaussian with a cubic grid."""
         origin = np.array([-1.0, -1.0, -1.0])
         axes = np.eye(3) * 0.01
-        shape = np.array([250, 250, 250], dtype=np.int)
+        shape = np.array([250, 250, 250], dtype=int)
 
         def gaussian(points):
             return np.exp(-5 * np.linalg.norm(points, axis=1) ** 2.0)
@@ -655,7 +607,7 @@ class TestUniformGrid(TestCase):
         r"""Test integration against a Gaussian with a square grid."""
         origin = np.array([-1.0, -1.0])
         axes = np.eye(2) * 0.005
-        shape = np.array([500, 500], dtype=np.int)
+        shape = np.array([500, 500], dtype=int)
 
         def gaussian(points):
             return np.exp(-5 * np.linalg.norm(points, axis=1) ** 2.0)
@@ -693,7 +645,7 @@ class TestUniformGrid(TestCase):
         # Set up the grid with easy examples but axes that form a cube.
         origin = np.array([0.0, 0.0, 0.0])
         axes = np.array([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]])
-        shape = np.array([3, 3, 3], dtype=np.int)
+        shape = np.array([3, 3, 3], dtype=int)
         uniform = UniformGrid(origin, axes, shape)
 
         # Create point close to the origin
@@ -731,7 +683,7 @@ class TestUniformGrid(TestCase):
         # Set up the grid with easy examples but axes that form a cube.
         origin = np.array([0.0, 0.0])
         axes = np.eye(2)
-        shape = np.array([3, 3], dtype=np.int)
+        shape = np.array([3, 3], dtype=int)
         uniform = UniformGrid(origin, axes, shape)
 
         # Create point close to the origin

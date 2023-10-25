@@ -22,10 +22,10 @@
 
 from unittest import TestCase
 
-from grid.basegrid import Grid, LocalGrid, OneDGrid
-
 import numpy as np
 from numpy.testing import assert_allclose
+
+from grid.basegrid import Grid, LocalGrid, OneDGrid
 
 
 class TestGrid(TestCase):
@@ -52,7 +52,7 @@ class TestGrid(TestCase):
         assert_allclose(result2, 2.1)
         # integral test2
         value1 = np.linspace(-1, 1, 21)
-        value2 = value1 ** 2
+        value2 = value1**2
         result3 = self.grid.integrate(value1, value2)
         assert_allclose(result3, 0, atol=1e-7)
 

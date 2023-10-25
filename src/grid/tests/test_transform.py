@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # GRID is a numerical integration module for quantum chemistry.
 #
 # Copyright (C) 2011-2019 The GRID Development Team
@@ -22,6 +21,9 @@
 
 from unittest import TestCase
 
+import numpy as np
+from numpy.testing import assert_allclose, assert_almost_equal
+
 from grid.onedgrid import GaussChebyshev, GaussLegendre, UniformInteger
 from grid.rtransform import (
     BeckeRTransform,
@@ -32,9 +34,6 @@ from grid.rtransform import (
     LinearFiniteRTransform,
     MultiExpRTransform,
 )
-
-import numpy as np
-from numpy.testing import assert_allclose, assert_almost_equal
 
 
 class TestTransform(TestCase):
@@ -187,7 +186,7 @@ class TestTransform(TestCase):
         rad = btf.transform_1d_grid(oned)
 
         def gauss(x):
-            return np.exp(-(x ** 2))
+            return np.exp(-(x**2))
 
         result = rad.integrate(gauss(rad.points))
         ref_result = np.sqrt(np.pi) / 2

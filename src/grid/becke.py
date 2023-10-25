@@ -22,9 +22,9 @@
 
 import warnings
 
-from grid.utils import get_cov_radii
-
 import numpy as np
+
+from grid.utils import get_cov_radii
 
 
 class BeckeWeights:
@@ -78,7 +78,7 @@ class BeckeWeights:
             alpha value for each pair of atoms
         """
         u_ab = (radii[:, None] - radii) / (radii[:, None] + radii)
-        alpha = u_ab / (u_ab ** 2 - 1)
+        alpha = u_ab / (u_ab**2 - 1)
         alpha[alpha > cutoff] = cutoff
         alpha[alpha < -cutoff] = -cutoff
         return alpha
@@ -103,8 +103,8 @@ class BeckeWeights:
         float or np.ndarray
             result of switching function
         """
-        for i in range(order):
-            x = 1.5 * x - 0.5 * x ** 3
+        for _i in range(order):
+            x = 1.5 * x - 0.5 * x**3
         return x
 
     def generate_weights(self, points, atcoords, atnums, *, select=None, pt_ind=None):
@@ -159,17 +159,24 @@ class BeckeWeights:
             mu_p_n_n = n_n_p.transpose([2, 0, 1]) / atomic_dist
         del n_n_p
         # if the radii of an atom is np.nan, use the radii with 1 less atomic number
+        specified_radius = [self._radii[num] for num in atnums]
+        indices = np.where(np.isnan(specified_radius))[0]
+        if len(indices) != 0:
+            warnings.warn(
+                f"Covalent radii for the following atom numbers {atnums[indices]} is nan."
+                f" Instead the radii with 1 less the atomic number is used.",
+                stacklevel=2,
+            )
         radii = np.array(
             [
                 self._radii[num] if not np.isnan(self._radii[num])
                 # if n-1 radii is nan, use the n-2 instead
-                else np.nan_to_num(self._radii[num - 1])
-                or np.nan_to_num(self._radii[num - 2])
+                else np.nan_to_num(self._radii[num - 1]) or np.nan_to_num(self._radii[num - 2])
                 for num in atnums
             ]
         )
         alpha = BeckeWeights._calculate_alpha(radii)
-        v_pp = mu_p_n_n + alpha * (1 - mu_p_n_n ** 2)
+        v_pp = mu_p_n_n + alpha * (1 - mu_p_n_n**2)
         del mu_p_n_n
         s_ab = 0.5 * (1 - BeckeWeights._switch_func(v_pp, order=self._order))
         del v_pp
@@ -225,17 +232,24 @@ class BeckeWeights:
             mu_p_n_n = n_n_p.transpose([2, 0, 1]) / atomic_dist
         del n_n_p
         # if the radii of an atom is np.nan, use the radii with 1 less atomic number
+        specified_radius = [self._radii[num] for num in atnums]
+        indices = np.where(np.isnan(specified_radius))[0]
+        if len(indices) != 0:
+            warnings.warn(
+                f"Covalent radii for the following atom numbers {atnums[indices]} is nan."
+                f" Instead the radii with 1 less the atomic number is used.",
+                stacklevel=2,
+            )
         radii = np.array(
             [
                 self._radii[num] if not np.isnan(self._radii[num])
                 # if n-1 radii is nan, use the n-2 instead
-                else np.nan_to_num(self._radii[num - 1])
-                or np.nan_to_num(self._radii[num - 2])
+                else np.nan_to_num(self._radii[num - 1]) or np.nan_to_num(self._radii[num - 2])
                 for num in atnums
             ]
         )
         alpha = BeckeWeights._calculate_alpha(radii)
-        v_pp = mu_p_n_n + alpha * (1 - mu_p_n_n ** 2)
+        v_pp = mu_p_n_n + alpha * (1 - mu_p_n_n**2)
         del mu_p_n_n
         s_ab = 0.5 * (1 - BeckeWeights._switch_func(v_pp, order=self._order))
         del v_pp
