@@ -594,19 +594,15 @@ def get_rgrid_size(preset_grid, atnums=None):
 
     Parameters
     ----------
-
     preset_grid : str
         String specifiying type of pruned grid to access radial points data.
     atnums : int or list/array of ints
         Atomic numbers for which to retrieve number of radial points.
-    """
 
+    """
     if preset_grid not in ['sg_0', 'sg_1', 'sg_2', 'sg_3',
                            'g1', 'g2', 'g3', 'g4', 'g5', 'g6', 'g7']:
         raise ValueError(f"type_pruned {preset_grid} not recognized as a valid pruned grid")
-    # elif preset_grid == 'sg_1':
-    #     print('sg_1 pruned grid is based on distance sectors and does not have predifined '
-    #           'number of radial points')
     elif atnums is None:
         raise ValueError(f"At least one atomic number must be specified. Got {atnums}")
     else:
