@@ -216,16 +216,6 @@ class AtomGrid(Grid):
                 &L_{Q+1} \text{ when } R a_{Q} < r.
             \end{align*}
 
-        Examples
-        --------
-        >>> sectors_r = [0.5, 1., 1.5]
-        >>> sectors_degree = [3, 7, 5, 3]
-        # 0 <= r < 0.5 radius, angular grid with degree 3
-        # 0.5 radius <= r < radius, angular grid with degree 7
-        # rad <= r < 1.5 radius, angular grid with degree 5
-        # 1.5 radius <= r, angular grid with degree 3
-        >>> atgrid = AtomGrid.from_pruned(rgrid, radius, sectors_r, sectors_degree)
-
         Parameters
         ----------
         rgrid : OneDGrid
