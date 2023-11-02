@@ -1,13 +1,13 @@
-testing the scripts                                                     
-SP        UHF                                                         6-31G               
+testing the scripts
+SP        UHF                                                         6-31G
 Number of atoms                            I                1
 Info1-9                                    I   N=           9
           14          10           0           0           0         110
            1           1           2
 Full Title                                 C   N=           2
-testing the scripts     
+testing the scripts
 Route                                      C   N=           1
-# hf/6-31g  
+# hf/6-31g
 Charge                                     I                0
 Multiplicity                               I                3
 Number of electrons                        I                2
@@ -28,7 +28,7 @@ Int Atom Types                             I   N=           1
            0
 Force Field                                I                0
 Atom Types                                 C   N=           1
-            
+
 MM charges                                 R   N=           1
   0.00000000E+00
 Integer atomic weights                     I   N=           1
@@ -171,7 +171,7 @@ Int Atom Modified Types                    I   N=           1
            0
 Force Field                                I                0
 Atom Modified Types                        C   N=           1
-            
+
 Link Atoms                                 I   N=           1
            0
 Atom Modified MM Charges                   R   N=           1
@@ -1047,4 +1047,4 @@ ClPar Real Params                          R   N=        3200
   0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00
   0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00
 Gaussian Version                           C   N=           2
-ES64L-G16RevC.01        
+ES64L-G16RevC.01
