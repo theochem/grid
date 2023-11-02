@@ -86,6 +86,7 @@ Modules
     :caption: Example Tutorials
 
     ./notebooks/Atom_Grid_Construction.ipynb
+    ./notebooks/Atom_Grid.ipynb
     ./notebooks/Molecular_Grid.ipynb
     ./notebooks/Molecular_Grid_Construction.ipynb
     ./notebooks/Cubic_Grids.ipynb
