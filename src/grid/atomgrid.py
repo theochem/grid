@@ -244,16 +244,6 @@ class AtomGrid(Grid):
                 &L_{Q+1} \text{ when } R a_{Q} < r.
             \end{align*}
 
-        Examples
-        --------
-        >>> sectors_r = [0.5, 1., 1.5]
-        >>> sectors_degree = [3, 7, 5, 3]
-        # 0 <= r < 0.5 radius, angular grid with degree 3
-        # 0.5 radius <= r < radius, angular grid with degree 7
-        # rad <= r < 1.5 radius, angular grid with degree 5
-        # 1.5 radius <= r, angular grid with degree 3
-        >>> atgrid = AtomGrid.from_pruned(rgrid, radius, sectors_r, sectors_degree)
-
         Parameters
         ----------
         rgrid : OneDGrid
@@ -547,22 +537,6 @@ class AtomGrid(Grid):
         CubicSpline:
             Cubic spline with input r in the positive real axis and output :math:`f_{avg}(r)`.
 
-        Examples
-        --------
-        >>> # Define a Gaussian function that takes Cartesian coordinates as input
-        >>> func = lambda cart_pts: np.exp(-np.linalg.norm(cart_pts, axis=1)**2.0)
-        # Construct atomic grid with degree 10 on a radial grid on [0, \infty)
-        >>> radial_grid = GaussLaguerre(100, alpha=1.0)
-        >>> atgrid = AtomGrid(radial_grid, degrees=[10])
-        # Evaluate func on atmic grid points (which are stored in Cartesian coordinates)
-        >>> func_vals = func(atgrid.points)
-        # Compute spherical average spline & evaluate it on a set of (radial) points in [0, \infty)
-        >>> spherical_avg = atgrid.spherical_average(func_vals)
-        >>> points = np.arange(0.0, 10.0)
-        >>> evals = spherical_avg(points)
-        # the largest error happens at origin because the spline is being extrapolated
-        >>> assert np.all(abs(evals - np.exp(- points ** 2)) < 1.0e-3)
-
         """
         # Integrate f(r, theta, phi) sin(phi) d\theta d\phi
         f_radial = self.integrate_angular_coordinates(func_vals)
@@ -676,27 +650,6 @@ class AtomGrid(Grid):
                     The interpolated function values or its derivatives with respect to Cartesian
                     :math:`(x,y,z)` or if `deriv_spherical` then :math:`(r, \theta, \phi)` or
                     if `only_radial_derivs` then derivative wrt to :math:`r` is only returned.
-
-        Examples
-        --------
-        >>> # First generate a atomic grid with raidal points that have all degree 10.
-        >>> from grid.basegrid import OneDGrid
-        >>> radial_grid = OneDGrid(np.linspace(0.01, 10, num=100), np.ones(100), (0, np.inf))
-        >>> atom_grid = AtomGrid(radial_grid, degrees=[10])
-        # Consider the function (3x^2 + 4y^2 + 5z^2)
-        >>> def polynomial_func(pts) :
-        >>>     return 3.0 * points[:, 0]**2.0 + 4.0 * points[:, 1]**2.0 + 5.0 * points[:, 2]**2.0
-        # Evaluate function values and interpolate them
-        >>> func_vals = polynomial_func(atom_grid.points)
-        >>> interpolate_func = atom_grid.interpolate(func_vals)
-        # To interpolate at new points.
-        >>> new_pts = np.array([[1.0, 1.0, 1.0], [0.0, 0.0, 0.0]])
-        >>> interpolate_vals = interpolate_func(new_pts)
-        # Can calculate first derivative wrt to Cartesian or spherical
-        >>> interpolate_derivs = interpolate_func(new_pts, deriv=1)
-        >>> interpolate_derivs_sph = interpolate_func(new_pts, deriv=1, deriv_spherical=True)
-        # Only higher-order derivatives are supported for the radius coordinate r.
-        >>> interpolated_derivs_radial = interpolate_func(new_pts, deriv=2, only_radial_derivs=True)
 
         """
         # compute splines for given value_array on grid points
