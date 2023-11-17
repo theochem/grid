@@ -25,14 +25,14 @@ repos:
   hooks:
     - id: remove-crlf
 - repo: https://github.com/psf/black
-  rev: 23.10.1
+  rev: 23.11.0
   hooks:
     - id: black
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: 'v0.1.1'
+  rev: 'v0.1.5'
   hooks:
     - id: ruff
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.27.0
+  rev: 0.27.1
   hooks:
     - id: check-github-workflows
