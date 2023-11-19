@@ -20,11 +20,10 @@
 """MolGrid test file."""
 from unittest import TestCase
 
-# from importlib_resources import path
 import numpy as np
 from numpy.testing import assert_allclose, assert_almost_equal
 
-from grid.atomgrid import AtomGrid
+from grid.atomgrid import AtomGrid, get_rgrid_size
 from grid.basegrid import LocalGrid
 from grid.becke import BeckeWeights
 from grid.hirshfeld import HirshfeldWeights
@@ -206,6 +205,132 @@ class TestMolGrid(TestCase):
             rad3, atnum=numbers[1], preset="veryfine", center=coordinates[1]
         )
         atgrid3 = AtomGrid.from_preset(rad1, atnum=numbers[2], preset="fine", center=coordinates[2])
+        assert_allclose(mg._atgrids[0].points, atgrid1.points)
+        assert_allclose(mg._atgrids[1].points, atgrid2.points)
+        assert_allclose(mg._atgrids[2].points, atgrid3.points)
+
+    def test_make_grid_different_grid_type_sg_0_1_2(self):
+        """Test different kind molgrid initizalize setting."""
+        # three different radial grid
+        rad1 = GaussLaguerre(get_rgrid_size("sg_0", atnums=1)[0])
+        rad2 = GaussLaguerre(get_rgrid_size("sg_2", atnums=8)[0])
+        rad3 = GaussLaguerre(get_rgrid_size("sg_1", atnums=1)[0])
+        # construct grid
+        numbers = np.array([1, 8, 1])
+        coordinates = np.array([[0.0, 0.0, -0.5], [0.0, 0.0, 0.5], [0.0, 0.5, 0.0]], float)
+        becke = BeckeWeights(order=3)
+
+        # grid_type test with list
+        mg = MolGrid.from_preset(
+            numbers,
+            coordinates,
+            [rad1, rad2, rad3],
+            ["sg_0", "sg_2", "sg_1"],
+            becke,
+            store=True,
+            rotate=False,
+        )
+        # dist0 = np.sqrt(((coordinates[0] - mg.points) ** 2).sum(axis=1))
+        # dist1 = np.sqrt(((coordinates[1] - mg.points) ** 2).sum(axis=1))
+        # dist2 = np.sqrt(((coordinates[2] - mg.points) ** 2).sum(axis=1))
+        # fn = (np.exp(-2 * dist0) + np.exp(-2 * dist1) + np.exp(-2 * dist2)) / np.pi
+        # occupation = mg.integrate(fn)
+        # assert_almost_equal(occupation, 3, decimal=3)
+
+        atgrid1 = AtomGrid.from_preset(rad1, atnum=numbers[0], preset="sg_0", center=coordinates[0])
+        atgrid2 = AtomGrid.from_preset(rad2, atnum=numbers[1], preset="sg_2", center=coordinates[1])
+        atgrid3 = AtomGrid.from_preset(rad3, atnum=numbers[2], preset="sg_1", center=coordinates[2])
+        assert_allclose(mg._atgrids[0].points, atgrid1.points)
+        assert_allclose(mg._atgrids[1].points, atgrid2.points)
+        assert_allclose(mg._atgrids[2].points, atgrid3.points)
+
+        # three different radial grid
+        rad2 = GaussLaguerre(get_rgrid_size("sg_2", atnums=8)[0])
+        rad3 = GaussLaguerre(get_rgrid_size("sg_1", atnums=1)[0])
+
+        # grid type test with dict
+        mg = MolGrid.from_preset(
+            numbers,
+            coordinates,
+            [rad3, rad2, rad3],
+            {1: "sg_1", 8: "sg_2"},
+            becke,
+            store=True,
+            rotate=False,
+        )
+        # dist0 = np.sqrt(((coordinates[0] - mg.points) ** 2).sum(axis=1))
+        # dist1 = np.sqrt(((coordinates[1] - mg.points) ** 2).sum(axis=1))
+        # dist2 = np.sqrt(((coordinates[2] - mg.points) ** 2).sum(axis=1))
+        # fn = (np.exp(-2 * dist0) + np.exp(-2 * dist1) + np.exp(-2 * dist2)) / np.pi
+        # occupation = mg.integrate(fn)
+        # assert_almost_equal(occupation, 3, decimal=2)
+
+        atgrid1 = AtomGrid.from_preset(rad3, atnum=numbers[0], preset="sg_1", center=coordinates[0])
+        atgrid2 = AtomGrid.from_preset(rad2, atnum=numbers[1], preset="sg_2", center=coordinates[1])
+        atgrid3 = AtomGrid.from_preset(rad3, atnum=numbers[2], preset="sg_1", center=coordinates[2])
+        assert_allclose(mg._atgrids[0].points, atgrid1.points)
+        assert_allclose(mg._atgrids[1].points, atgrid2.points)
+        assert_allclose(mg._atgrids[2].points, atgrid3.points)
+
+    def test_make_grid_different_grid_type_g1_g2_g3_g4_g6_g7(self):
+        """Test different kind molgrid initizalize setting."""
+        # three different radial grid
+        rad1 = GaussLaguerre(get_rgrid_size("g1", atnums=1)[0])
+        rad2 = GaussLaguerre(get_rgrid_size("g2", atnums=8)[0])
+        rad3 = GaussLaguerre(get_rgrid_size("g3", atnums=1)[0])
+        # construct grid
+        numbers = np.array([1, 8, 1])
+        coordinates = np.array([[0.0, 0.0, -0.5], [0.0, 0.0, 0.5], [0.0, 0.5, 0.0]], float)
+        becke = BeckeWeights(order=3)
+
+        # grid_type test with list
+        mg = MolGrid.from_preset(
+            numbers,
+            coordinates,
+            [rad1, rad2, rad3],
+            ["g1", "g2", "g3"],
+            becke,
+            store=True,
+            rotate=False,
+        )
+        # dist0 = np.sqrt(((coordinates[0] - mg.points) ** 2).sum(axis=1))
+        # dist1 = np.sqrt(((coordinates[1] - mg.points) ** 2).sum(axis=1))
+        # dist2 = np.sqrt(((coordinates[2] - mg.points) ** 2).sum(axis=1))
+        # fn = (np.exp(-2 * dist0) + np.exp(-2 * dist1) + np.exp(-2 * dist2)) / np.pi
+        # occupation = mg.integrate(fn)
+        # assert_almost_equal(occupation, 3, decimal=3)
+
+        atgrid1 = AtomGrid.from_preset(rad1, atnum=numbers[0], preset="g1", center=coordinates[0])
+        atgrid2 = AtomGrid.from_preset(rad2, atnum=numbers[1], preset="g2", center=coordinates[1])
+        atgrid3 = AtomGrid.from_preset(rad3, atnum=numbers[2], preset="g3", center=coordinates[2])
+        assert_allclose(mg._atgrids[0].points, atgrid1.points)
+        assert_allclose(mg._atgrids[1].points, atgrid2.points)
+        assert_allclose(mg._atgrids[2].points, atgrid3.points)
+
+        # three different radial grid
+        rad1 = GaussLaguerre(get_rgrid_size("g4", atnums=1)[0])
+        rad2 = GaussLaguerre(get_rgrid_size("g5", atnums=8)[0])
+        rad3 = GaussLaguerre(get_rgrid_size("g6", atnums=1)[0])
+
+        mg = MolGrid.from_preset(
+            numbers,
+            coordinates,
+            [rad1, rad2, rad3],
+            ["g4", "g5", "g6"],
+            becke,
+            store=True,
+            rotate=False,
+        )
+        # dist0 = np.sqrt(((coordinates[0] - mg.points) ** 2).sum(axis=1))
+        # dist1 = np.sqrt(((coordinates[1] - mg.points) ** 2).sum(axis=1))
+        # dist2 = np.sqrt(((coordinates[2] - mg.points) ** 2).sum(axis=1))
+        # fn = (np.exp(-2 * dist0) + np.exp(-2 * dist1) + np.exp(-2 * dist2)) / np.pi
+        # occupation = mg.integrate(fn)
+        # assert_almost_equal(occupation, 3, decimal=2)
+
+        atgrid1 = AtomGrid.from_preset(rad1, atnum=numbers[0], preset="g4", center=coordinates[0])
+        atgrid2 = AtomGrid.from_preset(rad2, atnum=numbers[1], preset="g5", center=coordinates[1])
+        atgrid3 = AtomGrid.from_preset(rad3, atnum=numbers[2], preset="g6", center=coordinates[2])
         assert_allclose(mg._atgrids[0].points, atgrid1.points)
         assert_allclose(mg._atgrids[1].points, atgrid2.points)
         assert_allclose(mg._atgrids[2].points, atgrid3.points)
