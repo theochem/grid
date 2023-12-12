@@ -1,13 +1,13 @@
-testing the scripts                                                     
-SP        UHF                                                         6-31G(d,p)          
+testing the scripts
+SP        UHF                                                         6-31G(d,p)
 Number of atoms                            I                4
 Info1-9                                    I   N=           9
           16          10           0           0           0         110
            1           1           2
 Full Title                                 C   N=           2
-testing the scripts     
+testing the scripts
 Route                                      C   N=           3
-# uhf/6-31g** Geom=Check Guess=Read 
+# uhf/6-31g** Geom=Check Guess=Read
 Charge                                     I               -1
 Multiplicity                               I                2
 Number of electrons                        I               17
@@ -30,7 +30,7 @@ Int Atom Types                             I   N=           4
            0           0           0           0
 Force Field                                I                0
 Atom Types                                 C   N=           4
-                                                
+
 MM charges                                 R   N=           4
   0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00
 Integer atomic weights                     I   N=           4
@@ -1524,7 +1524,7 @@ Int Atom Modified Types                    I   N=           4
            0           0           0           0
 Force Field                                I                0
 Atom Modified Types                        C   N=           4
-                                                
+
 Link Atoms                                 I   N=           4
            0           0           0           0
 Atom Modified MM Charges                   R   N=           4
@@ -2413,4 +2413,4 @@ ClPar Real Params                          R   N=        3200
   0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00
   0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00
 Gaussian Version                           C   N=           2
-ES64L-G16RevC.01        
+ES64L-G16RevC.01
