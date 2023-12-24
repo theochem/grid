@@ -1,6 +1,6 @@
 .. image:: grid_logo.png
   :width: 450
-|
+
 
 Welcome to grid's documentation!
 ================================
@@ -85,6 +85,7 @@ Modules
     :maxdepth: 1
     :caption: Example Tutorials
 
+    ./notebooks/Atom_Grid_Construction.ipynb
     ./notebooks/Molecular_Grid.ipynb
     ./notebooks/Molecular_Grid_Construction.ipynb
     ./notebooks/Cubic_Grids.ipynb
@@ -92,12 +93,12 @@ Modules
     ./notebooks/Multipole_Moments.ipynb
     ./notebooks/Angular_grid.ipynb
 
-
 .. toctree::
    :maxdepth: 2
    :caption: API Documentation
 
    pyapi/modules.rst
+
 
 
 Indices and tables
