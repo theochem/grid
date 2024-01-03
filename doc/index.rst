@@ -85,6 +85,7 @@ Modules
     :maxdepth: 1
     :caption: Example Tutorials
 
+    ./notebooks/Quickstart.ipynb
     ./notebooks/One_dimensional_grids.ipynb
     ./notebooks/Atom_Grid_Construction.ipynb
     ./notebooks/Atom_Grid.ipynb

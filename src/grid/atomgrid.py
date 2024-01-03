@@ -154,6 +154,10 @@ class AtomGrid(Grid):
             The name of predefined grid specifying the radial sectors and their corresponding
             number of angular grid points. Supported preset options include:
             'coarse', 'medium', 'fine', 'veryfine', 'ultrafine', and 'insane'.
+            Other options include the "standard grids":
+            'sg_0', 'sg_1', 'sg_2', and 'sg_3', and the Ochsenfeld grids:
+            'g1', 'g2', 'g3', 'g4', 'g5', 'g6', and 'g7', with higher number indicating
+            greater accuracy but denser grid. See `Notes` for more information.
         center : ndarray(3,), optional, keyword-only argument
             Cartesian coordinates of the grid center. If `None`, the origin is used.
         rotate : int, optional
@@ -163,6 +167,23 @@ class AtomGrid(Grid):
         use_spherical: bool, optional
             If true, loads the symmetric spherical t-design grid rather than the Lebedev-Laikov
             grid for the angular grid.
+
+        Notes
+        -----
+        - The standard and Ochsenfeld presets were not designed with symmetric spherical t-design
+          in mind.
+        - The "standard grids" [1]_ "SG-0" and "SG-1" are designed for large molecules with
+          LDA (GGA) functionals, whereas "SG-2" and "SG-3" are designed for Meta-GGA functionals
+          and B95/Minnesota functionals, respectively.
+        - The Ochsenfeld pruned grids [2]_ are obtained based on the paper.
+
+        References
+        ----------
+        .. [1] Y. Shao, et al. Advances in molecular quantum chemistry contained in the Q-Chem 4
+               program package. Mol. Phys. 113, 184-215 (2015)
+        .. [2] Laqua, H., Kussmann, J., & Ochsenfeld, C. (2018). An improved molecular partitioning
+               scheme for numerical quadratures in density functional theory. The Journal of
+               Chemical Physics, 149(20).
 
         """
         if not isinstance(use_spherical, bool):
@@ -178,15 +199,22 @@ class AtomGrid(Grid):
         rad = data[f"{atnum}_rad"]
         npt = data[f"{atnum}_npt"]
 
-        degs = AngularGrid.convert_angular_sizes_to_degrees(npt, use_spherical)
-        rad_degs = AtomGrid._find_l_for_rad_list(rgrid.points, rad, degs)
-        return cls(
-            rgrid,
-            degrees=rad_degs,
-            center=center,
-            rotate=rotate,
-            use_spherical=use_spherical,
-        )
+        if preset in ["sg_0", "sg_2", "sg_3", "g1", "g2", "g3", "g4", "g5", "g6", "g7"]:
+            sector_sizes = [npt[idx] for idx in range(len(rad)) for _ in range(rad[idx])]
+            return cls(
+                rgrid, sizes=sector_sizes, center=center, rotate=rotate, use_spherical=use_spherical
+            )
+        elif preset == "sg_1" and atnum > 19:
+            sector_sizes = [npt[idx] for idx in range(len(rad)) for _ in range(rad[idx])]
+            return cls(
+                rgrid, sizes=sector_sizes, center=center, rotate=rotate, use_spherical=use_spherical
+            )
+        else:
+            degs = AngularGrid.convert_angular_sizes_to_degrees(npt, use_spherical=use_spherical)
+            rad_degs = AtomGrid._find_l_for_rad_list(rgrid.points, rad, degs)
+            return cls(
+                rgrid, degrees=rad_degs, center=center, rotate=rotate, use_spherical=use_spherical
+            )
 
     @classmethod
     def from_pruned(
@@ -509,22 +537,6 @@ class AtomGrid(Grid):
         CubicSpline:
             Cubic spline with input r in the positive real axis and output :math:`f_{avg}(r)`.
 
-        Examples
-        --------
-        >>> # Define a Gaussian function that takes Cartesian coordinates as input
-        >>> func = lambda cart_pts: np.exp(-np.linalg.norm(cart_pts, axis=1)**2.0)
-        # Construct atomic grid with degree 10 on a radial grid on [0, \infty)
-        >>> radial_grid = GaussLaguerre(100, alpha=1.0)
-        >>> atgrid = AtomGrid(radial_grid, degrees=[10])
-        # Evaluate func on atmic grid points (which are stored in Cartesian coordinates)
-        >>> func_vals = func(atgrid.points)
-        # Compute spherical average spline & evaluate it on a set of (radial) points in [0, \infty)
-        >>> spherical_avg = atgrid.spherical_average(func_vals)
-        >>> points = np.arange(0.0, 10.0)
-        >>> evals = spherical_avg(points)
-        # the largest error happens at origin because the spline is being extrapolated
-        >>> assert np.all(abs(evals - np.exp(- points ** 2)) < 1.0e-3)
-
         """
         # Integrate f(r, theta, phi) sin(phi) d\theta d\phi
         f_radial = self.integrate_angular_coordinates(func_vals)
@@ -638,27 +650,6 @@ class AtomGrid(Grid):
                     The interpolated function values or its derivatives with respect to Cartesian
                     :math:`(x,y,z)` or if `deriv_spherical` then :math:`(r, \theta, \phi)` or
                     if `only_radial_derivs` then derivative wrt to :math:`r` is only returned.
-
-        Examples
-        --------
-        >>> # First generate a atomic grid with raidal points that have all degree 10.
-        >>> from grid.basegrid import OneDGrid
-        >>> radial_grid = OneDGrid(np.linspace(0.01, 10, num=100), np.ones(100), (0, np.inf))
-        >>> atom_grid = AtomGrid(radial_grid, degrees=[10])
-        # Consider the function (3x^2 + 4y^2 + 5z^2)
-        >>> def polynomial_func(pts) :
-        >>>     return 3.0 * points[:, 0]**2.0 + 4.0 * points[:, 1]**2.0 + 5.0 * points[:, 2]**2.0
-        # Evaluate function values and interpolate them
-        >>> func_vals = polynomial_func(atom_grid.points)
-        >>> interpolate_func = atom_grid.interpolate(func_vals)
-        # To interpolate at new points.
-        >>> new_pts = np.array([[1.0, 1.0, 1.0], [0.0, 0.0, 0.0]])
-        >>> interpolate_vals = interpolate_func(new_pts)
-        # Can calculate first derivative wrt to Cartesian or spherical
-        >>> interpolate_derivs = interpolate_func(new_pts, deriv=1)
-        >>> interpolate_derivs_sph = interpolate_func(new_pts, deriv=1, deriv_spherical=True)
-        # Only higher-order derivatives are supported for the radius coordinate r.
-        >>> interpolated_derivs_radial = interpolate_func(new_pts, deriv=2, only_radial_derivs=True)
 
         """
         # compute splines for given value_array on grid points
@@ -901,3 +892,46 @@ class AtomGrid(Grid):
         points = np.vstack(all_points)
         weights = np.hstack(all_weights)
         return points, weights, indices, actual_degrees
+
+
+def get_rgrid_size(preset_grid, atnums=None):
+    """Get the predefined radial points for available pruned grids
+
+    Parameters
+    ----------
+    preset_grid : str
+        String specifiying type of pruned grid to access radial points data.
+    atnums : int or list/array of ints
+        Atomic numbers for which to retrieve number of radial points.
+
+    """
+    if preset_grid not in [
+        "sg_0",
+        "sg_1",
+        "sg_2",
+        "sg_3",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "g5",
+        "g6",
+        "g7",
+    ]:
+        raise ValueError(f"type_pruned {preset_grid} not recognized as a valid pruned grid")
+    elif atnums is None:
+        raise ValueError(f"At least one atomic number must be specified. Got {atnums}")
+    else:
+        if isinstance(atnums, int):
+            atnums = [atnums]
+
+        radial_pts = []
+        data = np.load(files("grid.data.prune_grid").joinpath(f"prune_grid_{preset_grid}.npz"))
+        for at_num in atnums:
+            if preset_grid == "sg_1":
+                rad = data["r_points"]
+                radial_pts.append(sum(rad))
+            else:
+                rad = data[f"{at_num}_rad"]
+                radial_pts.append(sum(rad))
+        return radial_pts
