@@ -594,17 +594,21 @@ class MolGrid(Grid):
             If store=True, the AtomGrid instance used is returned.
             If store=False, the LocalGrid containing points and weights of AtomGrid
             is returned.
+        indices : ndarray(N,)
+            The indices of points corresponding to the atomic grid.
 
         """
         if index < 0:
             raise ValueError(f"index should be non-negative, got {index}")
-        # get atomic grid if stored
+        # get indices of points corresponding to the atomic grid
+        at_indices = np.arange(self._indices[index], self._indices[index + 1])
+        # get atomic grid if stored and the indices within the molecular grid
         if self._atgrids is not None:
-            return self._atgrids[index]
+            return self._atgrids[index], at_indices
         # make a local grid
         pts = self.points[self._indices[index] : self._indices[index + 1]]
         wts = self._atweights[self._indices[index] : self._indices[index + 1]]
-        return LocalGrid(pts, wts, self._atcoords[index])
+        return LocalGrid(pts, wts, self._atcoords[index]), at_indices
 
     def __getitem__(self, index: int):
         """Get separate atomic grid in molecules.
