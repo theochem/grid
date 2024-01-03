@@ -46,6 +46,7 @@ class GaussLaguerre(OneDGrid):
         \sum_{i=1}^n \left(\frac{w_i}{x_i^\alpha e^{-x_i}}\right) g(x_i) = \sum_{i=1}^n w_i' g(x_i)
 
     """
+    name = "Gauss-Laguerre"
 
     def __init__(self, npoints: int, alpha: float = 0):
         r"""Generate grid on :math:`[0, \infty)` based on generalized Gauss-Laguerre quadrature.
@@ -91,6 +92,7 @@ class GaussLegendre(OneDGrid):
     roots of the nth Legendre polynomial.
 
     """
+    name = "Gauss-Legendre"
 
     def __init__(self, npoints: int):
         r"""Generate grid on :math:`[-1, 1]` interval based on Gauss-Legendre quadrature.
@@ -137,6 +139,7 @@ class GaussChebyshev(OneDGrid):
         \sum_{i=1}^n w_i'g(x_i)
 
     """
+    name = "Gauss-Chebyshev"
 
     def __init__(self, npoints: int):
         r"""Generate grid on :math:`[-1, 1]` interval based on Gauss-Chebyshev quadrature.
@@ -172,6 +175,7 @@ class UniformInteger(OneDGrid):
         w_i =& 1.0
 
     """
+    name = "Uniform-Integer"
 
     def __init__(self, npoints: int):
         r"""Generate grid on [0, npoints] interval using equally spaced uniform distribution.
@@ -212,6 +216,7 @@ class GaussChebyshevType2(OneDGrid):
         \sum_{i=1}^n w_i' g(x_i)
 
     """
+    name = "Gauss-Chebyshev-Type2"
 
     def __init__(self, npoints: int):
         r"""Generate grid on :math:`[-1, 1]` interval based on Gauss-Chebyshev Type 2.
@@ -253,6 +258,7 @@ class GaussChebyshevLobatto(OneDGrid):
         \int_{-1}^{1}g(x) dx \approx \sum_{i=1}^n \left(w_i \sqrt{1-x_i^2}\right) g(x_i) =
         \sum_{i=1}^n w_i' g(x_i)
     """
+    name = "Gauss-Chebyshev-Lobatto"
 
     def __init__(self, npoints: int):
         r"""Generate grid on :math:`[-1, 1]` interval based on Gauss-Chebyshev-Lobatto quadrature.
@@ -294,6 +300,7 @@ class Trapezoidal(OneDGrid):
         w_{i\neq 1,n} =& \frac{2}{n}
 
     """
+    name = "Trapezoidal-Lobatto"
 
     def __init__(self, npoints: int):
         r"""Generate grid on [-1, 1] interval based on Trapezoidal (Euler-Maclaurin) rule.
@@ -340,6 +347,7 @@ class RectangleRuleSineEndPoints(OneDGrid):
     .. [#] Boyd, John P. Chebyshev and Fourier spectral methods. Courier Corporation, 2001.
 
     """
+    name = "Rectangle-Rule-Sine"
 
     def __init__(self, npoints: int):
         r"""
@@ -455,6 +463,7 @@ class TanhSinh(OneDGrid):
     endpoints of :math:`[-1, 1]`.
 
     """
+    name = "Tanh-Sinh"
 
     def __init__(self, npoints: int, delta: float = 0.1):
         r"""Generate grid on :math:`[-1, 1]` interval based on Tanh-Sinh rule.
@@ -507,6 +516,7 @@ class Simpson(OneDGrid):
         \end{cases}
 
     """
+    name = "Simpson"
 
     def __init__(self, npoints: int):
         r"""Generate grid on :math:`[-1,1]` interval based on Simpson rule.
@@ -548,6 +558,7 @@ class MidPoint(OneDGrid):
         w_i =& \frac{2}{n}
 
     """
+    name = "MidPoint"
 
     def __init__(self, npoints: int):
         r"""Generate grid on :math:`[-1, 1]` interval based on Mid-Point rule.
@@ -597,6 +608,7 @@ class ClenshawCurtis(OneDGrid):
     and handled separately.
 
     """
+    name = "Clenshaw-Curtis"
 
     def __init__(self, npoints: int):
         r"""Generate grid on :math:`[-1,1]` interval based on Clenshaw-Curtis method.
@@ -653,6 +665,7 @@ class FejerFirst(OneDGrid):
     and handled separately.
 
     """
+    name = "Fejer-First"
 
     def __init__(self, npoints: int):
         r"""Generate 1D grid on :math:`(-1,1)` interval based on Fejer's first rule.
@@ -705,6 +718,7 @@ class FejerSecond(OneDGrid):
     recommended to break the intervals at the discontinuities and handled separately.
 
     """
+    name = "Fejer-Second"
 
     def __init__(self, npoints: int):
         r"""Generate grid on :math:`(-1,1)` interval based on Fejer's second rule.
@@ -776,6 +790,8 @@ class TrefethenCC(OneDGrid):
 
     """
 
+    name = "Trefethen-Polynomial-Transformation-Clenshaw-Curtis"
+
     def __init__(self, npoints: int, d: int = 9):
         r"""Generate 1D grid on :math:`[-1,1]` interval based on Trefethen-Clenshaw-Curtis.
 
@@ -820,6 +836,8 @@ class TrefethenGC2(OneDGrid):
 
     """
 
+    name = "Trefethen-Polynomial-Transformation-Gauss-Chebyshev-Type2"
+
     def __init__(self, npoints: int, d: int = 9):
         r"""Generate 1D grid on [-1,1] interval based on Trefethen-Gauss-Chebyshev.
 
@@ -863,6 +881,8 @@ class TrefethenGeneral(OneDGrid):
        SIAM Journal on Numerical Analysis 46.2 (2008): 930-948.
 
     """
+
+    name = "Trefethen-Polynomial"
 
     def __init__(self, npoints: int, quadrature: OneDGrid, d=9):
         r"""Generate 1D grid on :math:`[-1,1]` interval based on Trefethen-General.
@@ -957,6 +977,8 @@ class TrefethenStripCC(OneDGrid):
 
     """
 
+    name = "Trefethen-Strip-Transformation-Clenshaw-Curtis"
+
     def __init__(self, npoints: int, rho: float = 1.1):
         r"""Generate grid on :math:`[-1,1]` interval based on Trefethen-Clenshaw-Curtis.
 
@@ -986,6 +1008,8 @@ class TrefethenStripGC2(OneDGrid):
        SIAM Journal on Numerical Analysis 46.2 (2008): 930-948.
 
     """
+
+    name = "Trefethen-Strip-Transformation-Gauss-Chebyshev-Type2"
 
     def __init__(self, npoints: int, rho: float = 1.1):
         r"""Generate grid on :math:`[-1,1]` interval based on Trefethen-Gauss-Chebyshev.
@@ -1017,6 +1041,8 @@ class TrefethenStripGeneral(OneDGrid):
        SIAM Journal on Numerical Analysis 46.2 (2008): 930-948.
 
     """
+
+    name = "Trefethen-Strip-General"
 
     def __init__(self, npoints: int, quadrature, rho: float = 1.1):
         r"""Generate grid on :math:`[-1,1]` interval based on Trefethen-General.
@@ -1055,6 +1081,7 @@ class ExpSinh(OneDGrid):
     - Using this quadrature requires heavy parameter-tuning in-order to work.
 
     """
+    name = "Exponential-Hyperbolic-Sine"
 
     def __init__(self, npoints: int, h: float = 1.0):
         r"""Generate 1D grid on :math:`(0, \infty)` interval based on exp-sinh quadrature.
@@ -1106,6 +1133,7 @@ class LogExpSinh(OneDGrid):
     - Using this quadrature requires heavy parameter-tuning in-order to work.
 
     """
+    name = "Logarithm-Exponential-Hyperbolic-Sine"
 
     def __init__(self, npoints: int, h: float = 0.1):
         r"""Generate 1D grid on :math:`(0, \infty)` interval based on log-exp-sinh quadrature.
@@ -1157,6 +1185,7 @@ class ExpExp(OneDGrid):
     - Using this quadrature requires heavy parameter-tuning in-order to work.
 
     """
+    name = "Exponential-Exponential"
 
     def __init__(self, npoints: int, h: float = 0.1):
         r"""Generate 1D grid on :math:`(0, \infty)` interval based on exp-exp quadrature.
@@ -1203,6 +1232,7 @@ class SingleTanh(OneDGrid):
         w_k = \frac{h}{\cosh^2(kh)}
 
     """
+    name = "Hyperbolic-Tan"
 
     def __init__(self, npoints: int, h: float = 0.1):
         r"""Generate 1D grid on :math:`(-1, +1)` interval based on tanh-sinh quadrature.
@@ -1249,6 +1279,7 @@ class SingleExp(OneDGrid):
     - Using this quadrature requires heavy parameter-tuning in-order to work.
 
     """
+    name = "Single-Exponential"
 
     def __init__(self, npoints: int, h: float = 0.1):
         r"""Generate 1D grid on :math:`(0, \infty)` interval based on exponential quadrature.
@@ -1299,6 +1330,7 @@ class SingleArcSinhExp(OneDGrid):
     - Using this quadrature requires heavy parameter-tuning in-order to work.
 
     """
+    name = "Single-Arc-Hyperbolic-Sine-Exponential"
 
     def __init__(self, npoints: int, h: float = 0.1):
         r"""Generate 1D grid on :math:`(0, \infty)` interval based on tanh-sinh quadrature.
