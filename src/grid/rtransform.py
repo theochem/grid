@@ -269,7 +269,8 @@ class BeckeRTransform(BaseTransform):
         np.ndarray(N,)
             First derivative of Becke transformation at each point.
         """
-        deriv = 2 * self._R / ((1 - x) ** 2)
+        with np.errstate(divide="ignore"):
+            deriv = 2 * self._R / ((1 - x) ** 2)
         if self.trim_inf:
             deriv = self._convert_inf(deriv)
         return deriv
@@ -290,7 +291,8 @@ class BeckeRTransform(BaseTransform):
         np.ndarray(N,)
             Second derivative of Becke transformation at each point.
         """
-        return 4 * self._R / (1 - x) ** 3
+        with np.errstate(divide="ignore"):
+            return 4 * self._R / (1 - x) ** 3
 
     def deriv3(self, x: np.ndarray):
         r"""Compute the third derivative of Becke transformation.
