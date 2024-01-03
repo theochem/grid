@@ -498,20 +498,21 @@ class TestMolGrid(TestCase):
         assert mg.points.shape == (mg.size, 3)
         assert mg.weights.shape == (mg.size,)
         assert mg.aim_weights.shape == (mg.size,)
-        assert mg.get_atomic_grid(0) is atg1
-        assert mg.get_atomic_grid(1) is atg2
+        assert mg.get_atomic_grid(0)[0] is atg1
+        assert mg.get_atomic_grid(1)[0] is atg2
 
-        simple_ag1 = mg.get_atomic_grid(0)
-        simple_ag2 = mg.get_atomic_grid(1)
+        simple_ag1, ag1_indices = mg.get_atomic_grid(0)
+        simple_ag2, _ = mg.get_atomic_grid(1)
         assert_allclose(simple_ag1.points, atg1.points)
+        assert_allclose(simple_ag1.points, mg.points[ag1_indices])
         assert_allclose(simple_ag1.weights, atg1.weights)
         assert_allclose(simple_ag2.weights, atg2.weights)
 
         # test molgrid is not stored
         mg2 = MolGrid(np.array([6, 8]), [atg1, atg2], becke, store=False)
         assert mg2._atgrids is None
-        simple2_ag1 = mg2.get_atomic_grid(0)
-        simple2_ag2 = mg2.get_atomic_grid(1)
+        simple2_ag1, _ = mg2.get_atomic_grid(0)
+        simple2_ag2, _ = mg2.get_atomic_grid(1)
         assert isinstance(simple2_ag1, LocalGrid)
         assert isinstance(simple2_ag2, LocalGrid)
         assert_allclose(simple2_ag1.points, atg1.points)
