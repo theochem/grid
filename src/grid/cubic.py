@@ -663,6 +663,78 @@ class UniformGrid(_HyperRectangleGrid):
         origin = com - np.dot((0.5 * shape), axes)
         return cls(origin, axes, shape, weight)
 
+    @classmethod
+    def from_cube(cls, fname, weight="Trapezoid", grid_only=True):
+        r"""Initialize ``UniformGrid`` class based on the grid specifications of a cube file.
+
+        Parameters
+        ----------
+        fname : str
+            Cube file name with \*.cube extension.
+        weight : str
+            Scheme for computing the weights of the grid. See the acceptable values in the
+            :func:`~UniformGrid.__init__` method.
+        grid_only : bool
+            If True, only the grid is returned. If False a tuple all cube information is returned.
+            This tuple consists of four elements (atomic numbers, core charges, atomic coordinates,
+            and the grid). Default is True.
+
+        """
+        fname = str(fname)
+        if not fname.endswith(".cube"):
+            raise ValueError("Argument fname should be a cube file with *.cube extension!")
+
+        with open(fname) as f:
+            # skip the title
+            f.readline()
+            # skip the second line
+            f.readline()
+
+            def read_grid_line(line):
+                """Read a number and (x, y, z) coordinate from the cube file line."""
+                words = line.split()
+                return (
+                    int(words[0]),
+                    np.array([float(words[1]), float(words[2]), float(words[3])], float)
+                    # all coordinates in a cube file are in atomic units
+                )
+
+            # number of atoms and origin of the grid
+            natom, origin = read_grid_line(f.readline())
+            # numer of grid points in A direction and step vector A, and so on
+            shape0, axis0 = read_grid_line(f.readline())
+            shape1, axis1 = read_grid_line(f.readline())
+            shape2, axis2 = read_grid_line(f.readline())
+            shape = np.array([shape0, shape1, shape2], int)
+            axes = np.array([axis0, axis1, axis2])
+
+            # if the grid_only is True, then return only the grid
+            if grid_only:
+                return cls(origin, axes, shape, weight)
+
+            # otherwise, return the atomic numbers, atomic coordinates, and the grid
+            def read_coordinate_line(line):
+                """Read atomic number and (x, y, z) coordinate from the cube file line."""
+                words = line.split()
+                return (
+                    int(words[0]),
+                    float(words[1]),
+                    np.array([float(words[2]), float(words[3]), float(words[4])], float)
+                    # all coordinates in a cube file are in atomic units
+                )
+
+            numbers = np.zeros(natom, int)
+            # get the core charges
+            pseudo_numbers = np.zeros(natom, float)
+            coordinates = np.zeros((natom, 3), float)
+            for i in range(natom):
+                numbers[i], pseudo_numbers[i], coordinates[i] = read_coordinate_line(f.readline())
+                # If the pseudo_number field is zero, we assume that no effective core
+                # potentials were used.
+                if pseudo_numbers[i] == 0.0:
+                    pseudo_numbers[i] = numbers[i]
+        return numbers, pseudo_numbers, coordinates, cls(origin, axes, shape, weight)
+
     @property
     def axes(self):
         """Return the axes of the uniform grid."""
