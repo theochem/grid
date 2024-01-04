@@ -31,9 +31,9 @@ from grid.basegrid import Grid, OneDGrid
 from grid.onedgrid import UniformInteger
 from grid.rtransform import PowerRTransform
 from grid.utils import (
+    _DEFAULT_POWER_RTRANSFORM_PARAMS,
     convert_cart_to_sph,
     convert_derivative_from_spherical_to_cartesian,
-    _DEFAULT_POWER_RTRANSFORM_PARAMS,
     generate_derivative_real_spherical_harmonics,
     generate_real_spherical_harmonics,
 )

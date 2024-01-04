@@ -25,8 +25,8 @@ import numpy as np
 
 from grid.atomgrid import AtomGrid
 from grid.basegrid import Grid, LocalGrid, OneDGrid
-from grid.rtransform import PowerRTransform
 from grid.onedgrid import UniformInteger
+from grid.rtransform import PowerRTransform
 from grid.utils import _DEFAULT_POWER_RTRANSFORM_PARAMS
 
 
