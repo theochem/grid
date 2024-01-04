@@ -198,7 +198,7 @@ class AtomGrid(Grid):
             if atnum in _DEFAULT_POWER_RTRANSFORM_PARAMS:
                 rmin, rmax, npt = _DEFAULT_POWER_RTRANSFORM_PARAMS[int(atnum)]
                 rmin, rmax = rmin * 1.8897259885789, rmax * 1.8897259885789
-                onedgrid = UniformInteger(atnum)
+                onedgrid = UniformInteger(npt)
                 rgrid = PowerRTransform(rmin, rmax).transform_1d_grid(onedgrid)
             else:
                 raise ValueError(f"Default rgrid parameter is not included for the"

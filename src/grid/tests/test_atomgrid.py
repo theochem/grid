@@ -134,6 +134,12 @@ class TestAtomGrid:
             np.sum(np.exp(-np.sum(atgrid.points**2, axis=1)) * atgrid.weights),
             5.56832800,
         )
+        # test fine grid but without default radial grid
+        atgrid = AtomGrid.from_preset(rgrid=None, atnum=1, preset="fine")
+        assert_almost_equal(
+            np.sum(np.exp(-np.sum(atgrid.points ** 2, axis=1)) * atgrid.weights),
+            5.56832800,
+        )
         # test veryfine grid
         pts = UniformInteger(41)
         tf = PowerRTransform(1.1774580743206259e-07, 20.140888089596444)
@@ -964,8 +970,6 @@ class TestAtomGrid:
             )
 
         # test preset
-        with pytest.raises(ValueError):
-            AtomGrid.from_preset(atnum=1, preset="fine")
         with pytest.raises(TypeError):
             AtomGrid(OneDGrid(np.arange(3), np.arange(3)), sizes=110)
         with pytest.raises(TypeError):
