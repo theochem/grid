@@ -348,7 +348,7 @@ class MolGrid(Grid):
         atcoords: np.ndarray,
         preset: Union[str, list, dict],
         rgrid: Union[OneDGrid, list, dict] = None,
-        aim_weights: Union[callable, np.ndarray] = BeckeWeights(order=3),
+        aim_weights: Union[callable, np.ndarray] = None,
         *_,
         rotate: int = 37,
         store: bool = False,
@@ -378,7 +378,7 @@ class MolGrid(Grid):
             If None, then using atomic numbers it will generate a default radial grid
             (PowerRTransform of UniformInteger grid).
         aim_weights : Callable or np.ndarray(K,), optional
-            Atoms in molecule weights. Default is Becke weights with order=3.
+            Atoms in molecule weights. If None, then aim_weights is Becke weights with order=3.
         rotate : bool or int, optional
             Flag to set auto rotation for atomic grid, if given int, the number
             will be used as a seed to generate rantom matrix.
@@ -413,6 +413,8 @@ class MolGrid(Grid):
                 "shape of atomic nums does not match with coordinates\n"
                 f"atomic numbers: {atnums.shape}, coordinates: {atcoords.shape}"
             )
+        if aim_weights is None:
+            aim_weights = BeckeWeights(order=3)
         total_atm = len(atnums)
         atomic_grids = []
         for i in range(total_atm):
@@ -452,7 +454,7 @@ class MolGrid(Grid):
         atcoords: np.ndarray,
         size: int,
         rgrid: OneDGrid = None,
-        aim_weights: Union[callable, np.ndarray] = BeckeWeights(order=3),
+        aim_weights: Union[callable, np.ndarray] = None,
         rotate: int = 37,
         store: bool = False,
     ):
@@ -478,7 +480,7 @@ class MolGrid(Grid):
             One-dimensional grid to construct the atomic grid. If none, then
             default radial grid is generated based on atomic numbers.
         aim_weights : Callable or np.ndarray(K,), optional
-            Atoms in molecule weights. Default is Becke weights with order=3.
+            Atoms in molecule weights. If None, then aim_weights is Becke weights with order=3.
         rotate : bool or int , optional
             Flag to set auto rotation for atomic grid, if given int, the number
             will be used as a seed to generate rantom matrix.
@@ -491,6 +493,8 @@ class MolGrid(Grid):
             MolGrid instance with specified grid property
 
         """
+        if aim_weights is None:
+            aim_weights = BeckeWeights(order=3)
         at_grids = []
         for i in range(len(atcoords)):
             if rgrid is None:
@@ -509,7 +513,7 @@ class MolGrid(Grid):
         radius: Union[float, list],
         sectors_r: np.ndarray,
         rgrid: Union[OneDGrid, list] = None,
-        aim_weights: Union[callable, np.ndarray] = BeckeWeights(order=3),
+        aim_weights: Union[callable, np.ndarray] = None,
         sectors_degree: np.ndarray = None,
         sectors_size: np.ndarray = None,
         rotate: int = 37,
@@ -539,8 +543,8 @@ class MolGrid(Grid):
             generate a default radial grid (PowerRTransform of UniformInteger grid).
         aim_weights: Callable or np.ndarray(\sum^M_n N_n,), optional
             Atoms in molecule/nuclear weights :math:`{ {w_n(r_k)}_k^{N_i}}_n^{M}`, where
-            :math:`N_i` is the number of points in the ith atomic grid. Default is
-            Becke weights with order=3.
+            :math:`N_i` is the number of points in the ith atomic grid. If None, then aim_weights
+            is Becke weights with order=3.
         sectors_degree: List[List], keyword-only argument
             Each row is a sequence of Lebedev/angular degrees for each radial sector of the pruned
             grid for the `m`th atom. If both `sectors_degree` and `sectors_size` are given,
@@ -565,6 +569,8 @@ class MolGrid(Grid):
             raise ValueError(
                 "The dimension of coordinates need to be 2\n" f"got shape: {atcoords.ndim}"
             )
+        if aim_weights is None:
+            aim_weights = BeckeWeights(order=3)
 
         at_grids = []
         num_atoms = len(atcoords)
