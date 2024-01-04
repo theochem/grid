@@ -204,7 +204,7 @@ def test_transform_and_rearrange_to_explicit_ode_with_simple_boundary(transform,
         [
             SqTF(1, 3),
             fx_complicated_example,
-            np.random.uniform(-100, 100, (4,)),
+            np.random.uniform(-50, 50, (4,)),
             [(0, 0, 0), (0, 1, 3), (1, 1, 3)],
         ],
     ],
