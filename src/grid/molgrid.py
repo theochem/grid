@@ -350,7 +350,7 @@ class MolGrid(Grid):
         rgrid: Union[OneDGrid, list, dict] = None,
         *_,
         rotate: int = 37,
-        store: bool = False
+        store: bool = False,
     ):
         """Construct molecular grid wih preset parameters.
 
@@ -673,5 +673,6 @@ def _generate_default_rgrid(atnum: int):
         rgrid = PowerRTransform(rmin, rmax).transform_1d_grid(onedgrid)
         return rgrid
     else:
-        raise ValueError(f"Default rgrid parameter is not included for the"
-                         f" atomic number {atnum}.")
+        raise ValueError(
+            f"Default rgrid parameter is not included for the" f" atomic number {atnum}."
+        )

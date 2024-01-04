@@ -137,7 +137,7 @@ class TestAtomGrid:
         # test fine grid but without default radial grid
         atgrid = AtomGrid.from_preset(rgrid=None, atnum=1, preset="fine")
         assert_almost_equal(
-            np.sum(np.exp(-np.sum(atgrid.points ** 2, axis=1)) * atgrid.weights),
+            np.sum(np.exp(-np.sum(atgrid.points**2, axis=1)) * atgrid.weights),
             5.56832800,
         )
         # test veryfine grid
