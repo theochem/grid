@@ -405,8 +405,8 @@ with the QZVP basis of Ahlrichs and coworkers. They are constructed to give
 on average 5 digits of precision for a variety of molecular integrals, using
 the Becke scheme with k=3.
 """
-# Items are (rmin, rmax, npts) in bohr, Meant for PowerRTransform
-DEFAULT_POWER_RTRANSFORM_PARAMS = {
+# Items are (rmin, rmax, npts) in angstrom, Meant for PowerRTransform
+_DEFAULT_POWER_RTRANSFORM_PARAMS = {
     1: (2.577533167224667e-07, 16.276983371222354, 34),
     2: (3.2755036736843646e-07, 20.13904927593614, 34),
     3: (6.186114573134926e-09, 18.12176164518007, 71),
