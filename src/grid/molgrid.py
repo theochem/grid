@@ -507,9 +507,9 @@ class MolGrid(Grid):
         atnums: np.ndarray,
         atcoords: np.ndarray,
         radius: Union[float, list],
-        aim_weights: Union[callable, np.ndarray],
         sectors_r: np.ndarray,
         rgrid: Union[OneDGrid, list] = None,
+        aim_weights: Union[callable, np.ndarray] = BeckeWeights(order=3),
         sectors_degree: np.ndarray = None,
         sectors_size: np.ndarray = None,
         rotate: int = 37,
@@ -528,9 +528,6 @@ class MolGrid(Grid):
             The atomic radius to be multiplied with `r_sectors` (to make them atom specific).
             If float, then the same atomic radius is used for all atoms, else a list specifies
             it for each atom.
-        aim_weights: Callable or np.ndarray(\sum^M_n N_n,)
-            Atoms in molecule/nuclear weights :math:`{ {w_n(r_k)}_k^{N_i}}_n^{M}`, where
-            :math:`N_i` is the number of points in the ith atomic grid.
         sectors_r: List[List], keyword-only argument
             Each row is a sequence of boundary points specifying radial sectors of the pruned grid
             for the `m`th atom. The first sector is ``[0, radius*sectors_r[0]]``, then
@@ -540,6 +537,10 @@ class MolGrid(Grid):
             grid correspond to the ith atom.  If dictionary is provided, then the keys are
             correspond to the `atnums[i]` attribute. If None, then using atomic numbers it will
             generate a default radial grid (PowerRTransform of UniformInteger grid).
+        aim_weights: Callable or np.ndarray(\sum^M_n N_n,), optional
+            Atoms in molecule/nuclear weights :math:`{ {w_n(r_k)}_k^{N_i}}_n^{M}`, where
+            :math:`N_i` is the number of points in the ith atomic grid. Default is
+            Becke weights with order=3.
         sectors_degree: List[List], keyword-only argument
             Each row is a sequence of Lebedev/angular degrees for each radial sector of the pruned
             grid for the `m`th atom. If both `sectors_degree` and `sectors_size` are given,

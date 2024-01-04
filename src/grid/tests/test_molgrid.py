@@ -606,9 +606,9 @@ class TestMolGrid(TestCase):
             nums,
             coors,
             radius,
-            becke,
             sectors_r=sectors_r,
             rgrid=self.rgrid,
+            aim_weights=becke,
             sectors_degree=sectors_deg,
             rotate=False,
         )
