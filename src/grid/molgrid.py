@@ -25,6 +25,9 @@ import numpy as np
 
 from grid.atomgrid import AtomGrid
 from grid.basegrid import Grid, LocalGrid, OneDGrid
+from grid.rtransform import PowerRTransform
+from grid.onedgrid import UniformInteger
+from grid.utils import _DEFAULT_POWER_RTRANSFORM_PARAMS
 
 
 class MolGrid(Grid):
@@ -628,3 +631,32 @@ class MolGrid(Grid):
                 self._atcoords[index],
             )
         return self._atgrids[index]
+
+
+def _generate_default_rgrid(atnum: int):
+    r"""
+    Generate default radial transformation grid from default Horton.
+
+    See _DEFAULT_POWER_RTRANSFORM_PARAMS inside utils for information on how
+    it was determined
+
+    Parameters
+    ----------
+    atnum: int
+        Atomic Number
+
+    Returns
+    -------
+    OneDGrid:
+        One-dimensional grid that was transformed using PowerRTransform.
+
+    """
+    if atnum in _DEFAULT_POWER_RTRANSFORM_PARAMS:
+        rmin, rmax, npt = _DEFAULT_POWER_RTRANSFORM_PARAMS[int(atnum)]
+        rmin, rmax = rmin * 1.8897259885789, rmax * 1.8897259885789
+        onedgrid = UniformInteger(atnum)
+        rgrid = PowerRTransform(rmin, rmax).transform_1d_grid(onedgrid)
+        return rgrid
+    else:
+        raise ValueError(f"Default rgrid parameter is not included for the"
+                         f" atomic number {atnum}.")
