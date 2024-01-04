@@ -724,9 +724,7 @@ class TestMolGrid(TestCase):
         assert_allclose(wholegrid.indices, np.arange(grid.size))
 
         # initialize MolGrid like horton
-        grid = MolGrid.from_size(
-            nums, coords[np.newaxis, :], 110, self.rgrid, store=True
-        )
+        grid = MolGrid.from_size(nums, coords[np.newaxis, :], 110, self.rgrid, store=True)
         fn = np.exp(-4.0 * np.linalg.norm(grid.points, axis=-1))
         assert_allclose(grid.integrate(fn), np.pi / 8)
         localgrid = grid.get_localgrid(coords, 5.0)
