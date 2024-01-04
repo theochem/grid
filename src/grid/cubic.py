@@ -675,9 +675,12 @@ class UniformGrid(_HyperRectangleGrid):
             Scheme for computing the weights of the grid. See the acceptable values in the
             :func:`~UniformGrid.__init__` method.
         grid_only : bool
-            If True, only the grid is returned. If False a tuple all cube information is returned.
-            This tuple consists of four elements (atomic numbers, core charges, atomic coordinates,
-            and the grid). Default is True.
+            If True, only the grid is returned. If False a tuple with the grid and the cube data
+            is returned. The cube data is a dictionary with the following keys:
+
+            - ``atnums``: atomic numbers of the atoms in the molecule.
+            - ``atcorenums``: Pseudo-number of :math:`M` atoms in the molecule.
+            - ``atcoords``: Cartesian coordinates of :math:`M` atoms in the molecule.
 
         """
         fname = str(fname)
@@ -733,7 +736,8 @@ class UniformGrid(_HyperRectangleGrid):
                 # potentials were used.
                 if pseudo_numbers[i] == 0.0:
                     pseudo_numbers[i] = numbers[i]
-        return numbers, pseudo_numbers, coordinates, cls(origin, axes, shape, weight)
+            cube_data = {"atnums": numbers, "atcorenums": pseudo_numbers, "atcoords": coordinates}
+        return cls(origin, axes, shape, weight), cube_data
 
     @property
     def axes(self):
