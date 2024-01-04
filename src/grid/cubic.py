@@ -921,3 +921,57 @@ class UniformGrid(_HyperRectangleGrid):
         index = self.coordinates_to_index(coord)
 
         return index
+
+    def generate_cube(self, fname, data, atcoords, atnums, pseudo_numbers=None):
+        r"""Write the data evaluated on grid points into a cube file.
+
+        Parameters
+        ----------
+        fname : str
+            Cube file name with \*.cube extension.
+        data : np.ndarray, shape=(npoints,)
+            An array containing the evaluated scalar property on the grid points.
+        atcoords : np.ndarray, shape (M, 3)
+            Cartesian coordinates of :math:`M` atoms in the molecule.
+        atnums : np.ndarray, shape (M,)
+            Atomic numbers of :math:`M` atoms in the molecule.
+        pseudo_numbers : np.ndarray, shape (M,), optional
+            Pseudo-numbers (core charges) of :math:`M` atoms in the molecule.
+
+        """
+        if not fname.endswith(".cube"):
+            raise ValueError("Argument fname should be a cube file with `*.cube` extension!")
+        natom = len(atnums)
+        if natom != len(atcoords):
+            raise ValueError("The number of atomic numbers and atom coordinates should equal.")
+        if data.size != len(self.points):
+            raise ValueError(
+                "Argument data should have the same size as the grid. "
+                + "{0}!={1}".format(data.size, self._npoints)
+            )
+        if pseudo_numbers is None:
+            pseudo_numbers = atnums.astype(float)
+        if pseudo_numbers.size != natom:
+            raise ValueError(
+                "Argument pseudo_numbers should have the same size as the atomic numbers. "
+                + "{0}!={1}".format(pseudo_numbers.size, natom)
+            )
+
+        # Write data into the cube file
+        with open(fname, "w") as f:
+            # writing the cube header:
+            f.write("Cubefile created with THEOCHEM Grid\n")
+            f.write("OUTER LOOP: X, MIDDLE LOOP: Y, INNER LOOP: Z\n")
+            x, y, z = self._origin
+            f.write("{0:5d} {1:11.6f} {2:11.6f} {3:11.6f}\n".format(natom, x, y, z))
+            rvecs = self._axes
+            for i, (x, y, z) in zip(self._shape, rvecs):
+                f.write("{0:5d} {1:11.6f} {2:11.6f} {3:11.6f}\n".format(i, x, y, z))
+            for i, q, (x, y, z) in zip(atnums, pseudo_numbers, atcoords):
+                f.write("{0:5d} {1:11.6f} {2:11.6f} {3:11.6f} {4:11.6f}\n".format(i, q, x, y, z))
+            # writing the cube data:
+            num_chunks = 6
+            for i in range(0, data.size, num_chunks):
+                row_data = data.flat[i : i + num_chunks]
+                f.write((row_data.size * " {:12.5E}").format(*row_data))
+                f.write("\n")
