@@ -377,7 +377,7 @@ class MolGrid(Grid):
             dictionary is provided, then the keys correspond to the `atnums[i]`attribute.
             If None, then using atomic numbers it will generate a default radial grid
             (PowerRTransform of UniformInteger grid).
-        aim_weights : Callable or np.ndarray(K,)
+        aim_weights : Callable or np.ndarray(K,), optional
             Atoms in molecule weights. Default is Becke weights with order=3.
         rotate : bool or int, optional
             Flag to set auto rotation for atomic grid, if given int, the number
@@ -451,8 +451,8 @@ class MolGrid(Grid):
         atnums: np.ndarray,
         atcoords: np.ndarray,
         size: int,
-        aim_weights: Union[callable, np.ndarray],
         rgrid: OneDGrid = None,
+        aim_weights: Union[callable, np.ndarray] = BeckeWeights(order=3),
         rotate: int = 37,
         store: bool = False,
     ):
@@ -474,11 +474,11 @@ class MolGrid(Grid):
             Cartesian coordinates for each atoms
         size : int
             Num of points on each shell of angular grid
-        aim_weights : Callable or np.ndarray(K,)
-            Atoms in molecule weights.
         rgrid : OneDGrid, optional
             One-dimensional grid to construct the atomic grid. If none, then
             default radial grid is generated based on atomic numbers.
+        aim_weights : Callable or np.ndarray(K,), optional
+            Atoms in molecule weights. Default is Becke weights with order=3.
         rotate : bool or int , optional
             Flag to set auto rotation for atomic grid, if given int, the number
             will be used as a seed to generate rantom matrix.
