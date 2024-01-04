@@ -350,7 +350,6 @@ class MolGrid(Grid):
         preset: Union[str, list, dict],
         rgrid: Union[OneDGrid, list, dict] = None,
         aim_weights: Union[callable, np.ndarray] = None,
-        *_,
         rotate: int = 37,
         store: bool = False,
     ):
