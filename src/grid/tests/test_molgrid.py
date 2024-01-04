@@ -575,7 +575,7 @@ class TestMolGrid(TestCase):
         nums = np.array([1, 1])
         coors = np.array([[0, 0, -0.5], [0, 0, 0.5]])
         becke = BeckeWeights(order=3)
-        mol_grid = MolGrid.from_size(nums, coors, 110, becke, self.rgrid, rotate=False)
+        mol_grid = MolGrid.from_size(nums, coors, 110, self.rgrid, becke, rotate=False)
         atg1 = AtomGrid.from_pruned(
             self.rgrid,
             0.5,
@@ -725,7 +725,7 @@ class TestMolGrid(TestCase):
 
         # initialize MolGrid like horton
         grid = MolGrid.from_size(
-            nums, coords[np.newaxis, :], 110, BeckeWeights(), self.rgrid, store=True
+            nums, coords[np.newaxis, :], 110, self.rgrid, store=True
         )
         fn = np.exp(-4.0 * np.linalg.norm(grid.points, axis=-1))
         assert_allclose(grid.integrate(fn), np.pi / 8)
@@ -741,7 +741,7 @@ class TestMolGrid(TestCase):
         nums = np.array([1, 3])
         coords = np.array([[0.0, 0.0, -0.5], [0.0, 0.0, 0.5]])
         grid = MolGrid.from_size(
-            nums, coords, 110, BeckeWeights(), self.rgrid, store=True, rotate=False
+            nums, coords, 110, self.rgrid, BeckeWeights(), store=True, rotate=False
         )
         fn0 = np.exp(-4.0 * np.linalg.norm(grid.points - coords[0], axis=-1))
         fn1 = np.exp(-8.0 * np.linalg.norm(grid.points - coords[1], axis=-1))
