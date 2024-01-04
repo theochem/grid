@@ -22,7 +22,7 @@
 from typing import Union
 
 import numpy as np
-import scipy
+import scipy.constants
 
 from grid.atomgrid import AtomGrid
 from grid.basegrid import Grid, LocalGrid, OneDGrid
