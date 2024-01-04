@@ -133,13 +133,13 @@ class TestMolGrid(TestCase):
         assert_almost_equal(occupation, 3, decimal=3)
 
         atgrid1 = AtomGrid.from_preset(
-            rgrid=rad2, atnum=numbers[0], preset="fine", center=coordinates[0]
+            atnum=numbers[0], preset="fine", center=coordinates[0], rgrid=rad2
         )
         atgrid2 = AtomGrid.from_preset(
-            rgrid=rad2, atnum=numbers[1], preset="veryfine", center=coordinates[1]
+            atnum=numbers[1], preset="veryfine", center=coordinates[1], rgrid=rad2
         )
         atgrid3 = AtomGrid.from_preset(
-            rgrid=rad2, atnum=numbers[2], preset="medium", center=coordinates[2]
+            atnum=numbers[2], preset="medium", center=coordinates[2], rgrid=rad2
         )
         assert_allclose(mg._atgrids[0].points, atgrid1.points)
         assert_allclose(mg._atgrids[1].points, atgrid2.points)
@@ -163,13 +163,13 @@ class TestMolGrid(TestCase):
         assert_almost_equal(occupation, 3, decimal=3)
 
         atgrid1 = AtomGrid.from_preset(
-            rgrid=rad3, atnum=numbers[0], preset="fine", center=coordinates[0]
+            atnum=numbers[0], preset="fine", center=coordinates[0], rgrid=rad3
         )
         atgrid2 = AtomGrid.from_preset(
-            rgrid=rad3, atnum=numbers[1], preset="veryfine", center=coordinates[1]
+            atnum=numbers[1], preset="veryfine", center=coordinates[1], rgrid=rad3
         )
         atgrid3 = AtomGrid.from_preset(
-            rgrid=rad3, atnum=numbers[2], preset="fine", center=coordinates[2]
+            atnum=numbers[2], preset="fine", center=coordinates[2], rgrid=rad3
         )
         assert_allclose(mg._atgrids[0].points, atgrid1.points)
         assert_allclose(mg._atgrids[1].points, atgrid2.points)
@@ -203,13 +203,13 @@ class TestMolGrid(TestCase):
         assert_almost_equal(occupation, 3, decimal=3)
 
         atgrid1 = AtomGrid.from_preset(
-            rgrid=rad1, atnum=numbers[0], preset="fine", center=coordinates[0]
+            atnum=numbers[0], preset="fine", center=coordinates[0], rgrid=rad1
         )
         atgrid2 = AtomGrid.from_preset(
-            rgrid=rad2, atnum=numbers[1], preset="veryfine", center=coordinates[1]
+            atnum=numbers[1], preset="veryfine", center=coordinates[1], rgrid=rad2
         )
         atgrid3 = AtomGrid.from_preset(
-            rgrid=rad3, atnum=numbers[2], preset="fine", center=coordinates[2]
+            atnum=numbers[2], preset="fine", center=coordinates[2], rgrid=rad3
         )
         assert_allclose(mg._atgrids[0].points, atgrid1.points)
         assert_allclose(mg._atgrids[1].points, atgrid2.points)
@@ -233,13 +233,13 @@ class TestMolGrid(TestCase):
         assert_almost_equal(occupation, 3, decimal=3)
 
         atgrid1 = AtomGrid.from_preset(
-            rgrid=rad1, atnum=numbers[0], preset="fine", center=coordinates[0]
+            atnum=numbers[0], preset="fine", center=coordinates[0], rgrid=rad1
         )
         atgrid2 = AtomGrid.from_preset(
-            rgrid=rad3, atnum=numbers[1], preset="veryfine", center=coordinates[1]
+            atnum=numbers[1], preset="veryfine", center=coordinates[1], rgrid=rad3
         )
         atgrid3 = AtomGrid.from_preset(
-            rgrid=rad1, atnum=numbers[2], preset="fine", center=coordinates[2]
+            atnum=numbers[2], preset="fine", center=coordinates[2], rgrid=rad1
         )
         assert_allclose(mg._atgrids[0].points, atgrid1.points)
         assert_allclose(mg._atgrids[1].points, atgrid2.points)
@@ -268,13 +268,13 @@ class TestMolGrid(TestCase):
         )
 
         atgrid1 = AtomGrid.from_preset(
-            rgrid=rad1, atnum=numbers[0], preset="sg_0", center=coordinates[0]
+            atnum=numbers[0], preset="sg_0", center=coordinates[0], rgrid=rad1
         )
         atgrid2 = AtomGrid.from_preset(
-            rgrid=rad2, atnum=numbers[1], preset="sg_2", center=coordinates[1]
+            atnum=numbers[1], preset="sg_2", center=coordinates[1], rgrid=rad2
         )
         atgrid3 = AtomGrid.from_preset(
-            rgrid=rad3, atnum=numbers[2], preset="sg_1", center=coordinates[2]
+            atnum=numbers[2], preset="sg_1", center=coordinates[2], rgrid=rad3
         )
         assert_allclose(mg._atgrids[0].points, atgrid1.points)
         assert_allclose(mg._atgrids[1].points, atgrid2.points)
@@ -296,13 +296,13 @@ class TestMolGrid(TestCase):
         )
 
         atgrid1 = AtomGrid.from_preset(
-            rgrid=rad3, atnum=numbers[0], preset="sg_1", center=coordinates[0]
+            atnum=numbers[0], preset="sg_1", center=coordinates[0], rgrid=rad3
         )
         atgrid2 = AtomGrid.from_preset(
-            rgrid=rad2, atnum=numbers[1], preset="sg_2", center=coordinates[1]
+            atnum=numbers[1], preset="sg_2", center=coordinates[1], rgrid=rad2
         )
         atgrid3 = AtomGrid.from_preset(
-            rgrid=rad3, atnum=numbers[2], preset="sg_1", center=coordinates[2]
+            atnum=numbers[2], preset="sg_1", center=coordinates[2], rgrid=rad3
         )
         assert_allclose(mg._atgrids[0].points, atgrid1.points)
         assert_allclose(mg._atgrids[1].points, atgrid2.points)
@@ -331,13 +331,13 @@ class TestMolGrid(TestCase):
         )
 
         atgrid1 = AtomGrid.from_preset(
-            rgrid=rad1, atnum=numbers[0], preset="g1", center=coordinates[0]
+            atnum=numbers[0], preset="g1", center=coordinates[0], rgrid=rad1
         )
         atgrid2 = AtomGrid.from_preset(
-            rgrid=rad2, atnum=numbers[1], preset="g2", center=coordinates[1]
+            atnum=numbers[1], preset="g2", center=coordinates[1], rgrid=rad2
         )
         atgrid3 = AtomGrid.from_preset(
-            rgrid=rad3, atnum=numbers[2], preset="g3", center=coordinates[2]
+            atnum=numbers[2], preset="g3", center=coordinates[2], rgrid=rad3
         )
         assert_allclose(mg._atgrids[0].points, atgrid1.points)
         assert_allclose(mg._atgrids[1].points, atgrid2.points)
@@ -359,13 +359,13 @@ class TestMolGrid(TestCase):
         )
 
         atgrid1 = AtomGrid.from_preset(
-            rgrid=rad1, atnum=numbers[0], preset="g4", center=coordinates[0]
+            atnum=numbers[0], preset="g4", center=coordinates[0], rgrid=rad1
         )
         atgrid2 = AtomGrid.from_preset(
-            rgrid=rad2, atnum=numbers[1], preset="g5", center=coordinates[1]
+            atnum=numbers[1], preset="g5", center=coordinates[1], rgrid=rad2
         )
         atgrid3 = AtomGrid.from_preset(
-            rgrid=rad3, atnum=numbers[2], preset="g6", center=coordinates[2]
+            atnum=numbers[2], preset="g6", center=coordinates[2], rgrid=rad3
         )
         assert_allclose(mg._atgrids[0].points, atgrid1.points)
         assert_allclose(mg._atgrids[1].points, atgrid2.points)
