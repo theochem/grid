@@ -26,6 +26,7 @@ from numpy.testing import assert_allclose
 
 from grid.cubic import Tensor1DGrids, UniformGrid, _HyperRectangleGrid
 from grid.onedgrid import GaussLaguerre, MidPoint
+import importlib.resources
 
 
 class TestHyperRectangleGrid(TestCase):
@@ -738,6 +739,46 @@ class TestUniformGrid(TestCase):
             ]
         )
         assert_allclose(grid.points, expected, rtol=1.0e-7, atol=1.0e-7)
+
+    def test_uniformgrid_from_cube(self):
+        r"""Test creating uniform cubic grid from cube example."""
+        atnums = np.array([6, 1, 1, 1, 1])
+        pseudo_numbers = np.array([6, 1, 1, 1, 1]).astype(float)
+        atcoords = np.array(
+            [
+                [-0.000041, 0.000035, 0.000003],
+                [1.051607, 1.517467, 0.942259],
+                [1.296786, -1.543671, -0.481272],
+                [-1.476881, -0.708836, 1.269987],
+                [-0.871678, 0.735176, -1.730958],
+            ]
+        )
+        axes = np.array(
+            [
+                [2.605101, 0.000000, 0.000000],
+                [0.000000, 2.605101, 0.000000],
+                [0.000000, 0.000000, 2.605101],
+            ]
+        )
+        origin = np.array([-6.512793, -6.512718, -6.51275])
+        shape = np.array([6, 6, 6])
+
+        ref_grid = UniformGrid(origin, axes, shape)
+
+        cubefile = "../data/tests/cubegen_ch4_6points.cube"
+        cubefile = importlib.resources.files("grid") / "data" / "tests" / "cubegen_ch4_6points.cube"
+
+        grid, cube_data = UniformGrid.from_cube(cubefile, grid_only=False)
+
+        assert_allclose(grid._axes, axes)
+        assert_allclose(grid._origin, origin)
+        assert_allclose(grid._shape, shape)
+        assert_allclose(cube_data["atnums"], atnums)
+        assert_allclose(cube_data["atcoords"], atcoords)
+        assert_allclose(cube_data["atcorenums"], pseudo_numbers)
+
+        assert_allclose(grid.points, ref_grid.points)
+        assert_allclose(grid.weights, ref_grid.weights)
 
     def test_uniformgrid_points_without_rotate(self):
         r"""Test creating uniform cubic grid from simple constructed molecule."""
