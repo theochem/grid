@@ -22,6 +22,7 @@
 from typing import Union
 
 import numpy as np
+import scipy
 
 from grid.atomgrid import AtomGrid
 from grid.basegrid import Grid, LocalGrid, OneDGrid
@@ -676,7 +677,9 @@ def _generate_default_rgrid(atnum: int):
     """
     if atnum in _DEFAULT_POWER_RTRANSFORM_PARAMS:
         rmin, rmax, npt = _DEFAULT_POWER_RTRANSFORM_PARAMS[int(atnum)]
-        rmin, rmax = rmin * 1.8897259885789, rmax * 1.8897259885789
+        # Convert from Angstrom to atomic units
+        rmin = rmin * scipy.constants.angstrom / scipy.constants.value("atomic unit of length")
+        rmax = rmax * scipy.constants.angstrom / scipy.constants.value("atomic unit of length")
         onedgrid = UniformInteger(npt)
         rgrid = PowerRTransform(rmin, rmax).transform_1d_grid(onedgrid)
         return rgrid
