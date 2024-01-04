@@ -18,6 +18,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
 """MolGrid test file."""
+import pytest
 from unittest import TestCase
 
 import numpy as np
@@ -77,6 +78,28 @@ class TestMolGrid(TestCase):
             ("insane", 6),
         ):
             mg = MolGrid.from_preset(numbers, coordinates, grid_type, becke, rgrid)
+            dist0 = np.sqrt(((coordinates[0] - mg.points) ** 2).sum(axis=1))
+            dist1 = np.sqrt(((coordinates[1] - mg.points) ** 2).sum(axis=1))
+            fn = np.exp(-2 * dist0) / np.pi + np.exp(-2 * dist1) / np.pi
+            occupation = mg.integrate(fn)
+            assert_almost_equal(occupation, 2.0, decimal=deci)
+
+    def test_make_grid_integral_with_default_rgrid(self):
+        """Test molecular make_grid works as designed with default rgrid."""
+        numbers = np.array([1, 1])
+        coordinates = np.array([[0.0, 0.0, -0.5], [0.0, 0.0, 0.5]], float)
+        becke = BeckeWeights(order=3)
+        # construct molgrid
+        for grid_type, deci in (
+            ("coarse", 3),
+            ("medium", 4),
+            ("fine", 4),
+            ("veryfine", 5),
+            ("ultrafine", 5),
+            ("insane", 5),
+        ):
+            print(grid_type)
+            mg = MolGrid.from_preset(numbers, coordinates, grid_type, becke)
             dist0 = np.sqrt(((coordinates[0] - mg.points) ** 2).sum(axis=1))
             dist1 = np.sqrt(((coordinates[1] - mg.points) ** 2).sum(axis=1))
             fn = np.exp(-2 * dist0) / np.pi + np.exp(-2 * dist1) / np.pi
@@ -244,12 +267,6 @@ class TestMolGrid(TestCase):
             store=True,
             rotate=False,
         )
-        # dist0 = np.sqrt(((coordinates[0] - mg.points) ** 2).sum(axis=1))
-        # dist1 = np.sqrt(((coordinates[1] - mg.points) ** 2).sum(axis=1))
-        # dist2 = np.sqrt(((coordinates[2] - mg.points) ** 2).sum(axis=1))
-        # fn = (np.exp(-2 * dist0) + np.exp(-2 * dist1) + np.exp(-2 * dist2)) / np.pi
-        # occupation = mg.integrate(fn)
-        # assert_almost_equal(occupation, 3, decimal=3)
 
         atgrid1 = AtomGrid.from_preset(rgrid=rad1, atnum=numbers[0], preset="sg_0", center=coordinates[0])
         atgrid2 = AtomGrid.from_preset(rgrid=rad2, atnum=numbers[1], preset="sg_2", center=coordinates[1])
@@ -389,18 +406,6 @@ class TestMolGrid(TestCase):
         fn = np.exp(-2 * dist0) / np.pi + np.exp(-2 * dist1) / np.pi + np.exp(-2 * dist2) / np.pi
         occupation = mg.integrate(fn)
         assert_almost_equal(occupation, 3.0, decimal=4)
-
-    """
-    def test_all_elements():
-        numbers = np.array([1, 118], int)
-        coordinates = np.array([[0.0, 0.0, -1.0], [0.0, 0.0, 1.0]], float)
-        rtf = ExpRTransform(1e-3, 1e1, 10)
-        rgrid = RadialGrid(rtf)
-        while numbers[0] < numbers[1]:
-            BeckeMolGrid(coordinates, numbers, None, (rgrid, 110), random_rotate=False)
-            numbers[0] += 1
-            numbers[1] -= 1
-    """
 
     def test_integrate_hydrogen_8_1s(self):
         """Test molecular integral in H2."""
