@@ -18,7 +18,6 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
 """MolGrid test file."""
-import pytest
 from unittest import TestCase
 
 import numpy as np
