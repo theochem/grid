@@ -76,7 +76,7 @@ class TestMolGrid(TestCase):
             ("ultrafine", 6),
             ("insane", 6),
         ):
-            mg = MolGrid.from_preset(numbers, coordinates, grid_type, becke, rgrid)
+            mg = MolGrid.from_preset(numbers, coordinates, grid_type, rgrid, becke)
             dist0 = np.sqrt(((coordinates[0] - mg.points) ** 2).sum(axis=1))
             dist1 = np.sqrt(((coordinates[1] - mg.points) ** 2).sum(axis=1))
             fn = np.exp(-2 * dist0) / np.pi + np.exp(-2 * dist1) / np.pi
@@ -98,7 +98,7 @@ class TestMolGrid(TestCase):
             ("insane", 5),
         ):
             print(grid_type)
-            mg = MolGrid.from_preset(numbers, coordinates, grid_type, becke)
+            mg = MolGrid.from_preset(numbers, coordinates, grid_type, aim_weights=becke)
             dist0 = np.sqrt(((coordinates[0] - mg.points) ** 2).sum(axis=1))
             dist1 = np.sqrt(((coordinates[1] - mg.points) ** 2).sum(axis=1))
             fn = np.exp(-2 * dist0) / np.pi + np.exp(-2 * dist1) / np.pi
@@ -120,8 +120,8 @@ class TestMolGrid(TestCase):
             numbers,
             coordinates,
             ["fine", "veryfine", "medium"],
-            becke,
             rad2,
+            becke,
             store=True,
             rotate=False,
         )
@@ -150,8 +150,8 @@ class TestMolGrid(TestCase):
             numbers,
             coordinates,
             {1: "fine", 8: "veryfine"},
-            becke,
             rad3,
+            becke,
             store=True,
             rotate=False,
         )
@@ -190,8 +190,8 @@ class TestMolGrid(TestCase):
             numbers,
             coordinates,
             {1: "fine", 8: "veryfine"},
-            becke,
             [rad1, rad2, rad3],
+            becke,
             store=True,
             rotate=False,
         )
@@ -220,8 +220,8 @@ class TestMolGrid(TestCase):
             numbers,
             coordinates,
             {1: "fine", 8: "veryfine"},
-            becke,
             {1: rad1, 8: rad3},
+            becke,
             store=True,
             rotate=False,
         )
@@ -261,8 +261,8 @@ class TestMolGrid(TestCase):
             numbers,
             coordinates,
             ["sg_0", "sg_2", "sg_1"],
-            becke,
             [rad1, rad2, rad3],
+            becke,
             store=True,
             rotate=False,
         )
@@ -289,8 +289,8 @@ class TestMolGrid(TestCase):
             numbers,
             coordinates,
             {1: "sg_1", 8: "sg_2"},
-            becke,
             [rad3, rad2, rad3],
+            becke,
             store=True,
             rotate=False,
         )
@@ -324,8 +324,8 @@ class TestMolGrid(TestCase):
             numbers,
             coordinates,
             ["g1", "g2", "g3"],
-            becke,
             [rad1, rad2, rad3],
+            becke,
             store=True,
             rotate=False,
         )
@@ -352,8 +352,8 @@ class TestMolGrid(TestCase):
             numbers,
             coordinates,
             ["g4", "g5", "g6"],
-            becke,
             [rad1, rad2, rad3],
+            becke,
             store=True,
             rotate=False,
         )
@@ -671,11 +671,11 @@ class TestMolGrid(TestCase):
         becke = BeckeWeights(order=3)
         # construct molgrid
         with self.assertRaises(ValueError):
-            MolGrid.from_preset(numbers, np.array([0.0, 0.0, 0.0]), "fine", becke, rgrid)
+            MolGrid.from_preset(numbers, np.array([0.0, 0.0, 0.0]), "fine", rgrid, becke)
         with self.assertRaises(ValueError):
-            MolGrid.from_preset(np.array([1, 1]), np.array([[0.0, 0.0, 0.0]]), "fine", becke, rgrid)
+            MolGrid.from_preset(np.array([1, 1]), np.array([[0.0, 0.0, 0.0]]), "fine", rgrid, becke)
         with self.assertRaises(ValueError):
-            MolGrid.from_preset(np.array([1, 1]), np.array([[0.0, 0.0, 0.0]]), "fine", becke, rgrid)
+            MolGrid.from_preset(np.array([1, 1]), np.array([[0.0, 0.0, 0.0]]), "fine", rgrid, becke)
         with self.assertRaises(TypeError):
             MolGrid.from_preset(
                 np.array([1, 1]),
@@ -689,8 +689,8 @@ class TestMolGrid(TestCase):
                 np.array([1, 1]),
                 np.array([[0.0, 0.0, -0.5], [0.0, 0.0, 0.5]]),
                 np.array([3, 5]),
-                becke,
                 rgrid,
+                becke,
             )
 
     def test_get_localgrid_1s(self):

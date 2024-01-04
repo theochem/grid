@@ -25,6 +25,7 @@ import numpy as np
 
 from grid.atomgrid import AtomGrid
 from grid.basegrid import Grid, LocalGrid, OneDGrid
+from grid.becke import BeckeWeights
 from grid.onedgrid import UniformInteger
 from grid.rtransform import PowerRTransform
 from grid.utils import _DEFAULT_POWER_RTRANSFORM_PARAMS
@@ -346,8 +347,8 @@ class MolGrid(Grid):
         atnums: np.ndarray,
         atcoords: np.ndarray,
         preset: Union[str, list, dict],
-        aim_weights: Union[callable, np.ndarray],
         rgrid: Union[OneDGrid, list, dict] = None,
+        aim_weights: Union[callable, np.ndarray] = BeckeWeights(order=3),
         *_,
         rotate: int = 37,
         store: bool = False,
@@ -370,14 +371,14 @@ class MolGrid(Grid):
             'sg_0', 'sg_1', 'sg_2', and 'sg_3', and the Ochsenfeld grids:
             'g1', 'g2', 'g3', 'g4', 'g5', 'g6', and 'g7', with higher number indicating
             greater accuracy but denser grid. See `Notes` for more information.
-        aim_weights : Callable or np.ndarray(K,)
-            Atoms in molecule weights.
         rgrid : (OneDGrid, list[OneDGrid], dict[int: OneDGrid]), optional
             One dimensional radial grid. If of type `OneDGrid` then this radial grid is used for
             all atoms. If a list is provided,then ith grid correspond to the ith atom.  If
             dictionary is provided, then the keys correspond to the `atnums[i]`attribute.
             If None, then using atomic numbers it will generate a default radial grid
             (PowerRTransform of UniformInteger grid).
+        aim_weights : Callable or np.ndarray(K,)
+            Atoms in molecule weights. Default is Becke weights with order=3.
         rotate : bool or int, optional
             Flag to set auto rotation for atomic grid, if given int, the number
             will be used as a seed to generate rantom matrix.
