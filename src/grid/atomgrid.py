@@ -55,7 +55,6 @@ class AtomGrid(Grid):
     def __init__(
         self,
         rgrid: OneDGrid,
-        *,
         degrees: Union[np.ndarray, list] = None,
         sizes: Union[np.ndarray, list] = None,
         center: np.ndarray = None,
@@ -132,10 +131,9 @@ class AtomGrid(Grid):
     @classmethod
     def from_preset(
         cls,
-        rgrid: OneDGrid = None,
-        *,
         atnum: int,
         preset: str,
+        rgrid: OneDGrid = None,
         center: np.ndarray = None,
         rotate: int = 0,
         use_spherical: bool = False,
@@ -145,7 +143,7 @@ class AtomGrid(Grid):
         Examples
         --------
         >>> # construct an atomic grid for H with fine grid setting
-        >>> atgrid = AtomGrid.from_preset(rgrid, atnum=1, preset="fine")
+        >>> atgrid = AtomGrid.from_preset(atnum=1, preset="fine", rgrid)
 
         Parameters
         ----------
@@ -234,7 +232,6 @@ class AtomGrid(Grid):
         cls,
         rgrid: OneDGrid,
         radius: float,
-        *_,
         sectors_r: np.ndarray,
         sectors_degree: np.ndarray = None,
         sectors_size: np.ndarray = None,
