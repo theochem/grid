@@ -201,8 +201,9 @@ class AtomGrid(Grid):
                 onedgrid = UniformInteger(npt)
                 rgrid = PowerRTransform(rmin, rmax).transform_1d_grid(onedgrid)
             else:
-                raise ValueError(f"Default rgrid parameter is not included for the"
-                                 f" atomic number {atnum}.")
+                raise ValueError(
+                    f"Default rgrid parameter is not included for the" f" atomic number {atnum}."
+                )
         center = np.zeros(3, dtype=float) if center is None else np.asarray(center, dtype=float)
         cls._input_type_check(rgrid, center)
         # load radial points and

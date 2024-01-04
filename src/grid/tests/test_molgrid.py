@@ -268,9 +268,15 @@ class TestMolGrid(TestCase):
             rotate=False,
         )
 
-        atgrid1 = AtomGrid.from_preset(rgrid=rad1, atnum=numbers[0], preset="sg_0", center=coordinates[0])
-        atgrid2 = AtomGrid.from_preset(rgrid=rad2, atnum=numbers[1], preset="sg_2", center=coordinates[1])
-        atgrid3 = AtomGrid.from_preset(rgrid=rad3, atnum=numbers[2], preset="sg_1", center=coordinates[2])
+        atgrid1 = AtomGrid.from_preset(
+            rgrid=rad1, atnum=numbers[0], preset="sg_0", center=coordinates[0]
+        )
+        atgrid2 = AtomGrid.from_preset(
+            rgrid=rad2, atnum=numbers[1], preset="sg_2", center=coordinates[1]
+        )
+        atgrid3 = AtomGrid.from_preset(
+            rgrid=rad3, atnum=numbers[2], preset="sg_1", center=coordinates[2]
+        )
         assert_allclose(mg._atgrids[0].points, atgrid1.points)
         assert_allclose(mg._atgrids[1].points, atgrid2.points)
         assert_allclose(mg._atgrids[2].points, atgrid3.points)
@@ -290,9 +296,15 @@ class TestMolGrid(TestCase):
             rotate=False,
         )
 
-        atgrid1 = AtomGrid.from_preset(rgrid=rad3, atnum=numbers[0], preset="sg_1", center=coordinates[0])
-        atgrid2 = AtomGrid.from_preset(rgrid=rad2, atnum=numbers[1], preset="sg_2", center=coordinates[1])
-        atgrid3 = AtomGrid.from_preset(rgrid=rad3, atnum=numbers[2], preset="sg_1", center=coordinates[2])
+        atgrid1 = AtomGrid.from_preset(
+            rgrid=rad3, atnum=numbers[0], preset="sg_1", center=coordinates[0]
+        )
+        atgrid2 = AtomGrid.from_preset(
+            rgrid=rad2, atnum=numbers[1], preset="sg_2", center=coordinates[1]
+        )
+        atgrid3 = AtomGrid.from_preset(
+            rgrid=rad3, atnum=numbers[2], preset="sg_1", center=coordinates[2]
+        )
         assert_allclose(mg._atgrids[0].points, atgrid1.points)
         assert_allclose(mg._atgrids[1].points, atgrid2.points)
         assert_allclose(mg._atgrids[2].points, atgrid3.points)
@@ -319,9 +331,15 @@ class TestMolGrid(TestCase):
             rotate=False,
         )
 
-        atgrid1 = AtomGrid.from_preset(rgrid=rad1, atnum=numbers[0], preset="g1", center=coordinates[0])
-        atgrid2 = AtomGrid.from_preset(rgrid=rad2, atnum=numbers[1], preset="g2", center=coordinates[1])
-        atgrid3 = AtomGrid.from_preset(rgrid=rad3, atnum=numbers[2], preset="g3", center=coordinates[2])
+        atgrid1 = AtomGrid.from_preset(
+            rgrid=rad1, atnum=numbers[0], preset="g1", center=coordinates[0]
+        )
+        atgrid2 = AtomGrid.from_preset(
+            rgrid=rad2, atnum=numbers[1], preset="g2", center=coordinates[1]
+        )
+        atgrid3 = AtomGrid.from_preset(
+            rgrid=rad3, atnum=numbers[2], preset="g3", center=coordinates[2]
+        )
         assert_allclose(mg._atgrids[0].points, atgrid1.points)
         assert_allclose(mg._atgrids[1].points, atgrid2.points)
         assert_allclose(mg._atgrids[2].points, atgrid3.points)
@@ -336,15 +354,20 @@ class TestMolGrid(TestCase):
             coordinates,
             ["g4", "g5", "g6"],
             becke,
-
             [rad1, rad2, rad3],
             store=True,
             rotate=False,
         )
 
-        atgrid1 = AtomGrid.from_preset(rgrid=rad1, atnum=numbers[0], preset="g4", center=coordinates[0])
-        atgrid2 = AtomGrid.from_preset(rgrid=rad2, atnum=numbers[1], preset="g5", center=coordinates[1])
-        atgrid3 = AtomGrid.from_preset(rgrid=rad3, atnum=numbers[2], preset="g6", center=coordinates[2])
+        atgrid1 = AtomGrid.from_preset(
+            rgrid=rad1, atnum=numbers[0], preset="g4", center=coordinates[0]
+        )
+        atgrid2 = AtomGrid.from_preset(
+            rgrid=rad2, atnum=numbers[1], preset="g5", center=coordinates[1]
+        )
+        atgrid3 = AtomGrid.from_preset(
+            rgrid=rad3, atnum=numbers[2], preset="g6", center=coordinates[2]
+        )
         assert_allclose(mg._atgrids[0].points, atgrid1.points)
         assert_allclose(mg._atgrids[1].points, atgrid2.points)
         assert_allclose(mg._atgrids[2].points, atgrid3.points)
@@ -553,7 +576,7 @@ class TestMolGrid(TestCase):
         nums = np.array([1, 1])
         coors = np.array([[0, 0, -0.5], [0, 0, 0.5]])
         becke = BeckeWeights(order=3)
-        mol_grid = MolGrid.from_size(nums, coors,  110, becke, self.rgrid, rotate=False)
+        mol_grid = MolGrid.from_size(nums, coors, 110, becke, self.rgrid, rotate=False)
         atg1 = AtomGrid.from_pruned(
             self.rgrid,
             0.5,
@@ -649,7 +672,7 @@ class TestMolGrid(TestCase):
         becke = BeckeWeights(order=3)
         # construct molgrid
         with self.assertRaises(ValueError):
-            MolGrid.from_preset(numbers, np.array([0.0, 0.0, 0.0]),  "fine", becke, rgrid)
+            MolGrid.from_preset(numbers, np.array([0.0, 0.0, 0.0]), "fine", becke, rgrid)
         with self.assertRaises(ValueError):
             MolGrid.from_preset(np.array([1, 1]), np.array([[0.0, 0.0, 0.0]]), "fine", becke, rgrid)
         with self.assertRaises(ValueError):
@@ -660,7 +683,7 @@ class TestMolGrid(TestCase):
                 np.array([[0.0, 0.0, -0.5], [0.0, 0.0, 0.5]]),
                 "fine",
                 becke,
-                {3, 5}
+                {3, 5},
             )
         with self.assertRaises(TypeError):
             MolGrid.from_preset(
@@ -668,7 +691,7 @@ class TestMolGrid(TestCase):
                 np.array([[0.0, 0.0, -0.5], [0.0, 0.0, 0.5]]),
                 np.array([3, 5]),
                 becke,
-                rgrid
+                rgrid,
             )
 
     def test_get_localgrid_1s(self):
@@ -703,7 +726,7 @@ class TestMolGrid(TestCase):
 
         # initialize MolGrid like horton
         grid = MolGrid.from_size(
-            nums, coords[np.newaxis, :],  110, BeckeWeights(), self.rgrid, store=True
+            nums, coords[np.newaxis, :], 110, BeckeWeights(), self.rgrid, store=True
         )
         fn = np.exp(-4.0 * np.linalg.norm(grid.points, axis=-1))
         assert_allclose(grid.integrate(fn), np.pi / 8)
@@ -719,7 +742,7 @@ class TestMolGrid(TestCase):
         nums = np.array([1, 3])
         coords = np.array([[0.0, 0.0, -0.5], [0.0, 0.0, 0.5]])
         grid = MolGrid.from_size(
-            nums, coords,  110, BeckeWeights(), self.rgrid, store=True, rotate=False
+            nums, coords, 110, BeckeWeights(), self.rgrid, store=True, rotate=False
         )
         fn0 = np.exp(-4.0 * np.linalg.norm(grid.points - coords[0], axis=-1))
         fn1 = np.exp(-8.0 * np.linalg.norm(grid.points - coords[1], axis=-1))
