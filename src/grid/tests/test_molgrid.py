@@ -578,10 +578,10 @@ class TestMolGrid(TestCase):
         mol_grid = MolGrid.from_pruned(
             nums,
             coors,
-            self.rgrid,
             radius,
             becke,
             sectors_r=sectors_r,
+            rgrid=self.rgrid,
             sectors_degree=sectors_deg,
             rotate=False,
         )

@@ -449,9 +449,9 @@ class MolGrid(Grid):
         cls,
         atnums: np.ndarray,
         atcoords: np.ndarray,
-        rgrid: OneDGrid,
         size: int,
         aim_weights: Union[callable, np.ndarray],
+        rgrid: OneDGrid = None,
         rotate: int = 37,
         store: bool = False,
     ):
@@ -463,7 +463,7 @@ class MolGrid(Grid):
         >>> onedg = UniformInteger(100) # number of points, oned grid before TF.
         >>> rgrid = ExpRTransform(1e-5, 2e1).generate_radial(onedg) # radial grid
         >>> becke = BeckeWeights(order=3)
-        >>> molgrid = MolGrid.from_size(atnums, atcoords, rgrid, 110, becke)
+        >>> molgrid = MolGrid.from_size(atnums, atcoords, 110, becke, rgrid)
 
         Parameters
         ----------
@@ -471,12 +471,13 @@ class MolGrid(Grid):
             Atomic number of :math:`M` atoms in molecule.
         atcoords : np.ndarray(N, 3)
             Cartesian coordinates for each atoms
-        rgrid : OneDGrid
-            one dimension grid  to construct spherical grid
         size : int
             Num of points on each shell of angular grid
         aim_weights : Callable or np.ndarray(K,)
             Atoms in molecule weights.
+        rgrid : OneDGrid, optional
+            One-dimensional grid to construct the atomic grid. If none, then
+            default radial grid is generated based on atomic numbers.
         rotate : bool or int , optional
             Flag to set auto rotation for atomic grid, if given int, the number
             will be used as a seed to generate rantom matrix.
@@ -491,7 +492,12 @@ class MolGrid(Grid):
         """
         at_grids = []
         for i in range(len(atcoords)):
-            at_grids.append(AtomGrid(rgrid, sizes=[size], center=atcoords[i], rotate=rotate))
+            if rgrid is None:
+                atnum = atnums[i]
+                rad_grid = _generate_default_rgrid(atnum)
+            else:
+                rad_grid = rgrid
+            at_grids.append(AtomGrid(rad_grid, sizes=[size], center=atcoords[i], rotate=rotate))
         return cls(atnums, at_grids, aim_weights, store=store)
 
     @classmethod
@@ -499,10 +505,10 @@ class MolGrid(Grid):
         cls,
         atnums: np.ndarray,
         atcoords: np.ndarray,
-        rgrid: Union[OneDGrid, list],
         radius: Union[float, list],
         aim_weights: Union[callable, np.ndarray],
         sectors_r: np.ndarray,
+        rgrid: Union[OneDGrid, list] = None,
         sectors_degree: np.ndarray = None,
         sectors_size: np.ndarray = None,
         rotate: int = 37,
@@ -517,10 +523,6 @@ class MolGrid(Grid):
             List of atomic numbers for each atom.
         atcoords: np.ndarray(M, 3)
             Cartesian coordinates for each atoms
-        rgrid : OneDGrid or List[OneDGrid] or Dict[int: OneDGrid]
-            One dimensional grid for the radial component.  If a list is provided,then ith
-            grid correspond to the ith atom.  If dictionary is provided, then the keys are
-            correspond to the `atnums[i]` attribute.
         radius: float, List[float]
             The atomic radius to be multiplied with `r_sectors` (to make them atom specific).
             If float, then the same atomic radius is used for all atoms, else a list specifies
@@ -532,6 +534,11 @@ class MolGrid(Grid):
             Each row is a sequence of boundary points specifying radial sectors of the pruned grid
             for the `m`th atom. The first sector is ``[0, radius*sectors_r[0]]``, then
             ``[radius*sectors_r[0], radius*sectors_r[1]]``, and so on.
+        rgrid : OneDGrid or List[OneDGrid] or Dict[int: OneDGrid], optional
+            One dimensional grid for the radial component.  If a list is provided,then ith
+            grid correspond to the ith atom.  If dictionary is provided, then the keys are
+            correspond to the `atnums[i]` attribute. If None, then using atomic numbers it will
+            generate a default radial grid (PowerRTransform of UniformInteger grid).
         sectors_degree: List[List], keyword-only argument
             Each row is a sequence of Lebedev/angular degrees for each radial sector of the pruned
             grid for the `m`th atom. If both `sectors_degree` and `sectors_size` are given,
@@ -571,6 +578,9 @@ class MolGrid(Grid):
                 rad = rgrid[i]
             elif isinstance(rgrid, dict):
                 rad = rgrid[atnums[i]]
+            elif rgrid is None:
+                atnum = atnums[i]
+                rad = _generate_default_rgrid(atnum)
             else:
                 raise TypeError(f"not supported radial grid input; got input type: {type(rgrid)}")
 
