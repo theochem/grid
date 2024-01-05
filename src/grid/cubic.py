@@ -664,7 +664,7 @@ class UniformGrid(_HyperRectangleGrid):
         return cls(origin, axes, shape, weight)
 
     @classmethod
-    def from_cube(cls, fname, weight="Trapezoid", grid_only=True):
+    def from_cube(cls, fname, weight="Trapezoid", return_data=False):
         r"""Initialize ``UniformGrid`` class based on the grid specifications of a cube file.
 
         Parameters
@@ -674,8 +674,8 @@ class UniformGrid(_HyperRectangleGrid):
         weight : str
             Scheme for computing the weights of the grid. See the acceptable values in the
             :func:`~UniformGrid.__init__` method.
-        grid_only : bool
-            If True, only the grid is returned. If False a tuple with the grid and the cube data
+        return_data : bool
+            If False, only the grid is returned. If True a tuple with the grid and the cube data
             is returned. The cube data is a dictionary with the following keys:
 
             - ``atnums``: atomic numbers of the atoms in the molecule.
@@ -711,8 +711,8 @@ class UniformGrid(_HyperRectangleGrid):
             shape = np.array([shape0, shape1, shape2], int)
             axes = np.array([axis0, axis1, axis2])
 
-            # if the grid_only is True, then return only the grid
-            if grid_only:
+            # if return_data=False, only grid is returned
+            if not return_data:
                 return cls(origin, axes, shape, weight)
 
             # otherwise, return the atomic numbers, atomic coordinates, and the grid
