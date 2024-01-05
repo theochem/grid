@@ -688,9 +688,8 @@ class UniformGrid(_HyperRectangleGrid):
             raise ValueError("Argument fname should be a cube file with *.cube extension!")
 
         with open(fname) as f:
-            # skip the title
+            # skip the title and second line
             f.readline()
-            # skip the second line
             f.readline()
 
             def read_grid_line(line):
@@ -704,7 +703,7 @@ class UniformGrid(_HyperRectangleGrid):
 
             # number of atoms and origin of the grid
             natom, origin = read_grid_line(f.readline())
-            # numer of grid points in A direction and step vector A, and so on
+            # number of grid points in A direction and step vector A, and so on
             shape0, axis0 = read_grid_line(f.readline())
             shape1, axis1 = read_grid_line(f.readline())
             shape2, axis2 = read_grid_line(f.readline())
