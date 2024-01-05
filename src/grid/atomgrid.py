@@ -22,8 +22,8 @@ import warnings
 from typing import Union
 
 import numpy as np
-from importlib_resources import files
 import scipy.constants
+from importlib_resources import files
 from scipy.interpolate import CubicSpline
 from scipy.spatial.transform import Rotation as R
 
