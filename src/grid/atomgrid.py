@@ -22,13 +22,17 @@ import warnings
 from typing import Union
 
 import numpy as np
+import scipy.constants
 from importlib_resources import files
 from scipy.interpolate import CubicSpline
 from scipy.spatial.transform import Rotation as R
 
 from grid.angular import AngularGrid
 from grid.basegrid import Grid, OneDGrid
+from grid.onedgrid import UniformInteger
+from grid.rtransform import PowerRTransform
 from grid.utils import (
+    _DEFAULT_POWER_RTRANSFORM_PARAMS,
     convert_cart_to_sph,
     convert_derivative_from_spherical_to_cartesian,
     generate_derivative_real_spherical_harmonics,
@@ -52,7 +56,6 @@ class AtomGrid(Grid):
     def __init__(
         self,
         rgrid: OneDGrid,
-        *,
         degrees: Union[np.ndarray, list] = None,
         sizes: Union[np.ndarray, list] = None,
         center: np.ndarray = None,
@@ -129,10 +132,9 @@ class AtomGrid(Grid):
     @classmethod
     def from_preset(
         cls,
-        rgrid: OneDGrid = None,
-        *,
         atnum: int,
         preset: str,
+        rgrid: OneDGrid = None,
         center: np.ndarray = None,
         rotate: int = 0,
         use_spherical: bool = False,
@@ -142,12 +144,14 @@ class AtomGrid(Grid):
         Examples
         --------
         >>> # construct an atomic grid for H with fine grid setting
-        >>> atgrid = AtomGrid.from_preset(rgrid, atnum=1, preset="fine")
+        >>> atgrid = AtomGrid.from_preset(atnum=1, preset="fine", rgrid)
 
         Parameters
         ----------
         rgrid : OneDGrid, optional
             The (1-dimensional) radial grid representing the radius of spherical grids.
+            If None, then using the atomic number it will generate a default radial grid
+            (PowerRTransform of UniformInteger grid).
         atnum : int, keyword-only argument
             The atomic number specifying the predefined grid.
         preset : str, keyword-only argument
@@ -189,8 +193,18 @@ class AtomGrid(Grid):
         if not isinstance(use_spherical, bool):
             raise TypeError(f"use_spherical {use_spherical} should be of type bool.")
         if rgrid is None:
-            # TODO: generate a default rgrid, currently raise an error instead
-            raise ValueError("A default OneDGrid will be generated")
+            # If the atomic number is found in the default RTransform
+            if atnum in _DEFAULT_POWER_RTRANSFORM_PARAMS:
+                rmin, rmax, npt = _DEFAULT_POWER_RTRANSFORM_PARAMS[int(atnum)]
+                # Convert angstrom to atomic units
+                ang2bohr = scipy.constants.angstrom / scipy.constants.value("atomic unit of length")
+                rmin, rmax = rmin * ang2bohr, rmax * ang2bohr
+                onedgrid = UniformInteger(npt)
+                rgrid = PowerRTransform(rmin, rmax).transform_1d_grid(onedgrid)
+            else:
+                raise ValueError(
+                    f"Default rgrid parameter is not included for the" f" atomic number {atnum}."
+                )
         center = np.zeros(3, dtype=float) if center is None else np.asarray(center, dtype=float)
         cls._input_type_check(rgrid, center)
         # load radial points and
@@ -221,7 +235,6 @@ class AtomGrid(Grid):
         cls,
         rgrid: OneDGrid,
         radius: float,
-        *_,
         sectors_r: np.ndarray,
         sectors_degree: np.ndarray = None,
         sectors_size: np.ndarray = None,

@@ -104,7 +104,7 @@ class TestAtomGrid:
         pts = UniformInteger(20)
         tf = PowerRTransform(7.0879993828935345e-06, 16.05937640019924)
         rad_grid = tf.transform_1d_grid(pts)
-        atgrid = AtomGrid.from_preset(rad_grid, atnum=1, preset="coarse")
+        atgrid = AtomGrid.from_preset(atnum=1, preset="coarse", rgrid=rad_grid)
         # 604 points for coarse H atom
         assert_equal(atgrid.size, 616)
         assert_almost_equal(
@@ -116,7 +116,7 @@ class TestAtomGrid:
         pts = UniformInteger(24)
         tf = PowerRTransform(3.69705074304963e-06, 19.279558946793685)
         rad_grid = tf.transform_1d_grid(pts)
-        atgrid = AtomGrid.from_preset(rad_grid, atnum=1, preset="medium")
+        atgrid = AtomGrid.from_preset(atnum=1, preset="medium", rgrid=rad_grid)
         # 928 points for coarse H atom
         assert_equal(atgrid.size, 940)
         assert_almost_equal(
@@ -127,9 +127,15 @@ class TestAtomGrid:
         pts = UniformInteger(34)
         tf = PowerRTransform(2.577533167224667e-07, 16.276983371222354)
         rad_grid = tf.transform_1d_grid(pts)
-        atgrid = AtomGrid.from_preset(rad_grid, atnum=1, preset="fine")
+        atgrid = AtomGrid.from_preset(atnum=1, preset="fine", rgrid=rad_grid)
         # 1984 points for coarse H atom
         assert_equal(atgrid.size, 1984 + 4 * 4)
+        assert_almost_equal(
+            np.sum(np.exp(-np.sum(atgrid.points**2, axis=1)) * atgrid.weights),
+            5.56832800,
+        )
+        # test fine grid but without default radial grid
+        atgrid = AtomGrid.from_preset(atnum=1, preset="fine", rgrid=None)
         assert_almost_equal(
             np.sum(np.exp(-np.sum(atgrid.points**2, axis=1)) * atgrid.weights),
             5.56832800,
@@ -138,7 +144,7 @@ class TestAtomGrid:
         pts = UniformInteger(41)
         tf = PowerRTransform(1.1774580743206259e-07, 20.140888089596444)
         rad_grid = tf.transform_1d_grid(pts)
-        atgrid = AtomGrid.from_preset(rad_grid, atnum=1, preset="veryfine")
+        atgrid = AtomGrid.from_preset(atnum=1, preset="veryfine", rgrid=rad_grid)
         # 3154 points for coarse H atom
         assert_equal(atgrid.size, 3154 + 4 * 6)
         assert_almost_equal(
@@ -149,7 +155,7 @@ class TestAtomGrid:
         pts = UniformInteger(49)
         tf = PowerRTransform(4.883104847991021e-08, 21.05456999309752)
         rad_grid = tf.transform_1d_grid(pts)
-        atgrid = AtomGrid.from_preset(rad_grid, atnum=1, preset="ultrafine")
+        atgrid = AtomGrid.from_preset(atnum=1, preset="ultrafine", rgrid=rad_grid)
         # 4546 points for coarse H atom
         assert_equal(atgrid.size, 4546 + 4 * 6)
         assert_almost_equal(
@@ -160,7 +166,7 @@ class TestAtomGrid:
         pts = UniformInteger(59)
         tf = PowerRTransform(1.9221827244049134e-08, 21.413278983919113)
         rad_grid = tf.transform_1d_grid(pts)
-        atgrid = AtomGrid.from_preset(rad_grid, atnum=1, preset="insane")
+        atgrid = AtomGrid.from_preset(atnum=1, preset="insane", rgrid=rad_grid)
         # 6622 points for coarse H atom
         assert_equal(atgrid.size, 6622 + 4 * 7)
         assert_almost_equal(
@@ -964,8 +970,6 @@ class TestAtomGrid:
             )
 
         # test preset
-        with pytest.raises(ValueError):
-            AtomGrid.from_preset(atnum=1, preset="fine")
         with pytest.raises(TypeError):
             AtomGrid(OneDGrid(np.arange(3), np.arange(3)), sizes=110)
         with pytest.raises(TypeError):
@@ -990,5 +994,5 @@ class TestAtomGrid:
             oned = GaussLegendre(30)
             btf = BeckeRTransform(0.0001, 1.5)
             rad = btf.transform_1d_grid(oned)
-            atgrid = AtomGrid.from_preset(rad, atnum=1, preset="fine")
+            atgrid = AtomGrid.from_preset(atnum=1, preset="fine", rgrid=rad)
             atgrid.radial_component_splines(np.random.rand(100))
