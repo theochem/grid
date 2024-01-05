@@ -762,27 +762,6 @@ class TestUniformGrid(TestCase):
         )
         origin = np.array([-6.512793, -6.512718, -6.51275])
         shape = np.array([6, 6, 6])
-
-        ref_grid = UniformGrid(origin, axes, shape)
-
-        cubefile = importlib.resources.files("grid") / "data" / "tests" / "cubegen_ch4_6points.cube"
-
-        grid, cube_data = UniformGrid.from_cube(cubefile, return_data=True)
-
-        assert_allclose(grid._axes, axes)
-        assert_allclose(grid._origin, origin)
-        assert_allclose(grid._shape, shape)
-        assert_allclose(cube_data["atnums"], atnums)
-        assert_allclose(cube_data["atcoords"], atcoords)
-        assert_allclose(cube_data["atcorenums"], pseudo_numbers)
-
-        assert_allclose(grid.points, ref_grid.points)
-        assert_allclose(grid.weights, ref_grid.weights)
-
-    def test_uniformgrid_generate_cube(self):
-        r"""Test creating uniform cubic grid from cube example.
-
-        Change by better test later."""
         data_vals = np.array(
             [
                 2.66011e-09,
@@ -1004,15 +983,33 @@ class TestUniformGrid(TestCase):
             ]
         )
 
-        ref_cube = importlib.resources.files("grid") / "data" / "tests" / "cubegen_ch4_6points.cube"
+        ref_grid = UniformGrid(origin, axes, shape)
+
+        cubefile = importlib.resources.files("grid") / "data" / "tests" / "cubegen_ch4_6_gen.cube"
+        grid, cube_data = UniformGrid.from_cube(cubefile, return_data=True)
+
+        assert_allclose(grid._axes, axes)
+        assert_allclose(grid._origin, origin)
+        assert_allclose(grid._shape, shape)
+        assert_allclose(cube_data["atnums"], atnums)
+        assert_allclose(cube_data["atcoords"], atcoords)
+        assert_allclose(cube_data["atcorenums"], pseudo_numbers)
+        assert_allclose(cube_data["data"], data_vals)
+
+        assert_allclose(grid.points, ref_grid.points)
+        assert_allclose(grid.weights, ref_grid.weights)
+
+    def test_uniformgrid_generate_cube(self):
+        r"""Test creating uniform cubic grid from cube example."""
+        # Change to better test later
+        ref_cube = importlib.resources.files("grid") / "data" / "tests" / "cubegen_ch4_6_gen.cube"
         out_cube = str(
             importlib.resources.files("grid") / "data" / "tests" / "cubegen_ch4_6_gen.cube"
         )
 
         grid, cube_data = UniformGrid.from_cube(ref_cube, return_data=True)
-        grid.generate_cube(
-            out_cube, data=data_vals, atcoords=cube_data["atcoords"], atnums=cube_data["atnums"]
-        )
+        atnums, atcoords, data = cube_data["atnums"], cube_data["data"], cube_data["atcoords"]
+        grid.generate_cube(out_cube, data=data, atcoords=atcoords, atnums=atnums)
 
         with open(out_cube, "r") as out_f, open(ref_cube, "r") as ref_f:
             for _ in range(2):
