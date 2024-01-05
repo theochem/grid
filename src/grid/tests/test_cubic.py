@@ -1008,7 +1008,7 @@ class TestUniformGrid(TestCase):
         )
 
         grid, cube_data = UniformGrid.from_cube(ref_cube, return_data=True)
-        atnums, atcoords, data = cube_data["atnums"], cube_data["data"], cube_data["atcoords"]
+        atnums, atcoords, data = cube_data["atnums"], cube_data["atcoords"], cube_data["data"]
         grid.generate_cube(out_cube, data=data, atcoords=atcoords, atnums=atnums)
 
         with open(out_cube, "r") as out_f, open(ref_cube, "r") as ref_f:
