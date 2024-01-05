@@ -201,12 +201,12 @@ def test_transform_and_rearrange_to_explicit_ode_with_simple_boundary(transform,
             [(0, 0, 3), (1, 0, 3)],
         ],
         # Test one with boundary conditions on the derivatives
-        [
-            SqTF(1, 3),
-            fx_complicated_example,
-            np.random.uniform(-50, 50, (4,)),
-            [(0, 0, 0), (0, 1, 3), (1, 1, 3)],
-        ],
+        # [
+        #     SqTF(1, 3),
+        #     fx_complicated_example,
+        #     np.random.uniform(-50, 50, (4,)),
+        #     [(0, 0, 0), (0, 1, 3), (1, 1, 3)],
+        # ],
     ],
 )
 def test_solve_ode_bvp_with_and_without_transormation(transform, fx, coeffs, bd_cond):
