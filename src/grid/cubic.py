@@ -714,7 +714,7 @@ class UniformGrid(_HyperRectangleGrid):
             if not return_data:
                 return cls(origin, axes, shape, weight)
 
-            # otherwise, return the atomic numbers, atomic coordinates, and the grid
+            # otherwise, return the atomic numbers, coordinates, and the grid data as well
             def read_coordinate_line(line):
                 """Read atomic number and (x, y, z) coordinate from the cube file line."""
                 words = line.split()
@@ -735,7 +735,24 @@ class UniformGrid(_HyperRectangleGrid):
                 # potentials were used.
                 if pseudo_numbers[i] == 0.0:
                     pseudo_numbers[i] = numbers[i]
-            cube_data = {"atnums": numbers, "atcorenums": pseudo_numbers, "atcoords": coordinates}
+
+            # load data stored in the cube file
+            data = np.zeros(tuple(shape), float).ravel()
+            counter = 0
+            while True:
+                line = f.readline()
+                if len(line) == 0:
+                    break
+                words = np.array(line.split(), float)
+                data[counter : counter + len(words)] = words
+                counter += len(words)
+            # store information from the cube file in a dictionary
+            cube_data = {
+                "atnums": numbers,
+                "atcorenums": pseudo_numbers,
+                "atcoords": coordinates,
+                "data": data,
+            }
         return cls(origin, axes, shape, weight), cube_data
 
     @property
