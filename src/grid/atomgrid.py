@@ -197,12 +197,8 @@ class AtomGrid(Grid):
             if atnum in _DEFAULT_POWER_RTRANSFORM_PARAMS:
                 rmin, rmax, npt = _DEFAULT_POWER_RTRANSFORM_PARAMS[int(atnum)]
                 # Convert angstrom to atomic units
-                rmin = rmin * (
-                    scipy.constants.angstrom / scipy.constants.value("atomic unit of length")
-                )
-                rmax = rmax * (
-                    scipy.constants.angstrom / scipy.constants.value("atomic unit of length")
-                )
+                ang2bohr = scipy.constants.angstrom / scipy.constants.value("atomic unit of length")
+                rmin, rmax = rmin * ang2bohr, rmax * ang2bohr
                 onedgrid = UniformInteger(npt)
                 rgrid = PowerRTransform(rmin, rmax).transform_1d_grid(onedgrid)
             else:
