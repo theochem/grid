@@ -767,7 +767,7 @@ class TestUniformGrid(TestCase):
 
         cubefile = importlib.resources.files("grid") / "data" / "tests" / "cubegen_ch4_6points.cube"
 
-        grid, cube_data = UniformGrid.from_cube(cubefile, grid_only=False)
+        grid, cube_data = UniformGrid.from_cube(cubefile, return_data=True)
 
         assert_allclose(grid._axes, axes)
         assert_allclose(grid._origin, origin)
@@ -1009,7 +1009,7 @@ class TestUniformGrid(TestCase):
             importlib.resources.files("grid") / "data" / "tests" / "cubegen_ch4_6_gen.cube"
         )
 
-        grid, cube_data = UniformGrid.from_cube(ref_cube, grid_only=False)
+        grid, cube_data = UniformGrid.from_cube(ref_cube, return_data=True)
         grid.generate_cube(
             out_cube, data=data_vals, atcoords=cube_data["atcoords"], atnums=cube_data["atnums"]
         )
