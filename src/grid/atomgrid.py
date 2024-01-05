@@ -23,6 +23,7 @@ from typing import Union
 
 import numpy as np
 from importlib_resources import files
+import scipy.constants
 from scipy.interpolate import CubicSpline
 from scipy.spatial.transform import Rotation as R
 
@@ -195,7 +196,13 @@ class AtomGrid(Grid):
             # If the atomic number is found in the default RTransform
             if atnum in _DEFAULT_POWER_RTRANSFORM_PARAMS:
                 rmin, rmax, npt = _DEFAULT_POWER_RTRANSFORM_PARAMS[int(atnum)]
-                rmin, rmax = rmin * 1.8897259885789, rmax * 1.8897259885789
+                # Convert angstrom to atomic units
+                rmin = rmin * (
+                    scipy.constants.angstrom / scipy.constants.value("atomic unit of length")
+                )
+                rmax = rmax * (
+                    scipy.constants.angstrom / scipy.constants.value("atomic unit of length")
+                )
                 onedgrid = UniformInteger(npt)
                 rgrid = PowerRTransform(rmin, rmax).transform_1d_grid(onedgrid)
             else:
