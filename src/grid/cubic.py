@@ -663,6 +663,98 @@ class UniformGrid(_HyperRectangleGrid):
         origin = com - np.dot((0.5 * shape), axes)
         return cls(origin, axes, shape, weight)
 
+    @classmethod
+    def from_cube(cls, fname, weight="Trapezoid", return_data=False):
+        r"""Initialize ``UniformGrid`` class based on the grid specifications of a cube file.
+
+        Parameters
+        ----------
+        fname : str
+            Cube file name with \*.cube extension.
+        weight : str
+            Scheme for computing the weights of the grid. See the acceptable values in the
+            :func:`~UniformGrid.__init__` method.
+        return_data : bool
+            If False, only the grid is returned. If True a tuple with the grid and the cube data
+            is returned. The cube data is a dictionary with the following keys:
+
+            - ``atnums``: atomic numbers of the atoms in the molecule.
+            - ``atcorenums``: Pseudo-number of :math:`M` atoms in the molecule.
+            - ``atcoords``: Cartesian coordinates of :math:`M` atoms in the molecule.
+
+        """
+        fname = str(fname)
+        if not fname.endswith(".cube"):
+            raise ValueError("Argument fname should be a cube file with *.cube extension!")
+
+        with open(fname) as f:
+            # skip the title and second line
+            f.readline()
+            f.readline()
+
+            def read_grid_line(line):
+                """Read a number and (x, y, z) coordinate from the cube file line."""
+                words = line.split()
+                return (
+                    int(words[0]),
+                    np.array([float(words[1]), float(words[2]), float(words[3])], float)
+                    # all coordinates in a cube file are in atomic units
+                )
+
+            # number of atoms and origin of the grid
+            natom, origin = read_grid_line(f.readline())
+            # number of grid points in A direction and step vector A, and so on
+            shape0, axis0 = read_grid_line(f.readline())
+            shape1, axis1 = read_grid_line(f.readline())
+            shape2, axis2 = read_grid_line(f.readline())
+            shape = np.array([shape0, shape1, shape2], int)
+            axes = np.array([axis0, axis1, axis2])
+
+            # if return_data=False, only grid is returned
+            if not return_data:
+                return cls(origin, axes, shape, weight)
+
+            # otherwise, return the atomic numbers, coordinates, and the grid data as well
+            def read_coordinate_line(line):
+                """Read atomic number and (x, y, z) coordinate from the cube file line."""
+                words = line.split()
+                return (
+                    int(words[0]),
+                    float(words[1]),
+                    np.array([float(words[2]), float(words[3]), float(words[4])], float)
+                    # all coordinates in a cube file are in atomic units
+                )
+
+            numbers = np.zeros(natom, int)
+            # get the core charges
+            pseudo_numbers = np.zeros(natom, float)
+            coordinates = np.zeros((natom, 3), float)
+            for i in range(natom):
+                numbers[i], pseudo_numbers[i], coordinates[i] = read_coordinate_line(f.readline())
+                # If the pseudo_number field is zero, we assume that no effective core
+                # potentials were used.
+                if pseudo_numbers[i] == 0.0:
+                    pseudo_numbers[i] = numbers[i]
+
+            # load data stored in the cube file
+            data = np.zeros(tuple(shape), float).ravel()
+            counter = 0
+            while True:
+                line = f.readline()
+                if len(line) == 0:
+                    break
+                words = np.array(line.split(), float)
+                data[counter : counter + len(words)] = words
+                counter += len(words)
+            # store information from the cube file in a dictionary
+            cube_data = {
+                "atnums": numbers,
+                "atcorenums": pseudo_numbers,
+                "atcoords": coordinates,
+                "data": data,
+            }
+        return cls(origin, axes, shape, weight), cube_data
+
     @property
     def axes(self):
         """Return the axes of the uniform grid."""
@@ -849,3 +941,57 @@ class UniformGrid(_HyperRectangleGrid):
         index = self.coordinates_to_index(coord)
 
         return index
+
+    def generate_cube(self, fname, data, atcoords, atnums, pseudo_numbers=None):
+        r"""Write the data evaluated on grid points into a cube file.
+
+        Parameters
+        ----------
+        fname : str
+            Cube file name with \*.cube extension.
+        data : np.ndarray, shape=(npoints,)
+            An array containing the evaluated scalar property on the grid points.
+        atcoords : np.ndarray, shape (M, 3)
+            Cartesian coordinates of :math:`M` atoms in the molecule.
+        atnums : np.ndarray, shape (M,)
+            Atomic numbers of :math:`M` atoms in the molecule.
+        pseudo_numbers : np.ndarray, shape (M,), optional
+            Pseudo-numbers (core charges) of :math:`M` atoms in the molecule.
+
+        """
+        if not fname.endswith(".cube"):
+            raise ValueError("Argument fname should be a cube file with `*.cube` extension!")
+        natom = len(atnums)
+        if natom != len(atcoords):
+            raise ValueError("The number of atomic numbers and atom coordinates should equal.")
+        if data.size != len(self.points):
+            raise ValueError(
+                "Argument data should have the same size as the grid. "
+                + "{0}!={1}".format(data.size, self._npoints)
+            )
+        if pseudo_numbers is None:
+            pseudo_numbers = atnums.astype(float)
+        if pseudo_numbers.size != natom:
+            raise ValueError(
+                "Argument pseudo_numbers should have the same size as the atomic numbers. "
+                + "{0}!={1}".format(pseudo_numbers.size, natom)
+            )
+
+        # Write data into the cube file
+        with open(fname, "w") as f:
+            # writing the cube header:
+            f.write("Cubefile created with THEOCHEM Grid\n")
+            f.write("OUTER LOOP: X, MIDDLE LOOP: Y, INNER LOOP: Z\n")
+            x, y, z = self._origin
+            f.write("{0:5d} {1:11.6f} {2:11.6f} {3:11.6f}\n".format(natom, x, y, z))
+            rvecs = self._axes
+            for i, (x, y, z) in zip(self._shape, rvecs):
+                f.write("{0:5d} {1:11.6f} {2:11.6f} {3:11.6f}\n".format(i, x, y, z))
+            for i, q, (x, y, z) in zip(atnums, pseudo_numbers, atcoords):
+                f.write("{0:5d} {1:11.6f} {2:11.6f} {3:11.6f} {4:11.6f}\n".format(i, q, x, y, z))
+            # writing the cube data:
+            num_chunks = 6
+            for i in range(0, data.size, num_chunks):
+                row_data = data.flat[i : i + num_chunks]
+                f.write((row_data.size * " {:12.5E}").format(*row_data))
+                f.write("\n")
