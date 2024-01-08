@@ -105,7 +105,7 @@ boundary conditions, is:
 
 .. math::
 
-    c'_\text{left} = \min_i x_i - r
+    c_\text{left} = \min_i x_i - r
 
 where :math:`x_i` is the position of grid point :math:`i` and :math:`r` is the
 radius of the sphere. We only need to consider translations by multiples of the
@@ -118,6 +118,8 @@ lattice vector:
 where :math:`a` is the length of the 1D lattice vector (and also the spacing
 between adjacent crystal planes). Similarly, for the right-most center, we
 have:
+
+.. math::
 
     c_\text{right} = c + a \left\lfloor \frac{\max_i x_i - c + r}{a} \right\rfloor
 
