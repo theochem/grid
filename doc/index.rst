@@ -12,9 +12,9 @@ but it also periodic boundary conditions.
 
 Please use the following citation in any publication using grid library:
 
-    **"Grid: A Python Library for Molecular Integration, Interpolation and More."**,
-    X. D. Yang,  L. Pujal, A. Tehrani,  R. Hernandez‐Esparza,  E. Vohringer‐Martinez,
-    T. Verstraelen, P. W. Ayers, F. Heidar‐Zadeh
+    **"Grid: A Python Library for Molecular Integration, Interpolation, Differentiation and More."**,
+    A. Tehrani, X. D. Yang, M. Martinez-Gonzalez,, L. Pujal, R. Hernandez‐Esparza, M. Chan,
+    E. Vohringer‐Martinez, T. Verstraelen, P. W. Ayers, F. Heidar‐Zadeh
 
 
 The Grid source code is hosted on GitHub and is released under the GNU General Public License v3.0. We welcome
