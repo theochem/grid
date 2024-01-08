@@ -89,15 +89,15 @@ Modules
     :caption: Example Tutorials
 
     ./notebooks/quickstart
-    ./notebooks/one_dimensional_grids
-    ./notebooks/atom_grid_construction
-    ./notebooks/atom_grid
-    ./notebooks/molecular_grid
-    ./notebooks/molecular_grid_construction
-    ./notebooks/cubic_grid
+    One-Dimensional Grids <./notebooks/one_dimensional_grids>
+    Angular Grids <./notebooks/angular_grid>
+    Atom Grid Construction <./notebooks/atom_grid_construction>
+    Atom Grid Application <./notebooks/atom_grid>
+    Molecular Grid Construction <./notebooks/molecular_grid_construction>
+    Molecular Grid Application <./notebooks/molecular_grid>
+    Cubic Grids <./notebooks/cubic_grid>
     ./notebooks/interpolation_poisson
     ./notebooks/multipole_moments
-    ./notebooks/angular_grid
 
 .. toctree::
    :maxdepth: 2
