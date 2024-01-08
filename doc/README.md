@@ -8,7 +8,7 @@ cd doc
 # # Generates API html for grid while ignoring the test and data folders.
 # Stores it in pyapi/
 sphinx-apidoc -a -o pyapi/ ../src/grid ../src/grid/tests/ ../src/grid/test/ ../src/grid/data/ --separate
-# Build the html files 
+# Build the html files
 sphinx-build -M html . ./build
 ```
 Here inside the "./build/html/ folder, there are the html files to run the website locally.
@@ -28,7 +28,5 @@ Now, paste and overwrite all of the files into ./docs/. Then commit and push to 
 ```bash
 git add ./docs/*
 git commit -m "Update website"
-git push origin doc 
+git push origin doc
 ```
-
-
