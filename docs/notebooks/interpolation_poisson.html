@@ -1,0 +1,498 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Interpolation and Solving Poisson’s Equation &mdash; grid  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/override.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/override.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/nbsphinx-code-cells.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Multipole Moments" href="multipole_moments.html" />
+    <link rel="prev" title="Cubic Grids" href="cubic_grid.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> grid
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">User Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#downloading-code">Downloading Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#id1">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#building-documentation">Building Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../onedgrids.html">One-Dimensional Grids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../radial_transf.html">Radial Transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../conventions.html">Conventions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../conventions.html#spherical-coordinates">Spherical Coordinates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../conventions.html#spherical-harmonics">Spherical Harmonics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../conventions.html#ordering">Ordering</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../conventions.html#angular-grids">Angular Grids</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../conventions.html#nested-grids">Nested Grids</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#One-Dimensional-Grids">One-Dimensional Grids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#Angular-Grids">Angular Grids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#Atomic-Grid">Atomic Grid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#Molecular-Grid">Molecular Grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#Visualize-3D-Grid-Points">Visualize 3D Grid Points</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#Integrate-Electron-Density-on-the-Grid">Integrate Electron Density on the Grid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#Interpolate-Electron-Density-on-the-Grid">Interpolate Electron Density on the Grid</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="quickstart.html#Check-Interpolation-Accuracy">Check Interpolation Accuracy</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#Differentiate-Electron-Density-on-the-Grid">Differentiate Electron Density on the Grid</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="quickstart.html#Check-interpolated-derivative-accuracy">Check interpolated derivative accuracy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="quickstart.html#Graphical-comparisons-of-the-accuracy">Graphical comparisons of the accuracy</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="one_dimensional_grids.html">One-Dimensional Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="one_dimensional_grids.html#Example:-Visualize-One-Dimensional-Grid-Points">Example: Visualize One-Dimensional Grid Points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="one_dimensional_grids.html#Example:-Integration-of-One-Variable-Function-on-[-1,-1]">Example: Integration of One-Variable Function on <span class="math notranslate nohighlight">\([-1, 1]\)</span></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="one_dimensional_grids.html#Radial-Grid:-Transformation-of-1D-Integration-Intervals">Radial Grid: Transformation of 1D-Integration Intervals</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="one_dimensional_grids.html#Visualize-Radial-Grid-Points">Visualize Radial Grid Points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="one_dimensional_grids.html#Example:-Integration-of-One-Variable-Function-on-[0,-\infty]">Example: Integration of One-Variable Function on <span class="math notranslate nohighlight">\([0, \infty]\)</span></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="angular_grid.html">Angular Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="angular_grid.html#Initialization-of-Angular-Grids">Initialization of Angular Grids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="angular_grid.html#Integral-of-Identity-Function">Integral of Identity Function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="angular_grid.html#Integral-of-Spherical-Harmonic-Function">Integral of Spherical Harmonic Function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="angular_grid.html#Spherical-Harmonics-Are-Orthonormal">Spherical Harmonics Are Orthonormal</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="atom_grid_construction.html">Atom Grid Construction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="atom_grid_construction.html#Atomic-Grid-AtomGrid">Atomic Grid <code class="docutils literal notranslate"><span class="pre">AtomGrid</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="atom_grid_construction.html#Plot-AtomGrid-Points">Plot <code class="docutils literal notranslate"><span class="pre">AtomGrid</span></code> Points</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="atom_grid_construction.html#Pruned-Grids-AtomGrid.from_pruned">Pruned Grids <code class="docutils literal notranslate"><span class="pre">AtomGrid.from_pruned</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="atom_grid_construction.html#Preset-Grids-AtomGrid.from_preset">Preset Grids <code class="docutils literal notranslate"><span class="pre">AtomGrid.from_preset</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="atom_grid_construction.html#Multiple-Centered-AtomGrids">Multiple Centered AtomGrids</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="atom_grid.html">Atom Grid Application</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="atom_grid.html#Construct-Atomic-Grid">Construct Atomic Grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="atom_grid.html#Example:-Integrate-Electron-Density">Example: Integrate Electron Density</a></li>
+<li class="toctree-l3"><a class="reference internal" href="atom_grid.html#Example:-Calculate-Radial-Electron-Density-Distribution">Example: Calculate Radial Electron Density Distribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="atom_grid.html#Example:-Calculate-Classical-Coulomb-Repulsion-Energy">Example: Calculate Classical Coulomb Repulsion Energy</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="molecular_grid_construction.html">Molecular Grid Construction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="molecular_grid_construction.html#Molecular-Grid-Details">Molecular Grid Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="molecular_grid_construction.html#Construction-of-Molecular-Grid">Construction of Molecular Grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="molecular_grid_construction.html#Constructor">Constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecular_grid_construction.html#from_preset-method">from_preset method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecular_grid_construction.html#from_size-method">from_size method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecular_grid_construction.html#from_pruned-method">from_pruned method</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="molecular_grid.html">Molecular Grid Application</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="molecular_grid.html#Integration">Integration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="molecular_grid.html#Example:-Electron-Density">Example: Electron Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="molecular_grid.html#Local-Properties">Local Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="molecular_grid.html#Interpolation">Interpolation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="molecular_grid.html#Derivative-Interpolation">Derivative Interpolation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="molecular_grid.html#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cubic_grid.html">Cubic Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cubic_grid.html#Tensor-1D-Grids">Tensor 1D Grids</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cubic_grid.html#Interpolation">Interpolation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cubic_grid.html#Uniform-Grid">Uniform Grid</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Interpolation and Solving Poisson’s Equation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Details">Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Example:-Unit-charge-distribution">Example: Unit-charge distribution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="multipole_moments.html">Multipole Moments</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pyapi/modules.html">grid</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.html">grid package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../pyapi/grid.html#submodules">Submodules</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.angular.html">grid.angular module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.atomgrid.html">grid.atomgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.basegrid.html">grid.basegrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.becke.html">grid.becke module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.cubic.html">grid.cubic module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.hirshfeld.html">grid.hirshfeld module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.molgrid.html">grid.molgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.ode.html">grid.ode module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.onedgrid.html">grid.onedgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.periodicgrid.html">grid.periodicgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.poisson.html">grid.poisson module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.rtransform.html">grid.rtransform module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.utils.html">grid.utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../pyapi/grid.html#module-grid">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">grid</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Interpolation and Solving Poisson’s Equation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/notebooks/interpolation_poisson.nblink" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="Interpolation-and-Solving-Poisson's-Equation">
+<h1>Interpolation and Solving Poisson’s Equation<a class="headerlink" href="#Interpolation-and-Solving-Poisson's-Equation" title="Permalink to this heading">¶</a></h1>
+<div class="section" id="Details">
+<h2>Details<a class="headerlink" href="#Details" title="Permalink to this heading">¶</a></h2>
+<p>It is known based on the properties of the real spherical harmonics <span class="math notranslate nohighlight">\(Y_{lm}\)</span> that any <span class="math notranslate nohighlight">\(L_2\)</span> function <span class="math notranslate nohighlight">\(f : \mathbb{R}^3 \rightarrow \mathbb{R}\)</span> can be decomposed as</p>
+<div class="math notranslate nohighlight">
+\[f(r, \theta, \phi) = \sum_{l=0}^\infty \sum_{m=-l}^l w_{lm}(r) Y_{lm}(\theta, \phi),\]</div>
+<p>where the unknown <span class="math notranslate nohighlight">\(w_{lm}\)</span> is a function of the radial component and is found as follows. For a fixed <span class="math notranslate nohighlight">\(r\)</span>, the radial component <span class="math notranslate nohighlight">\(w_{lm}\)</span> is computed as the integral</p>
+<div class="math notranslate nohighlight">
+\[w_{lm}(r) = \int \int f(r, \theta, \phi) Y_{lm}(\theta, \phi) \sin(\phi) d\theta d\phi\]</div>
+<p>over various values of <span class="math notranslate nohighlight">\(r\)</span> and then interpolated <span class="math notranslate nohighlight">\(\tilde{w}_{lm}\)</span> using a cubic spline. This integral can be done using the <a class="reference internal" href="../pyapi/grid.angular.html"><span class="doc">angular grid</span></a> module. The interpolation of <span class="math notranslate nohighlight">\(f\)</span> is simply then</p>
+<div class="math notranslate nohighlight">
+\[f(r, \theta, \phi) \approx \sum_{l=0}^{L_{max}} \sum_{m=-l}^l \tilde{w}_{lm}(r) Y_{lm}(\theta, \phi),\]</div>
+<p>where <span class="math notranslate nohighlight">\(L_{max}\)</span> is the maximum chosen degree <span class="math notranslate nohighlight">\(l\)</span> of the real spherical harmonics.</p>
+</div>
+<div class="section" id="Example:-Unit-charge-distribution">
+<h2>Example: Unit-charge distribution<a class="headerlink" href="#Example:-Unit-charge-distribution" title="Permalink to this heading">¶</a></h2>
+<p>This example tries to interpolate the unit-charge distribution given by <span class="math notranslate nohighlight">\(f(r, \theta, \phi) = \bigg( \frac{\alpha}{\pi} \bigg)^{1.5} e^{-\alpha r_A^2}\)</span>, where <span class="math notranslate nohighlight">\(\alpha = 0.25\)</span> and <span class="math notranslate nohighlight">\(r_A\)</span> is the radius centered at the coordinate <span class="math notranslate nohighlight">\([0, 1, 0]\)</span>. Since, this function does not depend on the angles, then <span class="math notranslate nohighlight">\(w_{lm} = 0\)</span> when <span class="math notranslate nohighlight">\(l &gt; 0\)</span>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">center</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">charge_distribution</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.25</span><span class="p">):</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">center</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">alpha</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="mf">3.0</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">alpha</span> <span class="o">*</span> <span class="n">r</span><span class="o">**</span><span class="mf">2.0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Construct Atomic Grid</span>
+<span class="kn">from</span> <span class="nn">grid.onedgrid</span> <span class="kn">import</span> <span class="n">GaussLegendre</span>
+<span class="kn">from</span> <span class="nn">grid.rtransform</span> <span class="kn">import</span> <span class="n">BeckeRTransform</span>
+<span class="kn">from</span> <span class="nn">grid.atomgrid</span> <span class="kn">import</span> <span class="n">AtomGrid</span>
+
+<span class="n">oned</span> <span class="o">=</span> <span class="n">GaussLegendre</span><span class="p">(</span><span class="n">npoints</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">btf</span> <span class="o">=</span> <span class="n">BeckeRTransform</span><span class="p">(</span><span class="n">rmin</span><span class="o">=</span><span class="mf">1e-30</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
+<span class="n">radial</span> <span class="o">=</span> <span class="n">btf</span><span class="o">.</span><span class="n">transform_1d_grid</span><span class="p">(</span><span class="n">oned</span><span class="p">)</span>
+<span class="n">degree</span> <span class="o">=</span> <span class="mi">29</span>
+<span class="n">atgrid</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="o">.</span><span class="n">from_pruned</span><span class="p">(</span><span class="n">radial</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">sectors_r</span><span class="o">=</span><span class="p">[],</span> <span class="n">sectors_degree</span><span class="o">=</span><span class="p">[</span><span class="n">degree</span><span class="p">],</span> <span class="n">center</span><span class="o">=</span><span class="n">center</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Construct the interpolation of the charge distribution.</span>
+<span class="n">density</span> <span class="o">=</span> <span class="n">charge_distribution</span><span class="p">(</span><span class="n">atgrid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>   <span class="c1"># evaluate the charge distribution on the atomic grid points.</span>
+<span class="n">interpolate_func</span> <span class="o">=</span> <span class="n">atgrid</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">density</span><span class="p">)</span>
+
+<span class="c1"># Compute the density form the interpolation on random points</span>
+<span class="n">random_pts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span>
+    <span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">20</span><span class="p">),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">20</span><span class="p">),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+    <span class="p">)</span>
+<span class="p">)</span><span class="o">.</span><span class="n">T</span>
+<span class="n">interpolate</span> <span class="o">=</span> <span class="n">interpolate_func</span><span class="p">(</span><span class="n">random_pts</span><span class="p">)</span>
+<span class="n">true</span> <span class="o">=</span> <span class="n">charge_distribution</span><span class="p">(</span><span class="n">random_pts</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error difference between interpolation and true:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">interpolate</span> <span class="o">-</span> <span class="n">true</span><span class="p">))</span>
+<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">interpolate</span> <span class="o">-</span> <span class="n">true</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-6</span><span class="p">)</span>
+
+
+<span class="c1"># First derivative wrt to Cartesian coordinates (x, y, z) can also be calculated</span>
+<span class="n">derivative</span> <span class="o">=</span> <span class="n">interpolate_func</span><span class="p">(</span><span class="n">random_pts</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1"># First derivative wrt to Spherical coordinates (r, \theta, \phi)</span>
+<span class="n">derivative</span> <span class="o">=</span> <span class="n">interpolate_func</span><span class="p">(</span><span class="n">random_pts</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">deriv_spherical</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="c1"># Higher order derivative wrt to r can be calculated</span>
+<span class="n">sec_deriv</span> <span class="o">=</span> <span class="n">interpolate_func</span><span class="p">(</span><span class="n">random_pts</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">only_radial_deriv</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Error difference between interpolation and true:
+[1.89178096e-11 5.27372802e-11 5.82772147e-11 4.10898563e-15
+ 1.64881470e-11 2.55238009e-11 1.29296147e-12 2.59097473e-12
+ 2.75023420e-10 5.08640456e-11 8.28065238e-12 7.54837099e-10
+ 2.51240298e-11 6.69289698e-12 2.82764424e-11 2.35286288e-11
+ 4.27065323e-11 3.41960277e-11 5.42822891e-11 5.25577287e-11]
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="Solving-Poisson-Equation">
+<h2>Solving Poisson Equation<a class="headerlink" href="#Solving-Poisson-Equation" title="Permalink to this heading">¶</a></h2>
+<p>The Poisson equation is defined as <span class="math notranslate nohighlight">\(\nabla^2 V = - 4\pi f(\vec{\textbf{r}})\)</span>, where <span class="math notranslate nohighlight">\(V\)</span> is the unknown potential, <span class="math notranslate nohighlight">\(\nabla^2\)</span> is the Laplacian and <span class="math notranslate nohighlight">\(f\)</span> is the charge distribution. It is well-known that the solution to this is given by <span class="math notranslate nohighlight">\(V(\vec{\textbf{r}}) = \int \frac{f(\vec{\textbf{r}}^\prime)}{|\vec{\textbf{r}} - \vec{\textbf{r}}^\prime| } d\vec{\textbf{r}}^\prime\)</span>. For the unit-charge distribution given above, the solution is given by
+<span class="math notranslate nohighlight">\(V(r, \theta, \phi) = \frac{\text{erf} \bigg[ \sqrt{\alpha} r_A \bigg]}{r_A},\)</span> where ERF is the error function. Grid offers two methods of solving the Poisson equation over an atomic grid. The recommended method is the <code class="docutils literal notranslate"><span class="pre">solve_poisson_bvp</span></code> and is used in this example.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">grid.rtransform</span> <span class="kn">import</span> <span class="n">InverseRTransform</span>
+<span class="kn">from</span> <span class="nn">grid.poisson</span> <span class="kn">import</span> <span class="n">solve_poisson_bvp</span>
+<span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">erf</span>
+
+
+<span class="k">def</span> <span class="nf">actual_potential</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.25</span><span class="p">):</span>
+    <span class="n">r_PC</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">center</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">desired</span> <span class="o">=</span> <span class="n">erf</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span> <span class="o">*</span> <span class="n">r_PC</span><span class="p">)</span> <span class="o">/</span> <span class="n">r_PC</span>
+    <span class="n">desired</span><span class="p">[</span><span class="n">r_PC</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">return</span> <span class="n">desired</span>
+
+<span class="c1">#Set the charge distribution to be unit-charge density and evaluate on atomic grid points.</span>
+<span class="n">func_vals</span> <span class="o">=</span> <span class="n">charge_distribution</span><span class="p">(</span><span class="n">atgrid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
+
+<span class="c1"># Solve for the potential as an initial value problem and evaluate it over the atomic grid.</span>
+<span class="n">potential</span> <span class="o">=</span> <span class="n">solve_poisson_bvp</span><span class="p">(</span>
+        <span class="n">atgrid</span><span class="p">,</span>
+        <span class="n">func_vals</span><span class="p">,</span>
+        <span class="n">InverseRTransform</span><span class="p">(</span><span class="n">btf</span><span class="p">),</span>
+        <span class="n">remove_large_pts</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span>
+        <span class="n">include_origin</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">potential_values</span> <span class="o">=</span> <span class="n">potential</span><span class="p">(</span><span class="n">atgrid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
+
+
+<span class="n">err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">actual_potential</span><span class="p">(</span><span class="n">atgrid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span> <span class="o">-</span> <span class="n">potential_values</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The maximum error: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The mean error: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The standard dev: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+The maximum error: 1.4653770128456663e-06
+The mean error: 1.1070838082589734e-06
+The standard dev: 4.6000482348200205e-07
+</pre></div></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="multipole_moments.html" class="btn btn-neutral float-right" title="Multipole Moments" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="cubic_grid.html" class="btn btn-neutral float-left" title="Cubic Grids" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2024, QC-Devs
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

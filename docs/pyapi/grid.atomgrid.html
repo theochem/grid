@@ -1,7 +1,8 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
   
@@ -11,20 +12,12 @@
   
 
   
-  <link rel="stylesheet" href="../_static/css/override.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/override.css" type="text/css" />
-
-  
   
   
   
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -41,6 +34,12 @@
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
     
+
+  
+  <link rel="stylesheet" href="../_static/css/override.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/override.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="grid.basegrid module" href="grid.basegrid.html" />
@@ -58,7 +57,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> grid
+            <a href="../index.html" class="icon icon-home"> grid
           
 
           
@@ -81,7 +80,6 @@
           
         </div>
 
-        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -115,51 +113,99 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Example Tutorials</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/Molecular_Grid.html">Molecular Grids</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/Molecular_Grid.html#Integration">Integration</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Grid.html#Example:-Electron-Density">Example: Electron Density</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/quickstart.html">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/quickstart.html#One-Dimensional-Grids">One-Dimensional Grids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/quickstart.html#Angular-Grids">Angular Grids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/quickstart.html#Atomic-Grid">Atomic Grid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/quickstart.html#Molecular-Grid">Molecular Grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/quickstart.html#Visualize-3D-Grid-Points">Visualize 3D Grid Points</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/quickstart.html#Integrate-Electron-Density-on-the-Grid">Integrate Electron Density on the Grid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/quickstart.html#Interpolate-Electron-Density-on-the-Grid">Interpolate Electron Density on the Grid</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../notebooks/quickstart.html#Check-Interpolation-Accuracy">Check Interpolation Accuracy</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/Molecular_Grid.html#Interpolation">Interpolation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Grid.html#id1">Example: Electron Density</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/Molecular_Grid.html#Derivative-Interpolation">Derivative Interpolation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Grid.html#Example:-Weizsacker-Kinetic-Energy-Density">Example: Weizsacker Kinetic Energy Density</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/Molecular_Grid.html#Solving-Poisson-Equation">Solving Poisson Equation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Grid.html#Example:-Electrostatic-Potential">Example: Electrostatic Potential</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/Molecular_Grid_Construction.html">Constructing Molecular Grids</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/Molecular_Grid_Construction.html#Molecular-Grid-Details">Molecular Grid Details</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/Molecular_Grid_Construction.html#Construction-of-Molecular-Grid">Construction of Molecular Grid</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Grid_Construction.html#Constructor">Constructor</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Grid_Construction.html#from_preset-method">from_preset method</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Grid_Construction.html#from_size-method">from_size method</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Grid_Construction.html#from_pruned-method">from_pruned method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/quickstart.html#Differentiate-Electron-Density-on-the-Grid">Differentiate Electron Density on the Grid</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../notebooks/quickstart.html#Check-interpolated-derivative-accuracy">Check interpolated derivative accuracy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../notebooks/quickstart.html#Graphical-comparisons-of-the-accuracy">Graphical comparisons of the accuracy</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/Cubic_Grids.html">Cubic Grids</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/Cubic_Grids.html#Tensor-1D-Grids">Tensor 1D Grids</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/Cubic_Grids.html#Interpolation">Interpolation</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/Cubic_Grids.html#Uniform-Grid">Uniform Grid</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/one_dimensional_grids.html">One-Dimensional Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/one_dimensional_grids.html#Example:-Visualize-One-Dimensional-Grid-Points">Example: Visualize One-Dimensional Grid Points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/one_dimensional_grids.html#Example:-Integration-of-One-Variable-Function-on-[-1,-1]">Example: Integration of One-Variable Function on <span class="math notranslate nohighlight">\([-1, 1]\)</span></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/one_dimensional_grids.html#Radial-Grid:-Transformation-of-1D-Integration-Intervals">Radial Grid: Transformation of 1D-Integration Intervals</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/Interpolation_and_Poisson.html">Interpolation and Solving Poisson’s Equation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/Interpolation_and_Poisson.html#Details">Details</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/Interpolation_and_Poisson.html#Example:-Unit-charge-distribution">Example: Unit-charge distribution</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/Interpolation_and_Poisson.html#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/one_dimensional_grids.html#Visualize-Radial-Grid-Points">Visualize Radial Grid Points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/one_dimensional_grids.html#Example:-Integration-of-One-Variable-Function-on-[0,-\infty]">Example: Integration of One-Variable Function on <span class="math notranslate nohighlight">\([0, \infty]\)</span></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/Multipole_Moments.html">Multipole Moments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/angular_grid.html">Angular Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/angular_grid.html#Initialization-of-Angular-Grids">Initialization of Angular Grids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/angular_grid.html#Integral-of-Identity-Function">Integral of Identity Function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/angular_grid.html#Integral-of-Spherical-Harmonic-Function">Integral of Spherical Harmonic Function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/angular_grid.html#Spherical-Harmonics-Are-Orthonormal">Spherical Harmonics Are Orthonormal</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/atom_grid_construction.html">Atom Grid Construction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/atom_grid_construction.html#Atomic-Grid-AtomGrid">Atomic Grid <code class="docutils literal notranslate"><span class="pre">AtomGrid</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/atom_grid_construction.html#Plot-AtomGrid-Points">Plot <code class="docutils literal notranslate"><span class="pre">AtomGrid</span></code> Points</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/atom_grid_construction.html#Pruned-Grids-AtomGrid.from_pruned">Pruned Grids <code class="docutils literal notranslate"><span class="pre">AtomGrid.from_pruned</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/atom_grid_construction.html#Preset-Grids-AtomGrid.from_preset">Preset Grids <code class="docutils literal notranslate"><span class="pre">AtomGrid.from_preset</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/atom_grid_construction.html#Multiple-Centered-AtomGrids">Multiple Centered AtomGrids</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/atom_grid.html">Atom Grid Application</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/atom_grid.html#Construct-Atomic-Grid">Construct Atomic Grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/atom_grid.html#Example:-Integrate-Electron-Density">Example: Integrate Electron Density</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/atom_grid.html#Example:-Calculate-Radial-Electron-Density-Distribution">Example: Calculate Radial Electron Density Distribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/atom_grid.html#Example:-Calculate-Classical-Coulomb-Repulsion-Energy">Example: Calculate Classical Coulomb Repulsion Energy</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/molecular_grid_construction.html">Molecular Grid Construction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid_construction.html#Molecular-Grid-Details">Molecular Grid Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid_construction.html#Construction-of-Molecular-Grid">Construction of Molecular Grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid_construction.html#Constructor">Constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid_construction.html#from_preset-method">from_preset method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid_construction.html#from_size-method">from_size method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid_construction.html#from_pruned-method">from_pruned method</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/molecular_grid.html">Molecular Grid Application</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Integration">Integration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#Example:-Electron-Density">Example: Electron Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Local-Properties">Local Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Interpolation">Interpolation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Derivative-Interpolation">Derivative Interpolation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/cubic_grid.html">Cubic Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/cubic_grid.html#Tensor-1D-Grids">Tensor 1D Grids</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/cubic_grid.html#Interpolation">Interpolation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/cubic_grid.html#Uniform-Grid">Uniform Grid</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/interpolation_poisson.html">Interpolation and Solving Poisson’s Equation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/interpolation_poisson.html#Details">Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/interpolation_poisson.html#Example:-Unit-charge-distribution">Example: Unit-charge distribution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/interpolation_poisson.html#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/multipole_moments.html">Multipole Moments</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
 <ul class="current">
@@ -191,7 +237,6 @@
             
           
         </div>
-        
       </div>
     </nav>
 
@@ -230,7 +275,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li><a href="../index.html">Docs</a> &raquo;</li>
         
           <li><a href="modules.html">grid</a> &raquo;</li>
         
@@ -260,7 +305,7 @@
 <p>Module for generating AtomGrid.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="grid.atomgrid.AtomGrid">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AtomGrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rgrid</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degrees</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sizes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_spherical</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.atomgrid.AtomGrid" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AtomGrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rgrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degrees</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sizes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_spherical</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.atomgrid.AtomGrid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="grid.basegrid.html#grid.basegrid.Grid" title="grid.basegrid.Grid"><code class="xref py py-class docutils literal notranslate"><span class="pre">Grid</span></code></a></p>
 <p>Atomic grid construction class for integrating three-dimensional functions.</p>
 <p>Atomic grid is composed of a radial grid <span class="math notranslate nohighlight">\(\{(r_i, w_i)\}_{i=1}^{N}\)</span> meant to
@@ -271,7 +316,7 @@ is associated with an Angular (Lebedev or Symmetric spherical t-design) grid
 location.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rgrid</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degrees</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sizes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_spherical</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.atomgrid.AtomGrid.__init__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rgrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degrees</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sizes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_spherical</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.atomgrid.AtomGrid.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct atomic grid for given arguments.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -366,21 +411,27 @@ center of this class is used.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.from_preset">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_preset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rgrid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atnum</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_spherical</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.atomgrid.AtomGrid.from_preset" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_preset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atnum</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rgrid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_spherical</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.atomgrid.AtomGrid.from_preset" title="Permalink to this definition">¶</a></dt>
 <dd><p>High level api to construct an atomic grid with preset arguments.</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># construct an atomic grid for H with fine grid setting</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">atgrid</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="o">.</span><span class="n">from_preset</span><span class="p">(</span><span class="n">rgrid</span><span class="p">,</span> <span class="n">atnum</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="s2">&quot;fine&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">atgrid</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="o">.</span><span class="n">from_preset</span><span class="p">(</span><span class="n">atnum</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="s2">&quot;fine&quot;</span><span class="p">,</span> <span class="n">rgrid</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>rgrid</strong> (<a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><em>OneDGrid</em></a><em>, </em><em>optional</em>) – The (1-dimensional) radial grid representing the radius of spherical grids.</p></li>
+<li><p><strong>rgrid</strong> (<a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><em>OneDGrid</em></a><em>, </em><em>optional</em>) – The (1-dimensional) radial grid representing the radius of spherical grids.
+If None, then using the atomic number it will generate a default radial grid
+(PowerRTransform of UniformInteger grid).</p></li>
 <li><p><strong>atnum</strong> (<em>int</em><em>, </em><em>keyword-only argument</em>) – The atomic number specifying the predefined grid.</p></li>
 <li><p><strong>preset</strong> (<em>str</em><em>, </em><em>keyword-only argument</em>) – The name of predefined grid specifying the radial sectors and their corresponding
 number of angular grid points. Supported preset options include:
-‘coarse’, ‘medium’, ‘fine’, ‘veryfine’, ‘ultrafine’, and ‘insane’.</p></li>
+‘coarse’, ‘medium’, ‘fine’, ‘veryfine’, ‘ultrafine’, and ‘insane’.
+Other options include the “standard grids”:
+‘sg_0’, ‘sg_1’, ‘sg_2’, and ‘sg_3’, and the Ochsenfeld grids:
+‘g1’, ‘g2’, ‘g3’, ‘g4’, ‘g5’, ‘g6’, and ‘g7’, with higher number indicating
+greater accuracy but denser grid. See <cite>Notes</cite> for more information.</p></li>
 <li><p><strong>center</strong> (<em>ndarray</em><em>(</em><em>3</em><em>,</em><em>)</em><em>, </em><em>optional</em><em>, </em><em>keyword-only argument</em>) – Cartesian coordinates of the grid center. If <cite>None</cite>, the origin is used.</p></li>
 <li><p><strong>rotate</strong> (<em>int</em><em>, </em><em>optional</em>) – Integer used as a seed for generating random rotation matrices to rotate the angular
 spherical grids at each radial grid point. If the integer is zero, then no rotate
@@ -390,11 +441,32 @@ grid for the angular grid.</p></li>
 </ul>
 </dd>
 </dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>The standard and Ochsenfeld presets were not designed with symmetric spherical t-design
+in mind.</p></li>
+<li><p>The “standard grids” <a class="footnote-reference brackets" href="#id3" id="id1">1</a> “SG-0” and “SG-1” are designed for large molecules with
+LDA (GGA) functionals, whereas “SG-2” and “SG-3” are designed for Meta-GGA functionals
+and B95/Minnesota functionals, respectively.</p></li>
+<li><p>The Ochsenfeld pruned grids <a class="footnote-reference brackets" href="#id4" id="id2">2</a> are obtained based on the paper.</p></li>
+</ul>
+<p class="rubric">References</p>
+<dl class="footnote brackets">
+<dt class="label" id="id3"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><p>Y. Shao, et al. Advances in molecular quantum chemistry contained in the Q-Chem 4
+program package. Mol. Phys. 113, 184-215 (2015)</p>
+</dd>
+<dt class="label" id="id4"><span class="brackets"><a class="fn-backref" href="#id2">2</a></span></dt>
+<dd><p>Laqua, H., Kussmann, J., &amp; Ochsenfeld, C. (2018). An improved molecular partitioning
+scheme for numerical quadratures in density functional theory. The Journal of
+Chemical Physics, 149(20).</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.from_pruned">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_pruned</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rgrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sectors_r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sectors_degree</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sectors_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_spherical</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.atomgrid.AtomGrid.from_pruned" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_pruned</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rgrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sectors_r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sectors_degree</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sectors_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_spherical</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.atomgrid.AtomGrid.from_pruned" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize AtomGrid class that splits radial sections into sectors which specified degrees.</p>
 <p>Given a sequence of radial sectors <span class="math notranslate nohighlight">\(\{a_i\}_{i=1}^Q\)</span>, a radius number <span class="math notranslate nohighlight">\(R\)</span>
 and angular degree sectors <span class="math notranslate nohighlight">\(\{L_i \}_{i=1}^{Q+1}\)</span>.  This assigned the degrees
@@ -406,16 +478,6 @@ to the following radial points:</p>
     \vdots \\
     &amp;L_{Q+1} \text{ when } R a_{Q} &lt; r.
 \end{align*}\end{split}\]</div>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sectors_r</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sectors_degree</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
-<span class="go"># 0 &lt;= r &lt; 0.5 radius, angular grid with degree 3</span>
-<span class="go"># 0.5 radius &lt;= r &lt; radius, angular grid with degree 7</span>
-<span class="go"># rad &lt;= r &lt; 1.5 radius, angular grid with degree 5</span>
-<span class="go"># 1.5 radius &lt;= r, angular grid with degree 3</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">atgrid</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="o">.</span><span class="n">from_pruned</span><span class="p">(</span><span class="n">rgrid</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">sectors_r</span><span class="p">,</span> <span class="n">sectors_degree</span><span class="p">)</span>
-</pre></div>
-</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -527,7 +589,7 @@ with its weights:</p>
 <dd><p>Integrate the angular coordinates of a sequence of functions.</p>
 <p>Given a series of functions <span class="math notranslate nohighlight">\(f_k \in L^2(\mathbb{R}^3)\)</span>, this returns the values</p>
 <div class="math notranslate nohighlight">
-\[f_k(r_i) = \int \int f(r_i, \theta, \phi) sin(\theta) d\theta d\phi\]</div>
+\[f_k(r_i) = \int \int f(r_i, \theta, \phi) sin(\phi) d\theta d\phi\]</div>
 <p>on each radial point <span class="math notranslate nohighlight">\(r_i\)</span> in the atomic grid.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -567,7 +629,7 @@ The function takes the following attributes:</p>
 <dt>deriv<span class="classifier">int, optional</span></dt><dd><p>If deriv is zero, then only returns function values. If it is one, then
 returns the first derivative of the interpolated function with respect to either
 Cartesian or spherical coordinates. Only higher-order derivatives
-(<a href="#id1"><span class="problematic" id="id2">`</span></a>deriv`=2,3) are supported for the derivatives wrt to radial components.</p>
+(<a href="#id5"><span class="problematic" id="id6">`</span></a>deriv`=2,3) are supported for the derivatives wrt to radial components.</p>
 </dd>
 <dt>deriv_spherical<span class="classifier">bool</span></dt><dd><p>If True, then returns the derivatives with respect to spherical coordinates
 <span class="math notranslate nohighlight">\((r, \theta, \phi)\)</span>. Default False.</p>
@@ -591,27 +653,6 @@ if <cite>only_radial_derivs</cite> then derivative wrt to <span class="math notr
 <dd class="field-odd"><p>Callable[[ndarray(M, 3), int] -&gt; ndarray(M)]</p>
 </dd>
 </dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># First generate a atomic grid with raidal points that have all degree 10.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">grid.basegrid</span> <span class="kn">import</span> <span class="n">OneDGrid</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">radial_grid</span> <span class="o">=</span> <span class="n">OneDGrid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">100</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">atom_grid</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="p">(</span><span class="n">radial_grid</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">])</span>
-<span class="go"># Consider the function (3x^2 + 4y^2 + 5z^2)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">polynomial_func</span><span class="p">(</span><span class="n">pts</span><span class="p">)</span> <span class="p">:</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="k">return</span> <span class="mf">3.0</span> <span class="o">*</span> <span class="n">points</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">2.0</span> <span class="o">+</span> <span class="mf">4.0</span> <span class="o">*</span> <span class="n">points</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mf">2.0</span> <span class="o">+</span> <span class="mf">5.0</span> <span class="o">*</span> <span class="n">points</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="mf">2.0</span>
-<span class="go"># Evaluate function values and interpolate them</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">func_vals</span> <span class="o">=</span> <span class="n">polynomial_func</span><span class="p">(</span><span class="n">atom_grid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">interpolate_func</span> <span class="o">=</span> <span class="n">atom_grid</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">func_vals</span><span class="p">)</span>
-<span class="go"># To interpolate at new points.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">new_pts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">interpolate_vals</span> <span class="o">=</span> <span class="n">interpolate_func</span><span class="p">(</span><span class="n">new_pts</span><span class="p">)</span>
-<span class="go"># Can calculate first derivative wrt to Cartesian or spherical</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">interpolate_derivs</span> <span class="o">=</span> <span class="n">interpolate_func</span><span class="p">(</span><span class="n">new_pts</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">interpolate_derivs_sph</span> <span class="o">=</span> <span class="n">interpolate_func</span><span class="p">(</span><span class="n">new_pts</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">deriv_spherical</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="go"># Only higher-order derivatives are supported for the radius coordinate r.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">interpolated_derivs_radial</span> <span class="o">=</span> <span class="n">interpolate_func</span><span class="p">(</span><span class="n">new_pts</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">only_radial_derivs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="py property">
@@ -704,9 +745,9 @@ harmonic expansion:</p>
 Y^m_l(\theta, \phi)\]</div>
 <p>where <span class="math notranslate nohighlight">\(Y^m_l\)</span> is the real Spherical harmonic of degree <span class="math notranslate nohighlight">\(l\)</span> and order <span class="math notranslate nohighlight">\(m\)</span>.
 The radial components <span class="math notranslate nohighlight">\(\rho^{lm}(r_i)\)</span> are calculated via integration on
-the :math:<a href="#id3"><span class="problematic" id="id4">`</span></a>i`th Lebedev/angular grid of the atomic grid:</p>
+the :math:<a href="#id7"><span class="problematic" id="id8">`</span></a>i`th Lebedev/angular grid of the atomic grid:</p>
 <div class="math notranslate nohighlight">
-\[\rho^{lm}(r_i) = \int \int f(r_i, \theta, \phi) Y^m_l(\theta, \phi) \sin(\theta)
+\[\rho^{lm}(r_i) = \int \int f(r_i, \theta, \phi) Y^m_l(\theta, \phi) \sin(\phi)
  d\theta d\phi,\]</div>
 <p>and then interpolated using a cubic spline over all radial points of the atomic grid.</p>
 <dl class="field-list simple">
@@ -777,7 +818,7 @@ the zeroth order spline is first, followed by positive orders then negative.</p>
 <p>This function takes a function <span class="math notranslate nohighlight">\(f\)</span> evaluated on the atomic grid points and returns
 the spherical average of it defined as:</p>
 <div class="math notranslate nohighlight">
-\[f_{avg}(r) := \frac{\int \int f(r, \theta, \phi) \sin(\theta) d\theta d\phi}{4 \pi}.\]</div>
+\[f_{avg}(r) := \frac{\int \int f(r, \theta, \phi) \sin(\phi) d\theta d\phi}{4 \pi}.\]</div>
 <p>The definition is chosen such that <span class="math notranslate nohighlight">\(\int f_{avg}(r) 4\pi r^2 dr\)</span>
 matches the full integral <span class="math notranslate nohighlight">\(\int \int \int f(x,y,z)dxdydz\)</span>.</p>
 <dl class="field-list simple">
@@ -791,22 +832,6 @@ matches the full integral <span class="math notranslate nohighlight">\(\int \int
 <dd class="field-odd"><p>CubicSpline</p>
 </dd>
 </dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Define a Gaussian function that takes Cartesian coordinates as input</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">cart_pts</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">cart_pts</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="mf">2.0</span><span class="p">)</span>
-<span class="go"># Construct atomic grid with degree 10 on a radial grid on [0, \infty)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">radial_grid</span> <span class="o">=</span> <span class="n">GaussLaguerre</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">atgrid</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="p">(</span><span class="n">radial_grid</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">])</span>
-<span class="go"># Evaluate func on atmic grid points (which are stored in Cartesian coordinates)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">func_vals</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">atgrid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
-<span class="go"># Compute spherical average spline &amp; evaluate it on a set of (radial) points in [0, \infty)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">spherical_avg</span> <span class="o">=</span> <span class="n">atgrid</span><span class="o">.</span><span class="n">spherical_average</span><span class="p">(</span><span class="n">func_vals</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">evals</span> <span class="o">=</span> <span class="n">spherical_avg</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
-<span class="go"># the largest error happens at origin because the spline is being extrapolated</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">evals</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span> <span class="n">points</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mf">1.0e-3</span><span class="p">)</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="py property">
@@ -855,19 +880,11 @@ matches the full integral <span class="math notranslate nohighlight">\(\int \int
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2021, QC-Devs
+        &copy; Copyright 2024, QC-Devs
 
     </p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -878,6 +895,7 @@ matches the full integral <span class="math notranslate nohighlight">\(\int \int
 
   </div>
   
+
 
   <script type="text/javascript">
       jQuery(function () {

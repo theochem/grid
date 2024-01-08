@@ -1,7 +1,8 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
   
@@ -11,20 +12,12 @@
   
 
   
-  <link rel="stylesheet" href="../_static/css/override.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/override.css" type="text/css" />
-
-  
   
   
   
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -39,6 +32,12 @@
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
     
+
+  
+  <link rel="stylesheet" href="../_static/css/override.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/override.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="grid.angular module" href="grid.angular.html" />
@@ -56,7 +55,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> grid
+            <a href="../index.html" class="icon icon-home"> grid
           
 
           
@@ -79,7 +78,6 @@
           
         </div>
 
-        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -113,51 +111,99 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Example Tutorials</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/Molecular_Grid.html">Molecular Grids</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/Molecular_Grid.html#Integration">Integration</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Grid.html#Example:-Electron-Density">Example: Electron Density</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/quickstart.html">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/quickstart.html#One-Dimensional-Grids">One-Dimensional Grids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/quickstart.html#Angular-Grids">Angular Grids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/quickstart.html#Atomic-Grid">Atomic Grid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/quickstart.html#Molecular-Grid">Molecular Grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/quickstart.html#Visualize-3D-Grid-Points">Visualize 3D Grid Points</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/quickstart.html#Integrate-Electron-Density-on-the-Grid">Integrate Electron Density on the Grid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/quickstart.html#Interpolate-Electron-Density-on-the-Grid">Interpolate Electron Density on the Grid</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../notebooks/quickstart.html#Check-Interpolation-Accuracy">Check Interpolation Accuracy</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/Molecular_Grid.html#Interpolation">Interpolation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Grid.html#id1">Example: Electron Density</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/Molecular_Grid.html#Derivative-Interpolation">Derivative Interpolation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Grid.html#Example:-Weizsacker-Kinetic-Energy-Density">Example: Weizsacker Kinetic Energy Density</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/Molecular_Grid.html#Solving-Poisson-Equation">Solving Poisson Equation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Grid.html#Example:-Electrostatic-Potential">Example: Electrostatic Potential</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/Molecular_Grid_Construction.html">Constructing Molecular Grids</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/Molecular_Grid_Construction.html#Molecular-Grid-Details">Molecular Grid Details</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/Molecular_Grid_Construction.html#Construction-of-Molecular-Grid">Construction of Molecular Grid</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Grid_Construction.html#Constructor">Constructor</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Grid_Construction.html#from_preset-method">from_preset method</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Grid_Construction.html#from_size-method">from_size method</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/Molecular_Grid_Construction.html#from_pruned-method">from_pruned method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/quickstart.html#Differentiate-Electron-Density-on-the-Grid">Differentiate Electron Density on the Grid</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../notebooks/quickstart.html#Check-interpolated-derivative-accuracy">Check interpolated derivative accuracy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../notebooks/quickstart.html#Graphical-comparisons-of-the-accuracy">Graphical comparisons of the accuracy</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/Cubic_Grids.html">Cubic Grids</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/Cubic_Grids.html#Tensor-1D-Grids">Tensor 1D Grids</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/Cubic_Grids.html#Interpolation">Interpolation</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/Cubic_Grids.html#Uniform-Grid">Uniform Grid</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/one_dimensional_grids.html">One-Dimensional Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/one_dimensional_grids.html#Example:-Visualize-One-Dimensional-Grid-Points">Example: Visualize One-Dimensional Grid Points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/one_dimensional_grids.html#Example:-Integration-of-One-Variable-Function-on-[-1,-1]">Example: Integration of One-Variable Function on <span class="math notranslate nohighlight">\([-1, 1]\)</span></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/one_dimensional_grids.html#Radial-Grid:-Transformation-of-1D-Integration-Intervals">Radial Grid: Transformation of 1D-Integration Intervals</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/Interpolation_and_Poisson.html">Interpolation and Solving Poisson’s Equation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/Interpolation_and_Poisson.html#Details">Details</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/Interpolation_and_Poisson.html#Example:-Unit-charge-distribution">Example: Unit-charge distribution</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/Interpolation_and_Poisson.html#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/one_dimensional_grids.html#Visualize-Radial-Grid-Points">Visualize Radial Grid Points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/one_dimensional_grids.html#Example:-Integration-of-One-Variable-Function-on-[0,-\infty]">Example: Integration of One-Variable Function on <span class="math notranslate nohighlight">\([0, \infty]\)</span></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/Multipole_Moments.html">Multipole Moments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/angular_grid.html">Angular Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/angular_grid.html#Initialization-of-Angular-Grids">Initialization of Angular Grids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/angular_grid.html#Integral-of-Identity-Function">Integral of Identity Function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/angular_grid.html#Integral-of-Spherical-Harmonic-Function">Integral of Spherical Harmonic Function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/angular_grid.html#Spherical-Harmonics-Are-Orthonormal">Spherical Harmonics Are Orthonormal</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/atom_grid_construction.html">Atom Grid Construction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/atom_grid_construction.html#Atomic-Grid-AtomGrid">Atomic Grid <code class="docutils literal notranslate"><span class="pre">AtomGrid</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/atom_grid_construction.html#Plot-AtomGrid-Points">Plot <code class="docutils literal notranslate"><span class="pre">AtomGrid</span></code> Points</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/atom_grid_construction.html#Pruned-Grids-AtomGrid.from_pruned">Pruned Grids <code class="docutils literal notranslate"><span class="pre">AtomGrid.from_pruned</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/atom_grid_construction.html#Preset-Grids-AtomGrid.from_preset">Preset Grids <code class="docutils literal notranslate"><span class="pre">AtomGrid.from_preset</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/atom_grid_construction.html#Multiple-Centered-AtomGrids">Multiple Centered AtomGrids</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/atom_grid.html">Atom Grid Application</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/atom_grid.html#Construct-Atomic-Grid">Construct Atomic Grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/atom_grid.html#Example:-Integrate-Electron-Density">Example: Integrate Electron Density</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/atom_grid.html#Example:-Calculate-Radial-Electron-Density-Distribution">Example: Calculate Radial Electron Density Distribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/atom_grid.html#Example:-Calculate-Classical-Coulomb-Repulsion-Energy">Example: Calculate Classical Coulomb Repulsion Energy</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/molecular_grid_construction.html">Molecular Grid Construction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid_construction.html#Molecular-Grid-Details">Molecular Grid Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid_construction.html#Construction-of-Molecular-Grid">Construction of Molecular Grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid_construction.html#Constructor">Constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid_construction.html#from_preset-method">from_preset method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid_construction.html#from_size-method">from_size method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid_construction.html#from_pruned-method">from_pruned method</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/molecular_grid.html">Molecular Grid Application</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Integration">Integration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#Example:-Electron-Density">Example: Electron Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Local-Properties">Local Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Interpolation">Interpolation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Derivative-Interpolation">Derivative Interpolation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/cubic_grid.html">Cubic Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/cubic_grid.html#Tensor-1D-Grids">Tensor 1D Grids</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/cubic_grid.html#Interpolation">Interpolation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/cubic_grid.html#Uniform-Grid">Uniform Grid</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/interpolation_poisson.html">Interpolation and Solving Poisson’s Equation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/interpolation_poisson.html#Details">Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/interpolation_poisson.html#Example:-Unit-charge-distribution">Example: Unit-charge distribution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/interpolation_poisson.html#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/multipole_moments.html">Multipole Moments</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
 <ul class="current">
@@ -189,7 +235,6 @@
             
           
         </div>
-        
       </div>
     </nav>
 
@@ -228,7 +273,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li><a href="../index.html">Docs</a> &raquo;</li>
         
           <li><a href="modules.html">grid</a> &raquo;</li>
         
@@ -378,7 +423,9 @@
 <li class="toctree-l3"><a class="reference internal" href="grid.cubic.html#grid.cubic.UniformGrid.axes"><code class="docutils literal notranslate"><span class="pre">UniformGrid.axes</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.cubic.html#grid.cubic.UniformGrid.closest_point"><code class="docutils literal notranslate"><span class="pre">UniformGrid.closest_point()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.cubic.html#grid.cubic.UniformGrid.coordinates_to_index"><code class="docutils literal notranslate"><span class="pre">UniformGrid.coordinates_to_index()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.cubic.html#grid.cubic.UniformGrid.from_cube"><code class="docutils literal notranslate"><span class="pre">UniformGrid.from_cube()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.cubic.html#grid.cubic.UniformGrid.from_molecule"><code class="docutils literal notranslate"><span class="pre">UniformGrid.from_molecule()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.cubic.html#grid.cubic.UniformGrid.generate_cube"><code class="docutils literal notranslate"><span class="pre">UniformGrid.generate_cube()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.cubic.html#grid.cubic.UniformGrid.get_localgrid"><code class="docutils literal notranslate"><span class="pre">UniformGrid.get_localgrid()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.cubic.html#grid.cubic.UniformGrid.get_points_along_axes"><code class="docutils literal notranslate"><span class="pre">UniformGrid.get_points_along_axes()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.cubic.html#grid.cubic.UniformGrid.index_to_coordinates"><code class="docutils literal notranslate"><span class="pre">UniformGrid.index_to_coordinates()</span></code></a></li>
@@ -440,10 +487,37 @@
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.ClenshawCurtis.get_localgrid"><code class="docutils literal notranslate"><span class="pre">ClenshawCurtis.get_localgrid()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.ClenshawCurtis.integrate"><code class="docutils literal notranslate"><span class="pre">ClenshawCurtis.integrate()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.ClenshawCurtis.moments"><code class="docutils literal notranslate"><span class="pre">ClenshawCurtis.moments()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.ClenshawCurtis.name"><code class="docutils literal notranslate"><span class="pre">ClenshawCurtis.name</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.ClenshawCurtis.points"><code class="docutils literal notranslate"><span class="pre">ClenshawCurtis.points</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.ClenshawCurtis.save"><code class="docutils literal notranslate"><span class="pre">ClenshawCurtis.save()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.ClenshawCurtis.size"><code class="docutils literal notranslate"><span class="pre">ClenshawCurtis.size</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.ClenshawCurtis.weights"><code class="docutils literal notranslate"><span class="pre">ClenshawCurtis.weights</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.ExpExp"><code class="docutils literal notranslate"><span class="pre">ExpExp</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.ExpExp.__init__"><code class="docutils literal notranslate"><span class="pre">ExpExp.__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.ExpExp.domain"><code class="docutils literal notranslate"><span class="pre">ExpExp.domain</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.ExpExp.get_localgrid"><code class="docutils literal notranslate"><span class="pre">ExpExp.get_localgrid()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.ExpExp.integrate"><code class="docutils literal notranslate"><span class="pre">ExpExp.integrate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.ExpExp.moments"><code class="docutils literal notranslate"><span class="pre">ExpExp.moments()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.ExpExp.name"><code class="docutils literal notranslate"><span class="pre">ExpExp.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.ExpExp.points"><code class="docutils literal notranslate"><span class="pre">ExpExp.points</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.ExpExp.save"><code class="docutils literal notranslate"><span class="pre">ExpExp.save()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.ExpExp.size"><code class="docutils literal notranslate"><span class="pre">ExpExp.size</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.ExpExp.weights"><code class="docutils literal notranslate"><span class="pre">ExpExp.weights</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.ExpSinh"><code class="docutils literal notranslate"><span class="pre">ExpSinh</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.ExpSinh.__init__"><code class="docutils literal notranslate"><span class="pre">ExpSinh.__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.ExpSinh.domain"><code class="docutils literal notranslate"><span class="pre">ExpSinh.domain</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.ExpSinh.get_localgrid"><code class="docutils literal notranslate"><span class="pre">ExpSinh.get_localgrid()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.ExpSinh.integrate"><code class="docutils literal notranslate"><span class="pre">ExpSinh.integrate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.ExpSinh.moments"><code class="docutils literal notranslate"><span class="pre">ExpSinh.moments()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.ExpSinh.name"><code class="docutils literal notranslate"><span class="pre">ExpSinh.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.ExpSinh.points"><code class="docutils literal notranslate"><span class="pre">ExpSinh.points</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.ExpSinh.save"><code class="docutils literal notranslate"><span class="pre">ExpSinh.save()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.ExpSinh.size"><code class="docutils literal notranslate"><span class="pre">ExpSinh.size</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.ExpSinh.weights"><code class="docutils literal notranslate"><span class="pre">ExpSinh.weights</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.FejerFirst"><code class="docutils literal notranslate"><span class="pre">FejerFirst</span></code></a><ul>
@@ -452,6 +526,7 @@
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.FejerFirst.get_localgrid"><code class="docutils literal notranslate"><span class="pre">FejerFirst.get_localgrid()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.FejerFirst.integrate"><code class="docutils literal notranslate"><span class="pre">FejerFirst.integrate()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.FejerFirst.moments"><code class="docutils literal notranslate"><span class="pre">FejerFirst.moments()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.FejerFirst.name"><code class="docutils literal notranslate"><span class="pre">FejerFirst.name</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.FejerFirst.points"><code class="docutils literal notranslate"><span class="pre">FejerFirst.points</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.FejerFirst.save"><code class="docutils literal notranslate"><span class="pre">FejerFirst.save()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.FejerFirst.size"><code class="docutils literal notranslate"><span class="pre">FejerFirst.size</span></code></a></li>
@@ -464,6 +539,7 @@
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.FejerSecond.get_localgrid"><code class="docutils literal notranslate"><span class="pre">FejerSecond.get_localgrid()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.FejerSecond.integrate"><code class="docutils literal notranslate"><span class="pre">FejerSecond.integrate()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.FejerSecond.moments"><code class="docutils literal notranslate"><span class="pre">FejerSecond.moments()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.FejerSecond.name"><code class="docutils literal notranslate"><span class="pre">FejerSecond.name</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.FejerSecond.points"><code class="docutils literal notranslate"><span class="pre">FejerSecond.points</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.FejerSecond.save"><code class="docutils literal notranslate"><span class="pre">FejerSecond.save()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.FejerSecond.size"><code class="docutils literal notranslate"><span class="pre">FejerSecond.size</span></code></a></li>
@@ -476,6 +552,7 @@
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.GaussChebyshev.get_localgrid"><code class="docutils literal notranslate"><span class="pre">GaussChebyshev.get_localgrid()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.GaussChebyshev.integrate"><code class="docutils literal notranslate"><span class="pre">GaussChebyshev.integrate()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.GaussChebyshev.moments"><code class="docutils literal notranslate"><span class="pre">GaussChebyshev.moments()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.GaussChebyshev.name"><code class="docutils literal notranslate"><span class="pre">GaussChebyshev.name</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.GaussChebyshev.points"><code class="docutils literal notranslate"><span class="pre">GaussChebyshev.points</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.GaussChebyshev.save"><code class="docutils literal notranslate"><span class="pre">GaussChebyshev.save()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.GaussChebyshev.size"><code class="docutils literal notranslate"><span class="pre">GaussChebyshev.size</span></code></a></li>
@@ -488,6 +565,7 @@
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.GaussChebyshevLobatto.get_localgrid"><code class="docutils literal notranslate"><span class="pre">GaussChebyshevLobatto.get_localgrid()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.GaussChebyshevLobatto.integrate"><code class="docutils literal notranslate"><span class="pre">GaussChebyshevLobatto.integrate()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.GaussChebyshevLobatto.moments"><code class="docutils literal notranslate"><span class="pre">GaussChebyshevLobatto.moments()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.GaussChebyshevLobatto.name"><code class="docutils literal notranslate"><span class="pre">GaussChebyshevLobatto.name</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.GaussChebyshevLobatto.points"><code class="docutils literal notranslate"><span class="pre">GaussChebyshevLobatto.points</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.GaussChebyshevLobatto.save"><code class="docutils literal notranslate"><span class="pre">GaussChebyshevLobatto.save()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.GaussChebyshevLobatto.size"><code class="docutils literal notranslate"><span class="pre">GaussChebyshevLobatto.size</span></code></a></li>
@@ -500,6 +578,7 @@
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.GaussChebyshevType2.get_localgrid"><code class="docutils literal notranslate"><span class="pre">GaussChebyshevType2.get_localgrid()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.GaussChebyshevType2.integrate"><code class="docutils literal notranslate"><span class="pre">GaussChebyshevType2.integrate()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.GaussChebyshevType2.moments"><code class="docutils literal notranslate"><span class="pre">GaussChebyshevType2.moments()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.GaussChebyshevType2.name"><code class="docutils literal notranslate"><span class="pre">GaussChebyshevType2.name</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.GaussChebyshevType2.points"><code class="docutils literal notranslate"><span class="pre">GaussChebyshevType2.points</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.GaussChebyshevType2.save"><code class="docutils literal notranslate"><span class="pre">GaussChebyshevType2.save()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.GaussChebyshevType2.size"><code class="docutils literal notranslate"><span class="pre">GaussChebyshevType2.size</span></code></a></li>
@@ -512,6 +591,7 @@
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.GaussLaguerre.get_localgrid"><code class="docutils literal notranslate"><span class="pre">GaussLaguerre.get_localgrid()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.GaussLaguerre.integrate"><code class="docutils literal notranslate"><span class="pre">GaussLaguerre.integrate()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.GaussLaguerre.moments"><code class="docutils literal notranslate"><span class="pre">GaussLaguerre.moments()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.GaussLaguerre.name"><code class="docutils literal notranslate"><span class="pre">GaussLaguerre.name</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.GaussLaguerre.points"><code class="docutils literal notranslate"><span class="pre">GaussLaguerre.points</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.GaussLaguerre.save"><code class="docutils literal notranslate"><span class="pre">GaussLaguerre.save()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.GaussLaguerre.size"><code class="docutils literal notranslate"><span class="pre">GaussLaguerre.size</span></code></a></li>
@@ -524,10 +604,24 @@
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.GaussLegendre.get_localgrid"><code class="docutils literal notranslate"><span class="pre">GaussLegendre.get_localgrid()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.GaussLegendre.integrate"><code class="docutils literal notranslate"><span class="pre">GaussLegendre.integrate()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.GaussLegendre.moments"><code class="docutils literal notranslate"><span class="pre">GaussLegendre.moments()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.GaussLegendre.name"><code class="docutils literal notranslate"><span class="pre">GaussLegendre.name</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.GaussLegendre.points"><code class="docutils literal notranslate"><span class="pre">GaussLegendre.points</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.GaussLegendre.save"><code class="docutils literal notranslate"><span class="pre">GaussLegendre.save()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.GaussLegendre.size"><code class="docutils literal notranslate"><span class="pre">GaussLegendre.size</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.GaussLegendre.weights"><code class="docutils literal notranslate"><span class="pre">GaussLegendre.weights</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.LogExpSinh"><code class="docutils literal notranslate"><span class="pre">LogExpSinh</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.LogExpSinh.__init__"><code class="docutils literal notranslate"><span class="pre">LogExpSinh.__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.LogExpSinh.domain"><code class="docutils literal notranslate"><span class="pre">LogExpSinh.domain</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.LogExpSinh.get_localgrid"><code class="docutils literal notranslate"><span class="pre">LogExpSinh.get_localgrid()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.LogExpSinh.integrate"><code class="docutils literal notranslate"><span class="pre">LogExpSinh.integrate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.LogExpSinh.moments"><code class="docutils literal notranslate"><span class="pre">LogExpSinh.moments()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.LogExpSinh.name"><code class="docutils literal notranslate"><span class="pre">LogExpSinh.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.LogExpSinh.points"><code class="docutils literal notranslate"><span class="pre">LogExpSinh.points</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.LogExpSinh.save"><code class="docutils literal notranslate"><span class="pre">LogExpSinh.save()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.LogExpSinh.size"><code class="docutils literal notranslate"><span class="pre">LogExpSinh.size</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.LogExpSinh.weights"><code class="docutils literal notranslate"><span class="pre">LogExpSinh.weights</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.MidPoint"><code class="docutils literal notranslate"><span class="pre">MidPoint</span></code></a><ul>
@@ -536,6 +630,7 @@
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.MidPoint.get_localgrid"><code class="docutils literal notranslate"><span class="pre">MidPoint.get_localgrid()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.MidPoint.integrate"><code class="docutils literal notranslate"><span class="pre">MidPoint.integrate()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.MidPoint.moments"><code class="docutils literal notranslate"><span class="pre">MidPoint.moments()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.MidPoint.name"><code class="docutils literal notranslate"><span class="pre">MidPoint.name</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.MidPoint.points"><code class="docutils literal notranslate"><span class="pre">MidPoint.points</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.MidPoint.save"><code class="docutils literal notranslate"><span class="pre">MidPoint.save()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.MidPoint.size"><code class="docutils literal notranslate"><span class="pre">MidPoint.size</span></code></a></li>
@@ -548,6 +643,7 @@
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.RectangleRuleSineEndPoints.get_localgrid"><code class="docutils literal notranslate"><span class="pre">RectangleRuleSineEndPoints.get_localgrid()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.RectangleRuleSineEndPoints.integrate"><code class="docutils literal notranslate"><span class="pre">RectangleRuleSineEndPoints.integrate()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.RectangleRuleSineEndPoints.moments"><code class="docutils literal notranslate"><span class="pre">RectangleRuleSineEndPoints.moments()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.RectangleRuleSineEndPoints.name"><code class="docutils literal notranslate"><span class="pre">RectangleRuleSineEndPoints.name</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.RectangleRuleSineEndPoints.points"><code class="docutils literal notranslate"><span class="pre">RectangleRuleSineEndPoints.points</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.RectangleRuleSineEndPoints.save"><code class="docutils literal notranslate"><span class="pre">RectangleRuleSineEndPoints.save()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.RectangleRuleSineEndPoints.size"><code class="docutils literal notranslate"><span class="pre">RectangleRuleSineEndPoints.size</span></code></a></li>
@@ -560,10 +656,50 @@
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.Simpson.get_localgrid"><code class="docutils literal notranslate"><span class="pre">Simpson.get_localgrid()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.Simpson.integrate"><code class="docutils literal notranslate"><span class="pre">Simpson.integrate()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.Simpson.moments"><code class="docutils literal notranslate"><span class="pre">Simpson.moments()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.Simpson.name"><code class="docutils literal notranslate"><span class="pre">Simpson.name</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.Simpson.points"><code class="docutils literal notranslate"><span class="pre">Simpson.points</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.Simpson.save"><code class="docutils literal notranslate"><span class="pre">Simpson.save()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.Simpson.size"><code class="docutils literal notranslate"><span class="pre">Simpson.size</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.Simpson.weights"><code class="docutils literal notranslate"><span class="pre">Simpson.weights</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.SingleArcSinhExp"><code class="docutils literal notranslate"><span class="pre">SingleArcSinhExp</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.SingleArcSinhExp.__init__"><code class="docutils literal notranslate"><span class="pre">SingleArcSinhExp.__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.SingleArcSinhExp.domain"><code class="docutils literal notranslate"><span class="pre">SingleArcSinhExp.domain</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.SingleArcSinhExp.get_localgrid"><code class="docutils literal notranslate"><span class="pre">SingleArcSinhExp.get_localgrid()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.SingleArcSinhExp.integrate"><code class="docutils literal notranslate"><span class="pre">SingleArcSinhExp.integrate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.SingleArcSinhExp.moments"><code class="docutils literal notranslate"><span class="pre">SingleArcSinhExp.moments()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.SingleArcSinhExp.name"><code class="docutils literal notranslate"><span class="pre">SingleArcSinhExp.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.SingleArcSinhExp.points"><code class="docutils literal notranslate"><span class="pre">SingleArcSinhExp.points</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.SingleArcSinhExp.save"><code class="docutils literal notranslate"><span class="pre">SingleArcSinhExp.save()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.SingleArcSinhExp.size"><code class="docutils literal notranslate"><span class="pre">SingleArcSinhExp.size</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.SingleArcSinhExp.weights"><code class="docutils literal notranslate"><span class="pre">SingleArcSinhExp.weights</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.SingleExp"><code class="docutils literal notranslate"><span class="pre">SingleExp</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.SingleExp.__init__"><code class="docutils literal notranslate"><span class="pre">SingleExp.__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.SingleExp.domain"><code class="docutils literal notranslate"><span class="pre">SingleExp.domain</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.SingleExp.get_localgrid"><code class="docutils literal notranslate"><span class="pre">SingleExp.get_localgrid()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.SingleExp.integrate"><code class="docutils literal notranslate"><span class="pre">SingleExp.integrate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.SingleExp.moments"><code class="docutils literal notranslate"><span class="pre">SingleExp.moments()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.SingleExp.name"><code class="docutils literal notranslate"><span class="pre">SingleExp.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.SingleExp.points"><code class="docutils literal notranslate"><span class="pre">SingleExp.points</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.SingleExp.save"><code class="docutils literal notranslate"><span class="pre">SingleExp.save()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.SingleExp.size"><code class="docutils literal notranslate"><span class="pre">SingleExp.size</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.SingleExp.weights"><code class="docutils literal notranslate"><span class="pre">SingleExp.weights</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.SingleTanh"><code class="docutils literal notranslate"><span class="pre">SingleTanh</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.SingleTanh.__init__"><code class="docutils literal notranslate"><span class="pre">SingleTanh.__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.SingleTanh.domain"><code class="docutils literal notranslate"><span class="pre">SingleTanh.domain</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.SingleTanh.get_localgrid"><code class="docutils literal notranslate"><span class="pre">SingleTanh.get_localgrid()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.SingleTanh.integrate"><code class="docutils literal notranslate"><span class="pre">SingleTanh.integrate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.SingleTanh.moments"><code class="docutils literal notranslate"><span class="pre">SingleTanh.moments()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.SingleTanh.name"><code class="docutils literal notranslate"><span class="pre">SingleTanh.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.SingleTanh.points"><code class="docutils literal notranslate"><span class="pre">SingleTanh.points</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.SingleTanh.save"><code class="docutils literal notranslate"><span class="pre">SingleTanh.save()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.SingleTanh.size"><code class="docutils literal notranslate"><span class="pre">SingleTanh.size</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.SingleTanh.weights"><code class="docutils literal notranslate"><span class="pre">SingleTanh.weights</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TanhSinh"><code class="docutils literal notranslate"><span class="pre">TanhSinh</span></code></a><ul>
@@ -572,6 +708,7 @@
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TanhSinh.get_localgrid"><code class="docutils literal notranslate"><span class="pre">TanhSinh.get_localgrid()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TanhSinh.integrate"><code class="docutils literal notranslate"><span class="pre">TanhSinh.integrate()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TanhSinh.moments"><code class="docutils literal notranslate"><span class="pre">TanhSinh.moments()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TanhSinh.name"><code class="docutils literal notranslate"><span class="pre">TanhSinh.name</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TanhSinh.points"><code class="docutils literal notranslate"><span class="pre">TanhSinh.points</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TanhSinh.save"><code class="docutils literal notranslate"><span class="pre">TanhSinh.save()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TanhSinh.size"><code class="docutils literal notranslate"><span class="pre">TanhSinh.size</span></code></a></li>
@@ -584,6 +721,7 @@
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.Trapezoidal.get_localgrid"><code class="docutils literal notranslate"><span class="pre">Trapezoidal.get_localgrid()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.Trapezoidal.integrate"><code class="docutils literal notranslate"><span class="pre">Trapezoidal.integrate()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.Trapezoidal.moments"><code class="docutils literal notranslate"><span class="pre">Trapezoidal.moments()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.Trapezoidal.name"><code class="docutils literal notranslate"><span class="pre">Trapezoidal.name</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.Trapezoidal.points"><code class="docutils literal notranslate"><span class="pre">Trapezoidal.points</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.Trapezoidal.save"><code class="docutils literal notranslate"><span class="pre">Trapezoidal.save()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.Trapezoidal.size"><code class="docutils literal notranslate"><span class="pre">Trapezoidal.size</span></code></a></li>
@@ -596,6 +734,7 @@
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TrefethenCC.get_localgrid"><code class="docutils literal notranslate"><span class="pre">TrefethenCC.get_localgrid()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TrefethenCC.integrate"><code class="docutils literal notranslate"><span class="pre">TrefethenCC.integrate()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TrefethenCC.moments"><code class="docutils literal notranslate"><span class="pre">TrefethenCC.moments()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TrefethenCC.name"><code class="docutils literal notranslate"><span class="pre">TrefethenCC.name</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TrefethenCC.points"><code class="docutils literal notranslate"><span class="pre">TrefethenCC.points</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TrefethenCC.save"><code class="docutils literal notranslate"><span class="pre">TrefethenCC.save()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TrefethenCC.size"><code class="docutils literal notranslate"><span class="pre">TrefethenCC.size</span></code></a></li>
@@ -608,6 +747,7 @@
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TrefethenGC2.get_localgrid"><code class="docutils literal notranslate"><span class="pre">TrefethenGC2.get_localgrid()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TrefethenGC2.integrate"><code class="docutils literal notranslate"><span class="pre">TrefethenGC2.integrate()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TrefethenGC2.moments"><code class="docutils literal notranslate"><span class="pre">TrefethenGC2.moments()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TrefethenGC2.name"><code class="docutils literal notranslate"><span class="pre">TrefethenGC2.name</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TrefethenGC2.points"><code class="docutils literal notranslate"><span class="pre">TrefethenGC2.points</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TrefethenGC2.save"><code class="docutils literal notranslate"><span class="pre">TrefethenGC2.save()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TrefethenGC2.size"><code class="docutils literal notranslate"><span class="pre">TrefethenGC2.size</span></code></a></li>
@@ -620,6 +760,7 @@
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TrefethenGeneral.get_localgrid"><code class="docutils literal notranslate"><span class="pre">TrefethenGeneral.get_localgrid()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TrefethenGeneral.integrate"><code class="docutils literal notranslate"><span class="pre">TrefethenGeneral.integrate()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TrefethenGeneral.moments"><code class="docutils literal notranslate"><span class="pre">TrefethenGeneral.moments()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TrefethenGeneral.name"><code class="docutils literal notranslate"><span class="pre">TrefethenGeneral.name</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TrefethenGeneral.points"><code class="docutils literal notranslate"><span class="pre">TrefethenGeneral.points</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TrefethenGeneral.save"><code class="docutils literal notranslate"><span class="pre">TrefethenGeneral.save()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TrefethenGeneral.size"><code class="docutils literal notranslate"><span class="pre">TrefethenGeneral.size</span></code></a></li>
@@ -632,6 +773,7 @@
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TrefethenStripCC.get_localgrid"><code class="docutils literal notranslate"><span class="pre">TrefethenStripCC.get_localgrid()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TrefethenStripCC.integrate"><code class="docutils literal notranslate"><span class="pre">TrefethenStripCC.integrate()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TrefethenStripCC.moments"><code class="docutils literal notranslate"><span class="pre">TrefethenStripCC.moments()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TrefethenStripCC.name"><code class="docutils literal notranslate"><span class="pre">TrefethenStripCC.name</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TrefethenStripCC.points"><code class="docutils literal notranslate"><span class="pre">TrefethenStripCC.points</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TrefethenStripCC.save"><code class="docutils literal notranslate"><span class="pre">TrefethenStripCC.save()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TrefethenStripCC.size"><code class="docutils literal notranslate"><span class="pre">TrefethenStripCC.size</span></code></a></li>
@@ -644,6 +786,7 @@
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TrefethenStripGC2.get_localgrid"><code class="docutils literal notranslate"><span class="pre">TrefethenStripGC2.get_localgrid()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TrefethenStripGC2.integrate"><code class="docutils literal notranslate"><span class="pre">TrefethenStripGC2.integrate()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TrefethenStripGC2.moments"><code class="docutils literal notranslate"><span class="pre">TrefethenStripGC2.moments()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TrefethenStripGC2.name"><code class="docutils literal notranslate"><span class="pre">TrefethenStripGC2.name</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TrefethenStripGC2.points"><code class="docutils literal notranslate"><span class="pre">TrefethenStripGC2.points</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TrefethenStripGC2.save"><code class="docutils literal notranslate"><span class="pre">TrefethenStripGC2.save()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TrefethenStripGC2.size"><code class="docutils literal notranslate"><span class="pre">TrefethenStripGC2.size</span></code></a></li>
@@ -656,6 +799,7 @@
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TrefethenStripGeneral.get_localgrid"><code class="docutils literal notranslate"><span class="pre">TrefethenStripGeneral.get_localgrid()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TrefethenStripGeneral.integrate"><code class="docutils literal notranslate"><span class="pre">TrefethenStripGeneral.integrate()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TrefethenStripGeneral.moments"><code class="docutils literal notranslate"><span class="pre">TrefethenStripGeneral.moments()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TrefethenStripGeneral.name"><code class="docutils literal notranslate"><span class="pre">TrefethenStripGeneral.name</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TrefethenStripGeneral.points"><code class="docutils literal notranslate"><span class="pre">TrefethenStripGeneral.points</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TrefethenStripGeneral.save"><code class="docutils literal notranslate"><span class="pre">TrefethenStripGeneral.save()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.TrefethenStripGeneral.size"><code class="docutils literal notranslate"><span class="pre">TrefethenStripGeneral.size</span></code></a></li>
@@ -668,6 +812,7 @@
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.UniformInteger.get_localgrid"><code class="docutils literal notranslate"><span class="pre">UniformInteger.get_localgrid()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.UniformInteger.integrate"><code class="docutils literal notranslate"><span class="pre">UniformInteger.integrate()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.UniformInteger.moments"><code class="docutils literal notranslate"><span class="pre">UniformInteger.moments()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.UniformInteger.name"><code class="docutils literal notranslate"><span class="pre">UniformInteger.name</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.UniformInteger.points"><code class="docutils literal notranslate"><span class="pre">UniformInteger.points</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.UniformInteger.save"><code class="docutils literal notranslate"><span class="pre">UniformInteger.save()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="grid.onedgrid.html#grid.onedgrid.UniformInteger.size"><code class="docutils literal notranslate"><span class="pre">UniformInteger.size</span></code></a></li>
@@ -903,6 +1048,7 @@
 <li class="toctree-l2"><a class="reference internal" href="grid.utils.html#grid.utils.generate_real_spherical_harmonics"><code class="docutils literal notranslate"><span class="pre">generate_real_spherical_harmonics()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="grid.utils.html#grid.utils.generate_real_spherical_harmonics_scipy"><code class="docutils literal notranslate"><span class="pre">generate_real_spherical_harmonics_scipy()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="grid.utils.html#grid.utils.get_cov_radii"><code class="docutils literal notranslate"><span class="pre">get_cov_radii()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="grid.utils.html#grid.utils.isotopic_masses"><code class="docutils literal notranslate"><span class="pre">isotopic_masses</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="grid.utils.html#grid.utils.solid_harmonics"><code class="docutils literal notranslate"><span class="pre">solid_harmonics()</span></code></a></li>
 </ul>
 </li>
@@ -935,19 +1081,11 @@
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2021, QC-Devs
+        &copy; Copyright 2024, QC-Devs
 
     </p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -958,6 +1096,7 @@
 
   </div>
   
+
 
   <script type="text/javascript">
       jQuery(function () {

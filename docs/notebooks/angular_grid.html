@@ -1,0 +1,677 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Angular Grids &mdash; grid  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/override.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/override.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/nbsphinx-code-cells.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Constuct Atomic Grid" href="atom_grid_construction.html" />
+    <link rel="prev" title="One-Dimensional and Radial Grids" href="one_dimensional_grids.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> grid
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">User Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#downloading-code">Downloading Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#id1">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#building-documentation">Building Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../onedgrids.html">One-Dimensional Grids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../radial_transf.html">Radial Transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../conventions.html">Conventions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../conventions.html#spherical-coordinates">Spherical Coordinates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../conventions.html#spherical-harmonics">Spherical Harmonics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../conventions.html#ordering">Ordering</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../conventions.html#angular-grids">Angular Grids</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../conventions.html#nested-grids">Nested Grids</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#One-Dimensional-Grids">One-Dimensional Grids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#Angular-Grids">Angular Grids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#Atomic-Grid">Atomic Grid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#Molecular-Grid">Molecular Grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#Visualize-3D-Grid-Points">Visualize 3D Grid Points</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#Integrate-Electron-Density-on-the-Grid">Integrate Electron Density on the Grid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#Interpolate-Electron-Density-on-the-Grid">Interpolate Electron Density on the Grid</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="quickstart.html#Check-Interpolation-Accuracy">Check Interpolation Accuracy</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#Differentiate-Electron-Density-on-the-Grid">Differentiate Electron Density on the Grid</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="quickstart.html#Check-interpolated-derivative-accuracy">Check interpolated derivative accuracy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="quickstart.html#Graphical-comparisons-of-the-accuracy">Graphical comparisons of the accuracy</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="one_dimensional_grids.html">One-Dimensional Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="one_dimensional_grids.html#Example:-Visualize-One-Dimensional-Grid-Points">Example: Visualize One-Dimensional Grid Points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="one_dimensional_grids.html#Example:-Integration-of-One-Variable-Function-on-[-1,-1]">Example: Integration of One-Variable Function on <span class="math notranslate nohighlight">\([-1, 1]\)</span></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="one_dimensional_grids.html#Radial-Grid:-Transformation-of-1D-Integration-Intervals">Radial Grid: Transformation of 1D-Integration Intervals</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="one_dimensional_grids.html#Visualize-Radial-Grid-Points">Visualize Radial Grid Points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="one_dimensional_grids.html#Example:-Integration-of-One-Variable-Function-on-[0,-\infty]">Example: Integration of One-Variable Function on <span class="math notranslate nohighlight">\([0, \infty]\)</span></a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Angular Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Initialization-of-Angular-Grids">Initialization of Angular Grids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Integral-of-Identity-Function">Integral of Identity Function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Integral-of-Spherical-Harmonic-Function">Integral of Spherical Harmonic Function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Spherical-Harmonics-Are-Orthonormal">Spherical Harmonics Are Orthonormal</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="atom_grid_construction.html">Atom Grid Construction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="atom_grid_construction.html#Atomic-Grid-AtomGrid">Atomic Grid <code class="docutils literal notranslate"><span class="pre">AtomGrid</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="atom_grid_construction.html#Plot-AtomGrid-Points">Plot <code class="docutils literal notranslate"><span class="pre">AtomGrid</span></code> Points</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="atom_grid_construction.html#Pruned-Grids-AtomGrid.from_pruned">Pruned Grids <code class="docutils literal notranslate"><span class="pre">AtomGrid.from_pruned</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="atom_grid_construction.html#Preset-Grids-AtomGrid.from_preset">Preset Grids <code class="docutils literal notranslate"><span class="pre">AtomGrid.from_preset</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="atom_grid_construction.html#Multiple-Centered-AtomGrids">Multiple Centered AtomGrids</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="atom_grid.html">Atom Grid Application</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="atom_grid.html#Construct-Atomic-Grid">Construct Atomic Grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="atom_grid.html#Example:-Integrate-Electron-Density">Example: Integrate Electron Density</a></li>
+<li class="toctree-l3"><a class="reference internal" href="atom_grid.html#Example:-Calculate-Radial-Electron-Density-Distribution">Example: Calculate Radial Electron Density Distribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="atom_grid.html#Example:-Calculate-Classical-Coulomb-Repulsion-Energy">Example: Calculate Classical Coulomb Repulsion Energy</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="molecular_grid_construction.html">Molecular Grid Construction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="molecular_grid_construction.html#Molecular-Grid-Details">Molecular Grid Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="molecular_grid_construction.html#Construction-of-Molecular-Grid">Construction of Molecular Grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="molecular_grid_construction.html#Constructor">Constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecular_grid_construction.html#from_preset-method">from_preset method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecular_grid_construction.html#from_size-method">from_size method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecular_grid_construction.html#from_pruned-method">from_pruned method</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="molecular_grid.html">Molecular Grid Application</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="molecular_grid.html#Integration">Integration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="molecular_grid.html#Example:-Electron-Density">Example: Electron Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="molecular_grid.html#Local-Properties">Local Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="molecular_grid.html#Interpolation">Interpolation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="molecular_grid.html#Derivative-Interpolation">Derivative Interpolation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="molecular_grid.html#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cubic_grid.html">Cubic Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cubic_grid.html#Tensor-1D-Grids">Tensor 1D Grids</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cubic_grid.html#Interpolation">Interpolation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cubic_grid.html#Uniform-Grid">Uniform Grid</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="interpolation_poisson.html">Interpolation and Solving Poisson’s Equation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="interpolation_poisson.html#Details">Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interpolation_poisson.html#Example:-Unit-charge-distribution">Example: Unit-charge distribution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interpolation_poisson.html#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="multipole_moments.html">Multipole Moments</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pyapi/modules.html">grid</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.html">grid package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../pyapi/grid.html#submodules">Submodules</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.angular.html">grid.angular module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.atomgrid.html">grid.atomgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.basegrid.html">grid.basegrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.becke.html">grid.becke module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.cubic.html">grid.cubic module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.hirshfeld.html">grid.hirshfeld module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.molgrid.html">grid.molgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.ode.html">grid.ode module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.onedgrid.html">grid.onedgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.periodicgrid.html">grid.periodicgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.poisson.html">grid.poisson module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.rtransform.html">grid.rtransform module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.utils.html">grid.utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../pyapi/grid.html#module-grid">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">grid</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Angular Grids</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/notebooks/angular_grid.nblink" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="Angular-Grids">
+<h1>Angular Grids<a class="headerlink" href="#Angular-Grids" title="Permalink to this heading">¶</a></h1>
+<p>The <a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.angular.html#grid.angular.AngularGrid">angular</a> grid can be used for integrating over a spherical surface. Currently, two types of angular grids are supported: Lebedev-Laikov and symmetric spherical t-design.</p>
+<div class="section" id="Initialization-of-Angular-Grids">
+<h2>Initialization of Angular Grids<a class="headerlink" href="#Initialization-of-Angular-Grids" title="Permalink to this heading">¶</a></h2>
+<p>Angular grids can be initialized in three ways:</p>
+<ol class="arabic simple">
+<li><p>By specifying the degree of the grid</p></li>
+<li><p>By specifying the number of points in the grid</p></li>
+<li><p>By specifying the grid points and integration weights directly</p></li>
+</ol>
+<p>The degree specifies be the maximum angular degree <span class="math notranslate nohighlight">\(l\)</span> of the real spherical harmonics <span class="math notranslate nohighlight">\(Y_{lm}\)</span> that the grid can integrate accurately. If the given degree is no supported, the closest degree is used.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[47]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">grid.angular</span> <span class="kn">import</span> <span class="n">AngularGrid</span>
+
+<span class="c1"># Make angular give specifying the degree</span>
+<span class="n">degree</span> <span class="o">=</span> <span class="mi">28</span>
+<span class="n">ang_grid_ll</span> <span class="o">=</span> <span class="n">AngularGrid</span><span class="p">(</span><span class="n">degree</span><span class="o">=</span><span class="n">degree</span><span class="p">)</span>
+<span class="n">ang_grid_ss</span> <span class="o">=</span> <span class="n">AngularGrid</span><span class="p">(</span><span class="n">degree</span><span class="o">=</span><span class="n">degree</span><span class="p">,</span> <span class="n">use_spherical</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Specified degree is </span><span class="si">{</span><span class="n">degree</span><span class="si">}</span><span class="s2"> but actual degree of the angular grid is:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - </span><span class="si">{</span><span class="n">ang_grid_ll</span><span class="o">.</span><span class="n">degree</span><span class="si">}</span><span class="s2"> for the Levedev-Laikov grid&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - </span><span class="si">{</span><span class="n">ang_grid_ss</span><span class="o">.</span><span class="n">degree</span><span class="si">}</span><span class="s2"> for the symmetric spherical grid&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+<span class="c1"># Using the same degree, the Levedev-Laikov and symmetric spherical grids</span>
+<span class="c1"># have different number of points</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of points of the Levedev-Laikov grid: </span><span class="si">{</span><span class="n">ang_grid_ll</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of points of the symmetric spherical grid: </span><span class="si">{</span><span class="n">ang_grid_ss</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+<span class="c1"># Make angular give specifying the number of points</span>
+<span class="n">size</span> <span class="o">=</span> <span class="mi">300</span>
+<span class="n">ang_grid_ll</span> <span class="o">=</span> <span class="n">AngularGrid</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Specified number of points (Levedev-Laikov grid) is: </span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Actual number of points of the angular grid </span><span class="si">{</span><span class="n">ang_grid_ll</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+<span class="c1"># The angular grid can be specified from the points and weights:</span>
+<span class="n">points</span> <span class="o">=</span> <span class="n">ang_grid_ll</span><span class="o">.</span><span class="n">points</span>
+<span class="n">weights</span> <span class="o">=</span> <span class="n">ang_grid_ll</span><span class="o">.</span><span class="n">weights</span>
+<span class="n">ang_grid</span> <span class="o">=</span> <span class="n">AngularGrid</span><span class="p">(</span><span class="n">points</span><span class="o">=</span><span class="n">points</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Angular grid was set from </span><span class="si">{</span><span class="n">ang_grid</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2"> points and weights&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;This grid has not specified degree!!!&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Specified degree is 28 but actual degree of the angular grid is:
+  - 29 for the Levedev-Laikov grid
+  - 29 for the symmetric spherical grid
+
+Number of points of the Levedev-Laikov grid: 302
+Number of points of the symmetric spherical grid: 438
+
+Specified number of points (Levedev-Laikov grid) is: 300
+Actual number of points of the angular grid 302
+
+Angular grid was set from 302 points and weights
+This grid has not specified degree!!!
+</pre></div></div>
+</div>
+<p>The angular grid points are distributed across on the unit-sphere <span class="math notranslate nohighlight">\(S^2\)</span>, i.e. points are normalized to one.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># Angular grid points are on the unit sphere.</span>
+<span class="n">norm_ll</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">ang_grid_ll</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">norm_ss</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">ang_grid_ss</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Norm of Levedev-Laikov grid points is all one: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">norm_ll</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">1.0</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">1e-8</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Norm of symmetric spherical grid points is all one: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">norm_ss</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">1.0</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">1e-8</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Plot of the angular grid points of the Levedev-Laikov grid</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+
+<span class="c1"># Customize the ticks for the x, y, and z axes for the entire figure</span>
+<span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">121</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s2">&quot;3d&quot;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Levedev-Laikov Grid (size=</span><span class="si">{</span><span class="n">ang_grid_ll</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">ang_grid_ll</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">T</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">)</span>
+
+<span class="c1"># Plot of the angular grid points of the symmetric spherical grid</span>
+<span class="n">ax2</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">122</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s2">&quot;3d&quot;</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Symmetric Spherical Grid (size=</span><span class="si">{</span><span class="n">ang_grid_ss</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">ang_grid_ss</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">T</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">)</span>
+
+<span class="n">xticks</span> <span class="o">=</span> <span class="n">yticks</span> <span class="o">=</span> <span class="n">zticks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">:</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">xticks</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">yticks</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_zticks</span><span class="p">(</span><span class="n">zticks</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Norm of Levedev-Laikov grid points is all one: True
+Norm of symmetric spherical grid points is all one: True
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_angular_grid_4_1.png" src="../_images/notebooks_angular_grid_4_1.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Integral-of-Identity-Function">
+<h2>Integral of Identity Function<a class="headerlink" href="#Integral-of-Identity-Function" title="Permalink to this heading">¶</a></h2>
+<p>The integral of the identity function over the unit-sphere <span class="math notranslate nohighlight">\(S^2\)</span> is <span class="math notranslate nohighlight">\(4 \pi\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\int_{0}^{2\pi} \int_0^{\pi} \sin(\phi) d\theta d\phi = 2 \pi \int_0^{\pi} \sin(\phi) d\phi = 4 \pi\]</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Integrate using Levedev-Laikov grid</span>
+<span class="n">integrand</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">ang_grid_ll</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+<span class="n">integral_ll</span> <span class="o">=</span> <span class="n">ang_grid_ll</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">integrand</span><span class="p">)</span>
+
+<span class="c1"># Integrate using symmetric spherical grid</span>
+<span class="n">integrand</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">ang_grid_ss</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+<span class="n">integral_ss</span> <span class="o">=</span> <span class="n">ang_grid_ss</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">integrand</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Analytical Integration (4xpi): </span><span class="si">{</span><span class="mi">4</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="si">:</span><span class="s2"> .9f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Numerical Integration (Levedev-Laikov grid)     : </span><span class="si">{</span><span class="n">integral_ll</span><span class="si">:</span><span class="s2"> .9f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Numerical Integration (Symmetric Spherical grid): </span><span class="si">{</span><span class="n">integral_ss</span><span class="si">:</span><span class="s2"> .9f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Analytical Integration (4xpi):  12.566370614
+Numerical Integration (Levedev-Laikov grid)     :  12.566370614
+Numerical Integration (Symmetric Spherical grid):  12.566370614
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="Integral-of-Spherical-Harmonic-Function">
+<h2>Integral of Spherical Harmonic Function<a class="headerlink" href="#Integral-of-Spherical-Harmonic-Function" title="Permalink to this heading">¶</a></h2>
+<p>The real spherical harmonic functions <span class="math notranslate nohighlight">\(Y_{lm}\)</span> integrates to zero unless when <span class="math notranslate nohighlight">\(l=0, m=0\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align*}
+    \int_{0}^{2\pi} \int_0^{\pi} Y_{00}(\theta, \phi) \sin(\phi) d\theta d\phi &amp;= \sqrt{4 \pi}  \\
+    \int_{0}^{2\pi} \int_0^{\pi} Y_{lm}(\theta, \phi) \sin(\phi) d\theta d\phi &amp;= 0
+\end{align*}\end{split}\]</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">grid.utils</span> <span class="kn">import</span> <span class="n">convert_cart_to_sph</span><span class="p">,</span> <span class="n">generate_real_spherical_harmonics</span>
+
+<span class="c1"># Convert from cartesian to spherical (theta, phi) coordinates, Levedev-Laikov grid</span>
+<span class="n">_</span><span class="p">,</span> <span class="n">theta_ll</span><span class="p">,</span> <span class="n">phi_ll</span> <span class="o">=</span> <span class="n">convert_cart_to_sph</span><span class="p">(</span><span class="n">ang_grid_ll</span><span class="o">.</span><span class="n">points</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+<span class="c1"># Convert from cartesian to spherical (theta, phi) coordinates, symmetric spherical grid</span>
+<span class="n">_</span><span class="p">,</span> <span class="n">theta_ss</span><span class="p">,</span> <span class="n">phi_ss</span> <span class="o">=</span> <span class="n">convert_cart_to_sph</span><span class="p">(</span><span class="n">ang_grid_ss</span><span class="o">.</span><span class="n">points</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Levedev-Laikov grid:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Minimum and Maximum of theta coordinate: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">theta_ll</span><span class="p">)</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">theta_ll</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Minimum and Maximum of phi coordinate: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">phi_ss</span><span class="p">)</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">phi_ll</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Symmetric spherical grid:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Minimum and Maximum of theta coordinate: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">theta_ss</span><span class="p">)</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">theta_ss</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Minimum and Maximum of phi coordinate: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">phi_ss</span><span class="p">)</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">phi_ss</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Generate all spherical harmonics up to order l=2</span>
+<span class="n">sph_harmonics_ll</span> <span class="o">=</span> <span class="n">generate_real_spherical_harmonics</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">theta_ll</span><span class="p">,</span> <span class="n">phi_ll</span><span class="p">)</span>
+<span class="n">sph_harmonics_ss</span> <span class="o">=</span> <span class="n">generate_real_spherical_harmonics</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">theta_ss</span><span class="p">,</span> <span class="n">phi_ss</span><span class="p">)</span>
+
+<span class="c1"># Orders are:</span>
+<span class="n">orders</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">]]</span>
+
+<span class="c1"># Calculate the integral of each spherical harmonic over the angular grid</span>
+<span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">sph_harmonic_i</span><span class="p">,</span> <span class="n">sph_harm</span> <span class="ow">in</span> <span class="n">orders</span><span class="p">:</span>
+    <span class="n">integral_ll</span> <span class="o">=</span> <span class="n">ang_grid_ll</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">sph_harmonics_ll</span><span class="p">[</span><span class="n">sph_harmonic_i</span><span class="p">])</span>
+    <span class="n">integral_ss</span> <span class="o">=</span> <span class="n">ang_grid_ss</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">sph_harmonics_ss</span><span class="p">[</span><span class="n">sph_harmonic_i</span><span class="p">])</span>
+    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">([(</span><span class="n">sph_harmonic_i</span><span class="p">,</span> <span class="n">sph_harm</span><span class="p">),</span> <span class="n">integral_ll</span><span class="p">,</span> <span class="n">integral_ss</span><span class="p">])</span>
+
+<span class="c1"># Print the results in a table</span>
+<span class="n">table_width</span> <span class="o">=</span> <span class="mi">82</span>
+<span class="n">width</span> <span class="o">=</span> <span class="mi">25</span>
+<span class="n">divide</span> <span class="o">=</span> <span class="s2">&quot;|&quot;</span>
+<span class="n">title_ll</span> <span class="o">=</span> <span class="s2">&quot;Levedev-Laikov grid&quot;</span>
+<span class="n">title_ss</span> <span class="o">=</span> <span class="s2">&quot;Symmetric spherical grid&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Results of the integration of the spherical harmonics over the angular grid&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="n">table_width</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">divide</span><span class="si">:</span><span class="s2">&lt;</span><span class="si">{</span><span class="n">width</span><span class="si">}}</span><span class="s2"> </span><span class="si">{</span><span class="n">divide</span><span class="si">}{</span><span class="n">title_ll</span><span class="si">:</span><span class="s2">&gt;</span><span class="si">{</span><span class="n">width</span><span class="si">}}</span><span class="s2"> </span><span class="si">{</span><span class="n">divide</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">title_ss</span><span class="si">:</span><span class="s2">&gt;</span><span class="si">{</span><span class="n">width</span><span class="si">}}</span><span class="s2"> </span><span class="si">{</span><span class="n">divide</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="n">table_width</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">sph_harmonic_i</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+    <span class="n">sph_harm</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Y_</span><span class="si">{</span><span class="n">sph_harmonic_i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">divide</span><span class="si">}{</span><span class="n">sph_harm</span><span class="si">:</span><span class="s2">^</span><span class="si">{</span><span class="n">width</span><span class="si">}}{</span><span class="n">divide</span><span class="si">}{</span><span class="n">sph_harmonic_i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">&gt;</span><span class="si">{</span><span class="n">width</span><span class="si">}</span><span class="s2">.16f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">divide</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">sph_harmonic_i</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">:</span><span class="s2">&gt;</span><span class="si">{</span><span class="n">width</span><span class="si">}</span><span class="s2">.16f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">divide</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="n">table_width</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Levedev-Laikov grid:
+Minimum and Maximum of theta coordinate: -3.044810534956229 and 3.141592653589793
+Minimum and Maximum of phi coordinate: 0.0 and 3.141592653589793
+
+Symmetric spherical grid:
+Minimum and Maximum of theta coordinate: -3.141592653589793 and 3.1265941085262927
+Minimum and Maximum of phi coordinate: 0.0 and 3.141592653589793
+
+Results of the integration of the spherical harmonics over the angular grid
+----------------------------------------------------------------------------------
+|                         |      Levedev-Laikov grid |  Symmetric spherical grid |
+----------------------------------------------------------------------------------
+|        Y_(0, 0)         |       3.5449077018109114 |        3.5449077018110318 |
+|        Y_(1, 0)         |       0.0000000000000002 |        0.0000000000000001 |
+|        Y_(1, 1)         |       0.0000000000000002 |        0.0000000000000001 |
+|        Y_(1, -1)        |       0.0000000000000002 |        0.0000000000000001 |
+|        Y_(2, 0)         |       0.0000000000000000 |       -0.0000000000000000 |
+|        Y_(2, 1)         |       0.0000000000000000 |       -0.0000000000000000 |
+|        Y_(2, -1)        |       0.0000000000000000 |       -0.0000000000000000 |
+|        Y_(2, 2)         |       0.0000000000000000 |       -0.0000000000000000 |
+|        Y_(2, -2)        |       0.0000000000000000 |       -0.0000000000000000 |
+----------------------------------------------------------------------------------
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="Spherical-Harmonics-Are-Orthonormal">
+<h2>Spherical Harmonics Are Orthonormal<a class="headerlink" href="#Spherical-Harmonics-Are-Orthonormal" title="Permalink to this heading">¶</a></h2>
+<p>The following showcases that the real spherical harmonics implemented in grid are orthonormal i.e.</p>
+<div class="math notranslate nohighlight">
+\[\int_{0}^{2\pi} \int_0^{\pi} Y_{l_1, m_1}(\theta, \phi)  Y_{l_2, m_2}(\theta, \phi)  \sin(\phi) d\theta d\phi = \delta_{l_1, l_2}\cdot \delta_{m_1, m_2}\]</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Show that real spherical harmonics are orthonormal</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">sph_harmonic_i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sph_harmonics_ll</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">sph_harmonic_j</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="n">sph_harmonics_ll</span><span class="p">))[</span><span class="n">i</span><span class="p">:]:</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">ang_grid_ll</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">sph_harmonic_i</span> <span class="o">*</span> <span class="n">sph_harmonic_j</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Integral of Y</span><span class="si">{</span><span class="n">orders</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2"> x Y</span><span class="si">{</span><span class="n">orders</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="si">}</span><span class="s2"> over the angular grid is: </span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s2"> .9f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Integral of Y[0, 0] x Y[0, 0] over the angular grid is:  1.000000000
+Integral of Y[0, 0] x Y[1, 0] over the angular grid is:  0.000000000
+Integral of Y[0, 0] x Y[1, 1] over the angular grid is: -0.000000000
+Integral of Y[0, 0] x Y[1, -1] over the angular grid is:  0.000000000
+Integral of Y[0, 0] x Y[2, 0] over the angular grid is:  0.000000000
+Integral of Y[0, 0] x Y[2, 1] over the angular grid is: -0.000000000
+Integral of Y[0, 0] x Y[2, -1] over the angular grid is: -0.000000000
+Integral of Y[0, 0] x Y[2, 2] over the angular grid is: -0.000000000
+Integral of Y[0, 0] x Y[2, -2] over the angular grid is:  0.000000000
+Integral of Y[1, 0] x Y[1, 0] over the angular grid is:  1.000000000
+Integral of Y[1, 0] x Y[1, 1] over the angular grid is: -0.000000000
+Integral of Y[1, 0] x Y[1, -1] over the angular grid is: -0.000000000
+Integral of Y[1, 0] x Y[2, 0] over the angular grid is: -0.000000000
+Integral of Y[1, 0] x Y[2, 1] over the angular grid is:  0.000000000
+Integral of Y[1, 0] x Y[2, -1] over the angular grid is:  0.000000000
+Integral of Y[1, 0] x Y[2, 2] over the angular grid is: -0.000000000
+Integral of Y[1, 0] x Y[2, -2] over the angular grid is: -0.000000000
+Integral of Y[1, 1] x Y[1, 1] over the angular grid is:  1.000000000
+Integral of Y[1, 1] x Y[1, -1] over the angular grid is:  0.000000000
+Integral of Y[1, 1] x Y[2, 0] over the angular grid is:  0.000000000
+Integral of Y[1, 1] x Y[2, 1] over the angular grid is:  0.000000000
+Integral of Y[1, 1] x Y[2, -1] over the angular grid is: -0.000000000
+Integral of Y[1, 1] x Y[2, 2] over the angular grid is: -0.000000000
+Integral of Y[1, 1] x Y[2, -2] over the angular grid is:  0.000000000
+Integral of Y[1, -1] x Y[1, -1] over the angular grid is:  1.000000000
+Integral of Y[1, -1] x Y[2, 0] over the angular grid is:  0.000000000
+Integral of Y[1, -1] x Y[2, 1] over the angular grid is: -0.000000000
+Integral of Y[1, -1] x Y[2, -1] over the angular grid is:  0.000000000
+Integral of Y[1, -1] x Y[2, 2] over the angular grid is:  0.000000000
+Integral of Y[1, -1] x Y[2, -2] over the angular grid is:  0.000000000
+Integral of Y[2, 0] x Y[2, 0] over the angular grid is:  1.000000000
+Integral of Y[2, 0] x Y[2, 1] over the angular grid is: -0.000000000
+Integral of Y[2, 0] x Y[2, -1] over the angular grid is:  0.000000000
+Integral of Y[2, 0] x Y[2, 2] over the angular grid is:  0.000000000
+Integral of Y[2, 0] x Y[2, -2] over the angular grid is: -0.000000000
+Integral of Y[2, 1] x Y[2, 1] over the angular grid is:  1.000000000
+Integral of Y[2, 1] x Y[2, -1] over the angular grid is:  0.000000000
+Integral of Y[2, 1] x Y[2, 2] over the angular grid is: -0.000000000
+Integral of Y[2, 1] x Y[2, -2] over the angular grid is:  0.000000000
+Integral of Y[2, -1] x Y[2, -1] over the angular grid is:  1.000000000
+Integral of Y[2, -1] x Y[2, 2] over the angular grid is:  0.000000000
+Integral of Y[2, -1] x Y[2, -2] over the angular grid is: -0.000000000
+Integral of Y[2, 2] x Y[2, 2] over the angular grid is:  1.000000000
+Integral of Y[2, 2] x Y[2, -2] over the angular grid is:  0.000000000
+Integral of Y[2, -2] x Y[2, -2] over the angular grid is:  1.000000000
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="atom_grid_construction.html" class="btn btn-neutral float-right" title="Constuct Atomic Grid" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="one_dimensional_grids.html" class="btn btn-neutral float-left" title="One-Dimensional and Radial Grids" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2024, QC-Devs
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,3 +1,7 @@
+.. image:: grid_logo.png
+  :width: 450
+
+
 Welcome to grid's documentation!
 ================================
 
@@ -76,23 +80,31 @@ Modules
     ./conventions.rst
 
 
+.. Notebooks that are external to the ./doc/ directory require
+   nbsphinx-link to link it to the table of contents. This
+   requires to create a ".nblink" for each external Jupyter notebook.
 
 .. toctree::
     :maxdepth: 1
     :caption: Example Tutorials
 
-    ./notebooks/Molecular_Grid.ipynb
-    ./notebooks/Molecular_Grid_Construction.ipynb
-    ./notebooks/Cubic_Grids.ipynb
-    ./notebooks/Interpolation_and_Poisson.ipynb
-    ./notebooks/Multipole_Moments.ipynb
-
+    ./notebooks/quickstart
+    One-Dimensional Grids <./notebooks/one_dimensional_grids>
+    Angular Grids <./notebooks/angular_grid>
+    Atom Grid Construction <./notebooks/atom_grid_construction>
+    Atom Grid Application <./notebooks/atom_grid>
+    Molecular Grid Construction <./notebooks/molecular_grid_construction>
+    Molecular Grid Application <./notebooks/molecular_grid>
+    Cubic Grids <./notebooks/cubic_grid>
+    ./notebooks/interpolation_poisson
+    ./notebooks/multipole_moments
 
 .. toctree::
    :maxdepth: 2
    :caption: API Documentation
 
    pyapi/modules.rst
+
 
 
 Indices and tables
