@@ -19,6 +19,7 @@
 # --
 r"""Rectangular Grid Testing."""
 
+import importlib.resources
 from unittest import TestCase
 
 import numpy as np
@@ -26,7 +27,6 @@ from numpy.testing import assert_allclose
 
 from grid.cubic import Tensor1DGrids, UniformGrid, _HyperRectangleGrid
 from grid.onedgrid import GaussLaguerre, MidPoint
-import importlib.resources
 
 
 class TestHyperRectangleGrid(TestCase):
@@ -1011,7 +1011,7 @@ class TestUniformGrid(TestCase):
         atnums, atcoords, data = cube_data["atnums"], cube_data["atcoords"], cube_data["data"]
         grid.generate_cube(out_cube, data=data, atcoords=atcoords, atnums=atnums)
 
-        with open(out_cube, "r") as out_f, open(ref_cube, "r") as ref_f:
+        with open(out_cube) as out_f, open(ref_cube) as ref_f:
             for _ in range(2):
                 next(out_f)
                 next(ref_f)
