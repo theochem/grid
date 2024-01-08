@@ -35,6 +35,7 @@ extensions = [
     "sphinx.ext.autosummary",
     "sphinx.ext.mathjax",
     "nbsphinx",
+    "nbsphinx_link",
 ]
 
 # List of arguments to be passed to the kernel that executes the notebooks:
