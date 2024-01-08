@@ -80,21 +80,24 @@ Modules
     ./conventions.rst
 
 
+.. Notebooks that are external to the ./doc/ directory require
+   nbsphinx-link to link it to the table of contents. This
+   requires to create a ".nblink" for each external Jupyter notebook.
 
 .. toctree::
     :maxdepth: 1
     :caption: Example Tutorials
 
-    ./notebooks/Quickstart.ipynb
-    ./notebooks/One_dimensional_grids.ipynb
-    ./notebooks/Atom_Grid_Construction.ipynb
-    ./notebooks/Atom_Grid.ipynb
-    ./notebooks/Molecular_Grid.ipynb
-    ./notebooks/Molecular_Grid_Construction.ipynb
-    ./notebooks/Cubic_Grids.ipynb
-    ./notebooks/Interpolation_and_Poisson.ipynb
-    ./notebooks/Multipole_Moments.ipynb
-    ./notebooks/Angular_grid.ipynb
+    ./notebooks/quickstart
+    ./notebooks/one_dimensional_grids
+    ./notebooks/atom_grid_construction
+    ./notebooks/atom_grid
+    ./notebooks/molecular_grid
+    ./notebooks/molecular_grid_construction
+    ./notebooks/cubic_grid
+    ./notebooks/interpolation_poisson
+    ./notebooks/multipole_moments
+    ./notebooks/angular_grid
 
 .. toctree::
    :maxdepth: 2
