@@ -8,3 +8,4 @@ sphinx_copybutton
 sphinx-autoapi
 nbsphinx
 sphinx_rtd_theme
+nbsphinx-link
