@@ -29,14 +29,13 @@ jobs:
 
     - name: Install development and distributions version
       run: |
+        pip install --upgrade pip
         pip install .[doc]
 
     # didn't need to change anything here, but had to add sphinx.ext.githubpages
     # to my conf.py extensions list. that fixes the broken uploads
     - name: Building documentation
       run: |
-        # pip install dist/*.whl
-        # pip install sphinx Pallets-Sphinx-Themes
         sphinx-apidoc -a -o ./doc/pyapi/ ./src/grid ./src/grid/tests/ ./src/grid/test/ ./src/grid/data/ --separate
         sphinx-build -M doc _build 
 
