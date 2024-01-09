@@ -15,15 +15,12 @@ on:
   pull_request:
 
 jobs:
-  tests:
+  build:
     runs-on: ubuntu-latest
 
-  steps:
-    - name: Setup python for building website 3.7
-      uses: actions/setup-python@v4
-      with:
-        python-version: 3.7
-
+    steps:
+    - uses: actions/checkout@v3
+  
     # download wheel that was build and uploaded in the build step
     - uses: actions/download-artifact@v1
       with:
