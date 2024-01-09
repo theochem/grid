@@ -306,7 +306,7 @@ coordinates.</p>
 <h2>Atomic Grid <code class="docutils literal notranslate"><span class="pre">AtomGrid</span></code><a class="headerlink" href="#Atomic-Grid-AtomGrid" title="Permalink to this heading">¶</a></h2>
 <p><a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid">AtomGrid</a> builds an atomic grid instance given a radial grid and an array of angular grid degrees (or sizes) used for constructing angular grids at each radial grid point. So, in the first step a radial grid needs to be constructed. For more details on the radial and angular grids, see <a class="reference external" href="../notebooks/one_dimensional_grids.html">radial grids</a> and <a class="reference external" href="../notebooks/angular_grid.html">angular grids</a>.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -339,7 +339,7 @@ Radial grid r_max: 3.00000
 <li><p>To randomly rotate the angular grids at each radial grid point, the <code class="docutils literal notranslate"><span class="pre">rotate</span></code> argument can be used to provide a seed for random rotation matrix (C).</p></li>
 </ul>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">grid</span> <span class="kn">import</span> <span class="n">AtomGrid</span>
@@ -410,14 +410,14 @@ AtomGrid D center        : [0. 0. 0.]
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-/Users/farnaz/Documents/projects/grid/src/grid/atomgrid.py:879: UserWarning: Lebedev weights are negative which can introduce round-off errors.
+/home/ali/PythonProjects/grid/src/grid/atomgrid.py:883: UserWarning: Lebedev weights are negative which can introduce round-off errors.
   sphere_grid = AngularGrid(degree=deg_i, use_spherical=use_spherical)
 </pre></div></div>
 </div>
 <div class="section" id="Plot-AtomGrid-Points">
 <h3>Plot <code class="docutils literal notranslate"><span class="pre">AtomGrid</span></code> Points<a class="headerlink" href="#Plot-AtomGrid-Points" title="Permalink to this heading">¶</a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -467,7 +467,7 @@ AtomGrid D center        : [0. 0. 0.]
 <p><a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.from_pruned">AtomGrid.from_pruned</a> construct an atomic grid given a radial grid, an atom radius, a set of radial sectors <code class="docutils literal notranslate"><span class="pre">sectors_r</span></code> and the degrees (or sizes) of angular grids <code class="docutils literal notranslate"><span class="pre">sectors_degrees</span></code> for each of the sectors. The <code class="docutils literal notranslate"><span class="pre">sectors_r</span></code> and <code class="docutils literal notranslate"><span class="pre">sectors_degrees</span></code> should have the same number of elements. This method is useful for constructing atomic grids with different angular grid resolutions for different radial
 sectors.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create an atom grid using AtomGrid.from_pruned</span>
@@ -520,11 +520,11 @@ AtomGrid center        : [0. 0. 0.]
 <p><a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.from_preset">AtomGrid.from_preset</a> builds an atomic grid given a radial grid and a preset angular grid name like <code class="docutils literal notranslate"><span class="pre">coarse</span></code>, <code class="docutils literal notranslate"><span class="pre">medium</span></code>, <code class="docutils literal notranslate"><span class="pre">fine</span></code>, <code class="docutils literal notranslate"><span class="pre">veryfine</span></code>, <code class="docutils literal notranslate"><span class="pre">ultrafine</span></code>, and <code class="docutils literal notranslate"><span class="pre">insane</span></code> (the names denote the increasing order of angular grid size) which uses a preset angular degrees for every element denoted by <code class="docutils literal notranslate"><span class="pre">atnum</span></code> (atomic number). In other words, every element has a predefined set of radial sector
 <code class="docutils literal notranslate"><span class="pre">sectors_r</span></code> and corresponding degrees <code class="docutils literal notranslate"><span class="pre">sectors_degrees</span></code> which is invoked by the <code class="docutils literal notranslate"><span class="pre">preset</span></code> argument.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># (A) Construct coarse atomic grid for Li atom</span>
-<span class="n">atgrid_coarse</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="o">.</span><span class="n">from_preset</span><span class="p">(</span><span class="n">rgrid</span><span class="p">,</span> <span class="n">atnum</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="s2">&quot;coarse&quot;</span><span class="p">)</span>
+<span class="n">atgrid_coarse</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="o">.</span><span class="n">from_preset</span><span class="p">(</span><span class="n">atnum</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="s2">&quot;coarse&quot;</span><span class="p">,</span> <span class="n">rgrid</span><span class="o">=</span><span class="n">rgrid</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid A size          : </span><span class="si">{</span><span class="n">atgrid_coarse</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid A radial size   : </span><span class="si">{</span><span class="n">atgrid_coarse</span><span class="o">.</span><span class="n">rgrid</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -532,7 +532,7 @@ AtomGrid center        : [0. 0. 0.]
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid A center        : </span><span class="si">{</span><span class="n">atgrid_coarse</span><span class="o">.</span><span class="n">center</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="c1"># (B) Construct medium atomic grid for Li atom</span>
-<span class="n">atgrid_medium</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="o">.</span><span class="n">from_preset</span><span class="p">(</span><span class="n">rgrid</span><span class="p">,</span> <span class="n">atnum</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="s2">&quot;medium&quot;</span><span class="p">)</span>
+<span class="n">atgrid_medium</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="o">.</span><span class="n">from_preset</span><span class="p">(</span><span class="n">atnum</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="s2">&quot;medium&quot;</span><span class="p">,</span> <span class="n">rgrid</span><span class="o">=</span><span class="n">rgrid</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid B size          : </span><span class="si">{</span><span class="n">atgrid_medium</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid B radial size   : </span><span class="si">{</span><span class="n">atgrid_medium</span><span class="o">.</span><span class="n">rgrid</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -540,7 +540,7 @@ AtomGrid center        : [0. 0. 0.]
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid B center        : </span><span class="si">{</span><span class="n">atgrid_medium</span><span class="o">.</span><span class="n">center</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="c1"># (C) Construct medium atomic grid for H atom</span>
-<span class="n">atgrid_medium_h</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="o">.</span><span class="n">from_preset</span><span class="p">(</span><span class="n">rgrid</span><span class="p">,</span> <span class="n">atnum</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="s2">&quot;medium&quot;</span><span class="p">)</span>
+<span class="n">atgrid_medium_h</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="o">.</span><span class="n">from_preset</span><span class="p">(</span><span class="n">atnum</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="s2">&quot;medium&quot;</span><span class="p">,</span> <span class="n">rgrid</span><span class="o">=</span><span class="n">rgrid</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid B size          : </span><span class="si">{</span><span class="n">atgrid_medium_h</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid B radial size   : </span><span class="si">{</span><span class="n">atgrid_medium_h</span><span class="o">.</span><span class="n">rgrid</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -606,7 +606,7 @@ AtomGrid B center        : [0. 0. 0.]
 <h2>Multiple Centered AtomGrids<a class="headerlink" href="#Multiple-Centered-AtomGrids" title="Permalink to this heading">¶</a></h2>
 <p>One can build multiple atomic grids with different radial and angular grid resolutions centered at different points in space using the <code class="docutils literal notranslate"><span class="pre">center</span></code> argument. Here we build two atomic grids centered on the x-axis at <span class="math notranslate nohighlight">\(x=-4\)</span> and <span class="math notranslate nohighlight">\(x=4\)</span> using for <span class="math notranslate nohighlight">\(\textbf{H}\)</span> and <span class="math notranslate nohighlight">\(\textbf{F}\)</span> atoms, respectively, using <a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.from_preset">AtomGrid.from_preset</a>.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -615,8 +615,8 @@ AtomGrid B center        : [0. 0. 0.]
 <span class="c1"># center of the atom grid</span>
 <span class="n">center</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
 
-<span class="n">atgrid_disp_1</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="o">.</span><span class="n">from_preset</span><span class="p">(</span><span class="n">rgrid</span><span class="p">,</span> <span class="n">atnum</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="s2">&quot;coarse&quot;</span><span class="p">,</span> <span class="n">center</span><span class="o">=-</span><span class="n">center</span><span class="p">)</span>
-<span class="n">atgrid_disp_2</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="o">.</span><span class="n">from_preset</span><span class="p">(</span><span class="n">rgrid</span><span class="p">,</span> <span class="n">atnum</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="s2">&quot;medium&quot;</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="n">center</span><span class="p">)</span>
+<span class="n">atgrid_disp_1</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="o">.</span><span class="n">from_preset</span><span class="p">(</span><span class="n">atnum</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="s2">&quot;coarse&quot;</span><span class="p">,</span> <span class="n">center</span><span class="o">=-</span><span class="n">center</span><span class="p">,</span> <span class="n">rgrid</span><span class="o">=</span><span class="n">rgrid</span><span class="p">)</span>
+<span class="n">atgrid_disp_2</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="o">.</span><span class="n">from_preset</span><span class="p">(</span><span class="n">atnum</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="s2">&quot;medium&quot;</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="n">center</span><span class="p">,</span> <span class="n">rgrid</span><span class="o">=</span><span class="n">rgrid</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;H AtomGrid size : </span><span class="si">{</span><span class="n">atgrid_disp_1</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2"> (Levedev-Laikov, coarse)&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;F AtomGrid size : </span><span class="si">{</span><span class="n">atgrid_disp_2</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2"> (Levedev-Laikov, medium)&quot;</span><span class="p">)</span>
