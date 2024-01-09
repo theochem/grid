@@ -20,12 +20,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-  
+
     # download wheel that was build and uploaded in the build step
-    - uses: actions/download-artifact@v1
-      with:
-        name: distributions
-        path: dist
+#    - uses: actions/download-artifact@v1
+#      with:
+#        name: distributions
+#        path: dist
 
     - name: Install development and distributions version
       run: |
@@ -47,10 +47,10 @@ jobs:
       env:
         PERSONAL_TOKEN: ${{ secrets.PAT }}
         PUBLISH_BRANCH: gh-pages
-        PUBLISH_DIR: public
+        PUBLISH_DIR: _build
 
     # since gh-pages has a history, this step might no longer be necessary.
-    - uses: actions/upload-artifact@v1
-      with:
-        name: documentation
-        path: public
+#    - uses: actions/upload-artifact@v1
+#      with:
+#        name: documentation
+#        path: public
