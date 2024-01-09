@@ -18,6 +18,7 @@ on:
 permissions:
   contents: write
   deployments: write
+  pages: write
 
 jobs:
   build:
