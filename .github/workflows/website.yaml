@@ -33,6 +33,11 @@ jobs:
         pip install .[doc]
         pip install pypandoc_binary
 
+    - name: Setup pandoc
+      uses: r-lib/actions/setup-pandoc@v1
+      with:
+        pandoc-version: '2.7.3' # The pandoc version to download (if necessary) and use.
+
     # didn't need to change anything here, but had to add sphinx.ext.githubpages
     # to my conf.py extensions list. that fixes the broken uploads
     - name: Building documentation
