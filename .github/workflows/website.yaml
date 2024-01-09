@@ -31,6 +31,8 @@ jobs:
       run: |
         pip install --upgrade pip
         pip install .[doc]
+        apt-get update && apt-get install -y pandoc
+        pip install pandoc
 
     # didn't need to change anything here, but had to add sphinx.ext.githubpages
     # to my conf.py extensions list. that fixes the broken uploads
@@ -46,7 +48,7 @@ jobs:
       env:
         PERSONAL_TOKEN: ${{ secrets.PAT }}
         PUBLISH_BRANCH: gh-pages
-        PUBLISH_DIR: _build
+        PUBLISH_DIR: _build/html
 
     # since gh-pages has a history, this step might no longer be necessary.
 #    - uses: actions/upload-artifact@v1
