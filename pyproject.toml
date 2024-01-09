@@ -49,7 +49,9 @@ doc = [
     "sphinx-autoapi",
     "nbsphinx",
     "sphinx_rtd_theme",
-    "sphinx_autodoc_typehints"
+    "sphinx_autodoc_typehints",
+    "docutils==0.16",  # Needed to show bullet points in sphinx_rtd_theme
+    "nbsphinx-link"
 ]
 
 [tool.black]
