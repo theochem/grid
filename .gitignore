@@ -2,7 +2,6 @@
 *.h5
 *.bz2
 *.gz
-*.png
 
 # Prerequisites
 *.d
