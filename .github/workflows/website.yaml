@@ -37,7 +37,7 @@ jobs:
     - name: Building documentation
       run: |
         sphinx-apidoc -a -o ./doc/pyapi/ ./src/grid ./src/grid/tests/ ./src/grid/test/ ./src/grid/data/ --separate
-        sphinx-build -M doc _build 
+        sphinx-build -M html doc _build 
 
     # still need to build and set the PAT to get a rebuild on the pages job,
     # apart from that quite clean and nice
