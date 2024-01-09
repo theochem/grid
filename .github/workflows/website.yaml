@@ -31,8 +31,7 @@ jobs:
       run: |
         pip install --upgrade pip
         pip install .[doc]
-        apt-get update && apt-get install -y pandoc
-        pip install pandoc
+        pip install pypandoc_binary
 
     # didn't need to change anything here, but had to add sphinx.ext.githubpages
     # to my conf.py extensions list. that fixes the broken uploads
