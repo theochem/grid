@@ -24,6 +24,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write
+      deployments: write
+      pages: write
+
     steps:
     - uses: actions/checkout@v3
 
