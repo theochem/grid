@@ -34,9 +34,12 @@ jobs:
         pip install pypandoc_binary
 
     - name: Setup pandoc
-      uses: r-lib/actions/setup-pandoc@v1
+#      uses: r-lib/actions/setup-pandoc@v1
+#      with:
+#        pandoc-version: '4.0.0' # The pandoc version to download (if necessary) and use
+      uses: siacodelabs/setup-pandoc@v1
       with:
-        pandoc-version: '2.7.3' # The pandoc version to download (if necessary) and use.
+        xelatex: true.
 
     # didn't need to change anything here, but had to add sphinx.ext.githubpages
     # to my conf.py extensions list. that fixes the broken uploads
@@ -50,7 +53,7 @@ jobs:
     - name: github pages deploy
       uses: peaceiris/actions-gh-pages@v2.3.1
       env:
-        PERSONAL_TOKEN: ${{ secrets.PAT }}
+        github_token: ${{ secrets.GITHUB_TOKEN }}
         PUBLISH_BRANCH: gh-pages
         PUBLISH_DIR: _build/html
 
