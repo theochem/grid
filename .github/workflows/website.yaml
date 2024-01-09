@@ -1,0 +1,59 @@
+name: build_website
+
+# Only run this workflow, when it is pushed to masters
+#on:
+#  push:
+#    branches:
+#      - master
+
+on:
+  push:
+    branches:
+     - main
+    tags-ignore:
+      - '**'
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+  steps:
+    - name: Setup python for building website 3.7
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.7
+
+    # download wheel that was build and uploaded in the build step
+    - uses: actions/download-artifact@v1
+      with:
+        name: distributions
+        path: dist
+
+    - name: Install development and distributions version
+      run: |
+        pip install -e .[doc]
+
+    # didn't need to change anything here, but had to add sphinx.ext.githubpages
+    # to my conf.py extensions list. that fixes the broken uploads
+    - name: Building documentation
+      run: |
+        # pip install dist/*.whl
+        # pip install sphinx Pallets-Sphinx-Themes
+        sphinx-apidoc -a -o ./doc/pyapi/ ./src/grid ./src/grid/tests/ ./src/grid/test/ ./src/grid/data/ --separate
+        sphinx-build -M doc _build 
+
+    # still need to build and set the PAT to get a rebuild on the pages job,
+    # apart from that quite clean and nice
+    - name: github pages deploy
+      uses: peaceiris/actions-gh-pages@v2.3.1
+      env:
+        PERSONAL_TOKEN: ${{ secrets.PAT }}
+        PUBLISH_BRANCH: gh-pages
+        PUBLISH_DIR: public
+
+    # since gh-pages has a history, this step might no longer be necessary.
+    - uses: actions/upload-artifact@v1
+      with:
+        name: documentation
+        path: public
