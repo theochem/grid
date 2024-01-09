@@ -1,6 +1,7 @@
 numpy>=1.16
 pytest>=2.6
 scipy>=1.4
+matplotlib
 importlib_resources
 sympy
 numpydoc

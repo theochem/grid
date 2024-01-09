@@ -26,7 +26,7 @@ jobs:
         pip install --upgrade pip
         pip install pytest pytest-md pytest-emoji
         # Install jupyter 
-        pip install jupyterlab nbclient
+        pip install jupyterlab nbclient matplotlib
         # Install iodata
         pip install qc-iodata
         # Install gbasis
