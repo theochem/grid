@@ -1,15 +1,9 @@
 name: build_website
 
-# Only run this workflow, when it is pushed to masters
-#on:
-#  push:
-#    branches:
-#      - master
-
 on:
   push:
     branches:
-     - main
+     - master
     tags-ignore:
       - '**'
   pull_request:
