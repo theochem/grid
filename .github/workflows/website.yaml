@@ -32,12 +32,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    # download wheel that was build and uploaded in the build step
-#    - uses: actions/download-artifact@v1
-#      with:
-#        name: distributions
-#        path: dist
-
     - name: Install development and distributions version
       run: |
         pip install --upgrade pip
@@ -45,9 +39,6 @@ jobs:
         pip install pypandoc_binary
 
     - name: Setup pandoc
-#      uses: r-lib/actions/setup-pandoc@v1
-#      with:
-#        pandoc-version: '4.0.0' # The pandoc version to download (if necessary) and use
       uses: siacodelabs/setup-pandoc@v1
       with:
         xelatex: true.
@@ -61,15 +52,10 @@ jobs:
 
     # still need to build and set the PAT to get a rebuild on the pages job,
     # apart from that quite clean and nice
-    - name: github pages deploy
-      uses: peaceiris/actions-gh-pages@v2.3.1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PUBLISH_BRANCH: gh-pages
-        PUBLISH_DIR: _build/html
-
-    # since gh-pages has a history, this step might no longer be necessary.
-#    - uses: actions/upload-artifact@v1
-#      with:
-#        name: documentation
-#        path: public
+    - name: GitHub Pages Action
+      #if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: _build/html
+        publish_branch: gh-pages
