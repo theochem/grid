@@ -595,7 +595,7 @@ def generate_real_spherical_harmonics(l_max: int, theta: np.ndarray, phi: np.nda
     Compute the real spherical harmonics recursively up to a maximum angular degree l.
 
     .. math::
-        Y_l^m(\theta, \phi) = \frac{(2l + 1) (l - m)!}{4\pi (l + m)!} f(m, \theta)
+        Y_l^m(\theta, \phi) = \sqrt{\frac{(2l + 1) (l - m)!}{4\pi (l + m)!}} f(m, \theta)
         P_l^m(\cos(\phi)),
 
     where :math:`l` is the angular degree, :math:`m` is the order and
