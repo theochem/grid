@@ -16,17 +16,19 @@ Here inside the "./build/html/ folder, there are the html files to run the websi
 
 ## Pushing To Website
 
+**WARNING: The website is automatically built everytime there is a push to the main branch and thus these sets of instructions must be taken with extreme care.**
+
 After running the commands above, you'll need to go inside the  "./build/html" folder and copy all the files.
 
 ```bash
 git branch -a
 # Should be something like origin/doc/ where origin is the remote to the theochem/grid Github
-git checkout doc
+git checkout gh-pages
 cd ..  # Get out of doc and go back to grid folder
 ```
-Now, paste and overwrite all of the files into ./docs/. Then commit and push to the `doc` branch of the theochem/grid
+Now, paste and overwrite all of the files into the root. Then commit and push to the `gh-pages` branch of the theochem/grid
 ```bash
-git add ./docs/*
+git add *
 git commit -m "Update website"
-git push origin doc
+git push origin gh-pages
 ```
