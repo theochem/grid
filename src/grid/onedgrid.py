@@ -584,7 +584,7 @@ class MidPoint(OneDGrid):
 
 
 class ClenshawCurtis(OneDGrid):
-    r"""Clenshow Curtis integral quadrature class.
+    r"""Clenshaw-Curtis integral quadrature class.
 
     The definition of this quadrature is:
 
@@ -602,7 +602,7 @@ class ClenshawCurtis(OneDGrid):
             2 & else
         \end{cases}
 
-    where :math:`k=0,\cdots,n`.
+    where :math:`k=0,\cdots ,n`.
 
     If discontinuous, it is recommended to break the intervals at the discontinuities
     and handled separately.

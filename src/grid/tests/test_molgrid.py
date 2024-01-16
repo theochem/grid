@@ -23,7 +23,7 @@ from unittest import TestCase
 import numpy as np
 from numpy.testing import assert_allclose, assert_almost_equal
 
-from grid.atomgrid import AtomGrid, get_rgrid_size
+from grid.atomgrid import AtomGrid, _get_rgrid_size
 from grid.basegrid import LocalGrid
 from grid.becke import BeckeWeights
 from grid.hirshfeld import HirshfeldWeights
@@ -248,9 +248,9 @@ class TestMolGrid(TestCase):
     def test_make_grid_different_grid_type_sg_0_1_2(self):
         """Test different kind molgrid initizalize setting."""
         # three different radial grid
-        rad1 = GaussLaguerre(get_rgrid_size("sg_0", atnums=1)[0])
-        rad2 = GaussLaguerre(get_rgrid_size("sg_2", atnums=8)[0])
-        rad3 = GaussLaguerre(get_rgrid_size("sg_1", atnums=1)[0])
+        rad1 = GaussLaguerre(_get_rgrid_size("sg_0", atnums=1)[0])
+        rad2 = GaussLaguerre(_get_rgrid_size("sg_2", atnums=8)[0])
+        rad3 = GaussLaguerre(_get_rgrid_size("sg_1", atnums=1)[0])
         # construct grid
         numbers = np.array([1, 8, 1])
         coordinates = np.array([[0.0, 0.0, -0.5], [0.0, 0.0, 0.5], [0.0, 0.5, 0.0]], float)
@@ -281,8 +281,8 @@ class TestMolGrid(TestCase):
         assert_allclose(mg._atgrids[2].points, atgrid3.points)
 
         # three different radial grid
-        rad2 = GaussLaguerre(get_rgrid_size("sg_2", atnums=8)[0])
-        rad3 = GaussLaguerre(get_rgrid_size("sg_1", atnums=1)[0])
+        rad2 = GaussLaguerre(_get_rgrid_size("sg_2", atnums=8)[0])
+        rad3 = GaussLaguerre(_get_rgrid_size("sg_1", atnums=1)[0])
 
         # grid type test with dict
         mg = MolGrid.from_preset(
@@ -311,9 +311,9 @@ class TestMolGrid(TestCase):
     def test_make_grid_different_grid_type_g1_g2_g3_g4_g6_g7(self):
         """Test different kind molgrid initizalize setting."""
         # three different radial grid
-        rad1 = GaussLaguerre(get_rgrid_size("g1", atnums=1)[0])
-        rad2 = GaussLaguerre(get_rgrid_size("g2", atnums=8)[0])
-        rad3 = GaussLaguerre(get_rgrid_size("g3", atnums=1)[0])
+        rad1 = GaussLaguerre(_get_rgrid_size("g1", atnums=1)[0])
+        rad2 = GaussLaguerre(_get_rgrid_size("g2", atnums=8)[0])
+        rad3 = GaussLaguerre(_get_rgrid_size("g3", atnums=1)[0])
         # construct grid
         numbers = np.array([1, 8, 1])
         coordinates = np.array([[0.0, 0.0, -0.5], [0.0, 0.0, 0.5], [0.0, 0.5, 0.0]], float)
@@ -344,9 +344,9 @@ class TestMolGrid(TestCase):
         assert_allclose(mg._atgrids[2].points, atgrid3.points)
 
         # three different radial grid
-        rad1 = GaussLaguerre(get_rgrid_size("g4", atnums=1)[0])
-        rad2 = GaussLaguerre(get_rgrid_size("g5", atnums=8)[0])
-        rad3 = GaussLaguerre(get_rgrid_size("g6", atnums=1)[0])
+        rad1 = GaussLaguerre(_get_rgrid_size("g4", atnums=1)[0])
+        rad2 = GaussLaguerre(_get_rgrid_size("g5", atnums=8)[0])
+        rad3 = GaussLaguerre(_get_rgrid_size("g6", atnums=1)[0])
 
         mg = MolGrid.from_preset(
             numbers,

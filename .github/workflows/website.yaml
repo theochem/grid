@@ -1,0 +1,59 @@
+name: build_website
+
+on:
+  push:
+    branches:
+      - master
+      - website
+
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches:
+      - main
+
+
+permissions:
+  contents: write
+  deployments: write
+  pages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      deployments: write
+      pages: write
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install development and distributions version
+      run: |
+        pip install --upgrade pip
+        pip install .[doc]
+        pip install pypandoc_binary
+
+    - name: Setup pandoc
+      uses: siacodelabs/setup-pandoc@v1
+      with:
+        xelatex: true.
+
+    # didn't need to change anything here, but had to add sphinx.ext.githubpages
+    # to my conf.py extensions list. that fixes the broken uploads
+    - name: Building documentation
+      run: |
+        sphinx-apidoc -a -o ./doc/pyapi/ ./src/grid ./src/grid/tests/ ./src/grid/test/ ./src/grid/data/ --separate
+        sphinx-build -M html doc _build 
+
+    # still need to build and set the PAT to get a rebuild on the pages job,
+    # apart from that quite clean and nice
+    - name: GitHub Pages Action
+      #if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: _build/html
+        publish_branch: gh-pages
+        cname: grid.qcdevs.org

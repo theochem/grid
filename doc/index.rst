@@ -12,9 +12,9 @@ but it also periodic boundary conditions.
 
 Please use the following citation in any publication using grid library:
 
-    **"Grid: A Python Library for Molecular Integration, Interpolation and More."**,
-    X. D. Yang,  L. Pujal, A. Tehrani,  R. Hernandez‐Esparza,  E. Vohringer‐Martinez,
-    T. Verstraelen, P. W. Ayers, F. Heidar‐Zadeh
+    **"Grid: A Python Library for Molecular Integration, Interpolation, Differentiation and More."**,
+    A. Tehrani, X. D. Yang, M. Martinez-Gonzalez,, L. Pujal, R. Hernandez‐Esparza, M. Chan,
+    E. Vohringer‐Martinez, T. Verstraelen, P. W. Ayers, F. Heidar‐Zadeh
 
 
 The Grid source code is hosted on GitHub and is released under the GNU General Public License v3.0. We welcome
@@ -80,21 +80,24 @@ Modules
     ./conventions.rst
 
 
+.. Notebooks that are external to the ./doc/ directory require
+   nbsphinx-link to link it to the table of contents. This
+   requires to create a ".nblink" for each external Jupyter notebook.
 
 .. toctree::
     :maxdepth: 1
     :caption: Example Tutorials
 
-    ./notebooks/Quickstart.ipynb
-    ./notebooks/One_dimensional_grids.ipynb
-    ./notebooks/Atom_Grid_Construction.ipynb
-    ./notebooks/Atom_Grid.ipynb
-    ./notebooks/Molecular_Grid.ipynb
-    ./notebooks/Molecular_Grid_Construction.ipynb
-    ./notebooks/Cubic_Grids.ipynb
-    ./notebooks/Interpolation_and_Poisson.ipynb
-    ./notebooks/Multipole_Moments.ipynb
-    ./notebooks/Angular_grid.ipynb
+    ./notebooks/quickstart
+    One-Dimensional Grids <./notebooks/one_dimensional_grids>
+    Angular Grids <./notebooks/angular_grid>
+    Atom Grid Construction <./notebooks/atom_grid_construction>
+    Atom Grid Application <./notebooks/atom_grid>
+    Molecular Grid Construction <./notebooks/molecular_grid_construction>
+    Molecular Grid Application <./notebooks/molecular_grid>
+    Cubic Grids <./notebooks/cubic_grid>
+    ./notebooks/interpolation_poisson
+    ./notebooks/multipole_moments
 
 .. toctree::
    :maxdepth: 2

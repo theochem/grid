@@ -828,7 +828,8 @@ def solid_harmonics(l_max: int, sph_pts: np.ndarray):
 
 
 def convert_derivative_from_spherical_to_cartesian(deriv_r, deriv_theta, deriv_phi, r, theta, phi):
-    r"""Convert the derivative form spherical coordinates to Cartesian.
+    r"""
+    Convert the derivative from spherical coordinates to Cartesian.
 
     If :math:`r` is zero, then the derivative wrt to theta and phi are set to zero.
     If :math:`\phi` is zero, then the derivative wrt to theta is set to zero.

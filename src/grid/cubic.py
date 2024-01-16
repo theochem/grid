@@ -966,15 +966,14 @@ class UniformGrid(_HyperRectangleGrid):
             raise ValueError("The number of atomic numbers and atom coordinates should equal.")
         if data.size != len(self.points):
             raise ValueError(
-                "Argument data should have the same size as the grid. "
-                + "{0}!={1}".format(data.size, self._npoints)
+                f"Argument data should have the same size as the grid {data.size}!={self._npoints}"
             )
         if pseudo_numbers is None:
             pseudo_numbers = atnums.astype(float)
         if pseudo_numbers.size != natom:
             raise ValueError(
                 "Argument pseudo_numbers should have the same size as the atomic numbers. "
-                + "{0}!={1}".format(pseudo_numbers.size, natom)
+                + f"{pseudo_numbers.size}!={natom}"
             )
 
         # Write data into the cube file
@@ -983,12 +982,12 @@ class UniformGrid(_HyperRectangleGrid):
             f.write("Cubefile created with THEOCHEM Grid\n")
             f.write("OUTER LOOP: X, MIDDLE LOOP: Y, INNER LOOP: Z\n")
             x, y, z = self._origin
-            f.write("{0:5d} {1:11.6f} {2:11.6f} {3:11.6f}\n".format(natom, x, y, z))
+            f.write(f"{natom:5d} {x:11.6f} {y:11.6f} {z:11.6f}\n")
             rvecs = self._axes
             for i, (x, y, z) in zip(self._shape, rvecs):
-                f.write("{0:5d} {1:11.6f} {2:11.6f} {3:11.6f}\n".format(i, x, y, z))
+                f.write(f"{i:5d} {x:11.6f} {y:11.6f} {z:11.6f}\n")
             for i, q, (x, y, z) in zip(atnums, pseudo_numbers, atcoords):
-                f.write("{0:5d} {1:11.6f} {2:11.6f} {3:11.6f} {4:11.6f}\n".format(i, q, x, y, z))
+                f.write(f"{i:5d} {q:11.6f} {x:11.6f} {y:11.6f} {z:11.6f}\n")
             # writing the cube data:
             num_chunks = 6
             for i in range(0, data.size, num_chunks):

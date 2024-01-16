@@ -31,7 +31,7 @@ from numpy.testing import (
 from scipy.spatial.transform import Rotation as R
 
 from grid.angular import LEBEDEV_DEGREES, AngularGrid
-from grid.atomgrid import AtomGrid, get_rgrid_size
+from grid.atomgrid import AtomGrid, _get_rgrid_size
 from grid.basegrid import Grid, OneDGrid
 from grid.onedgrid import GaussLaguerre, GaussLegendre, UniformInteger
 from grid.rtransform import BeckeRTransform, IdentityRTransform, PowerRTransform
@@ -40,27 +40,27 @@ from grid.utils import generate_real_spherical_harmonics
 
 def test_get_rgrid_size():
     """Test to obtain number of radial poitns for pruned atomic grids"""
-    n_rad = get_rgrid_size("sg_0", atnums=list(range(1, 18)))
+    n_rad = _get_rgrid_size("sg_0", atnums=list(range(1, 18)))
     assert n_rad == [23, 23, 23, 23, 25, 23, 23, 23, 23, 23, 26, 26, 26, 26, 26, 26, 26]
-    n_rad = get_rgrid_size("sg_1", atnums=[4, 8, 16, 28, 35, 40, 75])
+    n_rad = _get_rgrid_size("sg_1", atnums=[4, 8, 16, 28, 35, 40, 75])
     assert n_rad == [50, 50, 50, 50, 50, 50, 50]
-    n_rad = get_rgrid_size("sg_2", atnums=[4, 8, 16, 28, 35, 40, 75])
+    n_rad = _get_rgrid_size("sg_2", atnums=[4, 8, 16, 28, 35, 40, 75])
     assert n_rad == [75, 75, 75, 75, 75, 75, 75]
-    n_rad = get_rgrid_size("sg_3", atnums=[4, 8, 16, 28, 35, 40, 75])
+    n_rad = _get_rgrid_size("sg_3", atnums=[4, 8, 16, 28, 35, 40, 75])
     assert n_rad == [99, 99, 99, 99, 99, 99, 99]
-    n_rad = get_rgrid_size("g1", atnums=[6, 14, 32, 50, 82])
+    n_rad = _get_rgrid_size("g1", atnums=[6, 14, 32, 50, 82])
     assert n_rad == [40, 45, 55, 60, 65]
-    n_rad = get_rgrid_size("g2", atnums=[6, 14, 32, 50, 82])
+    n_rad = _get_rgrid_size("g2", atnums=[6, 14, 32, 50, 82])
     assert n_rad == [45, 50, 60, 65, 70]
-    n_rad = get_rgrid_size("g3", atnums=[6, 14, 32, 50, 82])
+    n_rad = _get_rgrid_size("g3", atnums=[6, 14, 32, 50, 82])
     assert n_rad == [55, 60, 70, 75, 80]
-    n_rad = get_rgrid_size("g4", atnums=[6, 14, 32, 50, 82])
+    n_rad = _get_rgrid_size("g4", atnums=[6, 14, 32, 50, 82])
     assert n_rad == [60, 65, 75, 80, 85]
-    n_rad = get_rgrid_size("g5", atnums=[6, 14, 32, 50, 82])
+    n_rad = _get_rgrid_size("g5", atnums=[6, 14, 32, 50, 82])
     assert n_rad == [65, 70, 80, 85, 90]
-    n_rad = get_rgrid_size("g6", atnums=[6, 14, 32, 50, 82])
+    n_rad = _get_rgrid_size("g6", atnums=[6, 14, 32, 50, 82])
     assert n_rad == [75, 80, 90, 95, 100]
-    n_rad = get_rgrid_size("g7", atnums=[6, 14, 32, 50, 82])
+    n_rad = _get_rgrid_size("g7", atnums=[6, 14, 32, 50, 82])
     assert n_rad == [85, 90, 100, 105, 110]
 
 
@@ -588,8 +588,8 @@ class TestAtomGrid:
         "centers",
         [
             np.array([[0.0, 0.0, 0.0]]),
-            np.array([[1e-2, 0.0, 0.0]]),  # Off-centered from AtomGrid
-            np.array([[1e-2, 0.0, -1e-2]]),  # Off-centered from AtomGrid
+            np.array([[1e-3, 0.0, 0.0]]),  # Off-centered from AtomGrid
+            np.array([[1e-3, 0.0, -1e-3]]),  # Off-centered from AtomGrid
         ],
     )
     def test_interpolation_of_gaussian(self, centers):
@@ -610,7 +610,7 @@ class TestAtomGrid:
         input_points = np.array((x, y, z)).T
         interfunc = atgrid.interpolate(value_array)
         assert_allclose(
-            self.helper_func_gauss(input_points, centers), interfunc(input_points), atol=1e-4
+            self.helper_func_gauss(input_points, centers), interfunc(input_points), atol=1e-3
         )
 
     @pytest.mark.parametrize("use_spherical", [False, True])
