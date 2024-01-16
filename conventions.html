@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Conventions &mdash; grid  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/override.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Quick Start" href="notebooks/quickstart.html" />
+    <link rel="prev" title="Radial Transformations" href="radial_transf.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            grid
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#downloading-code">Downloading Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#id1">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#building-documentation">Building Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="onedgrids.html">One-Dimensional Grids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="radial_transf.html">Radial Transformations</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Conventions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#spherical-coordinates">Spherical Coordinates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#spherical-harmonics">Spherical Harmonics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ordering">Ordering</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#angular-grids">Angular Grids</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#nested-grids">Nested Grids</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/quickstart.html">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/quickstart.html#One-Dimensional-Grids">One-Dimensional Grids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/quickstart.html#Angular-Grids">Angular Grids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/quickstart.html#Atomic-Grid">Atomic Grid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/quickstart.html#Molecular-Grid">Molecular Grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/quickstart.html#Visualize-3D-Grid-Points">Visualize 3D Grid Points</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/quickstart.html#Integrate-Electron-Density-on-the-Grid">Integrate Electron Density on the Grid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/quickstart.html#Interpolate-Electron-Density-on-the-Grid">Interpolate Electron Density on the Grid</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="notebooks/quickstart.html#Check-Interpolation-Accuracy">Check Interpolation Accuracy</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/quickstart.html#Differentiate-Electron-Density-on-the-Grid">Differentiate Electron Density on the Grid</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="notebooks/quickstart.html#Check-interpolated-derivative-accuracy">Check interpolated derivative accuracy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="notebooks/quickstart.html#Graphical-comparisons-of-the-accuracy">Graphical comparisons of the accuracy</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/one_dimensional_grids.html">One-Dimensional Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/one_dimensional_grids.html#Example:-Visualize-One-Dimensional-Grid-Points">Example: Visualize One-Dimensional Grid Points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/one_dimensional_grids.html#Example:-Integration-of-One-Variable-Function-on-[-1,-1]">Example: Integration of One-Variable Function on <span class="math notranslate nohighlight">\([-1, 1]\)</span></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/one_dimensional_grids.html#Radial-Grid:-Transformation-of-1D-Integration-Intervals">Radial Grid: Transformation of 1D-Integration Intervals</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/one_dimensional_grids.html#Visualize-Radial-Grid-Points">Visualize Radial Grid Points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/one_dimensional_grids.html#Example:-Integration-of-One-Variable-Function-on-[0,-\infty]">Example: Integration of One-Variable Function on <span class="math notranslate nohighlight">\([0, \infty]\)</span></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/angular_grid.html">Angular Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/angular_grid.html#Initialization-of-Angular-Grids">Initialization of Angular Grids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/angular_grid.html#Integral-of-Identity-Function">Integral of Identity Function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/angular_grid.html#Integral-of-Spherical-Harmonic-Function">Integral of Spherical Harmonic Function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/angular_grid.html#Spherical-Harmonics-Are-Orthonormal">Spherical Harmonics Are Orthonormal</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/atom_grid_construction.html">Atom Grid Construction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/atom_grid_construction.html#Atomic-Grid-AtomGrid">Atomic Grid <code class="docutils literal notranslate"><span class="pre">AtomGrid</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/atom_grid_construction.html#Plot-AtomGrid-Points">Plot <code class="docutils literal notranslate"><span class="pre">AtomGrid</span></code> Points</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/atom_grid_construction.html#Pruned-Grids-AtomGrid.from_pruned">Pruned Grids <code class="docutils literal notranslate"><span class="pre">AtomGrid.from_pruned</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/atom_grid_construction.html#Preset-Grids-AtomGrid.from_preset">Preset Grids <code class="docutils literal notranslate"><span class="pre">AtomGrid.from_preset</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/atom_grid_construction.html#Multiple-Centered-AtomGrids">Multiple Centered AtomGrids</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/atom_grid.html">Atom Grid Application</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/atom_grid.html#Construct-Atomic-Grid">Construct Atomic Grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/atom_grid.html#Example:-Integrate-Electron-Density">Example: Integrate Electron Density</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/atom_grid.html#Example:-Calculate-Radial-Electron-Density-Distribution">Example: Calculate Radial Electron Density Distribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/atom_grid.html#Example:-Calculate-Classical-Coulomb-Repulsion-Energy">Example: Calculate Classical Coulomb Repulsion Energy</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/molecular_grid_construction.html">Molecular Grid Construction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/molecular_grid_construction.html#Molecular-Grid-Details">Molecular Grid Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/molecular_grid_construction.html#Construction-of-Molecular-Grid">Construction of Molecular Grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/molecular_grid_construction.html#Constructor">Constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/molecular_grid_construction.html#from_preset-method">from_preset method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/molecular_grid_construction.html#from_size-method">from_size method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/molecular_grid_construction.html#from_pruned-method">from_pruned method</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/molecular_grid.html">Molecular Grid Application</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/molecular_grid.html#Integration">Integration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/molecular_grid.html#Example:-Electron-Density">Example: Electron Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/molecular_grid.html#Local-Properties">Local Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/molecular_grid.html#Interpolation">Interpolation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/molecular_grid.html#Derivative-Interpolation">Derivative Interpolation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/molecular_grid.html#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/cubic_grid.html">Cubic Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/cubic_grid.html#Tensor-1D-Grids">Tensor 1D Grids</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/cubic_grid.html#Interpolation">Interpolation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/cubic_grid.html#Uniform-Grid">Uniform Grid</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/interpolation_poisson.html">Interpolation and Solving Poisson’s Equation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/interpolation_poisson.html#Details">Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/interpolation_poisson.html#Example:-Unit-charge-distribution">Example: Unit-charge distribution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/interpolation_poisson.html#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/multipole_moments.html">Multipole Moments</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pyapi/modules.html">grid</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pyapi/grid.html">grid package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pyapi/grid.html#submodules">Submodules</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.angular.html">grid.angular module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.atomgrid.html">grid.atomgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.basegrid.html">grid.basegrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.becke.html">grid.becke module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.cubic.html">grid.cubic module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.hirshfeld.html">grid.hirshfeld module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.molgrid.html">grid.molgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.ode.html">grid.ode module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.onedgrid.html">grid.onedgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.periodicgrid.html">grid.periodicgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.poisson.html">grid.poisson module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.rtransform.html">grid.rtransform module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.utils.html">grid.utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pyapi/grid.html#module-grid">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">grid</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Conventions</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/conventions.rst" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="conventions">
+<span id="id1"></span><h1>Conventions<a class="headerlink" href="#conventions" title="Permalink to this heading"></a></h1>
+<div class="section" id="spherical-coordinates">
+<h2>Spherical Coordinates<a class="headerlink" href="#spherical-coordinates" title="Permalink to this heading"></a></h2>
+<p>Spherical coordinates <span class="math notranslate nohighlight">\((r, \theta, \phi)\)</span> is used extensively throughout the molecular, atomic,
+and angular grid modules.
+Particularly, the radius <span class="math notranslate nohighlight">\(r \in [0, \infty)\)</span>, azumuthal <span class="math notranslate nohighlight">\(\theta \in [-\pi, \pi]\)</span> and polar
+<span class="math notranslate nohighlight">\(\phi \in [0, \pi)\)</span> angles are defined from Cartesian coordinates as:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+    r &amp;= \sqrt{x^2 + y^2 + z^2}\\
+    \theta &amp;= \text{arctan2} \bigg(\frac{y}{x}\bigg)\\
+    \phi &amp;= arc\cos \bigg(\frac{z}{r}\bigg)
+\end{align}\end{split}\]</div>
+<p>such that when the radius is zero <span class="math notranslate nohighlight">\(r=0\)</span>, then the angles are zero <span class="math notranslate nohighlight">\(\theta,\phi = 0\)</span>.</p>
+<p>Grid offers a <a class="reference internal" href="pyapi/grid.utils.html#grid.utils.convert_cart_to_sph" title="grid.utils.convert_cart_to_sph"><code class="xref py py-class docutils literal notranslate"><span class="pre">utility</span></code></a> function to convert to spherical coordinates</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">grid.utils</span> <span class="kn">import</span> <span class="n">convert_cart_to_sph</span>
+
+<span class="c1"># Generate random set of points</span>
+<span class="n">cart_pts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">((</span><span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="c1"># Convert to spherical coordinates</span>
+<span class="n">spher_pts</span> <span class="o">=</span> <span class="n">convert_cart_to_sph</span><span class="p">(</span><span class="n">cart_pts</span><span class="p">)</span>
+<span class="c1"># Convert to spherical coordinates, centered at [1, 1, 1]</span>
+<span class="n">spher_pts</span> <span class="o">=</span> <span class="n">convert_cart_to_sph</span><span class="p">(</span><span class="n">cart_pts</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]))</span>
+</pre></div>
+</div>
+<p>The <a class="reference internal" href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid" title="grid.atomgrid.AtomGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">atomic</span> <span class="pre">grid</span></code></a> class can also be used to convert its points to spherical coordinates</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">grid.atomgrid</span> <span class="kn">import</span> <span class="n">AtomGrid</span>
+
+<span class="c1"># Construct atomic grid object</span>
+<span class="n">atom_grid</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+
+<span class="c1"># Convert atomic grid points centered at the nucleus to spherical coordinates</span>
+<span class="n">spher_pts</span> <span class="o">=</span> <span class="n">atom_grid</span><span class="o">.</span><span class="n">convert_cartesian_to_spherical</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>With the convention that when <span class="math notranslate nohighlight">\(r=0\)</span>, then the angles within <span class="math notranslate nohighlight">\(\{(0, \theta_j, \phi_j)\}\)</span> in that shell is
+obtained from a angular grid <span class="math notranslate nohighlight">\(\{(\theta_j, \phi_j)\}\)</span> with some degree.</p>
+</div>
+<div class="section" id="spherical-harmonics">
+<h2>Spherical Harmonics<a class="headerlink" href="#spherical-harmonics" title="Permalink to this heading"></a></h2>
+<p>The real spherical harmonics are defined using complex spherical harmonics:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}Y_{lm}(\theta, \phi) = \begin{cases}
+    i(Y^m_l(\theta, \phi) - (-1)^m Y_l^{-m}(\theta, \phi) &amp; \text{if } m &lt; 0 \\
+    Y_l^0 &amp; \text{if } m = 0 \\
+    (Y^{-|m|}_{l}(\theta, \phi) + (-1)^m Y_l^m(\theta, \phi)) &amp; \text{if } m &gt; 0
+\end{cases},\end{split}\]</div>
+<p>where the degree <span class="math notranslate nohighlight">\(l \in \mathbb{N}\)</span>, order <span class="math notranslate nohighlight">\(m \in \{-l, \cdots, l \}\)</span> and
+<span class="math notranslate nohighlight">\(Y^m_l\)</span> is the complex spherical harmonic.  The Condon-Shortley phase is not included.</p>
+<p>Alternatively, it can be written using the associated Legendre polynomials <span class="math notranslate nohighlight">\(P_l^m\)</span> (without the Conway phase):</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}Y_{lm}(\theta, \phi) = \begin{cases}
+    \sqrt{\frac{(2l + 1) (l - m)!}{4 \pi (l + m)!}} \sqrt{2} \cos(m \theta) P_l^m(\cos(\theta)) &amp; \text{if } m &lt; 0 \\
+    \frac{1}{2} \sqrt{\frac{1}{\pi}} &amp; \text{if } m = 0 \\
+    \sqrt{\frac{(2l + 1) (l - m)!}{4 \pi (l + m)!}}  \sqrt{2}\sin(m \theta) P_l^m(\cos(\theta))  &amp; \text{if } m &gt; 0
+\end{cases}\end{split}\]</div>
+<p>Grid offers <a class="reference internal" href="pyapi/grid.utils.html#grid.utils.generate_real_spherical_harmonics" title="grid.utils.generate_real_spherical_harmonics"><code class="xref py py-func docutils literal notranslate"><span class="pre">generate_real_spherical_harmonics</span></code></a> function
+to generate the real spherical harmonics:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">grid.utils</span> <span class="kn">import</span> <span class="n">generate_real_spherical_harmonics</span>
+
+<span class="n">spher_pts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="n">theta</span> <span class="o">=</span> <span class="n">spher_pts</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">phi</span> <span class="o">=</span> <span class="n">spher_pts</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span>
+<span class="c1"># Generate all degrees up to l=2</span>
+<span class="n">spherical_harmonics</span> <span class="o">=</span> <span class="n">generate_real_spherical_harmonics</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="ordering">
+<h3>Ordering<a class="headerlink" href="#ordering" title="Permalink to this heading"></a></h3>
+<p>The spherical harmonics are first ordered by the degree <span class="math notranslate nohighlight">\(l\)</span> in ascending order.</p>
+<p>For each degree <span class="math notranslate nohighlight">\(l\)</span>, the orders <span class="math notranslate nohighlight">\(m\)</span> are in HORTON2 order defined as:</p>
+<div class="math notranslate nohighlight">
+\[m = [0, 1, -1, 2, -2, \cdots, l, -l].\]</div>
+</div>
+</div>
+<div class="section" id="angular-grids">
+<h2>Angular Grids<a class="headerlink" href="#angular-grids" title="Permalink to this heading"></a></h2>
+<p>The <a class="reference internal" href="pyapi/grid.angular.html#grid.angular.AngularGrid" title="grid.angular.AngularGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">angular</span> <span class="pre">grids</span></code></a> is responsible for integrating functions over the unit-sphere.
+The quadrature weights are specifically chosen so that the spherical harmonics are orthonormal:</p>
+<div class="math notranslate nohighlight">
+\[\int_{-\pi}^{\pi} \int_0^{\pi} Y_{l_1}^{m_1} Y_{l_2}^{m_2} \sin(\phi) d\theta d\phi = \delta_{l_1, l_2} \delta_{m_1, m_2}\]</div>
+<p>Further, the quadrature weights are all chosen that the weights sum up to <span class="math notranslate nohighlight">\(4 \pi\)</span>.</p>
+<div class="section" id="nested-grids">
+<h3>Nested Grids<a class="headerlink" href="#nested-grids" title="Permalink to this heading"></a></h3>
+<p>Angular grids of different degrees can be very close to one another. The following shows the mean with
+standard deviation and maximum distance between an angular grid of one degree and the consequent
+angular grid with higher degree.  The * indicates Lebedev-Laikov grids with negative weights.</p>
+<table class="colwidths-given docutils align-center" id="id2">
+<caption><span class="caption-text">Lebedev-Laikov Grids</span><a class="headerlink" href="#id2" title="Permalink to this table"></a></caption>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Degree</p></th>
+<th class="head"><p>Number Points</p></th>
+<th class="head"><p>Mean (std) Distance</p></th>
+<th class="head"><p>Max Distance</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>3</p></td>
+<td><p>6</p></td>
+<td><p>0.0(0.0)</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-odd"><td><p>5</p></td>
+<td><p>18</p></td>
+<td><p>0.0(0.0)</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-even"><td><p>7</p></td>
+<td><p>26</p></td>
+<td><p>0.14(0.15)</p></td>
+<td><p>0.31</p></td>
+</tr>
+<tr class="row-odd"><td><p>9</p></td>
+<td><p>38</p></td>
+<td><p>0.19(0.15)</p></td>
+<td><p>0.31</p></td>
+</tr>
+<tr class="row-even"><td><p>11</p></td>
+<td><p>50</p></td>
+<td><p>0.15(0.15)</p></td>
+<td><p>0.31</p></td>
+</tr>
+<tr class="row-odd"><td><p>13*</p></td>
+<td><p>74</p></td>
+<td><p>0.11(0.082)</p></td>
+<td><p>0.2</p></td>
+</tr>
+<tr class="row-even"><td><p>15</p></td>
+<td><p>86</p></td>
+<td><p>0.052(0.042)</p></td>
+<td><p>0.12</p></td>
+</tr>
+<tr class="row-odd"><td><p>17</p></td>
+<td><p>110</p></td>
+<td><p>0.065(0.047)</p></td>
+<td><p>0.14</p></td>
+</tr>
+<tr class="row-even"><td><p>19</p></td>
+<td><p>146</p></td>
+<td><p>0.048(0.048)</p></td>
+<td><p>0.14</p></td>
+</tr>
+<tr class="row-odd"><td><p>21</p></td>
+<td><p>170</p></td>
+<td><p>0.035(0.027)</p></td>
+<td><p>0.089</p></td>
+</tr>
+<tr class="row-even"><td><p>23</p></td>
+<td><p>194</p></td>
+<td><p>0.061(0.047)</p></td>
+<td><p>0.16</p></td>
+</tr>
+<tr class="row-odd"><td><p>25*</p></td>
+<td><p>230</p></td>
+<td><p>0.058(0.036)</p></td>
+<td><p>0.12</p></td>
+</tr>
+<tr class="row-even"><td><p>27*</p></td>
+<td><p>266</p></td>
+<td><p>0.045(0.035)</p></td>
+<td><p>0.13</p></td>
+</tr>
+<tr class="row-odd"><td><p>29</p></td>
+<td><p>302</p></td>
+<td><p>0.055(0.036)</p></td>
+<td><p>0.14</p></td>
+</tr>
+<tr class="row-even"><td><p>31</p></td>
+<td><p>350</p></td>
+<td><p>0.042(0.028)</p></td>
+<td><p>0.1</p></td>
+</tr>
+<tr class="row-odd"><td><p>35</p></td>
+<td><p>434</p></td>
+<td><p>0.054(0.021)</p></td>
+<td><p>0.092</p></td>
+</tr>
+<tr class="row-even"><td><p>41</p></td>
+<td><p>590</p></td>
+<td><p>0.048(0.019)</p></td>
+<td><p>0.082</p></td>
+</tr>
+<tr class="row-odd"><td><p>47</p></td>
+<td><p>770</p></td>
+<td><p>0.043(0.017)</p></td>
+<td><p>0.074</p></td>
+</tr>
+<tr class="row-even"><td><p>53</p></td>
+<td><p>974</p></td>
+<td><p>0.038(0.015)</p></td>
+<td><p>0.065</p></td>
+</tr>
+<tr class="row-odd"><td><p>59</p></td>
+<td><p>1202</p></td>
+<td><p>0.035(0.014)</p></td>
+<td><p>0.06</p></td>
+</tr>
+<tr class="row-even"><td><p>65</p></td>
+<td><p>1454</p></td>
+<td><p>0.032(0.012)</p></td>
+<td><p>0.054</p></td>
+</tr>
+<tr class="row-odd"><td><p>71</p></td>
+<td><p>1730</p></td>
+<td><p>0.03(0.011)</p></td>
+<td><p>0.05</p></td>
+</tr>
+<tr class="row-even"><td><p>77</p></td>
+<td><p>2030</p></td>
+<td><p>0.027(0.011)</p></td>
+<td><p>0.047</p></td>
+</tr>
+<tr class="row-odd"><td><p>83</p></td>
+<td><p>2354</p></td>
+<td><p>0.026(0.0099)</p></td>
+<td><p>0.043</p></td>
+</tr>
+<tr class="row-even"><td><p>89</p></td>
+<td><p>2702</p></td>
+<td><p>0.024(0.0093)</p></td>
+<td><p>0.041</p></td>
+</tr>
+<tr class="row-odd"><td><p>95</p></td>
+<td><p>3074</p></td>
+<td><p>0.023(0.0088)</p></td>
+<td><p>0.039</p></td>
+</tr>
+<tr class="row-even"><td><p>101</p></td>
+<td><p>3470</p></td>
+<td><p>0.021(0.0083)</p></td>
+<td><p>0.036</p></td>
+</tr>
+<tr class="row-odd"><td><p>107</p></td>
+<td><p>3890</p></td>
+<td><p>0.02(0.0078)</p></td>
+<td><p>0.035</p></td>
+</tr>
+<tr class="row-even"><td><p>113</p></td>
+<td><p>4334</p></td>
+<td><p>0.019(0.0075)</p></td>
+<td><p>0.033</p></td>
+</tr>
+<tr class="row-odd"><td><p>119</p></td>
+<td><p>4802</p></td>
+<td><p>0.018(0.007)</p></td>
+<td><p>0.031</p></td>
+</tr>
+<tr class="row-even"><td><p>125</p></td>
+<td><p>5294</p></td>
+<td><p>0.018(0.0066)</p></td>
+<td><p>0.03</p></td>
+</tr>
+</tbody>
+</table>
+<table class="colwidths-given docutils align-center" id="id3">
+<caption><span class="caption-text">Symmetric Spherical t-Design Grids</span><a class="headerlink" href="#id3" title="Permalink to this table"></a></caption>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Degree</p></th>
+<th class="head"><p>Number Points</p></th>
+<th class="head"><p>Mean (std) Distance</p></th>
+<th class="head"><p>Max Distance</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1</p></td>
+<td><p>2</p></td>
+<td><p>0.0(0.0)</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-odd"><td><p>3</p></td>
+<td><p>6</p></td>
+<td><p>0.34(0.24)</p></td>
+<td><p>0.55</p></td>
+</tr>
+<tr class="row-even"><td><p>5</p></td>
+<td><p>12</p></td>
+<td><p>0.22(0.13)</p></td>
+<td><p>0.35</p></td>
+</tr>
+<tr class="row-odd"><td><p>7</p></td>
+<td><p>32</p></td>
+<td><p>0.16(0.076)</p></td>
+<td><p>0.26</p></td>
+</tr>
+<tr class="row-even"><td><p>9</p></td>
+<td><p>48</p></td>
+<td><p>0.14(0.071)</p></td>
+<td><p>0.26</p></td>
+</tr>
+<tr class="row-odd"><td><p>11</p></td>
+<td><p>70</p></td>
+<td><p>0.14(0.045)</p></td>
+<td><p>0.23</p></td>
+</tr>
+<tr class="row-even"><td><p>13</p></td>
+<td><p>94</p></td>
+<td><p>0.12(0.047)</p></td>
+<td><p>0.2</p></td>
+</tr>
+<tr class="row-odd"><td><p>15</p></td>
+<td><p>120</p></td>
+<td><p>0.11(0.041)</p></td>
+<td><p>0.19</p></td>
+</tr>
+<tr class="row-even"><td><p>17</p></td>
+<td><p>156</p></td>
+<td><p>0.088(0.038)</p></td>
+<td><p>0.16</p></td>
+</tr>
+<tr class="row-odd"><td><p>19</p></td>
+<td><p>192</p></td>
+<td><p>0.078(0.036)</p></td>
+<td><p>0.14</p></td>
+</tr>
+<tr class="row-even"><td><p>21</p></td>
+<td><p>234</p></td>
+<td><p>0.077(0.033)</p></td>
+<td><p>0.14</p></td>
+</tr>
+<tr class="row-odd"><td><p>23</p></td>
+<td><p>278</p></td>
+<td><p>0.075(0.027)</p></td>
+<td><p>0.13</p></td>
+</tr>
+<tr class="row-even"><td><p>25</p></td>
+<td><p>328</p></td>
+<td><p>0.066(0.029)</p></td>
+<td><p>0.11</p></td>
+</tr>
+<tr class="row-odd"><td><p>27</p></td>
+<td><p>380</p></td>
+<td><p>0.061(0.023)</p></td>
+<td><p>0.11</p></td>
+</tr>
+<tr class="row-even"><td><p>29</p></td>
+<td><p>438</p></td>
+<td><p>0.057(0.024)</p></td>
+<td><p>0.1</p></td>
+</tr>
+<tr class="row-odd"><td><p>31</p></td>
+<td><p>498</p></td>
+<td><p>0.06(0.021)</p></td>
+<td><p>0.1</p></td>
+</tr>
+<tr class="row-even"><td><p>33</p></td>
+<td><p>564</p></td>
+<td><p>0.047(0.02)</p></td>
+<td><p>0.094</p></td>
+</tr>
+<tr class="row-odd"><td><p>35</p></td>
+<td><p>632</p></td>
+<td><p>0.05(0.019)</p></td>
+<td><p>0.085</p></td>
+</tr>
+<tr class="row-even"><td><p>37</p></td>
+<td><p>706</p></td>
+<td><p>0.048(0.018)</p></td>
+<td><p>0.085</p></td>
+</tr>
+<tr class="row-odd"><td><p>39</p></td>
+<td><p>782</p></td>
+<td><p>0.039(0.017)</p></td>
+<td><p>0.074</p></td>
+</tr>
+<tr class="row-even"><td><p>41</p></td>
+<td><p>864</p></td>
+<td><p>0.045(0.017)</p></td>
+<td><p>0.079</p></td>
+</tr>
+<tr class="row-odd"><td><p>43</p></td>
+<td><p>948</p></td>
+<td><p>0.043(0.015)</p></td>
+<td><p>0.074</p></td>
+</tr>
+<tr class="row-even"><td><p>45</p></td>
+<td><p>1038</p></td>
+<td><p>0.041(0.015)</p></td>
+<td><p>0.071</p></td>
+</tr>
+<tr class="row-odd"><td><p>47</p></td>
+<td><p>1130</p></td>
+<td><p>0.037(0.014)</p></td>
+<td><p>0.068</p></td>
+</tr>
+<tr class="row-even"><td><p>49</p></td>
+<td><p>1228</p></td>
+<td><p>0.033(0.014)</p></td>
+<td><p>0.064</p></td>
+</tr>
+<tr class="row-odd"><td><p>51</p></td>
+<td><p>1328</p></td>
+<td><p>0.034(0.013)</p></td>
+<td><p>0.062</p></td>
+</tr>
+<tr class="row-even"><td><p>53</p></td>
+<td><p>1434</p></td>
+<td><p>0.034(0.013)</p></td>
+<td><p>0.061</p></td>
+</tr>
+<tr class="row-odd"><td><p>55</p></td>
+<td><p>1542</p></td>
+<td><p>0.03(0.012)</p></td>
+<td><p>0.054</p></td>
+</tr>
+<tr class="row-even"><td><p>57</p></td>
+<td><p>1656</p></td>
+<td><p>0.034(0.011)</p></td>
+<td><p>0.057</p></td>
+</tr>
+<tr class="row-odd"><td><p>59</p></td>
+<td><p>1772</p></td>
+<td><p>0.03(0.011)</p></td>
+<td><p>0.054</p></td>
+</tr>
+<tr class="row-even"><td><p>61</p></td>
+<td><p>1894</p></td>
+<td><p>0.025(0.011)</p></td>
+<td><p>0.05</p></td>
+</tr>
+<tr class="row-odd"><td><p>63</p></td>
+<td><p>2018</p></td>
+<td><p>0.029(0.011)</p></td>
+<td><p>0.052</p></td>
+</tr>
+<tr class="row-even"><td><p>65</p></td>
+<td><p>2148</p></td>
+<td><p>0.029(0.011)</p></td>
+<td><p>0.052</p></td>
+</tr>
+<tr class="row-odd"><td><p>67</p></td>
+<td><p>2280</p></td>
+<td><p>0.025(0.01)</p></td>
+<td><p>0.05</p></td>
+</tr>
+<tr class="row-even"><td><p>69</p></td>
+<td><p>2418</p></td>
+<td><p>0.027(0.0095)</p></td>
+<td><p>0.048</p></td>
+</tr>
+<tr class="row-odd"><td><p>71</p></td>
+<td><p>2558</p></td>
+<td><p>0.027(0.0093)</p></td>
+<td><p>0.048</p></td>
+</tr>
+<tr class="row-even"><td><p>73</p></td>
+<td><p>2704</p></td>
+<td><p>0.022(0.0095)</p></td>
+<td><p>0.045</p></td>
+</tr>
+<tr class="row-odd"><td><p>75</p></td>
+<td><p>2852</p></td>
+<td><p>0.024(0.0091)</p></td>
+<td><p>0.044</p></td>
+</tr>
+<tr class="row-even"><td><p>77</p></td>
+<td><p>3006</p></td>
+<td><p>0.02(0.0085)</p></td>
+<td><p>0.041</p></td>
+</tr>
+<tr class="row-odd"><td><p>79</p></td>
+<td><p>3162</p></td>
+<td><p>0.023(0.0086)</p></td>
+<td><p>0.041</p></td>
+</tr>
+<tr class="row-even"><td><p>81</p></td>
+<td><p>3324</p></td>
+<td><p>0.023(0.0084)</p></td>
+<td><p>0.042</p></td>
+</tr>
+<tr class="row-odd"><td><p>83</p></td>
+<td><p>3488</p></td>
+<td><p>0.02(0.0081)</p></td>
+<td><p>0.04</p></td>
+</tr>
+<tr class="row-even"><td><p>85</p></td>
+<td><p>3658</p></td>
+<td><p>0.022(0.0083)</p></td>
+<td><p>0.04</p></td>
+</tr>
+<tr class="row-odd"><td><p>87</p></td>
+<td><p>3830</p></td>
+<td><p>0.022(0.0081)</p></td>
+<td><p>0.039</p></td>
+</tr>
+<tr class="row-even"><td><p>89</p></td>
+<td><p>4008</p></td>
+<td><p>0.018(0.0076)</p></td>
+<td><p>0.036</p></td>
+</tr>
+<tr class="row-odd"><td><p>91</p></td>
+<td><p>4188</p></td>
+<td><p>0.02(0.0073)</p></td>
+<td><p>0.036</p></td>
+</tr>
+<tr class="row-even"><td><p>93</p></td>
+<td><p>4374</p></td>
+<td><p>0.018(0.0075)</p></td>
+<td><p>0.036</p></td>
+</tr>
+<tr class="row-odd"><td><p>95</p></td>
+<td><p>4562</p></td>
+<td><p>0.02(0.0074)</p></td>
+<td><p>0.036</p></td>
+</tr>
+<tr class="row-even"><td><p>97</p></td>
+<td><p>4756</p></td>
+<td><p>0.019(0.007)</p></td>
+<td><p>0.034</p></td>
+</tr>
+<tr class="row-odd"><td><p>99</p></td>
+<td><p>4952</p></td>
+<td><p>0.016(0.0067)</p></td>
+<td><p>0.031</p></td>
+</tr>
+<tr class="row-even"><td><p>101</p></td>
+<td><p>5154</p></td>
+<td><p>0.018(0.0067)</p></td>
+<td><p>0.034</p></td>
+</tr>
+<tr class="row-odd"><td><p>103</p></td>
+<td><p>5358</p></td>
+<td><p>0.016(0.0064)</p></td>
+<td><p>0.031</p></td>
+</tr>
+<tr class="row-even"><td><p>105</p></td>
+<td><p>5568</p></td>
+<td><p>0.018(0.0064)</p></td>
+<td><p>0.031</p></td>
+</tr>
+<tr class="row-odd"><td><p>107</p></td>
+<td><p>5780</p></td>
+<td><p>0.018(0.0063)</p></td>
+<td><p>0.032</p></td>
+</tr>
+<tr class="row-even"><td><p>109</p></td>
+<td><p>5998</p></td>
+<td><p>0.015(0.0062)</p></td>
+<td><p>0.03</p></td>
+</tr>
+<tr class="row-odd"><td><p>111</p></td>
+<td><p>6218</p></td>
+<td><p>0.017(0.0062)</p></td>
+<td><p>0.03</p></td>
+</tr>
+<tr class="row-even"><td><p>113</p></td>
+<td><p>6444</p></td>
+<td><p>0.017(0.0061)</p></td>
+<td><p>0.029</p></td>
+</tr>
+<tr class="row-odd"><td><p>115</p></td>
+<td><p>6672</p></td>
+<td><p>0.014(0.006)</p></td>
+<td><p>0.027</p></td>
+</tr>
+<tr class="row-even"><td><p>117</p></td>
+<td><p>6906</p></td>
+<td><p>0.016(0.006)</p></td>
+<td><p>0.029</p></td>
+</tr>
+<tr class="row-odd"><td><p>119</p></td>
+<td><p>7142</p></td>
+<td><p>0.016(0.0056)</p></td>
+<td><p>0.029</p></td>
+</tr>
+<tr class="row-even"><td><p>121</p></td>
+<td><p>7384</p></td>
+<td><p>0.016(0.0056)</p></td>
+<td><p>0.028</p></td>
+</tr>
+<tr class="row-odd"><td><p>123</p></td>
+<td><p>7628</p></td>
+<td><p>0.015(0.0056)</p></td>
+<td><p>0.027</p></td>
+</tr>
+<tr class="row-even"><td><p>125</p></td>
+<td><p>7878</p></td>
+<td><p>0.013(0.0054)</p></td>
+<td><p>0.027</p></td>
+</tr>
+<tr class="row-odd"><td><p>127</p></td>
+<td><p>8130</p></td>
+<td><p>0.015(0.0056)</p></td>
+<td><p>0.027</p></td>
+</tr>
+<tr class="row-even"><td><p>129</p></td>
+<td><p>8388</p></td>
+<td><p>0.014(0.0053)</p></td>
+<td><p>0.027</p></td>
+</tr>
+<tr class="row-odd"><td><p>131</p></td>
+<td><p>8648</p></td>
+<td><p>0.012(0.0051)</p></td>
+<td><p>0.025</p></td>
+</tr>
+<tr class="row-even"><td><p>133</p></td>
+<td><p>8914</p></td>
+<td><p>0.014(0.0054)</p></td>
+<td><p>0.025</p></td>
+</tr>
+<tr class="row-odd"><td><p>135</p></td>
+<td><p>9182</p></td>
+<td><p>0.012(0.005)</p></td>
+<td><p>0.025</p></td>
+</tr>
+<tr class="row-even"><td><p>137</p></td>
+<td><p>9456</p></td>
+<td><p>0.014(0.0052)</p></td>
+<td><p>0.025</p></td>
+</tr>
+<tr class="row-odd"><td><p>139</p></td>
+<td><p>9732</p></td>
+<td><p>0.014(0.0048)</p></td>
+<td><p>0.024</p></td>
+</tr>
+<tr class="row-even"><td><p>141</p></td>
+<td><p>10014</p></td>
+<td><p>0.013(0.005)</p></td>
+<td><p>0.025</p></td>
+</tr>
+<tr class="row-odd"><td><p>143</p></td>
+<td><p>10298</p></td>
+<td><p>0.011(0.0047)</p></td>
+<td><p>0.023</p></td>
+</tr>
+<tr class="row-even"><td><p>145</p></td>
+<td><p>10588</p></td>
+<td><p>0.013(0.0049)</p></td>
+<td><p>0.023</p></td>
+</tr>
+<tr class="row-odd"><td><p>147</p></td>
+<td><p>10880</p></td>
+<td><p>0.01(0.0047)</p></td>
+<td><p>0.022</p></td>
+</tr>
+<tr class="row-even"><td><p>149</p></td>
+<td><p>11178</p></td>
+<td><p>0.013(0.0047)</p></td>
+<td><p>0.023</p></td>
+</tr>
+<tr class="row-odd"><td><p>151</p></td>
+<td><p>11478</p></td>
+<td><p>0.013(0.0045)</p></td>
+<td><p>0.023</p></td>
+</tr>
+<tr class="row-even"><td><p>153</p></td>
+<td><p>11784</p></td>
+<td><p>0.01(0.0044)</p></td>
+<td><p>0.022</p></td>
+</tr>
+<tr class="row-odd"><td><p>155</p></td>
+<td><p>12092</p></td>
+<td><p>0.012(0.0045)</p></td>
+<td><p>0.022</p></td>
+</tr>
+<tr class="row-even"><td><p>157</p></td>
+<td><p>12406</p></td>
+<td><p>0.01(0.0043)</p></td>
+<td><p>0.021</p></td>
+</tr>
+<tr class="row-odd"><td><p>159</p></td>
+<td><p>12722</p></td>
+<td><p>0.012(0.0044)</p></td>
+<td><p>0.022</p></td>
+</tr>
+<tr class="row-even"><td><p>161</p></td>
+<td><p>13044</p></td>
+<td><p>0.012(0.0044)</p></td>
+<td><p>0.021</p></td>
+</tr>
+<tr class="row-odd"><td><p>163</p></td>
+<td><p>13368</p></td>
+<td><p>0.0096(0.0042)</p></td>
+<td><p>0.02</p></td>
+</tr>
+<tr class="row-even"><td><p>165</p></td>
+<td><p>13698</p></td>
+<td><p>0.011(0.0043)</p></td>
+<td><p>0.021</p></td>
+</tr>
+<tr class="row-odd"><td><p>167</p></td>
+<td><p>14030</p></td>
+<td><p>0.011(0.0042)</p></td>
+<td><p>0.02</p></td>
+</tr>
+<tr class="row-even"><td><p>169</p></td>
+<td><p>14368</p></td>
+<td><p>0.0092(0.004)</p></td>
+<td><p>0.02</p></td>
+</tr>
+<tr class="row-odd"><td><p>171</p></td>
+<td><p>14708</p></td>
+<td><p>0.011(0.004)</p></td>
+<td><p>0.02</p></td>
+</tr>
+<tr class="row-even"><td><p>173</p></td>
+<td><p>15054</p></td>
+<td><p>0.011(0.004)</p></td>
+<td><p>0.02</p></td>
+</tr>
+<tr class="row-odd"><td><p>175</p></td>
+<td><p>15402</p></td>
+<td><p>0.0086(0.0039)</p></td>
+<td><p>0.02</p></td>
+</tr>
+<tr class="row-even"><td><p>177</p></td>
+<td><p>15756</p></td>
+<td><p>0.01(0.004)</p></td>
+<td><p>0.019</p></td>
+</tr>
+<tr class="row-odd"><td><p>179</p></td>
+<td><p>16112</p></td>
+<td><p>0.0085(0.0039)</p></td>
+<td><p>0.018</p></td>
+</tr>
+<tr class="row-even"><td><p>181</p></td>
+<td><p>16474</p></td>
+<td><p>0.01(0.0038)</p></td>
+<td><p>0.019</p></td>
+</tr>
+<tr class="row-odd"><td><p>183</p></td>
+<td><p>16838</p></td>
+<td><p>0.011(0.0037)</p></td>
+<td><p>0.019</p></td>
+</tr>
+<tr class="row-even"><td><p>185</p></td>
+<td><p>17208</p></td>
+<td><p>0.01(0.0038)</p></td>
+<td><p>0.018</p></td>
+</tr>
+<tr class="row-odd"><td><p>187</p></td>
+<td><p>17580</p></td>
+<td><p>0.0087(0.0036)</p></td>
+<td><p>0.018</p></td>
+</tr>
+<tr class="row-even"><td><p>189</p></td>
+<td><p>17958</p></td>
+<td><p>0.0081(0.0036)</p></td>
+<td><p>0.017</p></td>
+</tr>
+<tr class="row-odd"><td><p>191</p></td>
+<td><p>18338</p></td>
+<td><p>0.0098(0.0036)</p></td>
+<td><p>0.018</p></td>
+</tr>
+<tr class="row-even"><td><p>193</p></td>
+<td><p>18724</p></td>
+<td><p>0.0099(0.0036)</p></td>
+<td><p>0.018</p></td>
+</tr>
+<tr class="row-odd"><td><p>195</p></td>
+<td><p>19112</p></td>
+<td><p>0.0098(0.0035)</p></td>
+<td><p>0.018</p></td>
+</tr>
+<tr class="row-even"><td><p>197</p></td>
+<td><p>19506</p></td>
+<td><p>0.0078(0.0034)</p></td>
+<td><p>0.017</p></td>
+</tr>
+<tr class="row-odd"><td><p>199</p></td>
+<td><p>19902</p></td>
+<td><p>0.0076(0.0034)</p></td>
+<td><p>0.017</p></td>
+</tr>
+<tr class="row-even"><td><p>201</p></td>
+<td><p>20304</p></td>
+<td><p>0.0095(0.0034)</p></td>
+<td><p>0.017</p></td>
+</tr>
+<tr class="row-odd"><td><p>203</p></td>
+<td><p>20708</p></td>
+<td><p>0.0094(0.0033)</p></td>
+<td><p>0.017</p></td>
+</tr>
+<tr class="row-even"><td><p>205</p></td>
+<td><p>21118</p></td>
+<td><p>0.0075(0.0033)</p></td>
+<td><p>0.016</p></td>
+</tr>
+<tr class="row-odd"><td><p>207</p></td>
+<td><p>21530</p></td>
+<td><p>0.0091(0.0033)</p></td>
+<td><p>0.017</p></td>
+</tr>
+<tr class="row-even"><td><p>209</p></td>
+<td><p>21948</p></td>
+<td><p>0.009(0.0033)</p></td>
+<td><p>0.016</p></td>
+</tr>
+<tr class="row-odd"><td><p>211</p></td>
+<td><p>22368</p></td>
+<td><p>0.0089(0.0033)</p></td>
+<td><p>0.016</p></td>
+</tr>
+<tr class="row-even"><td><p>213</p></td>
+<td><p>22794</p></td>
+<td><p>0.0072(0.0032)</p></td>
+<td><p>0.016</p></td>
+</tr>
+<tr class="row-odd"><td><p>215</p></td>
+<td><p>23222</p></td>
+<td><p>0.009(0.0032)</p></td>
+<td><p>0.016</p></td>
+</tr>
+<tr class="row-even"><td><p>217</p></td>
+<td><p>23656</p></td>
+<td><p>0.0071(0.0031)</p></td>
+<td><p>0.016</p></td>
+</tr>
+<tr class="row-odd"><td><p>219</p></td>
+<td><p>24092</p></td>
+<td><p>0.0087(0.0032)</p></td>
+<td><p>0.016</p></td>
+</tr>
+<tr class="row-even"><td><p>221</p></td>
+<td><p>24534</p></td>
+<td><p>0.0069(0.0031)</p></td>
+<td><p>0.015</p></td>
+</tr>
+<tr class="row-odd"><td><p>223</p></td>
+<td><p>24978</p></td>
+<td><p>0.0086(0.0031)</p></td>
+<td><p>0.016</p></td>
+</tr>
+<tr class="row-even"><td><p>225</p></td>
+<td><p>25428</p></td>
+<td><p>0.0084(0.003)</p></td>
+<td><p>0.015</p></td>
+</tr>
+<tr class="row-odd"><td><p>227</p></td>
+<td><p>25880</p></td>
+<td><p>0.0066(0.003)</p></td>
+<td><p>0.015</p></td>
+</tr>
+<tr class="row-even"><td><p>229</p></td>
+<td><p>26338</p></td>
+<td><p>0.0083(0.003)</p></td>
+<td><p>0.015</p></td>
+</tr>
+<tr class="row-odd"><td><p>231</p></td>
+<td><p>26798</p></td>
+<td><p>0.0082(0.003)</p></td>
+<td><p>0.015</p></td>
+</tr>
+<tr class="row-even"><td><p>233</p></td>
+<td><p>27264</p></td>
+<td><p>0.0065(0.003)</p></td>
+<td><p>0.015</p></td>
+</tr>
+<tr class="row-odd"><td><p>235</p></td>
+<td><p>27732</p></td>
+<td><p>0.0081(0.003)</p></td>
+<td><p>0.015</p></td>
+</tr>
+<tr class="row-even"><td><p>237</p></td>
+<td><p>28206</p></td>
+<td><p>0.0064(0.0028)</p></td>
+<td><p>0.015</p></td>
+</tr>
+<tr class="row-odd"><td><p>239</p></td>
+<td><p>28682</p></td>
+<td><p>0.0079(0.0029)</p></td>
+<td><p>0.015</p></td>
+</tr>
+<tr class="row-even"><td><p>241</p></td>
+<td><p>29164</p></td>
+<td><p>0.0062(0.0028)</p></td>
+<td><p>0.014</p></td>
+</tr>
+<tr class="row-odd"><td><p>243</p></td>
+<td><p>29648</p></td>
+<td><p>0.006(0.0028)</p></td>
+<td><p>0.014</p></td>
+</tr>
+<tr class="row-even"><td><p>245</p></td>
+<td><p>30138</p></td>
+<td><p>0.0078(0.0028)</p></td>
+<td><p>0.014</p></td>
+</tr>
+<tr class="row-odd"><td><p>247</p></td>
+<td><p>30630</p></td>
+<td><p>0.0077(0.0028)</p></td>
+<td><p>0.014</p></td>
+</tr>
+<tr class="row-even"><td><p>249</p></td>
+<td><p>31128</p></td>
+<td><p>0.006(0.0027)</p></td>
+<td><p>0.013</p></td>
+</tr>
+<tr class="row-odd"><td><p>251</p></td>
+<td><p>31628</p></td>
+<td><p>0.0076(0.0028)</p></td>
+<td><p>0.014</p></td>
+</tr>
+<tr class="row-even"><td><p>253</p></td>
+<td><p>32134</p></td>
+<td><p>0.0076(0.0027)</p></td>
+<td><p>0.014</p></td>
+</tr>
+<tr class="row-odd"><td><p>255</p></td>
+<td><p>32642</p></td>
+<td><p>0.0075(0.0027)</p></td>
+<td><p>0.014</p></td>
+</tr>
+<tr class="row-even"><td><p>257</p></td>
+<td><p>33156</p></td>
+<td><p>0.0059(0.0026)</p></td>
+<td><p>0.013</p></td>
+</tr>
+<tr class="row-odd"><td><p>259</p></td>
+<td><p>33672</p></td>
+<td><p>0.0074(0.0026)</p></td>
+<td><p>0.013</p></td>
+</tr>
+<tr class="row-even"><td><p>261</p></td>
+<td><p>34194</p></td>
+<td><p>0.0058(0.0026)</p></td>
+<td><p>0.013</p></td>
+</tr>
+<tr class="row-odd"><td><p>263</p></td>
+<td><p>34718</p></td>
+<td><p>0.0071(0.0027)</p></td>
+<td><p>0.013</p></td>
+</tr>
+<tr class="row-even"><td><p>265</p></td>
+<td><p>35248</p></td>
+<td><p>0.0055(0.0025)</p></td>
+<td><p>0.013</p></td>
+</tr>
+<tr class="row-odd"><td><p>267</p></td>
+<td><p>35780</p></td>
+<td><p>0.0071(0.0026)</p></td>
+<td><p>0.013</p></td>
+</tr>
+<tr class="row-even"><td><p>269</p></td>
+<td><p>36318</p></td>
+<td><p>0.0071(0.0026)</p></td>
+<td><p>0.013</p></td>
+</tr>
+<tr class="row-odd"><td><p>271</p></td>
+<td><p>36858</p></td>
+<td><p>0.0054(0.0024)</p></td>
+<td><p>0.012</p></td>
+</tr>
+<tr class="row-even"><td><p>273</p></td>
+<td><p>37404</p></td>
+<td><p>0.007(0.0025)</p></td>
+<td><p>0.013</p></td>
+</tr>
+<tr class="row-odd"><td><p>275</p></td>
+<td><p>37952</p></td>
+<td><p>0.007(0.0025)</p></td>
+<td><p>0.012</p></td>
+</tr>
+<tr class="row-even"><td><p>277</p></td>
+<td><p>38506</p></td>
+<td><p>0.0054(0.0024)</p></td>
+<td><p>0.012</p></td>
+</tr>
+<tr class="row-odd"><td><p>279</p></td>
+<td><p>39062</p></td>
+<td><p>0.0068(0.0025)</p></td>
+<td><p>0.012</p></td>
+</tr>
+<tr class="row-even"><td><p>281</p></td>
+<td><p>39624</p></td>
+<td><p>0.0052(0.0024)</p></td>
+<td><p>0.012</p></td>
+</tr>
+<tr class="row-odd"><td><p>283</p></td>
+<td><p>40188</p></td>
+<td><p>0.0068(0.0025)</p></td>
+<td><p>0.012</p></td>
+</tr>
+<tr class="row-even"><td><p>285</p></td>
+<td><p>40758</p></td>
+<td><p>0.0068(0.0024)</p></td>
+<td><p>0.012</p></td>
+</tr>
+<tr class="row-odd"><td><p>287</p></td>
+<td><p>41330</p></td>
+<td><p>0.0066(0.0025)</p></td>
+<td><p>0.012</p></td>
+</tr>
+<tr class="row-even"><td><p>289</p></td>
+<td><p>41908</p></td>
+<td><p>0.0051(0.0023)</p></td>
+<td><p>0.011</p></td>
+</tr>
+<tr class="row-odd"><td><p>291</p></td>
+<td><p>42488</p></td>
+<td><p>0.0065(0.0024)</p></td>
+<td><p>0.012</p></td>
+</tr>
+<tr class="row-even"><td><p>293</p></td>
+<td><p>43074</p></td>
+<td><p>0.0051(0.0023)</p></td>
+<td><p>0.011</p></td>
+</tr>
+<tr class="row-odd"><td><p>295</p></td>
+<td><p>43662</p></td>
+<td><p>0.0065(0.0023)</p></td>
+<td><p>0.012</p></td>
+</tr>
+<tr class="row-even"><td><p>297</p></td>
+<td><p>44256</p></td>
+<td><p>0.005(0.0023)</p></td>
+<td><p>0.011</p></td>
+</tr>
+<tr class="row-odd"><td><p>299</p></td>
+<td><p>44852</p></td>
+<td><p>0.0064(0.0023)</p></td>
+<td><p>0.011</p></td>
+</tr>
+<tr class="row-even"><td><p>301</p></td>
+<td><p>45454</p></td>
+<td><p>0.0064(0.0023)</p></td>
+<td><p>0.011</p></td>
+</tr>
+<tr class="row-odd"><td><p>303</p></td>
+<td><p>46058</p></td>
+<td><p>0.0063(0.0023)</p></td>
+<td><p>0.011</p></td>
+</tr>
+<tr class="row-even"><td><p>305</p></td>
+<td><p>46668</p></td>
+<td><p>0.0049(0.0023)</p></td>
+<td><p>0.011</p></td>
+</tr>
+<tr class="row-odd"><td><p>307</p></td>
+<td><p>47280</p></td>
+<td><p>0.0062(0.0023)</p></td>
+<td><p>0.011</p></td>
+</tr>
+<tr class="row-even"><td><p>309</p></td>
+<td><p>47898</p></td>
+<td><p>0.0047(0.0022)</p></td>
+<td><p>0.011</p></td>
+</tr>
+<tr class="row-odd"><td><p>311</p></td>
+<td><p>48518</p></td>
+<td><p>0.0061(0.0022)</p></td>
+<td><p>0.011</p></td>
+</tr>
+<tr class="row-even"><td><p>313</p></td>
+<td><p>49144</p></td>
+<td><p>0.0047(0.0022)</p></td>
+<td><p>0.011</p></td>
+</tr>
+<tr class="row-odd"><td><p>315</p></td>
+<td><p>49772</p></td>
+<td><p>0.0061(0.0022)</p></td>
+<td><p>0.011</p></td>
+</tr>
+<tr class="row-even"><td><p>317</p></td>
+<td><p>50406</p></td>
+<td><p>0.0059(0.0022)</p></td>
+<td><p>0.011</p></td>
+</tr>
+<tr class="row-odd"><td><p>319</p></td>
+<td><p>51042</p></td>
+<td><p>0.0059(0.0022)</p></td>
+<td><p>0.011</p></td>
+</tr>
+<tr class="row-even"><td><p>321</p></td>
+<td><p>51684</p></td>
+<td><p>0.0046(0.0021)</p></td>
+<td><p>0.011</p></td>
+</tr>
+<tr class="row-odd"><td><p>323</p></td>
+<td><p>52328</p></td>
+<td><p>0.0047(0.0021)</p></td>
+<td><p>0.01</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="radial_transf.html" class="btn btn-neutral float-left" title="Radial Transformations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="notebooks/quickstart.html" class="btn btn-neutral float-right" title="Quick Start" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, QC-Devs.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

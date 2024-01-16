@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cubic Grids &mdash; grid  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/override.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Interpolation and Solving Poisson’s Equation" href="interpolation_poisson.html" />
+    <link rel="prev" title="Molecular Grids" href="molecular_grid.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            grid
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#downloading-code">Downloading Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#id1">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#building-documentation">Building Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../onedgrids.html">One-Dimensional Grids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../radial_transf.html">Radial Transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../conventions.html">Conventions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../conventions.html#spherical-coordinates">Spherical Coordinates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../conventions.html#spherical-harmonics">Spherical Harmonics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../conventions.html#ordering">Ordering</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../conventions.html#angular-grids">Angular Grids</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../conventions.html#nested-grids">Nested Grids</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#One-Dimensional-Grids">One-Dimensional Grids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#Angular-Grids">Angular Grids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#Atomic-Grid">Atomic Grid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#Molecular-Grid">Molecular Grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#Visualize-3D-Grid-Points">Visualize 3D Grid Points</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#Integrate-Electron-Density-on-the-Grid">Integrate Electron Density on the Grid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#Interpolate-Electron-Density-on-the-Grid">Interpolate Electron Density on the Grid</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="quickstart.html#Check-Interpolation-Accuracy">Check Interpolation Accuracy</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#Differentiate-Electron-Density-on-the-Grid">Differentiate Electron Density on the Grid</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="quickstart.html#Check-interpolated-derivative-accuracy">Check interpolated derivative accuracy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="quickstart.html#Graphical-comparisons-of-the-accuracy">Graphical comparisons of the accuracy</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="one_dimensional_grids.html">One-Dimensional Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="one_dimensional_grids.html#Example:-Visualize-One-Dimensional-Grid-Points">Example: Visualize One-Dimensional Grid Points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="one_dimensional_grids.html#Example:-Integration-of-One-Variable-Function-on-[-1,-1]">Example: Integration of One-Variable Function on <span class="math notranslate nohighlight">\([-1, 1]\)</span></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="one_dimensional_grids.html#Radial-Grid:-Transformation-of-1D-Integration-Intervals">Radial Grid: Transformation of 1D-Integration Intervals</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="one_dimensional_grids.html#Visualize-Radial-Grid-Points">Visualize Radial Grid Points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="one_dimensional_grids.html#Example:-Integration-of-One-Variable-Function-on-[0,-\infty]">Example: Integration of One-Variable Function on <span class="math notranslate nohighlight">\([0, \infty]\)</span></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="angular_grid.html">Angular Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="angular_grid.html#Initialization-of-Angular-Grids">Initialization of Angular Grids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="angular_grid.html#Integral-of-Identity-Function">Integral of Identity Function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="angular_grid.html#Integral-of-Spherical-Harmonic-Function">Integral of Spherical Harmonic Function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="angular_grid.html#Spherical-Harmonics-Are-Orthonormal">Spherical Harmonics Are Orthonormal</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="atom_grid_construction.html">Atom Grid Construction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="atom_grid_construction.html#Atomic-Grid-AtomGrid">Atomic Grid <code class="docutils literal notranslate"><span class="pre">AtomGrid</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="atom_grid_construction.html#Plot-AtomGrid-Points">Plot <code class="docutils literal notranslate"><span class="pre">AtomGrid</span></code> Points</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="atom_grid_construction.html#Pruned-Grids-AtomGrid.from_pruned">Pruned Grids <code class="docutils literal notranslate"><span class="pre">AtomGrid.from_pruned</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="atom_grid_construction.html#Preset-Grids-AtomGrid.from_preset">Preset Grids <code class="docutils literal notranslate"><span class="pre">AtomGrid.from_preset</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="atom_grid_construction.html#Multiple-Centered-AtomGrids">Multiple Centered AtomGrids</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="atom_grid.html">Atom Grid Application</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="atom_grid.html#Construct-Atomic-Grid">Construct Atomic Grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="atom_grid.html#Example:-Integrate-Electron-Density">Example: Integrate Electron Density</a></li>
+<li class="toctree-l3"><a class="reference internal" href="atom_grid.html#Example:-Calculate-Radial-Electron-Density-Distribution">Example: Calculate Radial Electron Density Distribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="atom_grid.html#Example:-Calculate-Classical-Coulomb-Repulsion-Energy">Example: Calculate Classical Coulomb Repulsion Energy</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="molecular_grid_construction.html">Molecular Grid Construction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="molecular_grid_construction.html#Molecular-Grid-Details">Molecular Grid Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="molecular_grid_construction.html#Construction-of-Molecular-Grid">Construction of Molecular Grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="molecular_grid_construction.html#Constructor">Constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecular_grid_construction.html#from_preset-method">from_preset method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecular_grid_construction.html#from_size-method">from_size method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecular_grid_construction.html#from_pruned-method">from_pruned method</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="molecular_grid.html">Molecular Grid Application</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="molecular_grid.html#Integration">Integration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="molecular_grid.html#Example:-Electron-Density">Example: Electron Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="molecular_grid.html#Local-Properties">Local Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="molecular_grid.html#Interpolation">Interpolation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="molecular_grid.html#Derivative-Interpolation">Derivative Interpolation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="molecular_grid.html#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Cubic Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Tensor-1D-Grids">Tensor 1D Grids</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Interpolation">Interpolation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Uniform-Grid">Uniform Grid</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="interpolation_poisson.html">Interpolation and Solving Poisson’s Equation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="interpolation_poisson.html#Details">Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interpolation_poisson.html#Example:-Unit-charge-distribution">Example: Unit-charge distribution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interpolation_poisson.html#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="multipole_moments.html">Multipole Moments</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pyapi/modules.html">grid</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.html">grid package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../pyapi/grid.html#submodules">Submodules</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.angular.html">grid.angular module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.atomgrid.html">grid.atomgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.basegrid.html">grid.basegrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.becke.html">grid.becke module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.cubic.html">grid.cubic module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.hirshfeld.html">grid.hirshfeld module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.molgrid.html">grid.molgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.ode.html">grid.ode module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.onedgrid.html">grid.onedgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.periodicgrid.html">grid.periodicgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.poisson.html">grid.poisson module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.rtransform.html">grid.rtransform module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.utils.html">grid.utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../pyapi/grid.html#module-grid">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">grid</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Cubic Grids</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/notebooks/cubic_grid.nblink" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="Cubic-Grids">
+<h1>Cubic Grids<a class="headerlink" href="#Cubic-Grids" title="Permalink to this heading"></a></h1>
+<p>Grid offers two classes for constructing Hyper-rectangular grids in three-dimensions:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../pyapi/grid.cubic.html#grid.cubic.Tensor1DGrids"><span class="std std-ref">Tensor1DGrids</span></a> : Tensor product of three one-dimensional grids.</p></li>
+<li><p><a class="reference internal" href="../pyapi/grid.cubic.html#grid.cubic.UniformGrid"><span class="std std-ref">UniformGrid</span></a> : Evenly spaced grid in three axes.</p></li>
+</ul>
+<p>See their API documentation for more information about the classes.</p>
+<div class="section" id="Tensor-1D-Grids">
+<h2>Tensor 1D Grids<a class="headerlink" href="#Tensor-1D-Grids" title="Permalink to this heading"></a></h2>
+<p>The first grid is a tensor combination of three grids with points <span class="math notranslate nohighlight">\(\{p^1_i\}, \{p^2_i\}, \{p^3_i\}\)</span> and weights <span class="math notranslate nohighlight">\(\{w^1_i\}, \{w^2_i\}, \{w^3_i\}\)</span> such that the new set of points are <span class="math notranslate nohighlight">\(\{(p^1_i, p^2_j, p^3_k)\}\)</span> with weights <span class="math notranslate nohighlight">\(\{w^1_i \times w^2_j \times w^3_k\}\)</span>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>%matplotlib inline
+from grid.onedgrid import UniformInteger
+from grid.rtransform import LinearInfiniteRTransform
+from grid.cubic import Tensor1DGrids
+import numpy as np
+
+# Construct a grid between -1 and 1 on the real line.
+npoints = 25
+onedgridx = UniformInteger(npoints)
+onedgridx = LinearInfiniteRTransform(-1, 1).transform_1d_grid(onedgridx)
+
+# Construct another grid between -0.5 and 0.5 on the real line
+npoints = 15
+onedgridy = UniformInteger(npoints)
+onedgridy = LinearInfiniteRTransform(-1, 1).transform_1d_grid(onedgridy)
+
+# Construct another grid between -0.25 and 0.25 on the real line
+npoints = 10
+onedgridz = UniformInteger(npoints)
+onedgridz = LinearInfiniteRTransform(-1, 1).transform_1d_grid(onedgridz)
+</pre></div>
+</div>
+</div>
+<p>Each of the individual grids axes are plotted.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>import matplotlib.pyplot as plt
+from mpl_toolkits import mplot3d
+
+fig = plt.figure()
+ax = plt.axes(projection=&#39;3d&#39;)
+ax.scatter(onedgridx.points, [0] *  len(onedgridx.points), [0] *  len(onedgridx.points), color=&quot;k&quot;, label=&quot;Points on x-axis&quot;)
+ax.scatter( [0] *  len(onedgridy.points), onedgridy.points, [0] *  len(onedgridy.points), color=&quot;m&quot;, label=&quot;Points on y-axis&quot;)
+ax.scatter( [0] *  len(onedgridz.points), [0] *  len(onedgridz.points), onedgridz.points , color=&quot;b&quot;, label=&quot;Points on z-axis&quot;)
+ax.set_xlabel(&quot;X-axis&quot;)
+ax.set_ylabel(&quot;Y-axis&quot;)
+ax.set_zlabel(&quot;Z-axis&quot;)
+plt.legend()
+plt.show()
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_cubic_grid_3_0.png" src="../_images/notebooks_cubic_grid_3_0.png" />
+</div>
+</div>
+<p>The Tensor1DGrids can now be easily constructed by passing in each of the three one-dimensional grids. These are then plotted</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span># Constructing the tensor product grid.
+tensor_grid = Tensor1DGrids(onedgridx, onedgridy, onedgridz)
+
+fig = plt.figure()
+ax = plt.axes(projection=&#39;3d&#39;)
+ax.scatter(tensor_grid.points[:, 0], tensor_grid.points[:, 1], tensor_grid.points[:, 2], color=&quot;m&quot;, alpha=0.1)
+ax.set_xlabel(&quot;X-axis&quot;)
+ax.set_ylabel(&quot;Y-axis&quot;)
+ax.set_zlabel(&quot;Z-axis&quot;)
+plt.legend()
+plt.title(&quot;Tensor Product of Three One-Dimensional Grids&quot;)
+plt.show()
+
+print(f&quot;Points of the grid: {tensor_grid.points}&quot;)
+print(f&quot;Weights of the grid: {tensor_grid.weights}.&quot;)
+print(f&quot;The number of points: {tensor_grid.size}&quot;)
+print(f&quot;The number of dimensions: {tensor_grid.ndim}.&quot;)
+print(f&quot;The origin of the grid: {tensor_grid.origin}.&quot;)
+print(f&quot;The shape of the grid: {tensor_grid.shape}.&quot;)
+
+# Can integrate functions on it
+#func_vals = # insert function here
+#integral = tensor_grid.integrate(func_vals)
+
+# Conversion from indices i to coordinates (i, j, k) to points
+coordinate = tensor_grid.index_to_coordinates(5)
+print(f&quot;Coordinate of the fifth point: {coordinate}.&quot;)
+index = tensor_grid.coordinates_to_index((0, 0, 5))
+print(f&quot;Index of the (0, 0, 5) coordinate: {index}.&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+No handles with labels found to put in legend.
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_cubic_grid_5_1.png" src="../_images/notebooks_cubic_grid_5_1.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Points of the grid: [[-1.         -1.         -1.        ]
+ [-1.         -1.         -0.77777778]
+ [-1.         -1.         -0.55555556]
+ ...
+ [ 1.          1.          0.55555556]
+ [ 1.          1.          0.77777778]
+ [ 1.          1.          1.        ]]
+Weights of the grid: [0.0026455 0.0026455 0.0026455 ... 0.0026455 0.0026455 0.0026455].
+The number of points: 3750
+The number of dimensions: 3.
+The origin of the grid: [-1. -1. -1.].
+The shape of the grid: (25, 15, 10).
+Coordinate of the fifth point: (0, 0, 5).
+Index of the (0, 0, 5) coordinate: 5.
+</pre></div></div>
+</div>
+<div class="section" id="Interpolation">
+<h3>Interpolation<a class="headerlink" href="#Interpolation" title="Permalink to this heading"></a></h3>
+<p>This example will attempt to interpolate a Gaussian, first on a subset of the points used for interpolation then later on random set of points.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span># Interpolation of a Gaussian
+gaussian = lambda pts: np.exp(-3.0 * np.linalg.norm(pts, axis=1)**2.0)
+gaus_vals = gaussian(tensor_grid.points)
+
+# Interpolation evaluated on subset of the same points used for interpolation
+subset = tensor_grid.points[np.random.choice(range(tensor_grid.size), 10)]
+true_vals = gaussian(subset)
+
+print(&quot;Interpolate using linear method.&quot;)
+interpol = tensor_grid.interpolate(subset, gaus_vals, use_log=False, method=&quot;linear&quot;)
+print(&quot;The errors are: &quot;, np.abs(interpol - true_vals))
+print(f&quot;Maximum error is {np.max(np.abs(interpol - true_vals))} \n&quot;)
+
+print(&quot;Interpolate using linear method applying the logarithm.&quot;)
+interpol = tensor_grid.interpolate(subset, gaus_vals, use_log=True, method=&quot;linear&quot;)
+print(&quot;The errors are: &quot;, np.abs(interpol - true_vals))
+print(f&quot;Maximum error is {np.max(np.abs(interpol - true_vals))} \n&quot;)
+
+print(&quot;Interpolate using cubic splines&quot;)
+interpol = tensor_grid.interpolate(subset, gaus_vals, use_log=False, method=&quot;cubic&quot;)
+print(&quot;The errors are: &quot;, np.abs(interpol - true_vals))
+print(f&quot;Maximum error is {np.max(np.abs(interpol - true_vals))} \n&quot;)
+
+print(&quot;Inteprolate using cubic splines appling the logarithm&quot;)
+interpol = tensor_grid.interpolate(subset, gaus_vals, use_log=True, method=&quot;cubic&quot;)
+print(&quot;The errors are: &quot;, np.abs(interpol - true_vals))
+print(f&quot;Maximum error is {np.max(np.abs(interpol - true_vals))} \n&quot;)
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Interpolate using linear method.
+The errors are:  [0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+Maximum error is 0.0
+
+Interpolate using linear method applying the logarithm.
+The errors are:  [3.193657   2.73140349 3.12648027 4.0888995  5.15038888 1.17760791
+ 2.6164855  4.46085684 2.92740481 2.14224285]
+Maximum error is 5.150388875279692
+
+Interpolate using cubic splines
+The errors are:  [7.93544637e-03 1.38777878e-17 0.00000000e+00 3.91153506e-02
+ 3.71161462e-02 0.00000000e+00 0.00000000e+00 1.73472348e-18
+ 0.00000000e+00 0.00000000e+00]
+Maximum error is 0.03911535059395724
+
+Inteprolate using cubic splines appling the logarithm
+The errors are:  [3.46944695e-17 4.16333634e-17 0.00000000e+00 1.38777878e-17
+ 9.28077060e-17 0.00000000e+00 0.00000000e+00 1.04083409e-17
+ 0.00000000e+00 0.00000000e+00]
+Maximum error is 9.280770596475918e-17
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span># Interpolate at random set of points
+random_pts = np.random.uniform(-1, 1, (25, 3))
+true_vals = gaussian(random_pts)
+
+print(&quot;Interpolate using linear method.&quot;)
+interpol = tensor_grid.interpolate(random_pts, gaus_vals, use_log=False, method=&quot;linear&quot;)
+print(&quot;The errors are: &quot;, np.abs(interpol - true_vals))
+print(f&quot;Maximum error is {np.max(np.abs(interpol - true_vals))} \n&quot;)
+# The logarithm is first applied to the Gaussian functions to be easier to interpolate at.
+print(&quot;Interpolate using linear method applying the logarithm.&quot;)
+interpol = tensor_grid.interpolate(random_pts, gaus_vals, use_log=True, method=&quot;linear&quot;)
+print(&quot;The errors are: &quot;, np.abs(interpol - true_vals))
+print(f&quot;Maximum error is {np.max(np.abs(interpol - true_vals))} \n&quot;)
+# Rather then interpolate using linearly, this used the cubic
+print(&quot;Interpolate using cubic splines&quot;)
+interpol = tensor_grid.interpolate(random_pts, gaus_vals, use_log=False, method=&quot;cubic&quot;)
+print(&quot;The errors are: &quot;, np.abs(interpol - true_vals))
+print(f&quot;Maximum error is {np.max(np.abs(interpol - true_vals))} \n&quot;)
+# Same as above but the logarithm is applied.
+print(&quot;Inteprolate using cubic splines appling the logarithm&quot;)
+interpol = tensor_grid.interpolate(random_pts, gaus_vals, use_log=True, method=&quot;cubic&quot;)
+print(&quot;The errors are: &quot;, np.abs(interpol - true_vals))
+print(f&quot;Maximum error is {np.max(np.abs(interpol - true_vals))} \n&quot;)
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Interpolate using linear method.
+The errors are:  [6.86173876e-03 2.26427272e-03 2.75414631e-03 8.31728378e-04
+ 3.36204251e-04 1.02072667e-03 1.10210049e-03 8.64501631e-03
+ 2.59512329e-03 2.37728933e-02 7.91657412e-03 5.70279923e-04
+ 8.17962022e-05 1.00837863e-03 4.85942116e-04 2.44078257e-03
+ 1.23119491e-03 3.24114061e-03 8.79283200e-05 4.75430397e-04
+ 9.07759875e-03 3.06864518e-03 2.14220561e-03 1.70213035e-02
+ 5.44407520e-03]
+Maximum error is 0.023772893292459685
+
+Interpolate using linear method applying the logarithm.
+The errors are:  [1.05334441 2.35743704 2.76240336 5.30551986 3.77712127 4.66217629
+ 1.35942007 1.59072927 4.05482905 1.12249552 2.28187585 5.73517397
+ 3.4362982  1.87187658 3.77764034 2.69709785 3.40070745 1.90818364
+ 3.75722379 5.45525854 2.03052493 2.27263171 3.11819061 1.18778426
+ 1.64987246]
+Maximum error is 5.735173965540577
+
+Interpolate using cubic splines
+The errors are:  [2.24391131e-05 9.23295650e-05 2.05774450e-03 2.86880928e-03
+ 5.90844251e-03 6.90406116e-04 1.24241844e-05 2.27382451e-03
+ 1.42459188e-02 4.90499149e-04 1.90529487e-03 6.39533207e-03
+ 3.28474823e-03 6.72256151e-04 7.84640090e-05 3.24132588e-04
+ 7.13574686e-04 5.14307780e-04 3.21294961e-03 3.10990132e-04
+ 1.03380876e-02 1.99332441e-05 5.55937585e-04 4.34420520e-04
+ 1.68534787e-04]
+Maximum error is 0.014245918769024427
+
+Inteprolate using cubic splines appling the logarithm
+The errors are:  [0.00000000e+00 0.00000000e+00 2.77555756e-17 1.12757026e-16
+ 1.17961196e-16 8.67361738e-18 0.00000000e+00 5.55111512e-17
+ 1.04083409e-17 1.11022302e-16 0.00000000e+00 2.61509564e-16
+ 2.42861287e-16 5.55111512e-17 1.04083409e-17 4.16333634e-17
+ 3.46944695e-17 8.32667268e-17 4.51028104e-17 1.44849410e-16
+ 3.88578059e-16 5.55111512e-17 1.73472348e-16 1.11022302e-16
+ 5.55111512e-17]
+Maximum error is 3.885780586188048e-16
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span># Derivative can be interpolated
+# X-derivative
+deriv_x = tensor_grid.interpolate(random_pts, gaus_vals, use_log=False, nu_x=1, nu_y=0, nu_z=0, method=&quot;cubic&quot;)
+print(f&quot;Derivative in x-direction {deriv_x}.&quot;)
+# Y-derivative
+deriv_y = tensor_grid.interpolate(random_pts, gaus_vals, use_log=False, nu_x=0, nu_y=1, nu_z=0, method=&quot;cubic&quot;)
+# Z-derivative
+deriv_z = tensor_grid.interpolate(random_pts, gaus_vals, use_log=False, nu_x=0, nu_y=0, nu_z=1, method=&quot;cubic&quot;)
+# XY- derivative
+deriv_xy = tensor_grid.interpolate(random_pts, gaus_vals, use_log=False, nu_x=1, nu_y=1, nu_z=0, method=&quot;cubic&quot;)
+# The logarithm can be used to interpolate derivatives on single points only (mixed derivative are not supported)
+derivs = []
+for pt in random_pts:
+    deriv_x = tensor_grid.interpolate(np.array([pt]), gaus_vals, use_log=True, nu_x=1, nu_y=0, nu_z=0, method=&quot;cubic&quot;)
+    derivs.append(deriv_x[0])
+print(f&quot;Derivative (using logarithm) in x-direction {np.array(derivs)}.&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Derivative in x-direction [ 0.5624684  -0.20330985 -0.16864102 -0.03734494  0.07970672  0.05186396
+  0.34235791  0.14498176 -0.12459229  0.63700915  0.0117608  -0.04356053
+ -0.15437839 -0.04068863  0.13449481 -0.19856986 -0.11815679  0.12573653
+ -0.11598643  0.02723251  0.14342847  0.02407911  0.27687625  0.47523628
+ -0.31931175].
+Derivative (using logarithm) in x-direction [ 0.56248734 -0.20347957 -0.16380904 -0.03028918  0.06421742  0.04853431
+  0.34250822  0.14613648 -0.07047402  0.63771614  0.0118858  -0.01986379
+ -0.20530633 -0.04050378  0.13442416 -0.19776845 -0.11585667  0.12604302
+ -0.10288114  0.02637698  0.13490876  0.02404968  0.29198534  0.47578599
+ -0.31947902].
+</pre></div></div>
+</div>
+</div>
+</div>
+<div class="section" id="Uniform-Grid">
+<h2>Uniform Grid<a class="headerlink" href="#Uniform-Grid" title="Permalink to this heading"></a></h2>
+<p>This is type of cubic grid (a.k.a. rectilinear grid) with evenly-spaced points in each axes. It supports the same properties and functions as Tensor1DGrids. The easiest method to construct a uniform grid for the purposes of chemistry is the “from_molecule” method. This example will showcase this for Formaldehyde molecule.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>from scipy.stats import special_ortho_group
+
+# Coordinates of the ch2o molecule on the xy-axis
+coordinates = np.array([
+   [2.27823914E+00,  4.13899085E-07,  3.12033662E-07],
+   [1.01154892E-02,  1.09802629E-07, -6.99333116E-07],
+   [-1.09577141E+00,  1.77311416E+00,  1.42544321E-07],
+   [-1.09577166E+00, -1.77311468E+00,  2.44755133E-07]
+])
+# Rotate them
+rot = special_ortho_group.rvs(3)
+coordinates = coordinates.dot(rot)
+charges = np.array([8, 6, 1, 1])
+
+
+fig = plt.figure()
+ax = plt.axes(projection=&#39;3d&#39;)
+ax.scatter(coordinates[:, 0], coordinates[:, 1], coordinates[:, 2], color=&quot;k&quot;, s=50)
+ax.set_xlabel(&quot;X-axis&quot;)
+ax.set_ylabel(&quot;Y-axis&quot;)
+ax.set_zlabel(&quot;Z-axis&quot;)
+plt.title(&quot;Atomic coordinates of Formaldehyde.&quot;)
+plt.show()
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+No handles with labels found to put in legend.
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_cubic_grid_11_1.png" src="../_images/notebooks_cubic_grid_11_1.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>from grid.cubic import UniformGrid
+
+uniform_grid = UniformGrid.from_molecule(
+    charges, coordinates, spacing=0.75, extension=5.0, rotate=True
+)
+
+print(f&quot;The number of points: {uniform_grid.size}&quot;)
+print(f&quot;The number of dimensions: {uniform_grid.ndim}.&quot;)
+print(f&quot;The shape of the grid: {uniform_grid.shape}.&quot;)
+print(f&quot;The origin of the grid: {uniform_grid.origin}.&quot;)
+print(f&quot;The axes of the grid: {uniform_grid.axes}.&quot;)
+
+
+fig = plt.figure()
+ax = plt.axes(projection=&#39;3d&#39;)
+ax.scatter(coordinates[:, 0], coordinates[:, 1], coordinates[:, 2], color=&quot;k&quot;, s=50)
+ax.scatter(uniform_grid.points[:, 0], uniform_grid.points[:, 1], uniform_grid.points[:, 2], color=&quot;m&quot;, alpha=0.1)
+ax.set_xlabel(&quot;X-axis&quot;)
+ax.set_ylabel(&quot;Y-axis&quot;)
+ax.set_zlabel(&quot;Z-axis&quot;)
+plt.title(&quot;Atomic coordinates of Formaldehyde.&quot;)
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+No handles with labels found to put in legend.
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+The number of points: 4788
+The number of dimensions: 3.
+The shape of the grid: [18 19 14].
+The origin of the grid: [-7.89714547 -4.63767195 -7.6123223 ].
+The axes of the grid: [[ 0.67197732  0.29799576 -0.14881198]
+ [-0.12707384  0.5390871   0.50570479]
+ [ 0.307894   -0.42788272  0.5334957 ]].
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_cubic_grid_12_2.png" src="../_images/notebooks_cubic_grid_12_2.png" />
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="molecular_grid.html" class="btn btn-neutral float-left" title="Molecular Grids" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="interpolation_poisson.html" class="btn btn-neutral float-right" title="Interpolation and Solving Poisson’s Equation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, QC-Devs.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

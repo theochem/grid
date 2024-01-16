@@ -1,0 +1,1855 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Index &mdash; grid  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/override.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="#" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            grid
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#downloading-code">Downloading Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#id1">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#building-documentation">Building Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="onedgrids.html">One-Dimensional Grids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="radial_transf.html">Radial Transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conventions.html">Conventions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="conventions.html#spherical-coordinates">Spherical Coordinates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conventions.html#spherical-harmonics">Spherical Harmonics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="conventions.html#ordering">Ordering</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="conventions.html#angular-grids">Angular Grids</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="conventions.html#nested-grids">Nested Grids</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/quickstart.html">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/quickstart.html#One-Dimensional-Grids">One-Dimensional Grids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/quickstart.html#Angular-Grids">Angular Grids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/quickstart.html#Atomic-Grid">Atomic Grid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/quickstart.html#Molecular-Grid">Molecular Grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/quickstart.html#Visualize-3D-Grid-Points">Visualize 3D Grid Points</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/quickstart.html#Integrate-Electron-Density-on-the-Grid">Integrate Electron Density on the Grid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/quickstart.html#Interpolate-Electron-Density-on-the-Grid">Interpolate Electron Density on the Grid</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="notebooks/quickstart.html#Check-Interpolation-Accuracy">Check Interpolation Accuracy</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/quickstart.html#Differentiate-Electron-Density-on-the-Grid">Differentiate Electron Density on the Grid</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="notebooks/quickstart.html#Check-interpolated-derivative-accuracy">Check interpolated derivative accuracy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="notebooks/quickstart.html#Graphical-comparisons-of-the-accuracy">Graphical comparisons of the accuracy</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/one_dimensional_grids.html">One-Dimensional Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/one_dimensional_grids.html#Example:-Visualize-One-Dimensional-Grid-Points">Example: Visualize One-Dimensional Grid Points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/one_dimensional_grids.html#Example:-Integration-of-One-Variable-Function-on-[-1,-1]">Example: Integration of One-Variable Function on <span class="math notranslate nohighlight">\([-1, 1]\)</span></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/one_dimensional_grids.html#Radial-Grid:-Transformation-of-1D-Integration-Intervals">Radial Grid: Transformation of 1D-Integration Intervals</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/one_dimensional_grids.html#Visualize-Radial-Grid-Points">Visualize Radial Grid Points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/one_dimensional_grids.html#Example:-Integration-of-One-Variable-Function-on-[0,-\infty]">Example: Integration of One-Variable Function on <span class="math notranslate nohighlight">\([0, \infty]\)</span></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/angular_grid.html">Angular Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/angular_grid.html#Initialization-of-Angular-Grids">Initialization of Angular Grids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/angular_grid.html#Integral-of-Identity-Function">Integral of Identity Function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/angular_grid.html#Integral-of-Spherical-Harmonic-Function">Integral of Spherical Harmonic Function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/angular_grid.html#Spherical-Harmonics-Are-Orthonormal">Spherical Harmonics Are Orthonormal</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/atom_grid_construction.html">Atom Grid Construction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/atom_grid_construction.html#Atomic-Grid-AtomGrid">Atomic Grid <code class="docutils literal notranslate"><span class="pre">AtomGrid</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/atom_grid_construction.html#Plot-AtomGrid-Points">Plot <code class="docutils literal notranslate"><span class="pre">AtomGrid</span></code> Points</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/atom_grid_construction.html#Pruned-Grids-AtomGrid.from_pruned">Pruned Grids <code class="docutils literal notranslate"><span class="pre">AtomGrid.from_pruned</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/atom_grid_construction.html#Preset-Grids-AtomGrid.from_preset">Preset Grids <code class="docutils literal notranslate"><span class="pre">AtomGrid.from_preset</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/atom_grid_construction.html#Multiple-Centered-AtomGrids">Multiple Centered AtomGrids</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/atom_grid.html">Atom Grid Application</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/atom_grid.html#Construct-Atomic-Grid">Construct Atomic Grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/atom_grid.html#Example:-Integrate-Electron-Density">Example: Integrate Electron Density</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/atom_grid.html#Example:-Calculate-Radial-Electron-Density-Distribution">Example: Calculate Radial Electron Density Distribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/atom_grid.html#Example:-Calculate-Classical-Coulomb-Repulsion-Energy">Example: Calculate Classical Coulomb Repulsion Energy</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/molecular_grid_construction.html">Molecular Grid Construction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/molecular_grid_construction.html#Molecular-Grid-Details">Molecular Grid Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/molecular_grid_construction.html#Construction-of-Molecular-Grid">Construction of Molecular Grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/molecular_grid_construction.html#Constructor">Constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/molecular_grid_construction.html#from_preset-method">from_preset method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/molecular_grid_construction.html#from_size-method">from_size method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/molecular_grid_construction.html#from_pruned-method">from_pruned method</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/molecular_grid.html">Molecular Grid Application</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/molecular_grid.html#Integration">Integration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/molecular_grid.html#Example:-Electron-Density">Example: Electron Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/molecular_grid.html#Local-Properties">Local Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/molecular_grid.html#Interpolation">Interpolation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/molecular_grid.html#Derivative-Interpolation">Derivative Interpolation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/molecular_grid.html#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/cubic_grid.html">Cubic Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/cubic_grid.html#Tensor-1D-Grids">Tensor 1D Grids</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/cubic_grid.html#Interpolation">Interpolation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/cubic_grid.html#Uniform-Grid">Uniform Grid</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/interpolation_poisson.html">Interpolation and Solving Poisson’s Equation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/interpolation_poisson.html#Details">Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/interpolation_poisson.html#Example:-Unit-charge-distribution">Example: Unit-charge distribution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/interpolation_poisson.html#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/multipole_moments.html">Multipole Moments</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pyapi/modules.html">grid</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pyapi/grid.html">grid package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pyapi/grid.html#submodules">Submodules</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.angular.html">grid.angular module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.atomgrid.html">grid.atomgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.basegrid.html">grid.basegrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.becke.html">grid.becke module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.cubic.html">grid.cubic module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.hirshfeld.html">grid.hirshfeld module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.molgrid.html">grid.molgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.ode.html">grid.ode module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.onedgrid.html">grid.onedgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.periodicgrid.html">grid.periodicgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.poisson.html">grid.poisson module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.rtransform.html">grid.rtransform module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyapi/grid.utils.html">grid.utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pyapi/grid.html#module-grid">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">grid</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Index</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+
+<h1 id="index">Index</h1>
+
+<div class="genindex-jumpbox">
+ <a href="#_"><strong>_</strong></a>
+ | <a href="#A"><strong>A</strong></a>
+ | <a href="#B"><strong>B</strong></a>
+ | <a href="#C"><strong>C</strong></a>
+ | <a href="#D"><strong>D</strong></a>
+ | <a href="#E"><strong>E</strong></a>
+ | <a href="#F"><strong>F</strong></a>
+ | <a href="#G"><strong>G</strong></a>
+ | <a href="#H"><strong>H</strong></a>
+ | <a href="#I"><strong>I</strong></a>
+ | <a href="#K"><strong>K</strong></a>
+ | <a href="#L"><strong>L</strong></a>
+ | <a href="#M"><strong>M</strong></a>
+ | <a href="#N"><strong>N</strong></a>
+ | <a href="#O"><strong>O</strong></a>
+ | <a href="#P"><strong>P</strong></a>
+ | <a href="#R"><strong>R</strong></a>
+ | <a href="#S"><strong>S</strong></a>
+ | <a href="#T"><strong>T</strong></a>
+ | <a href="#U"><strong>U</strong></a>
+ | <a href="#W"><strong>W</strong></a>
+ 
+</div>
+<h2 id="_">_</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.angular.html#grid.angular.AngularGrid.__init__">__init__() (AngularGrid method)</a>
+
+      <ul>
+        <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.__init__">(AtomGrid method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BaseTransform.__init__">(BaseTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BeckeRTransform.__init__">(BeckeRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.becke.html#grid.becke.BeckeWeights.__init__">(BeckeWeights method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.ClenshawCurtis.__init__">(ClenshawCurtis method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.ExpExp.__init__">(ExpExp method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.ExpRTransform.__init__">(ExpRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.ExpSinh.__init__">(ExpSinh method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.FejerFirst.__init__">(FejerFirst method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.FejerSecond.__init__">(FejerSecond method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussChebyshev.__init__">(GaussChebyshev method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussChebyshevLobatto.__init__">(GaussChebyshevLobatto method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussChebyshevType2.__init__">(GaussChebyshevType2 method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussLaguerre.__init__">(GaussLaguerre method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussLegendre.__init__">(GaussLegendre method)</a>
+</li>
+        <li><a href="pyapi/grid.basegrid.html#grid.basegrid.Grid.__init__">(Grid method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HandyModRTransform.__init__">(HandyModRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HandyRTransform.__init__">(HandyRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.hirshfeld.html#grid.hirshfeld.HirshfeldWeights.__init__">(HirshfeldWeights method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HyperbolicRTransform.__init__">(HyperbolicRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.IdentityRTransform.__init__">(IdentityRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.InverseRTransform.__init__">(InverseRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.KnowlesRTransform.__init__">(KnowlesRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.LinearFiniteRTransform.__init__">(LinearFiniteRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.LinearInfiniteRTransform.__init__">(LinearInfiniteRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.basegrid.html#grid.basegrid.LocalGrid.__init__">(LocalGrid method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.LogExpSinh.__init__">(LogExpSinh method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.MidPoint.__init__">(MidPoint method)</a>
+</li>
+        <li><a href="pyapi/grid.molgrid.html#grid.molgrid.MolGrid.__init__">(MolGrid method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.MultiExpRTransform.__init__">(MultiExpRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.basegrid.html#grid.basegrid.OneDGrid.__init__">(OneDGrid method)</a>
+</li>
+        <li><a href="pyapi/grid.periodicgrid.html#grid.periodicgrid.PeriodicGrid.__init__">(PeriodicGrid method)</a>
+</li>
+        <li><a href="pyapi/grid.periodicgrid.html#grid.periodicgrid.PeriodicGridWarning.__init__">(PeriodicGridWarning method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.PowerRTransform.__init__">(PowerRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.RectangleRuleSineEndPoints.__init__">(RectangleRuleSineEndPoints method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.Simpson.__init__">(Simpson method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.SingleArcSinhExp.__init__">(SingleArcSinhExp method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.SingleExp.__init__">(SingleExp method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.SingleTanh.__init__">(SingleTanh method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TanhSinh.__init__">(TanhSinh method)</a>
+</li>
+        <li><a href="pyapi/grid.cubic.html#grid.cubic.Tensor1DGrids.__init__">(Tensor1DGrids method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.Trapezoidal.__init__">(Trapezoidal method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenCC.__init__">(TrefethenCC method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenGC2.__init__">(TrefethenGC2 method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenGeneral.__init__">(TrefethenGeneral method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenStripCC.__init__">(TrefethenStripCC method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenStripGC2.__init__">(TrefethenStripGC2 method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenStripGeneral.__init__">(TrefethenStripGeneral method)</a>
+</li>
+        <li><a href="pyapi/grid.cubic.html#grid.cubic.UniformGrid.__init__">(UniformGrid method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.UniformInteger.__init__">(UniformInteger method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="A">A</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HyperbolicRTransform.a">a (HyperbolicRTransform property)</a>
+</li>
+      <li><a href="pyapi/grid.molgrid.html#grid.molgrid.MolGrid.aim_weights">aim_weights (MolGrid property)</a>
+</li>
+      <li><a href="pyapi/grid.angular.html#grid.angular.AngularGrid">AngularGrid (class in grid.angular)</a>
+</li>
+      <li><a href="pyapi/grid.periodicgrid.html#grid.periodicgrid.PeriodicGridWarning.args">args (PeriodicGridWarning attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.molgrid.html#grid.molgrid.MolGrid.atcoords">atcoords (MolGrid property)</a>
+</li>
+      <li><a href="pyapi/grid.molgrid.html#grid.molgrid.MolGrid.atgrids">atgrids (MolGrid property)</a>
+</li>
+      <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid">AtomGrid (class in grid.atomgrid)</a>
+</li>
+      <li><a href="pyapi/grid.molgrid.html#grid.molgrid.MolGrid.atweights">atweights (MolGrid property)</a>
+</li>
+      <li><a href="pyapi/grid.cubic.html#grid.cubic.UniformGrid.axes">axes (UniformGrid property)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="B">B</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.ExpRTransform.b">b (ExpRTransform property)</a>
+
+      <ul>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HyperbolicRTransform.b">(HyperbolicRTransform property)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.LinearInfiniteRTransform.b">(LinearInfiniteRTransform property)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.PowerRTransform.b">(PowerRTransform property)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BaseTransform">BaseTransform (class in grid.rtransform)</a>
+</li>
+      <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.basis">basis (AtomGrid property)</a>
+</li>
+      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BeckeRTransform">BeckeRTransform (class in grid.rtransform)</a>
+</li>
+      <li><a href="pyapi/grid.becke.html#grid.becke.BeckeWeights">BeckeWeights (class in grid.becke)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="C">C</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.center">center (AtomGrid property)</a>
+
+      <ul>
+        <li><a href="pyapi/grid.basegrid.html#grid.basegrid.LocalGrid.center">(LocalGrid property)</a>
+</li>
+      </ul></li>
+      <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.ClenshawCurtis">ClenshawCurtis (class in grid.onedgrid)</a>
+</li>
+      <li><a href="pyapi/grid.cubic.html#grid.cubic.UniformGrid.closest_point">closest_point() (UniformGrid method)</a>
+</li>
+      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BaseTransform.codomain">codomain (BaseTransform property)</a>
+
+      <ul>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BeckeRTransform.codomain">(BeckeRTransform property)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.ExpRTransform.codomain">(ExpRTransform property)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HandyModRTransform.codomain">(HandyModRTransform property)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HandyRTransform.codomain">(HandyRTransform property)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HyperbolicRTransform.codomain">(HyperbolicRTransform property)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.IdentityRTransform.codomain">(IdentityRTransform property)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.InverseRTransform.codomain">(InverseRTransform property)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.KnowlesRTransform.codomain">(KnowlesRTransform property)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.LinearFiniteRTransform.codomain">(LinearFiniteRTransform property)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.LinearInfiniteRTransform.codomain">(LinearInfiniteRTransform property)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.MultiExpRTransform.codomain">(MultiExpRTransform property)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.PowerRTransform.codomain">(PowerRTransform property)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.becke.html#grid.becke.BeckeWeights.compute_atom_weight">compute_atom_weight() (BeckeWeights method)</a>
+</li>
+      <li><a href="pyapi/grid.becke.html#grid.becke.BeckeWeights.compute_weights">compute_weights() (BeckeWeights method)</a>
+</li>
+      <li><a href="pyapi/grid.angular.html#grid.angular.AngularGrid.convert_angular_sizes_to_degrees">convert_angular_sizes_to_degrees() (AngularGrid static method)</a>
+</li>
+      <li><a href="pyapi/grid.utils.html#grid.utils.convert_cart_to_sph">convert_cart_to_sph() (in module grid.utils)</a>
+</li>
+      <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.convert_cartesian_to_spherical">convert_cartesian_to_spherical() (AtomGrid method)</a>
+</li>
+      <li><a href="pyapi/grid.utils.html#grid.utils.convert_derivative_from_spherical_to_cartesian">convert_derivative_from_spherical_to_cartesian() (in module grid.utils)</a>
+</li>
+      <li><a href="pyapi/grid.cubic.html#grid.cubic.Tensor1DGrids.coordinates_to_index">coordinates_to_index() (Tensor1DGrids method)</a>
+
+      <ul>
+        <li><a href="pyapi/grid.cubic.html#grid.cubic.UniformGrid.coordinates_to_index">(UniformGrid method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="D">D</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.angular.html#grid.angular.AngularGrid.degree">degree (AngularGrid property)</a>
+</li>
+      <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.degrees">degrees (AtomGrid property)</a>
+</li>
+      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BaseTransform.deriv">deriv() (BaseTransform method)</a>
+
+      <ul>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BeckeRTransform.deriv">(BeckeRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.ExpRTransform.deriv">(ExpRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HandyModRTransform.deriv">(HandyModRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HandyRTransform.deriv">(HandyRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HyperbolicRTransform.deriv">(HyperbolicRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.IdentityRTransform.deriv">(IdentityRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.InverseRTransform.deriv">(InverseRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.KnowlesRTransform.deriv">(KnowlesRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.LinearFiniteRTransform.deriv">(LinearFiniteRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.LinearInfiniteRTransform.deriv">(LinearInfiniteRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.MultiExpRTransform.deriv">(MultiExpRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.PowerRTransform.deriv">(PowerRTransform method)</a>
+</li>
+      </ul></li>
+      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BaseTransform.deriv2">deriv2() (BaseTransform method)</a>
+
+      <ul>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BeckeRTransform.deriv2">(BeckeRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.ExpRTransform.deriv2">(ExpRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HandyModRTransform.deriv2">(HandyModRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HandyRTransform.deriv2">(HandyRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HyperbolicRTransform.deriv2">(HyperbolicRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.IdentityRTransform.deriv2">(IdentityRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.InverseRTransform.deriv2">(InverseRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.KnowlesRTransform.deriv2">(KnowlesRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.LinearFiniteRTransform.deriv2">(LinearFiniteRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.LinearInfiniteRTransform.deriv2">(LinearInfiniteRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.MultiExpRTransform.deriv2">(MultiExpRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.PowerRTransform.deriv2">(PowerRTransform method)</a>
+</li>
+      </ul></li>
+      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BaseTransform.deriv3">deriv3() (BaseTransform method)</a>
+
+      <ul>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BeckeRTransform.deriv3">(BeckeRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.ExpRTransform.deriv3">(ExpRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HandyModRTransform.deriv3">(HandyModRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HandyRTransform.deriv3">(HandyRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HyperbolicRTransform.deriv3">(HyperbolicRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.IdentityRTransform.deriv3">(IdentityRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.InverseRTransform.deriv3">(InverseRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.KnowlesRTransform.deriv3">(KnowlesRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.LinearFiniteRTransform.deriv3">(LinearFiniteRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.LinearInfiniteRTransform.deriv3">(LinearInfiniteRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.MultiExpRTransform.deriv3">(MultiExpRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.PowerRTransform.deriv3">(PowerRTransform method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.utils.html#grid.utils.dipole_moment_of_molecule">dipole_moment_of_molecule() (in module grid.utils)</a>
+</li>
+      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BaseTransform.domain">domain (BaseTransform property)</a>
+
+      <ul>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BeckeRTransform.domain">(BeckeRTransform property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.ClenshawCurtis.domain">(ClenshawCurtis property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.ExpExp.domain">(ExpExp property)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.ExpRTransform.domain">(ExpRTransform property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.ExpSinh.domain">(ExpSinh property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.FejerFirst.domain">(FejerFirst property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.FejerSecond.domain">(FejerSecond property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussChebyshev.domain">(GaussChebyshev property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussChebyshevLobatto.domain">(GaussChebyshevLobatto property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussChebyshevType2.domain">(GaussChebyshevType2 property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussLaguerre.domain">(GaussLaguerre property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussLegendre.domain">(GaussLegendre property)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HandyModRTransform.domain">(HandyModRTransform property)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HandyRTransform.domain">(HandyRTransform property)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HyperbolicRTransform.domain">(HyperbolicRTransform property)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.IdentityRTransform.domain">(IdentityRTransform property)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.InverseRTransform.domain">(InverseRTransform property)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.KnowlesRTransform.domain">(KnowlesRTransform property)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.LinearFiniteRTransform.domain">(LinearFiniteRTransform property)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.LinearInfiniteRTransform.domain">(LinearInfiniteRTransform property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.LogExpSinh.domain">(LogExpSinh property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.MidPoint.domain">(MidPoint property)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.MultiExpRTransform.domain">(MultiExpRTransform property)</a>
+</li>
+        <li><a href="pyapi/grid.basegrid.html#grid.basegrid.OneDGrid.domain">(OneDGrid property)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.PowerRTransform.domain">(PowerRTransform property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.RectangleRuleSineEndPoints.domain">(RectangleRuleSineEndPoints property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.Simpson.domain">(Simpson property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.SingleArcSinhExp.domain">(SingleArcSinhExp property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.SingleExp.domain">(SingleExp property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.SingleTanh.domain">(SingleTanh property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TanhSinh.domain">(TanhSinh property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.Trapezoidal.domain">(Trapezoidal property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenCC.domain">(TrefethenCC property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenGC2.domain">(TrefethenGC2 property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenGeneral.domain">(TrefethenGeneral property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenStripCC.domain">(TrefethenStripCC property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenStripGC2.domain">(TrefethenStripGC2 property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenStripGeneral.domain">(TrefethenStripGeneral property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.UniformInteger.domain">(UniformInteger property)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="E">E</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.ExpExp">ExpExp (class in grid.onedgrid)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.ExpRTransform">ExpRTransform (class in grid.rtransform)</a>
+</li>
+      <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.ExpSinh">ExpSinh (class in grid.onedgrid)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="F">F</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.FejerFirst">FejerFirst (class in grid.onedgrid)</a>
+</li>
+      <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.FejerSecond">FejerSecond (class in grid.onedgrid)</a>
+</li>
+      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BeckeRTransform.find_parameter">find_parameter() (BeckeRTransform static method)</a>
+</li>
+      <li><a href="pyapi/grid.periodicgrid.html#grid.periodicgrid.PeriodicGrid.frac_intvls">frac_intvls (PeriodicGrid property)</a>
+</li>
+      <li><a href="pyapi/grid.cubic.html#grid.cubic.UniformGrid.from_cube">from_cube() (UniformGrid class method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.cubic.html#grid.cubic.UniformGrid.from_molecule">from_molecule() (UniformGrid class method)</a>
+</li>
+      <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.from_preset">from_preset() (AtomGrid class method)</a>
+
+      <ul>
+        <li><a href="pyapi/grid.molgrid.html#grid.molgrid.MolGrid.from_preset">(MolGrid class method)</a>
+</li>
+      </ul></li>
+      <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.from_pruned">from_pruned() (AtomGrid class method)</a>
+
+      <ul>
+        <li><a href="pyapi/grid.molgrid.html#grid.molgrid.MolGrid.from_pruned">(MolGrid class method)</a>
+</li>
+      </ul></li>
+      <li><a href="pyapi/grid.molgrid.html#grid.molgrid.MolGrid.from_size">from_size() (MolGrid class method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="G">G</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussChebyshev">GaussChebyshev (class in grid.onedgrid)</a>
+</li>
+      <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussChebyshevLobatto">GaussChebyshevLobatto (class in grid.onedgrid)</a>
+</li>
+      <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussChebyshevType2">GaussChebyshevType2 (class in grid.onedgrid)</a>
+</li>
+      <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussLaguerre">GaussLaguerre (class in grid.onedgrid)</a>
+</li>
+      <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussLegendre">GaussLegendre (class in grid.onedgrid)</a>
+</li>
+      <li><a href="pyapi/grid.cubic.html#grid.cubic.UniformGrid.generate_cube">generate_cube() (UniformGrid method)</a>
+</li>
+      <li><a href="pyapi/grid.utils.html#grid.utils.generate_derivative_real_spherical_harmonics">generate_derivative_real_spherical_harmonics() (in module grid.utils)</a>
+</li>
+      <li><a href="pyapi/grid.utils.html#grid.utils.generate_orders_horton_order">generate_orders_horton_order() (in module grid.utils)</a>
+</li>
+      <li><a href="pyapi/grid.hirshfeld.html#grid.hirshfeld.HirshfeldWeights.generate_proatom">generate_proatom() (HirshfeldWeights static method)</a>
+</li>
+      <li><a href="pyapi/grid.utils.html#grid.utils.generate_real_spherical_harmonics">generate_real_spherical_harmonics() (in module grid.utils)</a>
+</li>
+      <li><a href="pyapi/grid.utils.html#grid.utils.generate_real_spherical_harmonics_scipy">generate_real_spherical_harmonics_scipy() (in module grid.utils)</a>
+</li>
+      <li><a href="pyapi/grid.becke.html#grid.becke.BeckeWeights.generate_weights">generate_weights() (BeckeWeights method)</a>
+</li>
+      <li><a href="pyapi/grid.molgrid.html#grid.molgrid.MolGrid.get_atomic_grid">get_atomic_grid() (MolGrid method)</a>
+</li>
+      <li><a href="pyapi/grid.utils.html#grid.utils.get_cov_radii">get_cov_radii() (in module grid.utils)</a>
+</li>
+      <li><a href="pyapi/grid.angular.html#grid.angular.AngularGrid.get_localgrid">get_localgrid() (AngularGrid method)</a>
+
+      <ul>
+        <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.get_localgrid">(AtomGrid method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.ClenshawCurtis.get_localgrid">(ClenshawCurtis method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.ExpExp.get_localgrid">(ExpExp method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.ExpSinh.get_localgrid">(ExpSinh method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.FejerFirst.get_localgrid">(FejerFirst method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.FejerSecond.get_localgrid">(FejerSecond method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussChebyshev.get_localgrid">(GaussChebyshev method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussChebyshevLobatto.get_localgrid">(GaussChebyshevLobatto method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussChebyshevType2.get_localgrid">(GaussChebyshevType2 method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussLaguerre.get_localgrid">(GaussLaguerre method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussLegendre.get_localgrid">(GaussLegendre method)</a>
+</li>
+        <li><a href="pyapi/grid.basegrid.html#grid.basegrid.Grid.get_localgrid">(Grid method)</a>
+</li>
+        <li><a href="pyapi/grid.basegrid.html#grid.basegrid.LocalGrid.get_localgrid">(LocalGrid method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.LogExpSinh.get_localgrid">(LogExpSinh method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.MidPoint.get_localgrid">(MidPoint method)</a>
+</li>
+        <li><a href="pyapi/grid.molgrid.html#grid.molgrid.MolGrid.get_localgrid">(MolGrid method)</a>
+</li>
+        <li><a href="pyapi/grid.basegrid.html#grid.basegrid.OneDGrid.get_localgrid">(OneDGrid method)</a>
+</li>
+        <li><a href="pyapi/grid.periodicgrid.html#grid.periodicgrid.PeriodicGrid.get_localgrid">(PeriodicGrid method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.RectangleRuleSineEndPoints.get_localgrid">(RectangleRuleSineEndPoints method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.Simpson.get_localgrid">(Simpson method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.SingleArcSinhExp.get_localgrid">(SingleArcSinhExp method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.SingleExp.get_localgrid">(SingleExp method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.SingleTanh.get_localgrid">(SingleTanh method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TanhSinh.get_localgrid">(TanhSinh method)</a>
+</li>
+        <li><a href="pyapi/grid.cubic.html#grid.cubic.Tensor1DGrids.get_localgrid">(Tensor1DGrids method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.Trapezoidal.get_localgrid">(Trapezoidal method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenCC.get_localgrid">(TrefethenCC method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenGC2.get_localgrid">(TrefethenGC2 method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenGeneral.get_localgrid">(TrefethenGeneral method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenStripCC.get_localgrid">(TrefethenStripCC method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenStripGC2.get_localgrid">(TrefethenStripGC2 method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenStripGeneral.get_localgrid">(TrefethenStripGeneral method)</a>
+</li>
+        <li><a href="pyapi/grid.cubic.html#grid.cubic.UniformGrid.get_localgrid">(UniformGrid method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.UniformInteger.get_localgrid">(UniformInteger method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.cubic.html#grid.cubic.Tensor1DGrids.get_points_along_axes">get_points_along_axes() (Tensor1DGrids method)</a>
+
+      <ul>
+        <li><a href="pyapi/grid.cubic.html#grid.cubic.UniformGrid.get_points_along_axes">(UniformGrid method)</a>
+</li>
+      </ul></li>
+      <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.get_shell_grid">get_shell_grid() (AtomGrid method)</a>
+</li>
+      <li>
+    grid
+
+      <ul>
+        <li><a href="pyapi/grid.html#module-grid">module</a>
+</li>
+      </ul></li>
+      <li><a href="pyapi/grid.basegrid.html#grid.basegrid.Grid">Grid (class in grid.basegrid)</a>
+</li>
+      <li>
+    grid.angular
+
+      <ul>
+        <li><a href="pyapi/grid.angular.html#module-grid.angular">module</a>
+</li>
+      </ul></li>
+      <li>
+    grid.atomgrid
+
+      <ul>
+        <li><a href="pyapi/grid.atomgrid.html#module-grid.atomgrid">module</a>
+</li>
+      </ul></li>
+      <li>
+    grid.basegrid
+
+      <ul>
+        <li><a href="pyapi/grid.basegrid.html#module-grid.basegrid">module</a>
+</li>
+      </ul></li>
+      <li>
+    grid.becke
+
+      <ul>
+        <li><a href="pyapi/grid.becke.html#module-grid.becke">module</a>
+</li>
+      </ul></li>
+      <li>
+    grid.cubic
+
+      <ul>
+        <li><a href="pyapi/grid.cubic.html#module-grid.cubic">module</a>
+</li>
+      </ul></li>
+      <li>
+    grid.hirshfeld
+
+      <ul>
+        <li><a href="pyapi/grid.hirshfeld.html#module-grid.hirshfeld">module</a>
+</li>
+      </ul></li>
+      <li>
+    grid.molgrid
+
+      <ul>
+        <li><a href="pyapi/grid.molgrid.html#module-grid.molgrid">module</a>
+</li>
+      </ul></li>
+      <li>
+    grid.ode
+
+      <ul>
+        <li><a href="pyapi/grid.ode.html#module-grid.ode">module</a>
+</li>
+      </ul></li>
+      <li>
+    grid.onedgrid
+
+      <ul>
+        <li><a href="pyapi/grid.onedgrid.html#module-grid.onedgrid">module</a>
+</li>
+      </ul></li>
+      <li>
+    grid.periodicgrid
+
+      <ul>
+        <li><a href="pyapi/grid.periodicgrid.html#module-grid.periodicgrid">module</a>
+</li>
+      </ul></li>
+      <li>
+    grid.poisson
+
+      <ul>
+        <li><a href="pyapi/grid.poisson.html#module-grid.poisson">module</a>
+</li>
+      </ul></li>
+      <li>
+    grid.rtransform
+
+      <ul>
+        <li><a href="pyapi/grid.rtransform.html#module-grid.rtransform">module</a>
+</li>
+      </ul></li>
+      <li>
+    grid.utils
+
+      <ul>
+        <li><a href="pyapi/grid.utils.html#module-grid.utils">module</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="H">H</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HandyModRTransform">HandyModRTransform (class in grid.rtransform)</a>
+</li>
+      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HandyRTransform">HandyRTransform (class in grid.rtransform)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.hirshfeld.html#grid.hirshfeld.HirshfeldWeights">HirshfeldWeights (class in grid.hirshfeld)</a>
+</li>
+      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HyperbolicRTransform">HyperbolicRTransform (class in grid.rtransform)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="I">I</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.IdentityRTransform">IdentityRTransform (class in grid.rtransform)</a>
+</li>
+      <li><a href="pyapi/grid.cubic.html#grid.cubic.Tensor1DGrids.index_to_coordinates">index_to_coordinates() (Tensor1DGrids method)</a>
+
+      <ul>
+        <li><a href="pyapi/grid.cubic.html#grid.cubic.UniformGrid.index_to_coordinates">(UniformGrid method)</a>
+</li>
+      </ul></li>
+      <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.indices">indices (AtomGrid property)</a>
+
+      <ul>
+        <li><a href="pyapi/grid.basegrid.html#grid.basegrid.LocalGrid.indices">(LocalGrid property)</a>
+</li>
+        <li><a href="pyapi/grid.molgrid.html#grid.molgrid.MolGrid.indices">(MolGrid property)</a>
+</li>
+      </ul></li>
+      <li><a href="pyapi/grid.angular.html#grid.angular.AngularGrid.integrate">integrate() (AngularGrid method)</a>
+
+      <ul>
+        <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.integrate">(AtomGrid method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.ClenshawCurtis.integrate">(ClenshawCurtis method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.ExpExp.integrate">(ExpExp method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.ExpSinh.integrate">(ExpSinh method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.FejerFirst.integrate">(FejerFirst method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.FejerSecond.integrate">(FejerSecond method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussChebyshev.integrate">(GaussChebyshev method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussChebyshevLobatto.integrate">(GaussChebyshevLobatto method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussChebyshevType2.integrate">(GaussChebyshevType2 method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussLaguerre.integrate">(GaussLaguerre method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussLegendre.integrate">(GaussLegendre method)</a>
+</li>
+        <li><a href="pyapi/grid.basegrid.html#grid.basegrid.Grid.integrate">(Grid method)</a>
+</li>
+        <li><a href="pyapi/grid.basegrid.html#grid.basegrid.LocalGrid.integrate">(LocalGrid method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.LogExpSinh.integrate">(LogExpSinh method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.MidPoint.integrate">(MidPoint method)</a>
+</li>
+        <li><a href="pyapi/grid.molgrid.html#grid.molgrid.MolGrid.integrate">(MolGrid method)</a>
+</li>
+        <li><a href="pyapi/grid.basegrid.html#grid.basegrid.OneDGrid.integrate">(OneDGrid method)</a>
+</li>
+        <li><a href="pyapi/grid.periodicgrid.html#grid.periodicgrid.PeriodicGrid.integrate">(PeriodicGrid method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.RectangleRuleSineEndPoints.integrate">(RectangleRuleSineEndPoints method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.Simpson.integrate">(Simpson method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.SingleArcSinhExp.integrate">(SingleArcSinhExp method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.SingleExp.integrate">(SingleExp method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.SingleTanh.integrate">(SingleTanh method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TanhSinh.integrate">(TanhSinh method)</a>
+</li>
+        <li><a href="pyapi/grid.cubic.html#grid.cubic.Tensor1DGrids.integrate">(Tensor1DGrids method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.Trapezoidal.integrate">(Trapezoidal method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenCC.integrate">(TrefethenCC method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenGC2.integrate">(TrefethenGC2 method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenGeneral.integrate">(TrefethenGeneral method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenStripCC.integrate">(TrefethenStripCC method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenStripGC2.integrate">(TrefethenStripGC2 method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenStripGeneral.integrate">(TrefethenStripGeneral method)</a>
+</li>
+        <li><a href="pyapi/grid.cubic.html#grid.cubic.UniformGrid.integrate">(UniformGrid method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.UniformInteger.integrate">(UniformInteger method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.integrate_angular_coordinates">integrate_angular_coordinates() (AtomGrid method)</a>
+</li>
+      <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.interpolate">interpolate() (AtomGrid method)</a>
+
+      <ul>
+        <li><a href="pyapi/grid.molgrid.html#grid.molgrid.MolGrid.interpolate">(MolGrid method)</a>
+</li>
+        <li><a href="pyapi/grid.cubic.html#grid.cubic.Tensor1DGrids.interpolate">(Tensor1DGrids method)</a>
+</li>
+        <li><a href="pyapi/grid.cubic.html#grid.cubic.UniformGrid.interpolate">(UniformGrid method)</a>
+</li>
+      </ul></li>
+      <li><a href="pyapi/grid.poisson.html#grid.poisson.interpolate_laplacian">interpolate_laplacian() (in module grid.poisson)</a>
+</li>
+      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BaseTransform.inverse">inverse() (BaseTransform method)</a>
+
+      <ul>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BeckeRTransform.inverse">(BeckeRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.ExpRTransform.inverse">(ExpRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HandyModRTransform.inverse">(HandyModRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HandyRTransform.inverse">(HandyRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HyperbolicRTransform.inverse">(HyperbolicRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.IdentityRTransform.inverse">(IdentityRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.InverseRTransform.inverse">(InverseRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.KnowlesRTransform.inverse">(KnowlesRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.LinearFiniteRTransform.inverse">(LinearFiniteRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.LinearInfiniteRTransform.inverse">(LinearInfiniteRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.MultiExpRTransform.inverse">(MultiExpRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.PowerRTransform.inverse">(PowerRTransform method)</a>
+</li>
+      </ul></li>
+      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.InverseRTransform">InverseRTransform (class in grid.rtransform)</a>
+</li>
+      <li><a href="pyapi/grid.utils.html#grid.utils.isotopic_masses">isotopic_masses (in module grid.utils)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="K">K</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.KnowlesRTransform.k">k (KnowlesRTransform property)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.KnowlesRTransform">KnowlesRTransform (class in grid.rtransform)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="L">L</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.l_max">l_max (AtomGrid property)</a>
+</li>
+      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.LinearFiniteRTransform">LinearFiniteRTransform (class in grid.rtransform)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.LinearInfiniteRTransform">LinearInfiniteRTransform (class in grid.rtransform)</a>
+</li>
+      <li><a href="pyapi/grid.basegrid.html#grid.basegrid.LocalGrid">LocalGrid (class in grid.basegrid)</a>
+</li>
+      <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.LogExpSinh">LogExpSinh (class in grid.onedgrid)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="M">M</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HandyModRTransform.m">m (HandyModRTransform property)</a>
+
+      <ul>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HandyRTransform.m">(HandyRTransform property)</a>
+</li>
+      </ul></li>
+      <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.MidPoint">MidPoint (class in grid.onedgrid)</a>
+</li>
+      <li>
+    module
+
+      <ul>
+        <li><a href="pyapi/grid.html#module-grid">grid</a>
+</li>
+        <li><a href="pyapi/grid.angular.html#module-grid.angular">grid.angular</a>
+</li>
+        <li><a href="pyapi/grid.atomgrid.html#module-grid.atomgrid">grid.atomgrid</a>
+</li>
+        <li><a href="pyapi/grid.basegrid.html#module-grid.basegrid">grid.basegrid</a>
+</li>
+        <li><a href="pyapi/grid.becke.html#module-grid.becke">grid.becke</a>
+</li>
+        <li><a href="pyapi/grid.cubic.html#module-grid.cubic">grid.cubic</a>
+</li>
+        <li><a href="pyapi/grid.hirshfeld.html#module-grid.hirshfeld">grid.hirshfeld</a>
+</li>
+        <li><a href="pyapi/grid.molgrid.html#module-grid.molgrid">grid.molgrid</a>
+</li>
+        <li><a href="pyapi/grid.ode.html#module-grid.ode">grid.ode</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#module-grid.onedgrid">grid.onedgrid</a>
+</li>
+        <li><a href="pyapi/grid.periodicgrid.html#module-grid.periodicgrid">grid.periodicgrid</a>
+</li>
+        <li><a href="pyapi/grid.poisson.html#module-grid.poisson">grid.poisson</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#module-grid.rtransform">grid.rtransform</a>
+</li>
+        <li><a href="pyapi/grid.utils.html#module-grid.utils">grid.utils</a>
+</li>
+      </ul></li>
+      <li><a href="pyapi/grid.molgrid.html#grid.molgrid.MolGrid">MolGrid (class in grid.molgrid)</a>
+</li>
+      <li><a href="pyapi/grid.angular.html#grid.angular.AngularGrid.moments">moments() (AngularGrid method)</a>
+
+      <ul>
+        <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.moments">(AtomGrid method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.ClenshawCurtis.moments">(ClenshawCurtis method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.ExpExp.moments">(ExpExp method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.ExpSinh.moments">(ExpSinh method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.FejerFirst.moments">(FejerFirst method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.FejerSecond.moments">(FejerSecond method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussChebyshev.moments">(GaussChebyshev method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussChebyshevLobatto.moments">(GaussChebyshevLobatto method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussChebyshevType2.moments">(GaussChebyshevType2 method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussLaguerre.moments">(GaussLaguerre method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussLegendre.moments">(GaussLegendre method)</a>
+</li>
+        <li><a href="pyapi/grid.basegrid.html#grid.basegrid.Grid.moments">(Grid method)</a>
+</li>
+        <li><a href="pyapi/grid.basegrid.html#grid.basegrid.LocalGrid.moments">(LocalGrid method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.LogExpSinh.moments">(LogExpSinh method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.MidPoint.moments">(MidPoint method)</a>
+</li>
+        <li><a href="pyapi/grid.molgrid.html#grid.molgrid.MolGrid.moments">(MolGrid method)</a>
+</li>
+        <li><a href="pyapi/grid.basegrid.html#grid.basegrid.OneDGrid.moments">(OneDGrid method)</a>
+</li>
+        <li><a href="pyapi/grid.periodicgrid.html#grid.periodicgrid.PeriodicGrid.moments">(PeriodicGrid method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.RectangleRuleSineEndPoints.moments">(RectangleRuleSineEndPoints method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.Simpson.moments">(Simpson method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.SingleArcSinhExp.moments">(SingleArcSinhExp method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.SingleExp.moments">(SingleExp method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.SingleTanh.moments">(SingleTanh method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TanhSinh.moments">(TanhSinh method)</a>
+</li>
+        <li><a href="pyapi/grid.cubic.html#grid.cubic.Tensor1DGrids.moments">(Tensor1DGrids method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.Trapezoidal.moments">(Trapezoidal method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenCC.moments">(TrefethenCC method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenGC2.moments">(TrefethenGC2 method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenGeneral.moments">(TrefethenGeneral method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenStripCC.moments">(TrefethenStripCC method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenStripGC2.moments">(TrefethenStripGC2 method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenStripGeneral.moments">(TrefethenStripGeneral method)</a>
+</li>
+        <li><a href="pyapi/grid.cubic.html#grid.cubic.UniformGrid.moments">(UniformGrid method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.UniformInteger.moments">(UniformInteger method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.MultiExpRTransform">MultiExpRTransform (class in grid.rtransform)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="N">N</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.n_shells">n_shells (AtomGrid property)</a>
+</li>
+      <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.ClenshawCurtis.name">name (ClenshawCurtis attribute)</a>
+
+      <ul>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.ExpExp.name">(ExpExp attribute)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.ExpSinh.name">(ExpSinh attribute)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.FejerFirst.name">(FejerFirst attribute)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.FejerSecond.name">(FejerSecond attribute)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussChebyshev.name">(GaussChebyshev attribute)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussChebyshevLobatto.name">(GaussChebyshevLobatto attribute)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussChebyshevType2.name">(GaussChebyshevType2 attribute)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussLaguerre.name">(GaussLaguerre attribute)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussLegendre.name">(GaussLegendre attribute)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.LogExpSinh.name">(LogExpSinh attribute)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.MidPoint.name">(MidPoint attribute)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.RectangleRuleSineEndPoints.name">(RectangleRuleSineEndPoints attribute)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.Simpson.name">(Simpson attribute)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.SingleArcSinhExp.name">(SingleArcSinhExp attribute)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.SingleExp.name">(SingleExp attribute)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.SingleTanh.name">(SingleTanh attribute)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TanhSinh.name">(TanhSinh attribute)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.Trapezoidal.name">(Trapezoidal attribute)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenCC.name">(TrefethenCC attribute)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenGC2.name">(TrefethenGC2 attribute)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenGeneral.name">(TrefethenGeneral attribute)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenStripCC.name">(TrefethenStripCC attribute)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenStripGC2.name">(TrefethenStripGC2 attribute)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenStripGeneral.name">(TrefethenStripGeneral attribute)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.UniformInteger.name">(UniformInteger attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.cubic.html#grid.cubic.Tensor1DGrids.ndim">ndim (Tensor1DGrids property)</a>
+
+      <ul>
+        <li><a href="pyapi/grid.cubic.html#grid.cubic.UniformGrid.ndim">(UniformGrid property)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="O">O</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.basegrid.html#grid.basegrid.OneDGrid">OneDGrid (class in grid.basegrid)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.cubic.html#grid.cubic.Tensor1DGrids.origin">origin (Tensor1DGrids property)</a>
+
+      <ul>
+        <li><a href="pyapi/grid.cubic.html#grid.cubic.UniformGrid.origin">(UniformGrid property)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="P">P</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.periodicgrid.html#grid.periodicgrid.PeriodicGrid">PeriodicGrid (class in grid.periodicgrid)</a>
+</li>
+      <li><a href="pyapi/grid.periodicgrid.html#grid.periodicgrid.PeriodicGridWarning">PeriodicGridWarning</a>
+</li>
+      <li><a href="pyapi/grid.angular.html#grid.angular.AngularGrid.points">points (AngularGrid property)</a>
+
+      <ul>
+        <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.points">(AtomGrid property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.ClenshawCurtis.points">(ClenshawCurtis property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.ExpExp.points">(ExpExp property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.ExpSinh.points">(ExpSinh property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.FejerFirst.points">(FejerFirst property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.FejerSecond.points">(FejerSecond property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussChebyshev.points">(GaussChebyshev property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussChebyshevLobatto.points">(GaussChebyshevLobatto property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussChebyshevType2.points">(GaussChebyshevType2 property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussLaguerre.points">(GaussLaguerre property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussLegendre.points">(GaussLegendre property)</a>
+</li>
+        <li><a href="pyapi/grid.basegrid.html#grid.basegrid.Grid.points">(Grid property)</a>
+</li>
+        <li><a href="pyapi/grid.basegrid.html#grid.basegrid.LocalGrid.points">(LocalGrid property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.LogExpSinh.points">(LogExpSinh property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.MidPoint.points">(MidPoint property)</a>
+</li>
+        <li><a href="pyapi/grid.molgrid.html#grid.molgrid.MolGrid.points">(MolGrid property)</a>
+</li>
+        <li><a href="pyapi/grid.basegrid.html#grid.basegrid.OneDGrid.points">(OneDGrid property)</a>
+</li>
+        <li><a href="pyapi/grid.periodicgrid.html#grid.periodicgrid.PeriodicGrid.points">(PeriodicGrid property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.RectangleRuleSineEndPoints.points">(RectangleRuleSineEndPoints property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.Simpson.points">(Simpson property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.SingleArcSinhExp.points">(SingleArcSinhExp property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.SingleExp.points">(SingleExp property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.SingleTanh.points">(SingleTanh property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TanhSinh.points">(TanhSinh property)</a>
+</li>
+        <li><a href="pyapi/grid.cubic.html#grid.cubic.Tensor1DGrids.points">(Tensor1DGrids property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.Trapezoidal.points">(Trapezoidal property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenCC.points">(TrefethenCC property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenGC2.points">(TrefethenGC2 property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenGeneral.points">(TrefethenGeneral property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenStripCC.points">(TrefethenStripCC property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenStripGC2.points">(TrefethenStripGC2 property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenStripGeneral.points">(TrefethenStripGeneral property)</a>
+</li>
+        <li><a href="pyapi/grid.cubic.html#grid.cubic.UniformGrid.points">(UniformGrid property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.UniformInteger.points">(UniformInteger property)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.PowerRTransform">PowerRTransform (class in grid.rtransform)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="R">R</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BeckeRTransform.R">R (BeckeRTransform property)</a>
+
+      <ul>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HandyRTransform.R">(HandyRTransform property)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.KnowlesRTransform.R">(KnowlesRTransform property)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.MultiExpRTransform.R">(MultiExpRTransform property)</a>
+</li>
+      </ul></li>
+      <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.radial_component_splines">radial_component_splines() (AtomGrid method)</a>
+</li>
+      <li><a href="pyapi/grid.periodicgrid.html#grid.periodicgrid.PeriodicGrid.realvecs">realvecs (PeriodicGrid property)</a>
+</li>
+      <li><a href="pyapi/grid.periodicgrid.html#grid.periodicgrid.PeriodicGrid.recivecs">recivecs (PeriodicGrid property)</a>
+</li>
+      <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.RectangleRuleSineEndPoints">RectangleRuleSineEndPoints (class in grid.onedgrid)</a>
+</li>
+      <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.rgrid">rgrid (AtomGrid property)</a>
+</li>
+      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.ExpRTransform.rmax">rmax (ExpRTransform property)</a>
+
+      <ul>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HandyModRTransform.rmax">(HandyModRTransform property)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.LinearInfiniteRTransform.rmax">(LinearInfiniteRTransform property)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.PowerRTransform.rmax">(PowerRTransform property)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BeckeRTransform.rmin">rmin (BeckeRTransform property)</a>
+
+      <ul>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.ExpRTransform.rmin">(ExpRTransform property)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HandyModRTransform.rmin">(HandyModRTransform property)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HandyRTransform.rmin">(HandyRTransform property)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.KnowlesRTransform.rmin">(KnowlesRTransform property)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.LinearInfiniteRTransform.rmin">(LinearInfiniteRTransform property)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.MultiExpRTransform.rmin">(MultiExpRTransform property)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.PowerRTransform.rmin">(PowerRTransform property)</a>
+</li>
+      </ul></li>
+      <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.rotate">rotate (AtomGrid property)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="S">S</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.angular.html#grid.angular.AngularGrid.save">save() (AngularGrid method)</a>
+
+      <ul>
+        <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.save">(AtomGrid method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.ClenshawCurtis.save">(ClenshawCurtis method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.ExpExp.save">(ExpExp method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.ExpSinh.save">(ExpSinh method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.FejerFirst.save">(FejerFirst method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.FejerSecond.save">(FejerSecond method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussChebyshev.save">(GaussChebyshev method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussChebyshevLobatto.save">(GaussChebyshevLobatto method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussChebyshevType2.save">(GaussChebyshevType2 method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussLaguerre.save">(GaussLaguerre method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussLegendre.save">(GaussLegendre method)</a>
+</li>
+        <li><a href="pyapi/grid.basegrid.html#grid.basegrid.Grid.save">(Grid method)</a>
+</li>
+        <li><a href="pyapi/grid.basegrid.html#grid.basegrid.LocalGrid.save">(LocalGrid method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.LogExpSinh.save">(LogExpSinh method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.MidPoint.save">(MidPoint method)</a>
+</li>
+        <li><a href="pyapi/grid.molgrid.html#grid.molgrid.MolGrid.save">(MolGrid method)</a>
+</li>
+        <li><a href="pyapi/grid.basegrid.html#grid.basegrid.OneDGrid.save">(OneDGrid method)</a>
+</li>
+        <li><a href="pyapi/grid.periodicgrid.html#grid.periodicgrid.PeriodicGrid.save">(PeriodicGrid method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.RectangleRuleSineEndPoints.save">(RectangleRuleSineEndPoints method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.Simpson.save">(Simpson method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.SingleArcSinhExp.save">(SingleArcSinhExp method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.SingleExp.save">(SingleExp method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.SingleTanh.save">(SingleTanh method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TanhSinh.save">(TanhSinh method)</a>
+</li>
+        <li><a href="pyapi/grid.cubic.html#grid.cubic.Tensor1DGrids.save">(Tensor1DGrids method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.Trapezoidal.save">(Trapezoidal method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenCC.save">(TrefethenCC method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenGC2.save">(TrefethenGC2 method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenGeneral.save">(TrefethenGeneral method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenStripCC.save">(TrefethenStripCC method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenStripGC2.save">(TrefethenStripGC2 method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenStripGeneral.save">(TrefethenStripGeneral method)</a>
+</li>
+        <li><a href="pyapi/grid.cubic.html#grid.cubic.UniformGrid.save">(UniformGrid method)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.UniformInteger.save">(UniformInteger method)</a>
+</li>
+      </ul></li>
+      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.ExpRTransform.set_maximum_parameter_b">set_maximum_parameter_b() (ExpRTransform method)</a>
+
+      <ul>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.LinearInfiniteRTransform.set_maximum_parameter_b">(LinearInfiniteRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.PowerRTransform.set_maximum_parameter_b">(PowerRTransform method)</a>
+</li>
+      </ul></li>
+      <li><a href="pyapi/grid.cubic.html#grid.cubic.Tensor1DGrids.shape">shape (Tensor1DGrids property)</a>
+
+      <ul>
+        <li><a href="pyapi/grid.cubic.html#grid.cubic.UniformGrid.shape">(UniformGrid property)</a>
+</li>
+      </ul></li>
+      <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.Simpson">Simpson (class in grid.onedgrid)</a>
+</li>
+      <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.SingleArcSinhExp">SingleArcSinhExp (class in grid.onedgrid)</a>
+</li>
+      <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.SingleExp">SingleExp (class in grid.onedgrid)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.SingleTanh">SingleTanh (class in grid.onedgrid)</a>
+</li>
+      <li><a href="pyapi/grid.angular.html#grid.angular.AngularGrid.size">size (AngularGrid property)</a>
+
+      <ul>
+        <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.size">(AtomGrid property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.ClenshawCurtis.size">(ClenshawCurtis property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.ExpExp.size">(ExpExp property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.ExpSinh.size">(ExpSinh property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.FejerFirst.size">(FejerFirst property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.FejerSecond.size">(FejerSecond property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussChebyshev.size">(GaussChebyshev property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussChebyshevLobatto.size">(GaussChebyshevLobatto property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussChebyshevType2.size">(GaussChebyshevType2 property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussLaguerre.size">(GaussLaguerre property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussLegendre.size">(GaussLegendre property)</a>
+</li>
+        <li><a href="pyapi/grid.basegrid.html#grid.basegrid.Grid.size">(Grid property)</a>
+</li>
+        <li><a href="pyapi/grid.basegrid.html#grid.basegrid.LocalGrid.size">(LocalGrid property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.LogExpSinh.size">(LogExpSinh property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.MidPoint.size">(MidPoint property)</a>
+</li>
+        <li><a href="pyapi/grid.molgrid.html#grid.molgrid.MolGrid.size">(MolGrid property)</a>
+</li>
+        <li><a href="pyapi/grid.basegrid.html#grid.basegrid.OneDGrid.size">(OneDGrid property)</a>
+</li>
+        <li><a href="pyapi/grid.periodicgrid.html#grid.periodicgrid.PeriodicGrid.size">(PeriodicGrid property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.RectangleRuleSineEndPoints.size">(RectangleRuleSineEndPoints property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.Simpson.size">(Simpson property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.SingleArcSinhExp.size">(SingleArcSinhExp property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.SingleExp.size">(SingleExp property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.SingleTanh.size">(SingleTanh property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TanhSinh.size">(TanhSinh property)</a>
+</li>
+        <li><a href="pyapi/grid.cubic.html#grid.cubic.Tensor1DGrids.size">(Tensor1DGrids property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.Trapezoidal.size">(Trapezoidal property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenCC.size">(TrefethenCC property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenGC2.size">(TrefethenGC2 property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenGeneral.size">(TrefethenGeneral property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenStripCC.size">(TrefethenStripCC property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenStripGC2.size">(TrefethenStripGC2 property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenStripGeneral.size">(TrefethenStripGeneral property)</a>
+</li>
+        <li><a href="pyapi/grid.cubic.html#grid.cubic.UniformGrid.size">(UniformGrid property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.UniformInteger.size">(UniformInteger property)</a>
+</li>
+      </ul></li>
+      <li><a href="pyapi/grid.utils.html#grid.utils.solid_harmonics">solid_harmonics() (in module grid.utils)</a>
+</li>
+      <li><a href="pyapi/grid.ode.html#grid.ode.solve_ode_bvp">solve_ode_bvp() (in module grid.ode)</a>
+</li>
+      <li><a href="pyapi/grid.ode.html#grid.ode.solve_ode_ivp">solve_ode_ivp() (in module grid.ode)</a>
+</li>
+      <li><a href="pyapi/grid.poisson.html#grid.poisson.solve_poisson_bvp">solve_poisson_bvp() (in module grid.poisson)</a>
+</li>
+      <li><a href="pyapi/grid.poisson.html#grid.poisson.solve_poisson_ivp">solve_poisson_ivp() (in module grid.poisson)</a>
+</li>
+      <li><a href="pyapi/grid.periodicgrid.html#grid.periodicgrid.PeriodicGrid.spacings">spacings (PeriodicGrid property)</a>
+</li>
+      <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.spherical_average">spherical_average() (AtomGrid method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="T">T</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TanhSinh">TanhSinh (class in grid.onedgrid)</a>
+</li>
+      <li><a href="pyapi/grid.cubic.html#grid.cubic.Tensor1DGrids">Tensor1DGrids (class in grid.cubic)</a>
+</li>
+      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BaseTransform.transform">transform() (BaseTransform method)</a>
+
+      <ul>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BeckeRTransform.transform">(BeckeRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.ExpRTransform.transform">(ExpRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HandyModRTransform.transform">(HandyModRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HandyRTransform.transform">(HandyRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HyperbolicRTransform.transform">(HyperbolicRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.IdentityRTransform.transform">(IdentityRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.InverseRTransform.transform">(InverseRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.KnowlesRTransform.transform">(KnowlesRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.LinearFiniteRTransform.transform">(LinearFiniteRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.LinearInfiniteRTransform.transform">(LinearInfiniteRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.MultiExpRTransform.transform">(MultiExpRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.PowerRTransform.transform">(PowerRTransform method)</a>
+</li>
+      </ul></li>
+      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BaseTransform.transform_1d_grid">transform_1d_grid() (BaseTransform method)</a>
+
+      <ul>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BeckeRTransform.transform_1d_grid">(BeckeRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.ExpRTransform.transform_1d_grid">(ExpRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HandyModRTransform.transform_1d_grid">(HandyModRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HandyRTransform.transform_1d_grid">(HandyRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HyperbolicRTransform.transform_1d_grid">(HyperbolicRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.IdentityRTransform.transform_1d_grid">(IdentityRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.InverseRTransform.transform_1d_grid">(InverseRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.KnowlesRTransform.transform_1d_grid">(KnowlesRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.LinearFiniteRTransform.transform_1d_grid">(LinearFiniteRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.LinearInfiniteRTransform.transform_1d_grid">(LinearInfiniteRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.MultiExpRTransform.transform_1d_grid">(MultiExpRTransform method)</a>
+</li>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.PowerRTransform.transform_1d_grid">(PowerRTransform method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.Trapezoidal">Trapezoidal (class in grid.onedgrid)</a>
+</li>
+      <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenCC">TrefethenCC (class in grid.onedgrid)</a>
+</li>
+      <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenGC2">TrefethenGC2 (class in grid.onedgrid)</a>
+</li>
+      <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenGeneral">TrefethenGeneral (class in grid.onedgrid)</a>
+</li>
+      <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenStripCC">TrefethenStripCC (class in grid.onedgrid)</a>
+</li>
+      <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenStripGC2">TrefethenStripGC2 (class in grid.onedgrid)</a>
+</li>
+      <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenStripGeneral">TrefethenStripGeneral (class in grid.onedgrid)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="U">U</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.cubic.html#grid.cubic.UniformGrid">UniformGrid (class in grid.cubic)</a>
+</li>
+      <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.UniformInteger">UniformInteger (class in grid.onedgrid)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.angular.html#grid.angular.AngularGrid.use_spherical">use_spherical (AngularGrid property)</a>
+
+      <ul>
+        <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.use_spherical">(AtomGrid property)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="W">W</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.angular.html#grid.angular.AngularGrid.weights">weights (AngularGrid property)</a>
+
+      <ul>
+        <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.weights">(AtomGrid property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.ClenshawCurtis.weights">(ClenshawCurtis property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.ExpExp.weights">(ExpExp property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.ExpSinh.weights">(ExpSinh property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.FejerFirst.weights">(FejerFirst property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.FejerSecond.weights">(FejerSecond property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussChebyshev.weights">(GaussChebyshev property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussChebyshevLobatto.weights">(GaussChebyshevLobatto property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussChebyshevType2.weights">(GaussChebyshevType2 property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussLaguerre.weights">(GaussLaguerre property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussLegendre.weights">(GaussLegendre property)</a>
+</li>
+        <li><a href="pyapi/grid.basegrid.html#grid.basegrid.Grid.weights">(Grid property)</a>
+</li>
+        <li><a href="pyapi/grid.basegrid.html#grid.basegrid.LocalGrid.weights">(LocalGrid property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.LogExpSinh.weights">(LogExpSinh property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.MidPoint.weights">(MidPoint property)</a>
+</li>
+        <li><a href="pyapi/grid.molgrid.html#grid.molgrid.MolGrid.weights">(MolGrid property)</a>
+</li>
+        <li><a href="pyapi/grid.basegrid.html#grid.basegrid.OneDGrid.weights">(OneDGrid property)</a>
+</li>
+        <li><a href="pyapi/grid.periodicgrid.html#grid.periodicgrid.PeriodicGrid.weights">(PeriodicGrid property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.RectangleRuleSineEndPoints.weights">(RectangleRuleSineEndPoints property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.Simpson.weights">(Simpson property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.SingleArcSinhExp.weights">(SingleArcSinhExp property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.SingleExp.weights">(SingleExp property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.SingleTanh.weights">(SingleTanh property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TanhSinh.weights">(TanhSinh property)</a>
+</li>
+        <li><a href="pyapi/grid.cubic.html#grid.cubic.Tensor1DGrids.weights">(Tensor1DGrids property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.Trapezoidal.weights">(Trapezoidal property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenCC.weights">(TrefethenCC property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenGC2.weights">(TrefethenGC2 property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenGeneral.weights">(TrefethenGeneral property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenStripCC.weights">(TrefethenStripCC property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenStripGC2.weights">(TrefethenStripGC2 property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenStripGeneral.weights">(TrefethenStripGeneral property)</a>
+</li>
+        <li><a href="pyapi/grid.cubic.html#grid.cubic.UniformGrid.weights">(UniformGrid property)</a>
+</li>
+        <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.UniformInteger.weights">(UniformInteger property)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.periodicgrid.html#grid.periodicgrid.PeriodicGridWarning.with_traceback">with_traceback() (PeriodicGridWarning method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, QC-Devs.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

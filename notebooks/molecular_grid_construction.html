@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Constructing Molecular Grids &mdash; grid  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/override.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Molecular Grids" href="molecular_grid.html" />
+    <link rel="prev" title="Atom Grids" href="atom_grid.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            grid
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#downloading-code">Downloading Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#id1">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#building-documentation">Building Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../onedgrids.html">One-Dimensional Grids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../radial_transf.html">Radial Transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../conventions.html">Conventions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../conventions.html#spherical-coordinates">Spherical Coordinates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../conventions.html#spherical-harmonics">Spherical Harmonics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../conventions.html#ordering">Ordering</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../conventions.html#angular-grids">Angular Grids</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../conventions.html#nested-grids">Nested Grids</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#One-Dimensional-Grids">One-Dimensional Grids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#Angular-Grids">Angular Grids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#Atomic-Grid">Atomic Grid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#Molecular-Grid">Molecular Grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#Visualize-3D-Grid-Points">Visualize 3D Grid Points</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#Integrate-Electron-Density-on-the-Grid">Integrate Electron Density on the Grid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#Interpolate-Electron-Density-on-the-Grid">Interpolate Electron Density on the Grid</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="quickstart.html#Check-Interpolation-Accuracy">Check Interpolation Accuracy</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#Differentiate-Electron-Density-on-the-Grid">Differentiate Electron Density on the Grid</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="quickstart.html#Check-interpolated-derivative-accuracy">Check interpolated derivative accuracy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="quickstart.html#Graphical-comparisons-of-the-accuracy">Graphical comparisons of the accuracy</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="one_dimensional_grids.html">One-Dimensional Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="one_dimensional_grids.html#Example:-Visualize-One-Dimensional-Grid-Points">Example: Visualize One-Dimensional Grid Points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="one_dimensional_grids.html#Example:-Integration-of-One-Variable-Function-on-[-1,-1]">Example: Integration of One-Variable Function on <span class="math notranslate nohighlight">\([-1, 1]\)</span></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="one_dimensional_grids.html#Radial-Grid:-Transformation-of-1D-Integration-Intervals">Radial Grid: Transformation of 1D-Integration Intervals</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="one_dimensional_grids.html#Visualize-Radial-Grid-Points">Visualize Radial Grid Points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="one_dimensional_grids.html#Example:-Integration-of-One-Variable-Function-on-[0,-\infty]">Example: Integration of One-Variable Function on <span class="math notranslate nohighlight">\([0, \infty]\)</span></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="angular_grid.html">Angular Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="angular_grid.html#Initialization-of-Angular-Grids">Initialization of Angular Grids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="angular_grid.html#Integral-of-Identity-Function">Integral of Identity Function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="angular_grid.html#Integral-of-Spherical-Harmonic-Function">Integral of Spherical Harmonic Function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="angular_grid.html#Spherical-Harmonics-Are-Orthonormal">Spherical Harmonics Are Orthonormal</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="atom_grid_construction.html">Atom Grid Construction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="atom_grid_construction.html#Atomic-Grid-AtomGrid">Atomic Grid <code class="docutils literal notranslate"><span class="pre">AtomGrid</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="atom_grid_construction.html#Plot-AtomGrid-Points">Plot <code class="docutils literal notranslate"><span class="pre">AtomGrid</span></code> Points</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="atom_grid_construction.html#Pruned-Grids-AtomGrid.from_pruned">Pruned Grids <code class="docutils literal notranslate"><span class="pre">AtomGrid.from_pruned</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="atom_grid_construction.html#Preset-Grids-AtomGrid.from_preset">Preset Grids <code class="docutils literal notranslate"><span class="pre">AtomGrid.from_preset</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="atom_grid_construction.html#Multiple-Centered-AtomGrids">Multiple Centered AtomGrids</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="atom_grid.html">Atom Grid Application</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="atom_grid.html#Construct-Atomic-Grid">Construct Atomic Grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="atom_grid.html#Example:-Integrate-Electron-Density">Example: Integrate Electron Density</a></li>
+<li class="toctree-l3"><a class="reference internal" href="atom_grid.html#Example:-Calculate-Radial-Electron-Density-Distribution">Example: Calculate Radial Electron Density Distribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="atom_grid.html#Example:-Calculate-Classical-Coulomb-Repulsion-Energy">Example: Calculate Classical Coulomb Repulsion Energy</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Molecular Grid Construction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Molecular-Grid-Details">Molecular Grid Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Construction-of-Molecular-Grid">Construction of Molecular Grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Constructor">Constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#from_preset-method">from_preset method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#from_size-method">from_size method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#from_pruned-method">from_pruned method</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="molecular_grid.html">Molecular Grid Application</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="molecular_grid.html#Integration">Integration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="molecular_grid.html#Example:-Electron-Density">Example: Electron Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="molecular_grid.html#Local-Properties">Local Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="molecular_grid.html#Interpolation">Interpolation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="molecular_grid.html#Derivative-Interpolation">Derivative Interpolation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="molecular_grid.html#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cubic_grid.html">Cubic Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cubic_grid.html#Tensor-1D-Grids">Tensor 1D Grids</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cubic_grid.html#Interpolation">Interpolation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cubic_grid.html#Uniform-Grid">Uniform Grid</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="interpolation_poisson.html">Interpolation and Solving Poisson’s Equation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="interpolation_poisson.html#Details">Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interpolation_poisson.html#Example:-Unit-charge-distribution">Example: Unit-charge distribution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interpolation_poisson.html#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="multipole_moments.html">Multipole Moments</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pyapi/modules.html">grid</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.html">grid package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../pyapi/grid.html#submodules">Submodules</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.angular.html">grid.angular module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.atomgrid.html">grid.atomgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.basegrid.html">grid.basegrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.becke.html">grid.becke module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.cubic.html">grid.cubic module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.hirshfeld.html">grid.hirshfeld module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.molgrid.html">grid.molgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.ode.html">grid.ode module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.onedgrid.html">grid.onedgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.periodicgrid.html">grid.periodicgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.poisson.html">grid.poisson module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.rtransform.html">grid.rtransform module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.utils.html">grid.utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../pyapi/grid.html#module-grid">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">grid</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Constructing Molecular Grids</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/notebooks/molecular_grid_construction.nblink" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="Constructing-Molecular-Grids">
+<h1>Constructing Molecular Grids<a class="headerlink" href="#Constructing-Molecular-Grids" title="Permalink to this heading"></a></h1>
+<p>Molecular grids are particularly useful in quantum chemistry for integrating functions that concentrate and are “spike” around finite set of points, usually the atomic nuclei. This is particularly needed for DFT computation or atom-in-molecule analysis.</p>
+<div class="section" id="Molecular-Grid-Details">
+<h2>Molecular Grid Details<a class="headerlink" href="#Molecular-Grid-Details" title="Permalink to this heading"></a></h2>
+<p>It starts by first decomposing a function into atomic contributions and writing out each atomic integral in spherical coordinates. As proposed by Becke, this is done as</p>
+<div class="math notranslate nohighlight">
+\[\int_{\mathbb{R}^3} f(\vec{\textbf{r}}) d\vec{\textbf{r}} = \sum_{A} \int_{\mathbb{R}^3}
+w_A(\vec{\textbf{r}}) f(\vec{\textbf{r}}) d\vec{\textbf{r}},\]</div>
+<p>where <span class="math notranslate nohighlight">\(w_A\)</span> is known as the nuclear weight function (or atom in molecule weights) such that it has value one close to the center and decay’s continuous over other centers with the condition that <span class="math notranslate nohighlight">\(\sum_{A} w_A(\vec{\textbf{r}}) = 1\)</span> for all <span class="math notranslate nohighlight">\(\vec{\textbf{r}}\)</span>. The module <a class="reference internal" href="../pyapi/grid.molgrid.html"><span class="doc">Molecular Grids</span></a> is responsible for computing integrals in this fashion with either <a class="reference internal" href="../pyapi/grid.becke.html"><span class="doc">Becke</span></a> or <a class="reference internal" href="../pyapi/grid.hirshfeld.html"><span class="doc">Hirshfeld</span></a> atom in
+molecule weights. The process to integrate each individual integral is done by first converting to spherical coordinates <span class="math notranslate nohighlight">\((r, \theta, \phi)\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\int_{\mathbb{R}^3} w_A(\vec{\textbf{r}}) f(\vec{\textbf{r}}) d\vec{\textbf{r}} =
+\int \int \int  w_A(r, \theta, \phi) f(r, \theta, \phi) r^2 \sin(\phi) dr d\theta d\phi\]</div>
+<p>Then a one-dimensional grid is chosen over the radial grid (see <a class="reference internal" href="../pyapi/grid.onedgrid.html"><span class="doc">radial</span></a> and <a class="reference internal" href="../pyapi/grid.rtransform.html"><span class="doc">radial transform</span></a> module) with weights <span class="math notranslate nohighlight">\(w_i^{rad}\)</span> and an angular grid with weights <span class="math notranslate nohighlight">\(w_j^{ang}\)</span> is chosen to integrate over the angles <span class="math notranslate nohighlight">\((\theta, \phi)\)</span> including the sin factor. The combination of the two is handled by the <a class="reference internal" href="../pyapi/grid.atomgrid.html"><span class="doc">atomic grid</span></a> module with weights <span class="math notranslate nohighlight">\(w_{ij} = w_i^{rad} w_j^{ang} r^2\)</span> to achieve
+the numerical integral</p>
+<div class="math notranslate nohighlight">
+\[\int \int \int  w_A(r, \theta, \phi) f(r, \theta, \phi) r^2 \sin(\phi) dr d\theta d\phi \approx
+\sum_{i=1}^{N_{rad}} \sum_{j=1}^{N_{ang}} w_{ij}(r, \theta, \phi)
+w_A(r, \theta, \phi) f(r, \theta, \phi).\]</div>
+<p>For any general function <span class="math notranslate nohighlight">\(f: \mathbb{R}^3\rightarrow \mathbb{R}\)</span>, Grid package offers various grids in <a class="reference internal" href="../pyapi/grid.cubic.html"><span class="doc">Cubic</span></a> class for constructing hyper-rectangular grids. If <span class="math notranslate nohighlight">\(f\)</span> is periodic, then the <a class="reference internal" href="../pyapi/grid.periodicgrid.html"><span class="doc">periodic</span></a> module is useful.</p>
+<p><strong>Example: Formaldehyde</strong> This example computes the integral of the electron density of Formaldehyde obtained from Gaussian calculation. The integral of the electron density should be the sum of the atomic charges (16 for Formaldehyde).</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span># Generate the electron density, coordinates and charges from .fchk file
+from iodata import load_one
+from gbasis.wrappers import from_iodata
+from gbasis.evals.density import evaluate_density
+
+mol = load_one(&quot;ch2o_q+0.fchk&quot;)
+
+print(f&quot;Coordinates of the atoms \n {mol.atcoords}\n&quot;)
+print(f&quot;Atomic numbers of the atom \n {mol.atnums}&quot;)
+
+atnums = mol.atnums
+atcoords = mol.atcoords
+
+# Construct molecular basis from wave-function information read by IOData
+basis = from_iodata(mol)
+
+# Get the RDM to compute electron density
+rdm = mol.one_rdms[&quot;scf&quot;]
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Coordinates of the atoms
+ [[ 2.27823914e+00  4.13899085e-07  3.12033662e-07]
+ [ 1.01154892e-02  1.09802629e-07 -6.99333116e-07]
+ [-1.09577141e+00  1.77311416e+00  1.42544321e-07]
+ [-1.09577166e+00 -1.77311468e+00  2.44755133e-07]]
+
+Atomic numbers of the atom
+ [8 6 1 1]
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="Construction-of-Molecular-Grid">
+<h2>Construction of Molecular Grid<a class="headerlink" href="#Construction-of-Molecular-Grid" title="Permalink to this heading"></a></h2>
+<p>Molecular grid offers various methods to construct MolGrid object. Each method requires the atom in molecule weights <span class="math notranslate nohighlight">\(w_A\)</span> to be provided.</p>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="../pyapi/grid.molgrid.html#grid.molgrid.MolGrid"><span class="std std-ref">MolGrid.__init__</span></a>: Provide list of atomic grids for each center, and the atomic numbers for each center. This is useful to explicitly place atomic grids at each center.</p></li>
+<li><p><a class="reference internal" href="../pyapi/grid.molgrid.html#grid.molgrid.MolGrid.from_preset"><span class="std std-ref">MolGrid.from_preset()</span></a>: Generates atomic grid for each center based on the atomic numbers, atomic coordinates, a radial grid to integrate over <span class="math notranslate nohighlight">\([0, \infty)\)</span>, and a preset parameter from the list [“coarse”, “medium”, “fine”, “veryfine”, “ultrafine”, “insane”] that controls the degree of the angular grid.</p></li>
+<li><p><a class="reference internal" href="../pyapi/grid.molgrid.html#grid.molgrid.MolGrid.from_size"><span class="std std-ref">MolGrid.from_size()</span></a>: Similar to from_preset method but instead of string preset parameter, it has an integer size which controls the size of the angular grid inside the atomic grid class.</p></li>
+<li><p><a class="reference internal" href="../pyapi/grid.molgrid.html#grid.molgrid.MolGrid.from_pruned"><span class="std std-ref">MolGrid.from_pruned()</span></a>: Gives more control to the size of the angular grid based on the radius. This is done by providing <code class="docutils literal notranslate"><span class="pre">r_sectors</span></code> list and <code class="docutils literal notranslate"><span class="pre">sector_degs</span></code> that controls what kind of angular grid to place at each radius point. This is useful for placing lower degree angular grids close to the nucleus and larger degree angular grids further away.</p></li>
+</ol>
+<p>See the function documentation for more information. The first step here is to generate an one-dimensional grid to integrate over the radial coordinate <span class="math notranslate nohighlight">\(r \in [0, \infty)\)</span>. This is done by constructing a Trapezoidal grid over <span class="math notranslate nohighlight">\([-1, 1]\)</span> and using the Becke Transformation to transform it to <span class="math notranslate nohighlight">\([0, \infty)\)</span>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>from grid.onedgrid import Trapezoidal
+from grid.rtransform import LinearFiniteRTransform
+
+n_rpoints = 400                         # Number of radial points
+oned = Trapezoidal(n_rpoints)           # Trapezoidal grid of that size
+rmin, R = 0.0, 0.5                      # Parameters for the Becke radial transform
+rgrid = LinearFiniteRTransform(rmin, 8).transform_1d_grid(oned)
+</pre></div>
+</div>
+</div>
+<p>The Becke weights is constructed as the atom in molecular weights (also called nuclear weight functions)</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>from grid.becke import BeckeWeights
+
+aim_weights = BeckeWeights()
+</pre></div>
+</div>
+</div>
+<div class="section" id="Constructor">
+<h3>Constructor<a class="headerlink" href="#Constructor" title="Permalink to this heading"></a></h3>
+<p>The first method of constructing (point 1 above) is using the initializor. This is done by explicitly constructing an atomic grid over each center. The degree of the angular component of the atomic grid should depend on the charge of the atom. It is recommended that the larger the atom, the larger the degree of the angular component. Similarly for the radial grid, the larger the atom, the larger the radial grid component should be.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>from grid.molgrid import MolGrid
+from grid.atomgrid import AtomGrid
+
+# Construct molecular grid
+atom_grid_oxygen = AtomGrid(rgrid, degrees=[51], center=atcoords[0])
+atom_grid_carbon = AtomGrid(rgrid, degrees=[25], center=atcoords[1])
+atom_grid_hydro1 = AtomGrid(rgrid, degrees=[10], center=atcoords[2])
+atom_grid_hydro2 = AtomGrid(rgrid, degrees=[10], center=atcoords[3])
+atom_grids = [atom_grid_oxygen, atom_grid_carbon, atom_grid_hydro1, atom_grid_hydro2]
+molgrid = MolGrid(atnums, atom_grids, aim_weights, store=True)
+
+density = evaluate_density(rdm, basis, molgrid.points)
+
+integral = molgrid.integrate(density)
+print(f&quot;The integral of electron density of Formaldehyde is {integral}.&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/ali/miniconda3/envs/py37/lib/python3.7/site-packages/grid/atomgrid.py:883: UserWarning: Lebedev weights are negative which can introduce round-off errors.
+  sphere_grid = AngularGrid(degree=deg_i, use_spherical=use_spherical)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+The integral of electron density of Formaldehyde is 15.999822947424516.
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="from_preset-method">
+<h3>from_preset method<a class="headerlink" href="#from_preset-method" title="Permalink to this heading"></a></h3>
+<p>The disadvantage of the previous method is that it is difficult to choose the size of the angular degrees for each atom, and it can be cumbersome for larger atoms to construct atomic grids for each center. The <code class="docutils literal notranslate"><span class="pre">from_preset</span></code> method has a preset that handles it for the user that is simpler.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>from grid.molgrid import MolGrid
+
+molgrid = MolGrid.from_preset(atnums, atcoords, rgrid=rgrid, preset=&quot;fine&quot;, aim_weights=aim_weights, store=True)
+
+density = evaluate_density(rdm, basis, molgrid.points)
+integral = molgrid.integrate(density)
+print(f&quot;The integral of electron density of Formaldehyde is {integral}.&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+The integral of electron density of Formaldehyde is 15.999839766372306.
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="from_size-method">
+<h3>from_size method<a class="headerlink" href="#from_size-method" title="Permalink to this heading"></a></h3>
+<p>This method is similar to before except you can explicitly set the size of the angular degrees. This is the same across all atoms.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>from grid.molgrid import MolGrid
+
+molgrid = MolGrid.from_size(atnums, atcoords, rgrid=rgrid, size=40, aim_weights=aim_weights, store=True)
+
+density = evaluate_density(rdm, basis, molgrid.points)
+integral = molgrid.integrate(density)
+print(f&quot;The integral of electron density of Formaldehyde is {integral}.&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+The integral of electron density of Formaldehyde is 16.000299762134755.
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="from_pruned-method">
+<h3>from_pruned method<a class="headerlink" href="#from_pruned-method" title="Permalink to this heading"></a></h3>
+<p>This method allows explicit control to the angular degree <span class="math notranslate nohighlight">\(L_i\)</span> by breaking up the radial grid <span class="math notranslate nohighlight">\([0, \infty)\)</span> into sectors <span class="math notranslate nohighlight">\([0, R a_1) \cup [R a_1, R a_2) \cup \cdots \cup [R a_Q, \infty)\)</span> where <span class="math notranslate nohighlight">\(R\)</span> is the radius parameter, <span class="math notranslate nohighlight">\(\{a_i\}\)</span> is the <code class="docutils literal notranslate"><span class="pre">r_sectors</span></code> and each segment is associated to a angular degree <span class="math notranslate nohighlight">\(L_i\)</span>, i.e.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align*}
+                &amp;L_1 \text{ when } r &lt; R a_1 \\
+                &amp;L_2 \text{ when } R a_1 \leq r &lt; R a_2 \\
+                \vdots \\
+                &amp;L_{Q+1} \text{ when } R a_{Q} &lt; r.
+            \end{align*}\end{split}\]</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>from grid.molgrid import MolGrid
+
+sectors_r = [
+    [0.25, 1.0, 1.5],   # for oxygen
+    [0.5, 1.0, 1.5],    # for carbon
+    [1.0], [1.0]        # for hydrogen
+]
+sectors_degree = [
+    [10, 15, 25, 10],   # for oxygen
+    [5, 10, 20, 10],    # for carbon
+    [5, 10], [5, 10]    # for hydrogen
+]
+radius = 1.0
+molgrid = MolGrid.from_pruned(atnums, atcoords, radius, sectors_r=sectors_r, sectors_degree=sectors_degree, aim_weights=aim_weights, rgrid=rgrid)
+
+density = evaluate_density(rdm, basis, molgrid.points)
+integral = molgrid.integrate(density)
+print(f&quot;The integral of electron density of Formaldehyde is {integral}.&quot;)
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/ali/miniconda3/envs/py37/lib/python3.7/site-packages/grid/atomgrid.py:883: UserWarning: Lebedev weights are negative which can introduce round-off errors.
+  sphere_grid = AngularGrid(degree=deg_i, use_spherical=use_spherical)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+The integral of electron density of Formaldehyde is 16.00050462615157.
+</pre></div></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="atom_grid.html" class="btn btn-neutral float-left" title="Atom Grids" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="molecular_grid.html" class="btn btn-neutral float-right" title="Molecular Grids" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, QC-Devs.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

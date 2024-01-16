@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>One-Dimensional and Radial Grids &mdash; grid  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/override.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Angular Grids" href="angular_grid.html" />
+    <link rel="prev" title="Quick Start" href="quickstart.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            grid
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#downloading-code">Downloading Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#id1">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#building-documentation">Building Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../onedgrids.html">One-Dimensional Grids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../radial_transf.html">Radial Transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../conventions.html">Conventions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../conventions.html#spherical-coordinates">Spherical Coordinates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../conventions.html#spherical-harmonics">Spherical Harmonics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../conventions.html#ordering">Ordering</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../conventions.html#angular-grids">Angular Grids</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../conventions.html#nested-grids">Nested Grids</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#One-Dimensional-Grids">One-Dimensional Grids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#Angular-Grids">Angular Grids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#Atomic-Grid">Atomic Grid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#Molecular-Grid">Molecular Grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#Visualize-3D-Grid-Points">Visualize 3D Grid Points</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#Integrate-Electron-Density-on-the-Grid">Integrate Electron Density on the Grid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#Interpolate-Electron-Density-on-the-Grid">Interpolate Electron Density on the Grid</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="quickstart.html#Check-Interpolation-Accuracy">Check Interpolation Accuracy</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#Differentiate-Electron-Density-on-the-Grid">Differentiate Electron Density on the Grid</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="quickstart.html#Check-interpolated-derivative-accuracy">Check interpolated derivative accuracy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="quickstart.html#Graphical-comparisons-of-the-accuracy">Graphical comparisons of the accuracy</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">One-Dimensional Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Example:-Visualize-One-Dimensional-Grid-Points">Example: Visualize One-Dimensional Grid Points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Example:-Integration-of-One-Variable-Function-on-[-1,-1]">Example: Integration of One-Variable Function on <span class="math notranslate nohighlight">\([-1, 1]\)</span></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Radial-Grid:-Transformation-of-1D-Integration-Intervals">Radial Grid: Transformation of 1D-Integration Intervals</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Visualize-Radial-Grid-Points">Visualize Radial Grid Points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Example:-Integration-of-One-Variable-Function-on-[0,-\infty]">Example: Integration of One-Variable Function on <span class="math notranslate nohighlight">\([0, \infty]\)</span></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="angular_grid.html">Angular Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="angular_grid.html#Initialization-of-Angular-Grids">Initialization of Angular Grids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="angular_grid.html#Integral-of-Identity-Function">Integral of Identity Function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="angular_grid.html#Integral-of-Spherical-Harmonic-Function">Integral of Spherical Harmonic Function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="angular_grid.html#Spherical-Harmonics-Are-Orthonormal">Spherical Harmonics Are Orthonormal</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="atom_grid_construction.html">Atom Grid Construction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="atom_grid_construction.html#Atomic-Grid-AtomGrid">Atomic Grid <code class="docutils literal notranslate"><span class="pre">AtomGrid</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="atom_grid_construction.html#Plot-AtomGrid-Points">Plot <code class="docutils literal notranslate"><span class="pre">AtomGrid</span></code> Points</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="atom_grid_construction.html#Pruned-Grids-AtomGrid.from_pruned">Pruned Grids <code class="docutils literal notranslate"><span class="pre">AtomGrid.from_pruned</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="atom_grid_construction.html#Preset-Grids-AtomGrid.from_preset">Preset Grids <code class="docutils literal notranslate"><span class="pre">AtomGrid.from_preset</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="atom_grid_construction.html#Multiple-Centered-AtomGrids">Multiple Centered AtomGrids</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="atom_grid.html">Atom Grid Application</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="atom_grid.html#Construct-Atomic-Grid">Construct Atomic Grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="atom_grid.html#Example:-Integrate-Electron-Density">Example: Integrate Electron Density</a></li>
+<li class="toctree-l3"><a class="reference internal" href="atom_grid.html#Example:-Calculate-Radial-Electron-Density-Distribution">Example: Calculate Radial Electron Density Distribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="atom_grid.html#Example:-Calculate-Classical-Coulomb-Repulsion-Energy">Example: Calculate Classical Coulomb Repulsion Energy</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="molecular_grid_construction.html">Molecular Grid Construction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="molecular_grid_construction.html#Molecular-Grid-Details">Molecular Grid Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="molecular_grid_construction.html#Construction-of-Molecular-Grid">Construction of Molecular Grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="molecular_grid_construction.html#Constructor">Constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecular_grid_construction.html#from_preset-method">from_preset method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecular_grid_construction.html#from_size-method">from_size method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecular_grid_construction.html#from_pruned-method">from_pruned method</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="molecular_grid.html">Molecular Grid Application</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="molecular_grid.html#Integration">Integration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="molecular_grid.html#Example:-Electron-Density">Example: Electron Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="molecular_grid.html#Local-Properties">Local Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="molecular_grid.html#Interpolation">Interpolation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="molecular_grid.html#Derivative-Interpolation">Derivative Interpolation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="molecular_grid.html#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cubic_grid.html">Cubic Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cubic_grid.html#Tensor-1D-Grids">Tensor 1D Grids</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cubic_grid.html#Interpolation">Interpolation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cubic_grid.html#Uniform-Grid">Uniform Grid</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="interpolation_poisson.html">Interpolation and Solving Poisson’s Equation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="interpolation_poisson.html#Details">Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interpolation_poisson.html#Example:-Unit-charge-distribution">Example: Unit-charge distribution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interpolation_poisson.html#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="multipole_moments.html">Multipole Moments</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pyapi/modules.html">grid</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.html">grid package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../pyapi/grid.html#submodules">Submodules</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.angular.html">grid.angular module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.atomgrid.html">grid.atomgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.basegrid.html">grid.basegrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.becke.html">grid.becke module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.cubic.html">grid.cubic module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.hirshfeld.html">grid.hirshfeld module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.molgrid.html">grid.molgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.ode.html">grid.ode module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.onedgrid.html">grid.onedgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.periodicgrid.html">grid.periodicgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.poisson.html">grid.poisson module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.rtransform.html">grid.rtransform module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pyapi/grid.utils.html">grid.utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../pyapi/grid.html#module-grid">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">grid</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">One-Dimensional and Radial Grids</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/notebooks/one_dimensional_grids.nblink" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="One-Dimensional-and-Radial-Grids">
+<h1>One-Dimensional and Radial Grids<a class="headerlink" href="#One-Dimensional-and-Radial-Grids" title="Permalink to this heading"></a></h1>
+<p>Grid supports several quadrature rules for one-dimensional grids, most of them in the [-1, 1] interval, within the <a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.basegrid.html#grid.basegrid.OneDGrid">OneDGrid</a> module.</p>
+<div class="section" id="Example:-Visualize-One-Dimensional-Grid-Points">
+<h2>Example: Visualize One-Dimensional Grid Points<a class="headerlink" href="#Example:-Visualize-One-Dimensional-Grid-Points" title="Permalink to this heading"></a></h2>
+<p>Here, we showcase some of the quadrature rules available each with a unique set of points. Click <a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.onedgrid.html">here</a> for a full list of one-dimensional grid classes and <a class="reference external" href="https://grid.qcdevs.org/onedgrids.html#one-dimensional-grids">here</a> for a condensed table containing most of the popular grids.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from grid.onedgrid import *
+
+# Make several 1-dimensional grids for a given number of points
+npoints = 31
+
+grids = [
+    GaussChebyshev(npoints),
+    GaussLegendre(npoints),
+    TanhSinh(npoints),
+    Simpson(npoints),
+    Trapezoidal(npoints),
+]
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import numpy as np
+import matplotlib.pyplot as plt
+
+names = []
+for i, oned in enumerate(grids):
+    plt.scatter(oned.points, np.repeat(i + 1, oned.size), marker=&quot;o&quot;)
+    names.append(oned.name)
+
+# set the y-ticks to be the 1D grid names, and set labels
+plt.title(f&quot;{npoints} Grid Points in One Dimension&quot;, fontsize=16)
+plt.yticks(np.arange(1, len(grids) + 1), names)
+plt.xlabel(&quot;Number of Points (Grid Size)&quot;, fontsize=14)
+plt.ylabel(&quot;Quadrature Rule&quot;, fontsize=14)
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_one_dimensional_grids_2_0.png" src="../_images/notebooks_one_dimensional_grids_2_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Example:-Integration-of-One-Variable-Function-on-[-1,-1]">
+<h2>Example: Integration of One-Variable Function on <span class="math notranslate nohighlight">\([-1, 1]\)</span><a class="headerlink" href="#Example:-Integration-of-One-Variable-Function-on-[-1,-1]" title="Permalink to this heading"></a></h2>
+<p>The one-dimensional grids can accurately integrate one-variable functions over an interval (defined by their domain), even with a small number of points. Here, we numerically compute the integral below and compute the relative percent error. The analytical value of this integral is <span class="math notranslate nohighlight">\(\pi/2\)</span>.</p>
+<div class="math notranslate nohighlight">
+\[\int_{-1}^1 \sqrt{1 - x^2} dx \approx \sum_{i=0}^{N-1} w_i \sqrt{1 - x_i^2}\]</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import numpy as np
+
+# define the function to integrate
+function = lambda x: np.sqrt(1 - x**2)
+
+print(&quot;Integral of sqrt(1-x^2) from -1 to 1:&quot;)
+print(f&quot;{np.pi / 2: .8f} from Analytical integration (which is equal to pi/2)&quot;)
+
+names = []
+error_relative = []
+for oned in grids:
+    # integrate the function evaluated on the grid points
+    integral = oned.integrate(function(oned.points))
+    print(f&quot;{integral: .8f} from {oned.name} integration&quot;)
+    error_relative.append(np.abs(integral - np.pi / 2) / (np.pi / 2) * 100)
+    names.append(oned.name)
+
+# plot the relative error as columns graph
+plt.figure(figsize=(8.5, 5))
+plt.bar(names, error_relative)
+title = r&quot;Numerical Integration of $\int_{-1}^1 \sqrt{1-x^2} dx$ with &quot; + str(npoints) + &quot; Points&quot;
+plt.title(title, fontsize=16)
+plt.xlabel(&quot;Quadrature Rule&quot;, fontsize=14)
+plt.ylabel(&quot;Relative Percent Error&quot;, fontsize=14)
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Integral of sqrt(1-x^2) from -1 to 1:
+ 1.57079633 from Analytical integration (which is equal to pi/2)
+ 1.57079633 from Gauss-Chebyshev integration
+ 1.57082270 from Gauss-Legendre integration
+ 1.57067045 from Tanh-Sinh integration
+ 1.56683246 from Simpson integration
+ 1.56069571 from Trapezoidal-Lobatto integration
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_one_dimensional_grids_4_1.png" src="../_images/notebooks_one_dimensional_grids_4_1.png" />
+</div>
+</div>
+<p>Changing the number of grid points increases the accuracy of each quadrature. Here we show how the relative integration error converges to zero when increasing the number of points.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>npoints = [3, 5, 11, 15, 17, 19, 21, 31]
+grid_classes = [GaussChebyshev, GaussLegendre, TanhSinh, Simpson, Trapezoidal]
+
+for grid_class in grid_classes:
+    errors = []
+    for npoint in npoints:
+        # make 1-dimensional grid for the given number of points
+        oned = grid_class(npoint)
+        # compute relative percent error of integration
+        integral = oned.integrate(function(oned.points))
+        errors.append(np.abs(integral - np.pi / 2) / (np.pi / 2) * 100)
+    # plot relative percent error vs. number of grid points
+    plt.plot(npoints, errors, label=oned.name)
+
+plt.legend(frameon=False, fontsize=12)
+plt.title(r&quot;Numerical Integration of $\int_{-1}^1 \sqrt{1-x^2} dx$&quot;, fontsize=16)
+plt.xlabel(&quot;Number of Points (Grid Size)&quot;, fontsize=14)
+plt.ylabel(&quot;Relative Percent Error&quot;, fontsize=14)
+plt.xticks(npoints)
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_one_dimensional_grids_6_0.png" src="../_images/notebooks_one_dimensional_grids_6_0.png" />
+</div>
+</div>
+<div class="section" id="Radial-Grid:-Transformation-of-1D-Integration-Intervals">
+<h3>Radial Grid: Transformation of 1D-Integration Intervals<a class="headerlink" href="#Radial-Grid:-Transformation-of-1D-Integration-Intervals" title="Permalink to this heading"></a></h3>
+<p>Generally, areas where the integrand changes more rapidly demand a denser concentration of points. So, the <span class="math notranslate nohighlight">\([-1, 1]\)</span> interval is not suitable for most applications encountered in quantum chemistry, where the integrals are usually performed on <span class="math notranslate nohighlight">\([0,\infty)\)</span> domain. <a class="reference external" href="https://github.com/theochem/grid">Grid</a> supports several transformations of the one-dimensional grids to other intervals. Some of these transformations have a parameter that can be used to control the density of points
+across different ranges of the new interval. Click <a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.rtransform.html">here</a> for a full list of radial transformations and <a class="reference external" href="https://grid.qcdevs.org/radial_transf.html">here</a> for a condensed table with explicit formulas.</p>
+</div>
+</div>
+<div class="section" id="Visualize-Radial-Grid-Points">
+<h2>Visualize Radial Grid Points<a class="headerlink" href="#Visualize-Radial-Grid-Points" title="Permalink to this heading"></a></h2>
+<p>Here we visualize the OneDGrid points for different quadrature rules after a Becke transformation.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from grid.rtransform import BeckeRTransform
+
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5), sharey=True)
+names = []
+for i, oned in enumerate(grids):
+    # Becke R-transform (goes from 0 to \infty) to transform 1D-grid
+    rgrid = BeckeRTransform(0.0, R=1.5).transform_1d_grid(oned)
+    # plot radial grid points for each transformed 1D-grid
+    ax1.scatter(rgrid.points, np.repeat(i + 1, rgrid.size), marker=&quot;o&quot;)
+    # plot log plot of radial grid points
+    ax2.semilogx(rgrid.points, np.repeat(i + 1, rgrid.size), marker=&quot;o&quot;, linestyle=&quot;&quot;)
+    names.append(oned.name)
+
+# set the ticks, labels, and title
+plt.suptitle(&quot;Plot &amp; Log-Plot of Becke Radial Transformation of 1D-Grids&quot;, fontsize=17)
+ax1.set_yticks(np.arange(1, len(grids) + 1), names, fontsize=11)
+ax1.set_xlim(0, 2500)
+ax2.set_xlim(1.0e-4, 2500)
+ax1.set_xlabel(&quot;Transformed Coordinate r&quot;, fontsize=14)
+ax2.set_xlabel(&quot;Transformed Coordinate r&quot;, fontsize=14)
+ax1.set_ylabel(&quot;Quadrature Rule&quot;, fontsize=17)
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/var/folders/wk/kmp6fyrn3396qjpx40d2qk600000gn/T/ipykernel_75060/2869605059.py:18: UserWarning: Attempt to set non-positive xlim on a log-scaled axis will be ignored.
+  ax2.set_xlim(0, 2500)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_one_dimensional_grids_8_1.png" src="../_images/notebooks_one_dimensional_grids_8_1.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Example:-Integration-of-One-Variable-Function-on-[0,-\infty]">
+<h2>Example: Integration of One-Variable Function on <span class="math notranslate nohighlight">\([0, \infty]\)</span><a class="headerlink" href="#Example:-Integration-of-One-Variable-Function-on-[0,-\infty]" title="Permalink to this heading"></a></h2>
+<p>This transformation tends to concentrate the points close to the origin. Because of this, it is usually used for defining radial grids for atoms where the function to integrate is rapidly varying close to the origin (e.g. the electron density is more concentrated close to the nucleus). Here, we integrate (which has the exact value of 2.0):</p>
+<div class="math notranslate nohighlight">
+\[\int_0^\infty x^2 e^{-x} dx\]</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>print(&quot;Integration of r^2 * exp(-r) from 0 to infinity:&quot;)
+print(f&quot;{2.0: .6f} Analytical integration&quot;)
+
+# Make several 1-dimensional grids for a given number of points
+npoints = 21
+grids = [
+    GaussChebyshev(npoints),
+    GaussLegendre(npoints),
+    TanhSinh(npoints),
+    Simpson(npoints),
+    Trapezoidal(npoints),
+]
+
+for oned in grids:
+    rgrid = BeckeRTransform(0.0, R=1.5).transform_1d_grid(oned)
+    x = rgrid.points
+    func_vals = x**2 * np.exp(-x)
+    integral = rgrid.integrate(func_vals)
+    print(f&quot;{integral: .6f} from BeckeRTransform radial grid of {oned.name}&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Integration of r^2 * exp(-r) from 0 to infinity:
+ 2.000000 Analytical integration
+ 2.000003 from BeckeRTransform radial grid of Gauss-Chebyshev
+ 1.999996 from BeckeRTransform radial grid of Gauss-Legendre
+ 1.999993 from BeckeRTransform radial grid of Tanh-Sinh
+ 1.998949 from BeckeRTransform radial grid of Simpson
+ 2.000006 from BeckeRTransform radial grid of Trapezoidal-Lobatto
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>npoints = [11, 21, 31, 41, 51, 61]
+grid_classes = [GaussChebyshev, GaussLegendre, TanhSinh, Simpson, Trapezoidal]
+
+for grid_class in grid_classes:
+    errors = []
+    for npoint in npoints:
+        # make 1-dimensional grid for the given number of points
+        oned = grid_class(npoint)
+        rgrid = BeckeRTransform(0.0, R=1.5).transform_1d_grid(oned)
+        # calculate x^2 e^-x
+        x = rgrid.points
+        func_vals = x**2.0 * np.exp(-x)
+        # compute relative percent error of integration
+        integral = rgrid.integrate(func_vals)
+        errors.append(np.abs(integral - 2.0) / 2.0 * 100)
+    # plot relative percent error vs. number of grid points
+    plt.semilogy(npoints, errors, label=oned.name)
+
+plt.legend(frameon=False, fontsize=12)
+plt.title(r&quot;Numerical Integration of $\int_0^\infty x^2 e^{-x}dx$&quot;, fontsize=16)
+plt.xlabel(&quot;Number of Points (Grid Size)&quot;, fontsize=14)
+plt.ylabel(&quot;Relative Percent Error&quot;, fontsize=14)
+plt.xticks(npoints)
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_one_dimensional_grids_11_0.png" src="../_images/notebooks_one_dimensional_grids_11_0.png" />
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="quickstart.html" class="btn btn-neutral float-left" title="Quick Start" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="angular_grid.html" class="btn btn-neutral float-right" title="Angular Grids" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, QC-Devs.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>grid.periodicgrid module &mdash; grid  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/override.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="grid.poisson module" href="grid.poisson.html" />
+    <link rel="prev" title="grid.onedgrid module" href="grid.onedgrid.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            grid
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#downloading-code">Downloading Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#id1">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#building-documentation">Building Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../onedgrids.html">One-Dimensional Grids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../radial_transf.html">Radial Transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../conventions.html">Conventions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../conventions.html#spherical-coordinates">Spherical Coordinates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../conventions.html#spherical-harmonics">Spherical Harmonics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../conventions.html#ordering">Ordering</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../conventions.html#angular-grids">Angular Grids</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../conventions.html#nested-grids">Nested Grids</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/quickstart.html">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/quickstart.html#One-Dimensional-Grids">One-Dimensional Grids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/quickstart.html#Angular-Grids">Angular Grids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/quickstart.html#Atomic-Grid">Atomic Grid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/quickstart.html#Molecular-Grid">Molecular Grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/quickstart.html#Visualize-3D-Grid-Points">Visualize 3D Grid Points</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/quickstart.html#Integrate-Electron-Density-on-the-Grid">Integrate Electron Density on the Grid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/quickstart.html#Interpolate-Electron-Density-on-the-Grid">Interpolate Electron Density on the Grid</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../notebooks/quickstart.html#Check-Interpolation-Accuracy">Check Interpolation Accuracy</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/quickstart.html#Differentiate-Electron-Density-on-the-Grid">Differentiate Electron Density on the Grid</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../notebooks/quickstart.html#Check-interpolated-derivative-accuracy">Check interpolated derivative accuracy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../notebooks/quickstart.html#Graphical-comparisons-of-the-accuracy">Graphical comparisons of the accuracy</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/one_dimensional_grids.html">One-Dimensional Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/one_dimensional_grids.html#Example:-Visualize-One-Dimensional-Grid-Points">Example: Visualize One-Dimensional Grid Points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/one_dimensional_grids.html#Example:-Integration-of-One-Variable-Function-on-[-1,-1]">Example: Integration of One-Variable Function on <span class="math notranslate nohighlight">\([-1, 1]\)</span></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/one_dimensional_grids.html#Radial-Grid:-Transformation-of-1D-Integration-Intervals">Radial Grid: Transformation of 1D-Integration Intervals</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/one_dimensional_grids.html#Visualize-Radial-Grid-Points">Visualize Radial Grid Points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/one_dimensional_grids.html#Example:-Integration-of-One-Variable-Function-on-[0,-\infty]">Example: Integration of One-Variable Function on <span class="math notranslate nohighlight">\([0, \infty]\)</span></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/angular_grid.html">Angular Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/angular_grid.html#Initialization-of-Angular-Grids">Initialization of Angular Grids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/angular_grid.html#Integral-of-Identity-Function">Integral of Identity Function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/angular_grid.html#Integral-of-Spherical-Harmonic-Function">Integral of Spherical Harmonic Function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/angular_grid.html#Spherical-Harmonics-Are-Orthonormal">Spherical Harmonics Are Orthonormal</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/atom_grid_construction.html">Atom Grid Construction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/atom_grid_construction.html#Atomic-Grid-AtomGrid">Atomic Grid <code class="docutils literal notranslate"><span class="pre">AtomGrid</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/atom_grid_construction.html#Plot-AtomGrid-Points">Plot <code class="docutils literal notranslate"><span class="pre">AtomGrid</span></code> Points</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/atom_grid_construction.html#Pruned-Grids-AtomGrid.from_pruned">Pruned Grids <code class="docutils literal notranslate"><span class="pre">AtomGrid.from_pruned</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/atom_grid_construction.html#Preset-Grids-AtomGrid.from_preset">Preset Grids <code class="docutils literal notranslate"><span class="pre">AtomGrid.from_preset</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/atom_grid_construction.html#Multiple-Centered-AtomGrids">Multiple Centered AtomGrids</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/atom_grid.html">Atom Grid Application</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/atom_grid.html#Construct-Atomic-Grid">Construct Atomic Grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/atom_grid.html#Example:-Integrate-Electron-Density">Example: Integrate Electron Density</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/atom_grid.html#Example:-Calculate-Radial-Electron-Density-Distribution">Example: Calculate Radial Electron Density Distribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/atom_grid.html#Example:-Calculate-Classical-Coulomb-Repulsion-Energy">Example: Calculate Classical Coulomb Repulsion Energy</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/molecular_grid_construction.html">Molecular Grid Construction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid_construction.html#Molecular-Grid-Details">Molecular Grid Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid_construction.html#Construction-of-Molecular-Grid">Construction of Molecular Grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid_construction.html#Constructor">Constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid_construction.html#from_preset-method">from_preset method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid_construction.html#from_size-method">from_size method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid_construction.html#from_pruned-method">from_pruned method</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/molecular_grid.html">Molecular Grid Application</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Integration">Integration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#Example:-Electron-Density">Example: Electron Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Local-Properties">Local Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Interpolation">Interpolation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Derivative-Interpolation">Derivative Interpolation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/cubic_grid.html">Cubic Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/cubic_grid.html#Tensor-1D-Grids">Tensor 1D Grids</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/cubic_grid.html#Interpolation">Interpolation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/cubic_grid.html#Uniform-Grid">Uniform Grid</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/interpolation_poisson.html">Interpolation and Solving Poisson’s Equation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/interpolation_poisson.html#Details">Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/interpolation_poisson.html#Example:-Unit-charge-distribution">Example: Unit-charge distribution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/interpolation_poisson.html#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/multipole_moments.html">Multipole Moments</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">grid</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="grid.html">grid package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="grid.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="grid.angular.html">grid.angular module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.atomgrid.html">grid.atomgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.basegrid.html">grid.basegrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.becke.html">grid.becke module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.cubic.html">grid.cubic module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.hirshfeld.html">grid.hirshfeld module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.molgrid.html">grid.molgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.ode.html">grid.ode module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.onedgrid.html">grid.onedgrid module</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">grid.periodicgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.poisson.html">grid.poisson module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.rtransform.html">grid.rtransform module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.utils.html">grid.utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="grid.html#module-grid">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">grid</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">grid</a></li>
+          <li class="breadcrumb-item"><a href="grid.html">grid package</a></li>
+      <li class="breadcrumb-item active">grid.periodicgrid module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/pyapi/grid.periodicgrid.rst" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="module-grid.periodicgrid">
+<span id="grid-periodicgrid-module"></span><h1>grid.periodicgrid module<a class="headerlink" href="#module-grid.periodicgrid" title="Permalink to this heading"></a></h1>
+<p>Grids with periodic boundary conditions.</p>
+<div class="section" id="algorithm">
+<h2>Algorithm<a class="headerlink" href="#algorithm" title="Permalink to this heading"></a></h2>
+<p>To understand how the algorithm in <code class="docutils literal notranslate"><span class="pre">get_localgrid</span></code> works, it may be useful
+review a few basic crystallographic concepts:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Bravais_lattice">https://en.wikipedia.org/wiki/Bravais_lattice</a></p></li>
+<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Reciprocal_lattice">https://en.wikipedia.org/wiki/Reciprocal_lattice</a></p></li>
+<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Fractional_coordinates">https://en.wikipedia.org/wiki/Fractional_coordinates</a></p></li>
+</ul>
+<p>The goal of the algorithm is to find all grid points of a periodically extended
+grid, which lie in a cutoff sphere. The following ASCII art is an example of
+such a problem in the 1D case:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">lattice</span><span class="p">:</span>       <span class="o">|</span>          <span class="o">|</span>          <span class="o">|</span>          <span class="o">|</span>          <span class="o">|</span>          <span class="o">|</span>
+<span class="n">periodic</span> <span class="n">grid</span><span class="p">:</span> <span class="o">|</span>          <span class="o">|</span>          <span class="o">|</span>  <span class="mi">1</span>   <span class="mi">2</span> <span class="mi">3</span> <span class="o">|</span>          <span class="o">|</span>          <span class="o">|</span>
+<span class="n">cutoff</span> <span class="n">sphere</span><span class="p">:</span>                           <span class="p">(</span>             <span class="n">c</span>             <span class="p">)</span>
+</pre></div>
+</div>
+<p>The first line represents the crystal planes of the lattice. The second line are
+grid points in one primitive cell, with the lattice repeated for clarity. The
+last line is the cutoff “sphere” with center <code class="docutils literal notranslate"><span class="pre">c</span></code> and the extent of the sphere
+is shown by the parenthesis.</p>
+<p>The conventional approach to build the local grid considers all the relevant
+periodic images of the grid points and retains only those that lie within the
+cutoff sphere:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">lattice</span><span class="p">:</span>       <span class="o">|</span>          <span class="o">|</span>          <span class="o">|</span>          <span class="o">|</span>          <span class="o">|</span>          <span class="o">|</span>
+<span class="n">periodic</span> <span class="n">grid</span><span class="p">:</span> <span class="o">|</span>          <span class="o">|</span>          <span class="o">|</span>  <span class="mi">1</span>   <span class="mi">2</span> <span class="mi">3</span> <span class="o">|</span>          <span class="o">|</span>          <span class="o">|</span>
+<span class="n">image</span> <span class="o">-</span><span class="mi">2</span><span class="p">:</span>      <span class="o">|</span>  <span class="mi">1</span>   <span class="mi">2</span> <span class="mi">3</span> <span class="o">|</span>          <span class="o">|</span>          <span class="o">|</span>          <span class="o">|</span>          <span class="o">|</span>
+<span class="n">image</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>      <span class="o">|</span>          <span class="o">|</span>  <span class="mi">1</span>   <span class="mi">2</span> <span class="mi">3</span> <span class="o">|</span>          <span class="o">|</span>          <span class="o">|</span>          <span class="o">|</span>
+<span class="n">image</span>  <span class="mi">0</span><span class="p">:</span>      <span class="o">|</span>          <span class="o">|</span>          <span class="o">|</span>  <span class="mi">1</span>   <span class="mi">2</span> <span class="mi">3</span> <span class="o">|</span>          <span class="o">|</span>          <span class="o">|</span>
+<span class="n">image</span>  <span class="mi">1</span><span class="p">:</span>      <span class="o">|</span>          <span class="o">|</span>          <span class="o">|</span>          <span class="o">|</span>  <span class="mi">1</span>   <span class="mi">2</span> <span class="mi">3</span> <span class="o">|</span>          <span class="o">|</span>
+<span class="n">image</span>  <span class="mi">2</span><span class="p">:</span>      <span class="o">|</span>          <span class="o">|</span>          <span class="o">|</span>          <span class="o">|</span>          <span class="o">|</span>  <span class="mi">1</span>   <span class="mi">2</span> <span class="mi">3</span> <span class="o">|</span>
+<span class="n">cutoff</span> <span class="n">sphere</span><span class="p">:</span>                           <span class="p">(</span>             <span class="n">c</span>             <span class="p">)</span>
+</pre></div>
+</div>
+<p>For each periodic image, one can apply a nearest-neighbor lookup within the
+sphere to find the relevant grid points. In this module, the cKDTree from SciPy
+is used for this purpose.
+See <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.KDTree.html">https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.KDTree.html</a></p>
+<p>Obviously, it is not necessary to consider an infinite number of periodic
+images. In this example, only images 0, 1 and 2 need to be constructed, because
+only these contain grid points that lie in the cutoff sphere.</p>
+<p>After retaining only the grid points of the periodic images within the cutoff
+sphere, one obtains a local grid suitable for integration or evaluation of a
+function whose domain is limited (approximately) to the cutoff sphere:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">lattice</span><span class="p">:</span>       <span class="o">|</span>          <span class="o">|</span>          <span class="o">|</span>          <span class="o">|</span>          <span class="o">|</span>          <span class="o">|</span>
+<span class="n">periodic</span> <span class="n">grid</span><span class="p">:</span> <span class="o">|</span>          <span class="o">|</span>          <span class="o">|</span>  <span class="mi">1</span>   <span class="mi">2</span> <span class="mi">3</span> <span class="o">|</span>          <span class="o">|</span>          <span class="o">|</span>
+<span class="n">local</span> <span class="n">grid</span><span class="p">:</span>                                 <span class="mi">2</span> <span class="mi">3</span>    <span class="mi">1</span>   <span class="mi">2</span> <span class="mi">3</span>    <span class="mi">1</span>   <span class="mi">2</span> <span class="mi">3</span>
+<span class="n">cutoff</span> <span class="n">sphere</span><span class="p">:</span>                           <span class="p">(</span>             <span class="n">c</span>             <span class="p">)</span>
+</pre></div>
+</div>
+<p>The algorithm in this module is slightly different. In order to build the cKDTree
+instance only once for a fixed set of points, periodic images of the cutoff
+sphere are constructed:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">lattice</span><span class="p">:</span>       <span class="o">|</span>          <span class="o">|</span>          <span class="o">|</span>          <span class="o">|</span>          <span class="o">|</span>          <span class="o">|</span>
+<span class="n">periodic</span> <span class="n">grid</span><span class="p">:</span> <span class="o">|</span>          <span class="o">|</span>          <span class="o">|</span>  <span class="mi">1</span>   <span class="mi">2</span> <span class="mi">3</span> <span class="o">|</span>          <span class="o">|</span>          <span class="o">|</span>
+<span class="n">c</span><span class="o">.</span><span class="n">s</span><span class="o">.</span> <span class="n">image</span>  <span class="mi">0</span><span class="p">:</span>                           <span class="p">(</span>             <span class="n">c</span>             <span class="p">)</span>
+<span class="n">c</span><span class="o">.</span><span class="n">s</span><span class="o">.</span> <span class="n">image</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>                <span class="p">(</span>             <span class="n">c</span>             <span class="p">)</span>
+<span class="n">c</span><span class="o">.</span><span class="n">s</span><span class="o">.</span> <span class="n">image</span> <span class="o">-</span><span class="mi">2</span><span class="p">:</span>     <span class="p">(</span>             <span class="n">c</span>             <span class="p">)</span>
+</pre></div>
+</div>
+<p>In this example, only images 0, -1 and -2 of the cutoff sphere result in
+non-zero “untranslated” grid points that lie within the translated sphere. For
+each image, the found grid points in the periodic grid need to be translated
+back, by the negative displacement of the image of the cutoff sphere, to find
+the grid points in the final local grid. This translation is carried out after
+the neighbor search and requires no change to the cKDTree object.</p>
+<p>To implement the second algorithm, one needs to find all possibly relevant
+displacements of the cutoff sphere. The left-most position of the center of the
+cutoff sphere still containing a grid point, without worrying about periodic
+boundary conditions, is:</p>
+<div class="math notranslate nohighlight">
+\[c_\text{left} = \min_i x_i - r\]</div>
+<p>where <span class="math notranslate nohighlight">\(x_i\)</span> is the position of grid point <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(r\)</span> is the
+radius of the sphere. We only need to consider translations by multiples of the
+lattice vector:</p>
+<div class="math notranslate nohighlight">
+\[c_\text{left} = c + a \left\lceil \frac{\min_i x_i - c - r}{a} \right\rceil\]</div>
+<p>where <span class="math notranslate nohighlight">\(a\)</span> is the length of the 1D lattice vector (and also the spacing
+between adjacent crystal planes). Similarly, for the right-most center, we
+have:</p>
+<div class="math notranslate nohighlight">
+\[c_\text{right} = c + a \left\lfloor \frac{\max_i x_i - c + r}{a} \right\rfloor\]</div>
+<p>The positions of all relevant centers are given by:</p>
+<div class="math notranslate nohighlight">
+\[c_j = c + a j \quad \forall \, j \in \mathbb{Z} \quad \text{with} \quad
+\left\lceil \frac{\min_i x_i - c - r}{a} \right\rceil
+\le j \le
+\left\lfloor \frac{\max_i x_i - c + r}{a} \right\rfloor\]</div>
+<p>Note that this algorithm also works when the points in the periodic grid are
+not confined to one primitive cell (as long as no duplicates are present). This
+situation will just result in more images of centers to be considered. While
+this will just work, it implies more iterations at the Python level, which could
+be potentially slow. To avoid such efficiency issues, the <code class="docutils literal notranslate"><span class="pre">wrap</span></code> option can be
+set to True when creating a <code class="docutils literal notranslate"><span class="pre">PeriodicGrid</span></code> instance.</p>
+<p>The generalization to higher-dimensional periodic grids is implemented with a
+combination (a superposition) of all possible displacements of the center along
+each lattice vector:</p>
+<div class="math notranslate nohighlight">
+\[\vec{c}_{j_1, \ldots, j_K} = \vec{c} + \sum_{k=1}^K \vec{a}_k j
+\quad \forall \, j \in \mathbb{Z} \quad \text{with} \quad
+\left\lceil \min_i \tilde{x}_i - \tild{c} - \frac{r}{s_k} \right\rceil
+\le j \le
+\left\lfloor \max_i \tilde{x}_i - \tild{c} + \frac{r}{s_k} \right\rfloor\]</div>
+<p>where <span class="math notranslate nohighlight">\(\vec{a}_k\)</span> is lattice vector <span class="math notranslate nohighlight">\(k\)</span>, <span class="math notranslate nohighlight">\(\tilde{x}_i\)</span> is the
+fractional coordinate of grid point <span class="math notranslate nohighlight">\(i\)</span>, <span class="math notranslate nohighlight">\(\tilde{c}\)</span> is the
+fractional coordinate of the center and <span class="math notranslate nohighlight">\(s_k\)</span> is the spacing between
+adjacent crystal planes along the :math:<a href="#id1"><span class="problematic" id="id2">`</span></a>k`th lattice vector.</p>
+</div>
+<dl class="py class">
+<dt class="sig sig-object py" id="grid.periodicgrid.PeriodicGrid">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PeriodicGrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">realvecs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="grid.basegrid.html#grid.basegrid.Grid" title="grid.basegrid.Grid"><code class="xref py py-class docutils literal notranslate"><span class="pre">Grid</span></code></a></p>
+<p>Grid with support for periodic boundary conditions.</p>
+<p>The purpose of this class is to support certain operations on integration
+grids with periodic boundary conditions. It does not construct such grids
+and it assumes the grid points and weights (and also the lattice vectors)
+of a single unit cell are provided when creating an instance of the class.</p>
+<p>The dimensionality of the grid points is not fixed but the most common use
+cases are 1D, 2D, 3D grids. The number of cell vectors can be anything from
+zero up to the dimensionality of the grid points. The cell vectors cannot
+form a singular matrix.</p>
+<p>The whole-grid integration works in exactly the same way as in the base
+class. Through the <code class="docutils literal notranslate"><span class="pre">get_localgrid</span></code> method, the following two operations can
+be carried out easily:</p>
+<p>1) The integration of a local function on a part of the periodic grid. The
+integrand may cover several unit cells and may contain contributions from a
+periodic function, as long as it decays sufficiently fast to zero near the
+cutoff radius.</p>
+<p>2) The addition of the periodic repetition of a local function to the whole
+grid.</p>
+<p>In both cases, one uses <code class="docutils literal notranslate"><span class="pre">get_localgrid</span></code> to construct an aperiodic grid,
+whose grid points lie within a given (hyper)sphere enclosing the local
+function of interest. This grid is a periodic repetition of the
+single-unit-cell grid of which only the points within the (hyper)sphere are
+retained. On this aperiodic grid, one can carry out operations as usual. The
+attribute <code class="docutils literal notranslate"><span class="pre">localgrid.indices</span></code> can be used for two purposes:</p>
+<p>1) To transfer a periodic function on the parent grid to the localgrid, one
+simply uses NumPy slicing: <code class="docutils literal notranslate"><span class="pre">fnlocal</span> <span class="pre">=</span> <span class="pre">fnperiodic[localgrid.indices]</span></code></p>
+<p>2) To add a periodic repetition of a local function to the parent grid, one
+uses <code class="docutils literal notranslate"><span class="pre">np.add.att(fnperiodic,</span> <span class="pre">localgrid.indices,</span> <span class="pre">fnlocal)</span></code>. One should not
+use <code class="docutils literal notranslate"><span class="pre">fnperiodic[localgrid.indices]</span> <span class="pre">+=</span> <span class="pre">fnlocal</span></code>, because this will give
+wrong results when <code class="docutils literal notranslate"><span class="pre">localgrid.indices</span></code> contains the same index multiple
+times, which happens when the cutoff (hyper)sphere covers multiple primitive
+cells.
+See <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ufunc.at.html">https://docs.scipy.org/doc/numpy/reference/generated/numpy.ufunc.at.html</a></p>
+<p>The efficiency of the <code class="docutils literal notranslate"><span class="pre">get_localgrid</span></code> method will be optimal when all grid
+points fall within one primitive cell, e.g. the fractional coordinates
+should lie in [0, 1[ or [-0.5, 0.5[. The algorithm will also work when the
+grid points of the primitive cell accidentally overflow into neighboring
+images, but in this case it becomes less efficient.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="grid.periodicgrid.PeriodicGrid.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">realvecs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Construct a PeriodicGrid instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>points</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>) or </em><em>np.ndarray</em><em>(</em><em>N</em><em>, </em><em>M</em><em>)</em>) – An array with N positions of M-dimensional grid points.</p></li>
+<li><p><strong>weights</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – An array of weights associated with each point on the grid.</p></li>
+<li><p><strong>realvecs</strong> (<em>np.ndarray</em><em>(</em><em>1</em><em>,</em><em>) or </em><em>np.ndarray</em><em>(</em><em>Nlv</em><em>, </em><em>M</em><em>,</em><em>)</em><em>, </em><em>optional</em>) – <code class="docutils literal notranslate"><span class="pre">Nlv</span></code> Lattice vectors in real space defining the periodic boundary
+conditions. Each row contains one vector. These are sometimes also
+called period vectors or cell vectors. When not given, this class
+behaves identically to the Grid base class.</p></li>
+<li><p><strong>wrap</strong> (<em>boolean</em>) – When True, the points are wrapped back into the primitive cell, by
+adding the appropriate integer linear combination of real-space
+lattice vectors to each point. (This correction is stored in a copy
+of the points array provided by the user.) As a result, all points
+will have fractional coordinates in the interval [0, 1[. When False,
+a warning is raised when the fractional coordinates span an interval
+wider than 1.1, because this implies a degradation of efficiency of
+<code class="docutils literal notranslate"><span class="pre">get_localgrid</span></code>, which can be easily avoided.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="grid.periodicgrid.PeriodicGrid.frac_intvls">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">frac_intvls</span></span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.frac_intvls" title="Permalink to this definition"></a></dt>
+<dd><p>Intervals containing the grid points in fractional coordinates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(Ncv, 2)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grid.periodicgrid.PeriodicGrid.get_localgrid">
+<span class="sig-name descname"><span class="pre">get_localgrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.get_localgrid" title="Permalink to this definition"></a></dt>
+<dd><p>Create a non-peroidic local grid within the given distance from the center.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>center</strong> (<em>float</em><em> or </em><em>np.array</em><em>(</em><em>M</em><em>,</em><em>)</em>) – Cartesian coordinates of the center of the local grid.</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – Radius of sphere around the center.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Instance of LocalGrid.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.LocalGrid" title="grid.basegrid.LocalGrid">LocalGrid</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grid.periodicgrid.PeriodicGrid.integrate">
+<span class="sig-name descname"><span class="pre">integrate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">value_arrays</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.integrate" title="Permalink to this definition"></a></dt>
+<dd><p>Integrate over the whole grid for given multiple value arrays.</p>
+<p>Product of all value_arrays will be computed element-wise then integrated on the grid
+with its weights:</p>
+<div class="math notranslate nohighlight">
+\[\int w(x) \prod_i f_i(x) dx.\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>*value_arrays</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>, </em><em>)</em>) – One or multiple value array to integrate.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The calculated integral over given integrand or function</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grid.periodicgrid.PeriodicGrid.moments">
+<span class="sig-name descname"><span class="pre">moments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orders</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_mom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cartesian'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_orders</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.moments" title="Permalink to this definition"></a></dt>
+<dd><p>Compute the multipole moment integral of a function over centers.</p>
+<p>The Cartesian type moments are:</p>
+<div class="math notranslate nohighlight">
+\[m_{n_x, n_y, n_z} = \int (x - X_c)^{n_x} (y - Y_c)^{n_y} (z - Z_c)^{n_z} f(r) dr,\]</div>
+<p>where <span class="math notranslate nohighlight">\(\textbf{R}_c = (X_c, Y_c, Z_c)\)</span> is the center of the moment,
+<span class="math notranslate nohighlight">\(\f(r)\)</span> is the density, and <span class="math notranslate nohighlight">\((n_x, n_y, n_z)\)</span> are the Cartesian orders.</p>
+<p>The spherical/pure moments with <span class="math notranslate nohighlight">\((l, m)\)</span> parameter are:</p>
+<div class="math notranslate nohighlight">
+\[m_{lm} = \int | \textbf{r} - \textbf{R}_c|^l S_l^m(\theta, \phi) f(\textbf{r})
+d\textbf{r},\]</div>
+<p>where <span class="math notranslate nohighlight">\(S_l^m\)</span> is a regular, real solid harmonic.</p>
+<p>The radial moments with <span class="math notranslate nohighlight">\(n\)</span> parameter are:</p>
+<div class="math notranslate nohighlight">
+\[m_n = \int | \textbf{r} - \textbf{R}_c|^{n} f(\textbf{r}) d\textbf{r}\]</div>
+<p>The radial combined with spherical/pure moments <span class="math notranslate nohighlight">\((n, l, m)\)</span> are:</p>
+<div class="math notranslate nohighlight">
+\[m_{nlm} = \int | \textbf{r} - \textbf{R}_c|^{n+1} S_l^m(\theta, \phi) f(\textbf{r})
+d\textbf{r}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>orders</strong> (<em>int</em>) – Generates all orders with Horton order depending on the type of the multipole
+moment <cite>type_mom</cite>.</p></li>
+<li><p><strong>centers</strong> (<em>ndarray</em><em>(</em><em>M</em><em>,  </em><em>3</em><em>)</em>) – The centers <span class="math notranslate nohighlight">\(\textbf{R}_c\)</span> of the moments to compute from.</p></li>
+<li><p><strong>func_vals</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – The function <span class="math notranslate nohighlight">\(f\)</span> values evaluated on all <span class="math notranslate nohighlight">\(N\)</span> points on the integration
+grid.</p></li>
+<li><p><strong>type_mom</strong> (<em>str</em>) – The type of multipole moments: “cartesian”, “pure”, “radial” and “pure-radial”.</p></li>
+<li><p><strong>return_orders</strong> (<em>bool</em>) – If true, it will also return a list of size <span class="math notranslate nohighlight">\(L\)</span> of the orders
+corresponding to each integral/row of the output.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Computes the moment integral of the function on the <cite>m`th center for all orders.
+If `return_orders</cite> is true, then this also returns a list that describes what
+each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(L, M), or (ndarray(L, M), list)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="grid.periodicgrid.PeriodicGrid.points">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">points</span></span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.points" title="Permalink to this definition"></a></dt>
+<dd><p>Positions of the grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,) or np.ndarray(N, M)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="grid.periodicgrid.PeriodicGrid.realvecs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">realvecs</span></span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.realvecs" title="Permalink to this definition"></a></dt>
+<dd><p>Real-space lattice vectors.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,) or np.ndarray(N, M)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="grid.periodicgrid.PeriodicGrid.recivecs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">recivecs</span></span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.recivecs" title="Permalink to this definition"></a></dt>
+<dd><p>Reciprocal-space lattice vectors.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,) or np.ndarray(N, M)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grid.periodicgrid.PeriodicGrid.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.save" title="Permalink to this definition"></a></dt>
+<dd><p>Save the points and weights as a npz file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> (<em>str</em>) – The path/name of the .npz file.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="grid.periodicgrid.PeriodicGrid.size">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">size</span></span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.size" title="Permalink to this definition"></a></dt>
+<dd><p>the total number of points on the grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="grid.periodicgrid.PeriodicGrid.spacings">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">spacings</span></span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.spacings" title="Permalink to this definition"></a></dt>
+<dd><p>Spacings between adjacent primitive crystal planes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(Ncv, 2)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="grid.periodicgrid.PeriodicGrid.weights">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">weights</span></span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.weights" title="Permalink to this definition"></a></dt>
+<dd><p>the weights of each grid point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="grid.periodicgrid.PeriodicGridWarning">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PeriodicGridWarning</span></span><a class="headerlink" href="#grid.periodicgrid.PeriodicGridWarning" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Warning</span></code></p>
+<p>Raised when the fractional coordinates span an interval wider than 1.1.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="grid.periodicgrid.PeriodicGridWarning.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.periodicgrid.PeriodicGridWarning.__init__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="grid.periodicgrid.PeriodicGridWarning.args">
+<span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#grid.periodicgrid.PeriodicGridWarning.args" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grid.periodicgrid.PeriodicGridWarning.with_traceback">
+<span class="sig-name descname"><span class="pre">with_traceback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#grid.periodicgrid.PeriodicGridWarning.with_traceback" title="Permalink to this definition"></a></dt>
+<dd><p>Exception.with_traceback(tb) –
+set self.__traceback__ to tb and return self.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="grid.onedgrid.html" class="btn btn-neutral float-left" title="grid.onedgrid module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="grid.poisson.html" class="btn btn-neutral float-right" title="grid.poisson module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, QC-Devs.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
