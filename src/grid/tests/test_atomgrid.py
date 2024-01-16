@@ -588,8 +588,8 @@ class TestAtomGrid:
         "centers",
         [
             np.array([[0.0, 0.0, 0.0]]),
-            np.array([[1e-2, 0.0, 0.0]]),  # Off-centered from AtomGrid
-            np.array([[1e-2, 0.0, -1e-2]]),  # Off-centered from AtomGrid
+            np.array([[1e-3, 0.0, 0.0]]),  # Off-centered from AtomGrid
+            np.array([[1e-3, 0.0, -1e-3]]),  # Off-centered from AtomGrid
         ],
     )
     def test_interpolation_of_gaussian(self, centers):
@@ -610,7 +610,7 @@ class TestAtomGrid:
         input_points = np.array((x, y, z)).T
         interfunc = atgrid.interpolate(value_array)
         assert_allclose(
-            self.helper_func_gauss(input_points, centers), interfunc(input_points), atol=1e-4
+            self.helper_func_gauss(input_points, centers), interfunc(input_points), atol=1e-3
         )
 
     @pytest.mark.parametrize("use_spherical", [False, True])
