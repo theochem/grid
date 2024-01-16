@@ -30,7 +30,10 @@ jobs:
         # Install iodata
         pip install qc-iodata
         # Install gbasis
-        python -m pip install git+https://github.com/theochem/gbasis.git
+        git clone https://github.com/theochem/gbasis.git
+        cd gbasis
+        pip install .
+        # python -m pip install git+https://github.com/theochem/gbasis.git
 
     - name: Install development version
       run: |
