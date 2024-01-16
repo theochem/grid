@@ -3,10 +3,13 @@ name: build_website
 on:
   push:
     branches:
-     - master
-    tags-ignore:
-      - '**'
+      - master
+      - website
+
   pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches:
+      - main
 
 
 permissions:
@@ -53,3 +56,4 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: _build/html
         publish_branch: gh-pages
+        cname: grid.qcdevs.org
