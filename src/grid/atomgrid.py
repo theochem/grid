@@ -907,7 +907,7 @@ class AtomGrid(Grid):
         return points, weights, indices, actual_degrees
 
 
-def get_rgrid_size(preset_grid, atnums=None):
+def _get_rgrid_size(preset_grid, atnums=None):
     """Get the predefined radial points for available pruned grids
 
     Parameters

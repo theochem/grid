@@ -133,7 +133,7 @@ class BeckeRTransform(BaseTransform):
 
     References
     ----------
-    .. [1] Becke, Axel D. "A multicenter numerical integration scheme for polyatomic molecules."
+    .. [#] Becke, Axel D. "A multicenter numerical integration scheme for polyatomic molecules."
        The Journal of chemical physics 88.4 (1988): 2547-2553.
 
     """
@@ -1394,7 +1394,7 @@ class MultiExpRTransform(BaseTransform):
 
     References
     ----------
-    .. [1] Gill, Peter MW, and Siu-Hung Chien. "Radial quadrature for multiexponential integrands."
+    .. [#] Gill, Peter MW, and Siu-Hung Chien. "Radial quadrature for multiexponential integrands."
        Journal of computational chemistry 24.6 (2003): 732-740.
 
     """

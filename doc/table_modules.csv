@@ -1,7 +1,7 @@
 Modules;Description
 :func:`One-dimensional Grids<grid.onedgrid>`; Integration of real-valued function over real line.
 :func:`Radial Transform<grid.rtransform>`; Transforming one-dimensional grids from one interval to another.
-:func:`Angular Grids<grid.lebedev>`; Integrating functions over sphere/angular coordinates.
+:func:`Angular Grids<grid.angular>`; Integrating functions over sphere/angular coordinates.
 :func:`ODE<grid.ode>`; Solving linear ordinary differential equations.
 :func:`Poisson<grid.poisson>`; Solving the Poisson equation.
 :func:`Atomic Grid<grid.atomgrid>`; Integrating real-valued function over three-dimensional Euclidean space.

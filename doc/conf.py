@@ -19,7 +19,7 @@ sys.path.insert(0, os.path.abspath("../"))
 # -- Project information -----------------------------------------------------
 
 project = "grid"
-copyright = "2021, QC-Devs"
+copyright = "2024, QC-Devs"
 author = "QC-Devs"
 
 
@@ -29,12 +29,14 @@ author = "QC-Devs"
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    "sphinx_rtd_theme",
     "sphinx.ext.autodoc",
     "sphinx.ext.napoleon",
     "sphinx_autodoc_typehints",
     "sphinx.ext.autosummary",
     "sphinx.ext.mathjax",
     "nbsphinx",
+    "nbsphinx_link",
 ]
 
 # List of arguments to be passed to the kernel that executes the notebooks:

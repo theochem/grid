@@ -396,9 +396,9 @@ class MolGrid(Grid):
 
         References
         ----------
-        .. [1] Y. Shao, et al. Advances in molecular quantum chemistry contained in the Q-Chem 4
+        .. [2] Y. Shao, et al. Advances in molecular quantum chemistry contained in the Q-Chem 4
                program package. Mol. Phys. 113, 184-215 (2015)
-        .. [2] Laqua, H., Kussmann, J., & Ochsenfeld, C. (2018). An improved molecular partitioning
+        .. [3] Laqua, H., Kussmann, J., & Ochsenfeld, C. (2018). An improved molecular partitioning
                scheme for numerical quadratures in density functional theory. The Journal of
                Chemical Physics, 149(20).
 
