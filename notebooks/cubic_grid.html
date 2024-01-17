@@ -154,10 +154,29 @@
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Cubic Grids</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#Tensor-1D-Grids">Tensor 1D Grids</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#Interpolation">Interpolation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Example-1:-Interpolation">Example 1: Interpolation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Example-2:-Visualization-of-2p_{z}-Orbital-using-Tensor-1D-Grid">Example 2: Visualization of <span class="math notranslate nohighlight">\(2p_{z}\)</span> Orbital using Tensor 1D Grid</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#i.-Utility-Function-For-Plotting-Isosurfaces">i. Utility Function For Plotting Isosurfaces</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ii.-Plot-2p_{z}-orbital-from-isosurface-value">ii. Plot <span class="math notranslate nohighlight">\(2p_{z}\)</span> orbital from isosurface value</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#Uniform-Grid">Uniform Grid</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Uniform-Grid">Uniform Grid</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Example-1:-Constructing-Uniform-Grid-Around-Formaldehyde-Anion">Example 1: Constructing Uniform Grid Around Formaldehyde Anion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Example-2:-Calculate-and-Visualize-Dual-Descriptor-of-Formaldehyde">Example 2: Calculate and Visualize Dual Descriptor of Formaldehyde</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#i.-Define-utility-function-to-calculate-the-dual-descriptor">i. Define utility function to calculate the dual descriptor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ii.-Calculate-and-visualize-dual-descriptor">ii. Calculate and visualize dual descriptor</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#Example-3:-Integrate-The-Dual-Descriptor-Domains">Example 3: Integrate The Dual Descriptor Domains</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#i.-Define-utility-function-to-extract-dual-descriptor-domains">i. Define utility function to extract dual descriptor domains</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ii.-Select-and-integrate-the-positive-(electrophilic)-domains-of-the-dual-descriptor">ii. Select and integrate the positive (electrophilic) domains of the dual descriptor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#iii.-Select-and-integrate-the-negative-(nucleophilic)-domains-of-the-dual-descriptor">iii. Select and integrate the negative (nucleophilic) domains of the dual descriptor</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="interpolation_poisson.html">Interpolation and Solving Poisson’s Equation</a><ul>
@@ -221,12 +240,13 @@
              
   <div class="section" id="Cubic-Grids">
 <h1>Cubic Grids<a class="headerlink" href="#Cubic-Grids" title="Permalink to this heading"></a></h1>
-<p>Grid offers two classes for constructing Hyper-rectangular grids in three-dimensions:</p>
+<p>Cubic grids are commonly found in many other packages and are useful for visualization, interpolation and integration purposes.</p>
+<p>In Grid, it offers two classes for constructing these cubic (or Hyper-rectangular) grids in three-dimensions:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../pyapi/grid.cubic.html#grid.cubic.Tensor1DGrids"><span class="std std-ref">Tensor1DGrids</span></a> : Tensor product of three one-dimensional grids.</p></li>
 <li><p><a class="reference internal" href="../pyapi/grid.cubic.html#grid.cubic.UniformGrid"><span class="std std-ref">UniformGrid</span></a> : Evenly spaced grid in three axes.</p></li>
 </ul>
-<p>See their API documentation for more information about the classes.</p>
+<p>See their API documentation for more information about the classes. This example illustrates how to use these grid classes for both visualization, interpolation (including differentiation), and integration, with a focus on usage in quantum chemistry. It is recommended for general usage to use the Tensor1DGrids and for quantum chemistry applications, to use the UniformGrid class.</p>
 <div class="section" id="Tensor-1D-Grids">
 <h2>Tensor 1D Grids<a class="headerlink" href="#Tensor-1D-Grids" title="Permalink to this heading"></a></h2>
 <p>The first grid is a tensor combination of three grids with points <span class="math notranslate nohighlight">\(\{p^1_i\}, \{p^2_i\}, \{p^3_i\}\)</span> and weights <span class="math notranslate nohighlight">\(\{w^1_i\}, \{w^2_i\}, \{w^3_i\}\)</span> such that the new set of points are <span class="math notranslate nohighlight">\(\{(p^1_i, p^2_j, p^3_k)\}\)</span> with weights <span class="math notranslate nohighlight">\(\{w^1_i \times w^2_j \times w^3_k\}\)</span>.</p>
@@ -240,20 +260,24 @@ from grid.rtransform import LinearInfiniteRTransform
 from grid.cubic import Tensor1DGrids
 import numpy as np
 
-# Construct a grid between -1 and 1 on the real line.
-npoints = 25
-onedgridx = UniformInteger(npoints)
-onedgridx = LinearInfiniteRTransform(-1, 1).transform_1d_grid(onedgridx)
+limit = 10
+# Construct a grid between -10 and 10 on the real line.
+npoints = 50
+oned_gridx = UniformInteger(npoints)
+oned_gridx = LinearInfiniteRTransform(-limit, limit).transform_1d_grid(oned_gridx)
 
 # Construct another grid between -0.5 and 0.5 on the real line
-npoints = 15
-onedgridy = UniformInteger(npoints)
-onedgridy = LinearInfiniteRTransform(-1, 1).transform_1d_grid(onedgridy)
+npoints = 45
+oned_gridy = UniformInteger(npoints)
+oned_gridy = LinearInfiniteRTransform(-limit, limit).transform_1d_grid(oned_gridy)
 
-# Construct another grid between -0.25 and 0.25 on the real line
-npoints = 10
-onedgridz = UniformInteger(npoints)
-onedgridz = LinearInfiniteRTransform(-1, 1).transform_1d_grid(onedgridz)
+# Construct another grid between -10 and 10 on the real line
+npoints = 55
+oned_gridz = UniformInteger(npoints)
+oned_gridz = LinearInfiniteRTransform(-limit, limit).transform_1d_grid(oned_gridz)
+
+# Constructing the tensor product grid.
+tensor_grid = Tensor1DGrids(oned_gridx, oned_gridy, oned_gridz)
 </pre></div>
 </div>
 </div>
@@ -267,9 +291,9 @@ from mpl_toolkits import mplot3d
 
 fig = plt.figure()
 ax = plt.axes(projection=&#39;3d&#39;)
-ax.scatter(onedgridx.points, [0] *  len(onedgridx.points), [0] *  len(onedgridx.points), color=&quot;k&quot;, label=&quot;Points on x-axis&quot;)
-ax.scatter( [0] *  len(onedgridy.points), onedgridy.points, [0] *  len(onedgridy.points), color=&quot;m&quot;, label=&quot;Points on y-axis&quot;)
-ax.scatter( [0] *  len(onedgridz.points), [0] *  len(onedgridz.points), onedgridz.points , color=&quot;b&quot;, label=&quot;Points on z-axis&quot;)
+ax.scatter(oned_gridx.points, [0] *  len(oned_gridx.points), [0] *  len(oned_gridx.points), color=&quot;k&quot;, label=&quot;Points on x-axis&quot;)
+ax.scatter( [0] *  len(oned_gridy.points), oned_gridy.points, [0] *  len(oned_gridy.points), color=&quot;m&quot;, label=&quot;Points on y-axis&quot;)
+ax.scatter( [0] *  len(oned_gridz.points), [0] *  len(oned_gridz.points), oned_gridz.points , color=&quot;b&quot;, label=&quot;Points on z-axis&quot;)
 ax.set_xlabel(&quot;X-axis&quot;)
 ax.set_ylabel(&quot;Y-axis&quot;)
 ax.set_zlabel(&quot;Z-axis&quot;)
@@ -282,7 +306,7 @@ plt.show()
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_cubic_grid_3_0.png" src="../_images/notebooks_cubic_grid_3_0.png" />
+<img alt="../_images/notebooks_cubic_grid_4_0.png" src="../_images/notebooks_cubic_grid_4_0.png" />
 </div>
 </div>
 <p>The Tensor1DGrids can now be easily constructed by passing in each of the three one-dimensional grids. These are then plotted</p>
@@ -290,16 +314,12 @@ plt.show()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span># Constructing the tensor product grid.
-tensor_grid = Tensor1DGrids(onedgridx, onedgridy, onedgridz)
-
-fig = plt.figure()
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>fig = plt.figure()
 ax = plt.axes(projection=&#39;3d&#39;)
-ax.scatter(tensor_grid.points[:, 0], tensor_grid.points[:, 1], tensor_grid.points[:, 2], color=&quot;m&quot;, alpha=0.1)
+ax.scatter(tensor_grid.points[:, 0], tensor_grid.points[:, 1], tensor_grid.points[:, 2], color=&quot;m&quot;, alpha=0.01)
 ax.set_xlabel(&quot;X-axis&quot;)
 ax.set_ylabel(&quot;Y-axis&quot;)
 ax.set_zlabel(&quot;Z-axis&quot;)
-plt.legend()
 plt.title(&quot;Tensor Product of Three One-Dimensional Grids&quot;)
 plt.show()
 
@@ -309,10 +329,6 @@ print(f&quot;The number of points: {tensor_grid.size}&quot;)
 print(f&quot;The number of dimensions: {tensor_grid.ndim}.&quot;)
 print(f&quot;The origin of the grid: {tensor_grid.origin}.&quot;)
 print(f&quot;The shape of the grid: {tensor_grid.shape}.&quot;)
-
-# Can integrate functions on it
-#func_vals = # insert function here
-#integral = tensor_grid.integrate(func_vals)
 
 # Conversion from indices i to coordinates (i, j, k) to points
 coordinate = tensor_grid.index_to_coordinates(5)
@@ -325,16 +341,8 @@ print(f&quot;Index of the (0, 0, 5) coordinate: {index}.&quot;)
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-No handles with labels found to put in legend.
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_cubic_grid_5_1.png" src="../_images/notebooks_cubic_grid_5_1.png" />
+<img alt="../_images/notebooks_cubic_grid_6_0.png" src="../_images/notebooks_cubic_grid_6_0.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -342,31 +350,31 @@ No handles with labels found to put in legend.
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Points of the grid: [[-1.         -1.         -1.        ]
- [-1.         -1.         -0.77777778]
- [-1.         -1.         -0.55555556]
+Points of the grid: [[-10.         -10.         -10.        ]
+ [-10.         -10.          -9.62962963]
+ [-10.         -10.          -9.25925926]
  ...
- [ 1.          1.          0.55555556]
- [ 1.          1.          0.77777778]
- [ 1.          1.          1.        ]]
-Weights of the grid: [0.0026455 0.0026455 0.0026455 ... 0.0026455 0.0026455 0.0026455].
-The number of points: 3750
+ [ 10.          10.           9.25925926]
+ [ 10.          10.           9.62962963]
+ [ 10.          10.          10.        ]]
+Weights of the grid: [0.06871435 0.06871435 0.06871435 ... 0.06871435 0.06871435 0.06871435].
+The number of points: 123750
 The number of dimensions: 3.
-The origin of the grid: [-1. -1. -1.].
-The shape of the grid: (25, 15, 10).
+The origin of the grid: [-10. -10. -10.].
+The shape of the grid: (50, 45, 55).
 Coordinate of the fifth point: (0, 0, 5).
 Index of the (0, 0, 5) coordinate: 5.
 </pre></div></div>
 </div>
-<div class="section" id="Interpolation">
-<h3>Interpolation<a class="headerlink" href="#Interpolation" title="Permalink to this heading"></a></h3>
+<div class="section" id="Example-1:-Interpolation">
+<h3>Example 1: Interpolation<a class="headerlink" href="#Example-1:-Interpolation" title="Permalink to this heading"></a></h3>
 <p>This example will attempt to interpolate a Gaussian, first on a subset of the points used for interpolation then later on random set of points.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span># Interpolation of a Gaussian
-gaussian = lambda pts: np.exp(-3.0 * np.linalg.norm(pts, axis=1)**2.0)
+gaussian = lambda pts: np.exp(-np.linalg.norm(pts, axis=1)**2.0)
 gaus_vals = gaussian(tensor_grid.points)
 
 # Interpolation evaluated on subset of the same points used for interpolation
@@ -405,22 +413,17 @@ The errors are:  [0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
 Maximum error is 0.0
 
 Interpolate using linear method applying the logarithm.
-The errors are:  [3.193657   2.73140349 3.12648027 4.0888995  5.15038888 1.17760791
- 2.6164855  4.46085684 2.92740481 2.14224285]
-Maximum error is 5.150388875279692
+The errors are:  [171.46716217  70.30215474  78.32720365  32.11924387 130.53013235
+  28.19417151  35.37443308  85.77553134  85.69913673  26.65532941]
+Maximum error is 171.4671621664289
 
 Interpolate using cubic splines
-The errors are:  [7.93544637e-03 1.38777878e-17 0.00000000e+00 3.91153506e-02
- 3.71161462e-02 0.00000000e+00 0.00000000e+00 1.73472348e-18
- 0.00000000e+00 0.00000000e+00]
-Maximum error is 0.03911535059395724
+The errors are:  [0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+Maximum error is 0.0
 
 Inteprolate using cubic splines appling the logarithm
-The errors are:  [3.46944695e-17 4.16333634e-17 0.00000000e+00 1.38777878e-17
- 9.28077060e-17 0.00000000e+00 0.00000000e+00 1.04083409e-17
- 0.00000000e+00 0.00000000e+00]
-Maximum error is 9.280770596475918e-17
-
+The errors are:  [0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+Maximum error is 0.0
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -459,43 +462,40 @@ print(f&quot;Maximum error is {np.max(np.abs(interpol - true_vals))} \n&quot;)
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 Interpolate using linear method.
-The errors are:  [6.86173876e-03 2.26427272e-03 2.75414631e-03 8.31728378e-04
- 3.36204251e-04 1.02072667e-03 1.10210049e-03 8.64501631e-03
- 2.59512329e-03 2.37728933e-02 7.91657412e-03 5.70279923e-04
- 8.17962022e-05 1.00837863e-03 4.85942116e-04 2.44078257e-03
- 1.23119491e-03 3.24114061e-03 8.79283200e-05 4.75430397e-04
- 9.07759875e-03 3.06864518e-03 2.14220561e-03 1.70213035e-02
- 5.44407520e-03]
-Maximum error is 0.023772893292459685
+The errors are:  [0.01233929 0.00172326 0.01414473 0.00302718 0.03765561 0.00854703
+ 0.00573863 0.0096147  0.06938564 0.00885821 0.03244877 0.00313253
+ 0.00879784 0.02016751 0.00573694 0.014182   0.00269118 0.01196634
+ 0.00416348 0.05229362 0.00944945 0.00436619 0.02369888 0.01221546
+ 0.03681424]
+Maximum error is 0.0693856422879573
 
 Interpolate using linear method applying the logarithm.
-The errors are:  [1.05334441 2.35743704 2.76240336 5.30551986 3.77712127 4.66217629
- 1.35942007 1.59072927 4.05482905 1.12249552 2.28187585 5.73517397
- 3.4362982  1.87187658 3.77764034 2.69709785 3.40070745 1.90818364
- 3.75722379 5.45525854 2.03052493 2.27263171 3.11819061 1.18778426
- 1.64987246]
-Maximum error is 5.735173965540577
+The errors are:  [1.5443592  1.71594526 1.34273699 1.80571319 1.18542439 1.62956061
+ 1.63051993 1.45611032 1.11876818 1.40452868 1.24498067 2.56010903
+ 1.54114751 1.13349723 1.88518539 1.45877593 1.86029613 1.40771558
+ 2.29762085 1.07745488 1.60149404 2.39484291 1.27974207 1.19860893
+ 1.19903943]
+Maximum error is 2.560109034575345
 
 Interpolate using cubic splines
-The errors are:  [2.24391131e-05 9.23295650e-05 2.05774450e-03 2.86880928e-03
- 5.90844251e-03 6.90406116e-04 1.24241844e-05 2.27382451e-03
- 1.42459188e-02 4.90499149e-04 1.90529487e-03 6.39533207e-03
- 3.28474823e-03 6.72256151e-04 7.84640090e-05 3.24132588e-04
- 7.13574686e-04 5.14307780e-04 3.21294961e-03 3.10990132e-04
- 1.03380876e-02 1.99332441e-05 5.55937585e-04 4.34420520e-04
- 1.68534787e-04]
-Maximum error is 0.014245918769024427
+The errors are:  [3.86592728e-04 4.22040488e-04 1.66738913e-04 4.13390441e-04
+ 1.01639001e-03 4.34750401e-05 5.16147392e-05 9.61299995e-05
+ 1.64110278e-03 5.10977886e-04 1.88314046e-04 1.11520856e-04
+ 5.16837466e-04 8.08227555e-04 1.77906599e-04 2.64324388e-05
+ 1.57194487e-04 3.27801023e-04 2.26379162e-04 1.25083661e-03
+ 2.33331268e-04 4.52028716e-04 3.51733200e-04 8.65339717e-04
+ 8.68365576e-04]
+Maximum error is 0.0016411027780264265
 
 Inteprolate using cubic splines appling the logarithm
-The errors are:  [0.00000000e+00 0.00000000e+00 2.77555756e-17 1.12757026e-16
- 1.17961196e-16 8.67361738e-18 0.00000000e+00 5.55111512e-17
- 1.04083409e-17 1.11022302e-16 0.00000000e+00 2.61509564e-16
- 2.42861287e-16 5.55111512e-17 1.04083409e-17 4.16333634e-17
- 3.46944695e-17 8.32667268e-17 4.51028104e-17 1.44849410e-16
- 3.88578059e-16 5.55111512e-17 1.73472348e-16 1.11022302e-16
- 5.55111512e-17]
-Maximum error is 3.885780586188048e-16
-
+The errors are:  [5.55111512e-17 5.55111512e-17 1.66533454e-16 1.11022302e-16
+ 0.00000000e+00 0.00000000e+00 0.00000000e+00 1.11022302e-16
+ 1.11022302e-16 0.00000000e+00 0.00000000e+00 4.16333634e-17
+ 1.11022302e-16 0.00000000e+00 8.32667268e-17 1.66533454e-16
+ 5.55111512e-17 1.11022302e-16 5.55111512e-17 1.11022302e-16
+ 1.11022302e-16 1.11022302e-16 1.11022302e-16 1.11022302e-16
+ 0.00000000e+00]
+Maximum error is 1.6653345369377348e-16
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -526,45 +526,191 @@ print(f&quot;Derivative (using logarithm) in x-direction {np.array(derivs)}.&quo
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Derivative in x-direction [ 0.5624684  -0.20330985 -0.16864102 -0.03734494  0.07970672  0.05186396
-  0.34235791  0.14498176 -0.12459229  0.63700915  0.0117608  -0.04356053
- -0.15437839 -0.04068863  0.13449481 -0.19856986 -0.11815679  0.12573653
- -0.11598643  0.02723251  0.14342847  0.02407911  0.27687625  0.47523628
- -0.31931175].
-Derivative (using logarithm) in x-direction [ 0.56248734 -0.20347957 -0.16380904 -0.03028918  0.06421742  0.04853431
-  0.34250822  0.14613648 -0.07047402  0.63771614  0.0118858  -0.01986379
- -0.20530633 -0.04050378  0.13442416 -0.19776845 -0.11585667  0.12604302
- -0.10288114  0.02637698  0.13490876  0.02404968  0.29198534  0.47578599
- -0.31947902].
+Derivative in x-direction [ 0.30734258  0.24753392 -0.10164385 -0.35502454  0.62256378 -0.4806336
+ -0.27490521  0.64421173  0.50708235 -0.62589627 -0.02271022 -0.18075862
+ -0.46666906 -0.35434171 -0.07220761  0.37371807 -0.07209604  0.47252084
+  0.18407512 -0.08490725  0.31419978 -0.18812879  0.11677048  0.27183554
+  0.00227194].
+Derivative (using logarithm) in x-direction [ 0.30673882  0.24715189 -0.1054587  -0.35469932  0.62461378 -0.48053782
+ -0.27527774  0.64168648  0.50556283 -0.62694789 -0.02390025 -0.17964052
+ -0.46912167 -0.35324203 -0.07340006  0.37428065 -0.07338858  0.4747938
+  0.18456838 -0.08932495  0.31453276 -0.18754882  0.12127639  0.27184459
+  0.00239627].
 </pre></div></div>
+</div>
+</div>
+<div class="section" id="Example-2:-Visualization-of-2p_{z}-Orbital-using-Tensor-1D-Grid">
+<h3>Example 2: Visualization of <span class="math notranslate nohighlight">\(2p_{z}\)</span> Orbital using Tensor 1D Grid<a class="headerlink" href="#Example-2:-Visualization-of-2p_{z}-Orbital-using-Tensor-1D-Grid" title="Permalink to this heading"></a></h3>
+<p>Given a function <span class="math notranslate nohighlight">\(f(x, y, z)\)</span>, (e.g. an atomic orbital or electron density) we can evaluate it on a cubic grid and visualize the distribution of the function in space using isosurface values. Here we define a function that plots every point in the grid with a corresponding absolute value of the function greater than a threshold value. The function is latter used to visualize the <span class="math notranslate nohighlight">\(2p_{z}\)</span> orbital.</p>
+<div class="section" id="i.-Utility-Function-For-Plotting-Isosurfaces">
+<h4>i. Utility Function For Plotting Isosurfaces<a class="headerlink" href="#i.-Utility-Function-For-Plotting-Isosurfaces" title="Permalink to this heading"></a></h4>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span># Function to plot grid points bigger than a given threshold
+def plot_isosurface(
+    grid, vals, isovalue, *, both_signs=True, at_data=None, noticks=False, title=None
+):
+    &quot;&quot;&quot;Plot grid points with values bigger than isovalue.
+
+    The function plots the grid points with absolute values bigger than isovalue.
+
+    Parameters
+    ----------
+    grid : Grid
+        Cartesian grid (it can be uniform or TensorProductGrid) with 3 dimensions.
+    vals : ndarray
+        Values of the function on the grid points.
+    isovalue : float
+        Value of the isosurface to plot.
+    both_signs : bool, optional
+        If True, plot points with negative values too. The default is True.
+    at_data : tuple, optional
+        Tuple containing the atomic coordinates and atomic labels. If not None,
+        it should be a tuple containing (atcoords, atlabels) where atcoords is
+        a ndarray of shape (natoms, 3) containing the atomic coordinates in
+        bohr and atlabels is a list of length natoms containing the atomic labels.
+    title : str, optional
+        Title of the plot. The default is None.
+    &quot;&quot;&quot;
+    # indices of points with values close to isovalue
+    idx_p_vals = np.where(vals &gt; isovalue)
+    idx_n_vals = np.where(vals &lt; -isovalue)
+
+    # points with values close to isovalue
+    p_pts = grid.points[idx_p_vals]
+    n_pts = grid.points[idx_n_vals]
+
+    xmin, xmax = np.min(grid.points[:, 0]), np.max(grid.points[:, 0])
+    ymin, ymax = np.min(grid.points[:, 1]), np.max(grid.points[:, 1])
+    zmin, zmax = np.min(grid.points[:, 2]), np.max(grid.points[:, 2])
+
+    fig = plt.figure()
+    ax = plt.axes(projection=&quot;3d&quot;)
+    if noticks:
+        ax.set_xticks([])
+        ax.set_yticks([])
+        ax.set_zticks([])
+
+    if at_data is not None:
+        if len(at_data) != 2:
+            raise ValueError(&quot;at_data should be a tuple containing (atcoords, atlabels)&quot;)
+
+        atcoords, atlabels = at_data
+        if atcoords.shape[0] != len(atlabels):
+            raise ValueError(&quot;atcoords and atlabels should have the same length&quot;)
+
+        # if there are more than 2 atoms set the view point perpendicular to the molecular plane
+        if len(atlabels) &gt; 2:
+            # Calculate the centroid of atomic coordinates
+            centroid = np.mean(atcoords, axis=0)
+            # Center the atomic coordinates by subtracting the centroid from each point
+            centered_coords = atcoords - centroid
+            # Perform Singular Value Decomposition (SVD) on the centered coordinates
+            _, _, V = np.linalg.svd(centered_coords)
+            # The normal vector the molecular plane is the last column of the V matrix
+            normal_vector = V[-1]
+            # Set the view point perpendicular to the plane
+            ax.view_init(
+                elev=np.degrees(np.arcsin(normal_vector[2])),
+                azim=np.degrees(np.arctan2(normal_vector[1], normal_vector[0])),
+            )
+
+        # plot the atomic centers
+        for i in range(len(atlabels)):
+            ax.text(
+                atcoords[i, 0],
+                atcoords[i, 1],
+                atcoords[i, 2],
+                atlabels[i],
+                color=&quot;k&quot;,
+                fontsize=12,
+                horizontalalignment=&quot;center&quot;,
+                verticalalignment=&quot;center&quot;,
+            )
+    # set axis limits
+    ax.set_xlim((xmin, xmax))
+    ax.set_ylim((ymin, ymax))
+    ax.set_zlim((zmin, zmax))
+
+    # plot points with values bigger than isovalue
+    ax.scatter(
+        p_pts[:, 0], p_pts[:, 1], p_pts[:, 2], alpha=0.01, color=&quot;r&quot;, label=f&quot;Positive values&quot;
+    )
+    if both_signs:
+        ax.scatter(
+            n_pts[:, 0], n_pts[:, 1], n_pts[:, 2], alpha=0.01, color=&quot;b&quot;, label=f&quot;Negative values&quot;
+        )
+    legend = plt.legend(loc=&quot;upper right&quot;)
+    for lh in legend.legendHandles:
+        lh.set_alpha(1)
+    if title is not None:
+        plt.title(title)
+    plt.show()
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="ii.-Plot-2p_{z}-orbital-from-isosurface-value">
+<h4>ii. Plot <span class="math notranslate nohighlight">\(2p_{z}\)</span> orbital from isosurface value<a class="headerlink" href="#ii.-Plot-2p_{z}-orbital-from-isosurface-value" title="Permalink to this heading"></a></h4>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>import matplotlib.pyplot as plt
+import numpy as np
+
+# define 2pz orbital function
+def psi_2pz(x, y, z, a_0):
+    r = np.sqrt(x**2 + y**2 + z**2)
+    return np.exp(-r / (2 * a_0)) * z
+
+
+# Evaluate the function on the grid.
+psi_vals = psi_2pz(*tensor_grid.points.T, a_0=1.0)
+
+point_idx = target_x = 0.15
+tolerance = 1e-2
+
+plot_isosurface(tensor_grid, psi_vals, target_x, title=&quot;$2p_{z}$ Isosurface (0.15 a.u.)&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_cubic_grid_15_0.png" src="../_images/notebooks_cubic_grid_15_0.png" />
+</div>
+</div>
 </div>
 </div>
 </div>
 <div class="section" id="Uniform-Grid">
 <h2>Uniform Grid<a class="headerlink" href="#Uniform-Grid" title="Permalink to this heading"></a></h2>
-<p>This is type of cubic grid (a.k.a. rectilinear grid) with evenly-spaced points in each axes. It supports the same properties and functions as Tensor1DGrids. The easiest method to construct a uniform grid for the purposes of chemistry is the “from_molecule” method. This example will showcase this for Formaldehyde molecule.</p>
+<p>This is type of cubic grid (a.k.a. rectilinear grid) with evenly-spaced points in each axes. It supports the same properties and functions as Tensor1DGrids.</p>
+<div class="section" id="Example-1:-Constructing-Uniform-Grid-Around-Formaldehyde-Anion">
+<h3>Example 1: Constructing Uniform Grid Around Formaldehyde Anion<a class="headerlink" href="#Example-1:-Constructing-Uniform-Grid-Around-Formaldehyde-Anion" title="Permalink to this heading"></a></h3>
+<p>This example illustates the use of Grid with the <a class="reference external" href="https://github.com/theochem/iodata">IOData</a> package to construct a default grid around a molecule. The easiest method to do so is the “from_molecule” method. This example will showcase this for Formaldehyde anion. The <code class="docutils literal notranslate"><span class="pre">.fchk</span></code> files of which are read using the <a class="reference external" href="https://github.com/theochem/iodata">IOData</a> package and the <code class="docutils literal notranslate"><span class="pre">.fchk</span></code> files are included in <code class="docutils literal notranslate"><span class="pre">doc/notebooks/ch2o_q-1.fchk</span></code>.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>from scipy.stats import special_ortho_group
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>from iodata import load_one
 
-# Coordinates of the ch2o molecule on the xy-axis
-coordinates = np.array([
-   [2.27823914E+00,  4.13899085E-07,  3.12033662E-07],
-   [1.01154892E-02,  1.09802629E-07, -6.99333116E-07],
-   [-1.09577141E+00,  1.77311416E+00,  1.42544321E-07],
-   [-1.09577166E+00, -1.77311468E+00,  2.44755133E-07]
-])
-# Rotate them
-rot = special_ortho_group.rvs(3)
-coordinates = coordinates.dot(rot)
-charges = np.array([8, 6, 1, 1])
+# Load the wavefunction information about ch2o
+mol_anion = load_one(&quot;ch2o_q-1.fchk&quot;)
 
+# Get the atomic coordinates and numbers
+atcoords = mol_anion.atcoords
+atnums = mol_anion.atnums
+print(f&quot;Atomic Coordinates \n {atcoords}&quot;)
+print(f&quot;Atomic Numbers: \n {atnums}&quot;)
 
 fig = plt.figure()
 ax = plt.axes(projection=&#39;3d&#39;)
-ax.scatter(coordinates[:, 0], coordinates[:, 1], coordinates[:, 2], color=&quot;k&quot;, s=50)
+ax.scatter(atcoords[:, 0], atcoords[:, 1], atcoords[:, 2], color=&quot;k&quot;, s=50)
 ax.set_xlabel(&quot;X-axis&quot;)
 ax.set_ylabel(&quot;Y-axis&quot;)
 ax.set_zlabel(&quot;Z-axis&quot;)
@@ -576,27 +722,33 @@ plt.show()
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="output_area stderr docutils container">
+<div class="output_area docutils container">
 <div class="highlight"><pre>
-No handles with labels found to put in legend.
+Atomic Coordinates
+ [[-1.23259516e-32  1.00530930e-32  1.27229733e+00]
+ [ 0.00000000e+00 -1.32254311e-32 -9.95825669e-01]
+ [ 0.00000000e+00  1.77311490e+00 -2.10171229e+00]
+ [-2.17143949e-16 -1.77311490e+00 -2.10171229e+00]]
+Atomic Numbers:
+ [8 6 1 1]
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_cubic_grid_11_1.png" src="../_images/notebooks_cubic_grid_11_1.png" />
+<img alt="../_images/notebooks_cubic_grid_18_1.png" src="../_images/notebooks_cubic_grid_18_1.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>from grid.cubic import UniformGrid
 
-uniform_grid = UniformGrid.from_molecule(
-    charges, coordinates, spacing=0.75, extension=5.0, rotate=True
-)
+# Construct uniform grid
+uniform_grid = UniformGrid.from_molecule(atnums, atcoords, spacing=0.1, extension=2.0, rotate=True)
+
 
 print(f&quot;The number of points: {uniform_grid.size}&quot;)
 print(f&quot;The number of dimensions: {uniform_grid.ndim}.&quot;)
@@ -607,8 +759,8 @@ print(f&quot;The axes of the grid: {uniform_grid.axes}.&quot;)
 
 fig = plt.figure()
 ax = plt.axes(projection=&#39;3d&#39;)
-ax.scatter(coordinates[:, 0], coordinates[:, 1], coordinates[:, 2], color=&quot;k&quot;, s=50)
-ax.scatter(uniform_grid.points[:, 0], uniform_grid.points[:, 1], uniform_grid.points[:, 2], color=&quot;m&quot;, alpha=0.1)
+ax.scatter(atcoords[:, 0], atcoords[:, 1], atcoords[:, 2], color=&quot;k&quot;, s=50)
+ax.scatter(uniform_grid.points[:, 0], uniform_grid.points[:, 1], uniform_grid.points[:, 2], color=&quot;m&quot;, alpha=0.01)
 ax.set_xlabel(&quot;X-axis&quot;)
 ax.set_ylabel(&quot;Y-axis&quot;)
 ax.set_zlabel(&quot;Z-axis&quot;)
@@ -620,30 +772,322 @@ plt.show()
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-No handles with labels found to put in legend.
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-The number of points: 4788
+The number of points: 224960
 The number of dimensions: 3.
-The shape of the grid: [18 19 14].
-The origin of the grid: [-7.89714547 -4.63767195 -7.6123223 ].
-The axes of the grid: [[ 0.67197732  0.29799576 -0.14881198]
- [-0.12707384  0.5390871   0.50570479]
- [ 0.307894   -0.42788272  0.5334957 ]].
+The shape of the grid: [74 76 40].
+The origin of the grid: [-2.   3.8 -3.7].
+The axes of the grid: [[ 0.00000000e+00  0.00000000e+00  1.00000000e-01]
+ [ 0.00000000e+00 -1.00000000e-01  0.00000000e+00]
+ [ 1.00000000e-01  1.11022302e-17  0.00000000e+00]].
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_cubic_grid_12_2.png" src="../_images/notebooks_cubic_grid_12_2.png" />
+<img alt="../_images/notebooks_cubic_grid_19_1.png" src="../_images/notebooks_cubic_grid_19_1.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Example-2:-Calculate-and-Visualize-Dual-Descriptor-of-Formaldehyde">
+<h3>Example 2: Calculate and Visualize Dual Descriptor of Formaldehyde<a class="headerlink" href="#Example-2:-Calculate-and-Visualize-Dual-Descriptor-of-Formaldehyde" title="Permalink to this heading"></a></h3>
+<p>This example will illusrate on how to use UniformGrid to compute and visualize the dual descriptor of formaldehyde. The dual descriptor is a function of electron density and its derivatives and is defined as:</p>
+<div class="math notranslate nohighlight">
+\[f^{(2)}(r) = \Delta f(r) = (f^{+}(r) - f^{-}(r)\]</div>
+<p>where <span class="math notranslate nohighlight">\(f^{+}(r)\)</span> and <span class="math notranslate nohighlight">\(f^{-}(r)\)</span> are the Fukui functions defined as:</p>
+<div class="math notranslate nohighlight">
+\[f^{+}(r) = \left(\frac{\partial \rho(r)}{\partial \rho^2}\right)^{+}_{\upsilon(r)} = \rho_{N+1}(r) - \rho_{N}(r)\]</div>
+<div class="math notranslate nohighlight">
+\[f^{-}(r) = \left(\frac{\partial \rho(r)}{\partial \rho^2}\right)^{-}_{\upsilon(r)} = \rho_{N}(r) - \rho_{N-1}(r)\]</div>
+<p>then <span class="math notranslate nohighlight">\(f^{(2)}(r)\)</span> can be written as:</p>
+<div class="math notranslate nohighlight">
+\[f^{(2)}(r) = \rho_{N+1}(r) - \rho_{N-1}(r)\]</div>
+<div class="section" id="i.-Define-utility-function-to-calculate-the-dual-descriptor">
+<h4>i. Define utility function to calculate the dual descriptor<a class="headerlink" href="#i.-Define-utility-function-to-calculate-the-dual-descriptor" title="Permalink to this heading"></a></h4>
+<p>The dual descriptor is evaluated at each grid point as the difference between the electron density of the anion and cation of formaldehyde. The electron density can be evaluated in the grid points using the <a class="reference external" href="https://github.com/theochem/gbasis">GBasis</a> package with the wavefunction read, as above.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>from gbasis.evals.density import evaluate_density
+
+# define function to compute dual descriptor on a grid
+def compute_dual_descriptor(grid, rdm_an, rdm_cat, basis_an, basis_cat):
+    &quot;&quot;&quot;Compute dual descriptor on a grid.
+
+    Parameters
+    ----------
+    grid : Grid
+        Grid object.
+    rdm_an : np.ndarray
+        1-RDM of the anion.
+    rdm_cat : np.ndarray
+        1-RDM of the cation.
+    basis_an : list
+        Basis set of the anion.
+    basis_cat : list
+        Basis set of the cation.
+    &quot;&quot;&quot;
+    # evaluate electron density of cation and anion on the grid
+    dens_vals_cat = evaluate_density(rdm_cat, basis_cat, grid.points)
+    dens_vals_an = evaluate_density(rdm_an, basis_an, grid.points)
+
+    # compute dual descriptor on the grid
+    return dens_vals_an - dens_vals_cat
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="ii.-Calculate-and-visualize-dual-descriptor">
+<h4>ii. Calculate and visualize dual descriptor<a class="headerlink" href="#ii.-Calculate-and-visualize-dual-descriptor" title="Permalink to this heading"></a></h4>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>from iodata import load_one
+from gbasis.wrappers import from_iodata
+
+# load formaldehyde cation and anion fchk files
+mol_cation = load_one(&quot;ch2o_q+1.fchk&quot;)
+
+# Construct molecular basis from wave-function information read by IOData
+basis_cat = from_iodata(mol_cation)
+basis_an = from_iodata(mol_anion)
+
+# get rdms for cation and anion
+rdm_cat = mol_cation.one_rdms[&quot;scf&quot;]
+rdm_an = mol_anion.one_rdms[&quot;scf&quot;]
+
+# compute dual descriptor on the grid
+dd = compute_dual_descriptor(uniform_grid, rdm_an, rdm_cat, basis_an, basis_cat)
+
+# plot dual descriptor isosurface
+mol_data = (atcoords, [&quot;O&quot;, &quot;C&quot;, &quot;H&quot;, &quot;H&quot;])
+plot_isosurface(
+    uniform_grid, dd, 0.03, at_data=mol_data, title=&quot;Dual Descriptor Isosurface&quot;, noticks=True
+)
+
+print(f&quot;Positive values (red) correspond to nucleophilic regions&quot;)
+print(f&quot;Negative values (blue) correspond to electrophilic regions&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_cubic_grid_24_0.png" src="../_images/notebooks_cubic_grid_24_0.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Positive values (red) correspond to nucleophilic regions
+Negative values (blue) correspond to electrophilic regions
+</pre></div></div>
+</div>
+</div>
+</div>
+<div class="section" id="Example-3:-Integrate-The-Dual-Descriptor-Domains">
+<h3>Example 3: Integrate The Dual Descriptor Domains<a class="headerlink" href="#Example-3:-Integrate-The-Dual-Descriptor-Domains" title="Permalink to this heading"></a></h3>
+<p>All classes in <a class="reference external" href="https://github.com/theochem/grid">Grid</a> offers an easy method to integrate. Here we integrate the different lobes of the dual descriptor. This can be used to assess the relevance of electrophilic and nucleophilic regions of the molecule.</p>
+<div class="section" id="i.-Define-utility-function-to-extract-dual-descriptor-domains">
+<h4>i. Define utility function to extract dual descriptor domains<a class="headerlink" href="#i.-Define-utility-function-to-extract-dual-descriptor-domains" title="Permalink to this heading"></a></h4>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span># define utility function for grouping grid points in domains
+from itertools import combinations
+from scipy.sparse.csgraph import connected_components
+
+
+# function to get grid points indices for same sign connected points with absolute
+# value  greater than a threshold (select domain defined by isovalue)
+def get_domains(grid, vals, isovalue):
+    &quot;&quot;&quot;Get grid points indices for domains with same sign connected points.
+
+    The function returns the indices of the grid points that belong to the same domain. A domain
+    is defined by a set of connected points with the same sign and absolute value greater than
+    isovalue.
+
+    Parameters
+    ----------
+    grid : Grid
+        Cartesian grid (it can be uniform or TensorProductGrid) with 3 dimensions.
+    vals : ndarray
+        Values of the function on the grid points.
+    isovalue : float
+        Value of the isosurface used to define the domains.
+
+    Returns
+    -------
+    tuple
+        Tuple containing two lists. The first list contains domains with positive values and the
+        second list contains domains with negative values. Each domain is a np.array with the
+        indexes of the grid points that belong to the same domain.
+    &quot;&quot;&quot;
+    # indices of points with value modulus greater than isovalue
+    idx_p_vals = np.where(vals &gt; isovalue)[0]  # positive values
+    idx_n_vals = np.where(vals &lt; -isovalue)[0]  # negative values
+
+    # create adjacency matrix selected points with same sign
+    p_vals_adj = np.zeros((len(idx_p_vals), len(idx_p_vals)))
+    n_vals_adj = np.zeros((len(idx_n_vals), len(idx_n_vals)))
+
+    # try all combinations of selected points with same sign (positive values)
+    for i, j in combinations(range(len(idx_p_vals)), 2):
+        # get coordinate indices of the points
+        i_coord_idx = np.array(grid.index_to_coordinates(idx_p_vals[i]))
+        j_coord_idx = np.array(grid.index_to_coordinates(idx_p_vals[j]))
+        # two points are adjacent if they differ by at most 1 in each coordinate index
+        if np.max(np.abs(i_coord_idx - j_coord_idx)) == 1:
+            p_vals_adj[i, j] = 1
+
+    # try all combinations of selected points with same sign (negative values)
+    for i, j in combinations(range(len(idx_n_vals)), 2):
+        i_coord_idx = np.array(grid.index_to_coordinates(idx_n_vals[i]))
+        j_coord_idx = np.array(grid.index_to_coordinates(idx_n_vals[j]))
+        # two points are adjacent if they differ by at most 1 in each coordinate
+        if np.max(np.abs(i_coord_idx - j_coord_idx)) == 1:
+            n_vals_adj[i, j] = 1
+
+    # returns an array of integers, each integer represents domain and the indexes where
+    # it appear are the points belonging to that domain
+    # example: [0,1,0,0,1,1] -&gt; points 0,2,3 belong to domain 0
+    #                        -&gt; points 1,4,5 belong to domain 1
+    p_groups = connected_components(p_vals_adj, directed=False)[1]
+    n_groups = connected_components(n_vals_adj, directed=False)[1]
+
+    # creates a list with the domains. Each element of the list is a np.array with the indexes
+    # of the selected points that belong to the same domain.
+    # example: [0,1,0,0,1,1] -&gt; [[0,2,3],[1,4,5]]
+    p_domains = list([np.where(p_groups == i)[0] for i in range(max(p_groups) + 1)])
+    n_domains = list([np.where(n_groups == i)[0] for i in range(max(n_groups) + 1)])
+
+    # transform indexes of selected points to indexes of all grid points for each domain
+    p_domains = [idx_p_vals[domain] for domain in p_domains]
+    n_domains = [idx_n_vals[domain] for domain in n_domains]
+
+    return p_domains, n_domains
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="ii.-Select-and-integrate-the-positive-(electrophilic)-domains-of-the-dual-descriptor">
+<h4>ii. Select and integrate the positive (electrophilic) domains of the dual descriptor<a class="headerlink" href="#ii.-Select-and-integrate-the-positive-(electrophilic)-domains-of-the-dual-descriptor" title="Permalink to this heading"></a></h4>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span># get dual descriptor domains, integrate and plot them
+p_domains, n_domains = get_domains(uniform_grid, dd, 0.03)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>for domain in p_domains:
+    domain_vals = dd.copy()
+    domain_mask = np.isin(np.arange(len(dd)), domain, invert=True)
+    domain_vals[domain_mask] = 0.0
+
+    plot_isosurface(
+        uniform_grid,
+        domain_vals,
+        0.001,
+        at_data=mol_data,
+        title=f&quot;Domain   Integral: {uniform_grid.integrate(domain_vals):.3f}&quot;,
+        noticks=True,
+    )
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_cubic_grid_30_0.png" src="../_images/notebooks_cubic_grid_30_0.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_cubic_grid_30_1.png" src="../_images/notebooks_cubic_grid_30_1.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_cubic_grid_30_2.png" src="../_images/notebooks_cubic_grid_30_2.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_cubic_grid_30_3.png" src="../_images/notebooks_cubic_grid_30_3.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_cubic_grid_30_4.png" src="../_images/notebooks_cubic_grid_30_4.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_cubic_grid_30_5.png" src="../_images/notebooks_cubic_grid_30_5.png" />
+</div>
+</div>
+</div>
+<div class="section" id="iii.-Select-and-integrate-the-negative-(nucleophilic)-domains-of-the-dual-descriptor">
+<h4>iii. Select and integrate the negative (nucleophilic) domains of the dual descriptor<a class="headerlink" href="#iii.-Select-and-integrate-the-negative-(nucleophilic)-domains-of-the-dual-descriptor" title="Permalink to this heading"></a></h4>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>for domain in n_domains:
+    domain_vals = dd.copy()
+    domain_mask = np.isin(np.arange(len(dd)), domain, invert=True)
+    domain_vals[domain_mask] = 0.0
+
+    plot_isosurface(
+        uniform_grid,
+        domain_vals,
+        0.001,
+        at_data=mol_data,
+        title=f&quot;Domain Integral: {uniform_grid.integrate(domain_vals):.3f}&quot;,
+        noticks=True,
+    )
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_cubic_grid_32_0.png" src="../_images/notebooks_cubic_grid_32_0.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_cubic_grid_32_1.png" src="../_images/notebooks_cubic_grid_32_1.png" />
+</div>
+</div>
 </div>
 </div>
 </div>
