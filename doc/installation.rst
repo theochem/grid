@@ -10,7 +10,7 @@ The latest code can be obtained through theochem (https://github.com/theochem/gr
 
 .. code-block:: bash
 
-   git clone git@github.com:theochem/grid.git
+   git clone https://github.com/theochem/grid.git
 
 .. _usr_py_depend:
 
@@ -45,6 +45,7 @@ Then installation via pip can be done by going into the directory where Grid is 
 
 .. code-block:: bash
 
+    cd grid
     pip install .
 
 Successful installation can be checked by running the tests,
