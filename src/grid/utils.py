@@ -1031,7 +1031,7 @@ def dipole_moment_of_molecule(grid, density: np.ndarray, coords: np.ndarray, cha
     )
 
     # calculate (X_a - X_c)**{n_x} (Y_a - Y_c)**{n_y} (Z_a - Z_c)**{n_z}
-    cent_pts_with_order = ((coords - center_mol) ** orders[:, None])
+    cent_pts_with_order = (coords - center_mol) ** orders[:, None]
     # multiply over each corresponding moment axis (row)
     cent_pts_with_order = np.prod(cent_pts_with_order, axis=2)
     # calculate Z_a (X_a - X_c)**{n_x} (Y_a - Y_c)**{n_y} (Z_a - Z_c)**{n_z}
