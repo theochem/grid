@@ -19,7 +19,7 @@ https://github.com/theochem/grid/issues/new) or email [qcdevs@gmail.com]().
 
 
 ## Citation
-Please use the following citation in any publication using BFit library:
+Please use the following citation in any publication:
 
 > **"Grid: A Python Library for Molecular Integration, Interpolation, Differentiation and More."**,
 > A. Tehrani, X. D. Yang, M. Martinez-Gonzalez,, L. Pujal, R. Hernandez‐Esparza, M. Chan,
