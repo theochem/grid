@@ -26,7 +26,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Constructing Molecular Grids" href="molecular_grid_construction.html" />
-    <link rel="prev" title="Constuct Atomic Grid" href="atom_grid_construction.html" /> 
+    <link rel="prev" title="Construct Atomic Grid" href="atom_grid_construction.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -238,7 +238,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="Atom-Grids">
+  <p><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></p>
+<div class="section" id="Atom-Grids">
 <h1>Atom Grids<a class="headerlink" href="#Atom-Grids" title="Permalink to this heading"></a></h1>
 <p><a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid">AtomGrid</a> constructs an atomic grid by combining a radial and angular components for evaluation, integration, interpolation, and differentiation in three-dimensional (3D) space. In quantum chemistry, this is typically used for computations of atomic properties. However, this is a general purpose grid that can be used for any function in 3D space.</p>
 <p>This notebook showcases various functionalities of <a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid">AtomGrid</a>. For computing properties on the grid, we use <span class="math notranslate nohighlight">\(\textbf{He}\)</span> in the triplet state (<span class="math notranslate nohighlight">\(1s^1 2s^1\)</span>) as an example. The corresponding wavefunction is obtained from formatted checkpoint file <code class="docutils literal notranslate"><span class="pre">&quot;doc/notebooks/He_t.fchk&quot;</span></code>. The <code class="docutils literal notranslate"><span class="pre">`qc-iodata</span></code> &lt;<a class="reference external" href="https://github.com/theochem/iodata">https://github.com/theochem/iodata</a>&gt;`__ package is used for parsing the wavefuction data from the fchk file, and
@@ -411,7 +412,7 @@ Max difference between radial_dens_1 and radial_dens_2: 2.220446049250313e-16
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_atom_grid_7_1.png" src="../_images/notebooks_atom_grid_7_1.png" />
+<img alt="../_images/notebooks_atom_grid_8_1.png" src="../_images/notebooks_atom_grid_8_1.png" />
 </div>
 </div>
 <p>To identify the local maxima of radial electron density and corresponding radii, the <code class="docutils literal notranslate"><span class="pre">`scipy.signal.find_peaks</span></code> &lt;<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.find_peaks.html">https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.find_peaks.html</a>&gt;`__ is used.</p>
@@ -520,7 +521,7 @@ Classic Coulomb Energy : 1.772374684606753 (hartree)
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="atom_grid_construction.html" class="btn btn-neutral float-left" title="Constuct Atomic Grid" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="atom_grid_construction.html" class="btn btn-neutral float-left" title="Construct Atomic Grid" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="molecular_grid_construction.html" class="btn btn-neutral float-right" title="Constructing Molecular Grids" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

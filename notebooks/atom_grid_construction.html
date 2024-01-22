@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Constuct Atomic Grid &mdash; grid  documentation</title>
+  <title>Construct Atomic Grid &mdash; grid  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
       <link rel="stylesheet" type="text/css" href="../_static/css/override.css" />
       <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
@@ -228,7 +228,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Constuct Atomic Grid</li>
+      <li class="breadcrumb-item active">Construct Atomic Grid</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/notebooks/atom_grid_construction.nblink" rel="nofollow"> View page source</a>
       </li>
@@ -238,8 +238,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="Constuct-Atomic-Grid">
-<h1>Constuct Atomic Grid<a class="headerlink" href="#Constuct-Atomic-Grid" title="Permalink to this heading"></a></h1>
+  <p><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></p>
+<div class="section" id="Construct-Atomic-Grid">
+<h1>Construct Atomic Grid<a class="headerlink" href="#Construct-Atomic-Grid" title="Permalink to this heading"></a></h1>
 <p>Atomic gris are useful for evaluation, integration, interpolation, and differentiation in three-dimensional (3D) atomic domains. The are constructed by combining a radial and angular grid. The radial grid <span class="math notranslate nohighlight">\(\{(r_i, w_i)\}_{i=1}^{N}\)</span> covers the radius coordinate of spherical coordinates, and associted with each radius, there is an angular (Lebedev or Symmetric spherical t-design) grid <span class="math notranslate nohighlight">\(\{(\theta^i_j, \phi^i_j, w_j^i)\}_{j=1}^{M_i}\)</span> covering the angle coordinate of spherical
 coordinates.</p>
 <p>This notebook will go over different ways of constructing an <a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.atomgrid.html">AtomGrid</a>, which provides flexibility in the choice of radial and angular components.</p>
@@ -398,7 +399,7 @@ plt.show()
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_atom_grid_construction_6_0.png" src="../_images/notebooks_atom_grid_construction_6_0.png" />
+<img alt="../_images/notebooks_atom_grid_construction_7_0.png" src="../_images/notebooks_atom_grid_construction_7_0.png" />
 </div>
 </div>
 </div>
@@ -452,7 +453,7 @@ AtomGrid center        : [0. 0. 0.]
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_atom_grid_construction_8_1.png" src="../_images/notebooks_atom_grid_construction_8_1.png" />
+<img alt="../_images/notebooks_atom_grid_construction_9_1.png" src="../_images/notebooks_atom_grid_construction_9_1.png" />
 </div>
 </div>
 </div>
@@ -539,7 +540,7 @@ AtomGrid B center        : [0. 0. 0.]
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_atom_grid_construction_10_1.png" src="../_images/notebooks_atom_grid_construction_10_1.png" />
+<img alt="../_images/notebooks_atom_grid_construction_11_1.png" src="../_images/notebooks_atom_grid_construction_11_1.png" />
 </div>
 </div>
 </div>
@@ -588,7 +589,7 @@ F AtomGrid size : 1632 (Levedev-Laikov, medium)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_atom_grid_construction_12_1.png" src="../_images/notebooks_atom_grid_construction_12_1.png" />
+<img alt="../_images/notebooks_atom_grid_construction_13_1.png" src="../_images/notebooks_atom_grid_construction_13_1.png" />
 </div>
 </div>
 </div>
