@@ -1030,15 +1030,14 @@ def dipole_moment_of_molecule(grid, density: np.ndarray, coords: np.ndarray, cha
         1, center_mol, density, type_mom="cartesian", return_orders=True
     )
 
-    result = -integrals
-    # Go through each atom a
-    for i in range(len(coords)):
-        coord = coords[i]
-        charge = charges[i]
+    # calculate (X_a - X_c)**{n_x} (Y_a - Y_c)**{n_y} (Z_a - Z_c)**{n_z}
+    cent_pts_with_order = (coords - center_mol) ** orders[:, None]
+    # multiply over each corresponding moment axis (row)
+    cent_pts_with_order = np.prod(cent_pts_with_order, axis=2)
+    # calculate Z_a (X_a - X_c)**{n_x} (Y_a - Y_c)**{n_y} (Z_a - Z_c)**{n_z}
+    result = np.einsum("ij,j->i", cent_pts_with_order, charges)
 
-        # Calculate Z_a * (X_a - X_c)^{n_x} (Y_a - Y_c)^{n_y} (Z_a - Z_c)^{n_z}
-        cent_pts_with_order = (coord - center_mol) ** orders[:, None]
-        cent_pts_with_order = np.prod(cent_pts_with_order, axis=2)
-        result += cent_pts_with_order * charge
+    # sum electric dipole moment and remove [0,0,0] moment value
+    result = (result - integrals.T).flatten()[1:]
 
-    return np.ravel(result[1:])
+    return result
