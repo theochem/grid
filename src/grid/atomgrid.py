@@ -18,6 +18,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
 """Module for generating AtomGrid."""
+
 import warnings
 from typing import Union
 
@@ -140,11 +141,6 @@ class AtomGrid(Grid):
         use_spherical: bool = False,
     ):
         """High level api to construct an atomic grid with preset arguments.
-
-        Examples
-        --------
-        >>> # construct an atomic grid for H with fine grid setting
-        >>> atgrid = AtomGrid.from_preset(atnum=1, preset="fine", rgrid)
 
         Parameters
         ----------
@@ -383,7 +379,7 @@ class AtomGrid(Grid):
         """Get the spherical integral grid at radial point from specified index.
 
         The spherical integration grid has points scaled with the ith radial point
-        and weights multipled by the ith weight of the radial grid.
+        and weights multiplied by the ith weight of the radial grid.
 
         Note that when :math:`r=0` then the Cartesian points are all zeros.
 
@@ -630,7 +626,7 @@ class AtomGrid(Grid):
             f(r, \theta, \phi) = \sum_l \sum_{m=-l}^l \sum_i \rho_{ilm}(r) Y_{lm}(\theta, \phi)
 
         A cubic spline is used to interpolate the radial functions :math:`\sum_i \rho_{ilm}(r)`.
-        This is then multipled by the corresponding spherical harmonics at all
+        This is then multiplied by the corresponding spherical harmonics at all
         :math:`(\theta_j, \phi_j)` angles and summed to obtain the equation above.
 
         Parameters
@@ -669,7 +665,7 @@ class AtomGrid(Grid):
         splines = self.radial_component_splines(func_vals)
 
         def interpolate_low(points, deriv=0, deriv_spherical=False, only_radial_deriv=False):
-            r"""Construct a spline like callable for intepolation.
+            r"""Construct a spline like callable for interpolation.
 
             Parameters
             ----------
@@ -913,7 +909,7 @@ def _get_rgrid_size(preset_grid, atnums=None):
     Parameters
     ----------
     preset_grid : str
-        String specifiying type of pruned grid to access radial points data.
+        String specifying type of pruned grid to access radial points data.
     atnums : int or list/array of ints
         Atomic numbers for which to retrieve number of radial points.
 
@@ -943,8 +939,7 @@ def _get_rgrid_size(preset_grid, atnums=None):
         for at_num in atnums:
             if preset_grid == "sg_1":
                 rad = data["r_points"]
-                radial_pts.append(sum(rad))
             else:
                 rad = data[f"{at_num}_rad"]
-                radial_pts.append(sum(rad))
+            radial_pts.append(sum(rad))
         return radial_pts
