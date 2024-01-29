@@ -29,7 +29,7 @@ Please use the following citation in any publication:
 
 Installation via pip can be done by the following command:
 ```bash
-pip install qc-grid
+pip install git+https://github.com/theochem/grid.git@master
 ```
 
 Local installation can be done as:
@@ -37,4 +37,9 @@ Local installation can be done as:
 git clone https://github.com/theochem/grid.git
 cd grid
 pip install .
+```
+
+With later release in PyPi, Grid can be installed via
+```bash
+pip install qc-grid
 ```
