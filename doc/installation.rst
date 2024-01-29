@@ -34,7 +34,21 @@ The following dependencies will be necessary for Procrustes to build properly,
 Installation
 ============
 
-Grid can be cloned via git,
+Installation via pip can be done by the following command:
+
+.. code-block:: bash
+
+    pip install git+https://github.com/theochem/grid.git@master
+
+
+With later release in PyPi, Grid can be installed via
+
+.. code-block:: bash
+
+    pip install qc-grid
+
+
+Grid can also be installed by cloning via git,
 
 .. code-block:: bash
 
