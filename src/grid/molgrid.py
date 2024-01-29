@@ -41,52 +41,6 @@ class MolGrid(Grid):
     :math:`w_n(r)` for each center n such that :math:`\sum^M_n w_n(r) = 1` for all points
     :math:`r\in\mathbb{R}^3.`
 
-    Examples
-    --------
-    There are multiple methods of specifiying molecular grids.
-    This example chooses Becke weights as the atom in molecule/nuclear weights and the
-    radial grid is the same for all atoms.  Two atoms are considered with charges [1, 2],
-    respectively.
-
-    >>> from grid.becke import BeckeWeights
-    >>> from grid.onedgrid import GaussLaguerre
-    >>> becke = BeckeWeights(order=3)
-    >>> rgrid = GaussLaguerre(100)
-    >>> charges = [1, 2]
-    >>> coords = np.array([[-1.0, 0.0, 0.0], [1.0, 0.0, 0.0]])
-
-    The default method is based on explicitly specifing the atomic grids (AtomGrids) for each atom.
-
-    >>> from grid.atomgrid import AtomGrid
-    >>> atgrid1 = AtomGrid(rgrid, degrees=5, center=coords[0])
-    >>> atgrid2 = AtomGrid(rgrid, degrees=10, center=coords[1])
-    >>> molgrid = MolGrid(charges, [atgrid1, atgrid2], aim_weights=becke)
-
-    The `from_size` method constructs AtomGrids with degree_size specified from integer size.
-
-    >>> size = 100  # Number of angular points used in each shell in the atomic grid.
-    >>> molgrid = MolGrid.from_size(charges, coords, rgrid, size=5, aim_weights=becke)
-
-    The `from_pruned` method is based on `AtomGrid.from_pruned` method on the idea
-    of spliting radial grid points into sectors that have the same angular degrees.
-
-    >>> sectors_r = [[0.5, 1., 1.5], [0.25, 0.5]]
-    >>> sectors_deg = [[3, 7, 5, 3], [3, 2, 2]]
-    >>> radius = 1.0
-    >>> mol_grid = MolGrid.from_pruned(charges, coords, rgrid, radius, becke,
-    >>>                                sectors_r=sectors_r, sectors_degree=sectors_deg)
-
-    The `from_preset` method is based on `AtomGrid.from_preset` method based on a string
-    specifying the size of each Levedev grid at each radial points.
-
-    >>> preset = "fine"  # Many choices available.
-    >>> molgrid = MolGrid.from_preset(charges,coords,preset,aim_weights=becke,rgrid=rgrid)
-
-    The general way to integrate is the following.
-
-    >>> integrand = integrand_func(molgrid.points)
-    >>> integrate = molgrid.integrate(integrand)
-
     References
     ----------
     .. [1] Becke, Axel D. "A multicenter numerical integration scheme for polyatomic molecules."
@@ -156,7 +110,7 @@ class MolGrid(Grid):
     @property
     def indices(self):
         r"""
-        Get the indices of the molecualr grid.
+        Get the indices of the molecular grid.
 
         Returns
         -------
@@ -276,22 +230,6 @@ class MolGrid(Grid):
                     The interpolated function values or its derivatives with respect to Cartesian
                     :math:`(x,y,z)` or if `deriv_spherical` then :math:`(r, \theta, \phi)` or
                     if `only_radial_derivs` then derivative wrt to :math:`r` is only returned.
-
-        Examples
-        --------
-        >>> # Consider the function (3x^2 + 4y^2 + 5z^2)
-        >>> def polynomial_func(pts) :
-        >>>     return 3.0 * points[:, 0]**2.0 + 4.0 * points[:, 1]**2.0 + 5.0 * points[:, 2]**2.0
-        >>> # Evaluate the polynomial over the molecular grid points and interpolate
-        >>> polynomial_vals = polynomial_func(molgrid.points)
-        >>> interpolate_func = molgrid.interpolate(polynomial_vals)
-        >>> # Use it to interpolate at new points.
-        >>> interpolate_vals = interpolate_func(new_pts)
-        >>> # Can calculate first derivative wrt to Cartesian or spherical
-        >>> interpolate_derivs = interpolate_func(new_pts, deriv=1)
-        >>> interpolate_derivs_sph = interpolate_func(new_pts, deriv=1, deriv_spherical=True)
-        >>> # Only higher-order derivatives are supported for the radius coordinate r.
-        >>> interpolated_derivs_radial = interpolate_func(new_pts, deriv=2, only_radial_derivs=True)
 
         """
         if self.atgrids is None:
@@ -461,13 +399,6 @@ class MolGrid(Grid):
         """
         Initialize a MolGrid instance with Horton Style input.
 
-        Example
-        -------
-        >>> onedg = UniformInteger(100) # number of points, oned grid before TF.
-        >>> rgrid = ExpRTransform(1e-5, 2e1).generate_radial(onedg) # radial grid
-        >>> becke = BeckeWeights(order=3)
-        >>> molgrid = MolGrid.from_size(atnums, atcoords, 110, becke, rgrid)
-
         Parameters
         ----------
         atnums : np.ndarray(M, 3)
@@ -475,7 +406,7 @@ class MolGrid(Grid):
         atcoords : np.ndarray(N, 3)
             Cartesian coordinates for each atoms
         size : int
-            Num of points on each shell of angular grid
+            Number of points on each shell of angular grid.
         rgrid : OneDGrid, optional
             One-dimensional grid to construct the atomic grid. If none, then
             default radial grid is generated based on atomic numbers.
@@ -555,7 +486,7 @@ class MolGrid(Grid):
             `sectors_degree` is used.
         rotate : bool or int , optional
             Flag to set auto rotation for atomic grid, if given int, the number
-            will be used as a seed to generate rantom matrix.
+            will be used as a seed to generate random matrix.
         store : bool, optional
             Flag to store each original atomic grid information.
 
