@@ -697,7 +697,7 @@ class UniformGrid(_HyperRectangleGrid):
                 words = line.split()
                 return (
                     int(words[0]),
-                    np.array([float(words[1]), float(words[2]), float(words[3])], float)
+                    np.array([float(words[1]), float(words[2]), float(words[3])], float),
                     # all coordinates in a cube file are in atomic units
                 )
 
@@ -721,7 +721,7 @@ class UniformGrid(_HyperRectangleGrid):
                 return (
                     int(words[0]),
                     float(words[1]),
-                    np.array([float(words[2]), float(words[3]), float(words[4])], float)
+                    np.array([float(words[2]), float(words[3]), float(words[4])], float),
                     # all coordinates in a cube file are in atomic units
                 )
 

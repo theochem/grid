@@ -169,9 +169,12 @@ class BeckeWeights:
             )
         radii = np.array(
             [
-                self._radii[num] if not np.isnan(self._radii[num])
-                # if n-1 radii is nan, use the n-2 instead
-                else np.nan_to_num(self._radii[num - 1]) or np.nan_to_num(self._radii[num - 2])
+                (
+                    self._radii[num]
+                    if not np.isnan(self._radii[num])
+                    # if n-1 radii is nan, use the n-2 instead
+                    else np.nan_to_num(self._radii[num - 1]) or np.nan_to_num(self._radii[num - 2])
+                )
                 for num in atnums
             ]
         )
@@ -242,9 +245,12 @@ class BeckeWeights:
             )
         radii = np.array(
             [
-                self._radii[num] if not np.isnan(self._radii[num])
-                # if n-1 radii is nan, use the n-2 instead
-                else np.nan_to_num(self._radii[num - 1]) or np.nan_to_num(self._radii[num - 2])
+                (
+                    self._radii[num]
+                    if not np.isnan(self._radii[num])
+                    # if n-1 radii is nan, use the n-2 instead
+                    else np.nan_to_num(self._radii[num - 1]) or np.nan_to_num(self._radii[num - 2])
+                )
                 for num in atnums
             ]
         )
