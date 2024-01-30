@@ -243,8 +243,11 @@ class TestTensor1DGrids(TestCase):
             return np.exp(-3 * np.linalg.norm(points, axis=1) ** 2.0)
 
         def derivative_wrt_one_var(points, i_var_deriv):
-            return (np.exp(-3 * np.linalg.norm(points, axis=1) ** 2.0) *
-                    points[:, i_var_deriv] * (-3 * 2.0))
+            return (
+                np.exp(-3 * np.linalg.norm(points, axis=1) ** 2.0)
+                * points[:, i_var_deriv]
+                * (-3 * 2.0)
+            )
 
         def derivative_second_x(points):
             expon = np.exp(-3 * np.linalg.norm(points, axis=1) ** 2.0)
@@ -266,9 +269,7 @@ class TestTensor1DGrids(TestCase):
         assert_allclose(interpolated, derivative_wrt_one_var(pts, 2), rtol=1e-4)
 
         # Test taking second-derivative in x-direction
-        interpolated = cubic.interpolate(
-            pts, gaussian_pts, use_log=True, nu_x=2, nu_y=0, nu_z=0
-        )
+        interpolated = cubic.interpolate(pts, gaussian_pts, use_log=True, nu_x=2, nu_y=0, nu_z=0)
         assert_allclose(interpolated, derivative_second_x(pts), rtol=1e-4)
 
         # Test raises error
