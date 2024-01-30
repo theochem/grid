@@ -18,10 +18,11 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
 """PeriodicGrid tests file."""
+import warnings
+
 import numpy as np
 import pytest
 from numpy.testing import assert_allclose
-import warnings
 
 from grid.basegrid import Grid
 from grid.periodicgrid import PeriodicGrid, PeriodicGridWarning

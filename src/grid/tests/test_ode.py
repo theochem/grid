@@ -18,13 +18,13 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
 """ODE test module."""
+import warnings
 from numbers import Number
 
 import numpy as np
 import pytest
 from numpy.testing import assert_allclose, assert_almost_equal, assert_raises
 from scipy.integrate import solve_bvp
-import warnings
 
 from grid.ode import (
     _derivative_transformation_matrix,

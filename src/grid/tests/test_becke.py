@@ -23,8 +23,8 @@
 from unittest import TestCase
 
 import numpy as np
-from numpy.testing import assert_allclose
 import pytest
+from numpy.testing import assert_allclose
 
 from grid.becke import BeckeWeights
 

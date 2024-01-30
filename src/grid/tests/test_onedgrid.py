@@ -22,8 +22,8 @@
 from unittest import TestCase
 
 import numpy as np
-from numpy.testing import assert_allclose, assert_almost_equal
 import pytest
+from numpy.testing import assert_allclose, assert_almost_equal
 from scipy.special import roots_chebyu, roots_legendre
 
 from grid.onedgrid import (
