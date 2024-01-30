@@ -633,6 +633,7 @@ class TestAtomGrid:
                 values[atgrid.indices[i] : atgrid.indices[i + 1]],
             )
 
+    @pytest.mark.filterwarnings("ignore:Lebedev weights are negative which can*")
     def test_cubicspline_and_interp(self):
         """Test cubicspline interpolation values."""
         odg = OneDGrid(np.arange(10) + 1, np.ones(10), (0, np.inf))
