@@ -128,17 +128,17 @@ class TestLebedev(TestCase):
             AngularGrid(pts, wts, size=14)
 
 
-@pytest.mark.parametrize("degree", [5, 10])
+@pytest.mark.parametrize("degree", [5, 10, 100])
 @pytest.mark.parametrize("use_spherical", [False, True])
 def test_integration_of_spherical_harmonic_up_to_degree(degree, use_spherical):
-    r"""Test integration of spherical harmonic up to degree 10 is accurate."""
+    r"""Test integration of spherical harmonic is accurate."""
     grid = AngularGrid(degree=degree, use_spherical=use_spherical)
     # Concert to spherical coordinates from Cartesian.
     r = np.linalg.norm(grid.points, axis=1)
     phi = np.arccos(grid.points[:, 2] / r)
     theta = np.arctan2(grid.points[:, 1], grid.points[:, 0])
     # Generate All Spherical Harmonics Up To Degree = 10
-    #   Returns a three dimensional array where [order m, degree l, points]
+    #   Returns a three-dimensional array where [order m, degree l, points]
     sph_harm = generate_real_spherical_harmonics(degree, theta, phi)
     for l_deg in range(0, degree):
         for m_ord in range(-l_deg, l_deg):
