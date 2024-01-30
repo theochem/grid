@@ -59,6 +59,8 @@ class TestLebedev(TestCase):
     def test_lebedev_cache(self):
         """Test cache behavior of spherical grid."""
         degrees = np.random.randint(1, 100, 50)
+        # Add 13 so that the warning is guaranteed to happen so pytest warning works.
+        degrees = np.append(degrees, [13])
         LEBEDEV_CACHE.clear()
         with pytest.warns(UserWarning, match="Lebedev weights are negative*"):
             for i in degrees:
