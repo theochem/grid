@@ -98,6 +98,7 @@ class TestAtomGrid:
         assert_allclose(ag_ob.rgrid.points, rgrid.points)
         assert_allclose(ag_ob.rgrid.weights, rgrid.weights)
 
+    @pytest.mark.filterwarnings("ignore:Lebedev weights are negative which can*")
     def test_from_predefined(self):
         """Test grid construction with predefined grid."""
         # test coarse grid
@@ -327,6 +328,7 @@ class TestAtomGrid:
         phi = np.arccos(ref_coor[2] / r)
         assert_allclose(np.array([r, theta, phi]).reshape(-1, 3), calc_sph)
 
+    @pytest.mark.filterwarnings("ignore:Lebedev weights are negative which can*")
     @pytest.mark.parametrize("use_spherical", [False, True])
     def test_spherical_complete(self, use_spherical):
         """Test atomic grid consistence for spherical integral."""
@@ -725,6 +727,7 @@ class TestAtomGrid:
         spherical_avg2 = spherical_avg(random_rad_pts[:, 0])
         assert_allclose(spherical_avg2, 0.0, atol=1e-4)
 
+    @pytest.mark.filterwarnings("ignore:Lebedev weights are negative which can*")
     @pytest.mark.parametrize("use_spherical", [False, True])
     def test_interpolate_and_its_derivatives_on_polynomial(self, use_spherical):
         """Test interpolation of derivative of polynomial function."""
