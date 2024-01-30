@@ -60,14 +60,15 @@ class TestLebedev(TestCase):
         """Test cache behavior of spherical grid."""
         degrees = np.random.randint(1, 100, 50)
         LEBEDEV_CACHE.clear()
-        for i in degrees:
-            AngularGrid(degree=i, cache=False)
-        assert len(LEBEDEV_CACHE) == 0
-
-        for i in degrees:
-            AngularGrid(degree=i)
-            ref_d = AngularGrid._get_size_and_degree(degree=i)[0]
-            assert ref_d in LEBEDEV_CACHE
+        with pytest.warns(UserWarning, match="Lebedev weights are negative*"):
+            for i in degrees:
+                AngularGrid(degree=i, cache=False)
+            assert len(LEBEDEV_CACHE) == 0
+        with pytest.warns(UserWarning, match="Lebedev weights are negative*"):
+            for i in degrees:
+                AngularGrid(degree=i)
+                ref_d = AngularGrid._get_size_and_degree(degree=i)[0]
+                assert ref_d in LEBEDEV_CACHE
 
     def test_convert_lebedev_sizes_to_degrees(self):
         """Test size to degree conversion."""
