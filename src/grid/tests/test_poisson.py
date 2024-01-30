@@ -82,8 +82,10 @@ def poisson_solution_to_charge_distribution(x, alpha=0.1, centers=None):
     result = np.zeros(len(x))
     for cent in centers:
         r_PC = np.linalg.norm(x - cent, axis=1)
-        desired = erf(np.sqrt(alpha) * r_PC) / r_PC
-        desired[r_PC == 0.0] = 0.0
+        # Ignore divide by zero and nan
+        with np.errstate(divide='ignore', invalid="ignore"):
+            desired = erf(np.sqrt(alpha) * r_PC) / r_PC
+            desired[r_PC == 0.0] = 0.0
         result += desired
     return result
 
