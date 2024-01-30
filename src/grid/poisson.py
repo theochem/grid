@@ -323,9 +323,10 @@ def _solve_poisson_bvp_atomgrid(
     def interpolate(points):
         # Need atomgrid to center the points to the atomic grid, then convert to spherical.
         r_pts, theta, phi = atomgrid.convert_cartesian_to_spherical(points).T
-        r_values = np.array([spline(r_pts) / r_pts for spline in splines])
-        # Since spline(r=0) = 0, then set points to zero there.
-        r_values[:, np.abs(r_pts) < 1e-300] = 0.0
+        with np.errstate(divide='ignore'):
+            r_values = np.array([spline(r_pts) / r_pts for spline in splines])
+            # Since spline(r=0) = 0, then set points to zero there.
+            r_values[:, np.abs(r_pts) < 1e-300] = 0.0
         r_sph_harm = generate_real_spherical_harmonics(atomgrid.l_max // 2, theta, phi)
         return np.einsum("ij, ij -> j", r_values, r_sph_harm)
 
