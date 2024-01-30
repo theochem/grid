@@ -169,6 +169,10 @@ def test_interpolation_of_laplacian_with_unit_charge_distribution():
     assert_allclose(-4.0 * np.pi * charge_distribution(atgrid.points), true, atol=1e-4, rtol=1e-7)
 
 
+# Ignore scipy/bvp warning
+@pytest.mark.filterwarnings(
+    "ignore:(divide by zero encountered in divide|invalid value encountered in divide)"
+)
 @pytest.mark.parametrize(
     "oned, tf, remove_large_pts, centers",
     [
