@@ -558,6 +558,11 @@ def generate_real_spherical_harmonics_scipy(l_max: int, theta: np.ndarray, phi: 
     >>> desired_degree = 2
     >>> spherical_harmonic[(desired_degree)**2: (desired_degree + 1)**2, :]
 
+    Notes
+    -----
+    - SciPy spherical harmonics is known (Jan 30, 2024) to give nans when the degree is large,
+      for our experience, when l >= 86
+
     """
     if l_max < 0:
         raise ValueError(f"lmax needs to be >=0, got l_amx={l_max}")
