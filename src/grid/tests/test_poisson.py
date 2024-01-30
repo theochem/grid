@@ -36,6 +36,10 @@ from grid.rtransform import (
 )
 from grid.utils import convert_cart_to_sph, generate_real_spherical_harmonics
 
+pytestmark = pytest.mark.filterwarnings(
+    "ignore:The coefficient of the leading Kth term is zero at some point"
+)
+
 
 def zero_func(pts, centers=None):
     """Zero function for test."""

@@ -36,6 +36,7 @@ from grid.rtransform import ExpRTransform, LinearFiniteRTransform
 # Ignore angular/Lebedev grid warnings where the weights are negative:
 pytestmark = pytest.mark.filterwarnings("ignore:Lebedev weights are negative which can*")
 
+
 class TestMolGrid(TestCase):
     """MolGrid test class."""
 
