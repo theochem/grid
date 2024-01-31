@@ -102,7 +102,7 @@ class _HyperRectangleGrid(Grid):
         return x, y
 
     def interpolate(self, points, values, use_log=False, nu_x=0, nu_y=0, nu_z=0, method="cubic"):
-        r"""Interpolate function value at a given point(s).
+        r"""Interpolate function and its derivatives on cubic grid.
 
         Only implemented in three-dimensions.
 
