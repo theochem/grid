@@ -546,9 +546,9 @@ def generate_real_spherical_harmonics_scipy(l_max: int, theta: np.ndarray, phi: 
     -------
     ndarray((l_max + 1)**2, N)
         Value of real spherical harmonics of all orders :math:`m`,and degree
-        :math:`l` spherical harmonics. For each degree, the zeroth order
-        is stored, followed by positive orders then negative orders,ordered as:
-        :math:`(-l, -l + 1, \cdots -1)`.
+        :math:`l` spherical harmonics. For each degree :math:`l`,
+        the orders :math:`m` are in Horton 2 order, i.e.
+        :math:`m=0, 1, -1, 2, -2, \cdots, l, -l`.
 
     Examples
     --------
