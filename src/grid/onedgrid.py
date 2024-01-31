@@ -46,6 +46,7 @@ class GaussLaguerre(OneDGrid):
         \sum_{i=1}^n \left(\frac{w_i}{x_i^\alpha e^{-x_i}}\right) g(x_i) = \sum_{i=1}^n w_i' g(x_i)
 
     """
+
     name = "Gauss-Laguerre"
 
     def __init__(self, npoints: int, alpha: float = 0):
@@ -92,6 +93,7 @@ class GaussLegendre(OneDGrid):
     roots of the nth Legendre polynomial.
 
     """
+
     name = "Gauss-Legendre"
 
     def __init__(self, npoints: int):
@@ -139,6 +141,7 @@ class GaussChebyshev(OneDGrid):
         \sum_{i=1}^n w_i'g(x_i)
 
     """
+
     name = "Gauss-Chebyshev"
 
     def __init__(self, npoints: int):
@@ -175,6 +178,7 @@ class UniformInteger(OneDGrid):
         w_i =& 1.0
 
     """
+
     name = "Uniform-Integer"
 
     def __init__(self, npoints: int):
@@ -216,6 +220,7 @@ class GaussChebyshevType2(OneDGrid):
         \sum_{i=1}^n w_i' g(x_i)
 
     """
+
     name = "Gauss-Chebyshev-Type2"
 
     def __init__(self, npoints: int):
@@ -258,6 +263,7 @@ class GaussChebyshevLobatto(OneDGrid):
         \int_{-1}^{1}g(x) dx \approx \sum_{i=1}^n \left(w_i \sqrt{1-x_i^2}\right) g(x_i) =
         \sum_{i=1}^n w_i' g(x_i)
     """
+
     name = "Gauss-Chebyshev-Lobatto"
 
     def __init__(self, npoints: int):
@@ -300,6 +306,7 @@ class Trapezoidal(OneDGrid):
         w_{i\neq 1,n} =& \frac{2}{n}
 
     """
+
     name = "Trapezoidal-Lobatto"
 
     def __init__(self, npoints: int):
@@ -347,6 +354,7 @@ class RectangleRuleSineEndPoints(OneDGrid):
     .. [#] Boyd, John P. Chebyshev and Fourier spectral methods. Courier Corporation, 2001.
 
     """
+
     name = "Rectangle-Rule-Sine"
 
     def __init__(self, npoints: int):
@@ -463,6 +471,7 @@ class TanhSinh(OneDGrid):
     endpoints of :math:`[-1, 1]`.
 
     """
+
     name = "Tanh-Sinh"
 
     def __init__(self, npoints: int, delta: float = 0.1):
@@ -516,6 +525,7 @@ class Simpson(OneDGrid):
         \end{cases}
 
     """
+
     name = "Simpson"
 
     def __init__(self, npoints: int):
@@ -558,6 +568,7 @@ class MidPoint(OneDGrid):
         w_i =& \frac{2}{n}
 
     """
+
     name = "MidPoint"
 
     def __init__(self, npoints: int):
@@ -608,6 +619,7 @@ class ClenshawCurtis(OneDGrid):
     and handled separately.
 
     """
+
     name = "Clenshaw-Curtis"
 
     def __init__(self, npoints: int):
@@ -665,6 +677,7 @@ class FejerFirst(OneDGrid):
     and handled separately.
 
     """
+
     name = "Fejer-First"
 
     def __init__(self, npoints: int):
@@ -718,6 +731,7 @@ class FejerSecond(OneDGrid):
     recommended to break the intervals at the discontinuities and handled separately.
 
     """
+
     name = "Fejer-Second"
 
     def __init__(self, npoints: int):
@@ -1081,6 +1095,7 @@ class ExpSinh(OneDGrid):
     - Using this quadrature requires heavy parameter-tuning in-order to work.
 
     """
+
     name = "Exponential-Hyperbolic-Sine"
 
     def __init__(self, npoints: int, h: float = 1.0):
@@ -1133,6 +1148,7 @@ class LogExpSinh(OneDGrid):
     - Using this quadrature requires heavy parameter-tuning in-order to work.
 
     """
+
     name = "Logarithm-Exponential-Hyperbolic-Sine"
 
     def __init__(self, npoints: int, h: float = 0.1):
@@ -1185,6 +1201,7 @@ class ExpExp(OneDGrid):
     - Using this quadrature requires heavy parameter-tuning in-order to work.
 
     """
+
     name = "Exponential-Exponential"
 
     def __init__(self, npoints: int, h: float = 0.1):
@@ -1232,6 +1249,7 @@ class SingleTanh(OneDGrid):
         w_k = \frac{h}{\cosh^2(kh)}
 
     """
+
     name = "Hyperbolic-Tan"
 
     def __init__(self, npoints: int, h: float = 0.1):
@@ -1279,6 +1297,7 @@ class SingleExp(OneDGrid):
     - Using this quadrature requires heavy parameter-tuning in-order to work.
 
     """
+
     name = "Single-Exponential"
 
     def __init__(self, npoints: int, h: float = 0.1):
@@ -1330,6 +1349,7 @@ class SingleArcSinhExp(OneDGrid):
     - Using this quadrature requires heavy parameter-tuning in-order to work.
 
     """
+
     name = "Single-Arc-Hyperbolic-Sine-Exponential"
 
     def __init__(self, npoints: int, h: float = 0.1):
