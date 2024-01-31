@@ -17,9 +17,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
-"""Utils function module."""
+"""Utility Module."""
+
 import numpy as np
 from scipy.special import sph_harm
+
 
 _bragg = np.array(
     [
@@ -397,7 +399,7 @@ isotopic_masses = {
 }
 
 r"""
-Obtained from theochem/horton/data/grids/tv-13.5.txt with the folllowing preamble
+Obtained from theochem/horton/data/grids/tv-13.5.txt with the following preamble
 
 These grids were created by Toon Verstraelen in July 2013 in a second effort
 to generate tuned grids based on a series of diatomic benchmarks computed
@@ -478,41 +480,37 @@ _DEFAULT_POWER_RTRANSFORM_PARAMS = {
 }
 
 
-def get_cov_radii(atnums, type="bragg"):
-    """Get the covalent radii for given atomic number(s).
+def get_cov_radii(atnums, cov_type="bragg"):
+    """
+    Get the covalent radii for given atomic number(s).
 
     Parameters
     ----------
     atnums : int or np.ndarray
-        atomic number of interested
-    type : str, default to bragg
-        types of covalent radii for elements.
-        "bragg": Bragg-Slater empirically measured covalent radii
-        "cambridge": Covalent radii from analysis of the Cambridge Database"
-        "alvarez": Covalent radii from https://doi.org/10.1039/B801115J
+        Atomic number(s) of the element(s) of interest.
+    cov_type : str, optional
+        Type of covalent radii for elements. Possible values are:
+        - "bragg": Bragg-Slater empirically measured covalent radii.
+        - "cambridge": Covalent radii from analysis of the Cambridge Database.
+        - "alvarez": Covalent radii from https://doi.org/10.1039/B801115J.
 
     Returns
     -------
     np.ndarray
-        covalent radii of desired atom(s)
+        Covalent radii of the desired atom(s) in atomic units.
 
-    Raises
-    ------
-    ValueError
-        Invalid covalent type, or input atomic number is 0
     """
     if isinstance(atnums, (int, np.integer)):
         atnums = np.array([atnums])
     if np.any(np.array(atnums) == 0):
-        raise ValueError("0 is not a valid atomic number")
-    if type == "bragg":
+        raise ValueError(f"0 is not a valid atomic number, got {atnums}")
+    if cov_type == "bragg":
         return _bragg[atnums]
-    elif type == "cambridge":
+    if cov_type == "cambridge":
         return _cambridge[atnums]
-    elif type == "alvarez":
+    if cov_type == "alvarez":
         return _alvarez[atnums]
-    else:
-        raise ValueError(f"Not supported radii type, got {type}")
+    raise ValueError(f"Not supported covalent radii type, got {cov_type}")
 
 
 def generate_real_spherical_harmonics_scipy(l_max: int, theta: np.ndarray, phi: np.ndarray):
@@ -545,32 +543,23 @@ def generate_real_spherical_harmonics_scipy(l_max: int, theta: np.ndarray, phi: 
     Returns
     -------
     ndarray((l_max + 1)**2, N)
-        Value of real spherical harmonics of all orders :math:`m`,and degree
+        Value of real spherical harmonics of all orders :math:`m`, and degree
         :math:`l` spherical harmonics. For each degree :math:`l`,
-        the orders :math:`m` are in Horton 2 order, i.e.
+        the orders :math:`m` are in HORTON 2 order, i.e.
         :math:`m=0, 1, -1, 2, -2, \cdots, l, -l`.
-
-    Examples
-    --------
-    To obtain the l-th degree for all orders
-    >>> spherical_harmonic = generate_real_spherical_harmonics(5, theta, phi)
-    To obtain specific degrees, e.g. l=2
-    >>> desired_degree = 2
-    >>> spherical_harmonic[(desired_degree)**2: (desired_degree + 1)**2, :]
 
     Notes
     -----
-    - SciPy spherical harmonics is known (Jan 30, 2024) to give nans when the degree is large,
-      for our experience, when l >= 86
-
+    - SciPy spherical harmonics is known (Jan 30, 2024) to give NaN when the degree is large,
+      for our experience, when l >= 86.
     """
     if l_max < 0:
-        raise ValueError(f"lmax needs to be >=0, got l_amx={l_max}")
+        raise ValueError(f"lmax should be non-negative, got l_amx={l_max}")
 
     total_sph = np.zeros((0, len(theta)), dtype=float)
     l_list = np.arange(l_max + 1)
     for l_val in l_list:
-        # generate m=0 real sphericla harmonic
+        # generate m=0 real spherical harmonic
         zero_real_sph = sph_harm(0, l_val, theta, phi).real
 
         # generate order m=positive real spherical harmonic
