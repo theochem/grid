@@ -190,6 +190,29 @@ def test_orthogonality_of_spherical_harmonic_up_to_degree_three(use_spherical):
                         assert np.abs(integral - 1.0) < 1e-8
 
 
+def test_orthogonality_of_spherical_harmonic_at_high_degrees():
+    r"""Test orthogonality of spherical harmonic is accurate at very high degrees."""
+    degree = 88 * 2
+    grid = AngularGrid(degree=degree, use_spherical=True)
+    # Concert to spherical coordinates from Cartesian.
+    r = np.linalg.norm(grid.points, axis=1)
+    phi = np.arccos(grid.points[:, 2] / r)
+    theta = np.arctan2(grid.points[:, 1], grid.points[:, 0])
+    half_l = degree // 2
+    sph_harm = generate_real_spherical_harmonics(half_l, theta, phi)
+    for l_deg in range(half_l - 1, half_l):
+        for m_ord in [0] + [j for i in [[i, -i] for i in range(1, l_deg)] for j in i]:
+            for l2 in range(half_l - 1, half_l):
+                for m2 in [0] + [j for i in [[i, -i] for i in range(1, l2)] for j in i]:
+                    sph_harm_one = sph_harm[l_deg**2 : (l_deg + 1) ** 2, :]
+                    sph_harm_two = sph_harm[l2**2 : (l2 + 1) ** 2, :]
+                    integral = grid.integrate(sph_harm_one[m_ord, :] * sph_harm_two[m2, :])
+                    if l2 != l_deg or m2 != m_ord:
+                        assert np.abs(integral) < 1e-8
+                    else:
+                        assert np.abs(integral - 1.0) < 1e-8
+
+
 def test_that_symmetric_spherical_design_is_symmetric():
     r"""Test the sum of all points on the sphere is zero."""
     for degree in SPHERICAL_DEGREES.keys():
