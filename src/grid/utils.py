@@ -692,17 +692,21 @@ def generate_real_spherical_harmonics(l_max: int, theta: np.ndarray, phi: np.nda
             # Compute Y_l^{m} that has cosine(theta) and Y_l^{-m} that has sin(theta)
             if m_ord == 0:
                 # init factorial needed to compute (l-m)!/(l+m)!
-                factorial = (l_deg + 1.0) * l_deg
+                #  Turn the number into an array of longdouble type because of Overflow error
+                #  for high degrees, also add the square-root to mitigate it too
+                factorial = np.sqrt(np.array([(l_deg + 1.0) * l_deg], dtype=np.longdouble))
                 spherical_harm[i_sph, :] = fac_sph(l_deg, m_ord) * p_leg[m_ord, 0]
             else:
                 common_fact = (
-                    (p_leg[m_ord, 0] / np.sqrt(factorial)) * fac_sph(l_deg, m_ord) * np.sqrt(2.0)
+                    (p_leg[m_ord, 0] / factorial[0]) * fac_sph(l_deg, m_ord) * np.sqrt(2.0)
                 )
                 spherical_harm[i_sph, :] = common_fact * np.cos(float(m_ord) * theta)
                 i_sph += 1
                 spherical_harm[i_sph, :] = common_fact * np.sin(float(m_ord) * theta)
                 # Update (l-m)!/(l+m)!
-                factorial *= (float(l_deg) + float(m_ord) + 1.0) * (float(l_deg) - float(m_ord))
+                factorial[0] *= np.sqrt(
+                    (float(l_deg) + float(m_ord) + 1.0) * (float(l_deg) - float(m_ord))
+                )
             i_sph += 1
     return spherical_harm
 
