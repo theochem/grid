@@ -366,13 +366,14 @@ with its weights:</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.cubic.Tensor1DGrids.interpolate">
 <span class="sig-name descname"><span class="pre">interpolate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nu_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nu_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nu_z</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cubic'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.Tensor1DGrids.interpolate" title="Permalink to this definition"></a></dt>
-<dd><p>Interpolate function value at a given point.</p>
+<dd><p>Interpolate function and its derivatives on cubic grid.</p>
 <p>Only implemented in three-dimensions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>points</strong> (<em>np.ndarray</em><em>, </em><em>shape</em><em> (</em><em>M</em><em>, </em><em>3</em><em>)</em>) – The 3D Cartesian coordinates of <span class="math notranslate nohighlight">\(M\)</span> points in <span class="math notranslate nohighlight">\(\mathbb{R}^3\)</span> for which
-the interpolant (i.e., the interpolated function) is evaluated.</p></li>
+the interpolant (i.e., the interpolated function) is evaluated. If
+method=”cubic”, then M must be equal to one.</p></li>
 <li><p><strong>values</strong> (<em>np.ndarray</em><em>, </em><em>shape</em><em> (</em><em>N</em><em>,</em><em>)</em>) – Function values at each of the <span class="math notranslate nohighlight">\(N\)</span> grid points.</p></li>
 <li><p><strong>use_log</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the logarithm of the function values are interpolated.
 Can only be used for interpolating derivatives when the derivative is not a
@@ -838,13 +839,14 @@ with its weights:</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.cubic.UniformGrid.interpolate">
 <span class="sig-name descname"><span class="pre">interpolate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nu_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nu_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nu_z</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cubic'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.cubic.UniformGrid.interpolate" title="Permalink to this definition"></a></dt>
-<dd><p>Interpolate function value at a given point.</p>
+<dd><p>Interpolate function and its derivatives on cubic grid.</p>
 <p>Only implemented in three-dimensions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>points</strong> (<em>np.ndarray</em><em>, </em><em>shape</em><em> (</em><em>M</em><em>, </em><em>3</em><em>)</em>) – The 3D Cartesian coordinates of <span class="math notranslate nohighlight">\(M\)</span> points in <span class="math notranslate nohighlight">\(\mathbb{R}^3\)</span> for which
-the interpolant (i.e., the interpolated function) is evaluated.</p></li>
+the interpolant (i.e., the interpolated function) is evaluated. If
+method=”cubic”, then M must be equal to one.</p></li>
 <li><p><strong>values</strong> (<em>np.ndarray</em><em>, </em><em>shape</em><em> (</em><em>N</em><em>,</em><em>)</em>) – Function values at each of the <span class="math notranslate nohighlight">\(N\)</span> grid points.</p></li>
 <li><p><strong>use_log</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the logarithm of the function values are interpolated.
 Can only be used for interpolating derivatives when the derivative is not a

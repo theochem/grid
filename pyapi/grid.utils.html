@@ -482,9 +482,9 @@ If this angle is outside of bounds, then periodicity is used.</p></li>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Value of real spherical harmonics of all orders <span class="math notranslate nohighlight">\(m\)</span>,and degree
-<span class="math notranslate nohighlight">\(l\)</span> spherical harmonics. For each degree, the zeroth order
-is stored, followed by positive orders then negative orders,ordered as:
-<span class="math notranslate nohighlight">\((-l, -l + 1, \cdots -1)\)</span>.</p>
+<span class="math notranslate nohighlight">\(l\)</span> spherical harmonics. For each degree <span class="math notranslate nohighlight">\(l\)</span>,
+the orders <span class="math notranslate nohighlight">\(m\)</span> are in Horton 2 order, i.e.
+<span class="math notranslate nohighlight">\(m=0, 1, -1, 2, -2, \cdots, l, -l\)</span>.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>ndarray((l_max + 1)**2, N)</p>
@@ -496,6 +496,11 @@ is stored, followed by positive orders then negative orders,ordered as:
 To obtain specific degrees, e.g. l=2
 &gt;&gt;&gt; desired_degree = 2
 &gt;&gt;&gt; spherical_harmonic[(desired_degree)**2: (desired_degree + 1)**2, :]</p>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>SciPy spherical harmonics is known (Jan 30, 2024) to give nans when the degree is large,
+for our experience, when l &gt;= 86</p></li>
+</ul>
 </dd></dl>
 
 <dl class="py function">
