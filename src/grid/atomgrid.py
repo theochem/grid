@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
-"""Module for generating AtomGrid."""
+"""Atomic Grid Module."""
 
 import warnings
 from typing import Union
@@ -88,8 +88,8 @@ class AtomGrid(Grid):
             spherical grids at each radial grid point. If the integer is zero, then no rotate
             is used.
         use_spherical: bool, optional
-            If true, loads the symmetric spherical t-design grid rather than the Lebedev-Laikov
-            grid for the angular grid.
+            If False, the Lebedev-Laikov angular grid is used. If True, the symmetric spherical
+            t-design angular grid are used.
 
         """
         if not isinstance(use_spherical, bool):
@@ -313,7 +313,7 @@ class AtomGrid(Grid):
 
     @property
     def degrees(self):
-        r"""ndarray(N,): Return the degree of each angular grid at each radial point."""
+        r"""ndarray(L,): Return the degree of each angular grid at each radial point."""
         return self._degs
 
     @property
@@ -437,7 +437,7 @@ class AtomGrid(Grid):
 
         Parameters
         ----------
-        points : ndarray(n, 3), optional
+        points : ndarray(N, 3), optional
             Points in three-dimensions. Atomic grid points will be used if `points` is not given
         center : ndarray(3,), optional
             Center of the atomic grid points.  If `center` is not provided, then the atomic
@@ -857,8 +857,8 @@ class AtomGrid(Grid):
             spherical grids at each radial grid point. If the integer is zero, then no rotate
             is used.
         use_spherical: bool, optional
-            If true, loads the symmetric spherical t-design grid rather than the Lebedev-Laikov
-            grid for the angular grid.
+            If False, the Lebedev-Laikov angular grid is used. If True, the symmetric spherical
+            t-design angular grid are used.
 
         Returns
         -------
@@ -866,38 +866,42 @@ class AtomGrid(Grid):
             Atomic grid points, atomic grid weights, indices and degrees for each shell.
 
         """
+        # check that the number of degrees matches the number of radial points
         if len(degrees) != rgrid.size:
             raise ValueError("The shape of radial grid does not match given degs.")
-        all_points, all_weights = [], []
 
-        shell_pt_indices = np.zeros(len(degrees) + 1, dtype=int)  # set index to int
-        actual_degrees = (
-            []
-        )  # The actual degree used to construct the Angular/lebedev/spherical grid.
-        for i, deg_i in enumerate(degrees):  # TODO: proper tests
+        # make lists to store all grid points and weights
+        all_points, all_weights = [], []
+        # array of integers to store the indices of points for each spherical shell of given radius
+        # e.g., all_points[indices[i]:indices[i+1]] are points for the ith shell of radius rgrid[i]
+        indices = np.zeros(len(degrees) + 1, dtype=int)
+
+        # The actual degree used to construct the Angular/lebedev/spherical grid.
+        actual_degrees = []
+
+        # TODO: proper tests
+        for i, deg_i in enumerate(degrees):
             # Generate Angular grid with the correct degree at the ith radial point.
             sphere_grid = AngularGrid(degree=deg_i, use_spherical=use_spherical)
             # Note that the copy is needed here.
             points, weights = sphere_grid.points.copy(), sphere_grid.weights.copy()
             actual_degrees.append(sphere_grid.degree)
-            if rotate == 0:
-                pass
-            # if rotate is a seed
-            else:
-                assert isinstance(rotate, int)  # check seed proper value
+
+            # check rotate value and randomly rotate angular grid points
+            if not isinstance(rotate, int):
+                raise ValueError(f"Argument rotate should be an integer, got {rotate}")
+            if rotate != 0:
                 rot_mt = R.random(random_state=rotate + i).as_matrix()
                 points = points @ rot_mt
 
             # construct atomic grid with each radial point and each spherical shell
-            # compute points
+            # compute points, weights, and indices
             points = points * rgrid[i].points
-            # compute weights
             weights = weights * rgrid[i].weights * rgrid[i].points ** 2
-            # locate separators
-            shell_pt_indices[i + 1] = shell_pt_indices[i] + len(points)
+            indices[i + 1] = indices[i] + len(points)
             all_points.append(points)
             all_weights.append(weights)
-        indices = shell_pt_indices
+
         points = np.vstack(all_points)
         weights = np.hstack(all_weights)
         return points, weights, indices, actual_degrees
