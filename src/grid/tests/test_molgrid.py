@@ -21,6 +21,7 @@
 from unittest import TestCase
 
 import numpy as np
+import pytest
 from numpy.testing import assert_allclose, assert_almost_equal
 
 from grid.atomgrid import AtomGrid, _get_rgrid_size
@@ -30,6 +31,9 @@ from grid.hirshfeld import HirshfeldWeights
 from grid.molgrid import MolGrid
 from grid.onedgrid import GaussLaguerre, Trapezoidal, UniformInteger
 from grid.rtransform import ExpRTransform, LinearFiniteRTransform
+
+# Ignore angular/Lebedev grid warnings where the weights are negative:
+pytestmark = pytest.mark.filterwarnings("ignore:Lebedev weights are negative which can*")
 
 
 class TestMolGrid(TestCase):

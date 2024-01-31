@@ -22,6 +22,7 @@
 from unittest import TestCase
 
 import numpy as np
+import pytest
 from numpy.testing import assert_allclose, assert_almost_equal
 from scipy.special import roots_chebyu, roots_legendre
 
@@ -248,23 +249,32 @@ class TestOneDGrid(TestCase):
         with self.assertRaises(ValueError):
             FejerSecond(-10)
         with self.assertRaises(ValueError):
-            ExpSinh(11, -0.1)
+            with pytest.warns(UserWarning, match="Using this quadrature require *"):
+                ExpSinh(11, -0.1)
         with self.assertRaises(ValueError):
-            ExpSinh(-11, 0.1)
+            with pytest.warns(UserWarning, match="Using this quadrature require *"):
+                ExpSinh(-11, 0.1)
         with self.assertRaises(ValueError):
-            ExpSinh(10, 0.1)
+            with pytest.warns(UserWarning, match="Using this quadrature require *"):
+                ExpSinh(10, 0.1)
         with self.assertRaises(ValueError):
-            LogExpSinh(11, -0.1)
+            with pytest.warns(UserWarning, match="Using this quadrature require *"):
+                LogExpSinh(11, -0.1)
         with self.assertRaises(ValueError):
-            LogExpSinh(-11, 0.1)
+            with pytest.warns(UserWarning, match="Using this quadrature require *"):
+                LogExpSinh(-11, 0.1)
         with self.assertRaises(ValueError):
-            LogExpSinh(10, 0.1)
+            with pytest.warns(UserWarning, match="Using this quadrature require *"):
+                LogExpSinh(10, 0.1)
         with self.assertRaises(ValueError):
-            ExpExp(11, -0.1)
+            with pytest.warns(UserWarning, match="Using this quadrature require *"):
+                ExpExp(11, -0.1)
         with self.assertRaises(ValueError):
-            ExpExp(-11, 0.1)
+            with pytest.warns(UserWarning, match="Using this quadrature require *"):
+                ExpExp(-11, 0.1)
         with self.assertRaises(ValueError):
-            ExpExp(10, 0.1)
+            with pytest.warns(UserWarning, match="Using this quadrature require *"):
+                ExpExp(10, 0.1)
         with self.assertRaises(ValueError):
             SingleTanh(11, -0.1)
         with self.assertRaises(ValueError):
@@ -272,17 +282,23 @@ class TestOneDGrid(TestCase):
         with self.assertRaises(ValueError):
             SingleTanh(10, 0.1)
         with self.assertRaises(ValueError):
-            SingleExp(11, -0.1)
+            with pytest.warns(UserWarning, match="Using this quadrature require *"):
+                SingleExp(11, -0.1)
         with self.assertRaises(ValueError):
-            SingleExp(-11, 0.1)
+            with pytest.warns(UserWarning, match="Using this quadrature require *"):
+                SingleExp(-11, 0.1)
         with self.assertRaises(ValueError):
-            SingleExp(10, 0.1)
+            with pytest.warns(UserWarning, match="Using this quadrature require *"):
+                SingleExp(10, 0.1)
         with self.assertRaises(ValueError):
-            SingleArcSinhExp(11, -0.1)
+            with pytest.warns(UserWarning, match="Using this quadrature require *"):
+                SingleArcSinhExp(11, -0.1)
         with self.assertRaises(ValueError):
-            SingleArcSinhExp(-11, 0.1)
+            with pytest.warns(UserWarning, match="Using this quadrature require *"):
+                SingleArcSinhExp(-11, 0.1)
         with self.assertRaises(ValueError):
-            SingleArcSinhExp(10, 0.1)
+            with pytest.warns(UserWarning, match="Using this quadrature require *"):
+                SingleArcSinhExp(10, 0.1)
 
     @staticmethod
     def helper_gaussian(x):
@@ -606,7 +622,8 @@ class TestOneDGrid(TestCase):
 
     def test_ExpSinh(self):
         """Test for ExpSinh rule."""
-        grid = ExpSinh(11, 0.1)
+        with pytest.warns(UserWarning, match="Using this quadrature require *"):
+            grid = ExpSinh(11, 0.1)
 
         k = np.arange(-5, 6)
         points = np.exp(np.pi * np.sinh(k * 0.1) / 2)
@@ -617,7 +634,8 @@ class TestOneDGrid(TestCase):
 
     def test_LogExpSinh(self):
         """Test for LogExpSinh rule."""
-        grid = LogExpSinh(11, 0.1)
+        with pytest.warns(UserWarning, match="Using this quadrature require *"):
+            grid = LogExpSinh(11, 0.1)
 
         k = np.arange(-5, 6)
         points = np.log(np.exp(np.pi * np.sinh(k * 0.1) / 2) + 1)
@@ -629,7 +647,9 @@ class TestOneDGrid(TestCase):
 
     def test_ExpExp(self):
         """Test for ExpExp rule."""
-        grid = ExpExp(11, 0.1)
+        # Test that Userwarning was raised when using ExpExp
+        with pytest.warns(UserWarning, match="Using this quadrature require *"):
+            grid = ExpExp(11, 0.1)
 
         k = np.arange(-5, 6)
         points = np.exp(k * 0.1) * np.exp(-np.exp(-k * 0.1))
@@ -651,7 +671,8 @@ class TestOneDGrid(TestCase):
 
     def test_SingleExp(self):
         """Test for Single Exp rule."""
-        grid = SingleExp(11, 0.1)
+        with pytest.warns(UserWarning, match="Using this quadrature require *"):
+            grid = SingleExp(11, 0.1)
 
         k = np.arange(-5, 6)
         points = np.exp(k * 0.1)
@@ -662,7 +683,8 @@ class TestOneDGrid(TestCase):
 
     def test_SingleArcSinhExp(self):
         """Test for SingleArcSinhExp rule."""
-        grid = SingleArcSinhExp(11, 0.1)
+        with pytest.warns(UserWarning, match="Using this quadrature require *"):
+            grid = SingleArcSinhExp(11, 0.1)
 
         k = np.arange(-5, 6)
         points = np.arcsinh(np.exp(k * 0.1))

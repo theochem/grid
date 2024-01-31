@@ -59,15 +59,18 @@ class TestLebedev(TestCase):
     def test_lebedev_cache(self):
         """Test cache behavior of spherical grid."""
         degrees = np.random.randint(1, 100, 50)
+        # Add 13 so that the warning is guaranteed to happen so pytest warning works.
+        degrees = np.append(degrees, [13])
         LEBEDEV_CACHE.clear()
-        for i in degrees:
-            AngularGrid(degree=i, cache=False)
-        assert len(LEBEDEV_CACHE) == 0
-
-        for i in degrees:
-            AngularGrid(degree=i)
-            ref_d = AngularGrid._get_size_and_degree(degree=i)[0]
-            assert ref_d in LEBEDEV_CACHE
+        with pytest.warns(UserWarning, match="Lebedev weights are negative*"):
+            for i in degrees:
+                AngularGrid(degree=i, cache=False)
+            assert len(LEBEDEV_CACHE) == 0
+        with pytest.warns(UserWarning, match="Lebedev weights are negative*"):
+            for i in degrees:
+                AngularGrid(degree=i)
+                ref_d = AngularGrid._get_size_and_degree(degree=i)[0]
+                assert ref_d in LEBEDEV_CACHE
 
     def test_convert_lebedev_sizes_to_degrees(self):
         """Test size to degree conversion."""
@@ -125,17 +128,17 @@ class TestLebedev(TestCase):
             AngularGrid(pts, wts, size=14)
 
 
-@pytest.mark.parametrize("degree", [5, 10])
+@pytest.mark.parametrize("degree", [5, 10, 100])
 @pytest.mark.parametrize("use_spherical", [False, True])
 def test_integration_of_spherical_harmonic_up_to_degree(degree, use_spherical):
-    r"""Test integration of spherical harmonic up to degree 10 is accurate."""
+    r"""Test integration of spherical harmonic is accurate."""
     grid = AngularGrid(degree=degree, use_spherical=use_spherical)
     # Concert to spherical coordinates from Cartesian.
     r = np.linalg.norm(grid.points, axis=1)
     phi = np.arccos(grid.points[:, 2] / r)
     theta = np.arctan2(grid.points[:, 1], grid.points[:, 0])
     # Generate All Spherical Harmonics Up To Degree = 10
-    #   Returns a three dimensional array where [order m, degree l, points]
+    #   Returns a three-dimensional array where [order m, degree l, points]
     sph_harm = generate_real_spherical_harmonics(degree, theta, phi)
     for l_deg in range(0, degree):
         for m_ord in range(-l_deg, l_deg):
@@ -178,6 +181,29 @@ def test_orthogonality_of_spherical_harmonic_up_to_degree_three(use_spherical):
         for m_ord in [0] + [x for x in range(1, l_deg + 1)] + [-x for x in range(1, l_deg + 1)]:
             for l2 in range(0, 4):
                 for m2 in [0] + [x for x in range(1, l2 + 1)] + [-x for x in range(1, l2 + 1)]:
+                    sph_harm_one = sph_harm[l_deg**2 : (l_deg + 1) ** 2, :]
+                    sph_harm_two = sph_harm[l2**2 : (l2 + 1) ** 2, :]
+                    integral = grid.integrate(sph_harm_one[m_ord, :] * sph_harm_two[m2, :])
+                    if l2 != l_deg or m2 != m_ord:
+                        assert np.abs(integral) < 1e-8
+                    else:
+                        assert np.abs(integral - 1.0) < 1e-8
+
+
+def test_orthogonality_of_spherical_harmonic_at_high_degrees():
+    r"""Test orthogonality of spherical harmonic is accurate at very high degrees."""
+    degree = 88 * 2
+    grid = AngularGrid(degree=degree, use_spherical=True)
+    # Concert to spherical coordinates from Cartesian.
+    r = np.linalg.norm(grid.points, axis=1)
+    phi = np.arccos(grid.points[:, 2] / r)
+    theta = np.arctan2(grid.points[:, 1], grid.points[:, 0])
+    half_l = degree // 2
+    sph_harm = generate_real_spherical_harmonics(half_l, theta, phi)
+    for l_deg in range(half_l - 1, half_l):
+        for m_ord in [0] + [j for i in [[i, -i] for i in range(1, l_deg)] for j in i]:
+            for l2 in range(half_l - 1, half_l):
+                for m2 in [0] + [j for i in [[i, -i] for i in range(1, l2)] for j in i]:
                     sph_harm_one = sph_harm[l_deg**2 : (l_deg + 1) ** 2, :]
                     sph_harm_two = sph_harm[l2**2 : (l2 + 1) ** 2, :]
                     integral = grid.integrate(sph_harm_one[m_ord, :] * sph_harm_two[m2, :])
