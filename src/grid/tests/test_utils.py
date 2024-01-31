@@ -97,7 +97,7 @@ class TestUtils(TestCase):
         # Test l=2, m=0
         assert_allclose(
             sph_h[4, :],
-            np.sqrt(5.0 / (16.0 * np.pi)) * (3.0 * pts[:, 2]**2.0 - r**2.0) / r**2.0
+            np.sqrt(5.0 / (16.0 * np.pi)) * (3.0 * pts[:, 2] ** 2.0 - r**2.0) / r**2.0,
         )
         # Test l=2, m=1, -1
         assert_allclose(
@@ -109,11 +109,10 @@ class TestUtils(TestCase):
         # Test l=2, m=2, -2
         assert_allclose(
             sph_h[7, :],
-            np.sqrt(15.0 / (16.0 * np.pi)) * (pts[:, 0]**2.0 - pts[:, 1]**2.0) / r**2.0
+            np.sqrt(15.0 / (16.0 * np.pi)) * (pts[:, 0] ** 2.0 - pts[:, 1] ** 2.0) / r**2.0,
         )
         assert_allclose(
-            sph_h[8, :],
-            np.sqrt(15.0 / (4.0 * np.pi)) * (pts[:, 0] * pts[:, 1]) / r**2.0
+            sph_h[8, :], np.sqrt(15.0 / (4.0 * np.pi)) * (pts[:, 0] * pts[:, 1]) / r**2.0
         )
 
     def test_generate_real_spherical_is_orthonormal(self):
@@ -265,8 +264,7 @@ def test_derivative_of_spherical_harmonics_with_finite_difference(numb_pts, max_
     assert_almost_equal(actual_answer[1, :], deriv_phi, decimal=3)
 
 
-@pytest.mark.parametrize("numb_pts, max_degree",
-                         [[20, 70], [1000, 10], [5000, 7], [100, 15]])
+@pytest.mark.parametrize("numb_pts, max_degree", [[20, 70], [1000, 10], [5000, 7], [100, 15]])
 def test_spherical_harmonic_recursion_against_scipy(numb_pts, max_degree):
     r"""Test spherical harmonic recursion against SciPy implementation."""
     theta = np.array([1e-5])
