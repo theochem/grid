@@ -72,12 +72,12 @@ class TestUtils(TestCase):
         ])
         # fmt: on
         all_index = np.arange(1, 87)
-        bragg_bohr = get_cov_radii(all_index, type="bragg")
+        bragg_bohr = get_cov_radii(all_index, cov_type="bragg")
         assert_allclose(bragg_bohr, bragg_slater[1:] * 1.8897261339213)
-        cambridge_bohr = get_cov_radii(all_index, type="cambridge")
+        cambridge_bohr = get_cov_radii(all_index, cov_type="cambridge")
         assert_allclose(cambridge_bohr, cambridge[1:] * 1.8897261339213)
         all_index = np.arange(1, 97)
-        alvaraz_bohr = get_cov_radii(all_index, type="alvarez")
+        alvaraz_bohr = get_cov_radii(all_index, cov_type="alvarez")
         assert_allclose(alvaraz_bohr, alvarez[1:] * 1.8897261339213)
 
     def test_generate_real_spherical_is_accurate(self):
@@ -223,7 +223,7 @@ class TestUtils(TestCase):
     def test_raise_errors(self):
         """Test raise proper errors."""
         with self.assertRaises(ValueError):
-            get_cov_radii(3, type="random")
+            get_cov_radii(3, cov_type="random")
         with self.assertRaises(ValueError):
             get_cov_radii(0)
         with self.assertRaises(ValueError):
