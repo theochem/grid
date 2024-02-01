@@ -66,10 +66,10 @@ The following references are for the symmetric spherical t-design points:
 
 import warnings
 from bisect import bisect_left
+from typing import Union
 
 import numpy as np
 from importlib_resources import files
-from typing import Union
 
 from grid.basegrid import Grid
 
