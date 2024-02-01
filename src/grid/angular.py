@@ -293,7 +293,7 @@ class AngularGrid(Grid):
          d\theta d\phi \approx \sum_{i}^{N} w_i f(\phi_i, \theta_i),
 
     where :math:`S^2` is the unit-sphere, :math:`\theta_i \in [0, 2\pi]`
-    and :math:`\phi_i \in [0, \pi)` and quadrature points and :math:`w^{ang}_i`
+    and :math:`\phi_i \in [0, \pi)` are quadrature points and :math:`w^{ang}_i`
     are the quadrature weights of :math:`N` grid points.
 
     Two types of angular grids are supported: Lebedev-Laikov grid and symmetric
@@ -405,7 +405,8 @@ class AngularGrid(Grid):
 
     @property
     def use_spherical(self):
-        r"""bool: If True, then symmetric spherical t-design is used else Lebedev-Laikov grid."""
+        r"""bool: If False, the Lebedev-Laikov angular grid is used. If True, the symmetric spherical
+            t-design angular grid are used."""
         return self._use_spherical
 
     @staticmethod

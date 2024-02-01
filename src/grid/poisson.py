@@ -364,26 +364,6 @@ def solve_poisson_bvp(
     callable(ndarray(N, 3) -> float) :
         The solution to Poisson equaiton/potential :math:`g : \mathbb{R}^3 \rightarrow \mathbb{R}`.
 
-    Examples
-    --------
-    >>> # Set up of the radial grid
-    >>> radial_grid = Trapezoidal(10000)
-    >>> # Set up the atomic grid with degree 10 at each radial point. Molecular grid works as well.
-    >>> degree = 10
-    >>> atomic_grid = AtomGrid(radial, degrees=[degree])
-    >>> # Set the charge distribution to be unit-charge density and evaluate on atomic grid points.
-    >>> def charge_distribution(x, alpha=0.1):
-    >>>    r = np.linalg.norm(x, axis=1)
-    >>>    return (alpha / np.pi)**(3.0 / 2.0) * np.exp(-alpha * r**2.0)
-    >>> func_vals = charge_distribution(atomic_grid.points)
-    >>> # Solve the Poisson equation with Becke transformation
-    >>> transform = BeckeRTransform(1e-6, 1.5, trim_inf=True)
-    >>> potential = solve_poisson_bvp(
-    >>>      atgrid, func_vals, InverseRTransform(tf), include_origin=True,
-    >>>      remove_large_pts=1e6, ode_params={"tol" : 1e-6, "max_nodes": 20000},
-    >>> )
-    >>> actual = potential(atgrid.points)
-
     References
     ----------
     .. [1] Becke, A. D., & Dickson, R. M. (1988). Numerical solution of Poisson`s equation in
