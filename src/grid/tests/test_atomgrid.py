@@ -275,27 +275,27 @@ class TestAtomGrid:
             rot_mt = R.random(random_state=atgrid2.rotate + i).as_matrix()
             assert_allclose(rot_shell, non_rot_shell @ rot_mt)
 
-    @pytest.mark.parametrize("use_spherical", [False, True])
-    def test_get_shell_grid(self, use_spherical):
+    @pytest.mark.parametrize("method", ["lebedev", "spherical"])
+    def test_get_shell_grid(self, method):
         """Test angular grid get from get_shell_grid function."""
         rad_pts = np.array([0.1, 0.5, 1])
         rad_wts = np.array([0.3, 0.4, 0.3])
         rad_grid = OneDGrid(rad_pts, rad_wts)
         degs = [3, 5, 7]
-        atgrid = AtomGrid(rad_grid, degrees=degs, use_spherical=use_spherical)
+        atgrid = AtomGrid(rad_grid, degrees=degs, method=method)
         assert atgrid.n_shells == 3
         # grep shell with r^2
         for i in range(atgrid.n_shells):
             sh_grid = atgrid.get_shell_grid(i)
             assert isinstance(sh_grid, AngularGrid)
-            ref_grid = AngularGrid(degree=degs[i], use_spherical=use_spherical)
+            ref_grid = AngularGrid(degree=degs[i], method=method)
             assert np.allclose(sh_grid.points, ref_grid.points * rad_pts[i])
             assert np.allclose(sh_grid.weights, ref_grid.weights * rad_wts[i] * rad_pts[i] ** 2)
         # grep shell without r^2
         for i in range(atgrid.n_shells):
             sh_grid = atgrid.get_shell_grid(i, r_sq=False)
             assert isinstance(sh_grid, AngularGrid)
-            ref_grid = AngularGrid(degree=degs[i], use_spherical=use_spherical)
+            ref_grid = AngularGrid(degree=degs[i], method=method)
             assert np.allclose(sh_grid.points, ref_grid.points * rad_pts[i])
             assert np.allclose(sh_grid.weights, ref_grid.weights * rad_wts[i])
 
@@ -329,8 +329,8 @@ class TestAtomGrid:
         assert_allclose(np.array([r, theta, phi]).reshape(-1, 3), calc_sph)
 
     @pytest.mark.filterwarnings("ignore:Lebedev weights are negative which can*")
-    @pytest.mark.parametrize("use_spherical", [False, True])
-    def test_spherical_complete(self, use_spherical):
+    @pytest.mark.parametrize("method", ["lebedev", "spherical"])
+    def test_spherical_complete(self, method):
         """Test atomic grid consistence for spherical integral."""
         num_pts = len(LEBEDEV_DEGREES)
         pts = UniformInteger(num_pts)
@@ -342,7 +342,7 @@ class TestAtomGrid:
             atgrid = AtomGrid(
                 rad_grid,
                 degrees=list(LEBEDEV_DEGREES.keys()),
-                use_spherical=use_spherical,
+                method=method,
             )
             values = np.random.rand(len(LEBEDEV_DEGREES))
             pt_val = np.zeros(atgrid.size)
@@ -386,11 +386,11 @@ class TestAtomGrid:
         dzf = 8 * points[:, 2] * points[:, 2] / r
         return dxf + dyf + dzf
 
-    @pytest.mark.parametrize("use_spherical", [False, True])
-    def test_integrating_angular_components_spherical(self, use_spherical):
+    @pytest.mark.parametrize("method", ["lebedev", "spherical"])
+    def test_integrating_angular_components_spherical(self, method):
         """Test integrating angular components of a spherical harmonics of maximum degree 3."""
         odg = OneDGrid(np.array([0.0, 1e-16, 1e-8, 1e-4, 1e-2]), np.ones(5), (0, np.inf))
-        atom_grid = AtomGrid(odg, degrees=[3], use_spherical=use_spherical)
+        atom_grid = AtomGrid(odg, degrees=[3], method=method)
         spherical = atom_grid.convert_cartesian_to_spherical()
         # Evaluate all spherical harmonics on the atomic grid points (r_i, theta_j, phi_j).
         spherical_harmonics = generate_real_spherical_harmonics(
@@ -458,12 +458,12 @@ class TestAtomGrid:
         assert np.all(integrals[2, :] < 1e-5)  # px, py-orbital should be zero
         assert np.all(integrals[3, :] < 1e-5)
 
-    @pytest.mark.parametrize("use_spherical", [False, True])
-    def test_fitting_spherical_harmonics(self, use_spherical):
+    @pytest.mark.parametrize("method", ["lebedev", "spherical"])
+    def test_fitting_spherical_harmonics(self, method):
         r"""Test fitting the radial components of spherical harmonics is just a one, rest zeros."""
         max_degree = 10  # Maximum degree
         rad = OneDGrid(np.linspace(0.0, 1.0, num=10), np.ones(10), (0, np.inf))
-        atom_grid = AtomGrid(rad, degrees=[max_degree], use_spherical=use_spherical)
+        atom_grid = AtomGrid(rad, degrees=[max_degree], method=method)
         max_degree = atom_grid.l_max
         spherical = atom_grid.convert_cartesian_to_spherical()
         # Evaluate all spherical harmonics on the atomic grid points (r_i, theta_j, phi_j).
@@ -491,12 +491,12 @@ class TestAtomGrid:
                         assert_almost_equal(radial_comp(radial_pts), 0.0, decimal=8)
                 i += 1
 
-    @pytest.mark.parametrize("use_spherical", [False, True])
-    def test_fitting_product_of_spherical_harmonic(self, use_spherical):
+    @pytest.mark.parametrize("method", ["lebedev", "spherical"])
+    def test_fitting_product_of_spherical_harmonic(self, method):
         r"""Test fitting the radial components of r**2 times spherical harmonic."""
         max_degree = 7  # Maximum degree
         rad = OneDGrid(np.linspace(0.0, 1.0, num=10), np.ones(10), (0, np.inf))
-        atom_grid = AtomGrid(rad, degrees=[max_degree], use_spherical=use_spherical)
+        atom_grid = AtomGrid(rad, degrees=[max_degree], method=method)
         max_degree = atom_grid.l_max
         spherical = atom_grid.convert_cartesian_to_spherical()
 
@@ -562,14 +562,12 @@ class TestAtomGrid:
                 assert_almost_equal(fit[counter](radial_pts, 2), 0.0)
                 counter += 1
 
-    @pytest.mark.parametrize("use_spherical", [False, True])
-    def test_value_fitting(self, use_spherical):
+    @pytest.mark.parametrize("method", ["lebedev", "spherical"])
+    def test_value_fitting(self, method):
         """Test spline projection the same as spherical harmonics."""
         odg = OneDGrid(np.arange(10) + 1, np.ones(10), (0, np.inf))
         rad = IdentityRTransform().transform_1d_grid(odg)
-        atgrid = AtomGrid.from_pruned(
-            rad, 1, sectors_r=[], sectors_degree=[7], use_spherical=use_spherical
-        )
+        atgrid = AtomGrid.from_pruned(rad, 1, sectors_r=[], sectors_degree=[7], method=method)
         values = self.helper_func_power(atgrid.points)
         spls = atgrid.radial_component_splines(values)
         assert len(spls) == 16
@@ -599,7 +597,7 @@ class TestAtomGrid:
         oned = GaussLegendre(350)
         btf = BeckeRTransform(0.0001, 1.5)
         rad = btf.transform_1d_grid(oned)
-        atgrid = AtomGrid(rad, degrees=[31], use_spherical=False)
+        atgrid = AtomGrid(rad, degrees=[31], method="lebedev")
         value_array = self.helper_func_gauss(atgrid.points)
         # random test points on gauss function
         size = 1000
@@ -615,14 +613,12 @@ class TestAtomGrid:
             self.helper_func_gauss(input_points, centers), interfunc(input_points), atol=1e-3
         )
 
-    @pytest.mark.parametrize("use_spherical", [False, True])
-    def test_cubicspline_and_interp_mol(self, use_spherical):
+    @pytest.mark.parametrize("method", ["lebedev", "spherical"])
+    def test_cubicspline_and_interp_mol(self, method):
         """Test cubicspline interpolation values."""
         odg = OneDGrid(np.arange(10) + 1, np.ones(10), (0, np.inf))
         rad = IdentityRTransform().transform_1d_grid(odg)
-        atgrid = AtomGrid.from_pruned(
-            rad, 1, sectors_r=[], sectors_degree=[7], use_spherical=use_spherical
-        )
+        atgrid = AtomGrid.from_pruned(rad, 1, sectors_r=[], sectors_degree=[7], method=method)
         values = self.helper_func_power(atgrid.points)
         # spls = atgrid.fit_values(values)
         for i in range(10):
@@ -661,8 +657,8 @@ class TestAtomGrid:
                 interp_func = atgrid.interpolate(values)
                 assert_allclose(interp_func(xyz), ref_value)
 
-    @pytest.mark.parametrize("use_spherical", [False, True])
-    def test_spherical_average_of_gaussian(self, use_spherical):
+    @pytest.mark.parametrize("method", ["lebedev", "spherical"])
+    def test_spherical_average_of_gaussian(self, method):
         r"""Test spherical average of a Gaussian (radial) function is itself and its integral."""
 
         # construct helper function
@@ -673,7 +669,7 @@ class TestAtomGrid:
         #   for all points.
         oned_grid = np.arange(0.0, 5.0, 0.001)
         rad = OneDGrid(oned_grid, np.ones(len(oned_grid)), (0, np.inf))
-        atgrid = AtomGrid(rad, degrees=[5], use_spherical=use_spherical)
+        atgrid = AtomGrid(rad, degrees=[5], method=method)
         spherical_pts = atgrid.convert_cartesian_to_spherical(atgrid.points)
         func_values = func(spherical_pts)
 
@@ -688,7 +684,9 @@ class TestAtomGrid:
 
         # Test the integral of spherical average is the integral of Gaussian e^(-x^2)e^(-y^2)...
         #   from -infinity to infinity which is equal to pi^(3/2)
-        integral = 4.0 * np.pi * np.trapz(y=spherical_avg(oned_grid) * oned_grid**2.0, x=oned_grid)
+        integral = (
+            4.0 * np.pi * np.trapz(y=spherical_avg(oned_grid) * oned_grid**2.0, x=oned_grid)
+        )
         actual_integral = np.sqrt(np.pi) ** 3.0
         assert_allclose(actual_integral, integral)
 
@@ -727,8 +725,8 @@ class TestAtomGrid:
         assert_allclose(spherical_avg2, 0.0, atol=1e-4)
 
     @pytest.mark.filterwarnings("ignore:Lebedev weights are negative which can*")
-    @pytest.mark.parametrize("use_spherical", [False, True])
-    def test_interpolate_and_its_derivatives_on_polynomial(self, use_spherical):
+    @pytest.mark.parametrize("method", ["lebedev", "spherical"])
+    def test_interpolate_and_its_derivatives_on_polynomial(self, method):
         """Test interpolation of derivative of polynomial function."""
         odg = OneDGrid(np.linspace(0.01, 10, num=50), np.ones(50), (0, np.inf))
         rad = IdentityRTransform().transform_1d_grid(odg)
@@ -739,7 +737,7 @@ class TestAtomGrid:
                 1,
                 sectors_r=[],
                 sectors_degree=[degree],
-                use_spherical=use_spherical,
+                method=method,
             )
             values = self.helper_func_power(atgrid.points)
             # spls = atgrid.fit_values(values)
