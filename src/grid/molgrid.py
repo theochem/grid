@@ -441,12 +441,12 @@ class MolGrid(Grid):
         cls,
         atnums: np.ndarray,
         atcoords: np.ndarray,
-        radius: Union[float, list],
-        sectors_r: np.ndarray,
-        rgrid: Union[OneDGrid, list] = None,
-        aim_weights: Union[callable, np.ndarray] = None,
-        sectors_degree: np.ndarray = None,
-        sectors_size: np.ndarray = None,
+        radius: Union[float, list[float]],
+        r_sectors: Union[float, list[float]],
+        d_sectors: Union[list[int], None],
+        s_sectors: Union[list[int], None] = None,
+        rgrid: Union[OneDGrid, list, None] = None,
+        aim_weights: Union[callable, np.ndarray, None] = None,
         rotate: int = 37,
         store: bool = False,
     ):
@@ -460,13 +460,21 @@ class MolGrid(Grid):
         atcoords: np.ndarray(M, 3)
             Cartesian coordinates for each atoms
         radius: float, List[float]
-            The atomic radius to be multiplied with `r_sectors` (to make them atom specific).
-            If float, then the same atomic radius is used for all atoms, else a list specifies
-            it for each atom.
-        sectors_r: List[List], keyword-only argument
-            Each row is a sequence of boundary points specifying radial sectors of the pruned grid
-            for the `m`th atom. The first sector is ``[0, radius*sectors_r[0]]``, then
-            ``[radius*sectors_r[0], radius*sectors_r[1]]``, and so on.
+            The atomic radius to be multiplied with `r_sectors` in atomic units (to make the
+            radial sectors atom specific). If float, then the same atomic radius is used for all
+            atoms, otherwise a list with :math:`M` elements is used, where :math:`M` is the number
+            of atoms in the molecule. If list, then the ith element is used for the ith atom.
+        r_sectors : list of List[float]
+            List of sequences of the boundary radius (in atomic units) specifying sectors of
+            the pruned radial grid of :math:`M` atoms. For the first atom, the first
+            sector is ``(0, radius*r_sectors[0][0])``, then ``(radius*r_sectors[0][0],
+            radius*r_sectors[0][1])``, and so on. See AtomGrid.from_pruned for more information.
+        d_sectors : list of List[int] or None
+            List of sequences of the angular degrees for radial sectors of :math:`M` atoms.
+            If None, then `s_sectors` should be given.
+        s_sectors : list of List[int] or None, optional
+            List of sequences of angular sizes for each radial sector of of :math:`M` atoms.
+            If both `d_sectors` and `s_sectors` are given, `d_sectors` is used unless it is None.
         rgrid : OneDGrid or List[OneDGrid] or Dict[int: OneDGrid], optional
             One dimensional grid for the radial component.  If a list is provided,then ith
             grid correspond to the ith atom.  If dictionary is provided, then the keys are
@@ -476,14 +484,6 @@ class MolGrid(Grid):
             Atoms in molecule/nuclear weights :math:`{ {w_n(r_k)}_k^{N_i}}_n^{M}`, where
             :math:`N_i` is the number of points in the ith atomic grid. If None, then aim_weights
             is Becke weights with order=3.
-        sectors_degree: List[List], keyword-only argument
-            Each row is a sequence of Lebedev/angular degrees for each radial sector of the pruned
-            grid for the `m`th atom. If both `sectors_degree` and `sectors_size` are given,
-            `sectors_degree` is used.
-        sectors_size: List[List], keyword-only argument
-            Each row is a sequence of Lebedev sizes for each radial sector of the pruned grid
-            for the `m`th atom. If both `sectors_degree` and `sectors_size` are given,
-            `sectors_degree` is used.
         rotate : bool or int , optional
             Flag to set auto rotation for atomic grid, if given int, the number
             will be used as a seed to generate random matrix.
@@ -506,8 +506,8 @@ class MolGrid(Grid):
         at_grids = []
         num_atoms = len(atcoords)
         # List of None is created, so that indexing is possible in the for-loop.
-        sectors_degree = [None] * num_atoms if sectors_degree is None else sectors_degree
-        sectors_size = [None] * num_atoms if sectors_size is None else sectors_size
+        d_sectors = [None] * num_atoms if d_sectors is None else d_sectors
+        s_sectors = [None] * num_atoms if s_sectors is None else s_sectors
         radius_atom = [radius] * num_atoms if isinstance(radius, (float, np.float64)) else radius
         for i in range(num_atoms):
             # get proper radial grid
@@ -527,9 +527,9 @@ class MolGrid(Grid):
                 AtomGrid.from_pruned(
                     rad,
                     radius_atom[i],
-                    sectors_r=sectors_r[i],
-                    sectors_degree=sectors_degree[i],
-                    sectors_size=sectors_size[i],
+                    r_sectors=r_sectors[i],
+                    d_sectors=d_sectors[i],
+                    s_sectors=s_sectors[i],
                     center=atcoords[i],
                     rotate=rotate,
                 )
@@ -597,7 +597,7 @@ def _generate_default_rgrid(atnum: int):
     Parameters
     ----------
     atnum: int
-        Atomic Number
+        Atomic Number.
 
     Returns
     -------

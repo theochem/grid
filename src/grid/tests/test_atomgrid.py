@@ -76,12 +76,12 @@ class TestAtomGrid:
         r_sectors = np.array([0.5, 1, 1.5])
         degs = np.array([6, 14, 14, 6])
         # generate a proper instance without failing.
-        ag_ob = AtomGrid.from_pruned(rgrid, radius=rad, sectors_r=r_sectors, sectors_degree=degs)
+        ag_ob = AtomGrid.from_pruned(rgrid, radius=rad, r_sectors=r_sectors, d_sectors=degs)
         assert isinstance(ag_ob, AtomGrid)
         assert len(ag_ob.indices) == 11
         assert ag_ob.l_max == 15
         ag_ob = AtomGrid.from_pruned(
-            rgrid, radius=rad, sectors_r=np.array([]), sectors_degree=np.array([6])
+            rgrid, radius=rad, r_sectors=np.array([]), d_sectors=np.array([6])
         )
         assert isinstance(ag_ob, AtomGrid)
         assert len(ag_ob.indices) == 11
@@ -185,9 +185,11 @@ class TestAtomGrid:
         degs = np.array([3, 5, 7, 5])
         size = np.array([6, 14, 26, 14])
         # construct atomic grid with degs
-        atgrid1 = AtomGrid.from_pruned(rgrid, radius=rad, sectors_r=r_sectors, sectors_degree=degs)
+        atgrid1 = AtomGrid.from_pruned(rgrid, radius=rad, r_sectors=r_sectors, d_sectors=degs)
         # construct atomic grid with size
-        atgrid2 = AtomGrid.from_pruned(rgrid, radius=rad, sectors_r=r_sectors, sectors_size=size)
+        atgrid2 = AtomGrid.from_pruned(
+            rgrid, radius=rad, r_sectors=r_sectors, d_sectors=None, s_sectors=size
+        )
         # test two grids are the same
         assert_equal(atgrid1.size, atgrid2.size)
         assert_allclose(atgrid1.points, atgrid2.points)
@@ -523,7 +525,7 @@ class TestAtomGrid:
         r"""Test fitting the radial components of spherical harmonic of l=6,m=0."""
         max_degree = 6 * 2 + 2  # Maximum degree
         rad = OneDGrid(np.linspace(0.0, 1.0, num=10), np.ones(10), (0, np.inf))
-        atom_grid = AtomGrid.from_pruned(rad, 1, sectors_r=[], sectors_degree=[max_degree])
+        atom_grid = AtomGrid.from_pruned(rad, 1, r_sectors=[], d_sectors=[max_degree])
         max_degree = atom_grid.l_max
         spherical = atom_grid.convert_cartesian_to_spherical()
 
@@ -567,7 +569,7 @@ class TestAtomGrid:
         """Test spline projection the same as spherical harmonics."""
         odg = OneDGrid(np.arange(10) + 1, np.ones(10), (0, np.inf))
         rad = IdentityRTransform().transform_1d_grid(odg)
-        atgrid = AtomGrid.from_pruned(rad, 1, sectors_r=[], sectors_degree=[7], method=method)
+        atgrid = AtomGrid.from_pruned(rad, 1, r_sectors=[], d_sectors=[7], method=method)
         values = self.helper_func_power(atgrid.points)
         spls = atgrid.radial_component_splines(values)
         assert len(spls) == 16
@@ -618,7 +620,7 @@ class TestAtomGrid:
         """Test cubicspline interpolation values."""
         odg = OneDGrid(np.arange(10) + 1, np.ones(10), (0, np.inf))
         rad = IdentityRTransform().transform_1d_grid(odg)
-        atgrid = AtomGrid.from_pruned(rad, 1, sectors_r=[], sectors_degree=[7], method=method)
+        atgrid = AtomGrid.from_pruned(rad, 1, r_sectors=[], d_sectors=[7], method=method)
         values = self.helper_func_power(atgrid.points)
         # spls = atgrid.fit_values(values)
         for i in range(10):
@@ -636,7 +638,7 @@ class TestAtomGrid:
         rad_grid = IdentityRTransform().transform_1d_grid(odg)
         for _ in range(10):
             degree = np.random.randint(5, 20)
-            atgrid = AtomGrid.from_pruned(rad_grid, 1, sectors_r=[], sectors_degree=[degree])
+            atgrid = AtomGrid.from_pruned(rad_grid, 1, r_sectors=[], d_sectors=[degree])
             values = self.helper_func_power(atgrid.points)
             # spls = atgrid.fit_values(values)
 
@@ -684,7 +686,9 @@ class TestAtomGrid:
 
         # Test the integral of spherical average is the integral of Gaussian e^(-x^2)e^(-y^2)...
         #   from -infinity to infinity which is equal to pi^(3/2)
-        integral = 4.0 * np.pi * np.trapz(y=spherical_avg(oned_grid) * oned_grid**2.0, x=oned_grid)
+        integral = (
+            4.0 * np.pi * np.trapz(y=spherical_avg(oned_grid) * oned_grid**2.0, x=oned_grid)
+        )
         actual_integral = np.sqrt(np.pi) ** 3.0
         assert_allclose(actual_integral, integral)
 
@@ -733,8 +737,8 @@ class TestAtomGrid:
             atgrid = AtomGrid.from_pruned(
                 rad,
                 1,
-                sectors_r=[],
-                sectors_degree=[degree],
+                r_sectors=[],
+                d_sectors=[degree],
                 method=method,
             )
             values = self.helper_func_power(atgrid.points)
@@ -774,7 +778,7 @@ class TestAtomGrid:
         oned = GaussLegendre(10000)
         btf = BeckeRTransform(0.0001, 0.1)
         rad = btf.transform_1d_grid(oned)
-        atgrid = AtomGrid.from_pruned(rad, 1, sectors_r=[], sectors_degree=[7])
+        atgrid = AtomGrid.from_pruned(rad, 1, r_sectors=[], d_sectors=[7])
 
         # Create Gaussian function
         func_vals = self.helper_func_gauss(atgrid.points, np.array([0.175, 0.25, 0.15]))
@@ -939,22 +943,20 @@ class TestAtomGrid:
     def test_error_raises(self):
         """Tests for error raises."""
         with pytest.raises(TypeError):
+            AtomGrid.from_pruned(np.arange(3), 1.0, r_sectors=np.arange(2), d_sectors=np.arange(3))
+        with pytest.raises(ValueError):
             AtomGrid.from_pruned(
-                np.arange(3), 1.0, sectors_r=np.arange(2), sectors_degree=np.arange(3)
+                OneDGrid(np.arange(3), np.arange(3)),
+                radius=1.0,
+                r_sectors=np.arange(2),
+                d_sectors=np.arange(0),
             )
         with pytest.raises(ValueError):
             AtomGrid.from_pruned(
                 OneDGrid(np.arange(3), np.arange(3)),
                 radius=1.0,
-                sectors_r=np.arange(2),
-                sectors_degree=np.arange(0),
-            )
-        with pytest.raises(ValueError):
-            AtomGrid.from_pruned(
-                OneDGrid(np.arange(3), np.arange(3)),
-                radius=1.0,
-                sectors_r=np.arange(2),
-                sectors_degree=np.arange(4),
+                r_sectors=np.arange(2),
+                d_sectors=np.arange(4),
             )
         with pytest.raises(ValueError):
             AtomGrid._generate_atomic_grid(OneDGrid(np.arange(3), np.arange(3)), np.arange(2))
@@ -962,8 +964,8 @@ class TestAtomGrid:
             AtomGrid.from_pruned(
                 OneDGrid(np.arange(3), np.arange(3)),
                 radius=1.0,
-                sectors_r=np.array([0.3, 0.5, 0.7]),
-                sectors_degree=np.array([3, 5, 7, 5]),
+                r_sectors=np.array([0.3, 0.5, 0.7]),
+                d_sectors=np.array([3, 5, 7, 5]),
                 center=np.array([0, 0, 0, 0]),
             )
 
