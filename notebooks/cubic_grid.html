@@ -255,30 +255,30 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>%matplotlib inline
-from grid.onedgrid import UniformInteger
-from grid.rtransform import LinearInfiniteRTransform
-from grid.cubic import Tensor1DGrids
-import numpy as np
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="kn">from</span> <span class="nn">grid.onedgrid</span> <span class="kn">import</span> <span class="n">UniformInteger</span>
+<span class="kn">from</span> <span class="nn">grid.rtransform</span> <span class="kn">import</span> <span class="n">LinearInfiniteRTransform</span>
+<span class="kn">from</span> <span class="nn">grid.cubic</span> <span class="kn">import</span> <span class="n">Tensor1DGrids</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-limit = 10
-# Construct a grid between -10 and 10 on the real line.
-npoints = 50
-oned_gridx = UniformInteger(npoints)
-oned_gridx = LinearInfiniteRTransform(-limit, limit).transform_1d_grid(oned_gridx)
+<span class="n">limit</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="c1"># Construct a grid between -10 and 10 on the real line.</span>
+<span class="n">npoints</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="n">oned_gridx</span> <span class="o">=</span> <span class="n">UniformInteger</span><span class="p">(</span><span class="n">npoints</span><span class="p">)</span>
+<span class="n">oned_gridx</span> <span class="o">=</span> <span class="n">LinearInfiniteRTransform</span><span class="p">(</span><span class="o">-</span><span class="n">limit</span><span class="p">,</span> <span class="n">limit</span><span class="p">)</span><span class="o">.</span><span class="n">transform_1d_grid</span><span class="p">(</span><span class="n">oned_gridx</span><span class="p">)</span>
 
-# Construct another grid between -0.5 and 0.5 on the real line
-npoints = 45
-oned_gridy = UniformInteger(npoints)
-oned_gridy = LinearInfiniteRTransform(-limit, limit).transform_1d_grid(oned_gridy)
+<span class="c1"># Construct another grid between -0.5 and 0.5 on the real line</span>
+<span class="n">npoints</span> <span class="o">=</span> <span class="mi">45</span>
+<span class="n">oned_gridy</span> <span class="o">=</span> <span class="n">UniformInteger</span><span class="p">(</span><span class="n">npoints</span><span class="p">)</span>
+<span class="n">oned_gridy</span> <span class="o">=</span> <span class="n">LinearInfiniteRTransform</span><span class="p">(</span><span class="o">-</span><span class="n">limit</span><span class="p">,</span> <span class="n">limit</span><span class="p">)</span><span class="o">.</span><span class="n">transform_1d_grid</span><span class="p">(</span><span class="n">oned_gridy</span><span class="p">)</span>
 
-# Construct another grid between -10 and 10 on the real line
-npoints = 55
-oned_gridz = UniformInteger(npoints)
-oned_gridz = LinearInfiniteRTransform(-limit, limit).transform_1d_grid(oned_gridz)
+<span class="c1"># Construct another grid between -10 and 10 on the real line</span>
+<span class="n">npoints</span> <span class="o">=</span> <span class="mi">55</span>
+<span class="n">oned_gridz</span> <span class="o">=</span> <span class="n">UniformInteger</span><span class="p">(</span><span class="n">npoints</span><span class="p">)</span>
+<span class="n">oned_gridz</span> <span class="o">=</span> <span class="n">LinearInfiniteRTransform</span><span class="p">(</span><span class="o">-</span><span class="n">limit</span><span class="p">,</span> <span class="n">limit</span><span class="p">)</span><span class="o">.</span><span class="n">transform_1d_grid</span><span class="p">(</span><span class="n">oned_gridz</span><span class="p">)</span>
 
-# Constructing the tensor product grid.
-tensor_grid = Tensor1DGrids(oned_gridx, oned_gridy, oned_gridz)
+<span class="c1"># Constructing the tensor product grid.</span>
+<span class="n">tensor_grid</span> <span class="o">=</span> <span class="n">Tensor1DGrids</span><span class="p">(</span><span class="n">oned_gridx</span><span class="p">,</span> <span class="n">oned_gridy</span><span class="p">,</span> <span class="n">oned_gridz</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -287,19 +287,19 @@ tensor_grid = Tensor1DGrids(oned_gridx, oned_gridy, oned_gridz)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>import matplotlib.pyplot as plt
-from mpl_toolkits import mplot3d
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">mpl_toolkits</span> <span class="kn">import</span> <span class="n">mplot3d</span>
 
-fig = plt.figure()
-ax = plt.axes(projection=&#39;3d&#39;)
-ax.scatter(oned_gridx.points, [0] *  len(oned_gridx.points), [0] *  len(oned_gridx.points), color=&quot;k&quot;, label=&quot;Points on x-axis&quot;)
-ax.scatter( [0] *  len(oned_gridy.points), oned_gridy.points, [0] *  len(oned_gridy.points), color=&quot;m&quot;, label=&quot;Points on y-axis&quot;)
-ax.scatter( [0] *  len(oned_gridz.points), [0] *  len(oned_gridz.points), oned_gridz.points , color=&quot;b&quot;, label=&quot;Points on z-axis&quot;)
-ax.set_xlabel(&quot;X-axis&quot;)
-ax.set_ylabel(&quot;Y-axis&quot;)
-ax.set_zlabel(&quot;Z-axis&quot;)
-plt.legend()
-plt.show()
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">oned_gridx</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span>  <span class="nb">len</span><span class="p">(</span><span class="n">oned_gridx</span><span class="o">.</span><span class="n">points</span><span class="p">),</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span>  <span class="nb">len</span><span class="p">(</span><span class="n">oned_gridx</span><span class="o">.</span><span class="n">points</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Points on x-axis&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span>  <span class="nb">len</span><span class="p">(</span><span class="n">oned_gridy</span><span class="o">.</span><span class="n">points</span><span class="p">),</span> <span class="n">oned_gridy</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span>  <span class="nb">len</span><span class="p">(</span><span class="n">oned_gridy</span><span class="o">.</span><span class="n">points</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Points on y-axis&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span>  <span class="nb">len</span><span class="p">(</span><span class="n">oned_gridz</span><span class="o">.</span><span class="n">points</span><span class="p">),</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span>  <span class="nb">len</span><span class="p">(</span><span class="n">oned_gridz</span><span class="o">.</span><span class="n">points</span><span class="p">),</span> <span class="n">oned_gridz</span><span class="o">.</span><span class="n">points</span> <span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Points on z-axis&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;X-axis&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Y-axis&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s2">&quot;Z-axis&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 <br/></pre></div>
 </div>
 </div>
@@ -315,27 +315,27 @@ plt.show()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>fig = plt.figure()
-ax = plt.axes(projection=&#39;3d&#39;)
-ax.scatter(tensor_grid.points[:, 0], tensor_grid.points[:, 1], tensor_grid.points[:, 2], color=&quot;m&quot;, alpha=0.01)
-ax.set_xlabel(&quot;X-axis&quot;)
-ax.set_ylabel(&quot;Y-axis&quot;)
-ax.set_zlabel(&quot;Z-axis&quot;)
-plt.title(&quot;Tensor Product of Three One-Dimensional Grids&quot;)
-plt.show()
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">tensor_grid</span><span class="o">.</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">tensor_grid</span><span class="o">.</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">tensor_grid</span><span class="o">.</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;X-axis&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Y-axis&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s2">&quot;Z-axis&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Tensor Product of Three One-Dimensional Grids&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 
-print(f&quot;Points of the grid: {tensor_grid.points}&quot;)
-print(f&quot;Weights of the grid: {tensor_grid.weights}.&quot;)
-print(f&quot;The number of points: {tensor_grid.size}&quot;)
-print(f&quot;The number of dimensions: {tensor_grid.ndim}.&quot;)
-print(f&quot;The origin of the grid: {tensor_grid.origin}.&quot;)
-print(f&quot;The shape of the grid: {tensor_grid.shape}.&quot;)
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Points of the grid: </span><span class="si">{</span><span class="n">tensor_grid</span><span class="o">.</span><span class="n">points</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Weights of the grid: </span><span class="si">{</span><span class="n">tensor_grid</span><span class="o">.</span><span class="n">weights</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The number of points: </span><span class="si">{</span><span class="n">tensor_grid</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The number of dimensions: </span><span class="si">{</span><span class="n">tensor_grid</span><span class="o">.</span><span class="n">ndim</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The origin of the grid: </span><span class="si">{</span><span class="n">tensor_grid</span><span class="o">.</span><span class="n">origin</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The shape of the grid: </span><span class="si">{</span><span class="n">tensor_grid</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
 
-# Conversion from indices i to coordinates (i, j, k) to points
-coordinate = tensor_grid.index_to_coordinates(5)
-print(f&quot;Coordinate of the fifth point: {coordinate}.&quot;)
-index = tensor_grid.coordinates_to_index((0, 0, 5))
-print(f&quot;Index of the (0, 0, 5) coordinate: {index}.&quot;)
+<span class="c1"># Conversion from indices i to coordinates (i, j, k) to points</span>
+<span class="n">coordinate</span> <span class="o">=</span> <span class="n">tensor_grid</span><span class="o">.</span><span class="n">index_to_coordinates</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Coordinate of the fifth point: </span><span class="si">{</span><span class="n">coordinate</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+<span class="n">index</span> <span class="o">=</span> <span class="n">tensor_grid</span><span class="o">.</span><span class="n">coordinates_to_index</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Index of the (0, 0, 5) coordinate: </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -374,33 +374,33 @@ Index of the (0, 0, 5) coordinate: 5.
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span># Interpolation of a Gaussian
-gaussian = lambda pts: np.exp(-np.linalg.norm(pts, axis=1)**2.0)
-gaus_vals = gaussian(tensor_grid.points)
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Interpolation of a Gaussian</span>
+<span class="n">gaussian</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">pts</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">pts</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="mf">2.0</span><span class="p">)</span>
+<span class="n">gaus_vals</span> <span class="o">=</span> <span class="n">gaussian</span><span class="p">(</span><span class="n">tensor_grid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
 
-# Interpolation evaluated on subset of the same points used for interpolation
-subset = tensor_grid.points[np.random.choice(range(tensor_grid.size), 10)]
-true_vals = gaussian(subset)
+<span class="c1"># Interpolation evaluated on subset of the same points used for interpolation</span>
+<span class="n">subset</span> <span class="o">=</span> <span class="n">tensor_grid</span><span class="o">.</span><span class="n">points</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">tensor_grid</span><span class="o">.</span><span class="n">size</span><span class="p">),</span> <span class="mi">10</span><span class="p">)]</span>
+<span class="n">true_vals</span> <span class="o">=</span> <span class="n">gaussian</span><span class="p">(</span><span class="n">subset</span><span class="p">)</span>
 
-print(&quot;Interpolate using linear method.&quot;)
-interpol = tensor_grid.interpolate(subset, gaus_vals, use_log=False, method=&quot;linear&quot;)
-print(&quot;The errors are: &quot;, np.abs(interpol - true_vals))
-print(f&quot;Maximum error is {np.max(np.abs(interpol - true_vals))} \n&quot;)
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Interpolate using linear method.&quot;</span><span class="p">)</span>
+<span class="n">interpol</span> <span class="o">=</span> <span class="n">tensor_grid</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">subset</span><span class="p">,</span> <span class="n">gaus_vals</span><span class="p">,</span> <span class="n">use_log</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The errors are: &quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">interpol</span> <span class="o">-</span> <span class="n">true_vals</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Maximum error is </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">interpol</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">true_vals</span><span class="p">))</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
-print(&quot;Interpolate using linear method applying the logarithm.&quot;)
-interpol = tensor_grid.interpolate(subset, gaus_vals, use_log=True, method=&quot;linear&quot;)
-print(&quot;The errors are: &quot;, np.abs(interpol - true_vals))
-print(f&quot;Maximum error is {np.max(np.abs(interpol - true_vals))} \n&quot;)
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Interpolate using linear method applying the logarithm.&quot;</span><span class="p">)</span>
+<span class="n">interpol</span> <span class="o">=</span> <span class="n">tensor_grid</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">subset</span><span class="p">,</span> <span class="n">gaus_vals</span><span class="p">,</span> <span class="n">use_log</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The errors are: &quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">interpol</span> <span class="o">-</span> <span class="n">true_vals</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Maximum error is </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">interpol</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">true_vals</span><span class="p">))</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
-print(&quot;Interpolate using cubic splines&quot;)
-interpol = tensor_grid.interpolate(subset, gaus_vals, use_log=False, method=&quot;cubic&quot;)
-print(&quot;The errors are: &quot;, np.abs(interpol - true_vals))
-print(f&quot;Maximum error is {np.max(np.abs(interpol - true_vals))} \n&quot;)
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Interpolate using cubic splines&quot;</span><span class="p">)</span>
+<span class="n">interpol</span> <span class="o">=</span> <span class="n">tensor_grid</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">subset</span><span class="p">,</span> <span class="n">gaus_vals</span><span class="p">,</span> <span class="n">use_log</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;cubic&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The errors are: &quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">interpol</span> <span class="o">-</span> <span class="n">true_vals</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Maximum error is </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">interpol</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">true_vals</span><span class="p">))</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
-print(&quot;Inteprolate using cubic splines appling the logarithm&quot;)
-interpol = tensor_grid.interpolate(subset, gaus_vals, use_log=True, method=&quot;cubic&quot;)
-print(&quot;The errors are: &quot;, np.abs(interpol - true_vals))
-print(f&quot;Maximum error is {np.max(np.abs(interpol - true_vals))} \n&quot;)
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Inteprolate using cubic splines appling the logarithm&quot;</span><span class="p">)</span>
+<span class="n">interpol</span> <span class="o">=</span> <span class="n">tensor_grid</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">subset</span><span class="p">,</span> <span class="n">gaus_vals</span><span class="p">,</span> <span class="n">use_log</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;cubic&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The errors are: &quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">interpol</span> <span class="o">-</span> <span class="n">true_vals</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Maximum error is </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">interpol</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">true_vals</span><span class="p">))</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 <br/></pre></div>
 </div>
 </div>
@@ -431,29 +431,29 @@ Maximum error is 0.0
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span># Interpolate at random set of points
-random_pts = np.random.uniform(-1, 1, (25, 3))
-true_vals = gaussian(random_pts)
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Interpolate at random set of points</span>
+<span class="n">random_pts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">true_vals</span> <span class="o">=</span> <span class="n">gaussian</span><span class="p">(</span><span class="n">random_pts</span><span class="p">)</span>
 
-print(&quot;Interpolate using linear method.&quot;)
-interpol = tensor_grid.interpolate(random_pts, gaus_vals, use_log=False, method=&quot;linear&quot;)
-print(&quot;The errors are: &quot;, np.abs(interpol - true_vals))
-print(f&quot;Maximum error is {np.max(np.abs(interpol - true_vals))} \n&quot;)
-# The logarithm is first applied to the Gaussian functions to be easier to interpolate at.
-print(&quot;Interpolate using linear method applying the logarithm.&quot;)
-interpol = tensor_grid.interpolate(random_pts, gaus_vals, use_log=True, method=&quot;linear&quot;)
-print(&quot;The errors are: &quot;, np.abs(interpol - true_vals))
-print(f&quot;Maximum error is {np.max(np.abs(interpol - true_vals))} \n&quot;)
-# Rather then interpolate using linearly, this used the cubic
-print(&quot;Interpolate using cubic splines&quot;)
-interpol = tensor_grid.interpolate(random_pts, gaus_vals, use_log=False, method=&quot;cubic&quot;)
-print(&quot;The errors are: &quot;, np.abs(interpol - true_vals))
-print(f&quot;Maximum error is {np.max(np.abs(interpol - true_vals))} \n&quot;)
-# Same as above but the logarithm is applied.
-print(&quot;Inteprolate using cubic splines appling the logarithm&quot;)
-interpol = tensor_grid.interpolate(random_pts, gaus_vals, use_log=True, method=&quot;cubic&quot;)
-print(&quot;The errors are: &quot;, np.abs(interpol - true_vals))
-print(f&quot;Maximum error is {np.max(np.abs(interpol - true_vals))} \n&quot;)
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Interpolate using linear method.&quot;</span><span class="p">)</span>
+<span class="n">interpol</span> <span class="o">=</span> <span class="n">tensor_grid</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">random_pts</span><span class="p">,</span> <span class="n">gaus_vals</span><span class="p">,</span> <span class="n">use_log</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The errors are: &quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">interpol</span> <span class="o">-</span> <span class="n">true_vals</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Maximum error is </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">interpol</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">true_vals</span><span class="p">))</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># The logarithm is first applied to the Gaussian functions to be easier to interpolate at.</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Interpolate using linear method applying the logarithm.&quot;</span><span class="p">)</span>
+<span class="n">interpol</span> <span class="o">=</span> <span class="n">tensor_grid</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">random_pts</span><span class="p">,</span> <span class="n">gaus_vals</span><span class="p">,</span> <span class="n">use_log</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The errors are: &quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">interpol</span> <span class="o">-</span> <span class="n">true_vals</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Maximum error is </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">interpol</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">true_vals</span><span class="p">))</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># Rather then interpolate using linearly, this used the cubic</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Interpolate using cubic splines&quot;</span><span class="p">)</span>
+<span class="n">interpol</span> <span class="o">=</span> <span class="n">tensor_grid</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">random_pts</span><span class="p">,</span> <span class="n">gaus_vals</span><span class="p">,</span> <span class="n">use_log</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;cubic&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The errors are: &quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">interpol</span> <span class="o">-</span> <span class="n">true_vals</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Maximum error is </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">interpol</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">true_vals</span><span class="p">))</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># Same as above but the logarithm is applied.</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Inteprolate using cubic splines appling the logarithm&quot;</span><span class="p">)</span>
+<span class="n">interpol</span> <span class="o">=</span> <span class="n">tensor_grid</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">random_pts</span><span class="p">,</span> <span class="n">gaus_vals</span><span class="p">,</span> <span class="n">use_log</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;cubic&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The errors are: &quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">interpol</span> <span class="o">-</span> <span class="n">true_vals</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Maximum error is </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">interpol</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">true_vals</span><span class="p">))</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 <br/></pre></div>
 </div>
 </div>
@@ -503,22 +503,22 @@ Maximum error is 1.6653345369377348e-16
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span># Derivative can be interpolated
-# X-derivative
-deriv_x = tensor_grid.interpolate(random_pts, gaus_vals, use_log=False, nu_x=1, nu_y=0, nu_z=0, method=&quot;cubic&quot;)
-print(f&quot;Derivative in x-direction {deriv_x}.&quot;)
-# Y-derivative
-deriv_y = tensor_grid.interpolate(random_pts, gaus_vals, use_log=False, nu_x=0, nu_y=1, nu_z=0, method=&quot;cubic&quot;)
-# Z-derivative
-deriv_z = tensor_grid.interpolate(random_pts, gaus_vals, use_log=False, nu_x=0, nu_y=0, nu_z=1, method=&quot;cubic&quot;)
-# XY- derivative
-deriv_xy = tensor_grid.interpolate(random_pts, gaus_vals, use_log=False, nu_x=1, nu_y=1, nu_z=0, method=&quot;cubic&quot;)
-# The logarithm can be used to interpolate derivatives on single points only (mixed derivative are not supported)
-derivs = []
-for pt in random_pts:
-    deriv_x = tensor_grid.interpolate(np.array([pt]), gaus_vals, use_log=True, nu_x=1, nu_y=0, nu_z=0, method=&quot;cubic&quot;)
-    derivs.append(deriv_x[0])
-print(f&quot;Derivative (using logarithm) in x-direction {np.array(derivs)}.&quot;)
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Derivative can be interpolated</span>
+<span class="c1"># X-derivative</span>
+<span class="n">deriv_x</span> <span class="o">=</span> <span class="n">tensor_grid</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">random_pts</span><span class="p">,</span> <span class="n">gaus_vals</span><span class="p">,</span> <span class="n">use_log</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">nu_x</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nu_y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nu_z</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;cubic&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Derivative in x-direction </span><span class="si">{</span><span class="n">deriv_x</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+<span class="c1"># Y-derivative</span>
+<span class="n">deriv_y</span> <span class="o">=</span> <span class="n">tensor_grid</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">random_pts</span><span class="p">,</span> <span class="n">gaus_vals</span><span class="p">,</span> <span class="n">use_log</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">nu_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nu_y</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nu_z</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;cubic&quot;</span><span class="p">)</span>
+<span class="c1"># Z-derivative</span>
+<span class="n">deriv_z</span> <span class="o">=</span> <span class="n">tensor_grid</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">random_pts</span><span class="p">,</span> <span class="n">gaus_vals</span><span class="p">,</span> <span class="n">use_log</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">nu_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nu_y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nu_z</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;cubic&quot;</span><span class="p">)</span>
+<span class="c1"># XY- derivative</span>
+<span class="n">deriv_xy</span> <span class="o">=</span> <span class="n">tensor_grid</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">random_pts</span><span class="p">,</span> <span class="n">gaus_vals</span><span class="p">,</span> <span class="n">use_log</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">nu_x</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nu_y</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nu_z</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;cubic&quot;</span><span class="p">)</span>
+<span class="c1"># The logarithm can be used to interpolate derivatives on single points only (mixed derivative are not supported)</span>
+<span class="n">derivs</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">pt</span> <span class="ow">in</span> <span class="n">random_pts</span><span class="p">:</span>
+    <span class="n">deriv_x</span> <span class="o">=</span> <span class="n">tensor_grid</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">pt</span><span class="p">]),</span> <span class="n">gaus_vals</span><span class="p">,</span> <span class="n">use_log</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nu_x</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nu_y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nu_z</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;cubic&quot;</span><span class="p">)</span>
+    <span class="n">derivs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">deriv_x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Derivative (using logarithm) in x-direction </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">derivs</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -549,106 +549,106 @@ Derivative (using logarithm) in x-direction [ 0.30673882  0.24715189 -0.1054587 
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span># Function to plot grid points bigger than a given threshold
-def plot_isosurface(
-    grid, vals, isovalue, *, both_signs=True, at_data=None, noticks=False, title=None
-):
-    &quot;&quot;&quot;Plot grid points with values bigger than isovalue.
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Function to plot grid points bigger than a given threshold</span>
+<span class="k">def</span> <span class="nf">plot_isosurface</span><span class="p">(</span>
+    <span class="n">grid</span><span class="p">,</span> <span class="n">vals</span><span class="p">,</span> <span class="n">isovalue</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">both_signs</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">at_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">noticks</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Plot grid points with values bigger than isovalue.</span>
 
-    The function plots the grid points with absolute values bigger than isovalue.
+<span class="sd">    The function plots the grid points with absolute values bigger than isovalue.</span>
 
-    Parameters
-    ----------
-    grid : Grid
-        Cartesian grid (it can be uniform or TensorProductGrid) with 3 dimensions.
-    vals : ndarray
-        Values of the function on the grid points.
-    isovalue : float
-        Value of the isosurface to plot.
-    both_signs : bool, optional
-        If True, plot points with negative values too. The default is True.
-    at_data : tuple, optional
-        Tuple containing the atomic coordinates and atomic labels. If not None,
-        it should be a tuple containing (atcoords, atlabels) where atcoords is
-        a ndarray of shape (natoms, 3) containing the atomic coordinates in
-        bohr and atlabels is a list of length natoms containing the atomic labels.
-    title : str, optional
-        Title of the plot. The default is None.
-    &quot;&quot;&quot;
-    # indices of points with values close to isovalue
-    idx_p_vals = np.where(vals &gt; isovalue)
-    idx_n_vals = np.where(vals &lt; -isovalue)
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    grid : Grid</span>
+<span class="sd">        Cartesian grid (it can be uniform or TensorProductGrid) with 3 dimensions.</span>
+<span class="sd">    vals : ndarray</span>
+<span class="sd">        Values of the function on the grid points.</span>
+<span class="sd">    isovalue : float</span>
+<span class="sd">        Value of the isosurface to plot.</span>
+<span class="sd">    both_signs : bool, optional</span>
+<span class="sd">        If True, plot points with negative values too. The default is True.</span>
+<span class="sd">    at_data : tuple, optional</span>
+<span class="sd">        Tuple containing the atomic coordinates and atomic labels. If not None,</span>
+<span class="sd">        it should be a tuple containing (atcoords, atlabels) where atcoords is</span>
+<span class="sd">        a ndarray of shape (natoms, 3) containing the atomic coordinates in</span>
+<span class="sd">        bohr and atlabels is a list of length natoms containing the atomic labels.</span>
+<span class="sd">    title : str, optional</span>
+<span class="sd">        Title of the plot. The default is None.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># indices of points with values close to isovalue</span>
+    <span class="n">idx_p_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">vals</span> <span class="o">&gt;</span> <span class="n">isovalue</span><span class="p">)</span>
+    <span class="n">idx_n_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">vals</span> <span class="o">&lt;</span> <span class="o">-</span><span class="n">isovalue</span><span class="p">)</span>
 
-    # points with values close to isovalue
-    p_pts = grid.points[idx_p_vals]
-    n_pts = grid.points[idx_n_vals]
+    <span class="c1"># points with values close to isovalue</span>
+    <span class="n">p_pts</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">points</span><span class="p">[</span><span class="n">idx_p_vals</span><span class="p">]</span>
+    <span class="n">n_pts</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">points</span><span class="p">[</span><span class="n">idx_n_vals</span><span class="p">]</span>
 
-    xmin, xmax = np.min(grid.points[:, 0]), np.max(grid.points[:, 0])
-    ymin, ymax = np.min(grid.points[:, 1]), np.max(grid.points[:, 1])
-    zmin, zmax = np.min(grid.points[:, 2]), np.max(grid.points[:, 2])
+    <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>
+    <span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="n">zmin</span><span class="p">,</span> <span class="n">zmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">])</span>
 
-    fig = plt.figure()
-    ax = plt.axes(projection=&quot;3d&quot;)
-    if noticks:
-        ax.set_xticks([])
-        ax.set_yticks([])
-        ax.set_zticks([])
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s2">&quot;3d&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">noticks</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([])</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([])</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_zticks</span><span class="p">([])</span>
 
-    if at_data is not None:
-        if len(at_data) != 2:
-            raise ValueError(&quot;at_data should be a tuple containing (atcoords, atlabels)&quot;)
+    <span class="k">if</span> <span class="n">at_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">at_data</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;at_data should be a tuple containing (atcoords, atlabels)&quot;</span><span class="p">)</span>
 
-        atcoords, atlabels = at_data
-        if atcoords.shape[0] != len(atlabels):
-            raise ValueError(&quot;atcoords and atlabels should have the same length&quot;)
+        <span class="n">atcoords</span><span class="p">,</span> <span class="n">atlabels</span> <span class="o">=</span> <span class="n">at_data</span>
+        <span class="k">if</span> <span class="n">atcoords</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">atlabels</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;atcoords and atlabels should have the same length&quot;</span><span class="p">)</span>
 
-        # if there are more than 2 atoms set the view point perpendicular to the molecular plane
-        if len(atlabels) &gt; 2:
-            # Calculate the centroid of atomic coordinates
-            centroid = np.mean(atcoords, axis=0)
-            # Center the atomic coordinates by subtracting the centroid from each point
-            centered_coords = atcoords - centroid
-            # Perform Singular Value Decomposition (SVD) on the centered coordinates
-            _, _, V = np.linalg.svd(centered_coords)
-            # The normal vector the molecular plane is the last column of the V matrix
-            normal_vector = V[-1]
-            # Set the view point perpendicular to the plane
-            ax.view_init(
-                elev=np.degrees(np.arcsin(normal_vector[2])),
-                azim=np.degrees(np.arctan2(normal_vector[1], normal_vector[0])),
-            )
+        <span class="c1"># if there are more than 2 atoms set the view point perpendicular to the molecular plane</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">atlabels</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="c1"># Calculate the centroid of atomic coordinates</span>
+            <span class="n">centroid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">atcoords</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="c1"># Center the atomic coordinates by subtracting the centroid from each point</span>
+            <span class="n">centered_coords</span> <span class="o">=</span> <span class="n">atcoords</span> <span class="o">-</span> <span class="n">centroid</span>
+            <span class="c1"># Perform Singular Value Decomposition (SVD) on the centered coordinates</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="n">centered_coords</span><span class="p">)</span>
+            <span class="c1"># The normal vector the molecular plane is the last column of the V matrix</span>
+            <span class="n">normal_vector</span> <span class="o">=</span> <span class="n">V</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="c1"># Set the view point perpendicular to the plane</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">view_init</span><span class="p">(</span>
+                <span class="n">elev</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="n">normal_vector</span><span class="p">[</span><span class="mi">2</span><span class="p">])),</span>
+                <span class="n">azim</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">normal_vector</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">normal_vector</span><span class="p">[</span><span class="mi">0</span><span class="p">])),</span>
+            <span class="p">)</span>
 
-        # plot the atomic centers
-        for i in range(len(atlabels)):
-            ax.text(
-                atcoords[i, 0],
-                atcoords[i, 1],
-                atcoords[i, 2],
-                atlabels[i],
-                color=&quot;k&quot;,
-                fontsize=12,
-                horizontalalignment=&quot;center&quot;,
-                verticalalignment=&quot;center&quot;,
-            )
-    # set axis limits
-    ax.set_xlim((xmin, xmax))
-    ax.set_ylim((ymin, ymax))
-    ax.set_zlim((zmin, zmax))
+        <span class="c1"># plot the atomic centers</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">atlabels</span><span class="p">)):</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
+                <span class="n">atcoords</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                <span class="n">atcoords</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+                <span class="n">atcoords</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+                <span class="n">atlabels</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span>
+                <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
+                <span class="n">horizontalalignment</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
+                <span class="n">verticalalignment</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+    <span class="c1"># set axis limits</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">((</span><span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">((</span><span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_zlim</span><span class="p">((</span><span class="n">zmin</span><span class="p">,</span> <span class="n">zmax</span><span class="p">))</span>
 
-    # plot points with values bigger than isovalue
-    ax.scatter(
-        p_pts[:, 0], p_pts[:, 1], p_pts[:, 2], alpha=0.01, color=&quot;r&quot;, label=f&quot;Positive values&quot;
-    )
-    if both_signs:
-        ax.scatter(
-            n_pts[:, 0], n_pts[:, 1], n_pts[:, 2], alpha=0.01, color=&quot;b&quot;, label=f&quot;Negative values&quot;
-        )
-    legend = plt.legend(loc=&quot;upper right&quot;)
-    for lh in legend.legendHandles:
-        lh.set_alpha(1)
-    if title is not None:
-        plt.title(title)
-    plt.show()
+    <span class="c1"># plot points with values bigger than isovalue</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+        <span class="n">p_pts</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">p_pts</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">p_pts</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Positive values&quot;</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">both_signs</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+            <span class="n">n_pts</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">n_pts</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">n_pts</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Negative values&quot;</span>
+        <span class="p">)</span>
+    <span class="n">legend</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper right&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">lh</span> <span class="ow">in</span> <span class="n">legend</span><span class="o">.</span><span class="n">legendHandles</span><span class="p">:</span>
+        <span class="n">lh</span><span class="o">.</span><span class="n">set_alpha</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">title</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -659,22 +659,22 @@ def plot_isosurface(
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>import matplotlib.pyplot as plt
-import numpy as np
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-# define 2pz orbital function
-def psi_2pz(x, y, z, a_0):
-    r = np.sqrt(x**2 + y**2 + z**2)
-    return np.exp(-r / (2 * a_0)) * z
+<span class="c1"># define 2pz orbital function</span>
+<span class="k">def</span> <span class="nf">psi_2pz</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">a_0</span><span class="p">):</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">r</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">a_0</span><span class="p">))</span> <span class="o">*</span> <span class="n">z</span>
 
 
-# Evaluate the function on the grid.
-psi_vals = psi_2pz(*tensor_grid.points.T, a_0=1.0)
+<span class="c1"># Evaluate the function on the grid.</span>
+<span class="n">psi_vals</span> <span class="o">=</span> <span class="n">psi_2pz</span><span class="p">(</span><span class="o">*</span><span class="n">tensor_grid</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">a_0</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
 
-point_idx = target_x = 0.15
-tolerance = 1e-2
+<span class="n">point_idx</span> <span class="o">=</span> <span class="n">target_x</span> <span class="o">=</span> <span class="mf">0.15</span>
+<span class="n">tolerance</span> <span class="o">=</span> <span class="mf">1e-2</span>
 
-plot_isosurface(tensor_grid, psi_vals, target_x, title=&quot;$2p_{z}$ Isosurface (0.15 a.u.)&quot;)
+<span class="n">plot_isosurface</span><span class="p">(</span><span class="n">tensor_grid</span><span class="p">,</span> <span class="n">psi_vals</span><span class="p">,</span> <span class="n">target_x</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;$2p_</span><span class="si">{z}</span><span class="s2">$ Isosurface (0.15 a.u.)&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -698,25 +698,25 @@ plot_isosurface(tensor_grid, psi_vals, target_x, title=&quot;$2p_{z}$ Isosurface
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>from iodata import load_one
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">iodata</span> <span class="kn">import</span> <span class="n">load_one</span>
 
-# Load the wavefunction information about ch2o
-mol_anion = load_one(&quot;ch2o_q-1.fchk&quot;)
+<span class="c1"># Load the wavefunction information about ch2o</span>
+<span class="n">mol_anion</span> <span class="o">=</span> <span class="n">load_one</span><span class="p">(</span><span class="s2">&quot;ch2o_q-1.fchk&quot;</span><span class="p">)</span>
 
-# Get the atomic coordinates and numbers
-atcoords = mol_anion.atcoords
-atnums = mol_anion.atnums
-print(f&quot;Atomic Coordinates \n {atcoords}&quot;)
-print(f&quot;Atomic Numbers: \n {atnums}&quot;)
+<span class="c1"># Get the atomic coordinates and numbers</span>
+<span class="n">atcoords</span> <span class="o">=</span> <span class="n">mol_anion</span><span class="o">.</span><span class="n">atcoords</span>
+<span class="n">atnums</span> <span class="o">=</span> <span class="n">mol_anion</span><span class="o">.</span><span class="n">atnums</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Atomic Coordinates </span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">atcoords</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Atomic Numbers: </span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">atnums</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-fig = plt.figure()
-ax = plt.axes(projection=&#39;3d&#39;)
-ax.scatter(atcoords[:, 0], atcoords[:, 1], atcoords[:, 2], color=&quot;k&quot;, s=50)
-ax.set_xlabel(&quot;X-axis&quot;)
-ax.set_ylabel(&quot;Y-axis&quot;)
-ax.set_zlabel(&quot;Z-axis&quot;)
-plt.title(&quot;Atomic coordinates of Formaldehyde.&quot;)
-plt.show()
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">atcoords</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">atcoords</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">atcoords</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;X-axis&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Y-axis&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s2">&quot;Z-axis&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Atomic coordinates of Formaldehyde.&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 <br/></pre></div>
 </div>
 </div>
@@ -745,28 +745,28 @@ Atomic Numbers:
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>from grid.cubic import UniformGrid
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">grid.cubic</span> <span class="kn">import</span> <span class="n">UniformGrid</span>
 
-# Construct uniform grid
-uniform_grid = UniformGrid.from_molecule(atnums, atcoords, spacing=0.1, extension=2.0, rotate=True)
-
-
-print(f&quot;The number of points: {uniform_grid.size}&quot;)
-print(f&quot;The number of dimensions: {uniform_grid.ndim}.&quot;)
-print(f&quot;The shape of the grid: {uniform_grid.shape}.&quot;)
-print(f&quot;The origin of the grid: {uniform_grid.origin}.&quot;)
-print(f&quot;The axes of the grid: {uniform_grid.axes}.&quot;)
+<span class="c1"># Construct uniform grid</span>
+<span class="n">uniform_grid</span> <span class="o">=</span> <span class="n">UniformGrid</span><span class="o">.</span><span class="n">from_molecule</span><span class="p">(</span><span class="n">atnums</span><span class="p">,</span> <span class="n">atcoords</span><span class="p">,</span> <span class="n">spacing</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">extension</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">rotate</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 
-fig = plt.figure()
-ax = plt.axes(projection=&#39;3d&#39;)
-ax.scatter(atcoords[:, 0], atcoords[:, 1], atcoords[:, 2], color=&quot;k&quot;, s=50)
-ax.scatter(uniform_grid.points[:, 0], uniform_grid.points[:, 1], uniform_grid.points[:, 2], color=&quot;m&quot;, alpha=0.01)
-ax.set_xlabel(&quot;X-axis&quot;)
-ax.set_ylabel(&quot;Y-axis&quot;)
-ax.set_zlabel(&quot;Z-axis&quot;)
-plt.title(&quot;Atomic coordinates of Formaldehyde.&quot;)
-plt.show()
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The number of points: </span><span class="si">{</span><span class="n">uniform_grid</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The number of dimensions: </span><span class="si">{</span><span class="n">uniform_grid</span><span class="o">.</span><span class="n">ndim</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The shape of the grid: </span><span class="si">{</span><span class="n">uniform_grid</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The origin of the grid: </span><span class="si">{</span><span class="n">uniform_grid</span><span class="o">.</span><span class="n">origin</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The axes of the grid: </span><span class="si">{</span><span class="n">uniform_grid</span><span class="o">.</span><span class="n">axes</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">atcoords</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">atcoords</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">atcoords</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">uniform_grid</span><span class="o">.</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">uniform_grid</span><span class="o">.</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">uniform_grid</span><span class="o">.</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;X-axis&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Y-axis&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s2">&quot;Z-axis&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Atomic coordinates of Formaldehyde.&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -812,31 +812,31 @@ The axes of the grid: [[ 0.00000000e+00  0.00000000e+00  1.00000000e-01]
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>from gbasis.evals.density import evaluate_density
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.evals.density</span> <span class="kn">import</span> <span class="n">evaluate_density</span>
 
-# define function to compute dual descriptor on a grid
-def compute_dual_descriptor(grid, rdm_an, rdm_cat, basis_an, basis_cat):
-    &quot;&quot;&quot;Compute dual descriptor on a grid.
+<span class="c1"># define function to compute dual descriptor on a grid</span>
+<span class="k">def</span> <span class="nf">compute_dual_descriptor</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">rdm_an</span><span class="p">,</span> <span class="n">rdm_cat</span><span class="p">,</span> <span class="n">basis_an</span><span class="p">,</span> <span class="n">basis_cat</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute dual descriptor on a grid.</span>
 
-    Parameters
-    ----------
-    grid : Grid
-        Grid object.
-    rdm_an : np.ndarray
-        1-RDM of the anion.
-    rdm_cat : np.ndarray
-        1-RDM of the cation.
-    basis_an : list
-        Basis set of the anion.
-    basis_cat : list
-        Basis set of the cation.
-    &quot;&quot;&quot;
-    # evaluate electron density of cation and anion on the grid
-    dens_vals_cat = evaluate_density(rdm_cat, basis_cat, grid.points)
-    dens_vals_an = evaluate_density(rdm_an, basis_an, grid.points)
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    grid : Grid</span>
+<span class="sd">        Grid object.</span>
+<span class="sd">    rdm_an : np.ndarray</span>
+<span class="sd">        1-RDM of the anion.</span>
+<span class="sd">    rdm_cat : np.ndarray</span>
+<span class="sd">        1-RDM of the cation.</span>
+<span class="sd">    basis_an : list</span>
+<span class="sd">        Basis set of the anion.</span>
+<span class="sd">    basis_cat : list</span>
+<span class="sd">        Basis set of the cation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># evaluate electron density of cation and anion on the grid</span>
+    <span class="n">dens_vals_cat</span> <span class="o">=</span> <span class="n">evaluate_density</span><span class="p">(</span><span class="n">rdm_cat</span><span class="p">,</span> <span class="n">basis_cat</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
+    <span class="n">dens_vals_an</span> <span class="o">=</span> <span class="n">evaluate_density</span><span class="p">(</span><span class="n">rdm_an</span><span class="p">,</span> <span class="n">basis_an</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
 
-    # compute dual descriptor on the grid
-    return dens_vals_an - dens_vals_cat
+    <span class="c1"># compute dual descriptor on the grid</span>
+    <span class="k">return</span> <span class="n">dens_vals_an</span> <span class="o">-</span> <span class="n">dens_vals_cat</span>
 </pre></div>
 </div>
 </div>
@@ -847,31 +847,31 @@ def compute_dual_descriptor(grid, rdm_an, rdm_cat, basis_an, basis_cat):
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>from iodata import load_one
-from gbasis.wrappers import from_iodata
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">iodata</span> <span class="kn">import</span> <span class="n">load_one</span>
+<span class="kn">from</span> <span class="nn">gbasis.wrappers</span> <span class="kn">import</span> <span class="n">from_iodata</span>
 
-# load formaldehyde cation and anion fchk files
-mol_cation = load_one(&quot;ch2o_q+1.fchk&quot;)
+<span class="c1"># load formaldehyde cation and anion fchk files</span>
+<span class="n">mol_cation</span> <span class="o">=</span> <span class="n">load_one</span><span class="p">(</span><span class="s2">&quot;ch2o_q+1.fchk&quot;</span><span class="p">)</span>
 
-# Construct molecular basis from wave-function information read by IOData
-basis_cat = from_iodata(mol_cation)
-basis_an = from_iodata(mol_anion)
+<span class="c1"># Construct molecular basis from wave-function information read by IOData</span>
+<span class="n">basis_cat</span> <span class="o">=</span> <span class="n">from_iodata</span><span class="p">(</span><span class="n">mol_cation</span><span class="p">)</span>
+<span class="n">basis_an</span> <span class="o">=</span> <span class="n">from_iodata</span><span class="p">(</span><span class="n">mol_anion</span><span class="p">)</span>
 
-# get rdms for cation and anion
-rdm_cat = mol_cation.one_rdms[&quot;scf&quot;]
-rdm_an = mol_anion.one_rdms[&quot;scf&quot;]
+<span class="c1"># get rdms for cation and anion</span>
+<span class="n">rdm_cat</span> <span class="o">=</span> <span class="n">mol_cation</span><span class="o">.</span><span class="n">one_rdms</span><span class="p">[</span><span class="s2">&quot;scf&quot;</span><span class="p">]</span>
+<span class="n">rdm_an</span> <span class="o">=</span> <span class="n">mol_anion</span><span class="o">.</span><span class="n">one_rdms</span><span class="p">[</span><span class="s2">&quot;scf&quot;</span><span class="p">]</span>
 
-# compute dual descriptor on the grid
-dd = compute_dual_descriptor(uniform_grid, rdm_an, rdm_cat, basis_an, basis_cat)
+<span class="c1"># compute dual descriptor on the grid</span>
+<span class="n">dd</span> <span class="o">=</span> <span class="n">compute_dual_descriptor</span><span class="p">(</span><span class="n">uniform_grid</span><span class="p">,</span> <span class="n">rdm_an</span><span class="p">,</span> <span class="n">rdm_cat</span><span class="p">,</span> <span class="n">basis_an</span><span class="p">,</span> <span class="n">basis_cat</span><span class="p">)</span>
 
-# plot dual descriptor isosurface
-mol_data = (atcoords, [&quot;O&quot;, &quot;C&quot;, &quot;H&quot;, &quot;H&quot;])
-plot_isosurface(
-    uniform_grid, dd, 0.03, at_data=mol_data, title=&quot;Dual Descriptor Isosurface&quot;, noticks=True
-)
+<span class="c1"># plot dual descriptor isosurface</span>
+<span class="n">mol_data</span> <span class="o">=</span> <span class="p">(</span><span class="n">atcoords</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;O&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="s2">&quot;H&quot;</span><span class="p">])</span>
+<span class="n">plot_isosurface</span><span class="p">(</span>
+    <span class="n">uniform_grid</span><span class="p">,</span> <span class="n">dd</span><span class="p">,</span> <span class="mf">0.03</span><span class="p">,</span> <span class="n">at_data</span><span class="o">=</span><span class="n">mol_data</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Dual Descriptor Isosurface&quot;</span><span class="p">,</span> <span class="n">noticks</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
 
-print(f&quot;Positive values (red) correspond to nucleophilic regions&quot;)
-print(f&quot;Negative values (blue) correspond to electrophilic regions&quot;)
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Positive values (red) correspond to nucleophilic regions&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Negative values (blue) correspond to electrophilic regions&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -902,79 +902,79 @@ Negative values (blue) correspond to electrophilic regions
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span># define utility function for grouping grid points in domains
-from itertools import combinations
-from scipy.sparse.csgraph import connected_components
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="c1"># define utility function for grouping grid points in domains</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">combinations</span>
+<span class="kn">from</span> <span class="nn">scipy.sparse.csgraph</span> <span class="kn">import</span> <span class="n">connected_components</span>
 
 
-# function to get grid points indices for same sign connected points with absolute
-# value  greater than a threshold (select domain defined by isovalue)
-def get_domains(grid, vals, isovalue):
-    &quot;&quot;&quot;Get grid points indices for domains with same sign connected points.
+<span class="c1"># function to get grid points indices for same sign connected points with absolute</span>
+<span class="c1"># value  greater than a threshold (select domain defined by isovalue)</span>
+<span class="k">def</span> <span class="nf">get_domains</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">vals</span><span class="p">,</span> <span class="n">isovalue</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get grid points indices for domains with same sign connected points.</span>
 
-    The function returns the indices of the grid points that belong to the same domain. A domain
-    is defined by a set of connected points with the same sign and absolute value greater than
-    isovalue.
+<span class="sd">    The function returns the indices of the grid points that belong to the same domain. A domain</span>
+<span class="sd">    is defined by a set of connected points with the same sign and absolute value greater than</span>
+<span class="sd">    isovalue.</span>
 
-    Parameters
-    ----------
-    grid : Grid
-        Cartesian grid (it can be uniform or TensorProductGrid) with 3 dimensions.
-    vals : ndarray
-        Values of the function on the grid points.
-    isovalue : float
-        Value of the isosurface used to define the domains.
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    grid : Grid</span>
+<span class="sd">        Cartesian grid (it can be uniform or TensorProductGrid) with 3 dimensions.</span>
+<span class="sd">    vals : ndarray</span>
+<span class="sd">        Values of the function on the grid points.</span>
+<span class="sd">    isovalue : float</span>
+<span class="sd">        Value of the isosurface used to define the domains.</span>
 
-    Returns
-    -------
-    tuple
-        Tuple containing two lists. The first list contains domains with positive values and the
-        second list contains domains with negative values. Each domain is a np.array with the
-        indexes of the grid points that belong to the same domain.
-    &quot;&quot;&quot;
-    # indices of points with value modulus greater than isovalue
-    idx_p_vals = np.where(vals &gt; isovalue)[0]  # positive values
-    idx_n_vals = np.where(vals &lt; -isovalue)[0]  # negative values
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple</span>
+<span class="sd">        Tuple containing two lists. The first list contains domains with positive values and the</span>
+<span class="sd">        second list contains domains with negative values. Each domain is a np.array with the</span>
+<span class="sd">        indexes of the grid points that belong to the same domain.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># indices of points with value modulus greater than isovalue</span>
+    <span class="n">idx_p_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">vals</span> <span class="o">&gt;</span> <span class="n">isovalue</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># positive values</span>
+    <span class="n">idx_n_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">vals</span> <span class="o">&lt;</span> <span class="o">-</span><span class="n">isovalue</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># negative values</span>
 
-    # create adjacency matrix selected points with same sign
-    p_vals_adj = np.zeros((len(idx_p_vals), len(idx_p_vals)))
-    n_vals_adj = np.zeros((len(idx_n_vals), len(idx_n_vals)))
+    <span class="c1"># create adjacency matrix selected points with same sign</span>
+    <span class="n">p_vals_adj</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">idx_p_vals</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx_p_vals</span><span class="p">)))</span>
+    <span class="n">n_vals_adj</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">idx_n_vals</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx_n_vals</span><span class="p">)))</span>
 
-    # try all combinations of selected points with same sign (positive values)
-    for i, j in combinations(range(len(idx_p_vals)), 2):
-        # get coordinate indices of the points
-        i_coord_idx = np.array(grid.index_to_coordinates(idx_p_vals[i]))
-        j_coord_idx = np.array(grid.index_to_coordinates(idx_p_vals[j]))
-        # two points are adjacent if they differ by at most 1 in each coordinate index
-        if np.max(np.abs(i_coord_idx - j_coord_idx)) == 1:
-            p_vals_adj[i, j] = 1
+    <span class="c1"># try all combinations of selected points with same sign (positive values)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">combinations</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">idx_p_vals</span><span class="p">)),</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="c1"># get coordinate indices of the points</span>
+        <span class="n">i_coord_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">index_to_coordinates</span><span class="p">(</span><span class="n">idx_p_vals</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+        <span class="n">j_coord_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">index_to_coordinates</span><span class="p">(</span><span class="n">idx_p_vals</span><span class="p">[</span><span class="n">j</span><span class="p">]))</span>
+        <span class="c1"># two points are adjacent if they differ by at most 1 in each coordinate index</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">i_coord_idx</span> <span class="o">-</span> <span class="n">j_coord_idx</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">p_vals_adj</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
 
-    # try all combinations of selected points with same sign (negative values)
-    for i, j in combinations(range(len(idx_n_vals)), 2):
-        i_coord_idx = np.array(grid.index_to_coordinates(idx_n_vals[i]))
-        j_coord_idx = np.array(grid.index_to_coordinates(idx_n_vals[j]))
-        # two points are adjacent if they differ by at most 1 in each coordinate
-        if np.max(np.abs(i_coord_idx - j_coord_idx)) == 1:
-            n_vals_adj[i, j] = 1
+    <span class="c1"># try all combinations of selected points with same sign (negative values)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">combinations</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">idx_n_vals</span><span class="p">)),</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="n">i_coord_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">index_to_coordinates</span><span class="p">(</span><span class="n">idx_n_vals</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+        <span class="n">j_coord_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">index_to_coordinates</span><span class="p">(</span><span class="n">idx_n_vals</span><span class="p">[</span><span class="n">j</span><span class="p">]))</span>
+        <span class="c1"># two points are adjacent if they differ by at most 1 in each coordinate</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">i_coord_idx</span> <span class="o">-</span> <span class="n">j_coord_idx</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">n_vals_adj</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
 
-    # returns an array of integers, each integer represents domain and the indexes where
-    # it appear are the points belonging to that domain
-    # example: [0,1,0,0,1,1] -&gt; points 0,2,3 belong to domain 0
-    #                        -&gt; points 1,4,5 belong to domain 1
-    p_groups = connected_components(p_vals_adj, directed=False)[1]
-    n_groups = connected_components(n_vals_adj, directed=False)[1]
+    <span class="c1"># returns an array of integers, each integer represents domain and the indexes where</span>
+    <span class="c1"># it appear are the points belonging to that domain</span>
+    <span class="c1"># example: [0,1,0,0,1,1] -&gt; points 0,2,3 belong to domain 0</span>
+    <span class="c1">#                        -&gt; points 1,4,5 belong to domain 1</span>
+    <span class="n">p_groups</span> <span class="o">=</span> <span class="n">connected_components</span><span class="p">(</span><span class="n">p_vals_adj</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">n_groups</span> <span class="o">=</span> <span class="n">connected_components</span><span class="p">(</span><span class="n">n_vals_adj</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
 
-    # creates a list with the domains. Each element of the list is a np.array with the indexes
-    # of the selected points that belong to the same domain.
-    # example: [0,1,0,0,1,1] -&gt; [[0,2,3],[1,4,5]]
-    p_domains = list([np.where(p_groups == i)[0] for i in range(max(p_groups) + 1)])
-    n_domains = list([np.where(n_groups == i)[0] for i in range(max(n_groups) + 1)])
+    <span class="c1"># creates a list with the domains. Each element of the list is a np.array with the indexes</span>
+    <span class="c1"># of the selected points that belong to the same domain.</span>
+    <span class="c1"># example: [0,1,0,0,1,1] -&gt; [[0,2,3],[1,4,5]]</span>
+    <span class="n">p_domains</span> <span class="o">=</span> <span class="nb">list</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">p_groups</span> <span class="o">==</span> <span class="n">i</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">p_groups</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)])</span>
+    <span class="n">n_domains</span> <span class="o">=</span> <span class="nb">list</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">n_groups</span> <span class="o">==</span> <span class="n">i</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">n_groups</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)])</span>
 
-    # transform indexes of selected points to indexes of all grid points for each domain
-    p_domains = [idx_p_vals[domain] for domain in p_domains]
-    n_domains = [idx_n_vals[domain] for domain in n_domains]
+    <span class="c1"># transform indexes of selected points to indexes of all grid points for each domain</span>
+    <span class="n">p_domains</span> <span class="o">=</span> <span class="p">[</span><span class="n">idx_p_vals</span><span class="p">[</span><span class="n">domain</span><span class="p">]</span> <span class="k">for</span> <span class="n">domain</span> <span class="ow">in</span> <span class="n">p_domains</span><span class="p">]</span>
+    <span class="n">n_domains</span> <span class="o">=</span> <span class="p">[</span><span class="n">idx_n_vals</span><span class="p">[</span><span class="n">domain</span><span class="p">]</span> <span class="k">for</span> <span class="n">domain</span> <span class="ow">in</span> <span class="n">n_domains</span><span class="p">]</span>
 
-    return p_domains, n_domains
+    <span class="k">return</span> <span class="n">p_domains</span><span class="p">,</span> <span class="n">n_domains</span>
 </pre></div>
 </div>
 </div>
@@ -985,8 +985,8 @@ def get_domains(grid, vals, isovalue):
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span># get dual descriptor domains, integrate and plot them
-p_domains, n_domains = get_domains(uniform_grid, dd, 0.03)
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="c1"># get dual descriptor domains, integrate and plot them</span>
+<span class="n">p_domains</span><span class="p">,</span> <span class="n">n_domains</span> <span class="o">=</span> <span class="n">get_domains</span><span class="p">(</span><span class="n">uniform_grid</span><span class="p">,</span> <span class="n">dd</span><span class="p">,</span> <span class="mf">0.03</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -994,19 +994,19 @@ p_domains, n_domains = get_domains(uniform_grid, dd, 0.03)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>for domain in p_domains:
-    domain_vals = dd.copy()
-    domain_mask = np.isin(np.arange(len(dd)), domain, invert=True)
-    domain_vals[domain_mask] = 0.0
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">domain</span> <span class="ow">in</span> <span class="n">p_domains</span><span class="p">:</span>
+    <span class="n">domain_vals</span> <span class="o">=</span> <span class="n">dd</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">domain_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dd</span><span class="p">)),</span> <span class="n">domain</span><span class="p">,</span> <span class="n">invert</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">domain_vals</span><span class="p">[</span><span class="n">domain_mask</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
 
-    plot_isosurface(
-        uniform_grid,
-        domain_vals,
-        0.001,
-        at_data=mol_data,
-        title=f&quot;Domain   Integral: {uniform_grid.integrate(domain_vals):.3f}&quot;,
-        noticks=True,
-    )
+    <span class="n">plot_isosurface</span><span class="p">(</span>
+        <span class="n">uniform_grid</span><span class="p">,</span>
+        <span class="n">domain_vals</span><span class="p">,</span>
+        <span class="mf">0.001</span><span class="p">,</span>
+        <span class="n">at_data</span><span class="o">=</span><span class="n">mol_data</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Domain   Integral: </span><span class="si">{</span><span class="n">uniform_grid</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">domain_vals</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">noticks</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1059,19 +1059,19 @@ p_domains, n_domains = get_domains(uniform_grid, dd, 0.03)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>for domain in n_domains:
-    domain_vals = dd.copy()
-    domain_mask = np.isin(np.arange(len(dd)), domain, invert=True)
-    domain_vals[domain_mask] = 0.0
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">domain</span> <span class="ow">in</span> <span class="n">n_domains</span><span class="p">:</span>
+    <span class="n">domain_vals</span> <span class="o">=</span> <span class="n">dd</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">domain_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dd</span><span class="p">)),</span> <span class="n">domain</span><span class="p">,</span> <span class="n">invert</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">domain_vals</span><span class="p">[</span><span class="n">domain_mask</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
 
-    plot_isosurface(
-        uniform_grid,
-        domain_vals,
-        0.001,
-        at_data=mol_data,
-        title=f&quot;Domain Integral: {uniform_grid.integrate(domain_vals):.3f}&quot;,
-        noticks=True,
-    )
+    <span class="n">plot_isosurface</span><span class="p">(</span>
+        <span class="n">uniform_grid</span><span class="p">,</span>
+        <span class="n">domain_vals</span><span class="p">,</span>
+        <span class="mf">0.001</span><span class="p">,</span>
+        <span class="n">at_data</span><span class="o">=</span><span class="n">mol_data</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Domain Integral: </span><span class="si">{</span><span class="n">uniform_grid</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">domain_vals</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">noticks</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
 </pre></div>
 </div>
 </div>

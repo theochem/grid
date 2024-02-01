@@ -250,27 +250,27 @@ quick overview of the main features of <code class="docutils literal notranslate
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import numpy as np
-from grid.onedgrid import GaussChebyshev
-from grid.rtransform import BeckeRTransform
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">grid.onedgrid</span> <span class="kn">import</span> <span class="n">GaussChebyshev</span>
+<span class="kn">from</span> <span class="nn">grid.rtransform</span> <span class="kn">import</span> <span class="n">BeckeRTransform</span>
 
-# Construct 1D grid on [-1,1] domain using Gauss-Chebyshev quadrature rule
-oned = GaussChebyshev(npoints=31)
+<span class="c1"># Construct 1D grid on [-1,1] domain using Gauss-Chebyshev quadrature rule</span>
+<span class="n">oned</span> <span class="o">=</span> <span class="n">GaussChebyshev</span><span class="p">(</span><span class="n">npoints</span><span class="o">=</span><span class="mi">31</span><span class="p">)</span>
 
-print(f&quot;1D grid size     : {oned.size}&quot;)
-print(f&quot;1D grid domain   : {oned.domain}&quot;)
-print(f&quot;Radial grid r_min: {np.min(oned.points):.3f}&quot;)
-print(f&quot;Radial grid r_max: {np.max(oned.points):.3f}\n&quot;)
-# print(f&quot;1D grid points   : {oned.points}\n&quot;)
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;1D grid size     : </span><span class="si">{</span><span class="n">oned</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;1D grid domain   : </span><span class="si">{</span><span class="n">oned</span><span class="o">.</span><span class="n">domain</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Radial grid r_min: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">oned</span><span class="o">.</span><span class="n">points</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Radial grid r_max: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">oned</span><span class="o">.</span><span class="n">points</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># print(f&quot;1D grid points   : {oned.points}\n&quot;)</span>
 
-# Transform grid to interval [0, infinity) domain using Becke&#39;s radial transform
-rgrid = BeckeRTransform(0.0, R=1.5).transform_1d_grid(oned)
+<span class="c1"># Transform grid to interval [0, infinity) domain using Becke&#39;s radial transform</span>
+<span class="n">rgrid</span> <span class="o">=</span> <span class="n">BeckeRTransform</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span><span class="o">.</span><span class="n">transform_1d_grid</span><span class="p">(</span><span class="n">oned</span><span class="p">)</span>
 
-print(f&quot;Radial grid size : {rgrid.size}&quot;)
-print(f&quot;Rgrid domain     : {rgrid.domain}&quot;)
-print(f&quot;Radial grid r_min: {np.min(rgrid.points):.3f}&quot;)
-print(f&quot;Radial grid r_max: {np.max(rgrid.points):.3f}\n&quot;)
-# print(f&quot;Radial grid points: {rgrid.points}&quot;)
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Radial grid size : </span><span class="si">{</span><span class="n">rgrid</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Rgrid domain     : </span><span class="si">{</span><span class="n">rgrid</span><span class="o">.</span><span class="n">domain</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Radial grid r_min: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">rgrid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Radial grid r_max: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">rgrid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># print(f&quot;Radial grid points: {rgrid.points}&quot;)</span>
 </pre></div>
 </div>
 </div>
@@ -300,26 +300,26 @@ Radial grid r_max: 2335.872
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from grid.angular import AngularGrid
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">grid.angular</span> <span class="kn">import</span> <span class="n">AngularGrid</span>
 
-# user-define parameter
-degree = 6
+<span class="c1"># user-define parameter</span>
+<span class="n">degree</span> <span class="o">=</span> <span class="mi">6</span>
 
-# Construct a Lebedev-Laikov grid
-ang_grid = AngularGrid(degree=degree)
+<span class="c1"># Construct a Lebedev-Laikov grid</span>
+<span class="n">ang_grid</span> <span class="o">=</span> <span class="n">AngularGrid</span><span class="p">(</span><span class="n">degree</span><span class="o">=</span><span class="n">degree</span><span class="p">)</span>
 
-print(f&quot;Lebedev-Laikov angular grid degree: {ang_grid.degree}&quot;)
-print(f&quot;Lebedev-Laikov angular grid size  : {ang_grid.size}&quot;)
-print(f&quot;Lebedev-Laikov angular grid points shape : {ang_grid.points.shape}&quot;)
-print(f&quot;Lebedev-Laikov angular grid weights shape: {ang_grid.weights.shape}\n&quot;)
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Lebedev-Laikov angular grid degree: </span><span class="si">{</span><span class="n">ang_grid</span><span class="o">.</span><span class="n">degree</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Lebedev-Laikov angular grid size  : </span><span class="si">{</span><span class="n">ang_grid</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Lebedev-Laikov angular grid points shape : </span><span class="si">{</span><span class="n">ang_grid</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Lebedev-Laikov angular grid weights shape: </span><span class="si">{</span><span class="n">ang_grid</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
-# Construct a symmetric spherical t-design grid
-ang_grid = AngularGrid(degree=degree, use_spherical=True)
+<span class="c1"># Construct a symmetric spherical t-design grid</span>
+<span class="n">ang_grid</span> <span class="o">=</span> <span class="n">AngularGrid</span><span class="p">(</span><span class="n">degree</span><span class="o">=</span><span class="n">degree</span><span class="p">,</span> <span class="n">use_spherical</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-print(f&quot;t-design angular grid degree: {ang_grid.degree}&quot;)
-print(f&quot;t-design angular grid size  : {ang_grid.size}&quot;)
-print(f&quot;t-design angular grid points shape : {ang_grid.points.shape}&quot;)
-print(f&quot;t-design angular grid weights shape: {ang_grid.weights.shape}&quot;)
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;t-design angular grid degree: </span><span class="si">{</span><span class="n">ang_grid</span><span class="o">.</span><span class="n">degree</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;t-design angular grid size  : </span><span class="si">{</span><span class="n">ang_grid</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;t-design angular grid points shape : </span><span class="si">{</span><span class="n">ang_grid</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;t-design angular grid weights shape: </span><span class="si">{</span><span class="n">ang_grid</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -348,14 +348,14 @@ t-design angular grid weights shape: (32,)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from grid.atomgrid import AtomGrid
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">grid.atomgrid</span> <span class="kn">import</span> <span class="n">AtomGrid</span>
 
-# Construct atom-centered grid using radial grid and degree of angular grid
-atomgrid = AtomGrid(rgrid, degrees=[11])
+<span class="c1"># Construct atom-centered grid using radial grid and degree of angular grid</span>
+<span class="n">atomgrid</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="p">(</span><span class="n">rgrid</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="p">[</span><span class="mi">11</span><span class="p">])</span>
 
-print(f&quot;AtomGrid size: {atomgrid.size}&quot;)
-print(f&quot;AtomGrid radial size : {atomgrid.rgrid.size}&quot;)
-print(f&quot;AtomGrid angular degrees: {atomgrid.degrees}&quot;)
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid size: </span><span class="si">{</span><span class="n">atomgrid</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid radial size : </span><span class="si">{</span><span class="n">atomgrid</span><span class="o">.</span><span class="n">rgrid</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid angular degrees: </span><span class="si">{</span><span class="n">atomgrid</span><span class="o">.</span><span class="n">degrees</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -378,35 +378,35 @@ AtomGrid angular degrees: [11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 1
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import numpy as np
-from grid import GaussLegendre, BeckeRTransform, BeckeWeights, MolGrid
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">grid</span> <span class="kn">import</span> <span class="n">GaussLegendre</span><span class="p">,</span> <span class="n">BeckeRTransform</span><span class="p">,</span> <span class="n">BeckeWeights</span><span class="p">,</span> <span class="n">MolGrid</span>
 
-# define atomic coordinates (in bohr) and atomic numbers for H2
-atcoords = np.array([[0.0, -1.0, 0.0], [0.0, 1.0, 0.0]])
-atnums = np.array([1, 1])
+<span class="c1"># define atomic coordinates (in bohr) and atomic numbers for H2</span>
+<span class="n">atcoords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]])</span>
+<span class="n">atnums</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
 
-# construct a radial grid from a 1D grid on [-1, 1] and then transforming it to [0, infinity)
-oned_grid = GaussLegendre(npoints=50)
-rgrid = BeckeRTransform(0.0, R=1.5).transform_1d_grid(oned_grid)
+<span class="c1"># construct a radial grid from a 1D grid on [-1, 1] and then transforming it to [0, infinity)</span>
+<span class="n">oned_grid</span> <span class="o">=</span> <span class="n">GaussLegendre</span><span class="p">(</span><span class="n">npoints</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">rgrid</span> <span class="o">=</span> <span class="n">BeckeRTransform</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span><span class="o">.</span><span class="n">transform_1d_grid</span><span class="p">(</span><span class="n">oned_grid</span><span class="p">)</span>
 
-# construct a molecular grid using the Becke partitioning scheme
-mgrid = MolGrid.from_preset(
-    atnums=atnums,
-    atcoords=atcoords,
-    # the same radial grid is used for all atoms
-    rgrid=rgrid,
-    # different angular degrees for each atom
-    preset=&quot;fine&quot;,
-    aim_weights=BeckeWeights(),
-    # store the individual atomic grids (used for interpolation)
-    store=True,
-)
+<span class="c1"># construct a molecular grid using the Becke partitioning scheme</span>
+<span class="n">mgrid</span> <span class="o">=</span> <span class="n">MolGrid</span><span class="o">.</span><span class="n">from_preset</span><span class="p">(</span>
+    <span class="n">atnums</span><span class="o">=</span><span class="n">atnums</span><span class="p">,</span>
+    <span class="n">atcoords</span><span class="o">=</span><span class="n">atcoords</span><span class="p">,</span>
+    <span class="c1"># the same radial grid is used for all atoms</span>
+    <span class="n">rgrid</span><span class="o">=</span><span class="n">rgrid</span><span class="p">,</span>
+    <span class="c1"># different angular degrees for each atom</span>
+    <span class="n">preset</span><span class="o">=</span><span class="s2">&quot;fine&quot;</span><span class="p">,</span>
+    <span class="n">aim_weights</span><span class="o">=</span><span class="n">BeckeWeights</span><span class="p">(),</span>
+    <span class="c1"># store the individual atomic grids (used for interpolation)</span>
+    <span class="n">store</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
 
-print(f&quot;Molecular grid size             : {mgrid.size}&quot;)
-print(f&quot;Molecular grid atomic grid sizes  : {[atgrid.size for atgrid in mgrid.atgrids]}&quot;)
-print(f&quot;Molecular grid points shape     : {mgrid.points.shape}&quot;)
-print(f&quot;Molecular grid weights shape    : {mgrid.weights.shape}&quot;)
-print(f&quot;Molecular grid centers: \n{mgrid.atcoords}&quot;)
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Molecular grid size             : </span><span class="si">{</span><span class="n">mgrid</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Molecular grid atomic grid sizes  : </span><span class="si">{</span><span class="p">[</span><span class="n">atgrid</span><span class="o">.</span><span class="n">size</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">atgrid</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">mgrid</span><span class="o">.</span><span class="n">atgrids</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Molecular grid points shape     : </span><span class="si">{</span><span class="n">mgrid</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Molecular grid weights shape    : </span><span class="si">{</span><span class="n">mgrid</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Molecular grid centers: </span><span class="se">\n</span><span class="si">{</span><span class="n">mgrid</span><span class="o">.</span><span class="n">atcoords</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -431,29 +431,29 @@ Molecular grid centers:
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import matplotlib.pyplot as plt
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
-fig = plt.figure(figsize=(6, 6))
-ax1 = fig.add_subplot(111, projection=&quot;3d&quot;)
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s2">&quot;3d&quot;</span><span class="p">)</span>
 
-# Plot grid points
-ax1.scatter(mgrid.points[:, 0], mgrid.points[:, 1], mgrid.points[:, 2], s=0.1, c=&quot;b&quot;, marker=&quot;.&quot;)
+<span class="c1"># Plot grid points</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">mgrid</span><span class="o">.</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">mgrid</span><span class="o">.</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">mgrid</span><span class="o">.</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
 
-# Plot atomic centers with label
-ax1.scatter(
-    atcoords[:, 0], atcoords[:, 1], atcoords[:, 2], s=100, c=&quot;r&quot;, marker=&quot;o&quot;, label=&quot;H centers&quot;
-)
+<span class="c1"># Plot atomic centers with label</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+    <span class="n">atcoords</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">atcoords</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">atcoords</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;H centers&quot;</span>
+<span class="p">)</span>
 
-# Set axis limits (to fit our data), labels, and legend
-ax1.set_xlim((-5, 5))
-ax1.set_ylim((-5, 5))
-ax1.set_zlim((-5, 5))
-ax1.set_xlabel(&quot;X&quot;)
-ax1.set_ylabel(&quot;Y&quot;)
-ax1.set_zlabel(&quot;Z&quot;)
-ax1.legend()
-plt.title(&quot;Molecular Grid Points&quot;, fontsize=16)
-plt.show()
+<span class="c1"># Set axis limits (to fit our data), labels, and legend</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">((</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">((</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_zlim</span><span class="p">((</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Y&quot;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s2">&quot;Z&quot;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Molecular Grid Points&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -485,34 +485,34 @@ plt.show()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># compute the distance between the two atoms
-R = np.linalg.norm(atcoords[0] - atcoords[1])
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># compute the distance between the two atoms</span>
+<span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">atcoords</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">atcoords</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
-# Evaluate 1s orbitals (centered on each atom) on the entire grid points
-s1_a_vals = np.sqrt(1 / np.pi) * np.exp(-np.linalg.norm(mgrid.points - atcoords[0], axis=1))
-s1_b_vals = np.sqrt(1 / np.pi) * np.exp(-np.linalg.norm(mgrid.points - atcoords[1], axis=1))
+<span class="c1"># Evaluate 1s orbitals (centered on each atom) on the entire grid points</span>
+<span class="n">s1_a_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">mgrid</span><span class="o">.</span><span class="n">points</span> <span class="o">-</span> <span class="n">atcoords</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">s1_b_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">mgrid</span><span class="o">.</span><span class="n">points</span> <span class="o">-</span> <span class="n">atcoords</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
 
-# Calculate overlap integral analytically and numerically
-S_ab = (1.0 + R + R**2 / 3) * np.exp(-R)
-S_ab_num = mgrid.integrate(s1_a_vals * s1_b_vals)
+<span class="c1"># Calculate overlap integral analytically and numerically</span>
+<span class="n">S_ab</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">R</span> <span class="o">+</span> <span class="n">R</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">R</span><span class="p">)</span>
+<span class="n">S_ab_num</span> <span class="o">=</span> <span class="n">mgrid</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">s1_a_vals</span> <span class="o">*</span> <span class="n">s1_b_vals</span><span class="p">)</span>
 
-print(f&quot;Overlap integral (analytical): {S_ab}&quot;)
-print(f&quot;Overlap integral (numerical) : {S_ab_num}\n&quot;)
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Overlap integral (analytical): </span><span class="si">{</span><span class="n">S_ab</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Overlap integral (numerical) : </span><span class="si">{</span><span class="n">S_ab_num</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
-# Calculate normalization constant analytically and numerically
-N = 1.0 / np.sqrt(2 + 2 * S_ab)
-N_num = 1.0 / np.sqrt(mgrid.integrate((s1_a_vals + s1_b_vals) ** 2))
+<span class="c1"># Calculate normalization constant analytically and numerically</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">S_ab</span><span class="p">)</span>
+<span class="n">N_num</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">mgrid</span><span class="o">.</span><span class="n">integrate</span><span class="p">((</span><span class="n">s1_a_vals</span> <span class="o">+</span> <span class="n">s1_b_vals</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span>
 
-print(f&quot;Normalization constant (analytical): {N}&quot;)
-print(f&quot;Normalization constant (numerical) : {N_num}\n&quot;)
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Normalization constant (analytical): </span><span class="si">{</span><span class="n">N</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Normalization constant (numerical) : </span><span class="si">{</span><span class="n">N_num</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
-# Build the wavefunction values on the grid points as a sum of 1s orbitals (centered on each atom)
-psi_vals = N_num * (s1_a_vals + s1_b_vals)
+<span class="c1"># Build the wavefunction values on the grid points as a sum of 1s orbitals (centered on each atom)</span>
+<span class="n">psi_vals</span> <span class="o">=</span> <span class="n">N_num</span> <span class="o">*</span> <span class="p">(</span><span class="n">s1_a_vals</span> <span class="o">+</span> <span class="n">s1_b_vals</span><span class="p">)</span>
 
-# Compute the electron density and integrate it across all space
-dens_vals = psi_vals**2
-n_electrons = mgrid.integrate(dens_vals)
-print(f&quot;Integral of the electron density: {n_electrons} (expected to be 1)&quot;)
+<span class="c1"># Compute the electron density and integrate it across all space</span>
+<span class="n">dens_vals</span> <span class="o">=</span> <span class="n">psi_vals</span><span class="o">**</span><span class="mi">2</span>
+<span class="n">n_electrons</span> <span class="o">=</span> <span class="n">mgrid</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">dens_vals</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Integral of the electron density: </span><span class="si">{</span><span class="n">n_electrons</span><span class="si">}</span><span class="s2"> (expected to be 1)&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -538,38 +538,38 @@ Integral of the electron density: 1.0000000000000013 (expected to be 1)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Sample points uniformly in the xy-plane (z=0)
-x_grid = np.linspace(-3, 3, 100)
-y_grid = np.linspace(-3, 3, 100)
-x_grid, y_grid = np.meshgrid(x_grid, y_grid)
-x_grid = x_grid.flatten()
-y_grid = y_grid.flatten()
-z_grid = np.zeros_like(x_grid)
-points = np.array([x_grid, y_grid, z_grid]).T
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Sample points uniformly in the xy-plane (z=0)</span>
+<span class="n">x_grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">y_grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">)</span>
+<span class="n">x_grid</span> <span class="o">=</span> <span class="n">x_grid</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="n">y_grid</span> <span class="o">=</span> <span class="n">y_grid</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="n">z_grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x_grid</span><span class="p">)</span>
+<span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="n">z_grid</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
 
-# Interpolated electron density one the xy-plane
-func_interpolation = mgrid.interpolate(dens_vals)
-rho_iner = func_interpolation(points=points).reshape(100, 100)
+<span class="c1"># Interpolated electron density one the xy-plane</span>
+<span class="n">func_interpolation</span> <span class="o">=</span> <span class="n">mgrid</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">dens_vals</span><span class="p">)</span>
+<span class="n">rho_iner</span> <span class="o">=</span> <span class="n">func_interpolation</span><span class="p">(</span><span class="n">points</span><span class="o">=</span><span class="n">points</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
 
-# Create 3D Counterplot of the interpolated electron density
-fig = plt.figure(figsize=(8, 6))
-ax1 = fig.add_subplot(111, projection=&quot;3d&quot;)
+<span class="c1"># Create 3D Counterplot of the interpolated electron density</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s2">&quot;3d&quot;</span><span class="p">)</span>
 
-# Adjust the limits to fit your data
-ax1.set_xlim((-3, 3))
-ax1.set_ylim((-3, 3))
-ax1.set_zlim((0, 0.1))
+<span class="c1"># Adjust the limits to fit your data</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">((</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">((</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_zlim</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">))</span>
 
-# Plot the interpolated electron density
-ax1.plot_surface(x_grid.reshape(100, 100), y_grid.reshape(100, 100), rho_iner, cmap=&quot;viridis&quot;)
+<span class="c1"># Plot the interpolated electron density</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">plot_surface</span><span class="p">(</span><span class="n">x_grid</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="n">y_grid</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="n">rho_iner</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;viridis&quot;</span><span class="p">)</span>
 
-# Change the view angle, set labels and title
-ax1.view_init(elev=20, azim=20)
-ax1.set_xlabel(&quot;X&quot;)
-ax1.set_ylabel(&quot;Y&quot;)
-ax1.set_zlabel(&quot;Interpolated Electron Density&quot;)
-ax1.set_title(&quot;Interpolated Electron Density for $H_2^+$ on XY Plane&quot;)
-plt.show()
+<span class="c1"># Change the view angle, set labels and title</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">view_init</span><span class="p">(</span><span class="n">elev</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">azim</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Y&quot;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s2">&quot;Interpolated Electron Density&quot;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Interpolated Electron Density for $H_2^+$ on XY Plane&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -587,17 +587,17 @@ plt.show()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Compute electron density on the xy-plane points analytically
-s1_a_vals = np.sqrt(1 / np.pi) * np.exp(-np.linalg.norm(points - atcoords[0], axis=1))
-s1_b_vals = np.sqrt(1 / np.pi) * np.exp(-np.linalg.norm(points - atcoords[1], axis=1))
-psi_vals = N_num * (s1_a_vals + s1_b_vals)
-rho = psi_vals**2
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute electron density on the xy-plane points analytically</span>
+<span class="n">s1_a_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">points</span> <span class="o">-</span> <span class="n">atcoords</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">s1_b_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">points</span> <span class="o">-</span> <span class="n">atcoords</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">psi_vals</span> <span class="o">=</span> <span class="n">N_num</span> <span class="o">*</span> <span class="p">(</span><span class="n">s1_a_vals</span> <span class="o">+</span> <span class="n">s1_b_vals</span><span class="p">)</span>
+<span class="n">rho</span> <span class="o">=</span> <span class="n">psi_vals</span><span class="o">**</span><span class="mi">2</span>
 
-# Compute the electron density and integrate it across all space
-rho_iner = func_interpolation(points=points)
+<span class="c1"># Compute the electron density and integrate it across all space</span>
+<span class="n">rho_iner</span> <span class="o">=</span> <span class="n">func_interpolation</span><span class="p">(</span><span class="n">points</span><span class="o">=</span><span class="n">points</span><span class="p">)</span>
 
-print(&quot;Compare interpolated and analytical electron density&quot;)
-print(f&quot;Maximum Absolute Different: {np.max(np.abs(rho_iner - rho))}&quot;)
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Compare interpolated and analytical electron density&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Maximum Absolute Different: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">rho_iner</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">rho</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -619,22 +619,22 @@ Maximum Absolute Different: 0.00024672773641038365
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Sample points uniformly in the xy-plane (z=0)
-x_grid = np.linspace(-3, 3, 50)
-y_grid = np.linspace(-3, 3, 50)
-x_grid, y_grid = np.meshgrid(x_grid, y_grid)
-x_grid = x_grid.flatten()
-y_grid = y_grid.flatten()
-z_grid = np.zeros_like(x_grid)
-points = np.array([x_grid, y_grid, z_grid]).T
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Sample points uniformly in the xy-plane (z=0)</span>
+<span class="n">x_grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+<span class="n">y_grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+<span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">)</span>
+<span class="n">x_grid</span> <span class="o">=</span> <span class="n">x_grid</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="n">y_grid</span> <span class="o">=</span> <span class="n">y_grid</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="n">z_grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x_grid</span><span class="p">)</span>
+<span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="n">z_grid</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
 
-# Interpolated gradient of electron density one the xy-plane
-grad_rho_iner = func_interpolation(points=points, deriv=1)
+<span class="c1"># Interpolated gradient of electron density one the xy-plane</span>
+<span class="n">grad_rho_iner</span> <span class="o">=</span> <span class="n">func_interpolation</span><span class="p">(</span><span class="n">points</span><span class="o">=</span><span class="n">points</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-print(&quot;For each point, the gradient is a vector with 3 components&quot;)
-print(f&quot;Shape of the gradient array for {len(points)} points: {grad_rho_iner.shape}\n&quot;)
-print(f&quot;In a planar molecule, the gradient in the molecular plane should not have a z-component&quot;)
-print(f&quot;Maximum z-component of the interpolated gradient: {np.max(np.abs(grad_rho_iner[:, 2]))}&quot;)
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;For each point, the gradient is a vector with 3 components&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shape of the gradient array for </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)</span><span class="si">}</span><span class="s2"> points: </span><span class="si">{</span><span class="n">grad_rho_iner</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;In a planar molecule, the gradient in the molecular plane should not have a z-component&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Maximum z-component of the interpolated gradient: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">grad_rho_iner</span><span class="p">[:,</span><span class="w"> </span><span class="mi">2</span><span class="p">]))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -657,22 +657,22 @@ Maximum z-component of the interpolated gradient: 0.00016216121124710116
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Compute psi values analytically
-s1_a_vals = np.sqrt(1 / np.pi) * np.exp(-np.linalg.norm(points - atcoords[0], axis=1))
-s1_b_vals = np.sqrt(1 / np.pi) * np.exp(-np.linalg.norm(points - atcoords[1], axis=1))
-psi_vals = N_num * (s1_a_vals + s1_b_vals)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute psi values analytically</span>
+<span class="n">s1_a_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">points</span> <span class="o">-</span> <span class="n">atcoords</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">s1_b_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">points</span> <span class="o">-</span> <span class="n">atcoords</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">psi_vals</span> <span class="o">=</span> <span class="n">N_num</span> <span class="o">*</span> <span class="p">(</span><span class="n">s1_a_vals</span> <span class="o">+</span> <span class="n">s1_b_vals</span><span class="p">)</span>
 
-# Compute the gradient of psi analytically
-s1_a_grad = s1_a_vals[:, np.newaxis] * (points - atcoords[0])
-s1_b_grad = s1_b_vals[:, np.newaxis] * (points - atcoords[1])
-psi_grad = N_num * (s1_a_grad + s1_b_grad)
+<span class="c1"># Compute the gradient of psi analytically</span>
+<span class="n">s1_a_grad</span> <span class="o">=</span> <span class="n">s1_a_vals</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">points</span> <span class="o">-</span> <span class="n">atcoords</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">s1_b_grad</span> <span class="o">=</span> <span class="n">s1_b_vals</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">points</span> <span class="o">-</span> <span class="n">atcoords</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">psi_grad</span> <span class="o">=</span> <span class="n">N_num</span> <span class="o">*</span> <span class="p">(</span><span class="n">s1_a_grad</span> <span class="o">+</span> <span class="n">s1_b_grad</span><span class="p">)</span>
 
-# Compute gradient of electron rho analytically
-rho_grad = -2 * psi_vals[:, np.newaxis] * psi_grad
+<span class="c1"># Compute gradient of electron rho analytically</span>
+<span class="n">rho_grad</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">psi_vals</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span> <span class="o">*</span> <span class="n">psi_grad</span>
 
-print(&quot;Compare interpolated and analytical electron density gradient&quot;)
-print(f&quot;Maximum Absolute Difference in any component: {np.max(np.abs(grad_rho_iner - rho_grad))}&quot;)
-print(f&quot;Mean Absolute Difference in any component: {np.mean(np.abs(grad_rho_iner - rho_grad))}&quot;)
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Compare interpolated and analytical electron density gradient&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Maximum Absolute Difference in any component: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">grad_rho_iner</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">rho_grad</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mean Absolute Difference in any component: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">grad_rho_iner</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">rho_grad</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -694,31 +694,31 @@ Mean Absolute Difference in any component: 0.005061691165558481
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># compute the norm of the difference between the interpolated and analytical gradient
-rho_error_norm = np.linalg.norm(grad_rho_iner - rho_grad, axis=1)
-# divide by the norm of the analytical gradient
-rho_error_norm /= np.linalg.norm(rho_grad, axis=1)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># compute the norm of the difference between the interpolated and analytical gradient</span>
+<span class="n">rho_error_norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">grad_rho_iner</span> <span class="o">-</span> <span class="n">rho_grad</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1"># divide by the norm of the analytical gradient</span>
+<span class="n">rho_error_norm</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">rho_grad</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-# create heatmap of the relative error
-rho_error_norm = rho_error_norm.reshape(50, 50)
-fig = plt.figure(figsize=(8, 6))
-ax1 = fig.add_subplot(111)
+<span class="c1"># create heatmap of the relative error</span>
+<span class="n">rho_error_norm</span> <span class="o">=</span> <span class="n">rho_error_norm</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
 
-# Adjust the limits to fit your data
-ax1.set_xlim((-3, 3))
-ax1.set_ylim((-3, 3))
+<span class="c1"># Adjust the limits to fit your data</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">((</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">((</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
 
-# Plot the error heatmap
-im = ax1.imshow(rho_error_norm, cmap=&quot;viridis&quot;, interpolation=&quot;none&quot;, extent=(-3, 3, -3, 3))
-fig.colorbar(im)
+<span class="c1"># Plot the error heatmap</span>
+<span class="n">im</span> <span class="o">=</span> <span class="n">ax1</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">rho_error_norm</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;viridis&quot;</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">)</span>
 
-# Set labels and title
-ax1.set_xlabel(&quot;X&quot;)
-ax1.set_ylabel(&quot;Y&quot;)
-ax1.set_title(
-    &quot;Relative Error of the Gradient of Electron Density for $H_2^+$ in the Molecular Plane&quot;
-)
-plt.show()
+<span class="c1"># Set labels and title</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Y&quot;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span>
+    <span class="s2">&quot;Relative Error of the Gradient of Electron Density for $H_2^+$ in the Molecular Plane&quot;</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -733,31 +733,31 @@ plt.show()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Create vectorial map of the interpolated and the analytical gradient
-fig = plt.figure(figsize=(8, 4))
-ax1 = fig.add_subplot(121)
-ax2 = fig.add_subplot(122)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create vectorial map of the interpolated and the analytical gradient</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">121</span><span class="p">)</span>
+<span class="n">ax2</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">122</span><span class="p">)</span>
 
-# Plot the vectorial map (omit the z-component) of the interpolated gradient
-ax1.quiver(points[:, 0], points[:, 1], grad_rho_iner[:, 0], grad_rho_iner[:, 1])
-# Adjust the limits to fit your data and set labels and title
-ax1.set_xlim((-3, 3))
-ax1.set_ylim((-3, 3))
-ax1.set_xlabel(&quot;X&quot;)
-ax1.set_ylabel(&quot;Y&quot;)
-ax1.set_title(&quot;Interpolated Gradient&quot;)
+<span class="c1"># Plot the vectorial map (omit the z-component) of the interpolated gradient</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">quiver</span><span class="p">(</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">points</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">grad_rho_iner</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">grad_rho_iner</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="c1"># Adjust the limits to fit your data and set labels and title</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">((</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">((</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Y&quot;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Interpolated Gradient&quot;</span><span class="p">)</span>
 
 
-# Plot the vectorial map (omit the z-component) of the analytical gradient
-ax2.quiver(points[:, 0], points[:, 1], rho_grad[:, 0], rho_grad[:, 1])
-# Adjust the limits to fit your data and set labels and title
-ax2.set_xlim((-3, 3))
-ax2.set_ylim((-3, 3))
-ax2.set_xlabel(&quot;X&quot;)
-ax2.set_ylabel(&quot;Y&quot;)
-ax2.set_title(&quot;Analytical Gradient&quot;)
+<span class="c1"># Plot the vectorial map (omit the z-component) of the analytical gradient</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">quiver</span><span class="p">(</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">points</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">rho_grad</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">rho_grad</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="c1"># Adjust the limits to fit your data and set labels and title</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">((</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">((</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Y&quot;</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Analytical Gradient&quot;</span><span class="p">)</span>
 
-plt.show()
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>

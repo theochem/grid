@@ -260,11 +260,11 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>from iodata import load_one
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">iodata</span> <span class="kn">import</span> <span class="n">load_one</span>
 
-mol = load_one(&quot;./ch2o_q+0.fchk&quot;)
+<span class="n">mol</span> <span class="o">=</span> <span class="n">load_one</span><span class="p">(</span><span class="s2">&quot;./ch2o_q+0.fchk&quot;</span><span class="p">)</span>
 
-print(&quot;Dipole Moments &quot;, mol.moments)
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Dipole Moments &quot;</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">moments</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -281,23 +281,23 @@ Dipole Moments  {(1, &#39;c&#39;): array([-9.39793529e-01,  2.44832724e-08, -2.0
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>from grid.becke import BeckeWeights
-from grid.molgrid import MolGrid
-from grid.onedgrid import GaussLegendre
-from grid.rtransform import BeckeRTransform
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">grid.becke</span> <span class="kn">import</span> <span class="n">BeckeWeights</span>
+<span class="kn">from</span> <span class="nn">grid.molgrid</span> <span class="kn">import</span> <span class="n">MolGrid</span>
+<span class="kn">from</span> <span class="nn">grid.onedgrid</span> <span class="kn">import</span> <span class="n">GaussLegendre</span>
+<span class="kn">from</span> <span class="nn">grid.rtransform</span> <span class="kn">import</span> <span class="n">BeckeRTransform</span>
 
-# Construct a radial grid
-oned_grid = GaussLegendre(npoints=150)
-radial_grid = BeckeRTransform(0.0, R=1.5).transform_1d_grid(oned_grid)  #BeckeRTransform(0.0, R=2.0).transform_1d_grid(oned_grid)
+<span class="c1"># Construct a radial grid</span>
+<span class="n">oned_grid</span> <span class="o">=</span> <span class="n">GaussLegendre</span><span class="p">(</span><span class="n">npoints</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+<span class="n">radial_grid</span> <span class="o">=</span> <span class="n">BeckeRTransform</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span><span class="o">.</span><span class="n">transform_1d_grid</span><span class="p">(</span><span class="n">oned_grid</span><span class="p">)</span>  <span class="c1">#BeckeRTransform(0.0, R=2.0).transform_1d_grid(oned_grid)</span>
 
-# Construct Molecular grid with angular degree of 50 for each atom.
-mol_grid = MolGrid.from_size(
-    atnums=mol.atnums,          # The atomic numbers of Formaldehyde
-    atcoords=mol.atcoords,      # The atomic coordinates of Formaldehyde
-    rgrid=radial_grid,          # Radial grid used to construct atomic grids over each carbon, and hydrogen.
-    size=130,                    # The angular degree of the atomic grid over each carbon, and hydrogen.
-    aim_weights=BeckeWeights(), # Atom-in molecular weights: Becke weights,
-)
+<span class="c1"># Construct Molecular grid with angular degree of 50 for each atom.</span>
+<span class="n">mol_grid</span> <span class="o">=</span> <span class="n">MolGrid</span><span class="o">.</span><span class="n">from_size</span><span class="p">(</span>
+    <span class="n">atnums</span><span class="o">=</span><span class="n">mol</span><span class="o">.</span><span class="n">atnums</span><span class="p">,</span>          <span class="c1"># The atomic numbers of Formaldehyde</span>
+    <span class="n">atcoords</span><span class="o">=</span><span class="n">mol</span><span class="o">.</span><span class="n">atcoords</span><span class="p">,</span>      <span class="c1"># The atomic coordinates of Formaldehyde</span>
+    <span class="n">rgrid</span><span class="o">=</span><span class="n">radial_grid</span><span class="p">,</span>          <span class="c1"># Radial grid used to construct atomic grids over each carbon, and hydrogen.</span>
+    <span class="n">size</span><span class="o">=</span><span class="mi">130</span><span class="p">,</span>                    <span class="c1"># The angular degree of the atomic grid over each carbon, and hydrogen.</span>
+    <span class="n">aim_weights</span><span class="o">=</span><span class="n">BeckeWeights</span><span class="p">(),</span> <span class="c1"># Atom-in molecular weights: Becke weights,</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -306,26 +306,26 @@ mol_grid = MolGrid.from_size(
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>import numpy as np
-from gbasis.wrappers import from_iodata
-from gbasis.evals.density import evaluate_density
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">gbasis.wrappers</span> <span class="kn">import</span> <span class="n">from_iodata</span>
+<span class="kn">from</span> <span class="nn">gbasis.evals.density</span> <span class="kn">import</span> <span class="n">evaluate_density</span>
 
-from grid.utils import dipole_moment_of_molecule
+<span class="kn">from</span> <span class="nn">grid.utils</span> <span class="kn">import</span> <span class="n">dipole_moment_of_molecule</span>
 
-# Construct molecular basis from wave-function information read by IOData
-basis = from_iodata(mol)
+<span class="c1"># Construct molecular basis from wave-function information read by IOData</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">from_iodata</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
 
-# Compute the electron density
-rdm = mol.one_rdms[&quot;scf&quot;]
-electron_density = evaluate_density(rdm, basis, mol_grid.points)
+<span class="c1"># Compute the electron density</span>
+<span class="n">rdm</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">one_rdms</span><span class="p">[</span><span class="s2">&quot;scf&quot;</span><span class="p">]</span>
+<span class="n">electron_density</span> <span class="o">=</span> <span class="n">evaluate_density</span><span class="p">(</span><span class="n">rdm</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">mol_grid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
 
-true = dipole_moment_of_molecule(mol_grid, electron_density, mol.atcoords, mol.atnums)
-desired = mol.moments[(1, &quot;c&quot;)]
-print(f&quot;Dipole moment calculated {true}&quot;)
-print(f&quot;Dipole moment true {desired}&quot;)
+<span class="n">true</span> <span class="o">=</span> <span class="n">dipole_moment_of_molecule</span><span class="p">(</span><span class="n">mol_grid</span><span class="p">,</span> <span class="n">electron_density</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">atcoords</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">atnums</span><span class="p">)</span>
+<span class="n">desired</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">moments</span><span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">)]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Dipole moment calculated </span><span class="si">{</span><span class="n">true</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Dipole moment true </span><span class="si">{</span><span class="n">desired</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-err = np.abs(true - desired)
-print(f&quot;Mean error {np.mean(err)} with maximum error {np.max(err)}&quot;)
+<span class="n">err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">true</span> <span class="o">-</span> <span class="n">desired</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mean error </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">}</span><span class="s2"> with maximum error </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <br/></pre></div>
 </div>
 </div>

@@ -248,16 +248,16 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from iodata import load_one
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">iodata</span> <span class="kn">import</span> <span class="n">load_one</span>
 
-# Get the atomic coordinates array to use as the center of the grid
-mol = load_one(&quot;He_t.fchk&quot;)
+<span class="c1"># Get the atomic coordinates array to use as the center of the grid</span>
+<span class="n">mol</span> <span class="o">=</span> <span class="n">load_one</span><span class="p">(</span><span class="s2">&quot;He_t.fchk&quot;</span><span class="p">)</span>
 
-center = mol.atcoords.flatten()
-print(f&quot;Atomic Coordinates: {mol.atcoords}&quot;)
-print(f&quot;Atomic numbers    : {mol.atnums}&quot;)
-print(f&quot;Alpha MO occupations: {mol.mo.occsa}&quot;)
-print(f&quot;Beta MO occupations : {mol.mo.occsb}&quot;)
+<span class="n">center</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">atcoords</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Atomic Coordinates: </span><span class="si">{</span><span class="n">mol</span><span class="o">.</span><span class="n">atcoords</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Atomic numbers    : </span><span class="si">{</span><span class="n">mol</span><span class="o">.</span><span class="n">atnums</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Alpha MO occupations: </span><span class="si">{</span><span class="n">mol</span><span class="o">.</span><span class="n">mo</span><span class="o">.</span><span class="n">occsa</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Beta MO occupations : </span><span class="si">{</span><span class="n">mol</span><span class="o">.</span><span class="n">mo</span><span class="o">.</span><span class="n">occsb</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -280,27 +280,27 @@ Beta MO occupations : [0. 0.]
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import numpy as np
-from grid import GaussLegendre, BeckeRTransform, AtomGrid
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">grid</span> <span class="kn">import</span> <span class="n">GaussLegendre</span><span class="p">,</span> <span class="n">BeckeRTransform</span><span class="p">,</span> <span class="n">AtomGrid</span>
 
-# construct a radial grid with 150 points
-oned = GaussLegendre(npoints=150)
-rgrid = BeckeRTransform(0.0, R=1.5).transform_1d_grid(oned)
+<span class="c1"># construct a radial grid with 150 points</span>
+<span class="n">oned</span> <span class="o">=</span> <span class="n">GaussLegendre</span><span class="p">(</span><span class="n">npoints</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+<span class="n">rgrid</span> <span class="o">=</span> <span class="n">BeckeRTransform</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span><span class="o">.</span><span class="n">transform_1d_grid</span><span class="p">(</span><span class="n">oned</span><span class="p">)</span>
 
-print(f&quot;Radial grid size : {rgrid.size}&quot;)
-print(f&quot;Radial grid r_min: {np.min(rgrid.points):.5f}&quot;)
-print(f&quot;Radial grid r_max: {np.max(rgrid.points):.5f}\n&quot;)
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Radial grid size : </span><span class="si">{</span><span class="n">rgrid</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Radial grid r_min: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">rgrid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Radial grid r_max: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">rgrid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
-# construct atomic grid
-atgrid = AtomGrid(rgrid, degrees=[22], center=center)
+<span class="c1"># construct atomic grid</span>
+<span class="n">atgrid</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="p">(</span><span class="n">rgrid</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="p">[</span><span class="mi">22</span><span class="p">],</span> <span class="n">center</span><span class="o">=</span><span class="n">center</span><span class="p">)</span>
 
-# atomic grid size = (radial grid size) * (angular grid size)
-print(f&quot;AtomGrid size          : {atgrid.size}&quot;)
-print(f&quot;AtomGrid points shape  : {atgrid.points.shape}&quot;)
-print(f&quot;AtomGrid weights shape : {atgrid.weights.shape}&quot;)
-print(f&quot;AtomGrid radial size   : {atgrid.rgrid.size}&quot;)
-print(f&quot;AtomGrid angular degree: {atgrid.degrees}&quot;)
-print(f&quot;AtomGrid center        : {atgrid.center}&quot;)
+<span class="c1"># atomic grid size = (radial grid size) * (angular grid size)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid size          : </span><span class="si">{</span><span class="n">atgrid</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid points shape  : </span><span class="si">{</span><span class="n">atgrid</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid weights shape : </span><span class="si">{</span><span class="n">atgrid</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid radial size   : </span><span class="si">{</span><span class="n">atgrid</span><span class="o">.</span><span class="n">rgrid</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid angular degree: </span><span class="si">{</span><span class="n">atgrid</span><span class="o">.</span><span class="n">degrees</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid center        : </span><span class="si">{</span><span class="n">atgrid</span><span class="o">.</span><span class="n">center</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -329,23 +329,23 @@ AtomGrid center        : [0. 0. 0.]
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from gbasis.wrappers import from_iodata
-from gbasis.evals.density import evaluate_density
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.wrappers</span> <span class="kn">import</span> <span class="n">from_iodata</span>
+<span class="kn">from</span> <span class="nn">gbasis.evals.density</span> <span class="kn">import</span> <span class="n">evaluate_density</span>
 
-# Check that the atomic grid is centered at the position of atomic nucleus
-assert np.all(mol.atcoords == atgrid.center)
+<span class="c1"># Check that the atomic grid is centered at the position of atomic nucleus</span>
+<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">mol</span><span class="o">.</span><span class="n">atcoords</span> <span class="o">==</span> <span class="n">atgrid</span><span class="o">.</span><span class="n">center</span><span class="p">)</span>
 
-# Construct molecular basis from wave-function information read by IOData
-basis = from_iodata(mol)
+<span class="c1"># Construct molecular basis from wave-function information read by IOData</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">from_iodata</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
 
-# Evaluate the electron density on the grid points
-rdm = mol.one_rdms[&quot;scf&quot;]
-dens = evaluate_density(rdm, basis, atgrid.points)
-print(f&quot;Shape of electron density array : {dens.shape}&quot;)
+<span class="c1"># Evaluate the electron density on the grid points</span>
+<span class="n">rdm</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">one_rdms</span><span class="p">[</span><span class="s2">&quot;scf&quot;</span><span class="p">]</span>
+<span class="n">dens</span> <span class="o">=</span> <span class="n">evaluate_density</span><span class="p">(</span><span class="n">rdm</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">atgrid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shape of electron density array : </span><span class="si">{</span><span class="n">dens</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-# Integrate electron density
-print(f&quot;Number of electrons in molecule : {np.sum(mol.atnums) - mol.charge}&quot;)
-print(f&quot;Integral of the electron density: {atgrid.integrate(dens)}&quot;)
+<span class="c1"># Integrate electron density</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of electrons in molecule : </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mol</span><span class="o">.</span><span class="n">atnums</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">mol</span><span class="o">.</span><span class="n">charge</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Integral of the electron density: </span><span class="si">{</span><span class="n">atgrid</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">dens</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -374,29 +374,29 @@ Integral of the electron density: 1.9999999911143622
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import matplotlib.pyplot as plt
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
-# Compute the radial electron density by angular integration
-radial_dens_1 = atgrid.integrate_angular_coordinates(dens)
-radial_dens_1 *= rgrid.points**2
+<span class="c1"># Compute the radial electron density by angular integration</span>
+<span class="n">radial_dens_1</span> <span class="o">=</span> <span class="n">atgrid</span><span class="o">.</span><span class="n">integrate_angular_coordinates</span><span class="p">(</span><span class="n">dens</span><span class="p">)</span>
+<span class="n">radial_dens_1</span> <span class="o">*=</span> <span class="n">rgrid</span><span class="o">.</span><span class="n">points</span><span class="o">**</span><span class="mi">2</span>
 
-# Compute the radial electron density by spherical average interpolation
-radial_dens_2 = atgrid.spherical_average(dens)(rgrid.points)
-radial_dens_2 *= 4 * np.pi * rgrid.points**2
+<span class="c1"># Compute the radial electron density by spherical average interpolation</span>
+<span class="n">radial_dens_2</span> <span class="o">=</span> <span class="n">atgrid</span><span class="o">.</span><span class="n">spherical_average</span><span class="p">(</span><span class="n">dens</span><span class="p">)(</span><span class="n">rgrid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
+<span class="n">radial_dens_2</span> <span class="o">*=</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">rgrid</span><span class="o">.</span><span class="n">points</span><span class="o">**</span><span class="mi">2</span>
 
-# Compare the two ways of computing radial electron density
-max_diff = np.max(np.abs(radial_dens_1 - radial_dens_2))
-print(f&quot;Max difference between radial_dens_1 and radial_dens_2: {max_diff}&quot;)
+<span class="c1"># Compare the two ways of computing radial electron density</span>
+<span class="n">max_diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">radial_dens_1</span> <span class="o">-</span> <span class="n">radial_dens_2</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max difference between radial_dens_1 and radial_dens_2: </span><span class="si">{</span><span class="n">max_diff</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-# Plot radial electron density distribution
-plt.plot(rgrid.points, radial_dens_1, c=&quot;r&quot;, marker=&quot;o&quot;, ls=&quot;&quot;, label=&quot;From angular integration&quot;)
-plt.plot(rgrid.points, radial_dens_2, c=&quot;k&quot;, label=&quot;From spherical average&quot;)
-plt.title(&quot;Radial Electron Density Distribution of He $(1s^{1}2s^{1})$&quot;, fontsize=14)
-plt.xlabel(&quot;r (bohr)&quot;, fontsize=12)
-plt.ylabel(r&quot;Radial $\rho(r)$&quot;, fontsize=12)
-plt.xlim(0, 10)
-plt.legend(frameon=False, fontsize=14)
-plt.show()
+<span class="c1"># Plot radial electron density distribution</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rgrid</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="n">radial_dens_1</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;From angular integration&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rgrid</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="n">radial_dens_2</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;From spherical average&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Radial Electron Density Distribution of He $(1s^</span><span class="si">{1}</span><span class="s2">2s^</span><span class="si">{1}</span><span class="s2">)$&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;r (bohr)&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;Radial $\rho(r)$&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -420,14 +420,14 @@ Max difference between radial_dens_1 and radial_dens_2: 2.220446049250313e-16
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from scipy.signal import find_peaks
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="kn">import</span> <span class="n">find_peaks</span>
 
-peaks, _ = find_peaks(radial_dens_1)
+<span class="n">peaks</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">find_peaks</span><span class="p">(</span><span class="n">radial_dens_1</span><span class="p">)</span>
 
-for i, peak in enumerate(peaks):
-    print(f&quot;Peak {i} of radial electron density has:&quot;)
-    print(f&quot;   radius = {rgrid.points[peak]:.5f} bohr&quot;)
-    print(f&quot;   radial density = {radial_dens_1[peak]:.5f} a.u.\n&quot;)
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">peak</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">peaks</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Peak </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> of radial electron density has:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   radius = </span><span class="si">{</span><span class="n">rgrid</span><span class="o">.</span><span class="n">points</span><span class="p">[</span><span class="n">peak</span><span class="p">]</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2"> bohr&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   radial density = </span><span class="si">{</span><span class="n">radial_dens_1</span><span class="p">[</span><span class="n">peak</span><span class="p">]</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2"> a.u.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -451,8 +451,8 @@ Peak 1 of radial electron density has:
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>print(f&quot;Number of electrons in atom            : {np.sum(mol.atnums) - mol.charge}&quot;)
-print(f&quot;Integral of the radial electron density: {rgrid.integrate(radial_dens_1)}&quot;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of electrons in atom            : </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mol</span><span class="o">.</span><span class="n">atnums</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">mol</span><span class="o">.</span><span class="n">charge</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Integral of the radial electron density: </span><span class="si">{</span><span class="n">rgrid</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">radial_dens_1</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -481,27 +481,27 @@ second grid can be either directly computed or obtained by interpolating from th
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Construct another radial grid with one less point
-oned = GaussLegendre(npoints=atgrid.rgrid.size - 1)
-rgrid = BeckeRTransform(0.0, R=1.5).transform_1d_grid(oned)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Construct another radial grid with one less point</span>
+<span class="n">oned</span> <span class="o">=</span> <span class="n">GaussLegendre</span><span class="p">(</span><span class="n">npoints</span><span class="o">=</span><span class="n">atgrid</span><span class="o">.</span><span class="n">rgrid</span><span class="o">.</span><span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">rgrid</span> <span class="o">=</span> <span class="n">BeckeRTransform</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span><span class="o">.</span><span class="n">transform_1d_grid</span><span class="p">(</span><span class="n">oned</span><span class="p">)</span>
 
-# Construct the second atomic grid (i.e., auxiliary grid) with the same angular degree
-atgrid_aux = AtomGrid(rgrid, degrees=[23])
+<span class="c1"># Construct the second atomic grid (i.e., auxiliary grid) with the same angular degree</span>
+<span class="n">atgrid_aux</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="p">(</span><span class="n">rgrid</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="p">[</span><span class="mi">23</span><span class="p">])</span>
 
-# interpolate the electron density on the auxiliary atomic gird points
-func_interpolate_dens = atgrid.interpolate(dens)
-dens_aux = func_interpolate_dens(atgrid_aux.points)
+<span class="c1"># interpolate the electron density on the auxiliary atomic gird points</span>
+<span class="n">func_interpolate_dens</span> <span class="o">=</span> <span class="n">atgrid</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">dens</span><span class="p">)</span>
+<span class="n">dens_aux</span> <span class="o">=</span> <span class="n">func_interpolate_dens</span><span class="p">(</span><span class="n">atgrid_aux</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
 
-classic_coulomb = 0.0
-# loop over grid points in the first grid
-for i in range(atgrid.size):
-    # compute its distance to all the points in the auxiliary atomgrid
-    distances = np.linalg.norm(atgrid.points[i] - atgrid_aux.points, axis=1)
-    # compute its Coulomb repulsion with the electron density at the auxiliary atomgrid points
-    coulomb_points = atgrid.weights[i] * dens[i] * dens_aux / distances / 2
-    classic_coulomb += atgrid_aux.integrate(coulomb_points)
+<span class="n">classic_coulomb</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="c1"># loop over grid points in the first grid</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">atgrid</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
+    <span class="c1"># compute its distance to all the points in the auxiliary atomgrid</span>
+    <span class="n">distances</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">atgrid</span><span class="o">.</span><span class="n">points</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">atgrid_aux</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c1"># compute its Coulomb repulsion with the electron density at the auxiliary atomgrid points</span>
+    <span class="n">coulomb_points</span> <span class="o">=</span> <span class="n">atgrid</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">dens</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">dens_aux</span> <span class="o">/</span> <span class="n">distances</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="n">classic_coulomb</span> <span class="o">+=</span> <span class="n">atgrid_aux</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">coulomb_points</span><span class="p">)</span>
 
-print(f&quot;Classic Coulomb Energy : {classic_coulomb} (hartree)&quot;)
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Classic Coulomb Energy : </span><span class="si">{</span><span class="n">classic_coulomb</span><span class="si">}</span><span class="s2"> (hartree)&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

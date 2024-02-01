@@ -255,36 +255,36 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[47]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from grid.angular import AngularGrid
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">grid.angular</span> <span class="kn">import</span> <span class="n">AngularGrid</span>
 
-# Make angular give specifying the degree
-degree = 28
-ang_grid_ll = AngularGrid(degree=degree)
-ang_grid_ss = AngularGrid(degree=degree, use_spherical=True)
-print(f&quot;Specified degree is {degree} but actual degree of the angular grid is:&quot;)
-print(f&quot;  - {ang_grid_ll.degree} for the Levedev-Laikov grid&quot;)
-print(f&quot;  - {ang_grid_ss.degree} for the symmetric spherical grid&quot;)
-print(&quot;&quot;)
+<span class="c1"># Make angular give specifying the degree</span>
+<span class="n">degree</span> <span class="o">=</span> <span class="mi">28</span>
+<span class="n">ang_grid_ll</span> <span class="o">=</span> <span class="n">AngularGrid</span><span class="p">(</span><span class="n">degree</span><span class="o">=</span><span class="n">degree</span><span class="p">)</span>
+<span class="n">ang_grid_ss</span> <span class="o">=</span> <span class="n">AngularGrid</span><span class="p">(</span><span class="n">degree</span><span class="o">=</span><span class="n">degree</span><span class="p">,</span> <span class="n">use_spherical</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Specified degree is </span><span class="si">{</span><span class="n">degree</span><span class="si">}</span><span class="s2"> but actual degree of the angular grid is:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - </span><span class="si">{</span><span class="n">ang_grid_ll</span><span class="o">.</span><span class="n">degree</span><span class="si">}</span><span class="s2"> for the Levedev-Laikov grid&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - </span><span class="si">{</span><span class="n">ang_grid_ss</span><span class="o">.</span><span class="n">degree</span><span class="si">}</span><span class="s2"> for the symmetric spherical grid&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
 
-# Using the same degree, the Levedev-Laikov and symmetric spherical grids
-# have different number of points
-print(f&quot;Number of points of the Levedev-Laikov grid: {ang_grid_ll.size}&quot;)
-print(f&quot;Number of points of the symmetric spherical grid: {ang_grid_ss.size}&quot;)
-print(&quot;&quot;)
+<span class="c1"># Using the same degree, the Levedev-Laikov and symmetric spherical grids</span>
+<span class="c1"># have different number of points</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of points of the Levedev-Laikov grid: </span><span class="si">{</span><span class="n">ang_grid_ll</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of points of the symmetric spherical grid: </span><span class="si">{</span><span class="n">ang_grid_ss</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
 
-# Make angular give specifying the number of points
-size = 300
-ang_grid_ll = AngularGrid(size=size)
-print(f&quot;Specified number of points (Levedev-Laikov grid) is: {size}&quot;)
-print(f&quot;Actual number of points of the angular grid {ang_grid_ll.size}&quot;)
-print(&quot;&quot;)
+<span class="c1"># Make angular give specifying the number of points</span>
+<span class="n">size</span> <span class="o">=</span> <span class="mi">300</span>
+<span class="n">ang_grid_ll</span> <span class="o">=</span> <span class="n">AngularGrid</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Specified number of points (Levedev-Laikov grid) is: </span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Actual number of points of the angular grid </span><span class="si">{</span><span class="n">ang_grid_ll</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
 
-# The angular grid can be specified from the points and weights:
-points = ang_grid_ll.points
-weights = ang_grid_ll.weights
-ang_grid = AngularGrid(points=points, weights=weights)
-print(f&quot;Angular grid was set from {ang_grid.size} points and weights&quot;)
-print(f&quot;This grid has not specified degree!!!&quot;)
+<span class="c1"># The angular grid can be specified from the points and weights:</span>
+<span class="n">points</span> <span class="o">=</span> <span class="n">ang_grid_ll</span><span class="o">.</span><span class="n">points</span>
+<span class="n">weights</span> <span class="o">=</span> <span class="n">ang_grid_ll</span><span class="o">.</span><span class="n">weights</span>
+<span class="n">ang_grid</span> <span class="o">=</span> <span class="n">AngularGrid</span><span class="p">(</span><span class="n">points</span><span class="o">=</span><span class="n">points</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Angular grid was set from </span><span class="si">{</span><span class="n">ang_grid</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2"> points and weights&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;This grid has not specified degree!!!&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -312,37 +312,37 @@ This grid has not specified degree!!!
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%matplotlib inline
-import numpy as np
-import matplotlib.pyplot as plt
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
-# Angular grid points are on the unit sphere.
-norm_ll = np.linalg.norm(ang_grid_ll.points, axis=1)
-norm_ss = np.linalg.norm(ang_grid_ss.points, axis=1)
-print(f&quot;Norm of Levedev-Laikov grid points is all one: {np.all(np.abs(norm_ll - 1.0) &lt; 1e-8)}&quot;)
-print(f&quot;Norm of symmetric spherical grid points is all one: {np.all(np.abs(norm_ss - 1.0) &lt; 1e-8)}&quot;)
+<span class="c1"># Angular grid points are on the unit sphere.</span>
+<span class="n">norm_ll</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">ang_grid_ll</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">norm_ss</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">ang_grid_ss</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Norm of Levedev-Laikov grid points is all one: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">norm_ll</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">1.0</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">1e-8</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Norm of symmetric spherical grid points is all one: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">norm_ss</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">1.0</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">1e-8</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-# Plot of the angular grid points of the Levedev-Laikov grid
-fig = plt.figure(figsize=(12, 6))
+<span class="c1"># Plot of the angular grid points of the Levedev-Laikov grid</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
 
-# Customize the ticks for the x, y, and z axes for the entire figure
-ax1 = fig.add_subplot(121, projection=&quot;3d&quot;)
-ax1.set_title(f&quot;Levedev-Laikov Grid (size={ang_grid_ll.size})&quot;)
-x, y, z = ang_grid_ll.points.T
-ax1.scatter(x, y, z, c=&quot;r&quot;, marker=&quot;o&quot;)
+<span class="c1"># Customize the ticks for the x, y, and z axes for the entire figure</span>
+<span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">121</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s2">&quot;3d&quot;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Levedev-Laikov Grid (size=</span><span class="si">{</span><span class="n">ang_grid_ll</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">ang_grid_ll</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">T</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">)</span>
 
-# Plot of the angular grid points of the symmetric spherical grid
-ax2 = fig.add_subplot(122, projection=&quot;3d&quot;)
-ax2.set_title(f&quot;Symmetric Spherical Grid (size={ang_grid_ss.size})&quot;)
-x, y, z = ang_grid_ss.points.T
-ax2.scatter(x, y, z, c=&quot;b&quot;, marker=&quot;o&quot;)
+<span class="c1"># Plot of the angular grid points of the symmetric spherical grid</span>
+<span class="n">ax2</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">122</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s2">&quot;3d&quot;</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Symmetric Spherical Grid (size=</span><span class="si">{</span><span class="n">ang_grid_ss</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">ang_grid_ss</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">T</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">)</span>
 
-xticks = yticks = zticks = np.arange(-1.0, 1.1, 0.5)
-for ax in fig.axes:
-    ax.set_xticks(xticks)
-    ax.set_yticks(yticks)
-    ax.set_zticks(zticks)
-plt.show()
+<span class="n">xticks</span> <span class="o">=</span> <span class="n">yticks</span> <span class="o">=</span> <span class="n">zticks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">:</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">xticks</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">yticks</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_zticks</span><span class="p">(</span><span class="n">zticks</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -372,17 +372,17 @@ Norm of symmetric spherical grid points is all one: True
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Integrate using Levedev-Laikov grid
-integrand = np.ones(ang_grid_ll.size)
-integral_ll = ang_grid_ll.integrate(integrand)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Integrate using Levedev-Laikov grid</span>
+<span class="n">integrand</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">ang_grid_ll</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+<span class="n">integral_ll</span> <span class="o">=</span> <span class="n">ang_grid_ll</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">integrand</span><span class="p">)</span>
 
-# Integrate using symmetric spherical grid
-integrand = np.ones(ang_grid_ss.size)
-integral_ss = ang_grid_ss.integrate(integrand)
+<span class="c1"># Integrate using symmetric spherical grid</span>
+<span class="n">integrand</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">ang_grid_ss</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+<span class="n">integral_ss</span> <span class="o">=</span> <span class="n">ang_grid_ss</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">integrand</span><span class="p">)</span>
 
-print(f&quot;Analytical Integration (4xpi): {4 * np.pi: .9f}&quot;)
-print(f&quot;Numerical Integration (Levedev-Laikov grid)     : {integral_ll: .9f}&quot;)
-print(f&quot;Numerical Integration (Symmetric Spherical grid): {integral_ss: .9f}&quot;)
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Analytical Integration (4xpi): </span><span class="si">{</span><span class="mi">4</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="si">:</span><span class="s2"> .9f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Numerical Integration (Levedev-Laikov grid)     : </span><span class="si">{</span><span class="n">integral_ll</span><span class="si">:</span><span class="s2"> .9f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Numerical Integration (Symmetric Spherical grid): </span><span class="si">{</span><span class="n">integral_ss</span><span class="si">:</span><span class="s2"> .9f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -409,51 +409,51 @@ Numerical Integration (Symmetric Spherical grid):  12.566370614
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from grid.utils import convert_cart_to_sph, generate_real_spherical_harmonics
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">grid.utils</span> <span class="kn">import</span> <span class="n">convert_cart_to_sph</span><span class="p">,</span> <span class="n">generate_real_spherical_harmonics</span>
 
-# Convert from cartesian to spherical (theta, phi) coordinates, Levedev-Laikov grid
-_, theta_ll, phi_ll = convert_cart_to_sph(ang_grid_ll.points).T
-# Convert from cartesian to spherical (theta, phi) coordinates, symmetric spherical grid
-_, theta_ss, phi_ss = convert_cart_to_sph(ang_grid_ss.points).T
+<span class="c1"># Convert from cartesian to spherical (theta, phi) coordinates, Levedev-Laikov grid</span>
+<span class="n">_</span><span class="p">,</span> <span class="n">theta_ll</span><span class="p">,</span> <span class="n">phi_ll</span> <span class="o">=</span> <span class="n">convert_cart_to_sph</span><span class="p">(</span><span class="n">ang_grid_ll</span><span class="o">.</span><span class="n">points</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+<span class="c1"># Convert from cartesian to spherical (theta, phi) coordinates, symmetric spherical grid</span>
+<span class="n">_</span><span class="p">,</span> <span class="n">theta_ss</span><span class="p">,</span> <span class="n">phi_ss</span> <span class="o">=</span> <span class="n">convert_cart_to_sph</span><span class="p">(</span><span class="n">ang_grid_ss</span><span class="o">.</span><span class="n">points</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
 
-print(&quot;Levedev-Laikov grid:&quot;)
-print(f&quot;Minimum and Maximum of theta coordinate: {np.min(theta_ll)} and {np.max(theta_ll)}&quot;)
-print(f&quot;Minimum and Maximum of phi coordinate: {np.min(phi_ss)} and {np.max(phi_ll)}\n&quot;)
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Levedev-Laikov grid:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Minimum and Maximum of theta coordinate: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">theta_ll</span><span class="p">)</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">theta_ll</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Minimum and Maximum of phi coordinate: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">phi_ss</span><span class="p">)</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">phi_ll</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
-print(&quot;Symmetric spherical grid:&quot;)
-print(f&quot;Minimum and Maximum of theta coordinate: {np.min(theta_ss)} and {np.max(theta_ss)}&quot;)
-print(f&quot;Minimum and Maximum of phi coordinate: {np.min(phi_ss)} and {np.max(phi_ss)}\n&quot;)
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Symmetric spherical grid:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Minimum and Maximum of theta coordinate: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">theta_ss</span><span class="p">)</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">theta_ss</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Minimum and Maximum of phi coordinate: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">phi_ss</span><span class="p">)</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">phi_ss</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
-# Generate all spherical harmonics up to order l=2
-sph_harmonics_ll = generate_real_spherical_harmonics(2, theta_ll, phi_ll)
-sph_harmonics_ss = generate_real_spherical_harmonics(2, theta_ss, phi_ss)
+<span class="c1"># Generate all spherical harmonics up to order l=2</span>
+<span class="n">sph_harmonics_ll</span> <span class="o">=</span> <span class="n">generate_real_spherical_harmonics</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">theta_ll</span><span class="p">,</span> <span class="n">phi_ll</span><span class="p">)</span>
+<span class="n">sph_harmonics_ss</span> <span class="o">=</span> <span class="n">generate_real_spherical_harmonics</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">theta_ss</span><span class="p">,</span> <span class="n">phi_ss</span><span class="p">)</span>
 
-# Orders are:
-orders = [[0, 0], [1, 0], [1, 1], [1, -1], [2, 0], [2, 1], [2, -1], [2, 2], [2, -2]]
+<span class="c1"># Orders are:</span>
+<span class="n">orders</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">]]</span>
 
-# Calculate the integral of each spherical harmonic over the angular grid
-results = []
-for sph_harmonic_i, sph_harm in orders:
-    integral_ll = ang_grid_ll.integrate(sph_harmonics_ll[sph_harmonic_i])
-    integral_ss = ang_grid_ss.integrate(sph_harmonics_ss[sph_harmonic_i])
-    results.append([(sph_harmonic_i, sph_harm), integral_ll, integral_ss])
+<span class="c1"># Calculate the integral of each spherical harmonic over the angular grid</span>
+<span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">sph_harmonic_i</span><span class="p">,</span> <span class="n">sph_harm</span> <span class="ow">in</span> <span class="n">orders</span><span class="p">:</span>
+    <span class="n">integral_ll</span> <span class="o">=</span> <span class="n">ang_grid_ll</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">sph_harmonics_ll</span><span class="p">[</span><span class="n">sph_harmonic_i</span><span class="p">])</span>
+    <span class="n">integral_ss</span> <span class="o">=</span> <span class="n">ang_grid_ss</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">sph_harmonics_ss</span><span class="p">[</span><span class="n">sph_harmonic_i</span><span class="p">])</span>
+    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">([(</span><span class="n">sph_harmonic_i</span><span class="p">,</span> <span class="n">sph_harm</span><span class="p">),</span> <span class="n">integral_ll</span><span class="p">,</span> <span class="n">integral_ss</span><span class="p">])</span>
 
-# Print the results in a table
-table_width = 82
-width = 25
-divide = &quot;|&quot;
-title_ll = &quot;Levedev-Laikov grid&quot;
-title_ss = &quot;Symmetric spherical grid&quot;
-print(&quot;Results of the integration of the spherical harmonics over the angular grid&quot;)
-print(&quot;-&quot; * table_width)
-print(f&quot;{divide:&lt;{width}} {divide}{title_ll:&gt;{width}} {divide} {title_ss:&gt;{width}} {divide}&quot;)
-print(&quot;-&quot; * table_width)
-for sph_harmonic_i in results:
-    sph_harm = f&quot;Y_{sph_harmonic_i[0]}&quot;
-    print(
-        f&quot;{divide}{sph_harm:^{width}}{divide}{sph_harmonic_i[1]:&gt;{width}.16f} {divide} {sph_harmonic_i[2]:&gt;{width}.16f} {divide}&quot;
-    )
-print(&quot;-&quot; * table_width)
+<span class="c1"># Print the results in a table</span>
+<span class="n">table_width</span> <span class="o">=</span> <span class="mi">82</span>
+<span class="n">width</span> <span class="o">=</span> <span class="mi">25</span>
+<span class="n">divide</span> <span class="o">=</span> <span class="s2">&quot;|&quot;</span>
+<span class="n">title_ll</span> <span class="o">=</span> <span class="s2">&quot;Levedev-Laikov grid&quot;</span>
+<span class="n">title_ss</span> <span class="o">=</span> <span class="s2">&quot;Symmetric spherical grid&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Results of the integration of the spherical harmonics over the angular grid&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="n">table_width</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">divide</span><span class="si">:</span><span class="s2">&lt;</span><span class="si">{</span><span class="n">width</span><span class="si">}}</span><span class="s2"> </span><span class="si">{</span><span class="n">divide</span><span class="si">}{</span><span class="n">title_ll</span><span class="si">:</span><span class="s2">&gt;</span><span class="si">{</span><span class="n">width</span><span class="si">}}</span><span class="s2"> </span><span class="si">{</span><span class="n">divide</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">title_ss</span><span class="si">:</span><span class="s2">&gt;</span><span class="si">{</span><span class="n">width</span><span class="si">}}</span><span class="s2"> </span><span class="si">{</span><span class="n">divide</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="n">table_width</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">sph_harmonic_i</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+    <span class="n">sph_harm</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Y_</span><span class="si">{</span><span class="n">sph_harmonic_i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">divide</span><span class="si">}{</span><span class="n">sph_harm</span><span class="si">:</span><span class="s2">^</span><span class="si">{</span><span class="n">width</span><span class="si">}}{</span><span class="n">divide</span><span class="si">}{</span><span class="n">sph_harmonic_i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">&gt;</span><span class="si">{</span><span class="n">width</span><span class="si">}</span><span class="s2">.16f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">divide</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">sph_harmonic_i</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">:</span><span class="s2">&gt;</span><span class="si">{</span><span class="n">width</span><span class="si">}</span><span class="s2">.16f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">divide</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="n">table_width</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -496,11 +496,11 @@ Results of the integration of the spherical harmonics over the angular grid
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Show that real spherical harmonics are orthonormal
-for i, sph_harmonic_i in enumerate(sph_harmonics_ll):
-    for j, sph_harmonic_j in list(enumerate(sph_harmonics_ll))[i:]:
-        value = ang_grid_ll.integrate(sph_harmonic_i * sph_harmonic_j)
-        print(f&quot;Integral of Y{orders[i]} x Y{orders[j]} over the angular grid is: {value: .9f}&quot;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Show that real spherical harmonics are orthonormal</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">sph_harmonic_i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sph_harmonics_ll</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">sph_harmonic_j</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="n">sph_harmonics_ll</span><span class="p">))[</span><span class="n">i</span><span class="p">:]:</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">ang_grid_ll</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">sph_harmonic_i</span> <span class="o">*</span> <span class="n">sph_harmonic_j</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Integral of Y</span><span class="si">{</span><span class="n">orders</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2"> x Y</span><span class="si">{</span><span class="n">orders</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="si">}</span><span class="s2"> over the angular grid is: </span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s2"> .9f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
