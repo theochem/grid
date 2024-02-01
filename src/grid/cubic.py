@@ -974,7 +974,7 @@ class UniformGrid(_HyperRectangleGrid):
             raise ValueError("The number of atomic numbers and atom coordinates should equal.")
         if data.size != len(self.points):
             raise ValueError(
-                f"Argument data should have the same size as the grid {data.size}!={len(self.points)}"
+                f"`data` should have the same size as the grid {data.size}!={len(self.points)}"
             )
         if pseudo_numbers is None:
             pseudo_numbers = atnums.astype(float)
