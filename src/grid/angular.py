@@ -286,16 +286,17 @@ SPHERICAL_CACHE = {}
 class AngularGrid(Grid):
     r"""Angular grid for integrating functions on the unit sphere.
 
-    This class numerically evaluates the integral of a function
-    :math:`f: S^2 \rightarrow \mathbb{R}` on the unit-sphere as follows:
+    This class numerically evaluates the surface integral of a function
+    :math:`f: S^2 \rightarrow \mathbb{R}` over the unit-sphere:
 
     .. math::
-        \int_{S^2} f   = \int_0^{2\pi} \int_0^\pi f(\theta, \phi) \sin(\phi)
+        \int_{S^2} f d\Omega  = \int_0^{2\pi} \int_0^\pi f(\theta, \phi) \sin(\phi)
          d\theta d\phi \approx \sum_{i}^{N} w_i f(\phi_i, \theta_i),
 
-    where :math:`S^2` is the unit-sphere, :math:`\theta_i \in [0, 2\pi]`
-    and :math:`\phi_i \in [0, \pi)` are quadrature points and :math:`w^{ang}_i`
-    are the quadrature weights of :math:`N` grid points.
+    where :math:`S^2` is the unit-sphere discretized by :math:`\theta_i \in [0, 2\pi]`
+    and :math:`\phi_i \in [0, \pi)` and quadrature points and :math:`w^{ang}_i`
+    are the quadrature weights of :math:`N` grid points. Just to clarify, the
+    :math:`4\pi` is included in the integration weights.
 
     Two types of angular grids are supported: Lebedev-Laikov grid and symmetric
     spherical t-design. Specifically, for spherical t-design, the weights are constant
