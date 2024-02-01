@@ -47,12 +47,16 @@ class TestLebedev(TestCase):
         """Consistency tests from old grid."""
         for i in LEBEDEV_NPOINTS:
             assert_equal(
-                AngularGrid._get_size_and_degree(degree=LEBEDEV_NPOINTS[i]),
+                AngularGrid._get_size_and_degree(
+                    degree=LEBEDEV_NPOINTS[i], size=None, method="lebedev"
+                ),
                 (LEBEDEV_NPOINTS[i], i),
             )
         for j in LEBEDEV_DEGREES:
             assert_equal(
-                AngularGrid._get_size_and_degree(size=LEBEDEV_DEGREES[j]),
+                AngularGrid._get_size_and_degree(
+                    degree=None, size=LEBEDEV_DEGREES[j], method="lebedev"
+                ),
                 (j, LEBEDEV_DEGREES[j]),
             )
 
@@ -69,19 +73,19 @@ class TestLebedev(TestCase):
         with pytest.warns(UserWarning, match="Lebedev weights are negative*"):
             for i in degrees:
                 AngularGrid(degree=i)
-                ref_d = AngularGrid._get_size_and_degree(degree=i)[0]
+                ref_d = AngularGrid._get_size_and_degree(degree=i, size=None, method="lebedev")[0]
                 assert ref_d in LEBEDEV_CACHE
 
     def test_convert_lebedev_sizes_to_degrees(self):
         """Test size to degree conversion."""
         # first test
         nums = [38, 50, 74, 86, 110, 38, 50, 74]
-        degs = AngularGrid.convert_angular_sizes_to_degrees(nums)
+        degs = AngularGrid.convert_angular_sizes_to_degrees(nums, method="lebedev")
         ref_degs = [9, 11, 13, 15, 17, 9, 11, 13]
         assert_array_equal(degs, ref_degs)
         # second test
         nums = [6]
-        degs = AngularGrid.convert_angular_sizes_to_degrees(nums)
+        degs = AngularGrid.convert_angular_sizes_to_degrees(nums, method="lebedev")
         ref_degs = [3]
         assert_array_equal(degs, ref_degs)
 
@@ -89,29 +93,31 @@ class TestLebedev(TestCase):
         """Tests for errors and warning."""
         # low level function tests
         with self.assertRaises(ValueError):
-            AngularGrid._get_size_and_degree()
+            AngularGrid._get_size_and_degree(degree=None, size=None, method="gibberish")
         with self.assertRaises(ValueError):
-            AngularGrid._get_size_and_degree(degree=-1)
+            AngularGrid._get_size_and_degree(degree=None, size=None, method="lebedev")
         with self.assertRaises(ValueError):
-            AngularGrid._get_size_and_degree(degree=132)
+            AngularGrid._get_size_and_degree(degree=-1, size=None, method="lebedev")
         with self.assertRaises(ValueError):
-            AngularGrid._get_size_and_degree(size=-1)
+            AngularGrid._get_size_and_degree(degree=132, size=None, method="lebedev")
         with self.assertRaises(ValueError):
-            AngularGrid._get_size_and_degree(size=6000)
+            AngularGrid._get_size_and_degree(degree=None, size=-1, method="lebedev")
+        with self.assertRaises(ValueError):
+            AngularGrid._get_size_and_degree(degree=None, size=6000, method="lebedev")
         with self.assertWarns(RuntimeWarning):
-            AngularGrid._get_size_and_degree(degree=5, size=10)
+            AngularGrid._get_size_and_degree(degree=5, size=10, method="lebedev")
         # load lebedev grid npz file
         with self.assertRaises(ValueError):
-            AngularGrid._load_precomputed_angular_grid(degree=2, size=6, method=False)
+            AngularGrid._load_precomputed_angular_grid(degree=2, size=6, method="lebedev")
         with self.assertRaises(ValueError):
-            AngularGrid._load_precomputed_angular_grid(degree=3, size=2, method=False)
+            AngularGrid._load_precomputed_angular_grid(degree=3, size=2, method="lebedev")
         # high level function tests
         with self.assertRaises(ValueError):
-            AngularGrid()
+            AngularGrid(degree=None)
         with self.assertRaises(ValueError):
-            AngularGrid(size=6000)
+            AngularGrid(degree=None, size=6000)
         with self.assertRaises(ValueError):
-            AngularGrid(size=-1)
+            AngularGrid(degree=None, size=-1)
         with self.assertRaises(ValueError):
             AngularGrid(degree=132)
         with self.assertRaises(ValueError):

@@ -69,6 +69,7 @@ from bisect import bisect_left
 
 import numpy as np
 from importlib_resources import files
+from typing import Union
 
 from grid.basegrid import Grid
 
@@ -305,30 +306,24 @@ class AngularGrid(Grid):
 
     def __init__(
         self,
-        degree: int = None,
-        size: int = None,
+        degree: Union[int, None],
+        size: Union[int, None] = None,
         cache: bool = True,
         method: str = "lebedev",
     ):
-        r"""Generate angular grid for a given degree and/or size.
-
-        Three choices to construct this grid:
-
-        1. Specify maximum degree of spherical harmonics that the angular grid can
-           integrate accurately on a unit sphere.
-        2. The number of points (size) wanted in the grid. The size corresponds
-           to a maximum degree.
+        r"""Generate angular grid for a given degree or size.
 
         Parameters
         ----------
-        degree : int, optional
-            Maximum angular degree :math:`l` of spherical harmonics that the grid
-            can integrate accurately. If the grid corresponding to the given angular
-            degree is not supported, the next largest degree is used.
-        size : int, optional
-            Number of grid points. If the grid corresponding to the given size is
+        degree : int or None
+            Maximum angular degree :math:`l` of spherical harmonics that the angular grid
+            can integrate accurately. If the angular grid corresponding to the given angular
+            degree is not supported, the next largest degree is used. Use None, if `size` is given.
+        size : int or None, optional
+            Number of angular grid points. If the angular grid corresponding to the given size is
             not supported, the next largest size is used. If both degree and size are given,
-            degree is used for constructing the grid.
+            degree is used for constructing the grid. Use None, if `degree` is given. If both
+            `degree` and `size` are given `degree` is used for constructing the grid.
         cache : bool, optional
             If True, then store the points and weights of the AngularGrid in cache
             to avoid duplicate grids that have the same `degree`.
@@ -339,7 +334,7 @@ class AngularGrid(Grid):
         Returns
         -------
         AngularGrid
-            An angular grid with points and weights on a unit sphere.
+            An instance of angular grid with points and weights on a unit sphere.
 
         Notes
         -----
@@ -367,13 +362,13 @@ class AngularGrid(Grid):
         else:
             points, weights = cache_dict[degree]
         self._degree = degree
-        # Multiply weights by 4 pi, so that the spherical harmonics are orthonormalized,
+        # Multiply weights by 4 pi, so that the spherical harmonics are orthonormal,
         #   etc. \int Y_l1 Y_l2 = \delta_{l1, l2}
         super().__init__(points, weights * 4 * np.pi)
 
         if method == "lebedev" and np.any(weights < 0.0):
             # Lebedev degrees 13, 25, 27 have negative weights. Symmetric spherical t-design
-            # have positive weights.
+            # have positive weights (see https://github.com/theochem/grid/issues/158)
             warnings.warn(
                 "Lebedev weights are negative which can introduce round-off errors.", stacklevel=2
             )
@@ -391,7 +386,7 @@ class AngularGrid(Grid):
         return self._method
 
     @staticmethod
-    def convert_angular_sizes_to_degrees(sizes: np.ndarray, method: str = "lebedev"):
+    def convert_angular_sizes_to_degrees(sizes: np.ndarray, method: str):
         """
         Convert given Lebedev/Spherical design grid sizes to degrees.
 
@@ -399,7 +394,7 @@ class AngularGrid(Grid):
         ----------
         sizes : ndarray[int]
             Sequence of angular grid sizes (e.g., number of points for each atomic shell).
-        method: str, optional
+        method: str
             Method for constructing the angular grid. Options are "lebedev" (for Lebedev-Laikov)
             and "spherical" (for symmetric spherical t-design).
 
@@ -419,21 +414,22 @@ class AngularGrid(Grid):
         return degrees
 
     @staticmethod
-    def _get_size_and_degree(degree: int = None, size: int = None, method: str = "lebedev"):
+    def _get_size_and_degree(degree: Union[int, None], size: Union[int, None], method: str):
         """
         Map the given degree and/or size to the degree and size of a supported angular grid.
 
         Parameters
         ----------
-        degree : int, optional
+        degree : int or None
             Maximum angular degree :math:`l` of spherical harmonics that the angular grid
             can integrate accurately. If the angular grid corresponding to the given angular
-            degree is not supported, the next largest degree is used.
-        size : int, optional
+            degree is not supported, the next largest degree is used. Use None, if `size` is given.
+        size : int or None
             Number of angular grid points. If the angular grid corresponding to the given size is
             not supported, the next largest size is used. If both degree and size are given,
-            degree is used for constructing the grid.
-        method: str, optional
+            degree is used for constructing the grid. Use None, if `degree` is given. If both
+            `degree` and `size` are given `degree` is used for constructing the grid.
+        method: str
             Method for constructing the angular grid. Options are "lebedev" (for Lebedev-Laikov)
             and "spherical" (for symmetric spherical t-design).
 
@@ -441,7 +437,8 @@ class AngularGrid(Grid):
         -------
         (int, int)
             Degree and size of a supported angular grid (equal to or larger than the
-            requested grid).
+            given degree or size). If both `degree` and `size` are given `degree` is used for
+            assigning the degree and size.
 
         """
         # assign the dictionary of degrees and number of points to use
@@ -452,12 +449,19 @@ class AngularGrid(Grid):
         else:
             raise ValueError(f"Method {method} is not supported, choose 'lebedev' or 'spherical'")
 
+        # check whether degree and size are valid
+        if not (degree is None or (isinstance(degree, (int, np.integer)) and degree >= 0)):
+            raise ValueError(f"Argument degree should be a positive integer or None, got {degree}!")
+        if not (size is None or (isinstance(size, (int, np.integer)) and size >= 0)):
+            raise ValueError(f"Argument size should be a positive integer or None, got {size}!")
+
         if degree and size:
             warnings.warn(
                 "Both degree and size arguments are given, so only degree is used!",
                 RuntimeWarning,
                 stacklevel=2,
             )
+
         if degree is not None:
             ang_degs = list(dict_degrees.keys())
             max_degree = max(ang_degs)
@@ -468,7 +472,8 @@ class AngularGrid(Grid):
             # match the given degree to the existing angular degree or the next largest degree
             degree = degree if degree in dict_degrees else ang_degs[bisect_left(ang_degs, degree)]
             return degree, dict_degrees[degree]
-        elif size:
+
+        elif size is not None:
             ang_npts = list(dict_npoints.keys())
             max_size = max(ang_npts)
             if size < 0 or size > max_size:
@@ -478,15 +483,16 @@ class AngularGrid(Grid):
             # match the given size to the existing angular size or the next largest size
             size = size if size in dict_npoints else ang_npts[bisect_left(ang_npts, size)]
             return dict_npoints[size], size
+
         else:
-            raise ValueError("Provide degree and/or size arguments!")
+            raise ValueError(
+                "Both degree and size cannot be None, got degree={degree} and size={size}!"
+            )
 
     @staticmethod
-    def _load_precomputed_angular_grid(degree: int, size: int, method: str = "lebedev"):
+    def _load_precomputed_angular_grid(degree: int, size: int, method: str):
         """
         Load the .npz file containing the pre-computed angular grid points and weights.
-
-        Either loads Lebedev-Laikov grid or the symmetric spherical t-design grid.
 
         Parameters
         ----------
@@ -494,9 +500,8 @@ class AngularGrid(Grid):
             Maximum angular degree :math:`l` of spherical harmonics that the angular grid
             can integrate accurately.
         size : int
-            Number of angular grid points. If the angular grid corresponding to the given size is
-            not supported, the next largest size is used.
-        method: str, optional
+            Number of angular grid points.
+        method: str
             Method for constructing the angular grid. Options are "lebedev" (for Lebedev-Laikov)
             and "spherical" (for symmetric spherical t-design).
 
@@ -510,21 +515,34 @@ class AngularGrid(Grid):
         # assign the dictionary of degrees and number of points to use
         if method == "lebedev":
             dict_degrees, dict_npoints = LEBEDEV_DEGREES, LEBEDEV_NPOINTS
-            ang_type, file_path = "lebedev", "grid.data.lebedev"
+            file_path = "grid.data.lebedev"
         elif method == "spherical":
             dict_degrees, dict_npoints = SPHERICAL_DEGREES, SPHERICAL_NPOINTS
-            ang_type, file_path = "spherical", "grid.data.spherical_design"
+            file_path = "grid.data.spherical_design"
         else:
             raise ValueError(f"Method {method} is not supported, choose 'lebedev' or 'spherical'")
 
-        # check given degree & size
+        # check whether degree and size are valid
+        if not (degree is None or (isinstance(degree, (int, np.integer)) and degree >= 0)):
+            raise ValueError(f"Argument degree should be a positive integer or None, got {degree}!")
+        if not (size is None or (isinstance(size, (int, np.integer)) and size >= 0)):
+            raise ValueError(f"Argument size should be a positive integer or None, got {size}!")
+
+        # check whether degree & size are supported
         if degree not in dict_degrees:
             raise ValueError(f"Given degree={degree} is not supported, choose from {dict_degrees}")
         if size not in dict_npoints:
             raise ValueError(f"Given size={size} is not supported, choose from {dict_npoints}")
 
+        # check whether the degree and size match
+        if dict_degrees[degree] != size:
+            raise ValueError(
+                f"Degree {degree} does not match size {size} for {method} grid! "
+                f"Expected {dict_degrees[degree]} size."
+            )
+
         # load npz file corresponding to the given degree & size
-        filename = f"{ang_type}_{degree}_{size}.npz"
+        filename = f"{method}_{degree}_{size}.npz"
         data = np.load(files(file_path).joinpath(filename))
         if len(data["weights"]) == 1:
             return data["points"], np.ones(len(data["points"])) * data["weights"]
