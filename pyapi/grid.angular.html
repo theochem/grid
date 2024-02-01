@@ -305,7 +305,7 @@ A Celebration of the 80th Birthday of Ian Sloan. Springer (2018) pp. 1243-1285
 \[\int_{S^2} f   = \int_0^{2\pi} \int_0^\pi f(\theta, \phi) \sin(\phi)
  d\theta d\phi \approx \sum_{i}^{N} w_i f(\phi_i, \theta_i),\]</div>
 <p>where <span class="math notranslate nohighlight">\(S^2\)</span> is the unit-sphere, <span class="math notranslate nohighlight">\(\theta_i \in [0, 2\pi]\)</span>
-and <span class="math notranslate nohighlight">\(\phi_i \in [0, \pi)\)</span> and quadrature points and <span class="math notranslate nohighlight">\(w^{ang}_i\)</span>
+and <span class="math notranslate nohighlight">\(\phi_i \in [0, \pi)\)</span> are quadrature points and <span class="math notranslate nohighlight">\(w^{ang}_i\)</span>
 are the quadrature weights of <span class="math notranslate nohighlight">\(N\)</span> grid points.</p>
 <p>Two types of angular grids are supported: Lebedev-Laikov grid and symmetric
 spherical t-design. Specifically, for spherical t-design, the weights are constant
@@ -514,7 +514,8 @@ each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="grid.angular.AngularGrid.use_spherical">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">use_spherical</span></span><a class="headerlink" href="#grid.angular.AngularGrid.use_spherical" title="Permalink to this definition"></a></dt>
-<dd><p>If True, then symmetric spherical t-design is used else Lebedev-Laikov grid.</p>
+<dd><p>If False, the Lebedev-Laikov angular grid is used. If True, the symmetric spherical
+t-design angular grid are used.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>bool</p>
