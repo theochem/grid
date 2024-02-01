@@ -244,7 +244,7 @@
 <p>Atomic Grid Module.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="grid.atomgrid.AtomGrid">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AtomGrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rgrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degrees</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sizes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_spherical</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.atomgrid.AtomGrid" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AtomGrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rgrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degrees</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sizes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lebedev'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.atomgrid.AtomGrid" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="grid.basegrid.html#grid.basegrid.Grid" title="grid.basegrid.Grid"><code class="xref py py-class docutils literal notranslate"><span class="pre">Grid</span></code></a></p>
 <p>Atomic grid construction class for integrating three-dimensional functions.</p>
 <p>Atomic grid is composed of a radial grid <span class="math notranslate nohighlight">\(\{(r_i, w_i)\}_{i=1}^{N}\)</span> meant to
@@ -255,7 +255,7 @@ is associated with an Angular (Lebedev or Symmetric spherical t-design) grid
 location.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rgrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degrees</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sizes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_spherical</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.atomgrid.AtomGrid.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rgrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degrees</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sizes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lebedev'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.atomgrid.AtomGrid.__init__" title="Permalink to this definition"></a></dt>
 <dd><p>Construct atomic grid for given arguments.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -274,8 +274,8 @@ If both degrees and sizes are given, degrees is used for making the spherical gr
 <li><p><strong>rotate</strong> (<em>int</em><em>, </em><em>optional</em>) – Integer used as a seed for generating random rotation matrices to rotate the angular
 spherical grids at each radial grid point. If the integer is zero, then no rotate
 is used.</p></li>
-<li><p><strong>use_spherical</strong> (<em>bool</em><em>, </em><em>optional</em>) – If False, the Lebedev-Laikov angular grid is used. If True, the symmetric spherical
-t-design angular grid are used.</p></li>
+<li><p><strong>method</strong> (<em>str</em><em>, </em><em>optional</em>) – Method for constructing the angular grid. Options are “lebedev” (for Lebedev-Laikov)
+and “spherical” (for symmetric spherical t-design).</p></li>
 </ul>
 </dd>
 </dl>
@@ -350,7 +350,7 @@ center of this class is used.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.from_preset">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_preset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atnum</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rgrid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_spherical</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.atomgrid.AtomGrid.from_preset" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_preset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atnum</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rgrid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lebedev'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.atomgrid.AtomGrid.from_preset" title="Permalink to this definition"></a></dt>
 <dd><p>High level api to construct an atomic grid with preset arguments.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -370,8 +370,8 @@ greater accuracy but denser grid. See <cite>Notes</cite> for more information.</
 <li><p><strong>rotate</strong> (<em>int</em><em>, </em><em>optional</em>) – Integer used as a seed for generating random rotation matrices to rotate the angular
 spherical grids at each radial grid point. If the integer is zero, then no rotate
 is used.</p></li>
-<li><p><strong>use_spherical</strong> (<em>bool</em><em>, </em><em>optional</em>) – If true, loads the symmetric spherical t-design grid rather than the Lebedev-Laikov
-grid for the angular grid.</p></li>
+<li><p><strong>method</strong> (<em>str</em><em>, </em><em>optional</em>) – Method for constructing the angular grid. Options are “lebedev” (for Lebedev-Laikov)
+and “spherical” (for symmetric spherical t-design).</p></li>
 </ul>
 </dd>
 </dl>
@@ -400,7 +400,7 @@ Chemical Physics, 149(20).</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.from_pruned">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_pruned</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rgrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sectors_r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sectors_degree</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sectors_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_spherical</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.atomgrid.AtomGrid.from_pruned" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_pruned</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rgrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sectors_r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sectors_degree</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sectors_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lebedev'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.atomgrid.AtomGrid.from_pruned" title="Permalink to this definition"></a></dt>
 <dd><p>Initialize AtomGrid class that splits radial sections into sectors which specified degrees.</p>
 <p>Given a sequence of radial sectors <span class="math notranslate nohighlight">\(\{a_i\}_{i=1}^Q\)</span>, a radius number <span class="math notranslate nohighlight">\(R\)</span>
 and angular degree sectors <span class="math notranslate nohighlight">\(\{L_i \}_{i=1}^{Q+1}\)</span>.  This assigned the degrees
@@ -427,8 +427,8 @@ If both sectors_degree and sectors_size are given, sectors_degree is used.</p></
 <li><p><strong>rotate</strong> (<em>int</em><em>, </em><em>optional</em>) – Integer used as a seed for generating random rotation matrices to rotate the angular
 spherical grids at each radial grid point. If the integer is zero, then no rotate
 is used.</p></li>
-<li><p><strong>use_spherical</strong> (<em>bool</em><em>, </em><em>optional</em>) – If true, loads the symmetric spherical t-design grid rather than the Lebedev-Laikov
-grid for the angular grid.</p></li>
+<li><p><strong>method</strong> (<em>str</em><em>, </em><em>optional</em>) – Method for constructing the angular grid. Options are “lebedev” (for Lebedev-Laikov)
+and “spherical” (for symmetric spherical t-design).</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -600,6 +600,17 @@ if <cite>only_radial_derivs</cite> then derivative wrt to <span class="math notr
 </dl>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.method">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">method</span></span><a class="headerlink" href="#grid.atomgrid.AtomGrid.method" title="Permalink to this definition"></a></dt>
+<dd><p>Method used for constructing an angular grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.moments">
 <span class="sig-name descname"><span class="pre">moments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orders</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_mom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cartesian'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_orders</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.atomgrid.AtomGrid.moments" title="Permalink to this definition"></a></dt>
@@ -764,17 +775,6 @@ matches the full integral <span class="math notranslate nohighlight">\(\int \int
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>CubicSpline</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.use_spherical">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">use_spherical</span></span><a class="headerlink" href="#grid.atomgrid.AtomGrid.use_spherical" title="Permalink to this definition"></a></dt>
-<dd><p>True then symmetric spherical t-design is used rather than Lebedev-Laikov grid.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
