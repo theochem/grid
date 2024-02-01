@@ -296,41 +296,36 @@ A Celebration of the 80th Birthday of Ian Sloan. Springer (2018) pp. 1243-1285
 </dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="grid.angular.AngularGrid">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AngularGrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">degree</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lebedev'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.angular.AngularGrid" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AngularGrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">degree</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lebedev'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.angular.AngularGrid" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="grid.basegrid.html#grid.basegrid.Grid" title="grid.basegrid.Grid"><code class="xref py py-class docutils literal notranslate"><span class="pre">Grid</span></code></a></p>
 <p>Angular grid for integrating functions on the unit sphere.</p>
-<p>This class numerically evaluates the integral of a function
-<span class="math notranslate nohighlight">\(f: S^2 \rightarrow \mathbb{R}\)</span> on the unit-sphere as follows:</p>
+<p>This class numerically evaluates the surface integral of a function
+<span class="math notranslate nohighlight">\(f: S^2 \rightarrow \mathbb{R}\)</span> over the unit-sphere:</p>
 <div class="math notranslate nohighlight">
-\[\int_{S^2} f   = \int_0^{2\pi} \int_0^\pi f(\theta, \phi) \sin(\phi)
+\[\int_{S^2} f d\Omega  = \int_0^{2\pi} \int_0^\pi f(\theta, \phi) \sin(\phi)
  d\theta d\phi \approx \sum_{i}^{N} w_i f(\phi_i, \theta_i),\]</div>
-<p>where <span class="math notranslate nohighlight">\(S^2\)</span> is the unit-sphere, <span class="math notranslate nohighlight">\(\theta_i \in [0, 2\pi]\)</span>
-and <span class="math notranslate nohighlight">\(\phi_i \in [0, \pi)\)</span> are quadrature points and <span class="math notranslate nohighlight">\(w^{ang}_i\)</span>
-are the quadrature weights of <span class="math notranslate nohighlight">\(N\)</span> grid points.</p>
+<p>where <span class="math notranslate nohighlight">\(S^2\)</span> is the unit-sphere parameterized by the quadrature points
+<span class="math notranslate nohighlight">\(\theta_i \in [0, 2\pi]\)</span> and <span class="math notranslate nohighlight">\(\phi_i \in [0, \pi)\)</span>, and
+<span class="math notranslate nohighlight">\(w^{ang}_i\)</span> are the weights of the <span class="math notranslate nohighlight">\(N\)</span> quadrature points.
+Just to clarify, the <span class="math notranslate nohighlight">\(4\pi\)</span> is included in the integration weights.</p>
 <p>Two types of angular grids are supported: Lebedev-Laikov grid and symmetric
 spherical t-design. Specifically, for spherical t-design, the weights are constant
 value of <span class="math notranslate nohighlight">\(4 \pi / N\)</span>, where <span class="math notranslate nohighlight">\(N\)</span> is the number of points in the grid.
 The weights are chosen so that the spherical harmonics are normalized.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.angular.AngularGrid.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">degree</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lebedev'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.angular.AngularGrid.__init__" title="Permalink to this definition"></a></dt>
-<dd><p>Generate angular grid for a given degree and/or size.</p>
-<p>Three choices to construct this grid:</p>
-<ol class="arabic simple">
-<li><p>Specify maximum degree of spherical harmonics that the angular grid can
-integrate accurately on a unit sphere.</p></li>
-<li><p>The number of points (size) wanted in the grid. The size corresponds
-to a maximum degree.</p></li>
-</ol>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">degree</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lebedev'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.angular.AngularGrid.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Generate angular grid for a given degree or size.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>degree</strong> (<em>int</em><em>, </em><em>optional</em>) – Maximum angular degree <span class="math notranslate nohighlight">\(l\)</span> of spherical harmonics that the grid
-can integrate accurately. If the grid corresponding to the given angular
-degree is not supported, the next largest degree is used.</p></li>
-<li><p><strong>size</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of grid points. If the grid corresponding to the given size is
+<li><p><strong>degree</strong> (<em>int</em><em> or </em><em>None</em>) – Maximum angular degree <span class="math notranslate nohighlight">\(l\)</span> of spherical harmonics that the angular grid
+can integrate accurately. If the angular grid corresponding to the given angular
+degree is not supported, the next largest degree is used. Use None, if <cite>size</cite> is given.</p></li>
+<li><p><strong>size</strong> (<em>int</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – Number of angular grid points. If the angular grid corresponding to the given size is
 not supported, the next largest size is used. If both degree and size are given,
-degree is used for constructing the grid.</p></li>
+degree is used for constructing the grid. Use None, if <cite>degree</cite> is given. If both
+<cite>degree</cite> and <cite>size</cite> are given <cite>degree</cite> is used for constructing the grid.</p></li>
 <li><p><strong>cache</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, then store the points and weights of the AngularGrid in cache
 to avoid duplicate grids that have the same <cite>degree</cite>.</p></li>
 <li><p><strong>method</strong> (<em>str</em><em>, </em><em>optional</em>) – Method for constructing the angular grid. Options are “lebedev” (for Lebedev-Laikov)
@@ -338,7 +333,7 @@ and “spherical” (for symmetric spherical t-design).</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>An angular grid with points and weights on a unit sphere.</p>
+<dd class="field-even"><p>An instance of angular grid with points and weights on a unit sphere.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="#grid.angular.AngularGrid" title="grid.angular.AngularGrid">AngularGrid</a></p>
@@ -354,13 +349,13 @@ negative weights. See <a class="reference external" href="https://github.com/the
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.angular.AngularGrid.convert_angular_sizes_to_degrees">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">convert_angular_sizes_to_degrees</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sizes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lebedev'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.angular.AngularGrid.convert_angular_sizes_to_degrees" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">convert_angular_sizes_to_degrees</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sizes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.angular.AngularGrid.convert_angular_sizes_to_degrees" title="Permalink to this definition"></a></dt>
 <dd><p>Convert given Lebedev/Spherical design grid sizes to degrees.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>sizes</strong> (<em>ndarray</em><em>[</em><em>int</em><em>]</em>) – Sequence of angular grid sizes (e.g., number of points for each atomic shell).</p></li>
-<li><p><strong>method</strong> (<em>str</em><em>, </em><em>optional</em>) – Method for constructing the angular grid. Options are “lebedev” (for Lebedev-Laikov)
+<li><p><strong>method</strong> (<em>str</em>) – Method for constructing the angular grid. Options are “lebedev” (for Lebedev-Laikov)
 and “spherical” (for symmetric spherical t-design).</p></li>
 </ul>
 </dd>
