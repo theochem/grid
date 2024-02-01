@@ -406,7 +406,7 @@ class AngularGrid(Grid):
     @property
     def use_spherical(self):
         r"""bool: If False, the Lebedev-Laikov angular grid is used. If True, the symmetric spherical
-            t-design angular grid are used."""
+        t-design angular grid are used."""
         return self._use_spherical
 
     @staticmethod
