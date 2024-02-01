@@ -358,6 +358,10 @@ class AngularGrid(Grid):
         # load pre-computed angular points & weights and make angular grid
         if degree not in cache_dict:
             points, weights = self._load_precomputed_angular_grid(degree, size, method)
+            # store the points and weights in cache_dict which updates the global cache
+            # dictionary for the given method (i.e., LEBEDEV_CACHE or SPHERICAL_CACHE)
+            # in this case, if another instance of AngularGrid is created with the same degree,
+            # the points and weights are not recomputed.
             if cache:
                 cache_dict[degree] = points, weights
         else:
