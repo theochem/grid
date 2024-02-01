@@ -37,7 +37,7 @@ class BeckeWeights:
         ----------
         radii : dict, optional
             Dictionary of atomic number and corresponding atomic radius.
-            If None, Bragg-Slater empirically measured covalent radii 
+            If None, Bragg-Slater empirically measured covalent radii
             (in atomic units) are used.
         order : int, optional
             Order of iteration for switching function.
@@ -112,7 +112,7 @@ class BeckeWeights:
         r"""Calculate Becke integration weights of points for select atom.
 
         The units of the points and coordinates should match `radii` attribute.
-        
+
         Parameters
         ----------
         points : np.ndarray(N, 3)
