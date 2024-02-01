@@ -22,7 +22,6 @@
 import numpy as np
 from scipy.special import sph_harm
 
-
 _bragg = np.array(
     [
         np.nan,  # index 0, place holder

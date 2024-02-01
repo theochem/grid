@@ -292,13 +292,14 @@ class AngularGrid(Grid):
         \int_{S^2} f   = \int_0^{2\pi} \int_0^\pi f(\theta, \phi) \sin(\phi)
          d\theta d\phi \approx \sum_{i}^{N} w_i f(\phi_i, \theta_i),
 
-    where :math:`S^2` is the unit-sphere, :math:`\theta_i \in [0, 2\pi]` and :math:`\phi_i \in [0, \pi)`
-    and quadrature points and :math:`w^{ang}_i` are the quadrature weights of :math:`N` grid points.
+    where :math:`S^2` is the unit-sphere, :math:`\theta_i \in [0, 2\pi]`
+    and :math:`\phi_i \in [0, \pi)` and quadrature points and :math:`w^{ang}_i`
+    are the quadrature weights of :math:`N` grid points.
 
-    Two types of angular grids are supported: Lebedev-Laikov grid and symmetric spherical t-design.
-    Specifically, for spherical t-design, the weights are constant
-    value of :math:`4 \pi / N`, where :math:`N` is the number of points in the grid. The weights
-    are chosen so that the spherical harmonics are normalized.
+    Two types of angular grids are supported: Lebedev-Laikov grid and symmetric
+    spherical t-design. Specifically, for spherical t-design, the weights are constant
+    value of :math:`4 \pi / N`, where :math:`N` is the number of points in the grid.
+    The weights are chosen so that the spherical harmonics are normalized.
 
     """
 
