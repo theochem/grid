@@ -404,6 +404,7 @@ class AtomGrid(Grid):
         degree = self.degrees[index]
         sphere_grid = AngularGrid(degree=degree, use_spherical=self.use_spherical)
 
+        # modify points and weights of angular grid to include radial contribution
         pts = sphere_grid.points.copy()
         wts = sphere_grid.weights.copy()
         # Rotate the points
@@ -415,7 +416,11 @@ class AtomGrid(Grid):
         wts = wts * self.rgrid[index].weights
         if r_sq is True:
             wts = wts * self.rgrid[index].points ** 2
-        return AngularGrid(pts, wts)
+
+        # update points and weights of angular grid
+        sphere_grid.points = pts
+        sphere_grid.weights = wts
+        return sphere_grid
 
     def convert_cartesian_to_spherical(self, points: np.ndarray = None, center: np.ndarray = None):
         r"""Convert a set of points from Cartesian to spherical coordinates.

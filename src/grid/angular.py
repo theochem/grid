@@ -305,8 +305,6 @@ class AngularGrid(Grid):
 
     def __init__(
         self,
-        points: np.ndarray = None,
-        weights: np.ndarray = None,
         degree: int = None,
         size: int = None,
         cache: bool = True,
@@ -316,20 +314,13 @@ class AngularGrid(Grid):
 
         Three choices to construct this grid:
 
-        1. Add your own points and weights.
-        2. Specify maximum degree of spherical harmonics that the angular grid can
+        1. Specify maximum degree of spherical harmonics that the angular grid can
            integrate accurately on a unit sphere.
-        3. The number of points (size) wanted in the grid. The size corresponds
+        2. The number of points (size) wanted in the grid. The size corresponds
            to a maximum degree.
 
         Parameters
         ----------
-        points : ndarray(N, 3), optional
-            The Cartesian coordinates of grid points.  The attribute
-            `weights` should also be provided.
-        weights : ndarray(N,), optional
-            The weights of each point on the integral quadrature grid. The attribute
-            `points` should also be applied.
         degree : int, optional
             Maximum angular degree :math:`l` of spherical harmonics that the grid
             can integrate accurately. If the grid corresponding to the given angular
@@ -361,33 +352,23 @@ class AngularGrid(Grid):
             raise TypeError(
                 f"use_spherical {use_spherical, type(use_spherical)} should be of type " f"boolean."
             )
-        # construct grid from pts and wts given directly
-        if points is not None and weights is not None:
-            super().__init__(points, weights)
-            if degree or size:
-                warnings.warn(
-                    "degree or size are not used for generating grids "
-                    "because points and weights are provided",
-                    RuntimeWarning,
-                    stacklevel=2,
-                )
+
+        # map degree and size to the supported (i.e., pre-computed) degree and size
+        degree, size = self._get_size_and_degree(
+            degree=degree, size=size, use_spherical=use_spherical
+        )
+        # load pre-computed angular points & weights and make angular grid
+        cache_dict = SPHERICAL_CACHE if use_spherical else LEBEDEV_CACHE
+        if degree not in cache_dict:
+            points, weights = self._load_precomputed_angular_grid(degree, size, use_spherical)
+            if cache:
+                cache_dict[degree] = points, weights
         else:
-            # map degree and size to the supported (i.e., pre-computed) degree and size
-            degree, size = self._get_size_and_degree(
-                degree=degree, size=size, use_spherical=use_spherical
-            )
-            # load pre-computed angular points & weights and make angular grid
-            cache_dict = SPHERICAL_CACHE if use_spherical else LEBEDEV_CACHE
-            if degree not in cache_dict:
-                points, weights = self._load_precomputed_angular_grid(degree, size, use_spherical)
-                if cache:
-                    cache_dict[degree] = points, weights
-            else:
-                points, weights = cache_dict[degree]
-            self._degree = degree
-            # Multiply weights by 4 pi, so that the spherical harmonics are orthonormalized,
-            #   etc. \int Y_l1 Y_l2 = \delta_{l1, l2}
-            super().__init__(points, weights * 4 * np.pi)
+            points, weights = cache_dict[degree]
+        self._degree = degree
+        # Multiply weights by 4 pi, so that the spherical harmonics are orthonormalized,
+        #   etc. \int Y_l1 Y_l2 = \delta_{l1, l2}
+        super().__init__(points, weights * 4 * np.pi)
 
         if not use_spherical and np.any(weights < 0.0):
             # Lebedev degrees 13, 25, 27 have negative weights. Symmetric spherical t-design
