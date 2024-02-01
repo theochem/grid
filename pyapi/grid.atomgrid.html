@@ -241,7 +241,7 @@
              
   <div class="section" id="module-grid.atomgrid">
 <span id="grid-atomgrid-module"></span><h1>grid.atomgrid module<a class="headerlink" href="#module-grid.atomgrid" title="Permalink to this heading"></a></h1>
-<p>Module for generating AtomGrid.</p>
+<p>Atomic Grid Module.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="grid.atomgrid.AtomGrid">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AtomGrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rgrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degrees</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sizes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_spherical</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.atomgrid.AtomGrid" title="Permalink to this definition"></a></dt>
@@ -274,8 +274,8 @@ If both degrees and sizes are given, degrees is used for making the spherical gr
 <li><p><strong>rotate</strong> (<em>int</em><em>, </em><em>optional</em>) – Integer used as a seed for generating random rotation matrices to rotate the angular
 spherical grids at each radial grid point. If the integer is zero, then no rotate
 is used.</p></li>
-<li><p><strong>use_spherical</strong> (<em>bool</em><em>, </em><em>optional</em>) – If true, loads the symmetric spherical t-design grid rather than the Lebedev-Laikov
-grid for the angular grid.</p></li>
+<li><p><strong>use_spherical</strong> (<em>bool</em><em>, </em><em>optional</em>) – If False, the Lebedev-Laikov angular grid is used. If True, the symmetric spherical
+t-design angular grid are used.</p></li>
 </ul>
 </dd>
 </dl>
@@ -322,7 +322,7 @@ from the Angular grid with the degree at <span class="math notranslate nohighlig
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>n</em><em>, </em><em>3</em><em>)</em><em>, </em><em>optional</em>) – Points in three-dimensions. Atomic grid points will be used if <cite>points</cite> is not given</p></li>
+<li><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em><em>, </em><em>optional</em>) – Points in three-dimensions. Atomic grid points will be used if <cite>points</cite> is not given</p></li>
 <li><p><strong>center</strong> (<em>ndarray</em><em>(</em><em>3</em><em>,</em><em>)</em><em>, </em><em>optional</em>) – Center of the atomic grid points.  If <cite>center</cite> is not provided, then the atomic
 center of this class is used.</p></li>
 </ul>
@@ -343,7 +343,7 @@ center of this class is used.</p></li>
 <dd><p>Return the degree of each angular grid at each radial point.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>ndarray(N,)</p>
+<dd class="field-odd"><p>ndarray(L,)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -352,11 +352,6 @@ center of this class is used.</p></li>
 <dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.from_preset">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_preset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atnum</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rgrid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_spherical</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.atomgrid.AtomGrid.from_preset" title="Permalink to this definition"></a></dt>
 <dd><p>High level api to construct an atomic grid with preset arguments.</p>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># construct an atomic grid for H with fine grid setting</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">atgrid</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="o">.</span><span class="n">from_preset</span><span class="p">(</span><span class="n">atnum</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="s2">&quot;fine&quot;</span><span class="p">,</span> <span class="n">rgrid</span><span class="p">)</span>
-</pre></div>
-</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -472,7 +467,7 @@ debugging.</p></li>
 <span class="sig-name descname"><span class="pre">get_shell_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_sq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.atomgrid.AtomGrid.get_shell_grid" title="Permalink to this definition"></a></dt>
 <dd><p>Get the spherical integral grid at radial point from specified index.</p>
 <p>The spherical integration grid has points scaled with the ith radial point
-and weights multipled by the ith weight of the radial grid.</p>
+and weights multiplied by the ith weight of the radial grid.</p>
 <p>Note that when <span class="math notranslate nohighlight">\(r=0\)</span> then the Cartesian points are all zeros.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -552,7 +547,7 @@ for many types of functions.  This can also be one-dimensional.</p>
 <div class="math notranslate nohighlight">
 \[f(r, \theta, \phi) = \sum_l \sum_{m=-l}^l \sum_i \rho_{ilm}(r) Y_{lm}(\theta, \phi)\]</div>
 <p>A cubic spline is used to interpolate the radial functions <span class="math notranslate nohighlight">\(\sum_i \rho_{ilm}(r)\)</span>.
-This is then multipled by the corresponding spherical harmonics at all
+This is then multiplied by the corresponding spherical harmonics at all
 <span class="math notranslate nohighlight">\((\theta_j, \phi_j)\)</span> angles and summed to obtain the equation above.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

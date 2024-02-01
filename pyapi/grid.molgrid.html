@@ -251,51 +251,6 @@
 (see AtomGrid). This is defined by a atom in molecule weights (or nuclear weight functions)
 <span class="math notranslate nohighlight">\(w_n(r)\)</span> for each center n such that <span class="math notranslate nohighlight">\(\sum^M_n w_n(r) = 1\)</span> for all points
 <span class="math notranslate nohighlight">\(r\in\mathbb{R}^3.\)</span></p>
-<p class="rubric">Examples</p>
-<p>There are multiple methods of specifiying molecular grids.
-This example chooses Becke weights as the atom in molecule/nuclear weights and the
-radial grid is the same for all atoms.  Two atoms are considered with charges [1, 2],
-respectively.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">grid.becke</span> <span class="kn">import</span> <span class="n">BeckeWeights</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">grid.onedgrid</span> <span class="kn">import</span> <span class="n">GaussLaguerre</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">becke</span> <span class="o">=</span> <span class="n">BeckeWeights</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">rgrid</span> <span class="o">=</span> <span class="n">GaussLaguerre</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">charges</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]])</span>
-</pre></div>
-</div>
-<p>The default method is based on explicitly specifing the atomic grids (AtomGrids) for each atom.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">grid.atomgrid</span> <span class="kn">import</span> <span class="n">AtomGrid</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">atgrid1</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="p">(</span><span class="n">rgrid</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="n">coords</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">atgrid2</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="p">(</span><span class="n">rgrid</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="n">coords</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">molgrid</span> <span class="o">=</span> <span class="n">MolGrid</span><span class="p">(</span><span class="n">charges</span><span class="p">,</span> <span class="p">[</span><span class="n">atgrid1</span><span class="p">,</span> <span class="n">atgrid2</span><span class="p">],</span> <span class="n">aim_weights</span><span class="o">=</span><span class="n">becke</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>The <cite>from_size</cite> method constructs AtomGrids with degree_size specified from integer size.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">size</span> <span class="o">=</span> <span class="mi">100</span>  <span class="c1"># Number of angular points used in each shell in the atomic grid.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">molgrid</span> <span class="o">=</span> <span class="n">MolGrid</span><span class="o">.</span><span class="n">from_size</span><span class="p">(</span><span class="n">charges</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">rgrid</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">aim_weights</span><span class="o">=</span><span class="n">becke</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>The <cite>from_pruned</cite> method is based on <cite>AtomGrid.from_pruned</cite> method on the idea
-of spliting radial grid points into sectors that have the same angular degrees.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sectors_r</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sectors_deg</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">radius</span> <span class="o">=</span> <span class="mf">1.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mol_grid</span> <span class="o">=</span> <span class="n">MolGrid</span><span class="o">.</span><span class="n">from_pruned</span><span class="p">(</span><span class="n">charges</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">rgrid</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">becke</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                               <span class="n">sectors_r</span><span class="o">=</span><span class="n">sectors_r</span><span class="p">,</span> <span class="n">sectors_degree</span><span class="o">=</span><span class="n">sectors_deg</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>The <cite>from_preset</cite> method is based on <cite>AtomGrid.from_preset</cite> method based on a string
-specifying the size of each Levedev grid at each radial points.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">preset</span> <span class="o">=</span> <span class="s2">&quot;fine&quot;</span>  <span class="c1"># Many choices available.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">molgrid</span> <span class="o">=</span> <span class="n">MolGrid</span><span class="o">.</span><span class="n">from_preset</span><span class="p">(</span><span class="n">charges</span><span class="p">,</span><span class="n">coords</span><span class="p">,</span><span class="n">preset</span><span class="p">,</span><span class="n">aim_weights</span><span class="o">=</span><span class="n">becke</span><span class="p">,</span><span class="n">rgrid</span><span class="o">=</span><span class="n">rgrid</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>The general way to integrate is the following.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">integrand</span> <span class="o">=</span> <span class="n">integrand_func</span><span class="p">(</span><span class="n">molgrid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">integrate</span> <span class="o">=</span> <span class="n">molgrid</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">integrand</span><span class="p">)</span>
-</pre></div>
-</div>
 <p class="rubric">References</p>
 <dl class="footnote brackets">
 <dt class="label" id="id1"><span class="brackets"><a class="fn-backref" href="#id4">1</a></span></dt>
@@ -454,7 +409,7 @@ grid for the <cite>m`th atom. If both `sectors_degree</cite> and <cite>sectors_s
 for the <cite>m`th atom. If both `sectors_degree</cite> and <cite>sectors_size</cite> are given,
 <cite>sectors_degree</cite> is used.</p></li>
 <li><p><strong>rotate</strong> (<em>bool</em><em> or </em><em>int</em><em> , </em><em>optional</em>) – Flag to set auto rotation for atomic grid, if given int, the number
-will be used as a seed to generate rantom matrix.</p></li>
+will be used as a seed to generate random matrix.</p></li>
 <li><p><strong>store</strong> (<em>bool</em><em>, </em><em>optional</em>) – Flag to store each original atomic grid information.</p></li>
 </ul>
 </dd>
@@ -471,19 +426,12 @@ will be used as a seed to generate rantom matrix.</p></li>
 <dt class="sig sig-object py" id="grid.molgrid.MolGrid.from_size">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atnums</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atcoords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rgrid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aim_weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">37</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">store</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.molgrid.MolGrid.from_size" title="Permalink to this definition"></a></dt>
 <dd><p>Initialize a MolGrid instance with Horton Style input.</p>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">onedg</span> <span class="o">=</span> <span class="n">UniformInteger</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="c1"># number of points, oned grid before TF.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">rgrid</span> <span class="o">=</span> <span class="n">ExpRTransform</span><span class="p">(</span><span class="mf">1e-5</span><span class="p">,</span> <span class="mf">2e1</span><span class="p">)</span><span class="o">.</span><span class="n">generate_radial</span><span class="p">(</span><span class="n">onedg</span><span class="p">)</span> <span class="c1"># radial grid</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">becke</span> <span class="o">=</span> <span class="n">BeckeWeights</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">molgrid</span> <span class="o">=</span> <span class="n">MolGrid</span><span class="o">.</span><span class="n">from_size</span><span class="p">(</span><span class="n">atnums</span><span class="p">,</span> <span class="n">atcoords</span><span class="p">,</span> <span class="mi">110</span><span class="p">,</span> <span class="n">becke</span><span class="p">,</span> <span class="n">rgrid</span><span class="p">)</span>
-</pre></div>
-</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>atnums</strong> (<em>np.ndarray</em><em>(</em><em>M</em><em>, </em><em>3</em><em>)</em>) – Atomic number of <span class="math notranslate nohighlight">\(M\)</span> atoms in molecule.</p></li>
 <li><p><strong>atcoords</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates for each atoms</p></li>
-<li><p><strong>size</strong> (<em>int</em>) – Num of points on each shell of angular grid</p></li>
+<li><p><strong>size</strong> (<em>int</em>) – Number of points on each shell of angular grid.</p></li>
 <li><p><strong>rgrid</strong> (<a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><em>OneDGrid</em></a><em>, </em><em>optional</em>) – One-dimensional grid to construct the atomic grid. If none, then
 default radial grid is generated based on atomic numbers.</p></li>
 <li><p><strong>aim_weights</strong> (<em>Callable</em><em> or </em><em>np.ndarray</em><em>(</em><em>K</em><em>,</em><em>)</em><em>, </em><em>optional</em>) – Atoms in molecule weights. If None, then aim_weights is Becke weights with order=3.</p></li>
@@ -546,7 +494,7 @@ debugging.</p></li>
 <dl class="py property">
 <dt class="sig sig-object py" id="grid.molgrid.MolGrid.indices">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">indices</span></span><a class="headerlink" href="#grid.molgrid.MolGrid.indices" title="Permalink to this definition"></a></dt>
-<dd><p>Get the indices of the molecualr grid.</p>
+<dd><p>Get the indices of the molecular grid.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>List of indices <span class="math notranslate nohighlight">\([i_0, i_1, \cdots]\)</span> that whose indices range [i_k, i_{k+1}]
@@ -631,22 +579,6 @@ if <cite>only_radial_derivs</cite> then derivative wrt to <span class="math notr
 <dd class="field-odd"><p>Callable[[ndarray(M, 3), int] -&gt; ndarray(M)]</p>
 </dd>
 </dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Consider the function (3x^2 + 4y^2 + 5z^2)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">polynomial_func</span><span class="p">(</span><span class="n">pts</span><span class="p">)</span> <span class="p">:</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="k">return</span> <span class="mf">3.0</span> <span class="o">*</span> <span class="n">points</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">2.0</span> <span class="o">+</span> <span class="mf">4.0</span> <span class="o">*</span> <span class="n">points</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mf">2.0</span> <span class="o">+</span> <span class="mf">5.0</span> <span class="o">*</span> <span class="n">points</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="mf">2.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Evaluate the polynomial over the molecular grid points and interpolate</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">polynomial_vals</span> <span class="o">=</span> <span class="n">polynomial_func</span><span class="p">(</span><span class="n">molgrid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">interpolate_func</span> <span class="o">=</span> <span class="n">molgrid</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">polynomial_vals</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Use it to interpolate at new points.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">interpolate_vals</span> <span class="o">=</span> <span class="n">interpolate_func</span><span class="p">(</span><span class="n">new_pts</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Can calculate first derivative wrt to Cartesian or spherical</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">interpolate_derivs</span> <span class="o">=</span> <span class="n">interpolate_func</span><span class="p">(</span><span class="n">new_pts</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">interpolate_derivs_sph</span> <span class="o">=</span> <span class="n">interpolate_func</span><span class="p">(</span><span class="n">new_pts</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">deriv_spherical</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Only higher-order derivatives are supported for the radius coordinate r.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">interpolated_derivs_radial</span> <span class="o">=</span> <span class="n">interpolate_func</span><span class="p">(</span><span class="n">new_pts</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">only_radial_derivs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="py method">

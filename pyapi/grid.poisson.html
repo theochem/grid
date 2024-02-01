@@ -387,26 +387,6 @@ on <span class="math notranslate nohighlight">\(f\)</span>.</p></li>
 <dd class="field-odd"><p>callable(ndarray(N, 3) -&gt; float)</p>
 </dd>
 </dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Set up of the radial grid</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">oned_grid</span> <span class="o">=</span> <span class="n">Trapezoidal</span><span class="p">(</span><span class="mi">10000</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">tf</span> <span class="o">=</span> <span class="n">LinearFiniteRTransform</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">radial_grid</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">transform_1d_grid</span><span class="p">(</span><span class="n">oned</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Set up the atomic grid with degree 10 at each radial point. Molecular grid works as well.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">atomic_grid</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="p">(</span><span class="n">radial_grid</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Set the charge distribution to be unit-charge density and evaluate on atomic grid points.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">charge_distribution</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
-<span class="gp">&gt;&gt;&gt; </span>   <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span>   <span class="k">return</span> <span class="p">(</span><span class="n">alpha</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mf">3.0</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">alpha</span> <span class="o">*</span> <span class="n">r</span><span class="o">**</span><span class="mf">2.0</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">func_vals</span> <span class="o">=</span> <span class="n">charge_distribution</span><span class="p">(</span><span class="n">atomic_grid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Solve for the potential as an initial value problem and evaluate it over the atomic grid.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">potential</span> <span class="o">=</span> <span class="n">solve_poisson_ivp</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>     <span class="n">atgrid</span><span class="p">,</span> <span class="n">func_vals</span><span class="p">,</span> <span class="n">InverseRTransform</span><span class="p">(</span><span class="n">tf</span><span class="p">),</span> <span class="n">r_interval</span><span class="o">=</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">),</span>
-<span class="gp">&gt;&gt;&gt; </span>     <span class="n">ode_params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;method&quot;</span> <span class="p">:</span> <span class="s2">&quot;DOP853&quot;</span><span class="p">,</span> <span class="s2">&quot;atol&quot;</span><span class="p">:</span> <span class="mf">1e-8</span><span class="p">},</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">potential_values</span> <span class="o">=</span> <span class="n">potential</span><span class="p">(</span><span class="n">atgrid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
-</pre></div>
-</div>
 </dd></dl>
 
 </div>
