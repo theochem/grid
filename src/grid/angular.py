@@ -307,7 +307,7 @@ class AngularGrid(Grid):
 
     def __init__(
         self,
-        degree: Union[int, None] = None,
+        degree: Union[int, None],
         size: Union[int, None] = None,
         cache: bool = True,
         method: str = "lebedev",
@@ -324,7 +324,8 @@ class AngularGrid(Grid):
             Number of angular grid points. If the angular grid corresponding to the given size is
             not supported, the next largest size is used. If both degree and size are given,
             degree is used for constructing the grid. Use None, if `degree` is given. If both
-            `degree` and `size` are given `degree` is used for constructing the grid.
+            `degree` and `size` are given `degree` is used for constructing the grid unless
+            `degree` is None.
         cache : bool, optional
             If True, then store the points and weights of the AngularGrid in cache
             to avoid duplicate grids that have the same `degree`.
