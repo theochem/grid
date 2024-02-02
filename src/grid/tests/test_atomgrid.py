@@ -85,7 +85,7 @@ class TestAtomGrid:
         )
         assert isinstance(ag_ob, AtomGrid)
         assert len(ag_ob.indices) == 11
-        ag_ob = AtomGrid(rgrid, sizes=[110])
+        ag_ob = AtomGrid(rgrid, degrees=None, sizes=[110])
         assert ag_ob.l_max == 17
         assert_array_equal(ag_ob._degs, np.ones(10) * 17)
         assert ag_ob.size == 110 * 10
