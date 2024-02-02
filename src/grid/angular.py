@@ -307,7 +307,7 @@ class AngularGrid(Grid):
 
     def __init__(
         self,
-        degree: Union[int, None],
+        degree: Union[int, None]=None,
         size: Union[int, None] = None,
         cache: bool = True,
         method: str = "lebedev",
@@ -352,6 +352,13 @@ class AngularGrid(Grid):
             cache_dict = SPHERICAL_CACHE
         else:
             raise ValueError(f"Method {method} is not supported, choose 'lebedev' or 'spherical'")
+
+        # allow only one of degree or size to be given
+        if degree is None and size is None:
+            raise ValueError("At least one of degree or size should be given!")
+        if degree is not None and size is not None:
+            warnings.warn("Both degree and size arguments are given, so only degree is used!")
+            size = None
 
         # map degree and size to the supported (i.e., pre-computed) degree and size
         degree, size = self._get_size_and_degree(degree=degree, size=size, method=method)
