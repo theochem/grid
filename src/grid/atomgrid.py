@@ -57,7 +57,7 @@ class AtomGrid(Grid):
     def __init__(
         self,
         rgrid: OneDGrid,
-        degrees: Union[np.ndarray, list] = None,
+        degrees: Union[np.ndarray, list, None],
         sizes: Union[np.ndarray, list] = None,
         center: np.ndarray = None,
         rotate: int = 0,
@@ -70,7 +70,7 @@ class AtomGrid(Grid):
         ----------
         rgrid : OneDGrid
             The (one-dimensional) radial grid representing the radius of spherical grids.
-        degrees : ndarray(N, dtype=int) or list, keyword-only argument
+        degrees : ndarray(N, dtype=int) or list or None
             Sequence of angular grid degrees used for constructing spherical grids at each
             radial grid point.
             If only one degree is given, the specified degree is used for all spherical grids.
@@ -207,10 +207,10 @@ class AtomGrid(Grid):
 
         if preset in ["sg_0", "sg_2", "sg_3", "g1", "g2", "g3", "g4", "g5", "g6", "g7"]:
             sector_sizes = [npt[idx] for idx in range(len(rad)) for _ in range(rad[idx])]
-            return cls(rgrid, sizes=sector_sizes, center=center, rotate=rotate, method=method)
+            return cls(rgrid, None, sizes=sector_sizes, center=center, rotate=rotate, method=method)
         elif preset == "sg_1" and atnum > 19:
             sector_sizes = [npt[idx] for idx in range(len(rad)) for _ in range(rad[idx])]
-            return cls(rgrid, sizes=sector_sizes, center=center, rotate=rotate, method=method)
+            return cls(rgrid, None, sizes=sector_sizes, center=center, rotate=rotate, method=method)
         else:
             degs = AngularGrid.convert_angular_sizes_to_degrees(npt, method=method)
             rad_degs = AtomGrid._find_degrees_for_radial_points(rgrid.points, rad, degs)
