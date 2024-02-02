@@ -764,7 +764,7 @@ class AtomGrid(Grid):
         rgrid : OneDGrid
             Radial grid with :math:`N` points.
         radius : float
-            Radius of interested atom.
+            Radius of interested atom in atomic units.
         r_sectors : list or ndarray(S,)
             Sequence of boundary radius (in atomic units) specifying sectors of the pruned radial
             grid. The first sector is ``(0, radius*r_sectors[0])``, then ``(radius*r_sectors[0],

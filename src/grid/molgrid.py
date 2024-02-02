@@ -286,7 +286,7 @@ class MolGrid(Grid):
         atnums: np.ndarray,
         atcoords: np.ndarray,
         preset: Union[str, list, dict],
-        rgrid: Union[OneDGrid, list, dict] = None,
+        rgrid: Union[OneDGrid, list, dict, None] = None,
         aim_weights: Union[callable, np.ndarray] = None,
         rotate: int = 37,
         store: bool = False,
@@ -309,12 +309,12 @@ class MolGrid(Grid):
             'sg_0', 'sg_1', 'sg_2', and 'sg_3', and the Ochsenfeld grids:
             'g1', 'g2', 'g3', 'g4', 'g5', 'g6', and 'g7', with higher number indicating
             greater accuracy but denser grid. See `Notes` for more information.
-        rgrid : (OneDGrid, list[OneDGrid], dict[int: OneDGrid]), optional
+        rgrid : (OneDGrid, list[OneDGrid], dict[int: OneDGrid], None), optional
             One dimensional radial grid. If of type `OneDGrid` then this radial grid is used for
-            all atoms. If a list is provided,then ith grid correspond to the ith atom.  If
+            all atoms. If a list is provided, then ith grid correspond to the ith atom.  If
             dictionary is provided, then the keys correspond to the `atnums[i]`attribute.
-            If None, then using atomic numbers it will generate a default radial grid
-            (PowerRTransform of UniformInteger grid).
+            If None, a default radial grid (PowerRTransform of UniformInteger grid) is constructed
+            based on the given atomic numbers.
         aim_weights : Callable or np.ndarray(K,), optional
             Atoms in molecule weights. If None, then aim_weights is Becke weights with order=3.
         rotate : bool or int, optional
@@ -391,7 +391,7 @@ class MolGrid(Grid):
         atnums: np.ndarray,
         atcoords: np.ndarray,
         size: int,
-        rgrid: OneDGrid = None,
+        rgrid: Union[OneDGrid, None] = None,
         aim_weights: Union[callable, np.ndarray] = None,
         rotate: int = 37,
         store: bool = False,
@@ -407,7 +407,7 @@ class MolGrid(Grid):
             Cartesian coordinates for each atoms
         size : int
             Number of points on each shell of angular grid.
-        rgrid : OneDGrid, optional
+        rgrid : OneDGrid or None, optional
             One-dimensional grid to construct the atomic grid. If none, then
             default radial grid is generated based on atomic numbers.
         aim_weights : Callable or np.ndarray(K,), optional
@@ -458,7 +458,7 @@ class MolGrid(Grid):
         atnums: ndarray(M,)
             List of atomic numbers for each atom.
         atcoords: np.ndarray(M, 3)
-            Cartesian coordinates for each atoms
+            Three-dimensional Cartesian coordinates for each atoms in atomic units.
         radius: float, List[float]
             The atomic radius to be multiplied with `r_sectors` in atomic units (to make the
             radial sectors atom specific). If float, then the same atomic radius is used for all
