@@ -122,7 +122,7 @@ class AtomGrid(Grid):
             if not isinstance(sizes, (np.ndarray, list)):
                 raise TypeError(f"sizes is not type: np.array or list, got {type(sizes)}")
             degrees = AngularGrid.convert_angular_sizes_to_degrees(sizes, method=method)
-        #check degrees
+        # check degrees
         if not isinstance(degrees, (np.ndarray, list)):
             raise TypeError(f"degrees is not type: np.array or list, got {type(degrees)}")
         if len(degrees) == 1:
