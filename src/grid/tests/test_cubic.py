@@ -19,10 +19,10 @@
 # --
 r"""Rectangular Grid Testing."""
 
-import importlib.resources
 from unittest import TestCase
 
 import numpy as np
+from importlib_resources import files
 from numpy.testing import assert_allclose
 
 from grid.cubic import Tensor1DGrids, UniformGrid, _HyperRectangleGrid
@@ -986,7 +986,7 @@ class TestUniformGrid(TestCase):
 
         ref_grid = UniformGrid(origin, axes, shape)
 
-        cubefile = importlib.resources.files("grid") / "data" / "tests" / "cubegen_ch4_6_gen.cube"
+        cubefile = files("grid") / "data" / "tests" / "cubegen_ch4_6_gen.cube"
         grid, cube_data = UniformGrid.from_cube(cubefile, return_data=True)
 
         assert_allclose(grid._axes, axes)
@@ -1003,10 +1003,8 @@ class TestUniformGrid(TestCase):
     def test_uniformgrid_generate_cube(self):
         r"""Test creating uniform cubic grid from cube example."""
         # Change to better test later
-        ref_cube = importlib.resources.files("grid") / "data" / "tests" / "cubegen_ch4_6_gen.cube"
-        out_cube = str(
-            importlib.resources.files("grid") / "data" / "tests" / "cubegen_ch4_6_gen.cube"
-        )
+        ref_cube = files("grid") / "data" / "tests" / "cubegen_ch4_6_gen.cube"
+        out_cube = str(files("grid") / "data" / "tests" / "cubegen_ch4_6_gen.cube")
 
         grid, cube_data = UniformGrid.from_cube(ref_cube, return_data=True)
         atnums, atcoords, data = cube_data["atnums"], cube_data["atcoords"], cube_data["data"]

@@ -94,7 +94,7 @@ def test_interpolation_of_laplacian_with_spherical_harmonic():
     r"""Test the interpolation of Laplacian of spherical harmonic is eigenvector."""
     odg = OneDGrid(np.linspace(1e-5, 1, num=20), np.ones(20), (0, np.inf))
     degree = 6 * 2 + 2
-    atgrid = AtomGrid.from_pruned(odg, 1, sectors_r=[], sectors_degree=[degree])
+    atgrid = AtomGrid.from_pruned(odg, 1, r_sectors=[], d_sectors=[degree])
 
     def func(sph_points):
         # Spherical harmonic of degree 6 and order 0
@@ -135,7 +135,7 @@ def test_interpolation_of_laplacian_of_exponential():
     btf = BeckeRTransform(0.0, 1.5)
     radial = btf.transform_1d_grid(oned)
     degree = 10
-    atgrid = AtomGrid.from_pruned(radial, 1, sectors_r=[], sectors_degree=[degree])
+    atgrid = AtomGrid.from_pruned(radial, 1, r_sectors=[], d_sectors=[degree])
 
     def func(cart_pts):
         radius = np.linalg.norm(cart_pts, axis=1)
@@ -162,7 +162,7 @@ def test_interpolation_of_laplacian_with_unit_charge_distribution():
     btf = BeckeRTransform(1e-3, 1.5)
     radial = btf.transform_1d_grid(oned)
     degree = 10
-    atgrid = AtomGrid.from_pruned(radial, 1, sectors_r=[], sectors_degree=[degree])
+    atgrid = AtomGrid.from_pruned(radial, 1, r_sectors=[], d_sectors=[degree])
 
     laplace = interpolate_laplacian(atgrid, poisson_solution_to_charge_distribution(atgrid.points))
     true = laplace(atgrid.points)
