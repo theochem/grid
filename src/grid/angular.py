@@ -361,7 +361,7 @@ class AngularGrid(Grid):
                 "Both degree and size arguments are given, so only degree is used!",
                 RuntimeWarning,
                 stacklevel=2,
-                )
+            )
             size = None
 
         # map degree and size to the supported (i.e., pre-computed) degree and size
