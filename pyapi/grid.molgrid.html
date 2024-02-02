@@ -345,11 +345,11 @@ Other options include the “standard grids”:
 ‘sg_0’, ‘sg_1’, ‘sg_2’, and ‘sg_3’, and the Ochsenfeld grids:
 ‘g1’, ‘g2’, ‘g3’, ‘g4’, ‘g5’, ‘g6’, and ‘g7’, with higher number indicating
 greater accuracy but denser grid. See <cite>Notes</cite> for more information.</p></li>
-<li><p><strong>rgrid</strong> (<em>(</em><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><em>OneDGrid</em></a><em>, </em><em>list</em><em>[</em><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><em>OneDGrid</em></a><em>]</em><em>, </em><em>dict</em><em>[</em><em>int: OneDGrid</em><em>]</em><em>)</em><em>, </em><em>optional</em>) – One dimensional radial grid. If of type <cite>OneDGrid</cite> then this radial grid is used for
-all atoms. If a list is provided,then ith grid correspond to the ith atom.  If
+<li><p><strong>rgrid</strong> (<em>(</em><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><em>OneDGrid</em></a><em>, </em><em>list</em><em>[</em><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><em>OneDGrid</em></a><em>]</em><em>, </em><em>dict</em><em>[</em><em>int: OneDGrid</em><em>]</em><em>, </em><em>None</em><em>)</em><em>, </em><em>optional</em>) – One dimensional radial grid. If of type <cite>OneDGrid</cite> then this radial grid is used for
+all atoms. If a list is provided, then ith grid correspond to the ith atom.  If
 dictionary is provided, then the keys correspond to the <a href="#id2"><span class="problematic" id="id3">`</span></a>atnums[i]`attribute.
-If None, then using atomic numbers it will generate a default radial grid
-(PowerRTransform of UniformInteger grid).</p></li>
+If None, a default radial grid (PowerRTransform of UniformInteger grid) is constructed
+based on the given atomic numbers.</p></li>
 <li><p><strong>aim_weights</strong> (<em>Callable</em><em> or </em><em>np.ndarray</em><em>(</em><em>K</em><em>,</em><em>)</em><em>, </em><em>optional</em>) – Atoms in molecule weights. If None, then aim_weights is Becke weights with order=3.</p></li>
 <li><p><strong>rotate</strong> (<em>bool</em><em> or </em><em>int</em><em>, </em><em>optional</em>) – Flag to set auto rotation for atomic grid, if given int, the number
 will be used as a seed to generate rantom matrix.</p></li>
@@ -382,19 +382,26 @@ Chemical Physics, 149(20).</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.molgrid.MolGrid.from_pruned">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_pruned</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atnums</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atcoords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sectors_r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rgrid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aim_weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sectors_degree</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sectors_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">37</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">store</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.molgrid.MolGrid.from_pruned" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_pruned</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atnums</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atcoords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_sectors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d_sectors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s_sectors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rgrid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aim_weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">37</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">store</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.molgrid.MolGrid.from_pruned" title="Permalink to this definition"></a></dt>
 <dd><p>Initialize a MolGrid instance with pruned method from AtomGrid.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>atnums</strong> (<em>ndarray</em><em>(</em><em>M</em><em>,</em><em>)</em>) – List of atomic numbers for each atom.</p></li>
-<li><p><strong>atcoords</strong> (<em>np.ndarray</em><em>(</em><em>M</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates for each atoms</p></li>
-<li><p><strong>radius</strong> (<em>float</em><em>, </em><em>List</em><em>[</em><em>float</em><em>]</em>) – The atomic radius to be multiplied with <cite>r_sectors</cite> (to make them atom specific).
-If float, then the same atomic radius is used for all atoms, else a list specifies
-it for each atom.</p></li>
-<li><p><strong>sectors_r</strong> (<em>List</em><em>[</em><em>List</em><em>]</em><em>, </em><em>keyword-only argument</em>) – Each row is a sequence of boundary points specifying radial sectors of the pruned grid
-for the <cite>m`th atom. The first sector is ``[0, radius*sectors_r[0]]`</cite>, then
-<code class="docutils literal notranslate"><span class="pre">[radius*sectors_r[0],</span> <span class="pre">radius*sectors_r[1]]</span></code>, and so on.</p></li>
+<li><p><strong>atcoords</strong> (<em>np.ndarray</em><em>(</em><em>M</em><em>, </em><em>3</em><em>)</em>) – Three-dimensional Cartesian coordinates for each atoms in atomic units.</p></li>
+<li><p><strong>radius</strong> (<em>float</em><em>, </em><em>List</em><em>[</em><em>float</em><em>]</em>) – The atomic radius to be multiplied with <cite>r_sectors</cite> in atomic units (to make the
+radial sectors atom specific). If float, then the same atomic radius is used for all
+atoms, otherwise a list with <span class="math notranslate nohighlight">\(M\)</span> elements is used, where <span class="math notranslate nohighlight">\(M\)</span> is the number
+of atoms in the molecule. If list, then the ith element is used for the ith atom.</p></li>
+<li><p><strong>r_sectors</strong> (<em>list</em><em> of </em><em>List</em><em>[</em><em>float</em><em>]</em>) – List of sequences of the boundary radius (in atomic units) specifying sectors of
+the pruned radial grid of <span class="math notranslate nohighlight">\(M\)</span> atoms. For the first atom, the first
+sector is <code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">radius*r_sectors[0][0])</span></code>, then <code class="docutils literal notranslate"><span class="pre">(radius*r_sectors[0][0],</span>
+<span class="pre">radius*r_sectors[0][1])</span></code>, and so on. See AtomGrid.from_pruned for more information.</p></li>
+<li><p><strong>d_sectors</strong> (<em>int</em><em> or </em><em>list</em><em> of </em><em>List</em><em>[</em><em>int</em><em>]</em><em>, </em><em>optional</em>) – List of sequences of the angular degrees for radial sectors of <span class="math notranslate nohighlight">\(M\)</span> atoms.
+If a number is given, then the same number of degrees is used for all sectors of
+all atoms.</p></li>
+<li><p><strong>s_sectors</strong> (<em>int</em><em> or </em><em>list</em><em> of </em><em>List</em><em>[</em><em>int</em><em>] or </em><em>None</em><em>, </em><em>optional</em><em>, </em><em>keyword-only</em>) – List of sequences of angular sizes for each radial sector of of <span class="math notranslate nohighlight">\(M\)</span> atoms.
+If both <cite>d_sectors</cite> and <cite>s_sectors</cite> are given, <cite>s_sectors</cite> is used.</p></li>
 <li><p><strong>rgrid</strong> (<a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><em>OneDGrid</em></a><em> or </em><em>List</em><em>[</em><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><em>OneDGrid</em></a><em>] or </em><em>Dict</em><em>[</em><em>int: OneDGrid</em><em>]</em><em>, </em><em>optional</em>) – One dimensional grid for the radial component.  If a list is provided,then ith
 grid correspond to the ith atom.  If dictionary is provided, then the keys are
 correspond to the <cite>atnums[i]</cite> attribute. If None, then using atomic numbers it will
@@ -402,12 +409,6 @@ generate a default radial grid (PowerRTransform of UniformInteger grid).</p></li
 <li><p><strong>aim_weights</strong> (<em>Callable</em><em> or </em><em>np.ndarray</em><em>(</em><em>sum^M_n N_n</em><em>,</em><em>)</em><em>, </em><em>optional</em>) – Atoms in molecule/nuclear weights <span class="math notranslate nohighlight">\({ {w_n(r_k)}_k^{N_i}}_n^{M}\)</span>, where
 <span class="math notranslate nohighlight">\(N_i\)</span> is the number of points in the ith atomic grid. If None, then aim_weights
 is Becke weights with order=3.</p></li>
-<li><p><strong>sectors_degree</strong> (<em>List</em><em>[</em><em>List</em><em>]</em><em>, </em><em>keyword-only argument</em>) – Each row is a sequence of Lebedev/angular degrees for each radial sector of the pruned
-grid for the <cite>m`th atom. If both `sectors_degree</cite> and <cite>sectors_size</cite> are given,
-<cite>sectors_degree</cite> is used.</p></li>
-<li><p><strong>sectors_size</strong> (<em>List</em><em>[</em><em>List</em><em>]</em><em>, </em><em>keyword-only argument</em>) – Each row is a sequence of Lebedev sizes for each radial sector of the pruned grid
-for the <cite>m`th atom. If both `sectors_degree</cite> and <cite>sectors_size</cite> are given,
-<cite>sectors_degree</cite> is used.</p></li>
 <li><p><strong>rotate</strong> (<em>bool</em><em> or </em><em>int</em><em> , </em><em>optional</em>) – Flag to set auto rotation for atomic grid, if given int, the number
 will be used as a seed to generate random matrix.</p></li>
 <li><p><strong>store</strong> (<em>bool</em><em>, </em><em>optional</em>) – Flag to store each original atomic grid information.</p></li>
@@ -432,7 +433,7 @@ will be used as a seed to generate random matrix.</p></li>
 <li><p><strong>atnums</strong> (<em>np.ndarray</em><em>(</em><em>M</em><em>, </em><em>3</em><em>)</em>) – Atomic number of <span class="math notranslate nohighlight">\(M\)</span> atoms in molecule.</p></li>
 <li><p><strong>atcoords</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates for each atoms</p></li>
 <li><p><strong>size</strong> (<em>int</em>) – Number of points on each shell of angular grid.</p></li>
-<li><p><strong>rgrid</strong> (<a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><em>OneDGrid</em></a><em>, </em><em>optional</em>) – One-dimensional grid to construct the atomic grid. If none, then
+<li><p><strong>rgrid</strong> (<a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><em>OneDGrid</em></a><em> or </em><em>None</em><em>, </em><em>optional</em>) – One-dimensional grid to construct the atomic grid. If none, then
 default radial grid is generated based on atomic numbers.</p></li>
 <li><p><strong>aim_weights</strong> (<em>Callable</em><em> or </em><em>np.ndarray</em><em>(</em><em>K</em><em>,</em><em>)</em><em>, </em><em>optional</em>) – Atoms in molecule weights. If None, then aim_weights is Becke weights with order=3.</p></li>
 <li><p><strong>rotate</strong> (<em>bool</em><em> or </em><em>int</em><em> , </em><em>optional</em>) – Flag to set auto rotation for atomic grid, if given int, the number

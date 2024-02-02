@@ -276,7 +276,7 @@ Radial grid r_max: 3.00000
 </div>
 <p>Having a radial grid, the angular grid can be specified by the angular grid <code class="docutils literal notranslate"><span class="pre">degrees</span></code> (or <code class="docutils literal notranslate"><span class="pre">sizes</span></code>). If only one value is provided (i.e., list/array of length one), the same angular grid is used for all radial grid points. Otherwise, the <code class="docutils literal notranslate"><span class="pre">degrees</span></code> (or <code class="docutils literal notranslate"><span class="pre">sizes</span></code>) list/array should have the same length as the number of radial grid points. Additionally (A, B, C, and D refer to the atomic grids constructed in the following code block):</p>
 <ul class="simple">
-<li><p>By default the Levedev-Laikov angular grids are used (A, C, and D), unless <code class="docutils literal notranslate"><span class="pre">use_spherical=True</span></code> which employs the Symmetric spherical t-design angular grids (B).</p></li>
+<li><p>By default the Levedev-Laikov angular grids are used (A, C, and D), unless <code class="docutils literal notranslate"><span class="pre">method=&quot;spherical&quot;</span></code> which employs the Symmetric spherical t-design angular grids (B).</p></li>
 <li><p>If the provided <code class="docutils literal notranslate"><span class="pre">degrees</span></code> are not available, the closest available <code class="docutils literal notranslate"><span class="pre">degrees</span></code> are used (B).</p></li>
 <li><p>To randomly rotate the angular grids at each radial grid point, the <code class="docutils literal notranslate"><span class="pre">rotate</span></code> argument can be used to provide a seed for random rotation matrix (C).</p></li>
 </ul>
@@ -295,7 +295,7 @@ Radial grid r_max: 3.00000
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid A center        : </span><span class="si">{</span><span class="n">atgrid_ll</span><span class="o">.</span><span class="n">center</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="c1"># (B) AtomGrid from a radial grid and an angular degree (symmetric spherical t-design)</span>
-<span class="n">atgrid_ss</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="p">(</span><span class="n">rgrid</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">],</span> <span class="n">use_spherical</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">atgrid_ss</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="p">(</span><span class="n">rgrid</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">],</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;spherical&quot;</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid B size          : </span><span class="si">{</span><span class="n">atgrid_ss</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid B radial size   : </span><span class="si">{</span><span class="n">atgrid_ss</span><span class="o">.</span><span class="n">rgrid</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -312,7 +312,7 @@ Radial grid r_max: 3.00000
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid C center        : </span><span class="si">{</span><span class="n">atgrid_ll_degrees</span><span class="o">.</span><span class="n">center</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="c1"># (D) AtomGrid  from a radial grid and an angular size (Levedev-Laikov)</span>
-<span class="n">atgrid_ll_size</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="p">(</span><span class="n">rgrid</span><span class="p">,</span> <span class="n">sizes</span><span class="o">=</span><span class="p">[</span><span class="mi">60</span><span class="p">],</span> <span class="n">rotate</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+<span class="n">atgrid_ll_size</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="p">(</span><span class="n">rgrid</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sizes</span><span class="o">=</span><span class="p">[</span><span class="mi">60</span><span class="p">],</span> <span class="n">rotate</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid D size          : </span><span class="si">{</span><span class="n">atgrid_ll_size</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid D radial size   : </span><span class="si">{</span><span class="n">atgrid_ll_size</span><span class="o">.</span><span class="n">rgrid</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -352,8 +352,8 @@ AtomGrid D center        : [0. 0. 0.]
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-/home/ali/PythonProjects/grid/src/grid/atomgrid.py:883: UserWarning: Lebedev weights are negative which can introduce round-off errors.
-  sphere_grid = AngularGrid(degree=deg_i, use_spherical=use_spherical)
+/home/ali/PythonProjects/grid/src/grid/atomgrid.py:879: UserWarning: Lebedev weights are negative which can introduce round-off errors.
+  sphere_grid = AngularGrid(degree=deg_i, method=method)
 </pre></div></div>
 </div>
 <div class="section" id="Plot-AtomGrid-Points">
@@ -406,8 +406,7 @@ AtomGrid D center        : [0. 0. 0.]
 </div>
 <div class="section" id="Pruned-Grids-AtomGrid.from_pruned">
 <h2>Pruned Grids <code class="docutils literal notranslate"><span class="pre">AtomGrid.from_pruned</span></code><a class="headerlink" href="#Pruned-Grids-AtomGrid.from_pruned" title="Permalink to this heading"></a></h2>
-<p><a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.from_pruned">AtomGrid.from_pruned</a> construct an atomic grid given a radial grid, an atom radius, a set of radial sectors <code class="docutils literal notranslate"><span class="pre">sectors_r</span></code> and the degrees (or sizes) of angular grids <code class="docutils literal notranslate"><span class="pre">sectors_degrees</span></code> for each of the sectors. The <code class="docutils literal notranslate"><span class="pre">sectors_r</span></code> and <code class="docutils literal notranslate"><span class="pre">sectors_degrees</span></code> should have the same number of elements. This method is useful for constructing atomic grids with different angular grid resolutions for different radial
-sectors.</p>
+<p><a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.from_pruned">AtomGrid.from_pruned</a> construct an atomic grid given a radial grid, an atom radius, a set of radial sectors <code class="docutils literal notranslate"><span class="pre">r_sectors</span></code> and the degrees (or sizes) of angular grids <code class="docutils literal notranslate"><span class="pre">d_sectors</span></code> for each of the sectors. The <code class="docutils literal notranslate"><span class="pre">r_sectors</span></code> and <code class="docutils literal notranslate"><span class="pre">d_sectors</span></code> should have the same number of elements. This method is useful for constructing atomic grids with different angular grid resolutions for different radial sectors.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
@@ -417,11 +416,11 @@ sectors.</p>
 <span class="c1"># example: covalent radius of lithium</span>
 <span class="n">radius</span> <span class="o">=</span> <span class="mf">2.418849439520986</span>
 <span class="c1"># radial sector 1 covers [0, 0.5 * radius], sector 2 covers [0.5 * radius, radius], etc.</span>
-<span class="c1"># each sector has a different number of angular points defined by sectors_d</span>
+<span class="c1"># each sector has a different number of angular points defined by d_sectors</span>
 <span class="c1"># note that the largest radial grid point is at r=3.0, so the last sector is not used</span>
-<span class="n">sectors_r</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">]</span>
-<span class="n">sectors_d</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span>
-<span class="n">atgrid</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="o">.</span><span class="n">from_pruned</span><span class="p">(</span><span class="n">rgrid</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">sectors_r</span><span class="o">=</span><span class="n">sectors_r</span><span class="p">,</span> <span class="n">sectors_degree</span><span class="o">=</span><span class="n">sectors_d</span><span class="p">)</span>
+<span class="n">r_sectors</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">]</span>
+<span class="n">d_sectors</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span>
+<span class="n">atgrid</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="o">.</span><span class="n">from_pruned</span><span class="p">(</span><span class="n">rgrid</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">r_sectors</span><span class="o">=</span><span class="n">r_sectors</span><span class="p">,</span> <span class="n">d_sectors</span><span class="o">=</span><span class="n">d_sectors</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid size          : </span><span class="si">{</span><span class="n">atgrid</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid radial size   : </span><span class="si">{</span><span class="n">atgrid</span><span class="o">.</span><span class="n">rgrid</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -460,7 +459,7 @@ AtomGrid center        : [0. 0. 0.]
 <div class="section" id="Preset-Grids-AtomGrid.from_preset">
 <h2>Preset Grids <code class="docutils literal notranslate"><span class="pre">AtomGrid.from_preset</span></code><a class="headerlink" href="#Preset-Grids-AtomGrid.from_preset" title="Permalink to this heading"></a></h2>
 <p><a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.from_preset">AtomGrid.from_preset</a> builds an atomic grid given a radial grid and a preset angular grid name like <code class="docutils literal notranslate"><span class="pre">coarse</span></code>, <code class="docutils literal notranslate"><span class="pre">medium</span></code>, <code class="docutils literal notranslate"><span class="pre">fine</span></code>, <code class="docutils literal notranslate"><span class="pre">veryfine</span></code>, <code class="docutils literal notranslate"><span class="pre">ultrafine</span></code>, and <code class="docutils literal notranslate"><span class="pre">insane</span></code> (the names denote the increasing order of angular grid size) which uses a preset angular degrees for every element denoted by <code class="docutils literal notranslate"><span class="pre">atnum</span></code> (atomic number). In other words, every element has a predefined set of radial sector
-<code class="docutils literal notranslate"><span class="pre">sectors_r</span></code> and corresponding degrees <code class="docutils literal notranslate"><span class="pre">sectors_degrees</span></code> which is invoked by the <code class="docutils literal notranslate"><span class="pre">preset</span></code> argument.</p>
+<code class="docutils literal notranslate"><span class="pre">r_sectors</span></code> and corresponding degrees <code class="docutils literal notranslate"><span class="pre">d_sectors</span></code> which is invoked by the <code class="docutils literal notranslate"><span class="pre">preset</span></code> argument.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>

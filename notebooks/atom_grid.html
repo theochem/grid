@@ -242,10 +242,10 @@
 <div class="section" id="Atom-Grids">
 <h1>Atom Grids<a class="headerlink" href="#Atom-Grids" title="Permalink to this heading"></a></h1>
 <p><a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid">AtomGrid</a> constructs an atomic grid by combining a radial and angular components for evaluation, integration, interpolation, and differentiation in three-dimensional (3D) space. In quantum chemistry, this is typically used for computations of atomic properties. However, this is a general purpose grid that can be used for any function in 3D space.</p>
-<p>This notebook showcases various functionalities of <a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid">AtomGrid</a>. For computing properties on the grid, we use <span class="math notranslate nohighlight">\(\textbf{He}\)</span> in the triplet state (<span class="math notranslate nohighlight">\(1s^1 2s^1\)</span>) as an example. The corresponding wavefunction is obtained from formatted checkpoint file <code class="docutils literal notranslate"><span class="pre">&quot;doc/notebooks/He_t.fchk&quot;</span></code>. The <code class="docutils literal notranslate"><span class="pre">`qc-iodata</span></code> &lt;<a class="reference external" href="https://github.com/theochem/iodata">https://github.com/theochem/iodata</a>&gt;`__ package is used for parsing the wavefuction data from the fchk file, and
-<code class="docutils literal notranslate"><span class="pre">`qc-gbasis</span></code> &lt;<a class="reference external" href="https://github.com/theochem/gbasis">https://github.com/theochem/gbasis</a>&gt;`__ package is used for analytical evaluation of various properties in the grid.</p>
+<p>This notebook showcases various functionalities of <a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid">AtomGrid</a>. For computing properties on the grid, we use <span class="math notranslate nohighlight">\(\textbf{He}\)</span> in the triplet state (<span class="math notranslate nohighlight">\(1s^1 2s^1\)</span>) as an example. The corresponding wavefunction is obtained from formatted checkpoint file <code class="docutils literal notranslate"><span class="pre">&quot;doc/notebooks/He_t.fchk&quot;</span></code>. The <a class="reference external" href="https://github.com/theochem/iodata">qc-iodata</a> package is used for parsing the wavefuction data from the fchk file, and
+<a class="reference external" href="https://github.com/theochem/gbasis">qc-gbasis</a> package is used for analytical evaluation of various properties in the grid.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">iodata</span> <span class="kn">import</span> <span class="n">load_one</span>
@@ -275,9 +275,9 @@ Beta MO occupations : [0. 0.]
 <div class="section" id="Construct-Atomic-Grid">
 <h2>Construct Atomic Grid<a class="headerlink" href="#Construct-Atomic-Grid" title="Permalink to this heading"></a></h2>
 <p>There are multiple ways to construct an atomic grid, for a complete description see the <a href="#id1"><span class="problematic" id="id2">`Atomic_Grid_Construction.ipynb &lt;&gt;`__</span></a>.</p>
-<p>Here we construct an atomic grid from a radial grid instance and the degrees of the angular grid centered at the position of <span class="math notranslate nohighlight">\(\textbf{He}\)</span> nucleus. The radial grid is constructed by specifying the number of radial grid points. For more details on the radial and angular grids see <a href="#id1"><span class="problematic" id="id3">`Radial_Grid.ipynb &lt;&gt;`__</span></a> and <a href="#id1"><span class="problematic" id="id4">`Angular_Grid.ipynb &lt;&gt;`__</span></a>.</p>
+<p>Here we construct an atomic grid from a radial grid instance and the degrees of the angular grid centered at the position of <span class="math notranslate nohighlight">\(\textbf{He}\)</span> nucleus. The radial grid is constructed by specifying the number of radial grid points. For more details on the radial and angular grids see <a class="reference external" href="https://grid.qcdevs.org/notebooks/one_dimensional_grids.html">One_dimensional_grids.ipynb</a> and <a class="reference external" href="https://grid.qcdevs.org/notebooks/angular_grid.html">Angular_Grid.ipynb</a>.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -323,10 +323,10 @@ AtomGrid center        : [0. 0. 0.]
 </div>
 <div class="section" id="Example:-Integrate-Electron-Density">
 <h3>Example: Integrate Electron Density<a class="headerlink" href="#Example:-Integrate-Electron-Density" title="Permalink to this heading"></a></h3>
-<p>To integrate a scalar function over the atomic grid, we first need to evaluate the function on the grid points. Here, we compute the electron density <span class="math notranslate nohighlight">\(\rho(\mathbf{r})\)</span> of the <span class="math notranslate nohighlight">\(\textbf{He}\)</span> in the triplet state (<span class="math notranslate nohighlight">\(1s^1 2s^1\)</span>) using the <code class="docutils literal notranslate"><span class="pre">`gbasis.evals.density</span></code> &lt;&gt;`__ function of the <code class="docutils literal notranslate"><span class="pre">`qc-gbasis</span></code> &lt;<a class="reference external" href="https://github.com/theochem/gbasis">https://github.com/theochem/gbasis</a>&gt;`__ package. The wavefunction data are loaded from the formatted checkpoint file using
-<code class="docutils literal notranslate"><span class="pre">`load_one</span></code> &lt;<a class="reference external" href="https://iodata.readthedocs.io/en/latest/pyapi/iodata.api.html#iodata.api.load_one">https://iodata.readthedocs.io/en/latest/pyapi/iodata.api.html#iodata.api.load_one</a>&gt;`__ function of <code class="docutils literal notranslate"><span class="pre">`qc-iodata</span></code> &lt;<a class="reference external" href="https://github.com/theochem/iodata">https://github.com/theochem/iodata</a>&gt;`__package. The density values are then integrated using the <code class="docutils literal notranslate"><span class="pre">`AtomGrid.integrate</span></code> &lt;<a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.basegrid.html#grid.basegrid.Grid.integrate">https://grid.qcdevs.org/pyapi/grid.basegrid.html#grid.basegrid.Grid.integrate</a>&gt;`__ method.</p>
+<p>To integrate a scalar function over the atomic grid, we first need to evaluate the function on the grid points. Here, we compute the electron density <span class="math notranslate nohighlight">\(\rho(\mathbf{r})\)</span> of the <span class="math notranslate nohighlight">\(\textbf{He}\)</span> in the triplet state (<span class="math notranslate nohighlight">\(1s^1 2s^1\)</span>) using the <a class="reference external" href="https://gbasis.qcdevs.org/_autosummary/gbasis.evals.html#gbasis.evals.density.evaluate_density">gbasis.evals.density</a> function of the <a class="reference external" href="https://github.com/theochem/gbasis">qc-gbasis</a> package. The wavefunction data are loaded from the
+formatted checkpoint file using <a class="reference external" href="https://iodata.readthedocs.io/en/latest/pyapi/iodata.api.html#iodata.api.load_one">load_one</a> function of <a class="reference external" href="https://github.com/theochem/iodata">qc-iodata</a>package. The density values are then integrated using the <a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.basegrid.html#grid.basegrid.Grid.integrate">AtomGrid.integrate</a> method.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.wrappers</span> <span class="kn">import</span> <span class="n">from_iodata</span>
@@ -371,7 +371,7 @@ Integral of the electron density: 1.9999999911143622
 <p>where <span class="math notranslate nohighlight">\(r_i\)</span> is a radial grid point.</p>
 <p>Here we calculate the radial electron density distribution for the <span class="math notranslate nohighlight">\(\textbf{He}\)</span> atom in the triplet (<span class="math notranslate nohighlight">\(1s^2 2s^1\)</span>) state using the previously defined atomic grid and the electron density values calculated on the grid points.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -415,9 +415,9 @@ Max difference between radial_dens_1 and radial_dens_2: 2.220446049250313e-16
 <img alt="../_images/notebooks_atom_grid_8_1.png" src="../_images/notebooks_atom_grid_8_1.png" />
 </div>
 </div>
-<p>To identify the local maxima of radial electron density and corresponding radii, the <code class="docutils literal notranslate"><span class="pre">`scipy.signal.find_peaks</span></code> &lt;<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.find_peaks.html">https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.find_peaks.html</a>&gt;`__ is used.</p>
+<p>To identify the local maxima of radial electron density and corresponding radii, the <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.find_peaks.html">scipy.signal.find_peaks</a> is used.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="kn">import</span> <span class="n">find_peaks</span>
@@ -448,7 +448,7 @@ Peak 1 of radial electron density has:
 </div>
 <p>The maximum values of the radial electron density distribution corresponds to the radial position with maximum probability of finding an electron. In this case there are two maximum values corresponding to the two electrons. The first one (left to right) corresponds to the <span class="math notranslate nohighlight">\(1s\)</span> orbital and the second one to the <span class="math notranslate nohighlight">\(2s\)</span> orbital. The radial electron density distribution also integrates to the total number of electrons in the system.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of electrons in atom            : </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mol</span><span class="o">.</span><span class="n">atnums</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">mol</span><span class="o">.</span><span class="n">charge</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -476,9 +476,9 @@ Integral of the radial electron density: 1.9999999911143642
 \[E_{rep} = \frac{1}{2} \sum_{i}^{N_{\text{G}_1}} \sum_{j}^{N_{\text{G}_2}} \frac{w(\mathbf{r}_i)\rho(\mathbf{r}_i) w(\mathbf{r}_j)\rho(\mathbf{r}_j)}{|\mathbf{r}_i - \mathbf{r}_j|} =
 \frac{1}{2} \sum_{i}^{N_{\text{G}_1}} w(\mathbf{r}_i)\rho(\mathbf{r}_i) \sum_{j}^{N_{\text{G}_2}} \frac{w(\mathbf{r}_j)\rho(\mathbf{r}_j)}{|\mathbf{r}_i - \mathbf{r}_j|}\]</div>
 <p>where <span class="math notranslate nohighlight">\(\mathbf{r}\)</span> and <span class="math notranslate nohighlight">\(w(\mathbf{r})\)</span> represent the coordinates and weights of grid points. When <span class="math notranslate nohighlight">\(i = j\)</span>, the denominator is zero denominator and the energy is undefined. To ensure that grid points do not coincide, different grids are used for <span class="math notranslate nohighlight">\(\mathbf{r}_i\)</span> and <span class="math notranslate nohighlight">\(\mathbf{r}_j\)</span> within the same spatial domain. This can be easily done by introducing a second atomic grid with different angular degree or one less radial grid points. The electron density values on this
-second grid can be either directly computed or obtained by interpolating from the values on the first grid using the <code class="docutils literal notranslate"><span class="pre">`AtomGrid.interpolate</span></code> &lt;<a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.interpolate">https://grid.qcdevs.org/pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.interpolate</a>&gt;`__ method.</p>
+second grid can be either directly computed or obtained by interpolating from the values on the first grid using the <a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.interpolate">AtomGrid.interpolate</a> method.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Construct another radial grid with one less point</span>

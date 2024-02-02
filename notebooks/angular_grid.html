@@ -248,11 +248,10 @@
 <ol class="arabic simple">
 <li><p>By specifying the degree of the grid</p></li>
 <li><p>By specifying the number of points in the grid</p></li>
-<li><p>By specifying the grid points and integration weights directly</p></li>
 </ol>
 <p>The degree specifies be the maximum angular degree <span class="math notranslate nohighlight">\(l\)</span> of the real spherical harmonics <span class="math notranslate nohighlight">\(Y_{lm}\)</span> that the grid can integrate accurately. If the given degree is no supported, the closest degree is used.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[47]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">grid.angular</span> <span class="kn">import</span> <span class="n">AngularGrid</span>
@@ -260,7 +259,7 @@
 <span class="c1"># Make angular give specifying the degree</span>
 <span class="n">degree</span> <span class="o">=</span> <span class="mi">28</span>
 <span class="n">ang_grid_ll</span> <span class="o">=</span> <span class="n">AngularGrid</span><span class="p">(</span><span class="n">degree</span><span class="o">=</span><span class="n">degree</span><span class="p">)</span>
-<span class="n">ang_grid_ss</span> <span class="o">=</span> <span class="n">AngularGrid</span><span class="p">(</span><span class="n">degree</span><span class="o">=</span><span class="n">degree</span><span class="p">,</span> <span class="n">use_spherical</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ang_grid_ss</span> <span class="o">=</span> <span class="n">AngularGrid</span><span class="p">(</span><span class="n">degree</span><span class="o">=</span><span class="n">degree</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;spherical&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Specified degree is </span><span class="si">{</span><span class="n">degree</span><span class="si">}</span><span class="s2"> but actual degree of the angular grid is:&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - </span><span class="si">{</span><span class="n">ang_grid_ll</span><span class="o">.</span><span class="n">degree</span><span class="si">}</span><span class="s2"> for the Levedev-Laikov grid&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - </span><span class="si">{</span><span class="n">ang_grid_ss</span><span class="o">.</span><span class="n">degree</span><span class="si">}</span><span class="s2"> for the symmetric spherical grid&quot;</span><span class="p">)</span>
@@ -274,17 +273,10 @@
 
 <span class="c1"># Make angular give specifying the number of points</span>
 <span class="n">size</span> <span class="o">=</span> <span class="mi">300</span>
-<span class="n">ang_grid_ll</span> <span class="o">=</span> <span class="n">AngularGrid</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+<span class="n">ang_grid_ll</span> <span class="o">=</span> <span class="n">AngularGrid</span><span class="p">(</span><span class="n">degree</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Specified number of points (Levedev-Laikov grid) is: </span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Actual number of points of the angular grid </span><span class="si">{</span><span class="n">ang_grid_ll</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
-
-<span class="c1"># The angular grid can be specified from the points and weights:</span>
-<span class="n">points</span> <span class="o">=</span> <span class="n">ang_grid_ll</span><span class="o">.</span><span class="n">points</span>
-<span class="n">weights</span> <span class="o">=</span> <span class="n">ang_grid_ll</span><span class="o">.</span><span class="n">weights</span>
-<span class="n">ang_grid</span> <span class="o">=</span> <span class="n">AngularGrid</span><span class="p">(</span><span class="n">points</span><span class="o">=</span><span class="n">points</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Angular grid was set from </span><span class="si">{</span><span class="n">ang_grid</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2"> points and weights&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;This grid has not specified degree!!!&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -302,14 +294,11 @@ Number of points of the symmetric spherical grid: 438
 
 Specified number of points (Levedev-Laikov grid) is: 300
 Actual number of points of the angular grid 302
-
-Angular grid was set from 302 points and weights
-This grid has not specified degree!!!
 </pre></div></div>
 </div>
 <p>The angular grid points are distributed across on the unit-sphere <span class="math notranslate nohighlight">\(S^2\)</span>, i.e. points are normalized to one.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline
@@ -369,7 +358,7 @@ Norm of symmetric spherical grid points is all one: True
 <div class="math notranslate nohighlight">
 \[\int_{0}^{2\pi} \int_0^{\pi} \sin(\phi) d\theta d\phi = 2 \pi \int_0^{\pi} \sin(\phi) d\phi = 4 \pi\]</div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Integrate using Levedev-Laikov grid</span>
@@ -406,7 +395,7 @@ Numerical Integration (Symmetric Spherical grid):  12.566370614
     \int_{0}^{2\pi} \int_0^{\pi} Y_{lm}(\theta, \phi) \sin(\phi) d\theta d\phi &amp;= 0
 \end{align*}\end{split}\]</div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">grid.utils</span> <span class="kn">import</span> <span class="n">convert_cart_to_sph</span><span class="p">,</span> <span class="n">generate_real_spherical_harmonics</span>
@@ -475,9 +464,9 @@ Results of the integration of the spherical harmonics over the angular grid
 |                         |      Levedev-Laikov grid |  Symmetric spherical grid |
 ----------------------------------------------------------------------------------
 |        Y_(0, 0)         |       3.5449077018109114 |        3.5449077018110318 |
-|        Y_(1, 0)         |       0.0000000000000002 |        0.0000000000000001 |
-|        Y_(1, 1)         |       0.0000000000000002 |        0.0000000000000001 |
-|        Y_(1, -1)        |       0.0000000000000002 |        0.0000000000000001 |
+|        Y_(1, 0)         |       0.0000000000000000 |       -0.0000000000000001 |
+|        Y_(1, 1)         |       0.0000000000000000 |       -0.0000000000000001 |
+|        Y_(1, -1)        |       0.0000000000000000 |       -0.0000000000000001 |
 |        Y_(2, 0)         |       0.0000000000000000 |       -0.0000000000000000 |
 |        Y_(2, 1)         |       0.0000000000000000 |       -0.0000000000000000 |
 |        Y_(2, -1)        |       0.0000000000000000 |       -0.0000000000000000 |
@@ -511,31 +500,31 @@ Results of the integration of the spherical harmonics over the angular grid
 <div class="highlight"><pre>
 Integral of Y[0, 0] x Y[0, 0] over the angular grid is:  1.000000000
 Integral of Y[0, 0] x Y[1, 0] over the angular grid is:  0.000000000
-Integral of Y[0, 0] x Y[1, 1] over the angular grid is: -0.000000000
+Integral of Y[0, 0] x Y[1, 1] over the angular grid is:  0.000000000
 Integral of Y[0, 0] x Y[1, -1] over the angular grid is:  0.000000000
 Integral of Y[0, 0] x Y[2, 0] over the angular grid is:  0.000000000
 Integral of Y[0, 0] x Y[2, 1] over the angular grid is: -0.000000000
 Integral of Y[0, 0] x Y[2, -1] over the angular grid is: -0.000000000
-Integral of Y[0, 0] x Y[2, 2] over the angular grid is: -0.000000000
-Integral of Y[0, 0] x Y[2, -2] over the angular grid is:  0.000000000
+Integral of Y[0, 0] x Y[2, 2] over the angular grid is:  0.000000000
+Integral of Y[0, 0] x Y[2, -2] over the angular grid is: -0.000000000
 Integral of Y[1, 0] x Y[1, 0] over the angular grid is:  1.000000000
 Integral of Y[1, 0] x Y[1, 1] over the angular grid is: -0.000000000
-Integral of Y[1, 0] x Y[1, -1] over the angular grid is: -0.000000000
+Integral of Y[1, 0] x Y[1, -1] over the angular grid is:  0.000000000
 Integral of Y[1, 0] x Y[2, 0] over the angular grid is: -0.000000000
 Integral of Y[1, 0] x Y[2, 1] over the angular grid is:  0.000000000
 Integral of Y[1, 0] x Y[2, -1] over the angular grid is:  0.000000000
 Integral of Y[1, 0] x Y[2, 2] over the angular grid is: -0.000000000
-Integral of Y[1, 0] x Y[2, -2] over the angular grid is: -0.000000000
+Integral of Y[1, 0] x Y[2, -2] over the angular grid is:  0.000000000
 Integral of Y[1, 1] x Y[1, 1] over the angular grid is:  1.000000000
-Integral of Y[1, 1] x Y[1, -1] over the angular grid is:  0.000000000
+Integral of Y[1, 1] x Y[1, -1] over the angular grid is: -0.000000000
 Integral of Y[1, 1] x Y[2, 0] over the angular grid is:  0.000000000
 Integral of Y[1, 1] x Y[2, 1] over the angular grid is:  0.000000000
-Integral of Y[1, 1] x Y[2, -1] over the angular grid is: -0.000000000
+Integral of Y[1, 1] x Y[2, -1] over the angular grid is:  0.000000000
 Integral of Y[1, 1] x Y[2, 2] over the angular grid is: -0.000000000
 Integral of Y[1, 1] x Y[2, -2] over the angular grid is:  0.000000000
 Integral of Y[1, -1] x Y[1, -1] over the angular grid is:  1.000000000
 Integral of Y[1, -1] x Y[2, 0] over the angular grid is:  0.000000000
-Integral of Y[1, -1] x Y[2, 1] over the angular grid is: -0.000000000
+Integral of Y[1, -1] x Y[2, 1] over the angular grid is:  0.000000000
 Integral of Y[1, -1] x Y[2, -1] over the angular grid is:  0.000000000
 Integral of Y[1, -1] x Y[2, 2] over the angular grid is:  0.000000000
 Integral of Y[1, -1] x Y[2, -2] over the angular grid is:  0.000000000
@@ -543,26 +532,18 @@ Integral of Y[2, 0] x Y[2, 0] over the angular grid is:  1.000000000
 Integral of Y[2, 0] x Y[2, 1] over the angular grid is: -0.000000000
 Integral of Y[2, 0] x Y[2, -1] over the angular grid is:  0.000000000
 Integral of Y[2, 0] x Y[2, 2] over the angular grid is:  0.000000000
-Integral of Y[2, 0] x Y[2, -2] over the angular grid is: -0.000000000
+Integral of Y[2, 0] x Y[2, -2] over the angular grid is:  0.000000000
 Integral of Y[2, 1] x Y[2, 1] over the angular grid is:  1.000000000
-Integral of Y[2, 1] x Y[2, -1] over the angular grid is:  0.000000000
+Integral of Y[2, 1] x Y[2, -1] over the angular grid is: -0.000000000
 Integral of Y[2, 1] x Y[2, 2] over the angular grid is: -0.000000000
-Integral of Y[2, 1] x Y[2, -2] over the angular grid is:  0.000000000
+Integral of Y[2, 1] x Y[2, -2] over the angular grid is: -0.000000000
 Integral of Y[2, -1] x Y[2, -1] over the angular grid is:  1.000000000
-Integral of Y[2, -1] x Y[2, 2] over the angular grid is:  0.000000000
+Integral of Y[2, -1] x Y[2, 2] over the angular grid is: -0.000000000
 Integral of Y[2, -1] x Y[2, -2] over the angular grid is: -0.000000000
 Integral of Y[2, 2] x Y[2, 2] over the angular grid is:  1.000000000
-Integral of Y[2, 2] x Y[2, -2] over the angular grid is:  0.000000000
+Integral of Y[2, 2] x Y[2, -2] over the angular grid is: -0.000000000
 Integral of Y[2, -2] x Y[2, -2] over the angular grid is:  1.000000000
 </pre></div></div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
-</div>
 </div>
 </div>
 </div>
