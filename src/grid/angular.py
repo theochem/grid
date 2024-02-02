@@ -64,9 +64,10 @@ The following references are for the symmetric spherical t-design points:
 
 """
 
+from __future__ import annotations
+
 import warnings
 from bisect import bisect_left
-from typing import Union
 
 import numpy as np
 from importlib_resources import files
@@ -307,8 +308,9 @@ class AngularGrid(Grid):
 
     def __init__(
         self,
-        degree: Union[int, None],
-        size: Union[int, None] = None,
+        degree: int | None = 50,
+        *,
+        size: int | None = None,
         cache: bool = True,
         method: str = "lebedev",
     ):
@@ -316,16 +318,16 @@ class AngularGrid(Grid):
 
         Parameters
         ----------
-        degree : int or None
+        degree : int, optional
             Maximum angular degree :math:`l` of spherical harmonics that the angular grid
             can integrate accurately. If the angular grid corresponding to the given angular
-            degree is not supported, the next largest degree is used. Use None, if `size` is given.
-        size : int or None, optional
+            degree is not supported, the next largest degree is used. If `size` is provided,
+            `degree` is ignored.
+        size : int or None, keyword-only
             Number of angular grid points. If the angular grid corresponding to the given size is
             not supported, the next largest size is used. If both degree and size are given,
-            degree is used for constructing the grid. Use None, if `degree` is given. If both
-            `degree` and `size` are given `degree` is used for constructing the grid unless
-            `degree` is None.
+            degree is used for constructing the grid. If both `degree` and `size` are given,
+            `size` is used for constructing the angular grid.
         cache : bool, optional
             If True, then store the points and weights of the AngularGrid in cache
             to avoid duplicate grids that have the same `degree`.
@@ -355,15 +357,14 @@ class AngularGrid(Grid):
             raise ValueError(f"Method {method} is not supported, choose 'lebedev' or 'spherical'")
 
         # allow only one of degree or size to be given
-        if degree is None and size is None:
-            raise ValueError("At least one of degree or size should be given!")
-        if degree is not None and size is not None:
+        if size is not None:
             warnings.warn(
-                "Both degree and size arguments are given, so only degree is used!",
+                # f"Size is used for making the angular grid, degree={degree} is ignored!",
+                "Size is used for making the angular grid, degree is ignored!",
                 RuntimeWarning,
                 stacklevel=2,
             )
-            size = None
+            degree = None
 
         # map degree and size to the supported (i.e., pre-computed) degree and size
         degree, size = self._get_degree_and_size(degree=degree, size=size, method=method)
@@ -431,7 +432,7 @@ class AngularGrid(Grid):
         return degrees
 
     @staticmethod
-    def _get_degree_and_size(degree: Union[int, None], size: Union[int, None], method: str):
+    def _get_degree_and_size(degree: int | None, size: int | None, method: str):
         """
         Map the given degree and/or size to the degree and size of a supported angular grid.
 
