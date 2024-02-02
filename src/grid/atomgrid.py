@@ -138,30 +138,29 @@ class AtomGrid(Grid):
         rotate: int = 0,
         method: str = "lebedev",
     ):
-        """High level api to construct an atomic grid with preset arguments.
+        """Construct an atomic grid with pre-defined angular grids for a given atomic number.
 
         Parameters
         ----------
-        rgrid : OneDGrid, optional
-            The (1-dimensional) radial grid representing the radius of spherical grids.
-            If None, then using the atomic number it will generate a default radial grid
-            (PowerRTransform of UniformInteger grid).
-        atnum : int, optional
-            The atomic number specifying the predefined grid.
+        atnum : int
+            The atomic number.
         preset : str, optional
-            The name of predefined grid specifying the radial sectors and their corresponding
-            number of angular grid points. Supported preset options include:
-            'coarse', 'medium', 'fine', 'veryfine', 'ultrafine', and 'insane'.
-            Other options include the "standard grids":
+            The name of pre-defined grid specifying the radial sectors and their corresponding
+            number of angular grid points. Supported options include our custom presets:
+            'coarse', 'medium', 'fine', 'veryfine', 'ultrafine', and 'insane', as well as,
+            other standard pre-defined grids including:
             'sg_0', 'sg_1', 'sg_2', and 'sg_3', and the Ochsenfeld grids:
             'g1', 'g2', 'g3', 'g4', 'g5', 'g6', and 'g7', with higher number indicating
             greater accuracy but denser grid. See `Notes` for more information.
-        center : ndarray(3,), optional, keyword-only argument
+        rgrid : OneDGrid, optional
+            The 1D radial grid representing the radius of spherical grids.
+            If None, a default radial grid (PowerRTransform of UniformInteger grid) for the give
+            `atnum` is constructed.
+        center : ndarray(3,), optional
             Cartesian coordinates of the grid center. If `None`, the origin is used.
         rotate : int, optional
             Integer used as a seed for generating random rotation matrices to rotate the angular
-            spherical grids at each radial grid point. If the integer is zero, then no rotate
-            is used.
+            spherical grids at each radial grid point. If 0, then no rotate is made.
         method: str, optional
             Method for constructing the angular grid. Options are "lebedev" (for Lebedev-Laikov)
             and "spherical" (for symmetric spherical t-design).
@@ -185,17 +184,18 @@ class AtomGrid(Grid):
 
         """
         if rgrid is None:
-            # If the atomic number is found in the default RTransform
             if atnum in _DEFAULT_POWER_RTRANSFORM_PARAMS:
+                # load the default radial grid parameters for the given atomic number
                 rmin, rmax, npt = _DEFAULT_POWER_RTRANSFORM_PARAMS[int(atnum)]
-                # Convert angstrom to atomic units
+                # convert angstrom to atomic units
                 ang2bohr = scipy.constants.angstrom / scipy.constants.value("atomic unit of length")
                 rmin, rmax = rmin * ang2bohr, rmax * ang2bohr
+                # construct a radial grid
                 onedgrid = UniformInteger(npt)
                 rgrid = PowerRTransform(rmin, rmax).transform_1d_grid(onedgrid)
             else:
                 raise ValueError(
-                    f"Default rgrid parameter is not included for the" f" atomic number {atnum}."
+                    f"Default radial grid parameters is not included for the atomic number {atnum}."
                 )
         center = np.zeros(3, dtype=float) if center is None else np.asarray(center, dtype=float)
         cls._input_type_check(rgrid, center)
