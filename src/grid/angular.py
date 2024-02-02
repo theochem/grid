@@ -357,7 +357,11 @@ class AngularGrid(Grid):
         if degree is None and size is None:
             raise ValueError("At least one of degree or size should be given!")
         if degree is not None and size is not None:
-            warnings.warn("Both degree and size arguments are given, so only degree is used!")
+            warnings.warn(
+                "Both degree and size arguments are given, so only degree is used!",
+                RuntimeWarning,
+                stacklevel=2,
+                )
             size = None
 
         # map degree and size to the supported (i.e., pre-computed) degree and size
