@@ -427,13 +427,12 @@ class MolGrid(Grid):
         if aim_weights is None:
             aim_weights = BeckeWeights(order=3)
         at_grids = []
-        for i in range(len(atcoords)):
+        for atnum, atcoord in zip(atnums, atcoords):
             if rgrid is None:
-                atnum = atnums[i]
                 rad_grid = _generate_default_rgrid(atnum)
             else:
                 rad_grid = rgrid
-            at_grids.append(AtomGrid(rad_grid, sizes=[size], center=atcoords[i], rotate=rotate))
+            at_grids.append(AtomGrid(rad_grid, sizes=[size], center=atcoord, rotate=rotate))
         return cls(atnums, at_grids, aim_weights, store=store)
 
     @classmethod
