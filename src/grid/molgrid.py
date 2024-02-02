@@ -499,28 +499,46 @@ class MolGrid(Grid):
             raise ValueError(
                 "The dimension of coordinates need to be 2\n" f"got shape: {atcoords.ndim}"
             )
+        if atnums.size != atcoords.shape[0]:
+            raise ValueError(
+                "The number of atoms in atomic numbers does not match with coordinates\n"
+                f"atomic numbers: {atnums.shape}, coordinates: {atcoords.shape}"
+            )
         if aim_weights is None:
             aim_weights = BeckeWeights(order=3)
 
         at_grids = []
-        num_atoms = len(atcoords)
+        natoms = len(atcoords)
         # List of None is created, so that indexing is possible in the for-loop.
-        d_sectors = [None] * num_atoms if d_sectors is None else d_sectors
-        s_sectors = [None] * num_atoms if s_sectors is None else s_sectors
-        radius_atom = [radius] * num_atoms if isinstance(radius, (float, np.float64)) else radius
-        for i in range(num_atoms):
+        if d_sectors is None and d_sectors is not None:
+            raise ValueError("Arguments d_sectors and r_sectors cannot be both None.")
+        d_sectors = [None] * natoms if d_sectors is None else d_sectors
+        s_sectors = [None] * natoms if s_sectors is None else s_sectors
+
+        if len(d_sectors) != len(r_sectors):
+            raise ValueError(
+                "The number of angular sectors does not match with the number of radial sectors."
+                f"Got {len(d_sectors)} angular sectors and {len(r_sectors)} radial sectors."
+            )
+        if len(s_sectors) != len(r_sectors):
+            raise ValueError(
+                "The number of angular sectors does not match with the number of radial sectors."
+                f"Got {len(s_sectors)} angular sectors and {len(r_sectors)} radial sectors."
+            )
+
+        radius_atom = [radius] * natoms if isinstance(radius, (float, np.float64)) else radius
+        for i, atnum in enumerate(atnums):
             # get proper radial grid
             if isinstance(rgrid, OneDGrid):
                 rad = rgrid
             elif isinstance(rgrid, list):
                 rad = rgrid[i]
             elif isinstance(rgrid, dict):
-                rad = rgrid[atnums[i]]
+                rad = rgrid[atnum]
             elif rgrid is None:
-                atnum = atnums[i]
                 rad = _generate_default_rgrid(atnum)
             else:
-                raise TypeError(f"not supported radial grid input; got input type: {type(rgrid)}")
+                raise TypeError(f"Argument rgrid is not supported; got rgrid type: {type(rgrid)}")
 
             at_grids.append(
                 AtomGrid.from_pruned(
