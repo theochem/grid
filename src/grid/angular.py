@@ -366,7 +366,7 @@ class AngularGrid(Grid):
             size = None
 
         # map degree and size to the supported (i.e., pre-computed) degree and size
-        degree, size = self._get_size_and_degree(degree=degree, size=size, method=method)
+        degree, size = self._get_degree_and_size(degree=degree, size=size, method=method)
         # load pre-computed angular points & weights and make angular grid
         if degree not in cache_dict:
             points, weights = self._load_precomputed_angular_grid(degree, size, method)
@@ -425,13 +425,13 @@ class AngularGrid(Grid):
         degrees = np.zeros(len(sizes), dtype=int)
         for size in np.unique(sizes):
             # get the degree corresponding to the given (unique) size
-            deg = AngularGrid._get_size_and_degree(degree=None, size=size, method=method)[0]
+            deg = AngularGrid._get_degree_and_size(degree=None, size=size, method=method)[0]
             # set value of degree to corresponding to the given size equal to deg
             degrees[np.where(sizes == size)] = deg
         return degrees
 
     @staticmethod
-    def _get_size_and_degree(degree: Union[int, None], size: Union[int, None], method: str):
+    def _get_degree_and_size(degree: Union[int, None], size: Union[int, None], method: str):
         """
         Map the given degree and/or size to the degree and size of a supported angular grid.
 
@@ -502,9 +502,7 @@ class AngularGrid(Grid):
             return dict_npoints[size], size
 
         else:
-            raise ValueError(
-                "Both degree and size cannot be None, got degree={degree} and size={size}!"
-            )
+            raise ValueError("Both degree and size cannot be None. Provide at least one of them!")
 
     @staticmethod
     def _load_precomputed_angular_grid(degree: int, size: int, method: str):

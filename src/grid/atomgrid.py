@@ -793,7 +793,7 @@ class AtomGrid(Grid):
         # match given degrees to the supported (i.e., pre-computed) angular degrees
         matched_deg = np.array(
             [
-                AngularGrid._get_size_and_degree(degree=d, size=None, method=method)[0]
+                AngularGrid._get_degree_and_size(degree=d, size=None, method=method)[0]
                 for d in d_sectors
             ]
         )
