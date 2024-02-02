@@ -307,7 +307,7 @@ class AngularGrid(Grid):
 
     def __init__(
         self,
-        degree: Union[int, None]=None,
+        degree: Union[int, None] = None,
         size: Union[int, None] = None,
         cache: bool = True,
         method: str = "lebedev",
