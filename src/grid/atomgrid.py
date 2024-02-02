@@ -213,7 +213,7 @@ class AtomGrid(Grid):
             return cls(rgrid, sizes=sector_sizes, center=center, rotate=rotate, method=method)
         else:
             degs = AngularGrid.convert_angular_sizes_to_degrees(npt, method=method)
-            rad_degs = AtomGrid._find_l_for_rad_list(rgrid.points, rad, degs)
+            rad_degs = AtomGrid._find_degrees_for_radial_points(rgrid.points, rad, degs)
             return cls(rgrid, degrees=rad_degs, center=center, rotate=rotate, method=method)
 
     @classmethod
@@ -781,7 +781,7 @@ class AtomGrid(Grid):
             Array of degree values :math:`l` for each radial point.
 
         """
-        r_sectors = np.array(r_sectors)
+        r_sectors = np.array(r_sectors) * radius
         d_sectors = np.array(d_sectors)
 
         # check that the number of degree sectors matches the number of radial sectors
@@ -797,20 +797,20 @@ class AtomGrid(Grid):
                 for d in d_sectors
             ]
         )
-        rad_degs = AtomGrid._find_l_for_rad_list(rgrid.points, radius * r_sectors, matched_deg)
+        rad_degs = AtomGrid._find_degrees_for_radial_points(rgrid.points, r_sectors, matched_deg)
         return rad_degs
 
     @staticmethod
-    def _find_l_for_rad_list(
-        radial_arrays: np.ndarray, r_sectors: np.ndarray, d_sectors: np.ndarray
+    def _find_degrees_for_radial_points(
+        radial_points: np.ndarray, r_sectors: np.ndarray, d_sectors: np.ndarray
     ):
         r"""
-        Get all degrees L for all radial points from radius sectors and degree sectors.
+        Find degrees for all radial points given radial and degree sectors.
 
         Parameters
         ----------
-        radial_arrays : ndarray(N,)
-            Radial grid points.
+        radial_points : ndarray(N,)
+            Radial grid points in angstrom.
         r_sectors : list or ndarray(S,)
             Sequence of boundary radius (in atomic units) specifying sectors of the pruned radial
             grid. The first sector is ``(0, radius*r_sectors[0])``, then ``(radius*r_sectors[0],
@@ -821,12 +821,12 @@ class AtomGrid(Grid):
         Returns
         -------
         ndarray(N,)
-            Obtain a list of degrees :math:`l` for the angular grid at each radial point.
+            A list of angular degrees :math:`l` for each radial grid point.
 
         """
         # use broadcast to compare each point with r_sectors then sum over all
         # the True value, which should equal to the position of L.
-        position = np.sum(radial_arrays[:, None] > r_sectors[None, :], axis=1)
+        position = np.sum(radial_points[:, None] > r_sectors[None, :], axis=1)
         return d_sectors[position]
 
     @staticmethod

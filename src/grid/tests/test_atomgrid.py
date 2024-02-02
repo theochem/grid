@@ -203,7 +203,9 @@ class TestAtomGrid:
         rad = 1
         r_sectors = np.array([0.2, 0.4, 0.8])
         degs = np.array([3, 5, 7, 3])
-        atomic_grid_degree = AtomGrid._find_l_for_rad_list(rgrid.points, rad * r_sectors, degs)
+        atomic_grid_degree = AtomGrid._find_degrees_for_radial_points(
+            rgrid.points, rad * r_sectors, degs
+        )
         assert_equal(atomic_grid_degree, [3, 3, 5, 5, 7, 7, 7, 7, 3, 3])
 
     def test_generate_atomic_grid(self):
