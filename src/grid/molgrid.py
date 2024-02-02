@@ -20,7 +20,6 @@
 """Molecular grid class."""
 
 from __future__ import annotations
-from typing import Union
 
 import numpy as np
 import scipy.constants
@@ -53,7 +52,7 @@ class MolGrid(Grid):
         self,
         atnums: np.ndarray,
         atgrids: list,
-        aim_weights: Union[callable, np.ndarray],
+        aim_weights: callable | np.ndarray,
         store: bool = False,
     ):
         r"""Initialize class.
@@ -286,9 +285,9 @@ class MolGrid(Grid):
         cls,
         atnums: np.ndarray,
         atcoords: np.ndarray,
-        preset: Union[str, list, dict],
-        rgrid: Union[OneDGrid, list, dict, None] = None,
-        aim_weights: Union[callable, np.ndarray] = None,
+        preset: str | list | dict,
+        rgrid: OneDGrid | list | dict | None = None,
+        aim_weights: callable | np.ndarray = None,
         rotate: int = 37,
         store: bool = False,
     ):
@@ -392,8 +391,8 @@ class MolGrid(Grid):
         atnums: np.ndarray,
         atcoords: np.ndarray,
         size: int,
-        rgrid: Union[OneDGrid, None] = None,
-        aim_weights: Union[callable, np.ndarray] = None,
+        rgrid: OneDGrid | None = None,
+        aim_weights: callable | np.ndarray = None,
         rotate: int = 37,
         store: bool = False,
     ):
@@ -443,12 +442,12 @@ class MolGrid(Grid):
         cls,
         atnums: np.ndarray,
         atcoords: np.ndarray,
-        radius: Union[float, list[float]],
-        r_sectors: Union[float, list[float]],
-        d_sectors: Union[list[int], None],
-        s_sectors: Union[list[int], None] = None,
-        rgrid: Union[OneDGrid, list, None] = None,
-        aim_weights: Union[callable, np.ndarray, None] = None,
+        radius: float | list[float],
+        r_sectors: float | list[float],
+        d_sectors: list[int] | None,
+        s_sectors: list[int] | None = None,
+        rgrid: OneDGrid | list | None = None,
+        aim_weights: callable | np.ndarray | None = None,
         rotate: int = 37,
         store: bool = False,
     ):
