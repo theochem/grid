@@ -323,15 +323,14 @@ class AngularGrid(Grid):
             can integrate accurately. If the angular grid corresponding to the given angular
             degree is not supported, the next largest degree is used. If `size` is provided,
             `degree` is ignored.
-        size : int or None, keyword-only
+        size : int or None, optional, keyword-only
             Number of angular grid points. If the angular grid corresponding to the given size is
-            not supported, the next largest size is used. If both degree and size are given,
-            degree is used for constructing the grid. If both `degree` and `size` are given,
+            not supported, the next largest size is used. If both `degree` and `size` are given,
             `size` is used for constructing the angular grid.
-        cache : bool, optional
+        cache : bool, optional, keyword-only
             If True, then store the points and weights of the AngularGrid in cache
             to avoid duplicate grids that have the same `degree`.
-        method: str, optional
+        method: str, optional, keyword-only
             Method for constructing the angular grid. Options are "lebedev" (for Lebedev-Laikov)
             and "spherical" (for symmetric spherical t-design).
 

@@ -444,8 +444,9 @@ class MolGrid(Grid):
         atcoords: np.ndarray,
         radius: float | list[float],
         r_sectors: float | list[float],
-        d_sectors: list[int] | None,
-        s_sectors: list[int] | None = None,
+        d_sectors: int | list[list[int]] = 50,
+        *,
+        s_sectors: int | list[list[int]] | None = None,
         rgrid: OneDGrid | list | None = None,
         aim_weights: callable | np.ndarray | None = None,
         rotate: int = 37,
@@ -470,12 +471,13 @@ class MolGrid(Grid):
             the pruned radial grid of :math:`M` atoms. For the first atom, the first
             sector is ``(0, radius*r_sectors[0][0])``, then ``(radius*r_sectors[0][0],
             radius*r_sectors[0][1])``, and so on. See AtomGrid.from_pruned for more information.
-        d_sectors : list of List[int] or None
+        d_sectors : int or list of List[int], optional
             List of sequences of the angular degrees for radial sectors of :math:`M` atoms.
-            If None, then `s_sectors` should be given.
-        s_sectors : list of List[int] or None, optional
+            If a number is given, then the same number of degrees is used for all sectors of
+            all atoms.
+        s_sectors : int or list of List[int] or None, optional, keyword-only
             List of sequences of angular sizes for each radial sector of of :math:`M` atoms.
-            If both `d_sectors` and `s_sectors` are given, `d_sectors` is used unless it is None.
+            If both `d_sectors` and `s_sectors` are given, `s_sectors` is used.
         rgrid : OneDGrid or List[OneDGrid] or Dict[int: OneDGrid], optional
             One dimensional grid for the radial component.  If a list is provided,then ith
             grid correspond to the ith atom.  If dictionary is provided, then the keys are
@@ -511,11 +513,15 @@ class MolGrid(Grid):
 
         at_grids = []
         natoms = len(atcoords)
-        # List of None is created, so that indexing is possible in the for-loop.
-        if d_sectors is None and d_sectors is not None:
-            raise ValueError("Arguments d_sectors and r_sectors cannot be both None.")
-        d_sectors = [None] * natoms if d_sectors is None else d_sectors
-        s_sectors = [None] * natoms if s_sectors is None else s_sectors
+        # List of int is created, so that indexing is possible in the for-loop.
+        if isinstance(d_sectors, (int, np.integer)):
+            d_sectors = [d_sectors] * natoms
+        # If s_sectors given d_sectors is set to [None] for all atoms.
+        if s_sectors is not None:
+            d_sectors = [None] * natoms
+        # else s_sectors is set to [None] for all atoms.
+        else:
+            s_sectors = [None] * natoms
 
         if len(d_sectors) != len(r_sectors):
             raise ValueError(

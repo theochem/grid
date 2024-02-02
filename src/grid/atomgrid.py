@@ -19,6 +19,8 @@
 # --
 """Atomic Grid Module."""
 
+from __future__ import annotations
+
 import warnings
 from typing import Union
 
@@ -57,8 +59,9 @@ class AtomGrid(Grid):
     def __init__(
         self,
         rgrid: OneDGrid,
-        degrees: Union[np.ndarray, list, None],
-        sizes: Union[np.ndarray, list] = None,
+        degrees: np.ndarray | list | None = [50],
+        *,
+        sizes: np.ndarray | list = None,
         center: np.ndarray = None,
         rotate: int = 0,
         method: str = "lebedev",
@@ -70,24 +73,23 @@ class AtomGrid(Grid):
         ----------
         rgrid : OneDGrid
             The (one-dimensional) radial grid representing the radius of spherical grids.
-        degrees : ndarray(N, dtype=int) or list or None
+        degrees : ndarray(N, dtype=int) or list, optional
             Sequence of angular grid degrees used for constructing spherical grids at each
             radial grid point.
             If only one degree is given, the specified degree is used for all spherical grids.
             If the given degree is not supported, the next largest degree is used.
-        sizes : ndarray(N, dtype=int) or list, keyword-only argument
-            Sequence of angular grid sizes used for constructing spherical grids at each
-            radial grid point.
-            If only one size is given, the specified size is used for all spherical grids.
-            If the given size is not supported, the next largest size is used.
-            If both degrees and sizes are given, degrees is used for making the spherical grids.
-        center : ndarray(3,), optional, keyword-only argument
+        sizes : ndarray(N, dtype=int) or list, keyword-only
+            Sequence of angular grid sizes used for constructing spherical grids at each radial
+            grid point. If only one size is given, the specified size is used for all spherical
+            grids. If the given size is not supported, the next largest size is used. If both
+            `degrees` and `sizes` are given, `size` are used for constructing the angular grid.
+        center : ndarray(3,), optional, keyword-only
             Cartesian coordinates of the grid center. If `None`, the origin is used.
-        rotate : int, optional
+        rotate : int, optional, keyword-only
             Integer used as a seed for generating random rotation matrices to rotate the angular
             spherical grids at each radial grid point. If the integer is zero, then no rotate
             is used.
-        method: str, optional
+        method: str, optional, keyword-only
             Method for constructing the angular grid. Options are "lebedev" (for Lebedev-Laikov)
             and "spherical" (for symmetric spherical t-design).
 
@@ -107,11 +109,20 @@ class AtomGrid(Grid):
                 f"rotate is not within [0, 2^32 - len(rgrid)], got {rotate}"
             )
         self._rot = rotate
-        # check degrees and size
-        if degrees is None:
+
+        # allow only one of degree or size to be given
+        if sizes is not None:
+            warnings.warn(
+                "Sizes are used for making the angular grids, degrees are ignored!",
+                RuntimeWarning,
+                stacklevel=2,
+            )
+            degree = None
+            # check sizes
             if not isinstance(sizes, (np.ndarray, list)):
                 raise TypeError(f"sizes is not type: np.array or list, got {type(sizes)}")
             degrees = AngularGrid.convert_angular_sizes_to_degrees(sizes, method=method)
+        #check degrees
         if not isinstance(degrees, (np.ndarray, list)):
             raise TypeError(f"degrees is not type: np.array or list, got {type(degrees)}")
         if len(degrees) == 1:
@@ -221,8 +232,9 @@ class AtomGrid(Grid):
         cls,
         rgrid: OneDGrid,
         radius: float,
-        r_sectors: Union[list, np.ndarray],
-        d_sectors: Union[list, np.ndarray],
+        r_sectors: list | np.ndarray,
+        d_sectors: list | np.ndarray | None = None,
+        *,
         s_sectors: Union[list, np.ndarray] = None,
         center: np.ndarray = None,
         rotate: int = 0,
@@ -257,9 +269,9 @@ class AtomGrid(Grid):
         d_sectors : list or ndarray(S + 1, dtype=int) or None
             Sequence of angular degrees for each radial sector of `r_sectors` in the pruned grid.
             If None, then `s_sectors` should be given.
-        s_sectors : list or ndarray(S + 1, dtype=int) or None, optional
+        s_sectors : list or ndarray(S + 1, dtype=int) or None, optional, keyword-only
             Sequence of angular sizes for each radial sector of `r_sectors` in the pruned grid.
-            If both `d_sectors` and `s_sectors` are given, `d_sectors` is used unless it is None.
+            If both `d_sectors` and `s_sectors` are given, `s_sectors` is used.
         center : ndarray(3,), optional
             Three-dimensional Cartesian coordinates of the grid center in atomic units.
             If None, the origin is used.
@@ -277,7 +289,12 @@ class AtomGrid(Grid):
             Generated AtomGrid instance for this special init method.
 
         """
-        if d_sectors is None and s_sectors is not None:
+        if s_sectors is not None:
+            warnings.warn(
+                "s_sectors are used for making the atomic grid, d_sectors is ignored!",
+                RuntimeWarning,
+                stacklevel=2,
+            )
             d_sectors = AngularGrid.convert_angular_sizes_to_degrees(s_sectors, method)
         # else:
         #     raise ValueError("Arguments d_sectors and s_sectors cannot be both None.")
