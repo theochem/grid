@@ -1004,9 +1004,7 @@ class TestUniformGrid(TestCase):
         r"""Test creating uniform cubic grid from cube example."""
         # Change to better test later
         ref_cube = files("grid") / "data" / "tests" / "cubegen_ch4_6_gen.cube"
-        out_cube = str(
-            files("grid") / "data" / "tests" / "cubegen_ch4_6_gen.cube"
-        )
+        out_cube = str(files("grid") / "data" / "tests" / "cubegen_ch4_6_gen.cube")
 
         grid, cube_data = UniformGrid.from_cube(ref_cube, return_data=True)
         atnums, atcoords, data = cube_data["atnums"], cube_data["atcoords"], cube_data["data"]
