@@ -25,7 +25,7 @@ Their calculations were based on F77 translation by Dr. Christoph van Wuellen
 and these are the comments from that translation.
 
 This subroutine is part of a set of subroutines that generate
-Lebedev grids [1-6]_ for integration on a sphere. The original
+Lebedev grids [1]_ [2]_ [3]_ [4]_ [5]_ [6]_ for integration on a sphere. The original
 C-code [1]_ was kindly provided by Dr. Dmitri N. Laikov and
 translated into Fortran by Dr. Christoph van Wuellen.
 This subroutine was translated from C to fortran77 by hand.
@@ -295,13 +295,14 @@ class AngularGrid(Grid):
          d\theta d\phi \approx \sum_{i}^{N} w_i f(\phi_i, \theta_i),
 
     where :math:`S^2` is the unit-sphere parameterized by the quadrature points
-    :math:`\theta_i \in [0, 2\pi]` and :math:`\phi_i \in [0, \pi)`, and
-    :math:`w^{ang}_i` are the weights of the :math:`N` quadrature points.
-    Just to clarify, the :math:`4\pi` is included in the integration weights.
+    :math:`\theta_i \in [0, 2\pi]` and :math:`\phi_i \in [0, \pi)`\, and
+    :math:`w_{i}` are the weights of the :math:`N` quadrature points. The
+    :math:`4\pi` normalization factor present in the original quadrature scheme
+    is included in the integration weights.
 
     Two types of angular grids are supported: Lebedev-Laikov grid and symmetric
     spherical t-design. Specifically, for spherical t-design, the weights are constant
-    value of :math:`4 \pi / N`, where :math:`N` is the number of points in the grid.
+    value of :math:`4 \pi / N`\, where :math:`N` is the number of points in the grid.
     The weights are chosen so that the spherical harmonics are normalized.
 
     """
@@ -318,7 +319,7 @@ class AngularGrid(Grid):
 
         Parameters
         ----------
-        degree : int, optional
+        degree : int or None, optional
             Maximum angular degree :math:`l` of spherical harmonics that the angular grid
             can integrate accurately. If the angular grid corresponding to the given angular
             degree is not supported, the next largest degree is used. If `size` is provided,
@@ -329,7 +330,7 @@ class AngularGrid(Grid):
             `size` is used for constructing the angular grid.
         cache : bool, optional, keyword-only
             If True, then store the points and weights of the AngularGrid in cache
-            to avoid duplicate grids that have the same `degree`.
+            to avoid duplicate grids that have the same `degree`\.
         method: str, optional, keyword-only
             Method for constructing the angular grid. Options are "lebedev" (for Lebedev-Laikov)
             and "spherical" (for symmetric spherical t-design).
@@ -399,7 +400,7 @@ class AngularGrid(Grid):
 
     @property
     def method(self):
-        r"""str: Method used for constructing an angular grid."""
+        r"""str: Method used for constructing the angular grid."""
         return self._method
 
     @staticmethod
