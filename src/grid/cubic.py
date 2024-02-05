@@ -272,7 +272,7 @@ class _HyperRectangleGrid(Grid):
         Parameters
         ----------
         indices : (int, int) or (int, int, int)
-            The :math:`i-th`, :math:`j-th`, (or :math:`k-th`) positions of the grid point.
+            The :math:`i-th`\, :math:`j-th`\, (or :math:`k-th`) positions of the grid point.
 
         Returns
         -------
@@ -293,9 +293,9 @@ class _HyperRectangleGrid(Grid):
         r"""Convert grid point index to its (i, j) or (i, j, k) integer coordinates in the grid.
 
         For 3D grid it has a shape of :math:`(N_x, N_y, N_z)` denoting the number of points in
-        :math:`x`, :math:`y`, and :math:`z` directions. So, each grid point has a :math:`(i, j, k)`
-        integer coordinate where :math:`0 <= i <= N_x - 1`, :math:`0 <= j <= N_y - 1`,
-        and :math:`0 <= k <= N_z - 1`.  Two-dimensional case similarly follows. Assumes
+        :math:`x`\, :math:`y`\, and :math:`z` directions. So, each grid point has a :math:`(i, j, k)`
+        integer coordinate where :math:`0 <= i <= N_x - 1`\, :math:`0 <= j <= N_y - 1`\,
+        and :math:`0 <= k <= N_z - 1`\.  Two-dimensional case similarly follows. Assumes
         the grid enumerates in the last coordinate first (with others fixed), following the
         next coordinate to the left (i.e., lexicographical ordering).
 
@@ -342,15 +342,15 @@ class Tensor1DGrids(_HyperRectangleGrid):
         """
         if not isinstance(oned_x, OneDGrid):
             raise TypeError(
-                f"Argument oned_x should be an instance of `OneDGrid`, got {type(oned_x)}"
+                f"Argument oned_x should be an instance of `OneDGrid`\, got {type(oned_x)}"
             )
         if not isinstance(oned_y, OneDGrid):
             raise TypeError(
-                f"Argument oned_y should be an instance of `OneDGrid`, got {type(oned_y)}"
+                f"Argument oned_y should be an instance of `OneDGrid`\, got {type(oned_y)}"
             )
         if not isinstance(oned_z, (OneDGrid, type(None))):
             raise TypeError(
-                f"Argument oned_z should be an instance of `OneDGrid`, got {type(oned_z)}"
+                f"Argument oned_z should be an instance of `OneDGrid`\, got {type(oned_z)}"
             )
 
         if oned_z is not None:
@@ -424,12 +424,14 @@ class UniformGrid(_HyperRectangleGrid):
         Grid whose points in each (x, y, z) direction has a constant step-size/evenly
         spaced. Given a origin :math:`\mathbf{o} = (o_x, o_y, o_z)` and three directions forming
         the axes :math:`\mathbf{a_1}, \mathbf{a_2}, \mathbf{a_3}` with shape
-        :math:`(M_x, M_y, M_z)`, then the :math:`(i, j, k)-\text{th}` point of the grid are:
+        :math:`(M_x, M_y, M_z)`\, then the :math:`(i, j, k)-\text{th}` point of the grid are:
 
         .. math::
-            x_i &= o_x + i \mathbf{a_1} \quad 0 \leq i \leq M_x \\
-            y_i &= o_y + j \mathbf{a_2} \quad 0 \leq j \leq M_y \\
-            z_i &= o_z + k \mathbf{a_3} \quad 0 \leq k \leq M_z
+            \begin{align*}
+                x_i &= o_x + i \mathbf{a_1} \quad 0 \leq i \leq M_x \\
+                y_i &= o_y + j \mathbf{a_2} \quad 0 \leq j \leq M_y \\
+                z_i &= o_z + k \mathbf{a_3} \quad 0 \leq k \leq M_z
+            \end{align*}
 
         The grid enumerates through the z-axis first, then y-axis then x-axis (i.e.,
         lexicographical ordering).
@@ -437,7 +439,7 @@ class UniformGrid(_HyperRectangleGrid):
         Parameters
         ----------
         origin : np.ndarray, shape (D,)
-            Cartesian coordinates of the grid origin in either two or three dimensions :math:`D`.
+            Cartesian coordinates of the grid origin in either two or three dimensions :math:`D`\.
         axes : np.ndarray, shape (D, D)
             The :math:`D` vectors, stored as rows of axes array, whose rows
             define the Cartesian coordinate system used to build the
@@ -468,6 +470,7 @@ class UniformGrid(_HyperRectangleGrid):
                         w_{ijk} &= \frac{V}{(M_x + 1) \cdot (M_y + 1) \cdot (M_z + 1)}
                         \tag{Three-Dimensions}
                     \end{align*}
+
                 where :math:`V` is the volume or area of the uniform grid.
 
             Fourier1 :
@@ -476,34 +479,39 @@ class UniformGrid(_HyperRectangleGrid):
                 In three-dimensions it is
 
                 .. math::
-                    w_{ijk} = \frac{2^3}{(M_x + 1) \cdot (M_y + 1) \cdot (M_z + 1)} \bigg[
+                    \begin{align*}
+                    w_{ijk} =& \frac{2^3}{(M_x + 1) \cdot (M_y + 1) \cdot (M_z + 1)} \cdot\\
+                    & \bigg[
                     \bigg(\sum_{p=1}^{M_x} \frac{\sin(ip \pi/(M_x + 1)) (1 - \cos(p\pi)}{p\pi}
-                         \bigg)
-                         \bigg(\sum_{p=1}^{M_y} \frac{\sin(jp \pi/(M_y + 1)) (1 - \cos(p\pi)}{p\pi}
-                         \bigg)
-                         \bigg(\sum_{p=1}^{M_z} \frac{\sin(kp \pi/(M_z + 1)) (1 - \cos(p\pi)}{p\pi}
-                         \bigg)
-                    \bigg]
+                         \bigg) \\
+                        &\bigg(\sum_{p=1}^{M_y} \frac{\sin(jp \pi/(M_y + 1)) (1 - \cos(p\pi)}{p\pi}
+                         \bigg) \\
+                        &\bigg(\sum_{p=1}^{M_z} \frac{\sin(kp \pi/(M_z + 1)) (1 - \cos(p\pi)}{p\pi}
+                         \bigg) \bigg]
+                    \end{align*}
 
                 whereas in two-dimensions it is
 
                 .. math::
-                    w_{ij} = \frac{2^3}{(M_x + 1) \cdot (M_y + 1)} \bigg[
-                    \bigg(\sum_{p=1}^{M_x} \frac{\sin(ip \pi/(M_x + 1)) (1 - \cos(p\pi)}{p\pi}
-                         \bigg)
-                         \bigg(\sum_{p=1}^{M_y} \frac{\sin(jp \pi/(M_y + 1)) (1 - \cos(p\pi)}{p\pi}
-                         \bigg)
-                    \bigg]
+                    \begin{align*}
+                        w_{ij} =& \frac{2^2}{(M_x + 1) \cdot (M_y + 1)} \cdot \\
+                        & \bigg[ \bigg(\sum_{p=1}^{M_x} \frac{\sin(ip \pi/(M_x + 1))
+                        (1 - \cos(p\pi)}{p\pi} \bigg) \\
+                        & \bigg(\sum_{p=1}^{M_y} \frac{\sin(jp \pi/(M_y + 1)) (1 - \cos(p\pi)}{p\pi}
+                        \bigg) \bigg]
+                    \end{align*}
 
             Fourier2 :
                 Alternative weights based on Fourier series. Assumes the function is zero at the
                 boundary of the cube.
 
                 .. math::
-                    w_{ijk} &= V^\prime \cdot w_i w_j w_k, \\
-                    w_i &= \bigg(\frac{2\sin((j - 0.5)\pi) \sin^2(M_x\pi/2)}{M_x^2 \pi} +
-                     \frac{4}{M_x \pi} \sum_{p=1}^{M_x - 1}
-                     \frac{\sin((2j-1)p\pi /n_x) sin^2(p \pi)}{\pi} \bigg)
+                    \begin{align*}
+                        w_{ijk} =& V^\prime \cdot w_i w_j w_k, \\
+                        w_i =& \bigg(\frac{2\sin((j - 0.5)\pi) \sin^2(M_x\pi/2)}{M_x^2 \pi} + \\
+                        & \frac{4}{M_x \pi} \sum_{p=1}^{M_x - 1}
+                        \frac{\sin((2j-1)p\pi /n_x) sin^2(p \pi)}{\pi} \bigg)
+                    \end{align*}
 
             Alternative :
                 This does not assume function is zero at the boundary.
@@ -579,7 +587,7 @@ class UniformGrid(_HyperRectangleGrid):
         atcoords : np.ndarray, shape (M, 3)
             Cartesian coordinates of :math:`M` atoms in the molecule.
         spacing : float, optional
-            Increment between grid points along :math:`x`, :math:`y`, and :math:`z` direction.
+            Increment between grid points along :math:`x`\, :math:`y`\, and :math:`z` direction.
         extension : float, optional
             The extension of the length of the cube on each side of the molecule.
         rotate : bool, optional
@@ -589,7 +597,7 @@ class UniformGrid(_HyperRectangleGrid):
             the origin is defined by the maximum/minimum of the atomic coordinates.
         weight : str, optional
             String indicating weighting function. Denoting the volume/area of the uniform grid
-            by :math:`V`, the weighting function can be:
+            by :math:`V`\, the weighting function can be:
 
             Rectangle :
                 The weights are the standard Riemannian weights,
@@ -608,24 +616,27 @@ class UniformGrid(_HyperRectangleGrid):
                 quadrature. Assumes the function is zero at the boundary of the cube.
 
                 .. math::
-                    w_{ijk} = \frac{8}{(M_x + 1) \cdot (M_y + 1) \cdot (M_z + 1)} \bigg[
-                    \bigg(\sum_{p=1}^{M_x} \frac{\sin(ip \pi/(M_x + 1)) (1 - \cos(p\pi)}{p\pi}
-                         \bigg)
-                         \bigg(\sum_{p=1}^{M_y} \frac{\sin(jp \pi/(M_y + 1)) (1 - \cos(p\pi)}{p\pi}
-                         \bigg)
-                         \bigg(\sum_{p=1}^{M_z} \frac{\sin(kp \pi/(M_z + 1)) (1 - \cos(p\pi)}{p\pi}
-                         \bigg)
-                    \bigg]
+                    \begin{align*}
+                    w_{ijk} =& \frac{2^3}{(M_x + 1) \cdot (M_y + 1) \cdot (M_z + 1)} \cdot\\
+                    & \bigg[ \bigg(\sum_{p=1}^{M_x} \frac{\sin(ip \pi/(M_x + 1))
+                    (1 - \cos(p\pi)}{p\pi} \bigg) \\
+                    & \bigg(\sum_{p=1}^{M_y} \frac{\sin(jp \pi/(M_y + 1)) (1 - \cos(p\pi)}{p\pi}
+                    \bigg) \\
+                    & \bigg(\sum_{p=1}^{M_z} \frac{\sin(kp \pi/(M_z + 1)) (1 - \cos(p\pi)}{p\pi}
+                    \bigg) \bigg]
+                    \end{align*}
 
             Fourier2 :
                 Alternative weights based on Fourier series. Assumes the function is zero at the
                 boundary of the cube.
 
                 .. math::
-                    w_{ijk} &= V^\prime \cdot w_i w_j w_k,\\
-                    w_i &= \bigg(\frac{2\sin((j - 0.5)\pi) \sin^2(M_x\pi/2)}{M_x^2 \pi} +
-                     \frac{4}{M_x \pi} \sum_{p=1}^{M_x - 1}
-                     \frac{\sin((2j-1)p\pi /n_x) sin^2(p \pi)}{\pi} \bigg)
+                    \begin{align*}
+                    w_{ijk} =& V^\prime \cdot w_i w_j w_k,\\
+                    w_i =& \bigg(\frac{2\sin((j - 0.5)\pi) \sin^2(M_x\pi/2)}{M_x^2 \pi} + \\
+                        & \frac{4}{M_x \pi} \sum_{p=1}^{M_x - 1}
+                        \frac{\sin((2j-1)p\pi /n_x) sin^2(p \pi)}{\pi} \bigg)
+                    \end{align*}
 
             Alternative :
                 This does not assume function is zero at the boundary.
@@ -686,9 +697,9 @@ class UniformGrid(_HyperRectangleGrid):
             If False, only the grid is returned. If True a tuple with the grid and the cube data
             is returned. The cube data is a dictionary with the following keys:
 
-            - ``atnums``: atomic numbers of the atoms in the molecule.
-            - ``atcorenums``: Pseudo-number of :math:`M` atoms in the molecule.
-            - ``atcoords``: Cartesian coordinates of :math:`M` atoms in the molecule.
+            - ``atnums``\: atomic numbers of the atoms in the molecule.
+            - ``atcorenums``\: Pseudo-number of :math:`M` atoms in the molecule.
+            - ``atcoords``\: Cartesian coordinates of :math:`M` atoms in the molecule.
 
         """
         fname = str(fname)
@@ -913,7 +924,7 @@ class UniformGrid(_HyperRectangleGrid):
         Parameters
         ----------
         point : np.ndarray, shape (3,)
-            Point in :math:`[-1,1]^3`.
+            Point in :math:`[-1,1]^3`\.
         which : str
             If "closest", returns the closest index of the grid point.
             If "origin", return the left-most, down-most closest index of the grid point.
