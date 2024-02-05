@@ -159,11 +159,11 @@ class Ngrid(Grid):
 
                 # calculate the value of the n particle function at each point of the last grid
                 vals = aux_func(grid_list[-1].points)
-
                 # Integrate the function over the last grid with all the other coordinates fixed.
                 # The result is multiplied by the product of the weights corresponding to the other
                 # grids' points (stored in i[1]).
                 # This is equivalent to integrating the n particle function over the coordinates of
                 # the last particle with the other coordinates fixed.
                 integral += grid_list[-1].integrate(vals) * np.prod(i[1])
+
             return integral
