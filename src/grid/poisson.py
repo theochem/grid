@@ -224,7 +224,7 @@ def _solve_poisson_bvp_atomgrid(
     atomgrid: AtomGrid,
     func_vals: np.ndarray,
     transform: BaseTransform,
-    boundary:  float | type(None) = None,
+    boundary: float | type(None) = None,
     include_origin: bool = True,
     remove_large_pts: float = 1e6,
     ode_params: dict | type(None) = None,

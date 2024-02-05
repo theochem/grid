@@ -374,9 +374,7 @@ def _transform_ode_from_derivs(
     return coeff_b
 
 
-def _transform_ode_from_rtransform(
-    coeff_a: list | np.ndarray, tf: BaseTransform, x: np.ndarray
-):
+def _transform_ode_from_rtransform(coeff_a: list | np.ndarray, tf: BaseTransform, x: np.ndarray):
     r"""
     Transform the coefficients of ODE from one variable to another based on Transform object.
 
