@@ -127,7 +127,6 @@ class Grid:
             *(array for array in value_arrays),
         )
 
-
     def get_localgrid(self, center, radius):
         """Create a grid contain points within the given radius of center.
 
