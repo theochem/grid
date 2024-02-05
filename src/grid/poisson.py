@@ -178,11 +178,11 @@ def solve_poisson_ivp(
     .. math::
         \nabla^2 g = (-4\pi) f,
 
-    for a fixed function :math:`f`, where :math:`\nabla^2` is the Laplacian.  This
+    for a fixed function :math:`f`\, where :math:`\nabla^2` is the Laplacian.  This
     is transformed to a set of ODE problems as an initial value problem.
 
     Ihe initial value problem is chosen so that the boundary of :math:`g` for large r is set to
-    :math:`\int \int \int f(r, \theta, \phi) / r`.  Depending on :math:`f`, this function has
+    :math:`\int \int \int f(r, \theta, \phi) / r`\.  Depending on :math:`f`\, this function has
     difficulty in capturing the origin :math:`r=0` region, and is recommended to keep the
     final interval :math:`a` close to zero.
 
@@ -198,16 +198,16 @@ def solve_poisson_ivp(
         domain that is a finite.
     r_interval : tuple, optional
         The interval :math:`(b, a)` of :math:`r` for which the ODE solver will start from and end,
-        where :math:`b>a`. The value :math:`b` should be large as it determines the asymptotic
+        where :math:`b>a`\. The value :math:`b` should be large as it determines the asymptotic
         region of :math:`g` and value :math:`a` is recommended to be small but not zero depending
-        on :math:`f`.
+        on :math:`f`\.
     ode_params : dict, optional
         The parameters for the ode solver. See `grid.ode.solve_ode_ivp` for all options.
 
     Returns
     -------
     callable(ndarray(N, 3) -> float) :
-        The solution to Poisson equaiton/potential :math:`g : \mathbb{R}^3 \rightarrow \mathbb{R}`.
+        The solution to Poisson equaiton/potential :math:`g : \mathbb{R}^3 \rightarrow \mathbb{R}`\.
 
     """
     return _interpolate_molgrid_helper(
@@ -330,12 +330,12 @@ def solve_poisson_bvp(
     .. math::
         \nabla^2 g = (-4\pi) f,
 
-    for a fixed function :math:`f`, where :math:`\nabla^2` is the Laplacian.  This
-    is transformed to an set of ODE problems as a boundary value problem.
+    for a fixed function :math:`f`\, where :math:`\nabla^2` is the Laplacian.  This
+    is transformed to an set of ODE problems as a boundary value problem. [1]_
 
     If boundary is not provided, then the boundary of :math:`g` for large r is set to
-    :math:`\int \int \int f(r, \theta, \phi) / r`.  The solution :math:`g` is assumed to be
-    zero at the origin :math:`g(0, \theta, \phi) = 0`.  Use `solve_poisson_ivp` if this assumption
+    :math:`\int \int \int f(r, \theta, \phi) / r`\.  The solution :math:`g` is assumed to be
+    zero at the origin :math:`g(0, \theta, \phi) = 0`\.  Use `solve_poisson_ivp` if this assumption
     isn't needed.
 
     Parameters
@@ -362,7 +362,7 @@ def solve_poisson_bvp(
     Returns
     -------
     callable(ndarray(N, 3) -> float) :
-        The solution to Poisson equaiton/potential :math:`g : \mathbb{R}^3 \rightarrow \mathbb{R}`.
+        The solution to Poisson equaiton/potential :math:`g : \mathbb{R}^3 \rightarrow \mathbb{R}`\.
 
     References
     ----------
@@ -386,7 +386,7 @@ def interpolate_laplacian(molgrid: Union[MolGrid, AtomGrid], func_vals: np.ndarr
     .. math::
         \nabla^2 f = \frac{1}{r}\frac{\partial^2 rf}{\partial r^2} - \frac{\hat{L}}{r^2},
 
-    such that the angular momentum operator satisfies :math:`\hat{L}(Y_l^m) = l (l + 1) Y_l^m`.
+    such that the angular momentum operator satisfies :math:`\hat{L}(Y_l^m) = l (l + 1) Y_l^m`\.
     Expanding f in terms of spherical harmonic expansion, we get that
 
     .. math::
@@ -414,7 +414,7 @@ def interpolate_laplacian(molgrid: Union[MolGrid, AtomGrid], func_vals: np.ndarr
     Warnings
     --------
     - Since :math:`\rho_{lm}` and its derivatives are being interpolated and due to division by
-      powers of :math:`r`, it is recommended to be very careful of having values near zero.
+      powers of :math:`r`\, it is recommended to be very careful of having values near zero.
 
     """
     if isinstance(molgrid, AtomGrid):
