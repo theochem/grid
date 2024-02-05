@@ -37,9 +37,9 @@ class GaussLaguerre(OneDGrid):
     .. math::
         \int_{0}^{\infty} x^\alpha e^{-x} f(x) dx \approx \sum_{i=1}^n w_i f(x_i),
 
-    where :math:`\alpha > -1`.
+    where :math:`\alpha > -1`\.
 
-    However, to integrate function :math:`g(x)` over :math:`[0, \infty)`, this is re-written as:
+    However, to integrate function :math:`g(x)` over :math:`[0, \infty)`\, this is re-written as:
 
     .. math::
         \int_{0}^{\infty} g(x)dx \approx
@@ -111,14 +111,13 @@ class GaussLegendre(OneDGrid):
 
         Notes
         -----
-        - Only known to be accurate up to `npoints`=100 and may cause problems after
-        that amount.
+        - Only known to be accurate up to `npoints`\=100 and may cause problems after that amount.
 
         """
         if npoints <= 1:
             raise ValueError(f"Argument npoints must be an integer > 1, given {npoints}")
         # compute points and weights for Gauss-Legendre quadrature
-        # according to numpy's leggauss, the accuracy is only known up to `npoints=100`.
+        # according to numpy's leggauss, the accuracy is only known up to `npoints=100`\.
         points, weights = np.polynomial.legendre.leggauss(npoints)
         super().__init__(points, weights, (-1, 1))
 
@@ -134,7 +133,7 @@ class GaussChebyshev(OneDGrid):
         x_i =& \cos\left( \frac{2i-1}{2n}\pi \right) \\
         w_i =& \frac{\pi}{n}
 
-    However, to integrate a given function :math:`g(x)` over :math:`[-1, 1]`, this is re-written as:
+    However, to integrate a given function :math:`g(x)` over :math:`[-1, 1]`\, this is re-written as:
 
     .. math::
         \int_{-1}^{1}g(x)dx \approx \sum_{i=1}^n \left(w_i\sqrt{1-x_i^2}\right)g(x_i) =
@@ -213,7 +212,7 @@ class GaussChebyshevType2(OneDGrid):
         x_i =& \cos\left( \frac{i}{n+1} \pi \right) \\
         w_i =& \frac{\pi}{n+1} \sin^2 \left( \frac{i}{n+1} \pi \right)
 
-    However, to integrate a given function :math:`g(x)` over :math:`[-1, 1]`, this is re-written as:
+    However, to integrate a given function :math:`g(x)` over :math:`[-1, 1]`\, this is re-written as:
 
     .. math::
         \int_{-1}^{1} g(x) dx \approx \sum_{i=1}^n \left(\frac{w_i}{\sqrt{1-x_i^2}}\right) g(x_i) =
@@ -257,7 +256,7 @@ class GaussChebyshevLobatto(OneDGrid):
         w_{1} = w_{n} =& \frac{\pi}{2(n-1)} \\
         w_{i\neq 1,n} =& \frac{\pi}{n-1}
 
-    However, to integrate a given function :math:`g(x)` over :math:`[-1, 1]`, this is re-written as:
+    However, to integrate a given function :math:`g(x)` over :math:`[-1, 1]`\, this is re-written as:
 
     .. math::
         \int_{-1}^{1}g(x) dx \approx \sum_{i=1}^n \left(w_i \sqrt{1-x_i^2}\right) g(x_i) =
@@ -336,7 +335,7 @@ class Trapezoidal(OneDGrid):
 
 class RectangleRuleSineEndPoints(OneDGrid):
     r"""
-    Rectangle-Rule Sine end points integral quadrature class.
+    Rectangle-Rule Sine end points integral quadrature class. [#]_
 
      .. math::
         \int_{-1}^{1} f(x) dx \approx& \sum_{i=1}^n w_i f(x_i) \\
@@ -344,7 +343,7 @@ class RectangleRuleSineEndPoints(OneDGrid):
         w_i =& \frac{2}{n+1} \sum_{m=1}^n \frac{\sin(m \pi x_i)(1-\cos(m \pi))}{m \pi}
 
     For consistency with other 1-D grids, the integration range is modified
-    by :math:`q=2x-1` to the interval :math:`[-1, 1]`, so that
+    by :math:`q=2x-1` to the interval :math:`[-1, 1]`\, so that
 
     .. math::
         2 \int_{0}^{1} f(x) dx = \int_{-1}^{1} f(q) dq
@@ -405,7 +404,7 @@ class RectangleRuleSineEndPoints(OneDGrid):
 #                 \frac{4}{n \pi} \sum_{m=1}^{n-1} \frac{\sin(m \pi x_i)\sin^2(m\pi /2)}{m}
 #
 #     For consistency with other 1-D grids, the integration range is modified
-#     by :math:`q=2x-1` to the interval :math:`[-1, 1]`, such that
+#     by :math:`q=2x-1` to the interval :math:`[-1, 1]`\, such that
 #
 #     .. math::
 #         2 \int_{0}^{1} f(x) dx = \int_{-1}^{1} f(q) dq
@@ -468,7 +467,7 @@ class TanhSinh(OneDGrid):
         w_i =& \frac{\frac{\pi}{2}\delta \cosh(i\delta)}{\cosh^2(\frac{\pi}{2}\sinh(i\delta))}
 
     This quadrature is useful when singularities or infinite derivatives exist on the
-    endpoints of :math:`[-1, 1]`.
+    endpoints of :math:`[-1, 1]`\.
 
     """
 
@@ -482,7 +481,7 @@ class TanhSinh(OneDGrid):
         npoints : int
             Number of grid points, which should be an odd integer.
         delta : float
-            The value of parameter :math:`\delta`, which is related with the size.
+            The value of parameter :math:`\delta`\, which is related with the size.
 
         Returns
         -------
@@ -613,7 +612,7 @@ class ClenshawCurtis(OneDGrid):
             2 & else
         \end{cases}
 
-    where :math:`k=0,\cdots ,n`.
+    where :math:`k=0,\cdots ,n`\.
 
     If discontinuous, it is recommended to break the intervals at the discontinuities
     and handled separately.
@@ -672,7 +671,7 @@ class FejerFirst(OneDGrid):
         w_i &= \frac{2}{n}\bigg(1 - 2 \sum_{j=1}^{\lfloor n/2 \rfloor}
             \frac{\cos(2j \theta_j)}{4 j^2 - 1} \bigg),
 
-    where :math:`k=1,\cdots, n`. It uses the zeros of the Chebyshev polynomial.
+    where :math:`k=1,\cdots, n`\. It uses the zeros of the Chebyshev polynomial.
     If discontinuous, it is recommended to break the intervals at the discontinuities
     and handled separately.
 
@@ -814,7 +813,7 @@ class TrefethenCC(OneDGrid):
         npoints : int
             Number of points in the grid.
         d :
-            Odd degree of the Taylor series polynomial of :math:`\sin^{-1}`.
+            Odd degree of the Taylor series polynomial of :math:`\sin^{-1}`\.
             Only d=1,5,9 are supported.
 
         Returns
@@ -860,7 +859,7 @@ class TrefethenGC2(OneDGrid):
         npoints : int
             Number of points in the grid.
         d : int
-            Odd degree of the Taylor series polynomial of :math:`\sin^{-1}`.
+            Odd degree of the Taylor series polynomial of :math:`\sin^{-1}`\.
             Only d=1,5,9 are supported.
 
         Returns
@@ -908,7 +907,7 @@ class TrefethenGeneral(OneDGrid):
         quadrature : OneDGrid
             General one-dimensional grid.
         d :
-            Odd degree of the Taylor series polynomial of :math:`\sin^{-1}`.
+            Odd degree of the Taylor series polynomial of :math:`\sin^{-1}`\.
             Only d=1,5,9 are supported.
 
         Returns
