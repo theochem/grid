@@ -342,15 +342,15 @@ class Tensor1DGrids(_HyperRectangleGrid):
         """
         if not isinstance(oned_x, OneDGrid):
             raise TypeError(
-                f"Argument oned_x should be an instance of `OneDGrid`\, got {type(oned_x)}"
+                f"Argument oned_x should be an instance of `OneDGrid`, got {type(oned_x)}"
             )
         if not isinstance(oned_y, OneDGrid):
             raise TypeError(
-                f"Argument oned_y should be an instance of `OneDGrid`\, got {type(oned_y)}"
+                f"Argument oned_y should be an instance of `OneDGrid`, got {type(oned_y)}"
             )
         if not isinstance(oned_z, (OneDGrid, type(None))):
             raise TypeError(
-                f"Argument oned_z should be an instance of `OneDGrid`\, got {type(oned_z)}"
+                f"Argument oned_z should be an instance of `OneDGrid`, got {type(oned_z)}"
             )
 
         if oned_z is not None:
