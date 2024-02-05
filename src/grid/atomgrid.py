@@ -22,7 +22,6 @@
 from __future__ import annotations
 
 import warnings
-from typing import Union
 
 import numpy as np
 import scipy.constants
@@ -235,7 +234,7 @@ class AtomGrid(Grid):
         r_sectors: list | np.ndarray,
         d_sectors: list | np.ndarray | None = None,
         *,
-        s_sectors: Union[list, np.ndarray] = None,
+        s_sectors: list | np.ndarray = None,
         center: np.ndarray = None,
         rotate: int = 0,
         method: str = "lebedev",
@@ -769,8 +768,8 @@ class AtomGrid(Grid):
     def _generate_degree_from_radius(
         rgrid: OneDGrid,
         radius: float,
-        r_sectors: Union[list, np.ndarray],
-        d_sectors: Union[list, np.ndarray],
+        r_sectors: list | np.ndarray,
+        d_sectors: list | np.ndarray,
         method: str = "lebedev",
     ):
         """

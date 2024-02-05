@@ -34,9 +34,10 @@ to another domain :math:`g(x)` for some :math:`K`-th differentiable transformati
 :math:`[0, \infty)`, to a finite interval.
 """
 
+from __future__ import annotations
+
 import warnings
 from numbers import Number, Real
-from typing import Union
 
 import numpy as np
 from scipy.integrate import solve_bvp, solve_ivp
@@ -51,8 +52,8 @@ __all__ = ["solve_ode_bvp", "solve_ode_ivp"]
 def solve_ode_ivp(
     x_span: tuple,
     fx: callable,
-    coeffs: Union[list, np.ndarray],
-    y0: Union[list, np.ndarray],
+    coeffs: list | np.ndarray,
+    y0: list | np.ndarray,
     transform: BaseTransform = None,
     method: str = "DOP853",
     no_derivatives: bool = False,
@@ -169,7 +170,7 @@ def solve_ode_ivp(
 def solve_ode_bvp(
     x: np.ndarray,
     fx: callable,
-    coeffs: Union[list, np.ndarray],
+    coeffs: list | np.ndarray,
     bd_cond: list,
     transform: BaseTransform = None,
     tol: float = 1e-4,
@@ -304,7 +305,7 @@ def _transform_solution_to_original_domain(result, tf, no_derivs, order):
 
 
 def _transform_ode_from_derivs(
-    coeffs: Union[list, np.ndarray], deriv_transformation: list, x: np.ndarray
+    coeffs: list | np.ndarray, deriv_transformation: list, x: np.ndarray
 ):
     r"""
     Transform the coefficients of ODE from one variable to another evaluated on mesh points.
@@ -374,7 +375,7 @@ def _transform_ode_from_derivs(
 
 
 def _transform_ode_from_rtransform(
-    coeff_a: Union[list, np.ndarray], tf: BaseTransform, x: np.ndarray
+    coeff_a: list | np.ndarray, tf: BaseTransform, x: np.ndarray
 ):
     r"""
     Transform the coefficients of ODE from one variable to another based on Transform object.
@@ -415,7 +416,7 @@ def _transform_ode_from_rtransform(
 def _transform_and_rearrange_to_explicit_ode(
     x: np.ndarray,
     y: np.ndarray,
-    coeff_a: Union[list, np.ndarray],
+    coeff_a: list | np.ndarray,
     tf: BaseTransform,
     fx_func: callable,
 ):
@@ -500,7 +501,7 @@ def _derivative_transformation_matrix(deriv_func_list: list, point: float, order
     return deriv_transf
 
 
-def _evaluate_coeffs_on_points(x: np.ndarray, coeff: Union[list, np.ndarray]):
+def _evaluate_coeffs_on_points(x: np.ndarray, coeff: list | np.ndarray):
     r"""Construct coefficients of the ODE evaluated on all points.
 
     Explicitly, constructs a matrix with :math:`(n, k)`-th entry

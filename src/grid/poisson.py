@@ -30,7 +30,8 @@ over a centered atomic grid. It is recommended to use the boundary value problem
 for handing singularities near the origin of the atomic grid.
 
 """
-from typing import Union
+
+from __future__ import annotations
 
 import numpy as np
 
@@ -87,7 +88,7 @@ def _solve_poisson_ivp_atomgrid(
     func_vals: np.ndarray,
     transform: BaseTransform,
     r_interval: tuple = (1000, 1e-5),
-    ode_params: Union[dict, type(None)] = None,
+    ode_params: dict | type(None) = None,
 ):
     if r_interval[0] < r_interval[1]:
         raise ValueError(
@@ -164,11 +165,11 @@ def _solve_poisson_ivp_atomgrid(
 
 
 def solve_poisson_ivp(
-    molgrid: Union[MolGrid, AtomGrid],
+    molgrid: MolGrid | AtomGrid,
     func_vals: np.ndarray,
     transform: BaseTransform,
     r_interval: tuple = (1000, 1e-5),
-    ode_params: Union[dict, type(None)] = None,
+    ode_params: dict | type(None) = None,
 ):
     r"""
     Return interpolation of the solution to the Poisson equation solved as an initial value problem.
@@ -188,7 +189,7 @@ def solve_poisson_ivp(
 
     Parameters
     ----------
-    molgrid : Union[MolGrid, AtomGrid]
+    molgrid : MolGrid or AtomGrid
         Molecular or atomic grid that is used for integration and expanding func into real
         spherical harmonic basis.
     func_vals : ndarray(N,)
@@ -223,10 +224,10 @@ def _solve_poisson_bvp_atomgrid(
     atomgrid: AtomGrid,
     func_vals: np.ndarray,
     transform: BaseTransform,
-    boundary: Union[float, type(None)] = None,
+    boundary:  float | type(None) = None,
     include_origin: bool = True,
     remove_large_pts: float = 1e6,
-    ode_params: Union[dict, type(None)] = None,
+    ode_params: dict | type(None) = None,
 ):
     if not isinstance(boundary, (float, type(None))):
         raise TypeError(f"`boundary` {type(boundary)} should be either float or None.")
@@ -314,13 +315,13 @@ def _solve_poisson_bvp_atomgrid(
 
 
 def solve_poisson_bvp(
-    molgrid: Union[MolGrid, AtomGrid],
+    molgrid: MolGrid | AtomGrid,
     func_vals: np.ndarray,
     transform: BaseTransform,
-    boundary: Union[float, type(None)] = None,
+    boundary: float | type(None) = None,
     include_origin: bool = True,
     remove_large_pts: float = 1e6,
-    ode_params: Union[dict, type(None)] = None,
+    ode_params: dict | type(None) = None,
 ):
     r"""
     Return interpolation of the solution to the Poisson equation solved as a boundary value problem.
@@ -340,7 +341,7 @@ def solve_poisson_bvp(
 
     Parameters
     ----------
-    molgrid : Union[MolGrid, AtomGrid]
+    molgrid : MolGrid or AtomGrid
         Molecular or atomic grid that is used for integration and expanding func into real spherical
         harmonic basis.
     func_vals : ndarray(N,)
@@ -379,7 +380,7 @@ def solve_poisson_bvp(
     )
 
 
-def interpolate_laplacian(molgrid: Union[MolGrid, AtomGrid], func_vals: np.ndarray):
+def interpolate_laplacian(molgrid: MolGrid | AtomGrid, func_vals: np.ndarray):
     r"""
     Return a function that interpolates the Laplacian of a function.
 
@@ -398,7 +399,7 @@ def interpolate_laplacian(molgrid: Union[MolGrid, AtomGrid], func_vals: np.ndarr
 
     Parameters
     ----------
-    molgrid : Union[MolGrid, AtomGrid]
+    molgrid : MolGrid or AtomGrid
         Atomic grid that can integrate spherical functions and interpolate radial components.
     func_vals : ndarray(N,)
         The function values evaluated on all :math:`N` points on the atomic grid.
