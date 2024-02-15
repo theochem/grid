@@ -131,16 +131,18 @@ class Grid:
             The calculated integral over given integrand or function
 
         """
+
         if len(value_arrays) < 1:
             raise ValueError("No array is given to integrate.")
+
         for i, array in enumerate(value_arrays):
             if not isinstance(array, np.ndarray):
                 raise TypeError(f"Arg {i} is {type(i)}, Need Numpy Array.")
-            if array.shape != (self.size,):
+            if np.shape(array)[0] != (self.size):
                 raise ValueError(f"Arg {i} need to be of shape ({self.size},).")
         # return np.einsum("i, ..., i", a, ..., z)
         return np.einsum(
-            "i" + ",i" * len(value_arrays),
+            "i" + ",i..." * len(value_arrays),
             self.weights,
             *(array for array in value_arrays),
         )
