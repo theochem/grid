@@ -146,7 +146,7 @@ class Grid:
         )
 
     def get_localgrid(self, center, radius):
-        """Create a grid contain points within the given radius of center.
+        """Create a grid containing points within the given radius of center.
 
         Parameters
         ----------
@@ -202,7 +202,7 @@ class Grid:
             m_{n_x, n_y, n_z} = \int (x - X_c)^{n_x} (y - Y_c)^{n_y} (z - Z_c)^{n_z} f(r) dr,
 
         where :math:`\textbf{R}_c = (X_c, Y_c, Z_c)` is the center of the moment,
-        :math:`\f(r)` is the density, and :math:`(n_x, n_y, n_z)` are the Cartesian orders.
+        :math:`f(r)` is the function, and :math:`(n_x, n_y, n_z)` are the Cartesian orders.
 
         The spherical/pure moments with :math:`(l, m)` parameter are:
 
@@ -227,7 +227,7 @@ class Grid:
         ----------
         orders : int
             Generates all orders with Horton order depending on the type of the multipole
-            moment `type_mom`.
+            moment `\type_mom`\.
         centers : ndarray(M,  3)
             The centers :math:`\textbf{R}_c` of the moments to compute from.
         func_vals : ndarray(N,)
@@ -242,7 +242,7 @@ class Grid:
         Returns
         -------
         ndarray(L, M), or (ndarray(L, M), list)
-            Computes the moment integral of the function on the `m`th center for all orders.
+            Computes the moment integral of the function on the `m`\th center for all orders.
             If `return_orders` is true, then this also returns a list that describes what
             each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,...].
 

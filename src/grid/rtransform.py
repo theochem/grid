@@ -121,7 +121,7 @@ class BeckeRTransform(BaseTransform):
     Becke Transformation.
 
     The Becke transformation transforms from :math:`[-1, 1]` to :math:`[r_{min}, \infty)`
-    according to
+    according to [#]_
 
     .. math::
         r(x) = R \frac{1 + x}{1 - x} + r_{min}.
@@ -139,13 +139,13 @@ class BeckeRTransform(BaseTransform):
     """
 
     def __init__(self, rmin: float, R: float, trim_inf: bool = True):
-        r"""Construct Becke transform, :math:`[-1, 1]` to :math`[r_{min}, \infty)`.
+        r"""Construct Becke transform, :math:`[-1, 1]` to :math`[r_{min}, \infty)`\.
 
         Parameters
         ----------
         rmin : float
             The minimum coordinate :math:`r_{min}` in the transformed interval
-            :math:`[r_{min}, \infty)`.
+            :math:`[r_{min}, \infty)`\.
         R : float
             The scale factor used in the transformation.
         trim_inf : bool, optional
@@ -188,7 +188,7 @@ class BeckeRTransform(BaseTransform):
         Parameters
         ----------
         array : np.ndarray(N,)
-            One-dimensional array in the domain :math:`[-1, 1]`.
+            One-dimensional array in the domain :math:`[-1, 1]`\.
         rmin : float
             Minimum value for transformed array.
         radius : float
@@ -212,7 +212,7 @@ class BeckeRTransform(BaseTransform):
         return (radius - rmin) * (1 - mid_value) / (1 + mid_value)
 
     def transform(self, x: np.ndarray):
-        r"""Transform from :math:`[-1, 1]` to :math:`[r_{min}, \infty)`.
+        r"""Transform from :math:`[-1, 1]` to :math:`[r_{min}, \infty)`\.
 
         .. math::
             r_i = R \frac{1 + x_i}{1 - x_i} + r_{min}
@@ -220,12 +220,12 @@ class BeckeRTransform(BaseTransform):
         Parameters
         ----------
         x : np.ndarray(N,)
-            One-dimensional array in the domain :math:`[-1, 1]`.
+            One-dimensional array in the domain :math:`[-1, 1]`\.
 
         Returns
         -------
         np.ndarray(N,)
-            Transformed array located between :math:`[r_min, \infty)`.
+            Transformed array located between :math:`[r_min, \infty)`\.
 
         """
         with warnings.catch_warnings():
@@ -236,7 +236,7 @@ class BeckeRTransform(BaseTransform):
         return rf_array
 
     def inverse(self, r: np.ndarray):
-        r"""Transform :math:`[r_{mi}n, \infty)` back to original :math:`[-1, 1]`.
+        r"""Transform :math:`[r_{mi}n, \infty)` back to original :math:`[-1, 1]`\.
 
         .. math::
             x_i = \frac{r_i - r_{min} - R} {r_i - r_{min} + R}
@@ -244,12 +244,12 @@ class BeckeRTransform(BaseTransform):
         Parameters
         ----------
         r : np.ndarray(N,)
-            One-dimensional array in the codomain :math:`[r_{min}, \infty)`.
+            One-dimensional array in the codomain :math:`[r_{min}, \infty)`\.
 
         Returns
         -------
         np.ndarray(N,)
-            One dimensional array in :math:`[-1, 1]`.
+            One dimensional array in :math:`[-1, 1]`\.
         """
         return (r - self._rmin - self._R) / (r - self._rmin + self._R)
 
@@ -262,7 +262,7 @@ class BeckeRTransform(BaseTransform):
         Parameters
         ----------
         x : np.array(N,)
-            One-dimensional array in the domain :math:`[-1, 1]`.
+            One-dimensional array in the domain :math:`[-1, 1]`\.
 
         Returns
         -------
@@ -284,7 +284,7 @@ class BeckeRTransform(BaseTransform):
         Parameters
         ----------
         x : np.array(N,)
-            One-dimensional array in the domain :math:`[-1, 1]`.
+            One-dimensional array in the domain :math:`[-1, 1]`\.
 
         Returns
         -------
@@ -303,7 +303,7 @@ class BeckeRTransform(BaseTransform):
         Parameters
         ----------
         x : np.array(N,)
-            One-dimensional array in the domain :math:`[-1, 1]`.
+            One-dimensional array in the domain :math:`[-1, 1]`\.
 
         Returns
         -------
@@ -315,7 +315,7 @@ class BeckeRTransform(BaseTransform):
 
 class LinearFiniteRTransform(BaseTransform):
     r"""
-    Linear finite transformation from :math:`[-1, 1]` to :math:`[r_{min}, r_{max}]`.
+    Linear finite transformation from :math:`[-1, 1]` to :math:`[r_{min}, r_{max}]`\.
 
     The Linear transformation from finite interval :math:`[-1, 1]` to finite interval
     :math:`[r_{min}, r_{max}]` is given by
@@ -346,17 +346,17 @@ class LinearFiniteRTransform(BaseTransform):
         self._codomain = (rmin, rmax)
 
     def transform(self, x: np.ndarray):
-        r"""Transform from interval :math:`[-1, 1]` to :math:`[r_{min}, r_{max}]`.
+        r"""Transform from interval :math:`[-1, 1]` to :math:`[r_{min}, r_{max}]`\.
 
         .. math::
             r_i = \frac{r_{max} - r_{min}}{2} (1 + x_i) + r_{min}.
 
-        This transformation maps :math:`r_i(-1) = r_{min}` and :math:`r_i(1) = r_{max}`.
+        This transformation maps :math:`r_i(-1) = r_{min}` and :math:`r_i(1) = r_{max}`\.
 
         Parameters
         ----------
         x : ndarray
-            One-dimensional array in the domain :math:`[-1, 1]`.
+            One-dimensional array in the domain :math:`[-1, 1]`\.
 
         Returns
         -------
@@ -374,7 +374,7 @@ class LinearFiniteRTransform(BaseTransform):
         Parameters
         ----------
         x : ndarray
-            One-dimensional array in the domain :math:`[-1, 1]`.
+            One-dimensional array in the domain :math:`[-1, 1]`\.
 
         Returns
         -------
@@ -395,7 +395,7 @@ class LinearFiniteRTransform(BaseTransform):
         Parameters
         ----------
         x : ndarray
-            One-dimensional array in the domain :math:`[-1, 1]`.
+            One-dimensional array in the domain :math:`[-1, 1]`\.
 
         Returns
         -------
@@ -413,7 +413,7 @@ class LinearFiniteRTransform(BaseTransform):
         Parameters
         ----------
         x : ndarray
-            One-dimensional array in the domain :math:`[-1, 1]`.
+            One-dimensional array in the domain :math:`[-1, 1]`\.
 
         Returns
         -------
@@ -431,12 +431,12 @@ class LinearFiniteRTransform(BaseTransform):
         Parameters
         ----------
         r : ndarray
-            One-dimensional array in the co-domain :math:`[r_{min}, r_{max}]`.
+            One-dimensional array in the co-domain :math:`[r_{min}, r_{max}]`\.
 
         Returns
         -------
         ndarray
-            One-dimensional array in the domain :math:`[-1, 1]`.
+            One-dimensional array in the domain :math:`[-1, 1]`\.
         """
         return (2 * r - (self._rmax + self._rmin)) / (self._rmax - self._rmin)
 
@@ -619,7 +619,7 @@ class IdentityRTransform(BaseTransform):
         Parameters
         ----------
         x : ndarray(N,)
-            One dimension numpy array located in :math:`[0, \infty)`.
+            One dimension numpy array located in :math:`[0, \infty)`\.
 
         Returns
         -------
@@ -636,7 +636,7 @@ class IdentityRTransform(BaseTransform):
         Parameters
         ----------
         x : ndarray(N,)
-            One dimension numpy array located in :math:`[0, \infty)`.
+            One dimension numpy array located in :math:`[0, \infty)`\.
 
         Returns
         -------
@@ -653,7 +653,7 @@ class IdentityRTransform(BaseTransform):
         Parameters
         ----------
         x : ndarray(N,)
-            One dimension numpy array located in :math:`[0, \infty)`.
+            One dimension numpy array located in :math:`[0, \infty)`\.
 
         Returns
         -------
@@ -670,7 +670,7 @@ class IdentityRTransform(BaseTransform):
         Parameters
         ----------
         x : ndarray(N,)
-            One dimension numpy array located in :math:`[0, \infty)`.
+            One dimension numpy array located in :math:`[0, \infty)`\.
 
         Returns
         -------
@@ -687,7 +687,7 @@ class IdentityRTransform(BaseTransform):
         Parameters
         ----------
         r : ndarray(N,)
-            One dimension numpy array located in :math:`[0, \infty)`.
+            One dimension numpy array located in :math:`[0, \infty)`\.
 
         Returns
         -------
@@ -700,7 +700,7 @@ class IdentityRTransform(BaseTransform):
 
 class LinearInfiniteRTransform(BaseTransform):
     r"""
-    Linear transform from interval :math:`[0, \infty)` to :math:`[r_{min}, r_{max})`.
+    Linear transform from interval :math:`[0, \infty)` to :math:`[r_{min}, r_{max})`\.
 
     This transformation linearly maps the infinite interval :math:`[0, \infty)` to a finite
     interval :math:`[r_{min}, r_{max}]` given by
@@ -708,12 +708,12 @@ class LinearInfiniteRTransform(BaseTransform):
     .. math::
         r(x) = \frac{(r_{max} - r_{min})}{b} x + r_{min},
 
-    where :math:`r(b) = r_{max}`.  If None, then the :math:`b` is taken to be the maximum
+    where :math:`r(b) = r_{max}`\.  If None, then the :math:`b` is taken to be the maximum
     from the first grid that is being transformed. This transformation always maps zero to
-    :math:`r_{min}`.
+    :math:`r_{min}`\.
 
-    The original goal is to transform the `UniformGrid`, equally-spaced integers from 0 to N-1,
-    to :math:`[r_{min}, r_{max}]`.
+    The original goal is to transform the `UniformGrid`\, equally-spaced integers from 0 to N-1,
+    to :math:`[r_{min}, r_{max}]`\.
 
     The inverse is given by
 
@@ -733,7 +733,7 @@ class LinearInfiniteRTransform(BaseTransform):
             Define the upper end of the linear transform
         b: float
             Maximum :math:`b` of a prespecified radial grid :math:`[0, b]` such that
-            :math:`b` maps to `rmax`. If None, then the maximum is taken and stored from the
+            :math:`b` maps to `rmax`\. If None, then the maximum is taken and stored from the
             grid that is transformed initially.
 
         """
@@ -757,7 +757,7 @@ class LinearInfiniteRTransform(BaseTransform):
 
     @property
     def b(self):
-        r"""float: Parameter such that :math:`r(b) = r_{max}`."""
+        r"""float: Parameter such that :math:`r(b) = r_{max}`\."""
         return self._b
 
     def set_maximum_parameter_b(self, x):
@@ -771,23 +771,23 @@ class LinearInfiniteRTransform(BaseTransform):
                 )
 
     def transform(self, x: np.ndarray):
-        r"""Transform from interval :math:`[0, \infty)` to :math:`[r_{min}, r_{max}]`.
+        r"""Transform from interval :math:`[0, \infty)` to :math:`[r_{min}, r_{max}]`\.
 
         .. math::
             r_i = \frac{(r_{max} - r_{min})}{\max_i x_i} x_i + r_{min},
 
         where :math:`N` is the number of points. The goal is to transform
-        equally-spaced integers from 0 to N-1, to :math:`[r_{min}, r_{max}]`.
+        equally-spaced integers from 0 to N-1, to :math:`[r_{min}, r_{max}]`\.
 
         Parameters
         ----------
         x : ndarray(N,)
-            One-dimensional array in the domain :math:`[0, \infty)`.
+            One-dimensional array in the domain :math:`[0, \infty)`\.
 
         Returns
         -------
         ndarray(N,)
-            Transformed points between :math:`[r_{min}, r_{max}]`.
+            Transformed points between :math:`[r_{min}, r_{max}]`\.
 
         """
         self.set_maximum_parameter_b(x)
@@ -801,7 +801,7 @@ class LinearInfiniteRTransform(BaseTransform):
         Parameters
         ----------
         x : ndarray(N,)
-            One-dimensional array in the domain :math:`[0, \infty)`.
+            One-dimensional array in the domain :math:`[0, \infty)`\.
 
         Returns
         -------
@@ -819,7 +819,7 @@ class LinearInfiniteRTransform(BaseTransform):
         Parameters
         ----------
         x : ndarray(N,)
-            One-dimensional array in the domain :math:`[0, \infty)`.
+            One-dimensional array in the domain :math:`[0, \infty)`\.
 
         Returns
         -------
@@ -835,7 +835,7 @@ class LinearInfiniteRTransform(BaseTransform):
         Parameters
         ----------
         x : ndarray(N,)
-            One-dimensional array in the domain :math:`[0, \infty)`.
+            One-dimensional array in the domain :math:`[0, \infty)`\.
 
         Returns
         -------
@@ -854,12 +854,12 @@ class LinearInfiniteRTransform(BaseTransform):
         Parameters
         ----------
         r : ndarray(N,)
-            One-dimensional array in the domain :math:`[r_{min}, r_{max}]`.
+            One-dimensional array in the domain :math:`[r_{min}, r_{max}]`\.
 
         Returns
         -------
         ndarray(N,)
-            Inverse of transformation from coordinate :math:`r` to :math:`x`.
+            Inverse of transformation from coordinate :math:`r` to :math:`x`\.
 
         """
         self.set_maximum_parameter_b(r)
@@ -869,7 +869,7 @@ class LinearInfiniteRTransform(BaseTransform):
 
 class ExpRTransform(BaseTransform):
     r"""
-    Exponential transform from :math:`[0, \infty)` to :math:`[r_{min}, r_{max}]`.
+    Exponential transform from :math:`[0, \infty)` to :math:`[r_{min}, r_{max}]`\.
 
     This transformation is given by
 
@@ -877,9 +877,9 @@ class ExpRTransform(BaseTransform):
         r(x) = r_{min} e^{x \log\bigg(\frac{r_{max}}{r_{min} / b}  \bigg)},
 
 
-    where :math:`b` maps to `rmax`. If None, then the :math:`b` is taken to be the maximum
+    where :math:`b` maps to `rmax`\. If None, then the :math:`b` is taken to be the maximum
      from the first grid that is being transformed. This transformation always maps zero to
-     :math:`r_{min}`.
+     :math:`r_{min}`\.
 
     The inverse transformation is given by
 
@@ -898,7 +898,7 @@ class ExpRTransform(BaseTransform):
             Maximum value for transformed points.
         b: float
             Maximum :math:`b` of a prespecified radial grid :math:`[0, b]` such that
-            :math:`b` maps to `rmax`. If None, then the maximum is taken and stored from the
+            :math:`b` maps to `rmax`\. If None, then the maximum is taken and stored from the
             grid that is transformed initially.
 
         """
@@ -924,7 +924,7 @@ class ExpRTransform(BaseTransform):
 
     @property
     def b(self):
-        r"""float: Parameter :math:`b` that maps/transforms to :math:`r_{max}`."""
+        r"""float: Parameter :math:`b` that maps/transforms to :math:`r_{max}`\."""
         return self._b
 
     def set_maximum_parameter_b(self, x):
@@ -944,7 +944,7 @@ class ExpRTransform(BaseTransform):
         .. math::
             r = r_{min} e^{x \log\bigg(\frac{r_{max}}{r_{min} / b}  \bigg)},
 
-        where :math:`b` is a prespecified parameter that maps to :math:`r_{max}`.
+        where :math:`b` is a prespecified parameter that maps to :math:`r_{max}`\.
 
         Parameters
         ----------
@@ -1045,14 +1045,14 @@ class ExpRTransform(BaseTransform):
 
 class PowerRTransform(BaseTransform):
     r"""
-    Power transform class from :math:`[0, \infty)` to :math:`[r_{min}, r_{max}]`.
+    Power transform class from :math:`[0, \infty)` to :math:`[r_{min}, r_{max}]`\.
 
     This transformations is given by
 
     .. math::
         r(x) = r_{min}  (x + 1)^{\frac{\log(r_{max} - \log(r_{min}}{\log(b + 1)}},
 
-    such that :math:`r(b) = r_{max}`.
+    such that :math:`r(b) = r_{max}`\.
 
     The inverse of the transformation is given by
 
@@ -1071,7 +1071,7 @@ class PowerRTransform(BaseTransform):
         rmax : float
             Maximum value for transformed points
         b: float
-            The parameter b that maps to :math:`r_{max}`.
+            The parameter b that maps to :math:`r_{max}`\.
 
 
         """
@@ -1087,7 +1087,7 @@ class PowerRTransform(BaseTransform):
 
     @property
     def b(self):
-        r"""float: Parameter :math:`b` that maps/transforms to :math:`r_{max}`."""
+        r"""float: Parameter :math:`b` that maps/transforms to :math:`r_{max}`\."""
         return self._b
 
     def set_maximum_parameter_b(self, x):
@@ -1117,12 +1117,12 @@ class PowerRTransform(BaseTransform):
         .. math::
             r = r_{min}  (x + 1)^{\frac{\log(r_{max} - \log(r_{min}}{b + 1}},
 
-        such that :math:`r(b) = r_{max}`.
+        such that :math:`r(b) = r_{max}`\.
 
         Parameters
         ----------
         x : ndarray(N,)
-            One-dimensional array in the domain of the transformation :math:`[0,\infty)`.
+            One-dimensional array in the domain of the transformation :math:`[0,\infty)`\.
 
         Return
         ------
@@ -1147,7 +1147,7 @@ class PowerRTransform(BaseTransform):
         Parameters
         ----------
         x : ndarray(N,)
-            One-dimensional array in the domain of the transformation :math:`[0,\infty)`.
+            One-dimensional array in the domain of the transformation :math:`[0,\infty)`\.
 
         Return
         ------
@@ -1166,7 +1166,7 @@ class PowerRTransform(BaseTransform):
         Parameters
         ----------
         x : ndarray(N,)
-            One-dimensional array in the domain of the transformation :math:`[0,\infty)`.
+            One-dimensional array in the domain of the transformation :math:`[0,\infty)`\.
 
         Return
         ------
@@ -1186,7 +1186,7 @@ class PowerRTransform(BaseTransform):
         Parameters
         ----------
         x : ndarray(N,)
-            One-dimensional array in the domain of the transformation :math:`[0,\infty)`.
+            One-dimensional array in the domain of the transformation :math:`[0,\infty)`\.
 
         Return
         ------
@@ -1205,7 +1205,7 @@ class PowerRTransform(BaseTransform):
         .. math::
             x(r) = \frac{r}{r_{min}}^{\frac{\log(b + 1)}{\log(r_{max}) - \log(r_{min})}} - 1
 
-        such that :math:`r(b) = r_{max}`.
+        such that :math:`r(b) = r_{max}`\.
 
 
         Parameters
@@ -1226,14 +1226,14 @@ class PowerRTransform(BaseTransform):
 
 class HyperbolicRTransform(BaseTransform):
     r"""
-    Hyperbolic transform from :math`[0, \infty)` to :math:`[0, \infty)`.
+    Hyperbolic transform from :math`[0, \infty)` to :math:`[0, \infty)`\.
 
     The transformation is given by
 
     .. math::
         r(x) = \frac{a x}{(1 - bx)},
 
-    where :math:`b ( N - 1) \geq 1`, and :math:`N` is the number of points in x.
+    where :math:`b ( N - 1) \geq 1`\, and :math:`N` is the number of points in x.
 
     The inverse transformation is given by
 
@@ -1278,12 +1278,12 @@ class HyperbolicRTransform(BaseTransform):
         .. math::
             r_i = \frac{a x_i}{(1 - bx_i)},
 
-        where :math:`b ( N - 1) \geq 1`, and :math:`N` is the number of points in x.
+        where :math:`b ( N - 1) \geq 1`\, and :math:`N` is the number of points in x.
 
         Parameters
         ----------
         x : ndarray(N,)
-            One-dimensional array in the domain of the transformation :math:`[0,\infty)`.
+            One-dimensional array in the domain of the transformation :math:`[0,\infty)`\.
 
         Return
         ------
@@ -1302,7 +1302,7 @@ class HyperbolicRTransform(BaseTransform):
         Parameters
         ----------
         x : ndarray(N,)
-            One-dimensional array in the domain of the transformation :math:`[0,\infty)`.
+            One-dimensional array in the domain of the transformation :math:`[0,\infty)`\.
 
         Return
         ------
@@ -1322,7 +1322,7 @@ class HyperbolicRTransform(BaseTransform):
         Parameters
         ----------
         x : ndarray(N,)
-            One-dimensional array in the domain of the transformation :math:`[0,\infty)`.
+            One-dimensional array in the domain of the transformation :math:`[0,\infty)`\.
 
         Return
         ------
@@ -1342,7 +1342,7 @@ class HyperbolicRTransform(BaseTransform):
         Parameters
         ----------
         x : ndarray(N,)
-            One-dimensional array in the domain of the transformation :math:`[0,\infty)`.
+            One-dimensional array in the domain of the transformation :math:`[0,\infty)`\.
 
         Return
         ------
@@ -1365,7 +1365,7 @@ class HyperbolicRTransform(BaseTransform):
         Parameters
         ----------
         r : ndarray(N,)
-            One-dimensional array in the domain of the transformation :math:`[0,\infty)`.
+            One-dimensional array in the domain of the transformation :math:`[0,\infty)`\.
 
         Return
         ------
@@ -1380,7 +1380,7 @@ class HyperbolicRTransform(BaseTransform):
 
 class MultiExpRTransform(BaseTransform):
     r"""
-    MultiExp Transformation class from :math:`[-1,1]` to :math:`[r_{min}, \infty)`.
+    MultiExp Transformation class from :math:`[-1,1]` to :math:`[r_{min}, \infty)`\. [#]_
 
     The transformation is given by
 
@@ -1400,7 +1400,7 @@ class MultiExpRTransform(BaseTransform):
     """
 
     def __init__(self, rmin: float, R: float, trim_inf=True):
-        r"""Construct MultiExp transform from :math:`[-1,1]` to :math:`[r_{min}, \infty)`.
+        r"""Construct MultiExp transform from :math:`[-1,1]` to :math:`[r_{min}, \infty)`\.
 
         Parameters
         ----------
@@ -1430,7 +1430,7 @@ class MultiExpRTransform(BaseTransform):
         return self._R
 
     def transform(self, x: np.ndarray):
-        r"""Transform from [-1,1] to  :math:`[r_{min},\infty)`.
+        r"""Transform from [-1,1] to  :math:`[r_{min},\infty)`\.
 
         .. math::
             r_i = -R \log \left( \frac{x_i + 1}{2} \right) + r_{min}
@@ -1438,12 +1438,12 @@ class MultiExpRTransform(BaseTransform):
         Parameters
         ----------
         x : ndarray(N,)
-            One dimensional array with values between :math:`[-1,1]`.
+            One dimensional array with values between :math:`[-1,1]`\.
 
         Returns
         -------
         ndarray(N,)
-            Transformed array located between :math:`[r_{min},\infty)`.
+            Transformed array located between :math:`[r_{min},\infty)`\.
 
         """
         rf_array = -self._R * np.log((x + 1) / 2) + self._rmin
@@ -1453,7 +1453,7 @@ class MultiExpRTransform(BaseTransform):
 
     def inverse(self, r: np.ndarray):
         r"""
-        Inverse of transform from :math:`[r_{min},\infty)` to :math:`[-1,1]`.
+        Inverse of transform from :math:`[r_{min},\infty)` to :math:`[-1,1]`\.
 
         .. math::
             x_i = 2 \exp \left( \frac{-(r_i - r_{min})}{R} \right) - 1
@@ -1461,12 +1461,12 @@ class MultiExpRTransform(BaseTransform):
         Parameters
         ----------
         r : np.ndarray(N,)
-            One-dimensional array in :math:`[r_{min}, \infty)`.
+            One-dimensional array in :math:`[r_{min}, \infty)`\.
 
         Returns
         -------
         np.ndarray(N,)
-            The inverse of transformation in :math:`[-1, 1]`.
+            The inverse of transformation in :math:`[-1, 1]`\.
 
         """
         return 2 * np.exp(-(r - self._rmin) / self._R) - 1
@@ -1480,7 +1480,7 @@ class MultiExpRTransform(BaseTransform):
         Parameters
         ----------
         x : ndarray(N,)
-            One dimensional in :math:`[-1, 1]`.
+            One dimensional in :math:`[-1, 1]`\.
 
         Returns
         -------
@@ -1499,7 +1499,7 @@ class MultiExpRTransform(BaseTransform):
         Parameters
         ----------
         x : ndarray(N,)
-            One dimensional in :math:`[-1,1]`.
+            One dimensional in :math:`[-1,1]`\.
 
         Returns
         -------
@@ -1518,7 +1518,7 @@ class MultiExpRTransform(BaseTransform):
         Parameters
         ----------
         x : ndarray(N,)
-            One dimensional array in :math:`[-1,1]`.
+            One dimensional array in :math:`[-1,1]`\.
 
         Returns
         -------
@@ -1531,7 +1531,7 @@ class MultiExpRTransform(BaseTransform):
 
 class KnowlesRTransform(BaseTransform):
     r"""
-    Knowles Transformation from :math:`[-1, 1]` to :math:`[r_{min}, \infty)`.
+    Knowles Transformation from :math:`[-1, 1]` to :math:`[r_{min}, \infty)`\.
 
     The transformation is given by
 
@@ -1589,7 +1589,7 @@ class KnowlesRTransform(BaseTransform):
         return self._k
 
     def transform(self, x: np.ndarray):
-        r"""Transform from :math:`[-1,1]` to :math:`[r_{min},\infty)`.
+        r"""Transform from :math:`[-1,1]` to :math:`[r_{min},\infty)`\.
 
         .. math::
             r_i = r_{min} - R \log \left( 1 - 2^{-k} (x_i + 1)^k \right)
@@ -1597,12 +1597,12 @@ class KnowlesRTransform(BaseTransform):
         Parameters
         ----------
         x: np.ndarray(N,)
-            One dimensional array in :math:`[-1,1]`.
+            One dimensional array in :math:`[-1,1]`\.
 
         Returns
         -------
         np.ndarray(N,)
-            One dimensional array in :math:`[r_{min},\infty)`.
+            One dimensional array in :math:`[r_{min},\infty)`\.
 
         """
         rf_array = -self._R * np.log(1 - (2**-self._k) * (x + 1) ** self._k) + self._rmin
@@ -1611,7 +1611,7 @@ class KnowlesRTransform(BaseTransform):
         return rf_array
 
     def inverse(self, r: np.ndarray):
-        r"""Inverse of transformation from :math:`[r_{min},\infty)` to :math:`[-1,1]`.
+        r"""Inverse of transformation from :math:`[r_{min},\infty)` to :math:`[-1,1]`\.
 
         .. math::
             x_i = 2 \sqrt[k]{1-\exp \left( -\frac{r_i-r_{min}}{R}\right)}-1
@@ -1619,12 +1619,12 @@ class KnowlesRTransform(BaseTransform):
         Parameters
         ----------
         r: ndarray(N,)
-            One-dimensional array in :math:`[r_{min},\infty)`.
+            One-dimensional array in :math:`[r_{min},\infty)`\.
 
         Returns
         -------
         ndarray(N,)
-            The inverse transformation in :math:`[-1,1]`.
+            The inverse transformation in :math:`[-1,1]`\.
 
         """
         return -1 + 2 * (1 - np.exp((self._rmin - r) / self._R)) ** (1 / self._k)
@@ -1638,7 +1638,7 @@ class KnowlesRTransform(BaseTransform):
         Parameters
         ----------
         x: ndarray(N,)
-            One dimensional  array with values between :math:`[-1,1]`.
+            One dimensional  array with values between :math:`[-1,1]`\.
 
         Returns
         -------
@@ -1662,7 +1662,7 @@ class KnowlesRTransform(BaseTransform):
         Parameters
         ----------
         x : ndarray(N,)
-            One dimensional array in :math:`[-1,1]`.
+            One dimensional array in :math:`[-1,1]`\.
 
         Returns
         -------
@@ -1691,7 +1691,7 @@ class KnowlesRTransform(BaseTransform):
         Parameters
         ----------
         x: ndarray(N,)
-            One dimensional array with values between :math:`[-1,1]`.
+            One dimensional array with values between :math:`[-1,1]`\.
 
         Returns
         -------
@@ -1715,7 +1715,7 @@ class KnowlesRTransform(BaseTransform):
 
 class HandyRTransform(BaseTransform):
     r"""
-    Handy Transformation class from :math:`[-1, 1]` to :math:`[r_{min}, \infty)`.
+    Handy Transformation class from :math:`[-1, 1]` to :math:`[r_{min}, \infty)`\.
 
     This transformation is given by
 
@@ -1771,7 +1771,7 @@ class HandyRTransform(BaseTransform):
         return self._m
 
     def transform(self, x: np.ndarray):
-        r"""Transform from :math:`[-1,1]` to :math:`[r_{min},\infty)`.
+        r"""Transform from :math:`[-1,1]` to :math:`[r_{min},\infty)`\.
 
         .. math::
             r_i = R \left( \frac{1+x_i}{1-x_i} \right)^m + r_{min}
@@ -1779,12 +1779,12 @@ class HandyRTransform(BaseTransform):
         Parameters
         ----------
         x: np.ndarray(N,)
-            One dimensional array in :math:`[-1,1]`.
+            One dimensional array in :math:`[-1,1]`\.
 
         Returns
         -------
         np.ndarray(N,)
-            One dimensional array in :math:`[r_{min},\infty)`.
+            One dimensional array in :math:`[r_{min},\infty)`\.
 
         """
         rf_array = self._R * ((1 + x) / (1 - x)) ** self._m + self._rmin
@@ -1793,7 +1793,7 @@ class HandyRTransform(BaseTransform):
         return rf_array
 
     def inverse(self, r: np.ndarray):
-        r"""Inverse transform from :math:`[r_{min},\infty)` to :math:`[-1,1]`.
+        r"""Inverse transform from :math:`[r_{min},\infty)` to :math:`[-1,1]`\.
 
         .. math::
             x_i = \frac{\sqrt[m]{r_i-r_{min}} - \sqrt[m]{R}}
@@ -1802,12 +1802,12 @@ class HandyRTransform(BaseTransform):
         Parameters
         ----------
         r : np.ndarray(N,)
-            One dimensional array in :math:`[r_{min},\infty)`.
+            One dimensional array in :math:`[r_{min},\infty)`\.
 
         Returns
         -------
         np.ndarray(N,)
-            One-dimensional array in :math:`[-1,1]`.
+            One-dimensional array in :math:`[-1,1]`\.
 
         """
         tmp_ri = (r - self._rmin) ** (1 / self._m)
@@ -1824,7 +1824,7 @@ class HandyRTransform(BaseTransform):
         Parameters
         ----------
         x: ndarray(N,)
-            One dimensional array with values between :math:`[-1,1]`.
+            One dimensional array with values between :math:`[-1,1]`\.
 
         Returns
         -------
@@ -1845,7 +1845,7 @@ class HandyRTransform(BaseTransform):
         Parameters
         ----------
         x : ndarray(N,)
-            One dimensional array in :math:`[-1,1]`.
+            One dimensional array in :math:`[-1,1]`\.
 
         Returns
         -------
@@ -1875,7 +1875,7 @@ class HandyRTransform(BaseTransform):
         Parameters
         ----------
         array: np.ndarray(N,)
-            One dimensional array in :math:`[-1,1]`.
+            One dimensional array in :math:`[-1,1]`\.
 
         Returns
         -------
@@ -1897,7 +1897,7 @@ class HandyRTransform(BaseTransform):
 
 
 class HandyModRTransform(BaseTransform):
-    r"""Modified Handy Transformation class from :math:`[-1, 1]` to :math:`[r_{min}, r_{max}]`.
+    r"""Modified Handy Transformation class from :math:`[-1, 1]` to :math:`[r_{min}, r_{max}]`\.
 
     This transformation is given by
 
@@ -1906,7 +1906,7 @@ class HandyModRTransform(BaseTransform):
                 { 2^m (1 - 2^m + r_{max} - r_{min})
                   - (1 + x)^m (r_{max} - r_{min} - 2^m )} + r_{min},
 
-    where :math:`m > 0`.
+    where :math:`m > 0`\.
 
     The inverse transformation is given by
 
@@ -1919,7 +1919,7 @@ class HandyModRTransform(BaseTransform):
     """
 
     def __init__(self, rmin: float, rmax: float, m: int, trim_inf=True):
-        r"""Construct a modified Handy transform from :math:`[-1, 1]` to :math:`[r_{min}, r_{max}]`.
+        r"""Construct a modified Handy transform from :math:`[-1, 1]` to :math:`[r_{min}, r_{max}]`\.
 
         Parameters
         ----------
@@ -1962,7 +1962,7 @@ class HandyModRTransform(BaseTransform):
         return self._m
 
     def transform(self, x: np.ndarray):
-        r"""Transform given array :math:`[-1,1]` to radial array :math:`[r_{min},r_{max}]`.
+        r"""Transform given array :math:`[-1,1]` to radial array :math:`[r_{min},r_{max}]`\.
 
         .. math::
             r_i = \frac{(1+x_i)^m (r_{max} - r_{min})}
@@ -1972,12 +1972,12 @@ class HandyModRTransform(BaseTransform):
         Parameters
         ----------
         x: ndarray(N,)
-            One dimensional array in :math:`[-1,1]`.
+            One dimensional array in :math:`[-1,1]`\.
 
         Returns
         -------
         ndarray(N,)
-            One dimensional array in :math:`[r_{min},r_{max}]`.
+            One dimensional array in :math:`[r_{min},r_{max}]`\.
 
         """
         two_m = 2**self._m
@@ -1992,7 +1992,7 @@ class HandyModRTransform(BaseTransform):
         return rf_array
 
     def inverse(self, r: np.ndarray):
-        r"""Inverse transform from :math:`[r_{min},r_{max}]` to :math:`[-1,1]`.
+        r"""Inverse transform from :math:`[r_{min},r_{max}]` to :math:`[-1,1]`\.
 
         .. math::
             x_i = 2 \sqrt[m]{
@@ -2003,12 +2003,12 @@ class HandyModRTransform(BaseTransform):
         Parameters
         ----------
         r : ndarrray(N,)
-            One dimensional array in :math:`[r_{min},\infty)`.
+            One dimensional array in :math:`[r_{min},\infty)`\.
 
         Returns
         -------
         ndarrray(N,)
-            The original one dimensional array in :math:`[-1,1]`.
+            The original one dimensional array in :math:`[-1,1]`\.
 
         """
         two_m = 2**self._m
@@ -2032,7 +2032,7 @@ class HandyModRTransform(BaseTransform):
         Parameters
         ----------
         x: ndarrray(N,)
-            One dimensional array in :math:`[-1,1]`.
+            One dimensional array in :math:`[-1,1]`\.
 
         Returns
         -------
@@ -2056,7 +2056,7 @@ class HandyModRTransform(BaseTransform):
         Parameters
         ----------
         x: ndarrray(N,)
-            One dimensional array in :math:`[-1,1]`.
+            One dimensional array in :math:`[-1,1]`\.
 
         Returns
         -------
@@ -2086,7 +2086,7 @@ class HandyModRTransform(BaseTransform):
         Parameters
         ----------
         x: ndarrray(N,)
-            One dimensional array in :math:`[-1,1]`.
+            One dimensional array in :math:`[-1,1]`\.
 
         Returns
         -------

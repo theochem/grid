@@ -39,7 +39,7 @@ class MolGrid(Grid):
     Molecular grid is defined here to be a weighted average of :math:`M` atomic grids
     (see AtomGrid). This is defined by a atom in molecule weights (or nuclear weight functions)
     :math:`w_n(r)` for each center n such that :math:`\sum^M_n w_n(r) = 1` for all points
-    :math:`r\in\mathbb{R}^3.`
+    :math:`r\in\mathbb{R}^3`\. [1]_
 
     References
     ----------
@@ -64,10 +64,10 @@ class MolGrid(Grid):
         atgrids : list[AtomGrid]
             List of atomic grids of size :math:`M` for each atom in molecule.
         aim_weights : Callable or np.ndarray(\sum^M_n N_n,)
-            Atoms in molecule weights :math:`{ {w_n(r_k)}_k^{N_i}}_n^{M}`, where
+            Atoms in molecule weights :math:`{ {w_n(r_k)}_k^{N_i}}_n^{M}`\, where
             :math:`N_i` is the number of points in the ith atomic grid.
         store: bool
-            If true, then the atomic grids `atgrids` are stored as attribute `atgrids`.
+            If true, then the atomic grids `atgrids` are stored as attribute `atgrids`\.
 
         """
         # initialize these attributes
@@ -188,22 +188,22 @@ class MolGrid(Grid):
         Return function that interpolates (and its derivatives) from function values.
 
         Consider a real-valued function :math:`f(r, \theta, \phi) = \sum_A f_A(r, \theta, \phi)`
-        written as a sum of atomic centers :math:`f_A(r, \theta, \phi)`.  Each of these
-        functions can be further decomposed based on the atom grid centered at :math:`A`:
+        written as a sum of atomic centers :math:`f_A(r, \theta, \phi)`\.  Each of these
+        functions can be further decomposed based on the atom grid centered at :math:`A`\:
 
         .. math::
             f_A(r, \theta, \phi) = \sum_l \sum_{m=-l}^l \sum_i \rho^A_{ilm}(r) Y_{lm}(\theta, \phi)
 
         A cubic spline is used to interpolate the radial functions :math:`\sum_i \rho^A_{ilm}(r)`
-        based on the atomic grid centered at :math:`A`.
+        based on the atomic grid centered at :math:`A`\.
         This is then multipled by the corresponding spherical harmonics at all
-        :math:`(\theta_j, \phi_j)` angles and summed to obtain approximation to :math:`f_A`. This
-        is then further summed over all centers to get :math:`f`.
+        :math:`(\theta_j, \phi_j)` angles and summed to obtain approximation to :math:`f_A`\. This
+        is then further summed over all centers to get :math:`f`\.
 
         Parameters
         ----------
         func_vals: ndarray(\sum_i N_i,)
-            The function values evaluated on all :math:`N_i` points on the :math:`i`th atomic grid.
+            The function values evaluated on all :math:`N_i` points on the :math:`i`\th atomic grid.
 
         Returns
         -------
@@ -217,10 +217,10 @@ class MolGrid(Grid):
                     If deriv is zero, then only returns function values. If it is one, then
                     returns the first derivative of the interpolated function with respect to either
                     Cartesian or spherical coordinates. Only higher-order derivatives
-                    (`deriv`=2,3) are supported for the derivatives wrt to radial components.
+                    (`deriv`\=2,3) are supported for the derivatives wrt to radial components.
                 deriv_spherical : bool
                     If True, then returns the derivatives with respect to spherical coordinates
-                    :math:`(r, \theta, \phi)`. Default False.
+                    :math:`(r, \theta, \phi)`\. Default False.
                 only_radial_deriv : bool
                     If true, then the derivative wrt to radius :math:`r` is returned.
 
@@ -261,7 +261,7 @@ class MolGrid(Grid):
                 for the derivatives wrt to radial components. `deriv=3` only returns a constant.
             deriv_spherical : bool
                 If True, then returns the derivatives with respect to spherical coordinates
-                :math:`(r, \theta, \phi)`. Default False.
+                :math:`(r, \theta, \phi)`\. Default False.
             only_radial_derivs : bool
                 If true, then the derivative wrt to radius :math:`r` is returned.
 
@@ -302,7 +302,7 @@ class MolGrid(Grid):
         preset : (str, list[str], dict[int: str])
             Preset grid accuracy scheme. If string is provided, then preset is used
             for all atoms, either it is specified by a list, or a dictionary whose keys
-            are from `atnums`. These predefined grid specify the radial sectors and
+            are from `atnums`\. These predefined grid specify the radial sectors and
             their corresponding number of Lebedev grid points. Supported preset options include:
             'coarse', 'medium', 'fine', 'veryfine', 'ultrafine', and 'insane'.
             Other options include the "standard grids":
@@ -312,7 +312,7 @@ class MolGrid(Grid):
         rgrid : (OneDGrid, list[OneDGrid], dict[int: OneDGrid], None), optional
             One dimensional radial grid. If of type `OneDGrid` then this radial grid is used for
             all atoms. If a list is provided, then ith grid correspond to the ith atom.  If
-            dictionary is provided, then the keys correspond to the `atnums[i]`attribute.
+            dictionary is provided, then the keys correspond to the `atnums[i]` attribute.
             If None, a default radial grid (PowerRTransform of UniformInteger grid) is constructed
             based on the given atomic numbers.
         aim_weights : Callable or np.ndarray(K,), optional
@@ -327,10 +327,10 @@ class MolGrid(Grid):
         -----
         - The standard and Ochsenfeld presets were not designed with symmetric spherical t-design
           in mind.
-        - The "standard grids" [1]_ "SG-0" and "SG-1" are designed for large molecules with LDA
+        - The "standard grids" [2]_ "SG-0" and "SG-1" are designed for large molecules with LDA
           (GGA) functionals, whereas "SG-2" and "SG-3" are designed for Meta-GGA functionals and
           B95/Minnesota functionals, respectively.
-        - The Ochsenfeld pruned grids [2]_ are obtained based on the paper.
+        - The Ochsenfeld pruned grids [3]_ are obtained based on the paper.
 
         References
         ----------
@@ -469,8 +469,8 @@ class MolGrid(Grid):
         r_sectors : list of List[float]
             List of sequences of the boundary radius (in atomic units) specifying sectors of
             the pruned radial grid of :math:`M` atoms. For the first atom, the first
-            sector is ``(0, radius*r_sectors[0][0])``, then ``(radius*r_sectors[0][0],
-            radius*r_sectors[0][1])``, and so on. See AtomGrid.from_pruned for more information.
+            sector is ``(0, radius*r_sectors[0][0])``\, then ``(radius*r_sectors[0][0],
+            radius*r_sectors[0][1])``\, and so on. See AtomGrid.from_pruned for more information.
         d_sectors : int or list of List[int], optional
             List of sequences of the angular degrees for radial sectors of :math:`M` atoms.
             If a number is given, then the same number of degrees is used for all sectors of
@@ -484,7 +484,7 @@ class MolGrid(Grid):
             correspond to the `atnums[i]` attribute. If None, then using atomic numbers it will
             generate a default radial grid (PowerRTransform of UniformInteger grid).
         aim_weights: Callable or np.ndarray(\sum^M_n N_n,), optional
-            Atoms in molecule/nuclear weights :math:`{ {w_n(r_k)}_k^{N_i}}_n^{M}`, where
+            Atoms in molecule/nuclear weights :math:`{ {w_n(r_k)}_k^{N_i}}_n^{M}`\, where
             :math:`N_i` is the number of points in the ith atomic grid. If None, then aim_weights
             is Becke weights with order=3.
         rotate : bool or int , optional

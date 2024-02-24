@@ -30,7 +30,8 @@ over a centered atomic grid. It is recommended to use the boundary value problem
 for handing singularities near the origin of the atomic grid.
 
 """
-from typing import Union
+
+from __future__ import annotations
 
 import numpy as np
 
@@ -87,7 +88,7 @@ def _solve_poisson_ivp_atomgrid(
     func_vals: np.ndarray,
     transform: BaseTransform,
     r_interval: tuple = (1000, 1e-5),
-    ode_params: Union[dict, type(None)] = None,
+    ode_params: dict | type(None) = None,
 ):
     if r_interval[0] < r_interval[1]:
         raise ValueError(
@@ -164,11 +165,11 @@ def _solve_poisson_ivp_atomgrid(
 
 
 def solve_poisson_ivp(
-    molgrid: Union[MolGrid, AtomGrid],
+    molgrid: MolGrid | AtomGrid,
     func_vals: np.ndarray,
     transform: BaseTransform,
     r_interval: tuple = (1000, 1e-5),
-    ode_params: Union[dict, type(None)] = None,
+    ode_params: dict | type(None) = None,
 ):
     r"""
     Return interpolation of the solution to the Poisson equation solved as an initial value problem.
@@ -178,17 +179,17 @@ def solve_poisson_ivp(
     .. math::
         \nabla^2 g = (-4\pi) f,
 
-    for a fixed function :math:`f`, where :math:`\nabla^2` is the Laplacian.  This
+    for a fixed function :math:`f`\, where :math:`\nabla^2` is the Laplacian.  This
     is transformed to a set of ODE problems as an initial value problem.
 
     Ihe initial value problem is chosen so that the boundary of :math:`g` for large r is set to
-    :math:`\int \int \int f(r, \theta, \phi) / r`.  Depending on :math:`f`, this function has
+    :math:`\int \int \int f(r, \theta, \phi) / r`\.  Depending on :math:`f`\, this function has
     difficulty in capturing the origin :math:`r=0` region, and is recommended to keep the
     final interval :math:`a` close to zero.
 
     Parameters
     ----------
-    molgrid : Union[MolGrid, AtomGrid]
+    molgrid : MolGrid or AtomGrid
         Molecular or atomic grid that is used for integration and expanding func into real
         spherical harmonic basis.
     func_vals : ndarray(N,)
@@ -198,16 +199,16 @@ def solve_poisson_ivp(
         domain that is a finite.
     r_interval : tuple, optional
         The interval :math:`(b, a)` of :math:`r` for which the ODE solver will start from and end,
-        where :math:`b>a`. The value :math:`b` should be large as it determines the asymptotic
+        where :math:`b>a`\. The value :math:`b` should be large as it determines the asymptotic
         region of :math:`g` and value :math:`a` is recommended to be small but not zero depending
-        on :math:`f`.
+        on :math:`f`\.
     ode_params : dict, optional
         The parameters for the ode solver. See `grid.ode.solve_ode_ivp` for all options.
 
     Returns
     -------
     callable(ndarray(N, 3) -> float) :
-        The solution to Poisson equaiton/potential :math:`g : \mathbb{R}^3 \rightarrow \mathbb{R}`.
+        The solution to Poisson equaiton/potential :math:`g : \mathbb{R}^3 \rightarrow \mathbb{R}`\.
 
     """
     return _interpolate_molgrid_helper(
@@ -223,10 +224,10 @@ def _solve_poisson_bvp_atomgrid(
     atomgrid: AtomGrid,
     func_vals: np.ndarray,
     transform: BaseTransform,
-    boundary: Union[float, type(None)] = None,
+    boundary: float | type(None) = None,
     include_origin: bool = True,
     remove_large_pts: float = 1e6,
-    ode_params: Union[dict, type(None)] = None,
+    ode_params: dict | type(None) = None,
 ):
     if not isinstance(boundary, (float, type(None))):
         raise TypeError(f"`boundary` {type(boundary)} should be either float or None.")
@@ -314,13 +315,13 @@ def _solve_poisson_bvp_atomgrid(
 
 
 def solve_poisson_bvp(
-    molgrid: Union[MolGrid, AtomGrid],
+    molgrid: MolGrid | AtomGrid,
     func_vals: np.ndarray,
     transform: BaseTransform,
-    boundary: Union[float, type(None)] = None,
+    boundary: float | type(None) = None,
     include_origin: bool = True,
     remove_large_pts: float = 1e6,
-    ode_params: Union[dict, type(None)] = None,
+    ode_params: dict | type(None) = None,
 ):
     r"""
     Return interpolation of the solution to the Poisson equation solved as a boundary value problem.
@@ -330,17 +331,17 @@ def solve_poisson_bvp(
     .. math::
         \nabla^2 g = (-4\pi) f,
 
-    for a fixed function :math:`f`, where :math:`\nabla^2` is the Laplacian.  This
-    is transformed to an set of ODE problems as a boundary value problem.
+    for a fixed function :math:`f`\, where :math:`\nabla^2` is the Laplacian.  This
+    is transformed to an set of ODE problems as a boundary value problem. [1]_
 
     If boundary is not provided, then the boundary of :math:`g` for large r is set to
-    :math:`\int \int \int f(r, \theta, \phi) / r`.  The solution :math:`g` is assumed to be
-    zero at the origin :math:`g(0, \theta, \phi) = 0`.  Use `solve_poisson_ivp` if this assumption
+    :math:`\int \int \int f(r, \theta, \phi) / r`\.  The solution :math:`g` is assumed to be
+    zero at the origin :math:`g(0, \theta, \phi) = 0`\.  Use `solve_poisson_ivp` if this assumption
     isn't needed.
 
     Parameters
     ----------
-    molgrid : Union[MolGrid, AtomGrid]
+    molgrid : MolGrid or AtomGrid
         Molecular or atomic grid that is used for integration and expanding func into real spherical
         harmonic basis.
     func_vals : ndarray(N,)
@@ -362,7 +363,7 @@ def solve_poisson_bvp(
     Returns
     -------
     callable(ndarray(N, 3) -> float) :
-        The solution to Poisson equaiton/potential :math:`g : \mathbb{R}^3 \rightarrow \mathbb{R}`.
+        The solution to Poisson equaiton/potential :math:`g : \mathbb{R}^3 \rightarrow \mathbb{R}`\.
 
     References
     ----------
@@ -379,14 +380,14 @@ def solve_poisson_bvp(
     )
 
 
-def interpolate_laplacian(molgrid: Union[MolGrid, AtomGrid], func_vals: np.ndarray):
+def interpolate_laplacian(molgrid: MolGrid | AtomGrid, func_vals: np.ndarray):
     r"""
     Return a function that interpolates the Laplacian of a function.
 
     .. math::
         \nabla^2 f = \frac{1}{r}\frac{\partial^2 rf}{\partial r^2} - \frac{\hat{L}}{r^2},
 
-    such that the angular momentum operator satisfies :math:`\hat{L}(Y_l^m) = l (l + 1) Y_l^m`.
+    such that the angular momentum operator satisfies :math:`\hat{L}(Y_l^m) = l (l + 1) Y_l^m`\.
     Expanding f in terms of spherical harmonic expansion, we get that
 
     .. math::
@@ -398,7 +399,7 @@ def interpolate_laplacian(molgrid: Union[MolGrid, AtomGrid], func_vals: np.ndarr
 
     Parameters
     ----------
-    molgrid : Union[MolGrid, AtomGrid]
+    molgrid : MolGrid or AtomGrid
         Atomic grid that can integrate spherical functions and interpolate radial components.
     func_vals : ndarray(N,)
         The function values evaluated on all :math:`N` points on the atomic grid.
@@ -414,7 +415,7 @@ def interpolate_laplacian(molgrid: Union[MolGrid, AtomGrid], func_vals: np.ndarr
     Warnings
     --------
     - Since :math:`\rho_{lm}` and its derivatives are being interpolated and due to division by
-      powers of :math:`r`, it is recommended to be very careful of having values near zero.
+      powers of :math:`r`\, it is recommended to be very careful of having values near zero.
 
     """
     if isinstance(molgrid, AtomGrid):
