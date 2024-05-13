@@ -244,7 +244,7 @@
 <p>Transformation from 1D intervals [a, b] to other 1D intervals [c, d].</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="grid.rtransform.BaseTransform">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">BaseTransform</span></span><a class="headerlink" href="#grid.rtransform.BaseTransform" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">BaseTransform</span></span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L32-L116"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.BaseTransform" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
 <p>Abstract class for transformation.</p>
 <dl class="py method">
@@ -265,19 +265,19 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.BaseTransform.deriv">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">deriv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BaseTransform.deriv" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">deriv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L43-L45"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.BaseTransform.deriv" title="Permalink to this definition"></a></dt>
 <dd><p>Abstract method for 1st derivative of transformation.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.BaseTransform.deriv2">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">deriv2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BaseTransform.deriv2" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">deriv2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L47-L49"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.BaseTransform.deriv2" title="Permalink to this definition"></a></dt>
 <dd><p>Abstract method for the second derivative of transformation.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.BaseTransform.deriv3">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">deriv3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BaseTransform.deriv3" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">deriv3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L51-L53"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.BaseTransform.deriv3" title="Permalink to this definition"></a></dt>
 <dd><p>Abstract method for the third derivative of transformation.</p>
 </dd></dl>
 
@@ -294,19 +294,19 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.BaseTransform.inverse">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BaseTransform.inverse" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L39-L41"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.BaseTransform.inverse" title="Permalink to this definition"></a></dt>
 <dd><p>Abstract method for inverse transformation.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.BaseTransform.transform">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BaseTransform.transform" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L35-L37"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.BaseTransform.transform" title="Permalink to this definition"></a></dt>
 <dd><p>Abstract method for transformation.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.BaseTransform.transform_1d_grid">
-<span class="sig-name descname"><span class="pre">transform_1d_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oned_grid</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BaseTransform.transform_1d_grid" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">transform_1d_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oned_grid</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L65-L101"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.BaseTransform.transform_1d_grid" title="Permalink to this definition"></a></dt>
 <dd><p>Generate a new integral grid by transforming the provided grid.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\int^{\inf}_0 g(r) d r &amp;= \int^{r(\infty)}_{r(0)} g(r(x)) \frac{dr}{dx} dx \\
@@ -331,7 +331,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="grid.rtransform.BeckeRTransform">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">BeckeRTransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trim_inf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BeckeRTransform" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">BeckeRTransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trim_inf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L119-L313"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.BeckeRTransform" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTransform</span></code></a></p>
 <p>Becke Transformation.</p>
 <p>The Becke transformation transforms from <span class="math notranslate nohighlight">\([-1, 1]\)</span> to <span class="math notranslate nohighlight">\([r_{min}, \infty)\)</span>
@@ -361,7 +361,7 @@ The Journal of chemical physics 88.4 (1988): 2547-2553.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.BeckeRTransform.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trim_inf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BeckeRTransform.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trim_inf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L141-L161"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.BeckeRTransform.__init__" title="Permalink to this definition"></a></dt>
 <dd><p>Construct Becke transform, <span class="math notranslate nohighlight">\([-1, 1]\)</span> to :math`[r_{min}, infty)`.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -390,7 +390,7 @@ following operations.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.BeckeRTransform.deriv">
-<span class="sig-name descname"><span class="pre">deriv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BeckeRTransform.deriv" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">deriv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L256-L276"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.BeckeRTransform.deriv" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the first derivative of Becke transformation.</p>
 <div class="math notranslate nohighlight">
 \[\frac{dr_i}{dx_i} = 2R \frac{1}{(1-x)^2}\]</div>
@@ -409,7 +409,7 @@ following operations.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.BeckeRTransform.deriv2">
-<span class="sig-name descname"><span class="pre">deriv2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BeckeRTransform.deriv2" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">deriv2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L278-L295"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.BeckeRTransform.deriv2" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the second derivative of Becke transformation.</p>
 <div class="math notranslate nohighlight">
 \[\frac{d^2r}{dx^2} = 4R \frac{1}{1-x^3}\]</div>
@@ -428,7 +428,7 @@ following operations.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.BeckeRTransform.deriv3">
-<span class="sig-name descname"><span class="pre">deriv3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BeckeRTransform.deriv3" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">deriv3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L297-L313"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.BeckeRTransform.deriv3" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the third derivative of Becke transformation.</p>
 <div class="math notranslate nohighlight">
 \[\frac{d^3r}{dx^3} = 12R \frac{1}{1 - x^4}\]</div>
@@ -458,7 +458,7 @@ following operations.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.BeckeRTransform.find_parameter">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">find_parameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BeckeRTransform.find_parameter" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">find_parameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L183-L212"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.BeckeRTransform.find_parameter" title="Permalink to this definition"></a></dt>
 <dd><p>Compute R such that half of the points in <span class="math notranslate nohighlight">\([r_{min}, \infty)\)</span> are within radius.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -479,7 +479,7 @@ following operations.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.BeckeRTransform.inverse">
-<span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BeckeRTransform.inverse" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L238-L254"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.BeckeRTransform.inverse" title="Permalink to this definition"></a></dt>
 <dd><p>Transform <span class="math notranslate nohighlight">\([r_{mi}n, \infty)\)</span> back to original <span class="math notranslate nohighlight">\([-1, 1]\)</span>.</p>
 <div class="math notranslate nohighlight">
 \[x_i = \frac{r_i - r_{min} - R} {r_i - r_{min} + R}\]</div>
@@ -509,7 +509,7 @@ following operations.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.BeckeRTransform.transform">
-<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BeckeRTransform.transform" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L214-L236"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.BeckeRTransform.transform" title="Permalink to this definition"></a></dt>
 <dd><p>Transform from <span class="math notranslate nohighlight">\([-1, 1]\)</span> to <span class="math notranslate nohighlight">\([r_{min}, \infty)\)</span>.</p>
 <div class="math notranslate nohighlight">
 \[r_i = R \frac{1 + x_i}{1 - x_i} + r_{min}\]</div>
@@ -528,7 +528,7 @@ following operations.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.BeckeRTransform.transform_1d_grid">
-<span class="sig-name descname"><span class="pre">transform_1d_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oned_grid</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BeckeRTransform.transform_1d_grid" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">transform_1d_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oned_grid</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L65-L101"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.BeckeRTransform.transform_1d_grid" title="Permalink to this definition"></a></dt>
 <dd><p>Generate a new integral grid by transforming the provided grid.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\int^{\inf}_0 g(r) d r &amp;= \int^{r(\infty)}_{r(0)} g(r(x)) \frac{dr}{dx} dx \\
@@ -553,7 +553,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="grid.rtransform.ExpRTransform">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ExpRTransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.ExpRTransform" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ExpRTransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L870-L1043"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.ExpRTransform" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTransform</span></code></a></p>
 <p>Exponential transform from <span class="math notranslate nohighlight">\([0, \infty)\)</span> to <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span>.</p>
 <p>This transformation is given by</p>
@@ -569,7 +569,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 \[x(r) = \frac{\log\big(\frac{r}{r_{min}} \big) b}{\log(\frac{r_{max}}{r_{min}})}\]</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.ExpRTransform.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.ExpRTransform.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L890-L913"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.ExpRTransform.__init__" title="Permalink to this definition"></a></dt>
 <dd><p>Initialize exp transform instance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -608,7 +608,7 @@ grid that is transformed initially.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.ExpRTransform.deriv">
-<span class="sig-name descname"><span class="pre">deriv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.ExpRTransform.deriv" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">deriv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L964-L981"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.ExpRTransform.deriv" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the first derivative of exponential transform.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -625,7 +625,7 @@ grid that is transformed initially.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.ExpRTransform.deriv2">
-<span class="sig-name descname"><span class="pre">deriv2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.ExpRTransform.deriv2" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">deriv2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L983-L1000"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.ExpRTransform.deriv2" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the second derivative of exponential transform.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -642,7 +642,7 @@ grid that is transformed initially.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.ExpRTransform.deriv3">
-<span class="sig-name descname"><span class="pre">deriv3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.ExpRTransform.deriv3" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">deriv3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L1002-L1019"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.ExpRTransform.deriv3" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the third derivative of exponential transform.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -670,7 +670,7 @@ grid that is transformed initially.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.ExpRTransform.inverse">
-<span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.ExpRTransform.inverse" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L1021-L1043"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.ExpRTransform.inverse" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the inverse of exponential transform.</p>
 <div class="math notranslate nohighlight">
 \[x(r_i) = \frac{\log\big(\frac{r}{r_{min}} \big) b}{\log(\frac{r_{max}}{r_{min}})},\]</div>
@@ -712,13 +712,13 @@ grid that is transformed initially.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.ExpRTransform.set_maximum_parameter_b">
-<span class="sig-name descname"><span class="pre">set_maximum_parameter_b</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.ExpRTransform.set_maximum_parameter_b" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">set_maximum_parameter_b</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L930-L938"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.ExpRTransform.set_maximum_parameter_b" title="Permalink to this definition"></a></dt>
 <dd><p>Sets up the parameter b from taken the maximum over x.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.ExpRTransform.transform">
-<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.ExpRTransform.transform" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L940-L962"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.ExpRTransform.transform" title="Permalink to this definition"></a></dt>
 <dd><p>Perform exponential transform.</p>
 <div class="math notranslate nohighlight">
 \[r = r_{min} e^{x \log\bigg(\frac{r_{max}}{r_{min} / b}  \bigg)},\]</div>
@@ -738,7 +738,7 @@ grid that is transformed initially.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.ExpRTransform.transform_1d_grid">
-<span class="sig-name descname"><span class="pre">transform_1d_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oned_grid</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.ExpRTransform.transform_1d_grid" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">transform_1d_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oned_grid</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L65-L101"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.ExpRTransform.transform_1d_grid" title="Permalink to this definition"></a></dt>
 <dd><p>Generate a new integral grid by transforming the provided grid.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\int^{\inf}_0 g(r) d r &amp;= \int^{r(\infty)}_{r(0)} g(r(x)) \frac{dr}{dx} dx \\
@@ -763,7 +763,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="grid.rtransform.HandyModRTransform">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">HandyModRTransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trim_inf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyModRTransform" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">HandyModRTransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trim_inf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L1899-L2120"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.HandyModRTransform" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTransform</span></code></a></p>
 <p>Modified Handy Transformation class from <span class="math notranslate nohighlight">\([-1, 1]\)</span> to <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span>.</p>
 <p>This transformation is given by</p>
@@ -780,7 +780,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
         } - 1.\]</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.HandyModRTransform.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trim_inf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyModRTransform.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trim_inf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L1921-L1947"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.HandyModRTransform.__init__" title="Permalink to this definition"></a></dt>
 <dd><p>Construct a modified Handy transform from <span class="math notranslate nohighlight">\([-1, 1]\)</span> to <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -809,7 +809,7 @@ following operations.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.HandyModRTransform.deriv">
-<span class="sig-name descname"><span class="pre">deriv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyModRTransform.deriv" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">deriv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L2023-L2051"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.HandyModRTransform.deriv" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the first derivative of modified Handy transformation.</p>
 <div class="math notranslate nohighlight">
 \[\frac{dr}{dx} = -\frac{
@@ -831,7 +831,7 @@ following operations.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.HandyModRTransform.deriv2">
-<span class="sig-name descname"><span class="pre">deriv2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyModRTransform.deriv2" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">deriv2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L2053-L2081"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.HandyModRTransform.deriv2" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the second derivative of modified Handy transformation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -848,7 +848,7 @@ following operations.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.HandyModRTransform.deriv3">
-<span class="sig-name descname"><span class="pre">deriv3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyModRTransform.deriv3" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">deriv3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L2083-L2120"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.HandyModRTransform.deriv3" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the third derivative of modified Handy transformation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -876,7 +876,7 @@ following operations.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.HandyModRTransform.inverse">
-<span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyModRTransform.inverse" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L1994-L2021"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.HandyModRTransform.inverse" title="Permalink to this definition"></a></dt>
 <dd><p>Inverse transform from <span class="math notranslate nohighlight">\([r_{min},r_{max}]\)</span> to <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
 <div class="math notranslate nohighlight">
 \[x_i = 2 \sqrt[m]{
@@ -931,7 +931,7 @@ following operations.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.HandyModRTransform.transform">
-<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyModRTransform.transform" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L1964-L1992"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.HandyModRTransform.transform" title="Permalink to this definition"></a></dt>
 <dd><p>Transform given array <span class="math notranslate nohighlight">\([-1,1]\)</span> to radial array <span class="math notranslate nohighlight">\([r_{min},r_{max}]\)</span>.</p>
 <div class="math notranslate nohighlight">
 \[r_i = \frac{(1+x_i)^m (r_{max} - r_{min})}
@@ -952,7 +952,7 @@ following operations.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.HandyModRTransform.transform_1d_grid">
-<span class="sig-name descname"><span class="pre">transform_1d_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oned_grid</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyModRTransform.transform_1d_grid" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">transform_1d_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oned_grid</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L65-L101"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.HandyModRTransform.transform_1d_grid" title="Permalink to this definition"></a></dt>
 <dd><p>Generate a new integral grid by transforming the provided grid.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\int^{\inf}_0 g(r) d r &amp;= \int^{r(\infty)}_{r(0)} g(r(x)) \frac{dr}{dx} dx \\
@@ -977,7 +977,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="grid.rtransform.HandyRTransform">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">HandyRTransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trim_inf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyRTransform" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">HandyRTransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trim_inf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L1716-L1896"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.HandyRTransform" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTransform</span></code></a></p>
 <p>Handy Transformation class from <span class="math notranslate nohighlight">\([-1, 1]\)</span> to <span class="math notranslate nohighlight">\([r_{min}, \infty)\)</span>.</p>
 <p>This transformation is given by</p>
@@ -999,7 +999,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.HandyRTransform.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trim_inf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyRTransform.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trim_inf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L1732-L1756"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.HandyRTransform.__init__" title="Permalink to this definition"></a></dt>
 <dd><p>Construct Handy transformation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1028,7 +1028,7 @@ following operations.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.HandyRTransform.deriv">
-<span class="sig-name descname"><span class="pre">deriv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyRTransform.deriv" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">deriv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L1818-L1837"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.HandyRTransform.deriv" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the first derivative of Handy transformation.</p>
 <div class="math notranslate nohighlight">
 \[\frac{dr}{dx} = 2mR \frac{(1+x)^{m-1}}{(1-x)^{m+1}}\]</div>
@@ -1047,7 +1047,7 @@ following operations.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.HandyRTransform.deriv2">
-<span class="sig-name descname"><span class="pre">deriv2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyRTransform.deriv2" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">deriv2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L1839-L1866"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.HandyRTransform.deriv2" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the second derivative of Handy transformation.</p>
 <div class="math notranslate nohighlight">
 \[\frac{d^2r}{dx^2} = 4mR (m + x) \frac{(1+x)^{m-2}}{(1-x)^{m+2}}\]</div>
@@ -1066,7 +1066,7 @@ following operations.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.HandyRTransform.deriv3">
-<span class="sig-name descname"><span class="pre">deriv3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyRTransform.deriv3" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">deriv3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L1868-L1896"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.HandyRTransform.deriv3" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the third derivative of Handy transformation.</p>
 <div class="math notranslate nohighlight">
 \[\frac{d^3r}{dx^3} = 4mR ( 1 + 6 m x + 2 m^2 + 3 x^2)
@@ -1097,7 +1097,7 @@ following operations.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.HandyRTransform.inverse">
-<span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyRTransform.inverse" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L1795-L1816"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.HandyRTransform.inverse" title="Permalink to this definition"></a></dt>
 <dd><p>Inverse transform from <span class="math notranslate nohighlight">\([r_{min},\infty)\)</span> to <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
 <div class="math notranslate nohighlight">
 \[x_i = \frac{\sqrt[m]{r_i-r_{min}} - \sqrt[m]{R}}
@@ -1139,7 +1139,7 @@ following operations.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.HandyRTransform.transform">
-<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyRTransform.transform" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L1773-L1793"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.HandyRTransform.transform" title="Permalink to this definition"></a></dt>
 <dd><p>Transform from <span class="math notranslate nohighlight">\([-1,1]\)</span> to <span class="math notranslate nohighlight">\([r_{min},\infty)\)</span>.</p>
 <div class="math notranslate nohighlight">
 \[r_i = R \left( \frac{1+x_i}{1-x_i} \right)^m + r_{min}\]</div>
@@ -1158,7 +1158,7 @@ following operations.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.HandyRTransform.transform_1d_grid">
-<span class="sig-name descname"><span class="pre">transform_1d_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oned_grid</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyRTransform.transform_1d_grid" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">transform_1d_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oned_grid</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L65-L101"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.HandyRTransform.transform_1d_grid" title="Permalink to this definition"></a></dt>
 <dd><p>Generate a new integral grid by transforming the provided grid.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\int^{\inf}_0 g(r) d r &amp;= \int^{r(\infty)}_{r(0)} g(r(x)) \frac{dr}{dx} dx \\
@@ -1183,7 +1183,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="grid.rtransform.HyperbolicRTransform">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">HyperbolicRTransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">HyperbolicRTransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L1227-L1378"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTransform</span></code></a></p>
 <p>Hyperbolic transform from :math`[0, infty)` to <span class="math notranslate nohighlight">\([0, \infty)\)</span>.</p>
 <p>The transformation is given by</p>
@@ -1195,7 +1195,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 \[x(r) = \frac{r}{a + br}\]</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.HyperbolicRTransform.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L1245-L1263"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.__init__" title="Permalink to this definition"></a></dt>
 <dd><p>Hyperbolic transform class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1242,7 +1242,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.HyperbolicRTransform.deriv">
-<span class="sig-name descname"><span class="pre">deriv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.deriv" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">deriv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L1298-L1316"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.deriv" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the first derivative of hyperbolic transformation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1259,7 +1259,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.HyperbolicRTransform.deriv2">
-<span class="sig-name descname"><span class="pre">deriv2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.deriv2" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">deriv2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L1318-L1336"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.deriv2" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the second derivative of hyperbolic transformation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1276,7 +1276,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.HyperbolicRTransform.deriv3">
-<span class="sig-name descname"><span class="pre">deriv3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.deriv3" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">deriv3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L1338-L1356"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.deriv3" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the third derivative of hyperbolic transformation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1304,7 +1304,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.HyperbolicRTransform.inverse">
-<span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.inverse" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L1358-L1378"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.inverse" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the inverse of hyperbolic transformation.</p>
 <div class="math notranslate nohighlight">
 \[x(r) = \frac{r}{a + br}\]</div>
@@ -1323,7 +1323,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.HyperbolicRTransform.transform">
-<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.transform" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L1275-L1296"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.transform" title="Permalink to this definition"></a></dt>
 <dd><p>Perform hyperbolic transformation.</p>
 <div class="math notranslate nohighlight">
 \[r_i = \frac{a x_i}{(1 - bx_i)},\]</div>
@@ -1343,7 +1343,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.HyperbolicRTransform.transform_1d_grid">
-<span class="sig-name descname"><span class="pre">transform_1d_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oned_grid</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.transform_1d_grid" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">transform_1d_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oned_grid</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L65-L101"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.transform_1d_grid" title="Permalink to this definition"></a></dt>
 <dd><p>Generate a new integral grid by transforming the provided grid.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\int^{\inf}_0 g(r) d r &amp;= \int^{r(\infty)}_{r(0)} g(r(x)) \frac{dr}{dx} dx \\
@@ -1368,7 +1368,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="grid.rtransform.IdentityRTransform">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">IdentityRTransform</span></span><a class="headerlink" href="#grid.rtransform.IdentityRTransform" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">IdentityRTransform</span></span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L591-L698"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.IdentityRTransform" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTransform</span></code></a></p>
 <p>Identity Transform class.</p>
 <p>The identity transform class trivially transforms from <span class="math notranslate nohighlight">\([0, \infty)\)</span> to
@@ -1380,7 +1380,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 \[x(r) = r.\]</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.IdentityRTransform.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.IdentityRTransform.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L608-L610"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.IdentityRTransform.__init__" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
@@ -1396,7 +1396,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.IdentityRTransform.deriv">
-<span class="sig-name descname"><span class="pre">deriv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.IdentityRTransform.deriv" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">deriv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L632-L647"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.IdentityRTransform.deriv" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the first derivative of identity transform.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1413,7 +1413,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.IdentityRTransform.deriv2">
-<span class="sig-name descname"><span class="pre">deriv2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.IdentityRTransform.deriv2" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">deriv2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L649-L664"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.IdentityRTransform.deriv2" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the second derivative of identity transform.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1430,7 +1430,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.IdentityRTransform.deriv3">
-<span class="sig-name descname"><span class="pre">deriv3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.IdentityRTransform.deriv3" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">deriv3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L666-L681"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.IdentityRTransform.deriv3" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the third derivative of identity transform.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1458,7 +1458,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.IdentityRTransform.inverse">
-<span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.IdentityRTransform.inverse" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L683-L698"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.IdentityRTransform.inverse" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the inverse of identity transform.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1475,7 +1475,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.IdentityRTransform.transform">
-<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.IdentityRTransform.transform" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L612-L630"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.IdentityRTransform.transform" title="Permalink to this definition"></a></dt>
 <dd><p>Perform given array into itself.</p>
 <div class="math notranslate nohighlight">
 \[r_i = x_i\]</div>
@@ -1494,7 +1494,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.IdentityRTransform.transform_1d_grid">
-<span class="sig-name descname"><span class="pre">transform_1d_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oned_grid</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.IdentityRTransform.transform_1d_grid" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">transform_1d_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oned_grid</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L65-L101"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.IdentityRTransform.transform_1d_grid" title="Permalink to this definition"></a></dt>
 <dd><p>Generate a new integral grid by transforming the provided grid.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\int^{\inf}_0 g(r) d r &amp;= \int^{r(\infty)}_{r(0)} g(r(x)) \frac{dr}{dx} dx \\
@@ -1519,12 +1519,12 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="grid.rtransform.InverseRTransform">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">InverseRTransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transform</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.InverseRTransform" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">InverseRTransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transform</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L444-L588"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.InverseRTransform" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTransform</span></code></a></p>
 <p>Inverse transformation class for any general transformation.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.InverseRTransform.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transform</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.InverseRTransform.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transform</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L447-L460"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.InverseRTransform.__init__" title="Permalink to this definition"></a></dt>
 <dd><p>Construct InverseRTransform instance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1546,7 +1546,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.InverseRTransform.deriv">
-<span class="sig-name descname"><span class="pre">deriv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.InverseRTransform.deriv" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">deriv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L519-L538"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.InverseRTransform.deriv" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the first derivative of inverse transformation.</p>
 <div class="math notranslate nohighlight">
 \[\frac{dx}{dr} = (\frac{dr}{dx})^{-1}\]</div>
@@ -1565,7 +1565,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.InverseRTransform.deriv2">
-<span class="sig-name descname"><span class="pre">deriv2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.InverseRTransform.deriv2" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">deriv2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L540-L561"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.InverseRTransform.deriv2" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the second derivative of inverse transformation.</p>
 <div class="math notranslate nohighlight">
 \[\frac{d^2 x}{dr^2} = - \frac{d^2 r}{dx^2} (\frac{dx}{dr})^3\]</div>
@@ -1584,7 +1584,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.InverseRTransform.deriv3">
-<span class="sig-name descname"><span class="pre">deriv3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.InverseRTransform.deriv3" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">deriv3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L563-L588"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.InverseRTransform.deriv3" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the third derivative of inverse transformation.</p>
 <div class="math notranslate nohighlight">
 \[\frac{d^3 x}{dr^3} = -\frac{d^3 r}{dx^3} (\frac{dx}{dr})^4
@@ -1615,7 +1615,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.InverseRTransform.inverse">
-<span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.InverseRTransform.inverse" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L481-L498"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.InverseRTransform.inverse" title="Permalink to this definition"></a></dt>
 <dd><p>Transform array to the co-domain of the provided transformation.</p>
 <p>This transformation is equivalent to the transformation function of the original
 transformation (i.e. OriginTF.transform).</p>
@@ -1634,7 +1634,7 @@ transformation (i.e. OriginTF.transform).</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.InverseRTransform.transform">
-<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.InverseRTransform.transform" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L462-L479"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.InverseRTransform.transform" title="Permalink to this definition"></a></dt>
 <dd><p>Transform array back to the original, domain of the provided transformation.</p>
 <p>This transformation is equivalent to the inverse function of the original
 transformation (i.e. OriginTF.inverse).</p>
@@ -1653,7 +1653,7 @@ transformation (i.e. OriginTF.inverse).</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.InverseRTransform.transform_1d_grid">
-<span class="sig-name descname"><span class="pre">transform_1d_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oned_grid</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.InverseRTransform.transform_1d_grid" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">transform_1d_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oned_grid</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L65-L101"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.InverseRTransform.transform_1d_grid" title="Permalink to this definition"></a></dt>
 <dd><p>Generate a new integral grid by transforming the provided grid.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\int^{\inf}_0 g(r) d r &amp;= \int^{r(\infty)}_{r(0)} g(r(x)) \frac{dr}{dx} dx \\
@@ -1678,7 +1678,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="grid.rtransform.KnowlesRTransform">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">KnowlesRTransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trim_inf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.KnowlesRTransform" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">KnowlesRTransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trim_inf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L1532-L1713"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.KnowlesRTransform" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTransform</span></code></a></p>
 <p>Knowles Transformation from <span class="math notranslate nohighlight">\([-1, 1]\)</span> to <span class="math notranslate nohighlight">\([r_{min}, \infty)\)</span>.</p>
 <p>The transformation is given by</p>
@@ -1701,7 +1701,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.KnowlesRTransform.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trim_inf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.KnowlesRTransform.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trim_inf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L1550-L1574"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.KnowlesRTransform.__init__" title="Permalink to this definition"></a></dt>
 <dd><p>Construct Knowles transformation class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1730,7 +1730,7 @@ following operations.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.KnowlesRTransform.deriv">
-<span class="sig-name descname"><span class="pre">deriv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.KnowlesRTransform.deriv" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">deriv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L1632-L1653"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.KnowlesRTransform.deriv" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the first derivative of Knowles transformation.</p>
 <div class="math notranslate nohighlight">
 \[\frac{dr}{dx} = kR \frac{(1+x_i)^{k-1}}{2^k-(1+x_i)^k}\]</div>
@@ -1749,7 +1749,7 @@ following operations.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.KnowlesRTransform.deriv2">
-<span class="sig-name descname"><span class="pre">deriv2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.KnowlesRTransform.deriv2" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">deriv2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L1655-L1680"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.KnowlesRTransform.deriv2" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the second derivative of Knowles transformation.</p>
 <div class="math notranslate nohighlight">
 \[\frac{d^2r}{dx^2} = kR \frac{(1+x_i)^{k-2}
@@ -1769,7 +1769,7 @@ following operations.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.KnowlesRTransform.deriv3">
-<span class="sig-name descname"><span class="pre">deriv3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.KnowlesRTransform.deriv3" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">deriv3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L1682-L1713"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.KnowlesRTransform.deriv3" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the third derivative of Knowles transformation.</p>
 <div class="math notranslate nohighlight">
 \[\frac{d^3r}{dx^3} = kR \frac{(1+x_i)^{k-3}
@@ -1802,7 +1802,7 @@ following operations.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.KnowlesRTransform.inverse">
-<span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.KnowlesRTransform.inverse" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L1613-L1630"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.KnowlesRTransform.inverse" title="Permalink to this definition"></a></dt>
 <dd><p>Inverse of transformation from <span class="math notranslate nohighlight">\([r_{min},\infty)\)</span> to <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
 <div class="math notranslate nohighlight">
 \[x_i = 2 \sqrt[k]{1-\exp \left( -\frac{r_i-r_{min}}{R}\right)}-1\]</div>
@@ -1843,7 +1843,7 @@ following operations.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.KnowlesRTransform.transform">
-<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.KnowlesRTransform.transform" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L1591-L1611"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.KnowlesRTransform.transform" title="Permalink to this definition"></a></dt>
 <dd><p>Transform from <span class="math notranslate nohighlight">\([-1,1]\)</span> to <span class="math notranslate nohighlight">\([r_{min},\infty)\)</span>.</p>
 <div class="math notranslate nohighlight">
 \[r_i = r_{min} - R \log \left( 1 - 2^{-k} (x_i + 1)^k \right)\]</div>
@@ -1862,7 +1862,7 @@ following operations.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.KnowlesRTransform.transform_1d_grid">
-<span class="sig-name descname"><span class="pre">transform_1d_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oned_grid</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.KnowlesRTransform.transform_1d_grid" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">transform_1d_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oned_grid</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L65-L101"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.KnowlesRTransform.transform_1d_grid" title="Permalink to this definition"></a></dt>
 <dd><p>Generate a new integral grid by transforming the provided grid.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\int^{\inf}_0 g(r) d r &amp;= \int^{r(\infty)}_{r(0)} g(r(x)) \frac{dr}{dx} dx \\
@@ -1887,7 +1887,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="grid.rtransform.LinearFiniteRTransform">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LinearFiniteRTransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmax</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearFiniteRTransform" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LinearFiniteRTransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmax</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L316-L441"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.LinearFiniteRTransform" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTransform</span></code></a></p>
 <p>Linear finite transformation from <span class="math notranslate nohighlight">\([-1, 1]\)</span> to <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span>.</p>
 <p>The Linear transformation from finite interval <span class="math notranslate nohighlight">\([-1, 1]\)</span> to finite interval
@@ -1899,7 +1899,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 \[x(r) = \frac{2 r - (r_{max} + r_{min})}{r_{max} - r_{min}}\]</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.LinearFiniteRTransform.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmax</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearFiniteRTransform.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmax</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L333-L346"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.LinearFiniteRTransform.__init__" title="Permalink to this definition"></a></dt>
 <dd><p>Construct linear transformation instance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1924,7 +1924,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.LinearFiniteRTransform.deriv">
-<span class="sig-name descname"><span class="pre">deriv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearFiniteRTransform.deriv" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">deriv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L368-L387"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.LinearFiniteRTransform.deriv" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the 1st order derivative.</p>
 <div class="math notranslate nohighlight">
 \[\frac{dr}{dx} = \frac{r_{max} - r_{min}}{2}\]</div>
@@ -1943,7 +1943,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.LinearFiniteRTransform.deriv2">
-<span class="sig-name descname"><span class="pre">deriv2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearFiniteRTransform.deriv2" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">deriv2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L389-L405"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.LinearFiniteRTransform.deriv2" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the second order derivative.</p>
 <div class="math notranslate nohighlight">
 \[\frac{d^2 r}{dx^2} = 0\]</div>
@@ -1962,7 +1962,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.LinearFiniteRTransform.deriv3">
-<span class="sig-name descname"><span class="pre">deriv3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearFiniteRTransform.deriv3" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">deriv3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L407-L423"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.LinearFiniteRTransform.deriv3" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the third order derivative.</p>
 <div class="math notranslate nohighlight">
 \[\frac{d^2 r}{dx^2} = 0\]</div>
@@ -1992,7 +1992,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.LinearFiniteRTransform.inverse">
-<span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearFiniteRTransform.inverse" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L425-L441"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.LinearFiniteRTransform.inverse" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the inverse of the transformation.</p>
 <div class="math notranslate nohighlight">
 \[x_i = \frac{2 r_i - (r_{max} + r_{min})}{r_{max} - r_{min}}\]</div>
@@ -2011,7 +2011,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.LinearFiniteRTransform.transform">
-<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearFiniteRTransform.transform" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L348-L366"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.LinearFiniteRTransform.transform" title="Permalink to this definition"></a></dt>
 <dd><p>Transform from interval <span class="math notranslate nohighlight">\([-1, 1]\)</span> to <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span>.</p>
 <div class="math notranslate nohighlight">
 \[r_i = \frac{r_{max} - r_{min}}{2} (1 + x_i) + r_{min}.\]</div>
@@ -2031,7 +2031,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.LinearFiniteRTransform.transform_1d_grid">
-<span class="sig-name descname"><span class="pre">transform_1d_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oned_grid</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearFiniteRTransform.transform_1d_grid" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">transform_1d_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oned_grid</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L65-L101"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.LinearFiniteRTransform.transform_1d_grid" title="Permalink to this definition"></a></dt>
 <dd><p>Generate a new integral grid by transforming the provided grid.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\int^{\inf}_0 g(r) d r &amp;= \int^{r(\infty)}_{r(0)} g(r(x)) \frac{dr}{dx} dx \\
@@ -2056,7 +2056,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="grid.rtransform.LinearInfiniteRTransform">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LinearInfiniteRTransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearInfiniteRTransform" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LinearInfiniteRTransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L701-L867"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.LinearInfiniteRTransform" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTransform</span></code></a></p>
 <p>Linear transform from interval <span class="math notranslate nohighlight">\([0, \infty)\)</span> to <span class="math notranslate nohighlight">\([r_{min}, r_{max})\)</span>.</p>
 <p>This transformation linearly maps the infinite interval <span class="math notranslate nohighlight">\([0, \infty)\)</span> to a finite
@@ -2073,7 +2073,7 @@ to <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span>.</p>
 \[x(r) = (r - r_{min}) \frac{\max_i (r_i)}{r_{max} - r_{min}}\]</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.LinearInfiniteRTransform.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearInfiniteRTransform.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L725-L746"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.LinearInfiniteRTransform.__init__" title="Permalink to this definition"></a></dt>
 <dd><p>Initialize linear transform class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2112,7 +2112,7 @@ grid that is transformed initially.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.LinearInfiniteRTransform.deriv">
-<span class="sig-name descname"><span class="pre">deriv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearInfiniteRTransform.deriv" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">deriv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L797-L814"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.LinearInfiniteRTransform.deriv" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the first derivative of linear transformation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2129,7 +2129,7 @@ grid that is transformed initially.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.LinearInfiniteRTransform.deriv2">
-<span class="sig-name descname"><span class="pre">deriv2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearInfiniteRTransform.deriv2" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">deriv2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L816-L830"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.LinearInfiniteRTransform.deriv2" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the second derivative of linear transformation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2146,7 +2146,7 @@ grid that is transformed initially.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.LinearInfiniteRTransform.deriv3">
-<span class="sig-name descname"><span class="pre">deriv3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearInfiniteRTransform.deriv3" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">deriv3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L832-L846"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.LinearInfiniteRTransform.deriv3" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the third derivative of linear transformation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2174,7 +2174,7 @@ grid that is transformed initially.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.LinearInfiniteRTransform.inverse">
-<span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearInfiniteRTransform.inverse" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L848-L867"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.LinearInfiniteRTransform.inverse" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the inverse of linear transformation.</p>
 <div class="math notranslate nohighlight">
 \[x_i = (r - r_{min}) / frac{b}{r_{max} - r_{min}}\]</div>
@@ -2215,13 +2215,13 @@ grid that is transformed initially.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.LinearInfiniteRTransform.set_maximum_parameter_b">
-<span class="sig-name descname"><span class="pre">set_maximum_parameter_b</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearInfiniteRTransform.set_maximum_parameter_b" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">set_maximum_parameter_b</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L763-L771"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.LinearInfiniteRTransform.set_maximum_parameter_b" title="Permalink to this definition"></a></dt>
 <dd><p>Sets up the parameter b from taken the maximum over some grid x.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.LinearInfiniteRTransform.transform">
-<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearInfiniteRTransform.transform" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L773-L795"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.LinearInfiniteRTransform.transform" title="Permalink to this definition"></a></dt>
 <dd><p>Transform from interval <span class="math notranslate nohighlight">\([0, \infty)\)</span> to <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span>.</p>
 <div class="math notranslate nohighlight">
 \[r_i = \frac{(r_{max} - r_{min})}{\max_i x_i} x_i + r_{min},\]</div>
@@ -2242,7 +2242,7 @@ equally-spaced integers from 0 to N-1, to <span class="math notranslate nohighli
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.LinearInfiniteRTransform.transform_1d_grid">
-<span class="sig-name descname"><span class="pre">transform_1d_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oned_grid</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearInfiniteRTransform.transform_1d_grid" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">transform_1d_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oned_grid</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L65-L101"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.LinearInfiniteRTransform.transform_1d_grid" title="Permalink to this definition"></a></dt>
 <dd><p>Generate a new integral grid by transforming the provided grid.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\int^{\inf}_0 g(r) d r &amp;= \int^{r(\infty)}_{r(0)} g(r(x)) \frac{dr}{dx} dx \\
@@ -2267,7 +2267,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="grid.rtransform.MultiExpRTransform">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MultiExpRTransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trim_inf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.MultiExpRTransform" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MultiExpRTransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trim_inf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L1381-L1529"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.MultiExpRTransform" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTransform</span></code></a></p>
 <p>MultiExp Transformation class from <span class="math notranslate nohighlight">\([-1,1]\)</span> to <span class="math notranslate nohighlight">\([r_{min}, \infty)\)</span>.</p>
 <p>The transformation is given by</p>
@@ -2296,7 +2296,7 @@ Journal of computational chemistry 24.6 (2003): 732-740.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.MultiExpRTransform.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trim_inf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.MultiExpRTransform.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trim_inf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L1402-L1420"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.MultiExpRTransform.__init__" title="Permalink to this definition"></a></dt>
 <dd><p>Construct MultiExp transform from <span class="math notranslate nohighlight">\([-1,1]\)</span> to <span class="math notranslate nohighlight">\([r_{min}, \infty)\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2324,7 +2324,7 @@ following operations.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.MultiExpRTransform.deriv">
-<span class="sig-name descname"><span class="pre">deriv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.MultiExpRTransform.deriv" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">deriv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L1474-L1491"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.MultiExpRTransform.deriv" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the first derivative of MultiExp transformation.</p>
 <div class="math notranslate nohighlight">
 \[\frac{dr}{dx} = -\frac{R}{1+x}\]</div>
@@ -2343,7 +2343,7 @@ following operations.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.MultiExpRTransform.deriv2">
-<span class="sig-name descname"><span class="pre">deriv2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.MultiExpRTransform.deriv2" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">deriv2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L1493-L1510"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.MultiExpRTransform.deriv2" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the second derivative of MultiExp transformation.</p>
 <div class="math notranslate nohighlight">
 \[\frac{d^2r}{dx^2} = \frac{R}{(1 + x)^2}\]</div>
@@ -2362,7 +2362,7 @@ following operations.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.MultiExpRTransform.deriv3">
-<span class="sig-name descname"><span class="pre">deriv3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.MultiExpRTransform.deriv3" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">deriv3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L1512-L1529"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.MultiExpRTransform.deriv3" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the third derivative of MultiExp transformation.</p>
 <div class="math notranslate nohighlight">
 \[\frac{d^3r}{dx^3} = -\frac{2R}{(1 + x)^3}\]</div>
@@ -2392,7 +2392,7 @@ following operations.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.MultiExpRTransform.inverse">
-<span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.MultiExpRTransform.inverse" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L1454-L1472"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.MultiExpRTransform.inverse" title="Permalink to this definition"></a></dt>
 <dd><p>Inverse of transform from <span class="math notranslate nohighlight">\([r_{min},\infty)\)</span> to <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
 <div class="math notranslate nohighlight">
 \[x_i = 2 \exp \left( \frac{-(r_i - r_{min})}{R} \right) - 1\]</div>
@@ -2422,7 +2422,7 @@ following operations.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.MultiExpRTransform.transform">
-<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.MultiExpRTransform.transform" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L1432-L1452"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.MultiExpRTransform.transform" title="Permalink to this definition"></a></dt>
 <dd><p>Transform from [-1,1] to  <span class="math notranslate nohighlight">\([r_{min},\infty)\)</span>.</p>
 <div class="math notranslate nohighlight">
 \[r_i = -R \log \left( \frac{x_i + 1}{2} \right) + r_{min}\]</div>
@@ -2441,7 +2441,7 @@ following operations.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.MultiExpRTransform.transform_1d_grid">
-<span class="sig-name descname"><span class="pre">transform_1d_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oned_grid</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.MultiExpRTransform.transform_1d_grid" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">transform_1d_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oned_grid</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L65-L101"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.MultiExpRTransform.transform_1d_grid" title="Permalink to this definition"></a></dt>
 <dd><p>Generate a new integral grid by transforming the provided grid.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\int^{\inf}_0 g(r) d r &amp;= \int^{r(\infty)}_{r(0)} g(r(x)) \frac{dr}{dx} dx \\
@@ -2466,7 +2466,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="grid.rtransform.PowerRTransform">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PowerRTransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.PowerRTransform" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PowerRTransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L1046-L1224"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.PowerRTransform" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTransform</span></code></a></p>
 <p>Power transform class from <span class="math notranslate nohighlight">\([0, \infty)\)</span> to <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span>.</p>
 <p>This transformations is given by</p>
@@ -2478,7 +2478,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 \[x(r) = \frac{r}{r_{min}}^{\frac{\log(N)}{\log(r_{max}) - \log(r_{min})}} - 1.\]</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.PowerRTransform.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.PowerRTransform.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L1064-L1086"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.PowerRTransform.__init__" title="Permalink to this definition"></a></dt>
 <dd><p>Initialize power transform instance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2515,7 +2515,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.PowerRTransform.deriv">
-<span class="sig-name descname"><span class="pre">deriv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.PowerRTransform.deriv" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">deriv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L1143-L1160"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.PowerRTransform.deriv" title="Permalink to this definition"></a></dt>
 <dd><p>Compute first derivative of power transform.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2532,7 +2532,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.PowerRTransform.deriv2">
-<span class="sig-name descname"><span class="pre">deriv2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.PowerRTransform.deriv2" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">deriv2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L1162-L1180"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.PowerRTransform.deriv2" title="Permalink to this definition"></a></dt>
 <dd><p>Compute second derivative of power transform.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2549,7 +2549,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.PowerRTransform.deriv3">
-<span class="sig-name descname"><span class="pre">deriv3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.PowerRTransform.deriv3" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">deriv3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L1182-L1199"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.PowerRTransform.deriv3" title="Permalink to this definition"></a></dt>
 <dd><p>Compute third derivative of power transform.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2577,7 +2577,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.PowerRTransform.inverse">
-<span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.PowerRTransform.inverse" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L1201-L1224"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.PowerRTransform.inverse" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the inverse of power transform.</p>
 <div class="math notranslate nohighlight">
 \[x(r) = \frac{r}{r_{min}}^{\frac{\log(b + 1)}{\log(r_{max}) - \log(r_{min})}} - 1\]</div>
@@ -2619,13 +2619,13 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.PowerRTransform.set_maximum_parameter_b">
-<span class="sig-name descname"><span class="pre">set_maximum_parameter_b</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.PowerRTransform.set_maximum_parameter_b" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">set_maximum_parameter_b</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L1093-L1101"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.PowerRTransform.set_maximum_parameter_b" title="Permalink to this definition"></a></dt>
 <dd><p>Sets up the parameter b from taken the maximum over x.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.PowerRTransform.transform">
-<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.PowerRTransform.transform" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L1113-L1141"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.PowerRTransform.transform" title="Permalink to this definition"></a></dt>
 <dd><p>Perform power transform.</p>
 <div class="math notranslate nohighlight">
 \[r = r_{min}  (x + 1)^{\frac{\log(r_{max} - \log(r_{min}}{b + 1}},\]</div>
@@ -2645,7 +2645,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.PowerRTransform.transform_1d_grid">
-<span class="sig-name descname"><span class="pre">transform_1d_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oned_grid</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.PowerRTransform.transform_1d_grid" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">transform_1d_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oned_grid</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L65-L101"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.PowerRTransform.transform_1d_grid" title="Permalink to this definition"></a></dt>
 <dd><p>Generate a new integral grid by transforming the provided grid.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\int^{\inf}_0 g(r) d r &amp;= \int^{r(\infty)}_{r(0)} g(r(x)) \frac{dr}{dx} dx \\

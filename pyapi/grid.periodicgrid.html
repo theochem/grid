@@ -352,7 +352,7 @@ adjacent crystal planes along the :math:<a href="#id1"><span class="problematic"
 </div>
 <dl class="py class">
 <dt class="sig sig-object py" id="grid.periodicgrid.PeriodicGrid">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PeriodicGrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">realvecs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PeriodicGrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">realvecs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/periodicgrid.py#L172-L464"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="grid.basegrid.html#grid.basegrid.Grid" title="grid.basegrid.Grid"><code class="xref py py-class docutils literal notranslate"><span class="pre">Grid</span></code></a></p>
 <p>Grid with support for periodic boundary conditions.</p>
 <p>The purpose of this class is to support certain operations on integration
@@ -394,7 +394,7 @@ grid points of the primitive cell accidentally overflow into neighboring
 images, but in this case it becomes less efficient.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.periodicgrid.PeriodicGrid.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">realvecs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">realvecs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/periodicgrid.py#L222-L325"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.__init__" title="Permalink to this definition"></a></dt>
 <dd><p>Construct a PeriodicGrid instance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -431,7 +431,7 @@ wider than 1.1, because this implies a degradation of efficiency of
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.periodicgrid.PeriodicGrid.get_localgrid">
-<span class="sig-name descname"><span class="pre">get_localgrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.get_localgrid" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_localgrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/periodicgrid.py#L373-L464"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.get_localgrid" title="Permalink to this definition"></a></dt>
 <dd><p>Create a non-peroidic local grid within the given distance from the center.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -451,7 +451,7 @@ wider than 1.1, because this implies a degradation of efficiency of
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.periodicgrid.PeriodicGrid.integrate">
-<span class="sig-name descname"><span class="pre">integrate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">value_arrays</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.integrate" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">integrate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">value_arrays</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/basegrid.py#L114-L146"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.integrate" title="Permalink to this definition"></a></dt>
 <dd><p>Integrate over the whole grid for given multiple value arrays.</p>
 <p>Product of all value_arrays will be computed element-wise then integrated on the grid
 with its weights:</p>
@@ -472,7 +472,7 @@ with its weights:</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.periodicgrid.PeriodicGrid.moments">
-<span class="sig-name descname"><span class="pre">moments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orders</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_mom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cartesian'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_orders</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.moments" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">moments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orders</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_mom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cartesian'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_orders</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/basegrid.py#L188-L330"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.moments" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the multipole moment integral of a function over centers.</p>
 <p>The Cartesian type moments are:</p>
 <div class="math notranslate nohighlight">
@@ -550,7 +550,7 @@ each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.periodicgrid.PeriodicGrid.save">
-<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.save" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/basegrid.py#L332-L343"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.periodicgrid.PeriodicGrid.save" title="Permalink to this definition"></a></dt>
 <dd><p>Save the points and weights as a npz file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -596,7 +596,7 @@ each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 
 <dl class="py exception">
 <dt class="sig sig-object py" id="grid.periodicgrid.PeriodicGridWarning">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PeriodicGridWarning</span></span><a class="headerlink" href="#grid.periodicgrid.PeriodicGridWarning" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PeriodicGridWarning</span></span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/periodicgrid.py#L168-L169"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.periodicgrid.PeriodicGridWarning" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Warning</span></code></p>
 <p>Raised when the fractional coordinates span an interval wider than 1.1.</p>
 <dl class="py method">
