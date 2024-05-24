@@ -21,15 +21,18 @@
 
 
 from unittest import TestCase
-from grid.onedgrid import UniformInteger
-from grid.rtransform import LinearInfiniteRTransform
+from grid.onedgrid import UniformInteger, GaussLegendre
+from grid.rtransform import BeckeRTransform, LinearInfiniteRTransform
+from grid.atomgrid import AtomGrid
 from grid.ngrid import Ngrid
+import pytest
+import itertools
 
 import numpy as np
 from numpy.testing import assert_allclose
 
 
-class TestNgrid(TestCase):
+class TestNgrid_linear(TestCase):
     """Ngrid tests class."""
 
     def setUp(self):
@@ -116,3 +119,117 @@ class TestNgrid(TestCase):
         result = ngrid.integrate(f)
         # check that the result is correct
         self.assertAlmostEqual(result, 1.0 / 8.0, places=2)
+
+
+class TestNgrid_atom(TestCase):
+    """Ngrid tests class."""
+
+    def setUp(self):
+        """Set up atomgrid to use in the tests."""
+        # construct a radial grid with 150 points
+        oned = GaussLegendre(npoints=150)
+        rgrid = BeckeRTransform(0.0, R=1.5).transform_1d_grid(oned)
+        self.center1 = np.array([50.0, 0.0, -0.5], float)
+        self.center2 = np.array([0.0, 50.0, 0.5], float)
+        self.center3 = np.array([0.0, -0.5, 50.0], float)
+        self.atgrid1 = AtomGrid(rgrid, degrees=[22], center=self.center1)
+        self.atgrid2 = AtomGrid(rgrid, degrees=[22], center=self.center2)
+        self.atgrid3 = AtomGrid(rgrid, degrees=[22], center=self.center3)
+
+    def make_gaussian(self, center, height, width):
+        """Make a gaussian function.
+
+        Parameters
+        ----------
+        center : np.ndarray
+            The center of the gaussian.
+        height : float
+            The height of the gaussian.
+        width : float
+            The width of the gaussian."""
+
+        def f(x):
+            r = np.linalg.norm(center - x, axis=1)
+            return height * np.exp(-(r**2) / (2 * width**2))
+
+        return f
+
+    def gaussian_integral(self, height, width):
+        """Calculate the integral of a gaussian function.
+
+        Parameters
+        ----------
+        center : np.ndarray
+            The center of the gaussian.
+        height : float
+            The height of the gaussian.
+        width : float
+            The width of the gaussian."""
+        return height * (width * np.sqrt(2 * np.pi)) ** 3
+
+    def test_single_grid_integration(self):
+        """Assert that the integration works as expected for a single grid."""
+
+        height, width = 1.0, 2.0
+
+        # define a function to integrate
+        g = self.make_gaussian(self.center1, height, width)
+
+        # define a Ngrid with only one atom grid
+        ngrid = Ngrid(grid_list=[self.atgrid1])
+        # integrate it
+        result = ngrid.integrate(g)
+        ref_val = self.gaussian_integral(height, width)
+        # check that the result is correct
+        self.assertAlmostEqual(result, ref_val, places=6)
+
+    def test_2_grid_integration(self):
+        """Assert that the integration works as expected for two grids."""
+
+        height1, width1 = 1.0, 2.0
+        height2, width2 = 0.7, 1.5
+
+        # define a function to integrate
+        g1 = self.make_gaussian(self.center1, height1, width1)
+        g2 = self.make_gaussian(self.center2, height2, width2)
+
+        # function is product of two gaussians
+        func = lambda x, y: g1(x) * g2(y)
+
+        # define a Ngrid with two grids
+        ngrid = Ngrid(grid_list=[self.atgrid1, self.atgrid2])
+        # integrate it and compare with reference value
+        result = ngrid.integrate(func)
+        ref_val = self.gaussian_integral(height1, width1) * self.gaussian_integral(height2, width2)
+
+        # check that the result is correct
+        self.assertAlmostEqual(result, ref_val, places=6)
+
+    @pytest.mark.skip(reason="This is to slow.")
+    def test_3_grid_integration(self):
+        """Assert that the integration works as expected for three grids."""
+
+        height1, width1 = 1.0, 2.0
+        height2, width2 = 0.7, 1.5
+        height3, width3 = 0.5, 1.0
+
+        # define a function to integrate
+        g1 = self.make_gaussian(self.center1, height1, width1)
+        g2 = self.make_gaussian(self.center2, height2, width2)
+        g3 = self.make_gaussian(self.center3, height3, width3)
+
+        # function is product of two gaussians
+        func = lambda x, y, z: g1(x) * g2(y) * g3(z)
+
+        # define a Ngrid with two grids
+        ngrid = Ngrid(grid_list=[self.atgrid1, self.atgrid2, self.atgrid3])
+        # integrate it and compare with reference value
+        result = ngrid.integrate(func)
+        ref_val = (
+            self.gaussian_integral(height1, width1)
+            * self.gaussian_integral(height2, width2)
+            * self.gaussian_integral(height3, width3)
+        )
+
+        # check that the result is correct
+        self.assertAlmostEqual(result, ref_val, places=6)

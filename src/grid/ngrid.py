@@ -22,16 +22,19 @@
 import numpy as np
 from grid.basegrid import Grid
 import itertools
+from numbers import Number
 
 
 class Ngrid(Grid):
     r"""
     Grid class for integration of N particle functions.
 
-    The function to integrate must be a function of the form
+    The function to integrate must be a function with all arguments with the same dimension as the
+    grid points. The function must depend on a number of particles equal to the number of grids. For
+    example, a function of the form
     f((x1,y1,z1), (x2,y2,z2), ..., (xn, yn, zn)) -> float where (xi, yi, zi) are the coordinates
-    of the i-th particle and n is the number of particles. Internally, one Grid is created for
-    each particle and the integration is performed by integrating the function over the space spanned
+    of the i-th particle and n is the number of particles. Internally, one Grid is created for each
+    particle and the integration is performed by integrating the function over the space spanned
     by the domain union of all the grids.
     """
 
@@ -41,10 +44,12 @@ class Ngrid(Grid):
 
         At least one grid must be specified. If only one grid is specified, and a value for n bigger
         than one is specified, the same grid will copied n times and one grid will used for each
-        particle. If more than one grid is specified, n will be ignored. In all cases, the function
-        to integrate must be a function of the form f((x1,y1,z1), (x2,y2,z2), ..., (xn, yn, zn)) ->
-        float where (xi, yi, zi) are the coordinates of the i-th particle and the function must
-        depend on a number of particles equal to the number of grids.
+        particle. If more than one grid is specified, n will be ignored. In all cases, The function
+        to integrate must be a function with all arguments with the same dimension as the grid
+        points and must depend on a number of particles equal to the number of grids. For example, a
+        function of the form
+        f((x1,y1,z1), (x2,y2,z2), ..., (xn, yn, zn)) -> float where (xi, yi, zi) are the coordinates
+        of the i-th particle and n is the number of particles.
 
         Parameters
         ----------
@@ -86,9 +91,9 @@ class Ngrid(Grid):
         Parameters
         ----------
         callable : callable
-            Callable to integrate. It must take a list of N three dimensional tuples as argument
-            (one for each particle) and return a float (e.g. a function of the form
-            f((x1,y1,z1), (x2,y2,z2)) -> float).
+            Callable to integrate. It must take a list of arguments (one for each particle) with
+            the same dimension as the grid points and return a float (e.g. a function of the form
+            f([x1,y1,z1], [x2,y2,z2]) -> float).
         call_kwargs : dict
             Keyword arguments that will be passed to callable.
 
@@ -115,9 +120,9 @@ class Ngrid(Grid):
         grid_list : list of Grid
             List of grids for each particle.
         callable : callable
-            Callable to integrate. It must take a list of N three dimensional tuples as argument
-            (one for each particle) and return a float (e.g. a function of the form
-            f((x1,y1,z1), (x2,y2,z2)) -> float).
+            Callable to integrate. It must take a list of arguments (one for each particle) with
+            the same dimension as the grid points and return a float (e.g. a function of the form
+            f([x1,y1,z1], [x2,y2,z2]) -> float).
         call_kwargs : dict
             Keyword arguments for callable.
 
@@ -142,28 +147,28 @@ class Ngrid(Grid):
             # - The last grid is integrated using the integrate method of the Grid class.
 
             # generate all possible combinations for the first n-1 grids
-            points = itertools.product(*[grid.points for grid in grid_list[:-1]])
-            # generate all corresponding weights to the generated points
-            weights = itertools.product(*[grid.weights for grid in grid_list[:-1]])
-            # zip the points and weights together
-            data = zip(points, weights)
+            data = itertools.product(*[zip(grid.points, grid.weights) for grid in grid_list[:-1]])
 
             integral = 0.0
             for i in data:
+                to_point = lambda x: np.array([[x]]) if isinstance(x, Number) else x[None, :]
+                # extract points (convert to array, add dim) and corresponding weights combinations
+                points_comb = (to_point(j[0]) for j in i)
+                weights_comb = np.array([j[1] for j in i])
                 # define an auxiliar function that takes a single argument (a point of the last
                 # grid) but uses the other coordinates as fixed parameters i[0] and returns the
                 # value of the n particle function at that point (i.e. the value of the n particle
                 # function at the point defined by the last grid point and the other coordinates
                 # fixed by i[0])
-                aux_func = lambda x: callable(*i[0], x, **call_kwargs)
+                aux_func = lambda x: callable(*points_comb, x, **call_kwargs)
 
                 # calculate the value of the n particle function at each point of the last grid
-                vals = aux_func(grid_list[-1].points)
+                vals = aux_func(grid_list[-1].points).flatten()
 
                 # Integrate the function over the last grid with all the other coordinates fixed.
                 # The result is multiplied by the product of the weights corresponding to the other
                 # grids' points (stored in i[1]).
                 # This is equivalent to integrating the n particle function over the coordinates of
                 # the last particle with the other coordinates fixed.
-                integral += grid_list[-1].integrate(vals) * np.prod(i[1])
+                integral += grid_list[-1].integrate(vals) * np.prod(weights_comb)
             return integral
