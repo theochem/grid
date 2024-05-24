@@ -159,8 +159,6 @@ class TestNgrid_atom(TestCase):
 
         Parameters
         ----------
-        center : np.ndarray
-            The center of the gaussian.
         height : float
             The height of the gaussian.
         width : float
@@ -231,5 +229,107 @@ class TestNgrid_atom(TestCase):
             * self.gaussian_integral(height3, width3)
         )
 
+        # check that the result is correct
+        self.assertAlmostEqual(result, ref_val, places=6)
+
+
+class TestNgrid_mixed(TestCase):
+    """Ngrid tests class."""
+
+    def setUp(self):
+        """Set up atomgrid to use in the tests."""
+        # construct a radial grid with 150 points
+        oned = GaussLegendre(npoints=150)
+        rgrid = BeckeRTransform(0.0, R=1.5).transform_1d_grid(oned)
+        # the radial grid for points > 0, integrates half of the gaussian
+        self.center1d = 0.0
+        self.center3d = np.array([0.0, 50.0, 0.5], float)
+
+        self.onedgrid = rgrid
+        self.atgrid1 = AtomGrid(rgrid, degrees=[22], center=self.center3d)
+
+    def make_gaussian_1d(self, center, height, width):
+        """Make a gaussian function.
+
+        Parameters
+        ----------
+        center : float
+            The center of the gaussian.
+        height : float
+            The height of the gaussian.
+        width : float
+            The width of the gaussian."""
+
+        def f(r):
+            return height * np.exp(-(r**2) / (2 * width**2))
+
+        return f
+
+    def make_gaussian_3d(self, center, height, width):
+        """Make a gaussian function.
+
+        Parameters
+        ----------
+        center : np.ndarray
+            The center of the gaussian.
+        height : float
+            The height of the gaussian.
+        width : float
+            The width of the gaussian."""
+
+        def f(x):
+            r = np.linalg.norm(center - x, axis=1)
+            return height * np.exp(-(r**2) / (2 * width**2))
+
+        return f
+
+    def gaussian_integral_1d(self, height, width):
+        """Calculate the integral of a gaussian function.
+
+        Parameters
+        ----------
+        height : float
+            The height of the gaussian.
+        width : float
+            The width of the gaussian."""
+        return height * (width * np.sqrt(2 * np.pi))
+
+    def gaussian_integral_3d(self, height, width):
+        """Calculate the integral of a gaussian function.
+
+        Parameters
+        ----------
+        height : float
+            The height of the gaussian.
+        width : float
+            The width of the gaussian."""
+        return height * (width * np.sqrt(2 * np.pi)) ** 3
+
+    def test_single_mixed_1d_3d(self):
+        """Assert that the integration works as expected for a single grid."""
+
+        height_1d, width_1d = 1.0, 2.0
+        height_3d, width_3d = 3.1, 1.5
+
+        # define a function to integrate
+        g1d = self.make_gaussian_1d(self.center1d, height_1d, width_1d)
+        g3d = self.make_gaussian_3d(self.center3d, height_3d, width_3d)
+
+        # define a function to integrate
+        g1 = self.make_gaussian_1d(self.center1d, height_1d, width_1d)
+        g2 = self.make_gaussian_3d(self.center3d, height_3d, width_3d)
+
+        # function is product of two gaussians
+        func = lambda x, y: g1(x) * g2(y)
+
+        # define a Ngrid with only one atom grid
+        ngrid = Ngrid(grid_list=[self.onedgrid, self.atgrid1])
+        # integrate it
+        result = ngrid.integrate(func)
+        ref_val = (
+            self.gaussian_integral_1d(height_1d, width_1d)
+            / 2
+            * self.gaussian_integral_3d(height_3d, width_3d)
+        )
         # check that the result is correct
         self.assertAlmostEqual(result, ref_val, places=6)
