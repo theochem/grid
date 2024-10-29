@@ -63,10 +63,30 @@ class Grid:
         """np.ndarray(N,) or np.ndarray(N, M): Positions of the grid points."""
         return self._points
 
+    @points.setter
+    def points(self, value):
+        """Set the points of the grid."""
+        if value.shape != self._points.shape:
+            raise ValueError(
+                "The shape of the new points should match the shape of the old points. \n"
+                f"New shape: {value.shape}, Old shape: {self._points.shape}."
+            )
+        self._points = value
+
     @property
     def weights(self):
         """np.ndarray(N,): the weights of each grid point."""
         return self._weights
+
+    @weights.setter
+    def weights(self, value):
+        """Set the weights of the grid."""
+        if value.shape != self._weights.shape:
+            raise ValueError(
+                "The shape of the new weights should match the shape of the old weights. \n"
+                f"New shape: {value.shape}, Old shape: {self._weights.shape}."
+            )
+        self._weights = value
 
     @property
     def size(self):

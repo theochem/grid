@@ -21,9 +21,21 @@ https://github.com/theochem/grid/issues/new) or email [qcdevs@gmail.com]().
 ## Citation
 Please use the following citation in any publication:
 
-> **"Grid: A Python Library for Molecular Integration, Interpolation, Differentiation and More."**,
-> A. Tehrani, X. D. Yang, M. Martinez-Gonzalez,, L. Pujal, R. Hernandez‐Esparza, M. Chan,
-> E. Vohringer‐Martinez, T. Verstraelen, P. W. Ayers, F. Heidar‐Zadeh
+> Tehrani, A., Yang, X.D., Martínez-González, M., Pujal, L., Hernández-Esparza, R., Chan, M., Vöhringer-Martinez, E., Verstraelen, T., Ayers, P.W. and Heidar-Zadeh, F., 2024. Grid: A Python library for molecular integration, interpolation, differentiation, and more. The Journal of Chemical Physics, 160(17).
+
+with the following bibtex:
+
+```
+@article{tehrani2024grid,
+  title={Grid: A Python library for molecular integration, interpolation, differentiation, and more},
+  author={Tehrani, Alireza and Yang, Xiaotian Derrick and Mart{\'\i}nez-Gonz{\'a}lez, Marco and Pujal, Leila and Hern{\'a}ndez-Esparza, Raymundo and Chan, Matthew and V{\"o}hringer-Martinez, Esteban and Verstraelen, Toon and Ayers, Paul W and Heidar-Zadeh, Farnaz},
+  journal={The Journal of Chemical Physics},
+  volume={160},
+  number={17},
+  year={2024},
+  publisher={AIP Publishing}
+}
+```
 
 ## Installation
 

@@ -2,7 +2,7 @@ files: "src/"
 exclude: "doc/|examples/"
 repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v4.5.0
+  rev: v4.6.0
   hooks:
     - id: check-added-large-files                   # prevents giant files from being commit
     - id: check-ast                                 # Check whether files parse as valid python.
@@ -23,18 +23,18 @@ repos:
       args: ["--autofix", "--no-sort-keys"]
     - id: trailing-whitespace                       # Trims trailing whitespace.
 - repo: https://github.com/Lucas-C/pre-commit-hooks
-  rev: v1.5.4
+  rev: v1.5.5
   hooks:
     - id: remove-crlf
 - repo: https://github.com/psf/black
-  rev: 24.1.1
+  rev: 24.4.2
   hooks:
     - id: black
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: 'v0.1.14'
+  rev: 'v0.4.3'
   hooks:
     - id: ruff
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.27.3
+  rev: 0.28.2
   hooks:
     - id: check-github-workflows

@@ -21,6 +21,7 @@
 from unittest import TestCase
 
 import numpy as np
+import pytest
 from numpy.testing import assert_allclose, assert_almost_equal
 
 from grid.atomgrid import AtomGrid, _get_rgrid_size
@@ -30,6 +31,9 @@ from grid.hirshfeld import HirshfeldWeights
 from grid.molgrid import MolGrid
 from grid.onedgrid import GaussLaguerre, Trapezoidal, UniformInteger
 from grid.rtransform import ExpRTransform, LinearFiniteRTransform
+
+# Ignore angular/Lebedev grid warnings where the weights are negative:
+pytestmark = pytest.mark.filterwarnings("ignore:Lebedev weights are negative which can*")
 
 
 class TestMolGrid(TestCase):
@@ -47,8 +51,8 @@ class TestMolGrid(TestCase):
         atg1 = AtomGrid.from_pruned(
             self.rgrid,
             0.5,
-            sectors_r=np.array([]),
-            sectors_degree=np.array([17]),
+            r_sectors=np.array([]),
+            d_sectors=np.array([17]),
             center=coordinates,
         )
         becke = BeckeWeights(order=3)
@@ -377,15 +381,15 @@ class TestMolGrid(TestCase):
         atg1 = AtomGrid.from_pruned(
             self.rgrid,
             0.5,
-            sectors_r=np.array([]),
-            sectors_degree=np.array([17]),
+            r_sectors=np.array([]),
+            d_sectors=np.array([17]),
             center=coordinates[0],
         )
         atg2 = AtomGrid.from_pruned(
             self.rgrid,
             0.5,
-            sectors_r=np.array([]),
-            sectors_degree=np.array([17]),
+            r_sectors=np.array([]),
+            d_sectors=np.array([17]),
             center=coordinates[1],
         )
         becke = BeckeWeights(order=3)
@@ -402,22 +406,22 @@ class TestMolGrid(TestCase):
         atg1 = AtomGrid.from_pruned(
             self.rgrid,
             0.5,
-            sectors_r=np.array([]),
-            sectors_degree=np.array([17]),
+            r_sectors=np.array([]),
+            d_sectors=np.array([17]),
             center=coordinates[0],
         )
         atg2 = AtomGrid.from_pruned(
             self.rgrid,
             0.5,
-            sectors_r=np.array([]),
-            sectors_degree=np.array([17]),
+            r_sectors=np.array([]),
+            d_sectors=np.array([17]),
             center=coordinates[1],
         )
         atg3 = AtomGrid.from_pruned(
             self.rgrid,
             0.5,
-            sectors_r=np.array([]),
-            sectors_degree=np.array([17]),
+            r_sectors=np.array([]),
+            d_sectors=np.array([17]),
             center=coordinates[2],
         )
         becke = BeckeWeights(order=3)
@@ -437,8 +441,8 @@ class TestMolGrid(TestCase):
             AtomGrid.from_pruned(
                 self.rgrid,
                 0.5,
-                sectors_r=np.array([]),
-                sectors_degree=np.array([17]),
+                r_sectors=np.array([]),
+                d_sectors=np.array([17]),
                 center=center,
             )
             for center in centers
@@ -460,15 +464,15 @@ class TestMolGrid(TestCase):
         atg1 = AtomGrid.from_pruned(
             self.rgrid,
             1.228,
-            sectors_r=np.array([]),
-            sectors_degree=np.array([17]),
+            r_sectors=np.array([]),
+            d_sectors=np.array([17]),
             center=coordinates[0],
         )
         atg2 = AtomGrid.from_pruned(
             self.rgrid,
             0.945,
-            sectors_r=np.array([]),
-            sectors_degree=np.array([17]),
+            r_sectors=np.array([]),
+            d_sectors=np.array([17]),
             center=coordinates[1],
         )
         becke = BeckeWeights(order=3)
@@ -503,15 +507,15 @@ class TestMolGrid(TestCase):
         atg1 = AtomGrid.from_pruned(
             self.rgrid,
             1.228,
-            sectors_r=np.array([]),
-            sectors_degree=np.array([17]),
+            r_sectors=np.array([]),
+            d_sectors=np.array([17]),
             center=coordinates[0],
         )
         atg2 = AtomGrid.from_pruned(
             self.rgrid,
             0.945,
-            sectors_r=np.array([]),
-            sectors_degree=np.array([17]),
+            r_sectors=np.array([]),
+            d_sectors=np.array([17]),
             center=coordinates[1],
         )
 
@@ -551,15 +555,15 @@ class TestMolGrid(TestCase):
         atg1 = AtomGrid.from_pruned(
             self.rgrid,
             0.5,
-            sectors_r=np.array([]),
-            sectors_degree=np.array([17]),
+            r_sectors=np.array([]),
+            d_sectors=np.array([17]),
             center=coordinates[0],
         )
         atg2 = AtomGrid.from_pruned(
             self.rgrid,
             0.5,
-            sectors_r=np.array([]),
-            sectors_degree=np.array([17]),
+            r_sectors=np.array([]),
+            d_sectors=np.array([17]),
             center=coordinates[1],
         )
         # use an array as aim_weights
@@ -579,15 +583,15 @@ class TestMolGrid(TestCase):
         atg1 = AtomGrid.from_pruned(
             self.rgrid,
             0.5,
-            sectors_r=np.array([]),
-            sectors_degree=np.array([17]),
+            r_sectors=np.array([]),
+            d_sectors=np.array([17]),
             center=coors[0],
         )
         atg2 = AtomGrid.from_pruned(
             self.rgrid,
             0.5,
-            sectors_r=np.array([]),
-            sectors_degree=np.array([17]),
+            r_sectors=np.array([]),
+            d_sectors=np.array([17]),
             center=coors[1],
         )
         ref_grid = MolGrid(nums, [atg1, atg2], becke, store=True)
@@ -600,30 +604,30 @@ class TestMolGrid(TestCase):
         coors = np.array([[0, 0, -0.5], [0, 0, 0.5]])
         becke = BeckeWeights(order=3)
         radius = np.array([1.0, 0.5])
-        sectors_r = [[0.5, 1.0, 1.5], [0.25, 0.5]]
-        sectors_deg = [[3, 7, 5, 3], [3, 2, 2]]
+        r_sectors = [[0.5, 1.0, 1.5], [0.25, 0.5]]
+        d_sectors = [[3, 7, 5, 3], [3, 2, 2]]
         mol_grid = MolGrid.from_pruned(
             nums,
             coors,
             radius,
-            sectors_r=sectors_r,
+            r_sectors=r_sectors,
             rgrid=self.rgrid,
             aim_weights=becke,
-            sectors_degree=sectors_deg,
+            d_sectors=d_sectors,
             rotate=False,
         )
         atg1 = AtomGrid.from_pruned(
             self.rgrid,
             radius[0],
-            sectors_r=sectors_r[0],
-            sectors_degree=sectors_deg[0],
+            r_sectors=r_sectors[0],
+            d_sectors=d_sectors[0],
             center=coors[0],
         )
         atg2 = AtomGrid.from_pruned(
             self.rgrid,
             radius[1],
-            sectors_r=sectors_r[1],
-            sectors_degree=sectors_deg[1],
+            r_sectors=r_sectors[1],
+            d_sectors=d_sectors[1],
             center=coors[1],
         )
         ref_grid = MolGrid(nums, [atg1, atg2], becke, store=True)
@@ -635,8 +639,8 @@ class TestMolGrid(TestCase):
         atg = AtomGrid.from_pruned(
             self.rgrid,
             0.5,
-            sectors_r=np.array([]),
-            sectors_degree=np.array([17]),
+            r_sectors=np.array([]),
+            d_sectors=np.array([17]),
             center=np.array([0.0, 0.0, 0.0]),
         )
 
@@ -702,8 +706,8 @@ class TestMolGrid(TestCase):
         atg1 = AtomGrid.from_pruned(
             self.rgrid,
             0.5,
-            sectors_r=np.array([]),
-            sectors_degree=np.array([17]),
+            r_sectors=np.array([]),
+            d_sectors=np.array([17]),
             center=coords,
         )
         grid = MolGrid(np.array([1]), [atg1], BeckeWeights(), store=False)
@@ -772,8 +776,8 @@ class TestMolGrid(TestCase):
         atg1 = AtomGrid.from_pruned(
             rgrid,
             0.5,
-            sectors_r=np.array([]),
-            sectors_degree=np.array([17]),
+            r_sectors=np.array([]),
+            d_sectors=np.array([17]),
             center=coordinates,
         )
         mg = MolGrid(np.array([7]), [atg1], HirshfeldWeights())
@@ -788,15 +792,15 @@ class TestMolGrid(TestCase):
         atg1 = AtomGrid.from_pruned(
             self.rgrid,
             0.5,
-            sectors_r=np.array([]),
-            sectors_degree=np.array([17]),
+            r_sectors=np.array([]),
+            d_sectors=np.array([17]),
             center=coordinates[0],
         )
         atg2 = AtomGrid.from_pruned(
             self.rgrid,
             0.5,
-            sectors_r=np.array([]),
-            sectors_degree=np.array([17]),
+            r_sectors=np.array([]),
+            d_sectors=np.array([17]),
             center=coordinates[1],
         )
         mg = MolGrid(np.array([1, 1]), [atg1, atg2], HirshfeldWeights())

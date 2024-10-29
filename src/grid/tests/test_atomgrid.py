@@ -76,16 +76,16 @@ class TestAtomGrid:
         r_sectors = np.array([0.5, 1, 1.5])
         degs = np.array([6, 14, 14, 6])
         # generate a proper instance without failing.
-        ag_ob = AtomGrid.from_pruned(rgrid, radius=rad, sectors_r=r_sectors, sectors_degree=degs)
+        ag_ob = AtomGrid.from_pruned(rgrid, radius=rad, r_sectors=r_sectors, d_sectors=degs)
         assert isinstance(ag_ob, AtomGrid)
         assert len(ag_ob.indices) == 11
         assert ag_ob.l_max == 15
         ag_ob = AtomGrid.from_pruned(
-            rgrid, radius=rad, sectors_r=np.array([]), sectors_degree=np.array([6])
+            rgrid, radius=rad, r_sectors=np.array([]), d_sectors=np.array([6])
         )
         assert isinstance(ag_ob, AtomGrid)
         assert len(ag_ob.indices) == 11
-        ag_ob = AtomGrid(rgrid, sizes=[110])
+        ag_ob = AtomGrid(rgrid, degrees=None, sizes=[110])
         assert ag_ob.l_max == 17
         assert_array_equal(ag_ob._degs, np.ones(10) * 17)
         assert ag_ob.size == 110 * 10
@@ -98,6 +98,7 @@ class TestAtomGrid:
         assert_allclose(ag_ob.rgrid.points, rgrid.points)
         assert_allclose(ag_ob.rgrid.weights, rgrid.weights)
 
+    @pytest.mark.filterwarnings("ignore:Lebedev weights are negative which can*")
     def test_from_predefined(self):
         """Test grid construction with predefined grid."""
         # test coarse grid
@@ -184,9 +185,11 @@ class TestAtomGrid:
         degs = np.array([3, 5, 7, 5])
         size = np.array([6, 14, 26, 14])
         # construct atomic grid with degs
-        atgrid1 = AtomGrid.from_pruned(rgrid, radius=rad, sectors_r=r_sectors, sectors_degree=degs)
+        atgrid1 = AtomGrid.from_pruned(rgrid, radius=rad, r_sectors=r_sectors, d_sectors=degs)
         # construct atomic grid with size
-        atgrid2 = AtomGrid.from_pruned(rgrid, radius=rad, sectors_r=r_sectors, sectors_size=size)
+        atgrid2 = AtomGrid.from_pruned(
+            rgrid, radius=rad, r_sectors=r_sectors, d_sectors=None, s_sectors=size
+        )
         # test two grids are the same
         assert_equal(atgrid1.size, atgrid2.size)
         assert_allclose(atgrid1.points, atgrid2.points)
@@ -200,7 +203,9 @@ class TestAtomGrid:
         rad = 1
         r_sectors = np.array([0.2, 0.4, 0.8])
         degs = np.array([3, 5, 7, 3])
-        atomic_grid_degree = AtomGrid._find_l_for_rad_list(rgrid.points, rad * r_sectors, degs)
+        atomic_grid_degree = AtomGrid._find_degrees_for_radial_points(
+            rgrid.points, rad * r_sectors, degs
+        )
         assert_equal(atomic_grid_degree, [3, 3, 5, 5, 7, 7, 7, 7, 3, 3])
 
     def test_generate_atomic_grid(self):
@@ -274,27 +279,27 @@ class TestAtomGrid:
             rot_mt = R.random(random_state=atgrid2.rotate + i).as_matrix()
             assert_allclose(rot_shell, non_rot_shell @ rot_mt)
 
-    @pytest.mark.parametrize("use_spherical", [False, True])
-    def test_get_shell_grid(self, use_spherical):
+    @pytest.mark.parametrize("method", ["lebedev", "spherical"])
+    def test_get_shell_grid(self, method):
         """Test angular grid get from get_shell_grid function."""
         rad_pts = np.array([0.1, 0.5, 1])
         rad_wts = np.array([0.3, 0.4, 0.3])
         rad_grid = OneDGrid(rad_pts, rad_wts)
         degs = [3, 5, 7]
-        atgrid = AtomGrid(rad_grid, degrees=degs, use_spherical=use_spherical)
+        atgrid = AtomGrid(rad_grid, degrees=degs, method=method)
         assert atgrid.n_shells == 3
         # grep shell with r^2
         for i in range(atgrid.n_shells):
             sh_grid = atgrid.get_shell_grid(i)
             assert isinstance(sh_grid, AngularGrid)
-            ref_grid = AngularGrid(degree=degs[i], use_spherical=use_spherical)
+            ref_grid = AngularGrid(degree=degs[i], method=method)
             assert np.allclose(sh_grid.points, ref_grid.points * rad_pts[i])
             assert np.allclose(sh_grid.weights, ref_grid.weights * rad_wts[i] * rad_pts[i] ** 2)
         # grep shell without r^2
         for i in range(atgrid.n_shells):
             sh_grid = atgrid.get_shell_grid(i, r_sq=False)
             assert isinstance(sh_grid, AngularGrid)
-            ref_grid = AngularGrid(degree=degs[i], use_spherical=use_spherical)
+            ref_grid = AngularGrid(degree=degs[i], method=method)
             assert np.allclose(sh_grid.points, ref_grid.points * rad_pts[i])
             assert np.allclose(sh_grid.weights, ref_grid.weights * rad_wts[i])
 
@@ -327,8 +332,9 @@ class TestAtomGrid:
         phi = np.arccos(ref_coor[2] / r)
         assert_allclose(np.array([r, theta, phi]).reshape(-1, 3), calc_sph)
 
-    @pytest.mark.parametrize("use_spherical", [False, True])
-    def test_spherical_complete(self, use_spherical):
+    @pytest.mark.filterwarnings("ignore:Lebedev weights are negative which can*")
+    @pytest.mark.parametrize("method", ["lebedev", "spherical"])
+    def test_spherical_complete(self, method):
         """Test atomic grid consistence for spherical integral."""
         num_pts = len(LEBEDEV_DEGREES)
         pts = UniformInteger(num_pts)
@@ -340,7 +346,7 @@ class TestAtomGrid:
             atgrid = AtomGrid(
                 rad_grid,
                 degrees=list(LEBEDEV_DEGREES.keys()),
-                use_spherical=use_spherical,
+                method=method,
             )
             values = np.random.rand(len(LEBEDEV_DEGREES))
             pt_val = np.zeros(atgrid.size)
@@ -384,11 +390,11 @@ class TestAtomGrid:
         dzf = 8 * points[:, 2] * points[:, 2] / r
         return dxf + dyf + dzf
 
-    @pytest.mark.parametrize("use_spherical", [False, True])
-    def test_integrating_angular_components_spherical(self, use_spherical):
+    @pytest.mark.parametrize("method", ["lebedev", "spherical"])
+    def test_integrating_angular_components_spherical(self, method):
         """Test integrating angular components of a spherical harmonics of maximum degree 3."""
         odg = OneDGrid(np.array([0.0, 1e-16, 1e-8, 1e-4, 1e-2]), np.ones(5), (0, np.inf))
-        atom_grid = AtomGrid(odg, degrees=[3], use_spherical=use_spherical)
+        atom_grid = AtomGrid(odg, degrees=[3], method=method)
         spherical = atom_grid.convert_cartesian_to_spherical()
         # Evaluate all spherical harmonics on the atomic grid points (r_i, theta_j, phi_j).
         spherical_harmonics = generate_real_spherical_harmonics(
@@ -456,12 +462,12 @@ class TestAtomGrid:
         assert np.all(integrals[2, :] < 1e-5)  # px, py-orbital should be zero
         assert np.all(integrals[3, :] < 1e-5)
 
-    @pytest.mark.parametrize("use_spherical", [False, True])
-    def test_fitting_spherical_harmonics(self, use_spherical):
+    @pytest.mark.parametrize("method", ["lebedev", "spherical"])
+    def test_fitting_spherical_harmonics(self, method):
         r"""Test fitting the radial components of spherical harmonics is just a one, rest zeros."""
         max_degree = 10  # Maximum degree
         rad = OneDGrid(np.linspace(0.0, 1.0, num=10), np.ones(10), (0, np.inf))
-        atom_grid = AtomGrid(rad, degrees=[max_degree], use_spherical=use_spherical)
+        atom_grid = AtomGrid(rad, degrees=[max_degree], method=method)
         max_degree = atom_grid.l_max
         spherical = atom_grid.convert_cartesian_to_spherical()
         # Evaluate all spherical harmonics on the atomic grid points (r_i, theta_j, phi_j).
@@ -489,12 +495,12 @@ class TestAtomGrid:
                         assert_almost_equal(radial_comp(radial_pts), 0.0, decimal=8)
                 i += 1
 
-    @pytest.mark.parametrize("use_spherical", [False, True])
-    def test_fitting_product_of_spherical_harmonic(self, use_spherical):
+    @pytest.mark.parametrize("method", ["lebedev", "spherical"])
+    def test_fitting_product_of_spherical_harmonic(self, method):
         r"""Test fitting the radial components of r**2 times spherical harmonic."""
         max_degree = 7  # Maximum degree
         rad = OneDGrid(np.linspace(0.0, 1.0, num=10), np.ones(10), (0, np.inf))
-        atom_grid = AtomGrid(rad, degrees=[max_degree], use_spherical=use_spherical)
+        atom_grid = AtomGrid(rad, degrees=[max_degree], method=method)
         max_degree = atom_grid.l_max
         spherical = atom_grid.convert_cartesian_to_spherical()
 
@@ -521,7 +527,7 @@ class TestAtomGrid:
         r"""Test fitting the radial components of spherical harmonic of l=6,m=0."""
         max_degree = 6 * 2 + 2  # Maximum degree
         rad = OneDGrid(np.linspace(0.0, 1.0, num=10), np.ones(10), (0, np.inf))
-        atom_grid = AtomGrid.from_pruned(rad, 1, sectors_r=[], sectors_degree=[max_degree])
+        atom_grid = AtomGrid.from_pruned(rad, 1, r_sectors=[], d_sectors=[max_degree])
         max_degree = atom_grid.l_max
         spherical = atom_grid.convert_cartesian_to_spherical()
 
@@ -560,14 +566,12 @@ class TestAtomGrid:
                 assert_almost_equal(fit[counter](radial_pts, 2), 0.0)
                 counter += 1
 
-    @pytest.mark.parametrize("use_spherical", [False, True])
-    def test_value_fitting(self, use_spherical):
+    @pytest.mark.parametrize("method", ["lebedev", "spherical"])
+    def test_value_fitting(self, method):
         """Test spline projection the same as spherical harmonics."""
         odg = OneDGrid(np.arange(10) + 1, np.ones(10), (0, np.inf))
         rad = IdentityRTransform().transform_1d_grid(odg)
-        atgrid = AtomGrid.from_pruned(
-            rad, 1, sectors_r=[], sectors_degree=[7], use_spherical=use_spherical
-        )
+        atgrid = AtomGrid.from_pruned(rad, 1, r_sectors=[], d_sectors=[7], method=method)
         values = self.helper_func_power(atgrid.points)
         spls = atgrid.radial_component_splines(values)
         assert len(spls) == 16
@@ -597,7 +601,7 @@ class TestAtomGrid:
         oned = GaussLegendre(350)
         btf = BeckeRTransform(0.0001, 1.5)
         rad = btf.transform_1d_grid(oned)
-        atgrid = AtomGrid(rad, degrees=[31], use_spherical=False)
+        atgrid = AtomGrid(rad, degrees=[31], method="lebedev")
         value_array = self.helper_func_gauss(atgrid.points)
         # random test points on gauss function
         size = 1000
@@ -613,14 +617,12 @@ class TestAtomGrid:
             self.helper_func_gauss(input_points, centers), interfunc(input_points), atol=1e-3
         )
 
-    @pytest.mark.parametrize("use_spherical", [False, True])
-    def test_cubicspline_and_interp_mol(self, use_spherical):
+    @pytest.mark.parametrize("method", ["lebedev", "spherical"])
+    def test_cubicspline_and_interp_mol(self, method):
         """Test cubicspline interpolation values."""
         odg = OneDGrid(np.arange(10) + 1, np.ones(10), (0, np.inf))
         rad = IdentityRTransform().transform_1d_grid(odg)
-        atgrid = AtomGrid.from_pruned(
-            rad, 1, sectors_r=[], sectors_degree=[7], use_spherical=use_spherical
-        )
+        atgrid = AtomGrid.from_pruned(rad, 1, r_sectors=[], d_sectors=[7], method=method)
         values = self.helper_func_power(atgrid.points)
         # spls = atgrid.fit_values(values)
         for i in range(10):
@@ -631,13 +633,14 @@ class TestAtomGrid:
                 values[atgrid.indices[i] : atgrid.indices[i + 1]],
             )
 
+    @pytest.mark.filterwarnings("ignore:Lebedev weights are negative which can*")
     def test_cubicspline_and_interp(self):
         """Test cubicspline interpolation values."""
         odg = OneDGrid(np.arange(10) + 1, np.ones(10), (0, np.inf))
         rad_grid = IdentityRTransform().transform_1d_grid(odg)
         for _ in range(10):
             degree = np.random.randint(5, 20)
-            atgrid = AtomGrid.from_pruned(rad_grid, 1, sectors_r=[], sectors_degree=[degree])
+            atgrid = AtomGrid.from_pruned(rad_grid, 1, r_sectors=[], d_sectors=[degree])
             values = self.helper_func_power(atgrid.points)
             # spls = atgrid.fit_values(values)
 
@@ -658,8 +661,8 @@ class TestAtomGrid:
                 interp_func = atgrid.interpolate(values)
                 assert_allclose(interp_func(xyz), ref_value)
 
-    @pytest.mark.parametrize("use_spherical", [False, True])
-    def test_spherical_average_of_gaussian(self, use_spherical):
+    @pytest.mark.parametrize("method", ["lebedev", "spherical"])
+    def test_spherical_average_of_gaussian(self, method):
         r"""Test spherical average of a Gaussian (radial) function is itself and its integral."""
 
         # construct helper function
@@ -670,7 +673,7 @@ class TestAtomGrid:
         #   for all points.
         oned_grid = np.arange(0.0, 5.0, 0.001)
         rad = OneDGrid(oned_grid, np.ones(len(oned_grid)), (0, np.inf))
-        atgrid = AtomGrid(rad, degrees=[5], use_spherical=use_spherical)
+        atgrid = AtomGrid(rad, degrees=[5], method=method)
         spherical_pts = atgrid.convert_cartesian_to_spherical(atgrid.points)
         func_values = func(spherical_pts)
 
@@ -723,8 +726,9 @@ class TestAtomGrid:
         spherical_avg2 = spherical_avg(random_rad_pts[:, 0])
         assert_allclose(spherical_avg2, 0.0, atol=1e-4)
 
-    @pytest.mark.parametrize("use_spherical", [False, True])
-    def test_interpolate_and_its_derivatives_on_polynomial(self, use_spherical):
+    @pytest.mark.filterwarnings("ignore:Lebedev weights are negative which can*")
+    @pytest.mark.parametrize("method", ["lebedev", "spherical"])
+    def test_interpolate_and_its_derivatives_on_polynomial(self, method):
         """Test interpolation of derivative of polynomial function."""
         odg = OneDGrid(np.linspace(0.01, 10, num=50), np.ones(50), (0, np.inf))
         rad = IdentityRTransform().transform_1d_grid(odg)
@@ -733,9 +737,9 @@ class TestAtomGrid:
             atgrid = AtomGrid.from_pruned(
                 rad,
                 1,
-                sectors_r=[],
-                sectors_degree=[degree],
-                use_spherical=use_spherical,
+                r_sectors=[],
+                d_sectors=[degree],
+                method=method,
             )
             values = self.helper_func_power(atgrid.points)
             # spls = atgrid.fit_values(values)
@@ -774,7 +778,7 @@ class TestAtomGrid:
         oned = GaussLegendre(10000)
         btf = BeckeRTransform(0.0001, 0.1)
         rad = btf.transform_1d_grid(oned)
-        atgrid = AtomGrid.from_pruned(rad, 1, sectors_r=[], sectors_degree=[7])
+        atgrid = AtomGrid.from_pruned(rad, 1, r_sectors=[], d_sectors=[7])
 
         # Create Gaussian function
         func_vals = self.helper_func_gauss(atgrid.points, np.array([0.175, 0.25, 0.15]))
@@ -939,22 +943,20 @@ class TestAtomGrid:
     def test_error_raises(self):
         """Tests for error raises."""
         with pytest.raises(TypeError):
+            AtomGrid.from_pruned(np.arange(3), 1.0, r_sectors=np.arange(2), d_sectors=np.arange(3))
+        with pytest.raises(ValueError):
             AtomGrid.from_pruned(
-                np.arange(3), 1.0, sectors_r=np.arange(2), sectors_degree=np.arange(3)
+                OneDGrid(np.arange(3), np.arange(3)),
+                radius=1.0,
+                r_sectors=np.arange(2),
+                d_sectors=np.arange(0),
             )
         with pytest.raises(ValueError):
             AtomGrid.from_pruned(
                 OneDGrid(np.arange(3), np.arange(3)),
                 radius=1.0,
-                sectors_r=np.arange(2),
-                sectors_degree=np.arange(0),
-            )
-        with pytest.raises(ValueError):
-            AtomGrid.from_pruned(
-                OneDGrid(np.arange(3), np.arange(3)),
-                radius=1.0,
-                sectors_r=np.arange(2),
-                sectors_degree=np.arange(4),
+                r_sectors=np.arange(2),
+                d_sectors=np.arange(4),
             )
         with pytest.raises(ValueError):
             AtomGrid._generate_atomic_grid(OneDGrid(np.arange(3), np.arange(3)), np.arange(2))
@@ -962,8 +964,8 @@ class TestAtomGrid:
             AtomGrid.from_pruned(
                 OneDGrid(np.arange(3), np.arange(3)),
                 radius=1.0,
-                sectors_r=np.array([0.3, 0.5, 0.7]),
-                sectors_degree=np.array([3, 5, 7, 5]),
+                r_sectors=np.array([0.3, 0.5, 0.7]),
+                d_sectors=np.array([3, 5, 7, 5]),
                 center=np.array([0, 0, 0, 0]),
             )
 

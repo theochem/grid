@@ -18,6 +18,8 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
 """PeriodicGrid tests file."""
+import warnings
+
 import numpy as np
 import pytest
 from numpy.testing import assert_allclose
@@ -135,7 +137,7 @@ def setup_equidistant_grid(origin, realvecs, npts):
     )
     # The weights take into account the Jacobian of the affine transformation
     # from fractional to Cartesian grid points.
-    npt_total = np.product(npts)
+    npt_total = np.prod(npts)
     weights = np.full(npt_total, abs(np.linalg.det(realvecs)) / npt_total)
     return PeriodicGrid(points, weights, realvecs)
 
@@ -282,16 +284,26 @@ class PeriodicGridTester:
 
     """
 
-    def setup(self):
+    def setup_method(self):
         """Initialize an unwrapped and a wrapped version of the grid."""
         self.define_reference_data()
-        with pytest.warns(None if self._ref_realvecs is None else PeriodicGridWarning):
+        with warnings.catch_warnings(record=True) as w:
+            # warnings.simplefilter("error", PeriodicGridWarning)
+            warnings.simplefilter("always")
             self.grid = PeriodicGrid(self._ref_points, self._ref_weights, self._ref_realvecs)
-        with pytest.warns(None) as record:
+
+            # Test that if _ref_realvecs is not None and warning was raised
+            #   then it was a PeriodicGridWarnings
+            if self._ref_realvecs is not None:
+                assert len(w) == 1  # assert there was only one warning
+                # assert that the warning was PeriodicGridWarning
+                assert issubclass(w[-1].category, PeriodicGridWarning)
+
+        with warnings.catch_warnings(record=True) as record:
             self.wrapped_grid = PeriodicGrid(
                 self._ref_points, self._ref_weights, self._ref_realvecs, True
             )
-            assert len(record) == 0
+            assert len(record) == 0  # Assert no warning was raised
 
     def define_reference_data(self):
         """Define reference data for the test."""
@@ -335,12 +347,20 @@ class PeriodicGridTester:
         assert_allclose(grid_index.frac_intvls, ref_grid_index.frac_intvls)
         assert isinstance(grid_index, PeriodicGrid)
         # test slice
-        with pytest.warns(None if self._ref_realvecs is None else PeriodicGridWarning):
+        with warnings.catch_warnings(record=True) as w:
             ref_grid_slice = PeriodicGrid(
                 self._ref_points[:15], self._ref_weights[:15], self._ref_realvecs
             )
-        with pytest.warns(None if self._ref_realvecs is None else PeriodicGridWarning):
+            if self._ref_realvecs is not None:
+                assert len(w) == 1
+                # Assert the warning was PeriodicGrid Warning
+                assert issubclass(w[-1].category, PeriodicGridWarning)
+        with warnings.catch_warnings(record=True) as w:
             grid_slice = self.grid[:15]
+            if self._ref_realvecs is not None:
+                assert len(w) == 1  # assert only one warning was raised
+                # Assert the warning was PeriodicGrid Warning
+                assert issubclass(w[-1].category, PeriodicGridWarning)
         assert_allclose(grid_slice.points, ref_grid_slice.points)
         assert_allclose(grid_slice.weights, ref_grid_slice.weights)
         assert_allclose(grid_slice.realvecs, self.grid.realvecs)

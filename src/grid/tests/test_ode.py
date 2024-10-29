@@ -18,6 +18,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
 """ODE test module."""
+import warnings
 from numbers import Number
 
 import numpy as np
@@ -384,19 +385,26 @@ def test_error_raises_for_solve_ode_bvp():
     x = np.linspace(-0.999, 0.999, 20)
 
     def fx(x):
-        return 1 / x**2
+        # Ignore any warnings from divide by zero
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            return 1 / x**2
 
     coeffs = [-1, -2, 1]
     bd_cond = [(0, 0, 0), (1, 0, 0), (0, 1, 0), (1, 1, 0)]
-    # Test the error that the number of boundary conditions should be equal to order.
-    assert_raises(ValueError, solve_ode_bvp, x, fx, coeffs, bd_cond[3:])
-    assert_raises(ValueError, solve_ode_bvp, x, fx, coeffs, bd_cond)
-    test_coeff = [1, 2, 3, 4, 5]
-    assert_raises(ValueError, solve_ode_bvp, x, fx, test_coeff, bd_cond)
 
-    test_coeff = [1, 2, 3, 3]
-    tf = BeckeRTransform(0.1, 1)
-    assert_raises(ValueError, solve_ode_bvp, x, fx, test_coeff, bd_cond[:3], tf)
+    # Ignore the SciPy warning from divide by zero, since this is an assertion test-case
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        # Test the error that the number of boundary conditions should be equal to order.
+        assert_raises(ValueError, solve_ode_bvp, x, fx, coeffs, bd_cond[3:])
+        assert_raises(ValueError, solve_ode_bvp, x, fx, coeffs, bd_cond)
+        test_coeff = [1, 2, 3, 4, 5]
+        assert_raises(ValueError, solve_ode_bvp, x, fx, test_coeff, bd_cond)
+
+        test_coeff = [1, 2, 3, 3]
+        tf = BeckeRTransform(0.1, 1)
+        assert_raises(ValueError, solve_ode_bvp, x, fx, test_coeff, bd_cond[:3], tf)
 
 
 def test_construct_coeffs_of_ode_over_mesh():

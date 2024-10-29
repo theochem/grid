@@ -16,7 +16,8 @@ Please use the following citation in any publication using grid library:
     E. Vohringer‐Martinez, T. Verstraelen, P. W. Ayers, F. Heidar‐Zadeh
 
 
-The Grid source code is hosted on GitHub and is released under the GNU General Public License v3.0. We welcome
+The `Grid source code <https://github.com/theochem/grid>`_ is hosted on GitHub and is released under the
+GNU General Public License v3.0. We welcome
 any contributions to the Grid library in accordance with our Code of Conduct; please see our Contributing
 Guidelines. Please report any issues you encounter while using Grid library on
 `GitHub Issues <https://github.com/theochem/grid/issues/new>`_. For further

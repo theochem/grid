@@ -209,26 +209,6 @@ def solve_poisson_ivp(
     callable(ndarray(N, 3) -> float) :
         The solution to Poisson equaiton/potential :math:`g : \mathbb{R}^3 \rightarrow \mathbb{R}`.
 
-    Examples
-    --------
-    >>> # Set up of the radial grid
-    >>> oned_grid = Trapezoidal(10000)
-    >>> tf = LinearFiniteRTransform(0.0, 1000)
-    >>> radial_grid = tf.transform_1d_grid(oned)
-    >>> # Set up the atomic grid with degree 10 at each radial point. Molecular grid works as well.
-    >>> atomic_grid = AtomGrid(radial_grid, degrees=[10])
-    >>> # Set the charge distribution to be unit-charge density and evaluate on atomic grid points.
-    >>> def charge_distribution(x, alpha=0.1):
-    >>>    r = np.linalg.norm(x, axis=1)
-    >>>    return (alpha / np.pi)**(3.0 / 2.0) * np.exp(-alpha * r**2.0)
-    >>> func_vals = charge_distribution(atomic_grid.points)
-    >>> # Solve for the potential as an initial value problem and evaluate it over the atomic grid.
-    >>> potential = solve_poisson_ivp(
-    >>>      atgrid, func_vals, InverseRTransform(tf), r_interval=(1000, 1e-3),
-    >>>      ode_params={"method" : "DOP853", "atol": 1e-8},
-    >>> )
-    >>> potential_values = potential(atgrid.points)
-
     """
     return _interpolate_molgrid_helper(
         molgrid,
@@ -323,9 +303,10 @@ def _solve_poisson_bvp_atomgrid(
     def interpolate(points):
         # Need atomgrid to center the points to the atomic grid, then convert to spherical.
         r_pts, theta, phi = atomgrid.convert_cartesian_to_spherical(points).T
-        r_values = np.array([spline(r_pts) / r_pts for spline in splines])
-        # Since spline(r=0) = 0, then set points to zero there.
-        r_values[:, np.abs(r_pts) < 1e-300] = 0.0
+        with np.errstate(divide="ignore"):
+            r_values = np.array([spline(r_pts) / r_pts for spline in splines])
+            # Since spline(r=0) = 0, then set points to zero there.
+            r_values[:, np.abs(r_pts) < 1e-300] = 0.0
         r_sph_harm = generate_real_spherical_harmonics(atomgrid.l_max // 2, theta, phi)
         return np.einsum("ij, ij -> j", r_values, r_sph_harm)
 
@@ -382,26 +363,6 @@ def solve_poisson_bvp(
     -------
     callable(ndarray(N, 3) -> float) :
         The solution to Poisson equaiton/potential :math:`g : \mathbb{R}^3 \rightarrow \mathbb{R}`.
-
-    Examples
-    --------
-    >>> # Set up of the radial grid
-    >>> radial_grid = Trapezoidal(10000)
-    >>> # Set up the atomic grid with degree 10 at each radial point. Molecular grid works as well.
-    >>> degree = 10
-    >>> atomic_grid = AtomGrid(radial, degrees=[degree])
-    >>> # Set the charge distribution to be unit-charge density and evaluate on atomic grid points.
-    >>> def charge_distribution(x, alpha=0.1):
-    >>>    r = np.linalg.norm(x, axis=1)
-    >>>    return (alpha / np.pi)**(3.0 / 2.0) * np.exp(-alpha * r**2.0)
-    >>> func_vals = charge_distribution(atomic_grid.points)
-    >>> # Solve the Poisson equation with Becke transformation
-    >>> transform = BeckeRTransform(1e-6, 1.5, trim_inf=True)
-    >>> potential = solve_poisson_bvp(
-    >>>      atgrid, func_vals, InverseRTransform(tf), include_origin=True,
-    >>>      remove_large_pts=1e6, ode_params={"tol" : 1e-6, "max_nodes": 20000},
-    >>> )
-    >>> actual = potential(atgrid.points)
 
     References
     ----------

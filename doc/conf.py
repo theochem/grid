@@ -10,6 +10,8 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
+import importlib
+import inspect
 import os
 import sys
 
@@ -37,6 +39,8 @@ extensions = [
     "sphinx.ext.mathjax",
     "nbsphinx",
     "nbsphinx_link",
+    "IPython.sphinxext.ipython_console_highlighting",
+    "sphinx.ext.linkcode",
 ]
 
 # List of arguments to be passed to the kernel that executes the notebooks:
@@ -72,7 +76,7 @@ templates_path = ["_templates"]
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", "**.ipynb_checkpoints"]
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -123,3 +127,44 @@ def autodoc_skip_member(app, what, name, obj, skip, options):
 def setup(app):
     """Set up sphinx."""
     app.connect("autodoc-skip-member", autodoc_skip_member)
+
+
+# -- Link to Github ------------------------------
+# Configure viewcode extension.
+code_url = f"https://github.com/theochem/grid/blob/master/src/grid"
+
+
+def linkcode_resolve(domain, info):
+    # Non-linkable objects from the starter kit in the tutorial.
+    if domain != 'py':
+        return None
+    if not info['module']:
+        return None
+
+    mod = importlib.import_module(info["module"])
+    if "." in info["fullname"]:
+        objname, attrname = info["fullname"].split(".")
+        obj = getattr(mod, objname)
+        try:
+            # object is a method of a class
+            obj = getattr(obj, attrname)
+        except AttributeError:
+            # object is an attribute of a class
+            return None
+    else:
+        obj = getattr(mod, info["fullname"])
+    try:
+        file = inspect.getsourcefile(obj)
+        lines = inspect.getsourcelines(obj)
+    except TypeError:
+        # e.g. object is a typing.Union
+        return None
+    file = os.path.relpath(file, os.path.abspath(".."))
+
+    # Get the file name e.g. /usr/conda/py37/grid/angular.py -> angular.py
+    split = file.split("grid/")
+    file = split[-1]
+
+    start, end = lines[1], lines[1] + len(lines[0]) - 1
+
+    return f"{code_url}/{file}#L{start}-L{end}"

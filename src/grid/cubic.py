@@ -102,7 +102,7 @@ class _HyperRectangleGrid(Grid):
         return x, y
 
     def interpolate(self, points, values, use_log=False, nu_x=0, nu_y=0, nu_z=0, method="cubic"):
-        r"""Interpolate function value at a given point.
+        r"""Interpolate function and its derivatives on cubic grid.
 
         Only implemented in three-dimensions.
 
@@ -110,7 +110,8 @@ class _HyperRectangleGrid(Grid):
         ----------
         points : np.ndarray, shape (M, 3)
             The 3D Cartesian coordinates of :math:`M` points in :math:`\mathbb{R}^3` for which
-            the interpolant (i.e., the interpolated function) is evaluated.
+            the interpolant (i.e., the interpolated function) is evaluated. If
+            method="cubic", then M must be equal to one.
         values : np.ndarray, shape (N,)
             Function values at each of the :math:`N` grid points.
         use_log : bool, optional
@@ -237,15 +238,22 @@ class _HyperRectangleGrid(Grid):
                     deriv_var = nu_z
                 # Sympy symbols and dictionary of symbols pointing to the derivative values
                 sympy_symbols = symbols("x:" + str(deriv_var))
-                symbol_values = {"x" + str(i): float(derivs[i]) for i in range(0, deriv_var)}
-                return interpolated * float(
-                    sum(
-                        [
-                            bell(deriv_var, i, sympy_symbols).evalf(subs=symbol_values)
-                            for i in range(1, deriv_var + 1)
-                        ]
+                # This interpolation only works on singular points and thus we can safely
+                #   assuming derivs=[[0], [1]] is a list of list of single points.
+                bell_derivs = []
+                for j in range(0, len(points)):
+                    symbol_values = {"x" + str(i): float(derivs[i][j]) for i in range(0, deriv_var)}
+                    bell_derivs.append(
+                        float(
+                            sum(
+                                [
+                                    bell(deriv_var, i, sympy_symbols).evalf(subs=symbol_values)
+                                    for i in range(1, deriv_var + 1)
+                                ]
+                            )
+                        )
                     )
-                )
+                return interpolated * np.array(bell_derivs)
             else:
                 raise NotImplementedError(
                     "Taking mixed derivative while applying the logarithm is not supported."
@@ -966,7 +974,7 @@ class UniformGrid(_HyperRectangleGrid):
             raise ValueError("The number of atomic numbers and atom coordinates should equal.")
         if data.size != len(self.points):
             raise ValueError(
-                f"Argument data should have the same size as the grid {data.size}!={self._npoints}"
+                f"`data` should have the same size as the grid {data.size}!={len(self.points)}"
             )
         if pseudo_numbers is None:
             pseudo_numbers = atnums.astype(float)

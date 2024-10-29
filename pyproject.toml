@@ -44,10 +44,12 @@ Changelog = "https://github.com/theochem/grid/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]
 doc = [
+    "ipython",
     "numpydoc",
     "sphinx_copybutton",
     "sphinx-autoapi",
     "nbsphinx",
+    "nbconvert",
     "sphinx_rtd_theme",
     "sphinx_autodoc_typehints",
     "docutils==0.16",  # Needed to show bullet points in sphinx_rtd_theme

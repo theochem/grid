@@ -36,6 +36,10 @@ from grid.rtransform import (
 )
 from grid.utils import convert_cart_to_sph, generate_real_spherical_harmonics
 
+pytestmark = pytest.mark.filterwarnings(
+    "ignore:The coefficient of the leading Kth term is zero at some point"
+)
+
 
 def zero_func(pts, centers=None):
     """Zero function for test."""
@@ -78,8 +82,10 @@ def poisson_solution_to_charge_distribution(x, alpha=0.1, centers=None):
     result = np.zeros(len(x))
     for cent in centers:
         r_PC = np.linalg.norm(x - cent, axis=1)
-        desired = erf(np.sqrt(alpha) * r_PC) / r_PC
-        desired[r_PC == 0.0] = 0.0
+        # Ignore divide by zero and nan
+        with np.errstate(divide="ignore", invalid="ignore"):
+            desired = erf(np.sqrt(alpha) * r_PC) / r_PC
+            desired[r_PC == 0.0] = 0.0
         result += desired
     return result
 
@@ -88,7 +94,7 @@ def test_interpolation_of_laplacian_with_spherical_harmonic():
     r"""Test the interpolation of Laplacian of spherical harmonic is eigenvector."""
     odg = OneDGrid(np.linspace(1e-5, 1, num=20), np.ones(20), (0, np.inf))
     degree = 6 * 2 + 2
-    atgrid = AtomGrid.from_pruned(odg, 1, sectors_r=[], sectors_degree=[degree])
+    atgrid = AtomGrid.from_pruned(odg, 1, r_sectors=[], d_sectors=[degree])
 
     def func(sph_points):
         # Spherical harmonic of degree 6 and order 0
@@ -129,7 +135,7 @@ def test_interpolation_of_laplacian_of_exponential():
     btf = BeckeRTransform(0.0, 1.5)
     radial = btf.transform_1d_grid(oned)
     degree = 10
-    atgrid = AtomGrid.from_pruned(radial, 1, sectors_r=[], sectors_degree=[degree])
+    atgrid = AtomGrid.from_pruned(radial, 1, r_sectors=[], d_sectors=[degree])
 
     def func(cart_pts):
         radius = np.linalg.norm(cart_pts, axis=1)
@@ -156,13 +162,17 @@ def test_interpolation_of_laplacian_with_unit_charge_distribution():
     btf = BeckeRTransform(1e-3, 1.5)
     radial = btf.transform_1d_grid(oned)
     degree = 10
-    atgrid = AtomGrid.from_pruned(radial, 1, sectors_r=[], sectors_degree=[degree])
+    atgrid = AtomGrid.from_pruned(radial, 1, r_sectors=[], d_sectors=[degree])
 
     laplace = interpolate_laplacian(atgrid, poisson_solution_to_charge_distribution(atgrid.points))
     true = laplace(atgrid.points)
     assert_allclose(-4.0 * np.pi * charge_distribution(atgrid.points), true, atol=1e-4, rtol=1e-7)
 
 
+# Ignore scipy/bvp warning
+@pytest.mark.filterwarnings(
+    "ignore:(divide by zero encountered in divide|invalid value encountered in divide)"
+)
 @pytest.mark.parametrize(
     "oned, tf, remove_large_pts, centers",
     [

@@ -37,7 +37,8 @@ class BeckeWeights:
         ----------
         radii : dict, optional
             Dictionary of atomic number and corresponding atomic radius.
-            If None, Bragg-Slater empirically measured covalent radii are used.
+            If None, Bragg-Slater empirically measured covalent radii
+            (in atomic units) are used.
         order : int, optional
             Order of iteration for switching function.
 
@@ -109,6 +110,8 @@ class BeckeWeights:
 
     def generate_weights(self, points, atcoords, atnums, *, select=None, pt_ind=None):
         r"""Calculate Becke integration weights of points for select atom.
+
+        The units of the points and coordinates should match `radii` attribute.
 
         Parameters
         ----------
@@ -316,6 +319,8 @@ class BeckeWeights:
 
     def __call__(self, points, atcoords, atnums, indices):
         r"""Evaluate integration weights on the given grid points.
+
+        The units of the points and coordinates should match `radii` attribute.
 
         Parameters
         ----------

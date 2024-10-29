@@ -23,6 +23,7 @@
 from unittest import TestCase
 
 import numpy as np
+import pytest
 from numpy.testing import assert_allclose
 
 from grid.becke import BeckeWeights
@@ -135,10 +136,17 @@ class TestBecke(TestCase):
             pts[:, 1:] += np.random.rand(10, 2)
 
             becke = BeckeWeights(order=3)
-            wts = becke.generate_weights(pts, centers, nums, pt_ind=[0, 5, 10])
-            assert_allclose(wts, 0.5)
-            wts = becke.compute_weights(pts, centers, nums, pt_ind=[0, 5, 10])
-            assert_allclose(wts, 0.5)
+            # Make sure a warning was raised, since covalent radii are not defined
+            with pytest.warns(
+                UserWarning, match="Covalent radii for the following atom numbers [\\d+]*"
+            ):
+                wts = becke.generate_weights(pts, centers, nums, pt_ind=[0, 5, 10])
+                assert_allclose(wts, 0.5)
+            with pytest.warns(
+                UserWarning, match="Covalent radii for the following atom numbers [\\d+]*"
+            ):
+                wts = becke.compute_weights(pts, centers, nums, pt_ind=[0, 5, 10])
+                assert_allclose(wts, 0.5)
 
     def test_raise_errors(self):
         """Test errors raise."""
