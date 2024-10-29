@@ -21,7 +21,7 @@ sys.path.insert(0, os.path.abspath("../"))
 project = "grid"
 copyright = "2024, QC-Devs"
 author = "QC-Devs"
-html_logo = "./images/grid_logo_website.png"
+html_logo = "./images/grid_logo_website.svg"
 
 # -- General configuration ---------------------------------------------------
 
