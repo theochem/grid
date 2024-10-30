@@ -37,8 +37,9 @@
 
           
           
-          <a href="../index.html" class="icon icon-home">
-            grid
+          <a href="../index.html">
+            
+              <img src="../_static/grid_logo_website.svg" class="logo" alt="Logo"/>
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -644,7 +645,7 @@ Derivative (using logarithm) in x-direction [ 0.30673882  0.24715189 -0.1054587 
             <span class="n">n_pts</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">n_pts</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">n_pts</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Negative values&quot;</span>
         <span class="p">)</span>
     <span class="n">legend</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper right&quot;</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">lh</span> <span class="ow">in</span> <span class="n">legend</span><span class="o">.</span><span class="n">legendHandles</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">lh</span> <span class="ow">in</span> <span class="n">legend</span><span class="o">.</span><span class="n">get_lines</span><span class="p">():</span>
         <span class="n">lh</span><span class="o">.</span><span class="n">set_alpha</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">title</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>

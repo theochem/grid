@@ -1,5 +1,4 @@
-.. image:: grid_logo.png
-  :width: 450
+
 
 
 Welcome to grid's documentation!
