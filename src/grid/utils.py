@@ -513,7 +513,7 @@ def get_cov_radii(atnums, cov_type="bragg"):
 
 
 def generate_real_spherical_harmonics_scipy(l_max: int, theta: np.ndarray, phi: np.ndarray):
-    r"""Generate real spherical harmonics up to degree :math:`l` and for all orders :math:`m`.
+    r"""Generate real spherical harmonics up to degree :math:`l` and for all orders :math:`m`\.
 
     The real spherical harmonics are defined as a function
     :math:`Y_{lm} : L^2(S^2) \rightarrow \mathbb{R}` such that
@@ -525,7 +525,7 @@ def generate_real_spherical_harmonics_scipy(l_max: int, theta: np.ndarray, phi: 
             \frac{1}{\sqrt{2}} (Y^{-|m|}_{l} + (-1)^m Y_l^m) & \text{if } m > 0
         \end{cases},
 
-    where :math:`l \in \mathbb{N}`, :math:`m \in \{-l_{max}, \cdots, l_{max} \}` and
+    where :math:`l \in \mathbb{N}`\, :math:`m \in \{-l_{max}, \cdots, l_{max} \}` and
     :math:`Y^m_l` is the complex spherical harmonic.
 
     Parameters
@@ -542,15 +542,16 @@ def generate_real_spherical_harmonics_scipy(l_max: int, theta: np.ndarray, phi: 
     Returns
     -------
     ndarray((l_max + 1)**2, N)
-        Value of real spherical harmonics of all orders :math:`m`, and degree
-        :math:`l` spherical harmonics. For each degree :math:`l`,
+        Value of real spherical harmonics of all orders :math:`m`\, and degree
+        :math:`l` spherical harmonics. For each degree :math:`l`\,
         the orders :math:`m` are in HORTON 2 order, i.e.
-        :math:`m=0, 1, -1, 2, -2, \cdots, l, -l`.
+        :math:`m=0, 1, -1, 2, -2, \cdots, l, -l`\.
 
     Notes
     -----
     - SciPy spherical harmonics is known (Jan 30, 2024) to give NaN when the degree is large,
       for our experience, when l >= 86.
+
     """
     if l_max < 0:
         raise ValueError(f"lmax should be non-negative, got l_amx={l_max}")
@@ -585,7 +586,8 @@ def generate_real_spherical_harmonics_scipy(l_max: int, theta: np.ndarray, phi: 
 
 def generate_real_spherical_harmonics(l_max: int, theta: np.ndarray, phi: np.ndarray):
     r"""
-    Compute the real spherical harmonics recursively up to a maximum angular degree l.
+    Compute the real spherical harmonics recursively up to a maximum angular degree :math:`l`\. [1]_
+    [2]_
 
     .. math::
         Y_l^m(\theta, \phi) = \sqrt{\frac{(2l + 1) (l - m)!}{4\pi (l + m)!}} f(m, \theta)
@@ -594,7 +596,7 @@ def generate_real_spherical_harmonics(l_max: int, theta: np.ndarray, phi: np.nda
     where :math:`l` is the angular degree, :math:`m` is the order and
     :math:`f(m, \theta) = \sqrt{2} \cos(m \theta)` when :math:`m>0` otherwise
     :math:`f(m, \theta) = \sqrt{2} \sin(m\theta)`
-    when :math:`m<0`, and equal to one when :math:`m= 0`.  :math:`P_l^m` is the associated
+    when :math:`m<0`\, and equal to one when :math:`m= 0`\.  :math:`P_l^m` is the associated
     Legendre polynomial without the Conway phase factor.
     The angle :math:`\theta \in [0, 2\pi]` is the azimuthal angle and :math:`\phi \in [0, \pi]`
     is the polar angle.
@@ -613,23 +615,23 @@ def generate_real_spherical_harmonics(l_max: int, theta: np.ndarray, phi: np.nda
     Returns
     -------
     ndarray((l_max + 1)**2, N)
-        Value of real spherical harmonics of all orders :math:`m`,and degree
-        :math:`l` spherical harmonics. For each degree :math:`l`, the orders :math:`m` are
-        in Horton 2 order, i.e. :math:`m=0, 1, -1, 2, -2, \cdots, l, -l`.
+        Value of real spherical harmonics of all orders :math:`m`\,and degree
+        :math:`l` spherical harmonics. For each degree :math:`l`\, the orders :math:`m` are
+        in Horton 2 order, i.e. :math:`m=0, 1, -1, 2, -2, \cdots, l, -l`\.
 
     Notes
     -----
-    - The associated Legendre polynomials are computed using the forward recursion:
+    - The associated Legendre polynomials are computed using the forward recursion: [2]_
       :math:`P_l^m(\phi) = \frac{2l + 1}{l - m + 1}\cos(\phi) P_{l-1}^m(x) -
-      \frac{(l + m)}{l - m + 1} P_{l-1}^m(x)`, and
-      :math:`P_l^l(\phi) = (2l + 1) \sin(\phi) P_{l-1}^{l-1}(\phi)`.
+      \frac{(l + m)}{l - m + 1} P_{l-1}^m(x)`\, and
+      :math:`P_l^l(\phi) = (2l + 1) \sin(\phi) P_{l-1}^{l-1}(\phi)`\.
     - For higher maximum degree :math:`l_{max} > 1900` with double precision the computation
       of spherical harmonic will underflow within the range
-      :math:`20^\circ \leq \phi \leq 160^\circ`.  This code does not implement the
+      :math:`20^\circ \leq \phi \leq 160^\circ`\.  This code does not implement the
       modified recursion formulas in [2] and instead opts for higher precision defined
       by the computer system and np.longdouble.
     - The mapping from :math:`(l, m)` to the correct row index in the spherical harmonic array is
-      given by :math:`(l + 1)^2 + 2 * m - 1` if :math:`m > 0`, else it is :math:`(l+1)^2 + 2 |m|`.
+      given by :math:`(l + 1)^2 + 2 * m - 1` if :math:`m > 0`\, else it is :math:`(l+1)^2 + 2 |m|`\.
 
     References
     ----------
@@ -722,22 +724,24 @@ def generate_derivative_real_spherical_harmonics(l_max: int, theta: np.ndarray, 
     ndarray(2, (l_max^2 + 1)^2, M)
         Derivative of spherical harmonics, (theta first, then phi) of all degrees up to
         :math:`l_{max}` and orders :math:`m` in Horton 2 order, i.e.
-        :math:`m=0, 1, -1, \cdots, l, -l`.
+        :math:`m=0, 1, -1, \cdots, l, -l`\.
 
     Notes
     -----
     - The derivative with respect to :math:`\phi` is
 
     .. math::
-        \frac{\partial Y_l^m(\theta, \phi)}{\partial\phi} = -m Y_l^{-m}(\theta, \phi),
+        \frac{\partial Y_l^m(\theta, \phi)}{\partial\phi} = -m Y_l^{-m}(\theta, \phi)
+
     - The derivative with respect to :math:`\theta` is
 
     .. math::
         \frac{\partial Y_l^m(\theta, \phi)}{\partial\phi} = |m| \cot(\phi)
          \Re (Y_l^{|m|}(\theta, \phi)) + \sqrt{(n - |m|)(n + |m| + 1)}
          Re(e^{-i\theta} Y_l^{|m| + 1}(\theta, \phi))
-    for positive :math:`m` and for negative :math:`m`, the real projection :math:`\Re` is replaced
-    with the imaginary projection :math:`\Im`.
+
+    for positive :math:`m` and for negative :math:`m`\, the real projection :math:`\Re` is replaced
+    with the imaginary projection :math:`\Im`\.
 
     """
     num_pts = len(theta)
@@ -757,7 +761,7 @@ def generate_derivative_real_spherical_harmonics(l_max: int, theta: np.ndarray, 
             # for complex spherical harmonic it is   i m Y^m_l,
             # Note ie^(i |m| x) = -sin(|m| x) + i cos(|m| x), then take real/imaginery component.
             # hence why the negative is in (-m).
-            # index_m maps m to index where (l, m)  is located in `sph_harm_degree`.
+            # index_m maps m to index where (l, m)  is located in `sph_harm_degree`\.
             def index_m(m):
                 return 2 * m - 1 if m > 0 else int(2 * np.fabs(m))
 
@@ -803,13 +807,13 @@ def solid_harmonics(l_max: int, sph_pts: np.ndarray):
     l_max : int
         Largest angular degree of the spherical harmonics.
     sph_pts : ndarray(M, 3)
-        Three-dimensional points in spherical coordinates :math:`(r, \theta, \phi)`, where
-        :math:`r\geq 0, \theta \in [0, 2\pi]` and :math:`\phi \in [0, \pi]`.
+        Three-dimensional points in spherical coordinates :math:`(r, \theta, \phi)`\, where
+        :math:`r\geq 0, \theta \in [0, 2\pi]` and :math:`\phi \in [0, \pi]`\.
 
     Returns
     -------
     ndarray((l_max + 1)^2, M)
-        The solid harmonics from degree :math:`l=0=, \cdots, l_{max}` and for all orders :math:`m`,
+        The solid harmonics from degree :math:`l=0=, \cdots, l_{max}` and for all orders :math:`m`\,
         ordered as :math:`m=0, 1, -1, 2, -2, \cdots, l, -l` evaluated on :math:`M` points.
 
     """
@@ -882,13 +886,13 @@ def convert_cart_to_sph(points, center=None):
         The (3-dimensional) Cartesian coordinates of points.
     center : np.ndarray(3,), list, optional
         Cartesian coordinates of the center of spherical coordinate system.
-        If `None`, origin is used.
+        If `None`\, origin is used.
 
     Returns
     -------
     np.ndarray(N, 3)
         Spherical coordinates of atoms respect to the center
-        [radius :math:`r`, azumuthal :math:`\theta`, polar :math:`\phi`]
+        [radius :math:`r`\, azumuthal :math:`\theta`\, polar :math:`\phi`]
 
     """
     if points.ndim != 2 or points.shape[1] != 3:
@@ -911,21 +915,21 @@ def convert_cart_to_sph(points, center=None):
 
 def generate_orders_horton_order(order: int, type_ord: str, dim: int = 3):
     r"""
-    Generate all orders from an integer :math:`l`.
+    Generate all orders from an integer :math:`l`\.
 
-    For Cartesian, the orders are :math:`(n_x, n_y, n_z)` such that they sum to `order`.
-    If `dim=1,2`, then it generates Cartesian orders :math:`(n_x)`, :math:`(n_x, n_y)`,
-    respectively, such that they sum to `order`.
+    For Cartesian, the orders are :math:`(n_x, n_y, n_z)` such that they sum to `order`\.
+    If `dim=1,2`\, then it generates Cartesian orders :math:`(n_x)`\, :math:`(n_x, n_y)`\,
+    respectively, such that they sum to `order`\.
 
-    For radial, the orders is just the order :math:`l`.
+    For radial, the orders is just the order :math:`l`\.
 
     For pure, the orders :math:`(l, m)` following the order
-    :math:`[(l, 0), (l, 1), (l, -1), \cdots, (l, l), (l, -l)]`.
+    :math:`[(l, 0), (l, 1), (l, -1), \cdots, (l, l), (l, -l)]`\.
 
     Parameters
     ----------
     order: int
-        The order :math:`l`.
+        The order :math:`l`\.
     type_ord : str, optional
         The type of the order, it is either "cartesian", "radial", "pure" or "pure-radial".
     dim : int, optional
