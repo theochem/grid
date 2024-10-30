@@ -391,9 +391,10 @@ class TestUniformGrid(TestCase):
         )
         # Test shape is always positive
         with self.assertRaises(ValueError) as err:
-            UniformGrid(proper_origin, proper_axes, np.array([5, -1, 2]))
+            grid_shape = np.array([5, -1, 2])
+            UniformGrid(proper_origin, proper_axes, grid_shape)
         self.assertEqual(
-            "Number of points in each direction should be positive, got shape=[5, -1, 2]",
+            f"Number of points in each direction should be positive, got shape={list(grid_shape)}",
             str(err.exception),
         )
         # Test the weights are correct

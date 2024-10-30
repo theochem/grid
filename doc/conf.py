@@ -23,7 +23,7 @@ sys.path.insert(0, os.path.abspath("../"))
 project = "grid"
 copyright = "2024, QC-Devs"
 author = "QC-Devs"
-
+html_logo = "./images/grid_logo_website.svg"
 
 # -- General configuration ---------------------------------------------------
 
@@ -95,7 +95,11 @@ html_style = "css/override.css"
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-html_theme_options = {"collapse_navigation": False,}
+html_theme_options = {
+    "collapse_navigation": False,
+    "logo_only": True
+}
+
 
 # -- Configuration for autodoc extensions ---------------------------------
 
