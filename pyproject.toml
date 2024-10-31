@@ -80,5 +80,5 @@ addopts = "-v"
 
 [tool.setuptools_scm]
 write_to = "src/grid/_version.py"
-version_scheme = "guess-next-dev"
+# version_scheme = "guess-next-dev"
 local_scheme = "node-and-timestamp"
