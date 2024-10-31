@@ -1,6 +1,6 @@
 # Grid
 
-[![Python Version](https://img.shields.io/badge/python-3.7%2B-blue.svg)](https://docs.python.org/3/whatsnew/3.7.html)
+[![Python Version](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://docs.python.org/3/whatsnew/3.9.html)
 [![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/)
 [![GitHub Actions CI Tox Status](https://github.com/theochem/grid/actions/workflows/pytest.yaml/badge.svg)](https://github.com/theochem/grid/actions/workflows/pytest.yaml)
 [![GitHub contributors](https://img.shields.io/github/contributors/theochem/grid.svg)](https://github.com/theochem/grid/graphs/contributors)
