@@ -3,7 +3,7 @@
 # Changes made:
 # - Removed emoticons
 # - Updated some actions to more recent versions
-# - Customized for the qc-grid repository
+# - Customized for the qcgrid repository
 
 name: PyPI Release
 on:
@@ -18,7 +18,7 @@ on:
 
 env:
   # The name of the package to be published to PyPI and TestPyPI.
-  PYPI_NAME: qc-grid
+  PYPI_NAME: qcgrid
 
 jobs:
   build:
