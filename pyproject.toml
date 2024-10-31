@@ -25,10 +25,11 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
 ]
 dependencies = [
     "numpy>=1.16",
-    "pytest >=2.6",
+    "pytest>=8.0.0",
     "scipy>=1.4",
     "importlib_resources",
     "sympy",
@@ -79,5 +80,5 @@ addopts = "-v"
 
 [tool.setuptools_scm]
 write_to = "src/grid/_version.py"
-version_scheme = "post-release"
-local_scheme = "no-local-version"
+version_scheme = "guess-next-dev"
+local_scheme = "node-and-timestamp"
