@@ -4,6 +4,7 @@ on:
   push:
     branches:
      - main
+     - master
     tags-ignore:
       - '**'
   pull_request:
@@ -15,13 +16,13 @@ jobs:
 
     strategy:
       matrix:
-        os: ["ubuntu-latest", "windows-latest"]
-        py: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+        os: ["ubuntu-latest", "windows-latest", "macos-latest"]
+        py: ["3.9", "3.10", "3.11", "3.12"]
 
     steps:
-      - uses: "actions/checkout@v3"
+      - uses: "actions/checkout@v4"
       - name: Setup python for test ${{ matrix.py }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.py }}
       - name: Install dependencies for testing
