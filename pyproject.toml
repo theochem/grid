@@ -3,7 +3,7 @@ requires = ["setuptools>=65.0", "setuptools_scm[toml]>=7.1.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "qc-grids"
+name = "qc-grid"
 authors = [
   { name="QC-Devs Community", email="qcdevs@gmail.com" },
 ]
