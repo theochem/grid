@@ -14,6 +14,7 @@ Submodules
    grid.cubic
    grid.hirshfeld
    grid.molgrid
+   grid.ngrid
    grid.ode
    grid.onedgrid
    grid.periodicgrid

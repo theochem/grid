@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>grid.poisson module &mdash; grid  documentation</title>
+  <title>grid.ngrid module &mdash; grid  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
       <link rel="stylesheet" type="text/css" href="../_static/css/override.css" />
 
@@ -24,8 +24,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="grid.rtransform module" href="grid.rtransform.html" />
-    <link rel="prev" title="grid.periodicgrid module" href="grid.periodicgrid.html" /> 
+    <link rel="next" title="grid.ode module" href="grid.ode.html" />
+    <link rel="prev" title="grid.molgrid module" href="grid.molgrid.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -199,11 +199,11 @@
 <li class="toctree-l4"><a class="reference internal" href="grid.cubic.html">grid.cubic module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="grid.hirshfeld.html">grid.hirshfeld module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="grid.molgrid.html">grid.molgrid module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="grid.ngrid.html">grid.ngrid module</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">grid.ngrid module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="grid.ode.html">grid.ode module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="grid.onedgrid.html">grid.onedgrid module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="grid.periodicgrid.html">grid.periodicgrid module</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">grid.poisson module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grid.poisson.html">grid.poisson module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="grid.rtransform.html">grid.rtransform module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="grid.utils.html">grid.utils module</a></li>
 </ul>
@@ -231,9 +231,9 @@
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="modules.html">grid</a></li>
           <li class="breadcrumb-item"><a href="grid.html">grid package</a></li>
-      <li class="breadcrumb-item active">grid.poisson module</li>
+      <li class="breadcrumb-item active">grid.ngrid module</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/pyapi/grid.poisson.rst" rel="nofollow"> View page source</a>
+            <a href="../_sources/pyapi/grid.ngrid.rst" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -241,134 +241,178 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="module-grid.poisson">
-<span id="grid-poisson-module"></span><h1>grid.poisson module<a class="headerlink" href="#module-grid.poisson" title="Permalink to this heading"></a></h1>
-<p>Poisson solver module.</p>
-<p>This module solves the following Poisson equation:</p>
-<div class="math notranslate nohighlight">
-\[\nabla^2 V(r) = -4\pi \rho(r),\]</div>
-<p>for some Coulomb potential <span class="math notranslate nohighlight">\(V(r)\)</span> and charge density <span class="math notranslate nohighlight">\(\rho(r)\)</span>
-over a centered atomic grid. It is recommended to use the boundary value problem
-for handing singularities near the origin of the atomic grid.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="grid.poisson.interpolate_laplacian">
-<span class="sig-name descname"><span class="pre">interpolate_laplacian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">molgrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_vals</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/poisson.py#L382-L496"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.poisson.interpolate_laplacian" title="Permalink to this definition"></a></dt>
-<dd><p>Return a function that interpolates the Laplacian of a function.</p>
-<div class="math notranslate nohighlight">
-\[\nabla^2 f = \frac{1}{r}\frac{\partial^2 rf}{\partial r^2} - \frac{\hat{L}}{r^2},\]</div>
-<p>such that the angular momentum operator satisfies <span class="math notranslate nohighlight">\(\hat{L}(Y_l^m) = l (l + 1) Y_l^m\)</span>.
-Expanding f in terms of spherical harmonic expansion, we get that</p>
-<div class="math notranslate nohighlight">
-\[\nabla^2 f = \sum_l \sum_m \bigg[ \frac{\partial^2 \rho_{lm}(r)}{\partial r^2}
-+ \frac{2}{r} \frac{\partial \rho_{lm}(r)}{\partial r} - \frac{l(l+1)}{r^2}\rho_{lm}(r)
- \bigg] Y_l^m,\]</div>
-<p>where <span class="math notranslate nohighlight">\(\rho_{lm}^f\)</span> is the lth, mth radial component of function f.</p>
+  <div class="section" id="module-grid.ngrid">
+<span id="grid-ngrid-module"></span><h1>grid.ngrid module<a class="headerlink" href="#module-grid.ngrid" title="Permalink to this heading"></a></h1>
+<p>Grid for N particle functions.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="grid.ngrid.Ngrid">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Ngrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/ngrid.py#L28-L177"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.ngrid.Ngrid" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="grid.basegrid.html#grid.basegrid.Grid" title="grid.basegrid.Grid"><code class="xref py py-class docutils literal notranslate"><span class="pre">Grid</span></code></a></p>
+<p>Grid class for integration of N argument functions.</p>
+<p>This class is used for integrating functions of N arguments.</p>
+<dl class="simple">
+<dt>..math::</dt><dd><p>idotsint f(x_1, x_2, …, x_N) dx_1 dx_2 … dx_N</p>
+</dd>
+</dl>
+<p>The function to integrate must have all arguments <span class="math notranslate nohighlight">\(\{x_i\}\)</span> with the same dimension as the
+points of the corresponding grids (i.e. each of the arguments corresponds to a different grid).
+For example for a function of the form f((x1,y1,z1), (x2,y2)) -&gt; float the first argument must
+be described by a 3D grid and the second argument by a 2D grid.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="grid.ngrid.Ngrid.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/ngrid.py#L43-L87"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.ngrid.Ngrid.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Initialize n particle grid.</p>
+<p>At least one grid must be specified. If only one grid is specified, and a value for n bigger
+than one is specified, the same grid will copied n times and one grid will used for each
+particle. If more than one grid is specified, n will be ignored. In all cases, The function
+to integrate must be a function with all arguments with the same dimension as the grid
+points and must depend on a number of particles equal to the number of grids. For example, a
+function of the form
+f((x1,y1,z1), (x2,y2,z2), …, (xn, yn, zn)) -&gt; float where (xi, yi, zi) are the coordinates
+of the i-th particle and n is the number of particles.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>molgrid</strong> (<em>Union</em><em>[</em><a class="reference internal" href="grid.molgrid.html#grid.molgrid.MolGrid" title="grid.molgrid.MolGrid"><em>MolGrid</em></a><em>, </em><a class="reference internal" href="grid.atomgrid.html#grid.atomgrid.AtomGrid" title="grid.atomgrid.AtomGrid"><em>AtomGrid</em></a><em>]</em>) – Atomic grid that can integrate spherical functions and interpolate radial components.</p></li>
-<li><p><strong>func_vals</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – The function values evaluated on all <span class="math notranslate nohighlight">\(N\)</span> points on the atomic grid.</p></li>
+<li><p><strong>grid_list</strong> (<em>list</em><em> of </em><a class="reference internal" href="grid.basegrid.html#grid.basegrid.Grid" title="grid.basegrid.Grid"><em>Grid</em></a>) – List of grids, one Grid for each particle.</p></li>
+<li><p><strong>n</strong> (<em>int</em>) – Number of particles.</p></li>
 </ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Function that interpolates the Laplacian of a function whose input is
-Cartesian points. The float value is the cutoff where radial points
-smaller than the cutoff are replaced with the cutoff. Computing the Laplacian at r=0 can
-cause problems depending on the function provided.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>callable[ndarray(M,3), float -&gt; ndarray(M,)]</p>
-</dd>
-</dl>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<ul class="simple">
-<li><p>Since <span class="math notranslate nohighlight">\(\rho_{lm}\)</span> and its derivatives are being interpolated and due to division by
-powers of <span class="math notranslate nohighlight">\(r\)</span>, it is recommended to be very careful of having values near zero.</p></li>
-</ul>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="grid.poisson.solve_poisson_bvp">
-<span class="sig-name descname"><span class="pre">solve_poisson_bvp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">molgrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_large_pts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000000.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ode_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/poisson.py#L316-L379"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.poisson.solve_poisson_bvp" title="Permalink to this definition"></a></dt>
-<dd><p>Return interpolation of the solution to the Poisson equation solved as a boundary value problem.</p>
-<p>The Poisson equation solves for function <span class="math notranslate nohighlight">\(g\)</span> of the following:</p>
-<div class="math notranslate nohighlight">
-\[\nabla^2 g = (-4\pi) f,\]</div>
-<p>for a fixed function <span class="math notranslate nohighlight">\(f\)</span>, where <span class="math notranslate nohighlight">\(\nabla^2\)</span> is the Laplacian.  This
-is transformed to an set of ODE problems as a boundary value problem.</p>
-<p>If boundary is not provided, then the boundary of <span class="math notranslate nohighlight">\(g\)</span> for large r is set to
-<span class="math notranslate nohighlight">\(\int \int \int f(r, \theta, \phi) / r\)</span>.  The solution <span class="math notranslate nohighlight">\(g\)</span> is assumed to be
-zero at the origin <span class="math notranslate nohighlight">\(g(0, \theta, \phi) = 0\)</span>.  Use <cite>solve_poisson_ivp</cite> if this assumption
-isn’t needed.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>molgrid</strong> (<em>Union</em><em>[</em><a class="reference internal" href="grid.molgrid.html#grid.molgrid.MolGrid" title="grid.molgrid.MolGrid"><em>MolGrid</em></a><em>, </em><a class="reference internal" href="grid.atomgrid.html#grid.atomgrid.AtomGrid" title="grid.atomgrid.AtomGrid"><em>AtomGrid</em></a><em>]</em>) – Molecular or atomic grid that is used for integration and expanding func into real spherical
-harmonic basis.</p></li>
-<li><p><strong>func_vals</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – The function values evaluated on all <span class="math notranslate nohighlight">\(N\)</span> points on the molecular grid.</p></li>
-<li><p><strong>transform</strong> (<a class="reference internal" href="grid.rtransform.html#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><em>BaseTransform</em></a><em>, </em><em>optional</em>) – Transformation from infinite domain <span class="math notranslate nohighlight">\(r \in [0, \infty)\)</span> to another
-domain that is a finite.</p></li>
-<li><p><strong>boundary</strong> (<em>float</em><em>, </em><em>optional</em>) – The boundary value of <span class="math notranslate nohighlight">\(g\)</span> in the limit of r to infinity.</p></li>
-<li><p><strong>include_origin</strong> (<em>bool</em><em>, </em><em>optional</em>) – If true, will add r=0 point when solving for the ode only. If false, it is recommended
-to have many radial points near the origin.</p></li>
-<li><p><strong>remove_large_pts</strong> (<em>float</em><em>, </em><em>optional</em>) – If true, will remove any points larger than <cite>remove_large_pts</cite> when solving for the ode
-only.</p></li>
-<li><p><strong>ode_params</strong> (<em>dict</em><em>, </em><em>optional</em>) – The parameters for the ode solver. See <cite>grid.ode.solve_ode_bvp</cite> for all options.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The solution to Poisson equaiton/potential <span class="math notranslate nohighlight">\(g : \mathbb{R}^3 \rightarrow \mathbb{R}\)</span>.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>callable(ndarray(N, 3) -&gt; float)</p>
-</dd>
-</dl>
-<p class="rubric">References</p>
-<dl class="footnote brackets">
-<dt class="label" id="id1"><span class="brackets">1</span></dt>
-<dd><p>Becke, A. D., &amp; Dickson, R. M. (1988). Numerical solution of Poisson`s equation in
-polyatomic molecules. The Journal of chemical physics, 89(5), 2993-2997.</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="grid.poisson.solve_poisson_ivp">
-<span class="sig-name descname"><span class="pre">solve_poisson_ivp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">molgrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1000,</span> <span class="pre">1e-05)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ode_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/poisson.py#L166-L219"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.poisson.solve_poisson_ivp" title="Permalink to this definition"></a></dt>
-<dd><p>Return interpolation of the solution to the Poisson equation solved as an initial value problem.</p>
-<p>The Poisson equation solves for function <span class="math notranslate nohighlight">\(g\)</span> of the following:</p>
-<div class="math notranslate nohighlight">
-\[\nabla^2 g = (-4\pi) f,\]</div>
-<p>for a fixed function <span class="math notranslate nohighlight">\(f\)</span>, where <span class="math notranslate nohighlight">\(\nabla^2\)</span> is the Laplacian.  This
-is transformed to a set of ODE problems as an initial value problem.</p>
-<p>Ihe initial value problem is chosen so that the boundary of <span class="math notranslate nohighlight">\(g\)</span> for large r is set to
-<span class="math notranslate nohighlight">\(\int \int \int f(r, \theta, \phi) / r\)</span>.  Depending on <span class="math notranslate nohighlight">\(f\)</span>, this function has
-difficulty in capturing the origin <span class="math notranslate nohighlight">\(r=0\)</span> region, and is recommended to keep the
-final interval <span class="math notranslate nohighlight">\(a\)</span> close to zero.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="grid.ngrid.Ngrid.get_localgrid">
+<span class="sig-name descname"><span class="pre">get_localgrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/basegrid.py#L148-L186"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.ngrid.Ngrid.get_localgrid" title="Permalink to this definition"></a></dt>
+<dd><p>Create a grid contain points within the given radius of center.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>molgrid</strong> (<em>Union</em><em>[</em><a class="reference internal" href="grid.molgrid.html#grid.molgrid.MolGrid" title="grid.molgrid.MolGrid"><em>MolGrid</em></a><em>, </em><a class="reference internal" href="grid.atomgrid.html#grid.atomgrid.AtomGrid" title="grid.atomgrid.AtomGrid"><em>AtomGrid</em></a><em>]</em>) – Molecular or atomic grid that is used for integration and expanding func into real
-spherical harmonic basis.</p></li>
-<li><p><strong>func_vals</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – The function values evaluated on all <span class="math notranslate nohighlight">\(N\)</span> points on the molecular grid.</p></li>
-<li><p><strong>transform</strong> (<a class="reference internal" href="grid.rtransform.html#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><em>BaseTransform</em></a><em>, </em><em>optional</em>) – Transformation from infinite domain <span class="math notranslate nohighlight">\(r \in [0, \infty)\)</span> to another
-domain that is a finite.</p></li>
-<li><p><strong>r_interval</strong> (<em>tuple</em><em>, </em><em>optional</em>) – The interval <span class="math notranslate nohighlight">\((b, a)\)</span> of <span class="math notranslate nohighlight">\(r\)</span> for which the ODE solver will start from and end,
-where <span class="math notranslate nohighlight">\(b&gt;a\)</span>. The value <span class="math notranslate nohighlight">\(b\)</span> should be large as it determines the asymptotic
-region of <span class="math notranslate nohighlight">\(g\)</span> and value <span class="math notranslate nohighlight">\(a\)</span> is recommended to be small but not zero depending
-on <span class="math notranslate nohighlight">\(f\)</span>.</p></li>
-<li><p><strong>ode_params</strong> (<em>dict</em><em>, </em><em>optional</em>) – The parameters for the ode solver. See <cite>grid.ode.solve_ode_ivp</cite> for all options.</p></li>
+<li><p><strong>center</strong> (<em>float</em><em> or </em><em>np.array</em><em>(</em><em>M</em><em>,</em><em>)</em>) – Cartesian coordinates of the center of the local grid.</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – Radius of sphere around the center. When equal to np.inf, the
+local grid coincides with the whole grid, which can be useful for
+debugging.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The solution to Poisson equaiton/potential <span class="math notranslate nohighlight">\(g : \mathbb{R}^3 \rightarrow \mathbb{R}\)</span>.</p>
+<dd class="field-even"><p>Instance of LocalGrid.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>callable(ndarray(N, 3) -&gt; float)</p>
+<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.LocalGrid" title="grid.basegrid.LocalGrid">LocalGrid</a></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grid.ngrid.Ngrid.integrate">
+<span class="sig-name descname"><span class="pre">integrate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callable</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">call_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/ngrid.py#L89-L114"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.ngrid.Ngrid.integrate" title="Permalink to this definition"></a></dt>
+<dd><p>Integrate callable on the N particle grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>callable</strong> (<em>callable</em>) – Callable to integrate. It must take a list of arguments (one for each particle) with
+the same dimension as the grid points and return a float (e.g. a function of the form
+f([x1,y1,z1], [x2,y2,z2]) -&gt; float).</p></li>
+<li><p><strong>call_kwargs</strong> (<em>dict</em>) – Keyword arguments that will be passed to callable.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Integral of callable.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grid.ngrid.Ngrid.moments">
+<span class="sig-name descname"><span class="pre">moments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orders</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_mom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cartesian'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_orders</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/basegrid.py#L188-L330"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.ngrid.Ngrid.moments" title="Permalink to this definition"></a></dt>
+<dd><p>Compute the multipole moment integral of a function over centers.</p>
+<p>The Cartesian type moments are:</p>
+<div class="math notranslate nohighlight">
+\[m_{n_x, n_y, n_z} = \int (x - X_c)^{n_x} (y - Y_c)^{n_y} (z - Z_c)^{n_z} f(r) dr,\]</div>
+<p>where <span class="math notranslate nohighlight">\(\textbf{R}_c = (X_c, Y_c, Z_c)\)</span> is the center of the moment,
+<span class="math notranslate nohighlight">\(\f(r)\)</span> is the density, and <span class="math notranslate nohighlight">\((n_x, n_y, n_z)\)</span> are the Cartesian orders.</p>
+<p>The spherical/pure moments with <span class="math notranslate nohighlight">\((l, m)\)</span> parameter are:</p>
+<div class="math notranslate nohighlight">
+\[m_{lm} = \int | \textbf{r} - \textbf{R}_c|^l S_l^m(\theta, \phi) f(\textbf{r})
+d\textbf{r},\]</div>
+<p>where <span class="math notranslate nohighlight">\(S_l^m\)</span> is a regular, real solid harmonic.</p>
+<p>The radial moments with <span class="math notranslate nohighlight">\(n\)</span> parameter are:</p>
+<div class="math notranslate nohighlight">
+\[m_n = \int | \textbf{r} - \textbf{R}_c|^{n} f(\textbf{r}) d\textbf{r}\]</div>
+<p>The radial combined with spherical/pure moments <span class="math notranslate nohighlight">\((n, l, m)\)</span> are:</p>
+<div class="math notranslate nohighlight">
+\[m_{nlm} = \int | \textbf{r} - \textbf{R}_c|^{n+1} S_l^m(\theta, \phi) f(\textbf{r})
+d\textbf{r}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>orders</strong> (<em>int</em>) – Generates all orders with Horton order depending on the type of the multipole
+moment <cite>type_mom</cite>.</p></li>
+<li><p><strong>centers</strong> (<em>ndarray</em><em>(</em><em>M</em><em>,  </em><em>3</em><em>)</em>) – The centers <span class="math notranslate nohighlight">\(\textbf{R}_c\)</span> of the moments to compute from.</p></li>
+<li><p><strong>func_vals</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – The function <span class="math notranslate nohighlight">\(f\)</span> values evaluated on all <span class="math notranslate nohighlight">\(N\)</span> points on the integration
+grid.</p></li>
+<li><p><strong>type_mom</strong> (<em>str</em>) – The type of multipole moments: “cartesian”, “pure”, “radial” and “pure-radial”.</p></li>
+<li><p><strong>return_orders</strong> (<em>bool</em>) – If true, it will also return a list of size <span class="math notranslate nohighlight">\(L\)</span> of the orders
+corresponding to each integral/row of the output.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Computes the moment integral of the function on the <cite>m`th center for all orders.
+If `return_orders</cite> is true, then this also returns a list that describes what
+each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(L, M), or (ndarray(L, M), list)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="grid.ngrid.Ngrid.points">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">points</span></span><a class="headerlink" href="#grid.ngrid.Ngrid.points" title="Permalink to this definition"></a></dt>
+<dd><p>Positions of the grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,) or np.ndarray(N, M)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grid.ngrid.Ngrid.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/basegrid.py#L332-L343"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.ngrid.Ngrid.save" title="Permalink to this definition"></a></dt>
+<dd><p>Save the points and weights as a npz file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> (<em>str</em>) – The path/name of the .npz file.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="grid.ngrid.Ngrid.size">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">size</span></span><a class="headerlink" href="#grid.ngrid.Ngrid.size" title="Permalink to this definition"></a></dt>
+<dd><p>the total number of points on the grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="grid.ngrid.Ngrid.weights">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">weights</span></span><a class="headerlink" href="#grid.ngrid.Ngrid.weights" title="Permalink to this definition"></a></dt>
+<dd><p>the weights of each grid point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -377,8 +421,8 @@ on <span class="math notranslate nohighlight">\(f\)</span>.</p></li>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="grid.periodicgrid.html" class="btn btn-neutral float-left" title="grid.periodicgrid module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="grid.rtransform.html" class="btn btn-neutral float-right" title="grid.rtransform module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="grid.molgrid.html" class="btn btn-neutral float-left" title="grid.molgrid module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="grid.ode.html" class="btn btn-neutral float-right" title="grid.ode module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
