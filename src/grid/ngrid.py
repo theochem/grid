@@ -27,15 +27,17 @@ from numbers import Number
 
 class Ngrid(Grid):
     r"""
-    Grid class for integration of N particle functions.
+    Grid class for integration of N argument functions.
 
-    The function to integrate must be a function with all arguments with the same dimension as the
-    grid points. The function must depend on a number of particles equal to the number of grids. For
-    example, a function of the form
-    f((x1,y1,z1), (x2,y2,z2), ..., (xn, yn, zn)) -> float where (xi, yi, zi) are the coordinates
-    of the i-th particle and n is the number of particles. Internally, one Grid is created for each
-    particle and the integration is performed by integrating the function over the space spanned
-    by the domain union of all the grids.
+    This class is used for integrating functions of N arguments.
+
+    ..math::
+        \idotsint f(x_1, x_2, ..., x_N) dx_1 dx_2 ... dx_N
+
+    The function to integrate must have all arguments :math:`\{x_i\}` with the same dimension as the
+    points of the corresponding grids (i.e. each of the arguments corresponds to a different grid).
+    For example for a function of the form f((x1,y1,z1), (x2,y2)) -> float the first argument must
+    be described by a 3D grid and the second argument by a 2D grid.
     """
 
     def __init__(self, grid_list=None, n=None, **kwargs):
@@ -151,6 +153,7 @@ class Ngrid(Grid):
 
             integral = 0.0
             for i in data:
+                # Add a dimension to the point (two if it is a number)
                 to_point = lambda x: np.array([[x]]) if isinstance(x, Number) else x[None, :]
                 # extract points (convert to array, add dim) and corresponding weights combinations
                 points_comb = (to_point(j[0]) for j in i)
