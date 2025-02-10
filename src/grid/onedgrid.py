@@ -794,7 +794,7 @@ def _derg3(x):
 
 class TrefethenCC(OneDGrid):
     """
-    Trefethen polynomial transformation of Clenshaw-Curtis integral quadrature class.
+    Trefethen polynomial transformation of Clenshaw-Curtis integral quadrature class [#]_.
 
     References
     ----------
@@ -840,7 +840,7 @@ class TrefethenCC(OneDGrid):
 
 class TrefethenGC2(OneDGrid):
     """
-    Trefethen polynomial transformation of Gauss-Chebyshev of the second kind quadrature.
+    Trefethen polynomial transformation of Gauss-Chebyshev of the second kind quadrature [#]_.
 
     References
     ----------
@@ -886,7 +886,7 @@ class TrefethenGC2(OneDGrid):
 
 class TrefethenGeneral(OneDGrid):
     """
-    Trefethen polynomial transformation of a general integral quadrature class.
+    Trefethen polynomial transformation of a general integral quadrature class [#]_.
 
     References
     ----------
@@ -981,7 +981,7 @@ def _dergstrip(rho, s):
 
 
 class TrefethenStripCC(OneDGrid):
-    """Trefethen strip transformation of Clenshaw-Curtis quadrature.
+    """Trefethen strip transformation of Clenshaw-Curtis quadrature [#]_.
 
     References
     ----------
@@ -1013,7 +1013,7 @@ class TrefethenStripCC(OneDGrid):
 
 
 class TrefethenStripGC2(OneDGrid):
-    """Trefethen strip transformation of the Gauss-Chebyshev of the second kind quadrature.
+    """Trefethen strip transformation of the Gauss-Chebyshev of the second kind quadrature [#]_.
 
     References
     ----------
@@ -1046,7 +1046,7 @@ class TrefethenStripGC2(OneDGrid):
 
 
 class TrefethenStripGeneral(OneDGrid):
-    """Trefethen Strip General integral quadrature class.
+    """Trefethen Strip General integral quadrature class [#]_.
 
     References
     ----------
