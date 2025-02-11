@@ -147,14 +147,14 @@ each lattice vector:
 
     \vec{c}_{j_1, \ldots, j_K} = \vec{c} + \sum_{k=1}^K \vec{a}_k j
     \quad \forall \, j \in \mathbb{Z} \quad \text{with} \quad
-    \left\lceil \min_i \tilde{x}_i - \tild{c} - \frac{r}{s_k} \right\rceil
+    \left\lceil \min_i \tilde{x}_i - \tilde{c} - \frac{r}{s_k} \right\rceil
     \le j \le
-    \left\lfloor \max_i \tilde{x}_i - \tild{c} + \frac{r}{s_k} \right\rfloor
+    \left\lfloor \max_i \tilde{x}_i - \tilde{c} + \frac{r}{s_k} \right\rfloor
 
-where :math:`\vec{a}_k` is lattice vector :math:`k`, :math:`\tilde{x}_i` is the
-fractional coordinate of grid point :math:`i`, :math:`\tilde{c}` is the
+where :math:`\vec{a}_k` is lattice vector :math:`k`\, :math:`\tilde{x}_i` is the
+fractional coordinate of grid point :math:`i`\, :math:`\tilde{c}` is the
 fractional coordinate of the center and :math:`s_k` is the spacing between
-adjacent crystal planes along the :math:`k`th lattice vector.
+adjacent crystal planes along the :math:`k`\th lattice vector.
 """
 import itertools
 import warnings
@@ -205,8 +205,8 @@ class PeriodicGrid(Grid):
     simply uses NumPy slicing: ``fnlocal = fnperiodic[localgrid.indices]``
 
     2) To add a periodic repetition of a local function to the parent grid, one
-    uses ``np.add.att(fnperiodic, localgrid.indices, fnlocal)``. One should not
-    use ``fnperiodic[localgrid.indices] += fnlocal``, because this will give
+    uses ``np.add.att(fnperiodic, localgrid.indices, fnlocal)``\. One should not
+    use ``fnperiodic[localgrid.indices] += fnlocal``\, because this will give
     wrong results when ``localgrid.indices`` contains the same index multiple
     times, which happens when the cutoff (hyper)sphere covers multiple primitive
     cells.
@@ -241,7 +241,7 @@ class PeriodicGrid(Grid):
             will have fractional coordinates in the interval [0, 1[. When False,
             a warning is raised when the fractional coordinates span an interval
             wider than 1.1, because this implies a degradation of efficiency of
-            ``get_localgrid``, which can be easily avoided.
+            ``get_localgrid``\, which can be easily avoided.
 
         """
         if realvecs is None:

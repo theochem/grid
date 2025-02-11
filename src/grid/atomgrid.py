@@ -22,7 +22,6 @@
 from __future__ import annotations
 
 import warnings
-from typing import Union
 
 import numpy as np
 import scipy.constants
@@ -84,7 +83,7 @@ class AtomGrid(Grid):
             grids. If the given size is not supported, the next largest size is used. If both
             `degrees` and `sizes` are given, `size` are used for constructing the angular grid.
         center : ndarray(3,), optional, keyword-only
-            Cartesian coordinates of the grid center. If `None`, the origin is used.
+            Cartesian coordinates of the grid center. If `None`\, the origin is used.
         rotate : int, optional, keyword-only
             Integer used as a seed for generating random rotation matrices to rotate the angular
             spherical grids at each radial grid point. If the integer is zero, then no rotate
@@ -168,7 +167,7 @@ class AtomGrid(Grid):
             If None, a default radial grid (PowerRTransform of UniformInteger grid) for the give
             `atnum` is constructed.
         center : ndarray(3,), optional
-            Cartesian coordinates of the grid center. If `None`, the origin is used.
+            Cartesian coordinates of the grid center. If `None`\, the origin is used.
         rotate : int, optional
             Integer used as a seed for generating random rotation matrices to rotate the angular
             spherical grids at each radial grid point. If 0, then no rotate is made.
@@ -235,7 +234,7 @@ class AtomGrid(Grid):
         r_sectors: list | np.ndarray,
         d_sectors: list | np.ndarray | None = None,
         *,
-        s_sectors: Union[list, np.ndarray] = None,
+        s_sectors: list | np.ndarray = None,
         center: np.ndarray = None,
         rotate: int = 0,
         method: str = "lebedev",
@@ -243,8 +242,8 @@ class AtomGrid(Grid):
         r"""
         Initialize AtomGrid class that splits radial sections into sectors which specified degrees.
 
-        Given a sequence of radial sectors :math:`\{a_i\}_{i=1}^Q`, a radius number :math:`R`
-        and angular degree sectors :math:`\{L_i \}_{i=1}^{Q+1}`.  This assigned the degrees
+        Given a sequence of radial sectors :math:`\{a_i\}_{i=1}^Q`\, a radius number :math:`R`
+        and angular degree sectors :math:`\{L_i \}_{i=1}^{Q+1}`\.  This assigned the degrees
         to the following radial points:
 
         .. math::
@@ -264,8 +263,8 @@ class AtomGrid(Grid):
             (to make the radial sectors atom specific).
         r_sectors : list or ndarray(S,)
             Sequence of boundary radius (in atomic units) specifying sectors of the pruned radial
-            grid. The first sector is ``(0, radius*r_sectors[0])``, then ``(radius*r_sectors[0],
-            radius*r_sectors[1])``, and so on.
+            grid. The first sector is ``(0, radius*r_sectors[0])``\, then ``(radius*r_sectors[0],
+            radius*r_sectors[1])``\, and so on.
         d_sectors : list or ndarray(S + 1, dtype=int) or None
             Sequence of angular degrees for each radial sector of `r_sectors` in the pruned grid.
             If None, then `s_sectors` should be given.
@@ -434,11 +433,11 @@ class AtomGrid(Grid):
                 \phi &= arc\cos(\frac{z}{r})
             \end{align}
 
-        with the canonical choice :math:`r=0`, then :math:`\theta,\phi = 0`.
+        with the canonical choice :math:`r=0`\, then :math:`\theta,\phi = 0`\.
         If the `points` attribute is not specified, then atomic grid points are used
-        and the canonical choice when :math:`r=0`, is the points
+        and the canonical choice when :math:`r=0`\, is the points
         :math:`(r=0, \theta_j, \phi_j)` where :math:`(\theta_j, \phi_j)` come
-        from the Angular grid with the degree at :math:`r=0`.
+        from the Angular grid with the degree at :math:`r=0`\.
 
         Parameters
         ----------
@@ -453,7 +452,7 @@ class AtomGrid(Grid):
         -------
         ndarray(N, 3)
             Spherical coordinates of points respect to the center denoted as
-            (radius :math:`r`, azimuthal :math:`\theta`, polar :math:`\phi`).
+            (radius :math:`r`\, azimuthal :math:`\theta`\, polar :math:`\phi`).
 
         """
         is_atomic = False
@@ -480,7 +479,7 @@ class AtomGrid(Grid):
     def integrate_angular_coordinates(self, func_vals: np.ndarray):
         r"""Integrate the angular coordinates of a sequence of functions.
 
-        Given a series of functions :math:`f_k \in L^2(\mathbb{R}^3)`, this returns the values
+        Given a series of functions :math:`f_k \in L^2(\mathbb{R}^3)`\, this returns the values
 
         .. math::
             f_k(r_i) = \int \int f(r_i, \theta, \phi) sin(\phi) d\theta d\phi
@@ -537,7 +536,7 @@ class AtomGrid(Grid):
             f_{avg}(r) := \frac{\int \int f(r, \theta, \phi) \sin(\phi) d\theta d\phi}{4 \pi}.
 
         The definition is chosen such that :math:`\int f_{avg}(r) 4\pi r^2 dr`
-        matches the full integral :math:`\int \int \int f(x,y,z)dxdydz`.
+        matches the full integral :math:`\int \int \int f(x,y,z)dxdydz`\.
 
         Parameters
         ----------
@@ -547,7 +546,7 @@ class AtomGrid(Grid):
         Returns
         -------
         CubicSpline:
-            Cubic spline with input r in the positive real axis and output :math:`f_{avg}(r)`.
+            Cubic spline with input r in the positive real axis and output :math:`f_{avg}(r)`\.
 
         """
         # Integrate f(r, theta, phi) sin(phi) d\theta d\phi
@@ -561,7 +560,7 @@ class AtomGrid(Grid):
         r"""
         Return spline to interpolate radial components wrt to expansion in real spherical harmonics.
 
-        For each pt :math:`r_i` of the atomic grid with associated angular degree :math:`l_i`,
+        For each pt :math:`r_i` of the atomic grid with associated angular degree :math:`l_i`\,
         the function :math:`f(r_i, \theta, \phi)` is projected onto the spherical
         harmonic expansion:
 
@@ -569,9 +568,9 @@ class AtomGrid(Grid):
             f(r_i, \theta, \phi) \approx \sum_{l=0}^{l_i} \sum_{m=-l}^l \rho^{lm}(r_i)
             Y^m_l(\theta, \phi)
 
-        where :math:`Y^m_l` is the real Spherical harmonic of degree :math:`l` and order :math:`m`.
+        where :math:`Y^m_l` is the real Spherical harmonic of degree :math:`l` and order :math:`m`\.
         The radial components :math:`\rho^{lm}(r_i)` are calculated via integration on
-        the :math:`i`th Lebedev/angular grid of the atomic grid:
+        the :math:`i`\th Lebedev/angular grid of the atomic grid:
 
         .. math::
             \rho^{lm}(r_i) = \int \int f(r_i, \theta, \phi) Y^m_l(\theta, \phi) \sin(\phi)
@@ -588,9 +587,9 @@ class AtomGrid(Grid):
         -------
         list[scipy.PPoly]
             A list of size :math:`(l_{max}/2 + 1)^2` of  CubicSpline object for interpolating the
-            coefficients :math:`\rho^{lm}(r)`. The input of spline is array
-            of :math:`N` points on :math:`[0, \infty)` and the output is :math:`\{\rho^{lm}(r_i)\}`.
-            The list starts with degrees :math:`l=0,\cdots l_{max}`, and the for each degree,
+            coefficients :math:`\rho^{lm}(r)`\. The input of spline is array
+            of :math:`N` points on :math:`[0, \infty)` and the output is :math:`\{\rho^{lm}(r_i)\}`\.
+            The list starts with degrees :math:`l=0,\cdots l_{max}`\, and the for each degree,
             the zeroth order spline is first, followed by positive orders then negative.
 
         """
@@ -616,7 +615,7 @@ class AtomGrid(Grid):
                 num_nonzero_sph = (self.degrees[i] // 2 + 1) ** 2
                 radial_components[num_nonzero_sph:, i] = 0.0
 
-        # Return a spline for each spherical harmonic with maximum degree `self.l_max // 2`.
+        # Return a spline for each spherical harmonic with maximum degree `self.l_max // 2`\.
         return [CubicSpline(x=self.rgrid.points, y=sph_val) for sph_val in radial_components]
 
     def interpolate(self, func_vals: np.ndarray):
@@ -628,7 +627,7 @@ class AtomGrid(Grid):
         .. math::
             f(r, \theta, \phi) = \sum_l \sum_{m=-l}^l \sum_i \rho_{ilm}(r) Y_{lm}(\theta, \phi)
 
-        A cubic spline is used to interpolate the radial functions :math:`\sum_i \rho_{ilm}(r)`.
+        A cubic spline is used to interpolate the radial functions :math:`\sum_i \rho_{ilm}(r)`\.
         This is then multiplied by the corresponding spherical harmonics at all
         :math:`(\theta_j, \phi_j)` angles and summed to obtain the equation above.
 
@@ -649,10 +648,10 @@ class AtomGrid(Grid):
                     If deriv is zero, then only returns function values. If it is one, then
                     returns the first derivative of the interpolated function with respect to either
                     Cartesian or spherical coordinates. Only higher-order derivatives
-                    (`deriv`=2,3) are supported for the derivatives wrt to radial components.
+                    (`deriv`\=2,3) are supported for the derivatives wrt to radial components.
                 deriv_spherical : bool
                     If True, then returns the derivatives with respect to spherical coordinates
-                    :math:`(r, \theta, \phi)`. Default False.
+                    :math:`(r, \theta, \phi)`\. Default False.
                 only_radial_deriv : bool
                     If true, then the derivative wrt to radius :math:`r` is returned.
 
@@ -681,7 +680,7 @@ class AtomGrid(Grid):
                 for the derivatives wrt to radial components. `deriv=3` only returns a constant.
             deriv_spherical : bool
                 If True, then returns the derivatives with respect to spherical coordinates
-                :math:`(r, \theta, \phi)`. Default False.
+                :math:`(r, \theta, \phi)`\. Default False.
             only_radial_deriv : bool
                 If true, then the derivative wrt to radius :math:`r` is returned.
 
@@ -769,8 +768,8 @@ class AtomGrid(Grid):
     def _generate_degree_from_radius(
         rgrid: OneDGrid,
         radius: float,
-        r_sectors: Union[list, np.ndarray],
-        d_sectors: Union[list, np.ndarray],
+        r_sectors: list | np.ndarray,
+        d_sectors: list | np.ndarray,
         method: str = "lebedev",
     ):
         """
@@ -784,8 +783,8 @@ class AtomGrid(Grid):
             Radius of interested atom in atomic units.
         r_sectors : list or ndarray(S,)
             Sequence of boundary radius (in atomic units) specifying sectors of the pruned radial
-            grid. The first sector is ``(0, radius*r_sectors[0])``, then ``(radius*r_sectors[0],
-            radius*r_sectors[1])``, and so on.
+            grid. The first sector is ``(0, radius*r_sectors[0])``\, then ``(radius*r_sectors[0],
+            radius*r_sectors[1])``\, and so on.
         d_sectors : list or ndarray(S + 1, dtype=int)
             Sequence of angular degrees for each radial sector of `r_sectors` in the pruned grid.
         method: str, optional
@@ -830,8 +829,8 @@ class AtomGrid(Grid):
             Radial grid points in angstrom.
         r_sectors : list or ndarray(S,)
             Sequence of boundary radius (in atomic units) specifying sectors of the pruned radial
-            grid. The first sector is ``(0, radius*r_sectors[0])``, then ``(radius*r_sectors[0],
-            radius*r_sectors[1])``, and so on.
+            grid. The first sector is ``(0, radius*r_sectors[0])``\, then ``(radius*r_sectors[0],
+            radius*r_sectors[1])``\, and so on.
         d_sectors : list or ndarray(S + 1, dtype=int)
             Sequence of angular degrees for each radial sector of `r_sectors` in the pruned grid.
 
