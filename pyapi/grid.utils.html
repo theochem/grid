@@ -145,10 +145,22 @@
 <li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#Example:-Electron-Density">Example: Electron Density</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Local-Properties">Local Properties</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Interpolation">Interpolation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Derivative-Interpolation">Derivative Interpolation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Local-Properties">Local Properties</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#Example:-Atomic-charges-from-molecular-electron-density">Example: Atomic charges from molecular electron density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Interpolation">Interpolation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#id1">Example: Electron Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Derivative-Interpolation">Derivative Interpolation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#Example:-Weizsacker-Kinetic-Energy-Density">Example: Weizsacker Kinetic Energy Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Solving-Poisson-Equation">Solving Poisson Equation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#Example:-Electrostatic-Potential">Example: Electrostatic Potential</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/cubic_grid.html">Cubic Grids</a><ul>
@@ -245,7 +257,7 @@
 <p>Utility Module.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="grid.utils.convert_cart_to_sph">
-<span class="sig-name descname"><span class="pre">convert_cart_to_sph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/utils.py#L873-L909"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.utils.convert_cart_to_sph" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_cart_to_sph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/utils.py#L877-L913"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.utils.convert_cart_to_sph" title="Permalink to this definition"></a></dt>
 <dd><p>Convert a set of points from cartesian to spherical coordinates.</p>
 <p>The convention that <span class="math notranslate nohighlight">\(\theta \in [-\pi, \pi]\)</span> and <span class="math notranslate nohighlight">\(\phi \in [0, \pi)\)</span>
 is chosen.</p>
@@ -269,7 +281,7 @@ If <cite>None</cite>, origin is used.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="grid.utils.convert_derivative_from_spherical_to_cartesian">
-<span class="sig-name descname"><span class="pre">convert_derivative_from_spherical_to_cartesian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">deriv_r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deriv_theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deriv_phi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/utils.py#L827-L870"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.utils.convert_derivative_from_spherical_to_cartesian" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_derivative_from_spherical_to_cartesian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">deriv_r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deriv_theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deriv_phi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/utils.py#L831-L874"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.utils.convert_derivative_from_spherical_to_cartesian" title="Permalink to this definition"></a></dt>
 <dd><p>Convert the derivative from spherical coordinates to Cartesian.</p>
 <p>If <span class="math notranslate nohighlight">\(r\)</span> is zero, then the derivative wrt to theta and phi are set to zero.
 If <span class="math notranslate nohighlight">\(\phi\)</span> is zero, then the derivative wrt to theta is set to zero.</p>
@@ -295,7 +307,7 @@ If <span class="math notranslate nohighlight">\(\phi\)</span> is zero, then the 
 
 <dl class="py function">
 <dt class="sig sig-object py" id="grid.utils.dipole_moment_of_molecule">
-<span class="sig-name descname"><span class="pre">dipole_moment_of_molecule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">charges</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/utils.py#L982-L1040"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.utils.dipole_moment_of_molecule" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">dipole_moment_of_molecule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">charges</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/utils.py#L986-L1044"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.utils.dipole_moment_of_molecule" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate the dipole of a molecule.</p>
 <p>This is defined as the observable form a wavefunction <span class="math notranslate nohighlight">\(\Psi\)</span>:</p>
 <div class="math notranslate nohighlight">
@@ -328,7 +340,7 @@ of the molecule.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="grid.utils.generate_derivative_real_spherical_harmonics">
-<span class="sig-name descname"><span class="pre">generate_derivative_real_spherical_harmonics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/utils.py#L702-L791"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.utils.generate_derivative_real_spherical_harmonics" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">generate_derivative_real_spherical_harmonics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/utils.py#L704-L795"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.utils.generate_derivative_real_spherical_harmonics" title="Permalink to this definition"></a></dt>
 <dd><p>Generate derivatives of real spherical harmonics.</p>
 <p>If <span class="math notranslate nohighlight">\(\phi\)</span> is zero, then the first component of the derivative wrt to
 <span class="math notranslate nohighlight">\(phi\)</span> is set to zero.</p>
@@ -356,7 +368,7 @@ If this angle is outside of bounds, then periodicity is used.</p></li>
 <li><p>The derivative with respect to <span class="math notranslate nohighlight">\(\phi\)</span> is</p></li>
 </ul>
 <div class="math notranslate nohighlight">
-\[\frac{\partial Y_l^m(\theta, \phi)}{\partial\phi} = -m Y_l^{-m}(\theta, \phi),\]</div>
+\[\frac{\partial Y_l^m(\theta, \phi)}{\partial\phi} = -m Y_l^{-m}(\theta, \phi)\]</div>
 <ul class="simple">
 <li><p>The derivative with respect to <span class="math notranslate nohighlight">\(\theta\)</span> is</p></li>
 </ul>
@@ -370,7 +382,7 @@ with the imaginary projection <span class="math notranslate nohighlight">\(\Im\)
 
 <dl class="py function">
 <dt class="sig sig-object py" id="grid.utils.generate_orders_horton_order">
-<span class="sig-name descname"><span class="pre">generate_orders_horton_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_ord</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/utils.py#L912-L979"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.utils.generate_orders_horton_order" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">generate_orders_horton_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_ord</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/utils.py#L916-L983"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.utils.generate_orders_horton_order" title="Permalink to this definition"></a></dt>
 <dd><p>Generate all orders from an integer <span class="math notranslate nohighlight">\(l\)</span>.</p>
 <p>For Cartesian, the orders are <span class="math notranslate nohighlight">\((n_x, n_y, n_z)\)</span> such that they sum to <cite>order</cite>.
 If <cite>dim=1,2</cite>, then it generates Cartesian orders <span class="math notranslate nohighlight">\((n_x)\)</span>, <span class="math notranslate nohighlight">\((n_x, n_y)\)</span>,
@@ -399,8 +411,9 @@ The output is in Horton 2 order. e.g. order=2 it’s
 
 <dl class="py function">
 <dt class="sig sig-object py" id="grid.utils.generate_real_spherical_harmonics">
-<span class="sig-name descname"><span class="pre">generate_real_spherical_harmonics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/utils.py#L586-L699"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.utils.generate_real_spherical_harmonics" title="Permalink to this definition"></a></dt>
-<dd><p>Compute the real spherical harmonics recursively up to a maximum angular degree l.</p>
+<span class="sig-name descname"><span class="pre">generate_real_spherical_harmonics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/utils.py#L587-L701"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.utils.generate_real_spherical_harmonics" title="Permalink to this definition"></a></dt>
+<dd><p>Compute the real spherical harmonics recursively up to a maximum angular degree <span class="math notranslate nohighlight">\(l\)</span>. <a class="footnote-reference brackets" href="#id4" id="id1">1</a>
+<a class="footnote-reference brackets" href="#id5" id="id2">2</a></p>
 <div class="math notranslate nohighlight">
 \[Y_l^m(\theta, \phi) = \sqrt{\frac{(2l + 1) (l - m)!}{4\pi (l + m)!}} f(m, \theta)
 P_l^m(\cos(\phi)),\]</div>
@@ -432,7 +445,7 @@ in Horton 2 order, i.e. <span class="math notranslate nohighlight">\(m=0, 1, -1,
 </dl>
 <p class="rubric">Notes</p>
 <ul class="simple">
-<li><p>The associated Legendre polynomials are computed using the forward recursion:
+<li><p>The associated Legendre polynomials are computed using the forward recursion: <a class="footnote-reference brackets" href="#id5" id="id3">2</a>
 <span class="math notranslate nohighlight">\(P_l^m(\phi) = \frac{2l + 1}{l - m + 1}\cos(\phi) P_{l-1}^m(x) -
 \frac{(l + m)}{l - m + 1} P_{l-1}^m(x)\)</span>, and
 <span class="math notranslate nohighlight">\(P_l^l(\phi) = (2l + 1) \sin(\phi) P_{l-1}^{l-1}(\phi)\)</span>.</p></li>
@@ -446,11 +459,11 @@ given by <span class="math notranslate nohighlight">\((l + 1)^2 + 2 * m - 1\)</s
 </ul>
 <p class="rubric">References</p>
 <dl class="footnote brackets">
-<dt class="label" id="id1"><span class="brackets">1</span></dt>
+<dt class="label" id="id4"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
 <dd><p>Colombo, Oscar L. Numerical methods for harmonic analysis on the sphere.
 Ohio State Univ Columbus Dept of Geodetic Science And Surveying, 1981.</p>
 </dd>
-<dt class="label" id="id2"><span class="brackets">2</span></dt>
+<dt class="label" id="id5"><span class="brackets">2</span><span class="fn-backref">(<a href="#id2">1</a>,<a href="#id3">2</a>)</span></dt>
 <dd><p>Holmes, Simon A., and Will E. Featherstone. “A unified approach to the Clenshaw
 summation and the recursive computation of very high degree and order normalised
 associated Legendre functions.” Journal of Geodesy 76.5 (2002): 279-299.</p>
@@ -460,7 +473,7 @@ associated Legendre functions.” Journal of Geodesy 76.5 (2002): 279-299.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="grid.utils.generate_real_spherical_harmonics_scipy">
-<span class="sig-name descname"><span class="pre">generate_real_spherical_harmonics_scipy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/utils.py#L515-L583"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.utils.generate_real_spherical_harmonics_scipy" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">generate_real_spherical_harmonics_scipy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/utils.py#L515-L584"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.utils.generate_real_spherical_harmonics_scipy" title="Permalink to this definition"></a></dt>
 <dd><p>Generate real spherical harmonics up to degree <span class="math notranslate nohighlight">\(l\)</span> and for all orders <span class="math notranslate nohighlight">\(m\)</span>.</p>
 <p>The real spherical harmonics are defined as a function
 <span class="math notranslate nohighlight">\(Y_{lm} : L^2(S^2) \rightarrow \mathbb{R}\)</span> such that</p>
@@ -535,7 +548,7 @@ the Becke scheme with k=3.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="grid.utils.solid_harmonics">
-<span class="sig-name descname"><span class="pre">solid_harmonics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sph_pts</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/utils.py#L794-L824"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.utils.solid_harmonics" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">solid_harmonics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sph_pts</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/utils.py#L798-L828"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.utils.solid_harmonics" title="Permalink to this definition"></a></dt>
 <dd><p>Generate the solid harmonics from zero to a maximum angular degree.</p>
 <div class="math notranslate nohighlight">
 \[R_l^m(r, \theta, \phi) = \sqrt{\frac{4\pi}{2l + 1}} r^l Y_l^m(\theta, \phi)\]</div>

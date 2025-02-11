@@ -146,10 +146,22 @@
 <li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#Example:-Electron-Density">Example: Electron Density</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Local-Properties">Local Properties</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Interpolation">Interpolation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Derivative-Interpolation">Derivative Interpolation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Local-Properties">Local Properties</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#Example:-Atomic-charges-from-molecular-electron-density">Example: Atomic charges from molecular electron density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Interpolation">Interpolation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#id1">Example: Electron Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Derivative-Interpolation">Derivative Interpolation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#Example:-Weizsacker-Kinetic-Energy-Density">Example: Weizsacker Kinetic Energy Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Solving-Poisson-Equation">Solving Poisson Equation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#Example:-Electrostatic-Potential">Example: Electrostatic Potential</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/cubic_grid.html">Cubic Grids</a><ul>
@@ -252,10 +264,10 @@
 <p>Molecular grid is defined here to be a weighted average of <span class="math notranslate nohighlight">\(M\)</span> atomic grids
 (see AtomGrid). This is defined by a atom in molecule weights (or nuclear weight functions)
 <span class="math notranslate nohighlight">\(w_n(r)\)</span> for each center n such that <span class="math notranslate nohighlight">\(\sum^M_n w_n(r) = 1\)</span> for all points
-<span class="math notranslate nohighlight">\(r\in\mathbb{R}^3.\)</span></p>
+<span class="math notranslate nohighlight">\(r\in\mathbb{R}^3\)</span>. <a class="footnote-reference brackets" href="#id2" id="id1">1</a></p>
 <p class="rubric">References</p>
 <dl class="footnote brackets">
-<dt class="label" id="id1"><span class="brackets"><a class="fn-backref" href="#id4">1</a></span></dt>
+<dt class="label" id="id2"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
 <dd><p>Becke, Axel D. “A multicenter numerical integration scheme for polyatomic molecules.”
 The Journal of chemical physics 88.4 (1988): 2547-2553.</p>
 </dd>
@@ -349,7 +361,7 @@ Other options include the “standard grids”:
 greater accuracy but denser grid. See <cite>Notes</cite> for more information.</p></li>
 <li><p><strong>rgrid</strong> (<em>(</em><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><em>OneDGrid</em></a><em>, </em><em>list</em><em>[</em><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><em>OneDGrid</em></a><em>]</em><em>, </em><em>dict</em><em>[</em><em>int: OneDGrid</em><em>]</em><em>, </em><em>None</em><em>)</em><em>, </em><em>optional</em>) – One dimensional radial grid. If of type <cite>OneDGrid</cite> then this radial grid is used for
 all atoms. If a list is provided, then ith grid correspond to the ith atom.  If
-dictionary is provided, then the keys correspond to the <a href="#id2"><span class="problematic" id="id3">`</span></a>atnums[i]`attribute.
+dictionary is provided, then the keys correspond to the <cite>atnums[i]</cite> attribute.
 If None, a default radial grid (PowerRTransform of UniformInteger grid) is constructed
 based on the given atomic numbers.</p></li>
 <li><p><strong>aim_weights</strong> (<em>Callable</em><em> or </em><em>np.ndarray</em><em>(</em><em>K</em><em>,</em><em>)</em><em>, </em><em>optional</em>) – Atoms in molecule weights. If None, then aim_weights is Becke weights with order=3.</p></li>
@@ -363,18 +375,18 @@ will be used as a seed to generate rantom matrix.</p></li>
 <ul class="simple">
 <li><p>The standard and Ochsenfeld presets were not designed with symmetric spherical t-design
 in mind.</p></li>
-<li><p>The “standard grids” <a class="footnote-reference brackets" href="#id1" id="id4">1</a> “SG-0” and “SG-1” are designed for large molecules with LDA
+<li><p>The “standard grids” <a class="footnote-reference brackets" href="#id5" id="id3">2</a> “SG-0” and “SG-1” are designed for large molecules with LDA
 (GGA) functionals, whereas “SG-2” and “SG-3” are designed for Meta-GGA functionals and
 B95/Minnesota functionals, respectively.</p></li>
-<li><p>The Ochsenfeld pruned grids <a class="footnote-reference brackets" href="#id6" id="id5">2</a> are obtained based on the paper.</p></li>
+<li><p>The Ochsenfeld pruned grids <a class="footnote-reference brackets" href="#id6" id="id4">3</a> are obtained based on the paper.</p></li>
 </ul>
 <p class="rubric">References</p>
 <dl class="footnote brackets">
-<dt class="label" id="id6"><span class="brackets"><a class="fn-backref" href="#id5">2</a></span></dt>
+<dt class="label" id="id5"><span class="brackets"><a class="fn-backref" href="#id3">2</a></span></dt>
 <dd><p>Y. Shao, et al. Advances in molecular quantum chemistry contained in the Q-Chem 4
 program package. Mol. Phys. 113, 184-215 (2015)</p>
 </dd>
-<dt class="label" id="id7"><span class="brackets">3</span></dt>
+<dt class="label" id="id6"><span class="brackets"><a class="fn-backref" href="#id4">3</a></span></dt>
 <dd><p>Laqua, H., Kussmann, J., &amp; Ochsenfeld, C. (2018). An improved molecular partitioning
 scheme for numerical quadratures in density functional theory. The Journal of
 Chemical Physics, 149(20).</p>
@@ -475,7 +487,7 @@ is returned.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.molgrid.MolGrid.get_localgrid">
 <span class="sig-name descname"><span class="pre">get_localgrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/basegrid.py#L148-L186"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.molgrid.MolGrid.get_localgrid" title="Permalink to this definition"></a></dt>
-<dd><p>Create a grid contain points within the given radius of center.</p>
+<dd><p>Create a grid containing points within the given radius of center.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -546,7 +558,7 @@ This is then multipled by the corresponding spherical harmonics at all
 is then further summed over all centers to get <span class="math notranslate nohighlight">\(f\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>func_vals</strong> (<em>ndarray</em><em>(</em><em>sum_i N_i</em><em>,</em><em>)</em>) – The function values evaluated on all <span class="math notranslate nohighlight">\(N_i\)</span> points on the :math:<a href="#id8"><span class="problematic" id="id9">`</span></a>i`th atomic grid.</p>
+<dd class="field-odd"><p><strong>func_vals</strong> (<em>ndarray</em><em>(</em><em>sum_i N_i</em><em>,</em><em>)</em>) – The function values evaluated on all <span class="math notranslate nohighlight">\(N_i\)</span> points on the <span class="math notranslate nohighlight">\(i\)</span>th atomic grid.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><p>Callable function that interpolates the function and its derivative provided.
@@ -558,7 +570,7 @@ The function takes the following attributes:</p>
 <dt>deriv<span class="classifier">int, optional</span></dt><dd><p>If deriv is zero, then only returns function values. If it is one, then
 returns the first derivative of the interpolated function with respect to either
 Cartesian or spherical coordinates. Only higher-order derivatives
-(<a href="#id10"><span class="problematic" id="id11">`</span></a>deriv`=2,3) are supported for the derivatives wrt to radial components.</p>
+(<cite>deriv</cite>=2,3) are supported for the derivatives wrt to radial components.</p>
 </dd>
 <dt>deriv_spherical<span class="classifier">bool</span></dt><dd><p>If True, then returns the derivatives with respect to spherical coordinates
 <span class="math notranslate nohighlight">\((r, \theta, \phi)\)</span>. Default False.</p>
@@ -592,7 +604,7 @@ if <cite>only_radial_derivs</cite> then derivative wrt to <span class="math notr
 <div class="math notranslate nohighlight">
 \[m_{n_x, n_y, n_z} = \int (x - X_c)^{n_x} (y - Y_c)^{n_y} (z - Z_c)^{n_z} f(r) dr,\]</div>
 <p>where <span class="math notranslate nohighlight">\(\textbf{R}_c = (X_c, Y_c, Z_c)\)</span> is the center of the moment,
-<span class="math notranslate nohighlight">\(\f(r)\)</span> is the density, and <span class="math notranslate nohighlight">\((n_x, n_y, n_z)\)</span> are the Cartesian orders.</p>
+<span class="math notranslate nohighlight">\(f(r)\)</span> is the function, and <span class="math notranslate nohighlight">\((n_x, n_y, n_z)\)</span> are the Cartesian orders.</p>
 <p>The spherical/pure moments with <span class="math notranslate nohighlight">\((l, m)\)</span> parameter are:</p>
 <div class="math notranslate nohighlight">
 \[m_{lm} = \int | \textbf{r} - \textbf{R}_c|^l S_l^m(\theta, \phi) f(\textbf{r})
@@ -619,8 +631,8 @@ corresponding to each integral/row of the output.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Computes the moment integral of the function on the <cite>m`th center for all orders.
-If `return_orders</cite> is true, then this also returns a list that describes what
+<dd class="field-even"><p>Computes the moment integral of the function on the <cite>m</cite>th center for all orders.
+If <cite>return_orders</cite> is true, then this also returns a list that describes what
 each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 </dd>
 <dt class="field-odd">Return type</dt>

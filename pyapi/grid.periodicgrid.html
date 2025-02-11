@@ -146,10 +146,22 @@
 <li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#Example:-Electron-Density">Example: Electron Density</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Local-Properties">Local Properties</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Interpolation">Interpolation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Derivative-Interpolation">Derivative Interpolation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Local-Properties">Local Properties</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#Example:-Atomic-charges-from-molecular-electron-density">Example: Atomic charges from molecular electron density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Interpolation">Interpolation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#id1">Example: Electron Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Derivative-Interpolation">Derivative Interpolation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#Example:-Weizsacker-Kinetic-Energy-Density">Example: Weizsacker Kinetic Energy Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Solving-Poisson-Equation">Solving Poisson Equation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#Example:-Electrostatic-Potential">Example: Electrostatic Potential</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/cubic_grid.html">Cubic Grids</a><ul>
@@ -344,13 +356,13 @@ each lattice vector:</p>
 <div class="math notranslate nohighlight">
 \[\vec{c}_{j_1, \ldots, j_K} = \vec{c} + \sum_{k=1}^K \vec{a}_k j
 \quad \forall \, j \in \mathbb{Z} \quad \text{with} \quad
-\left\lceil \min_i \tilde{x}_i - \tild{c} - \frac{r}{s_k} \right\rceil
+\left\lceil \min_i \tilde{x}_i - \tilde{c} - \frac{r}{s_k} \right\rceil
 \le j \le
-\left\lfloor \max_i \tilde{x}_i - \tild{c} + \frac{r}{s_k} \right\rfloor\]</div>
+\left\lfloor \max_i \tilde{x}_i - \tilde{c} + \frac{r}{s_k} \right\rfloor\]</div>
 <p>where <span class="math notranslate nohighlight">\(\vec{a}_k\)</span> is lattice vector <span class="math notranslate nohighlight">\(k\)</span>, <span class="math notranslate nohighlight">\(\tilde{x}_i\)</span> is the
 fractional coordinate of grid point <span class="math notranslate nohighlight">\(i\)</span>, <span class="math notranslate nohighlight">\(\tilde{c}\)</span> is the
 fractional coordinate of the center and <span class="math notranslate nohighlight">\(s_k\)</span> is the spacing between
-adjacent crystal planes along the :math:<a href="#id1"><span class="problematic" id="id2">`</span></a>k`th lattice vector.</p>
+adjacent crystal planes along the <span class="math notranslate nohighlight">\(k\)</span>th lattice vector.</p>
 </div>
 <dl class="py class">
 <dt class="sig sig-object py" id="grid.periodicgrid.PeriodicGrid">
@@ -480,7 +492,7 @@ with its weights:</p>
 <div class="math notranslate nohighlight">
 \[m_{n_x, n_y, n_z} = \int (x - X_c)^{n_x} (y - Y_c)^{n_y} (z - Z_c)^{n_z} f(r) dr,\]</div>
 <p>where <span class="math notranslate nohighlight">\(\textbf{R}_c = (X_c, Y_c, Z_c)\)</span> is the center of the moment,
-<span class="math notranslate nohighlight">\(\f(r)\)</span> is the density, and <span class="math notranslate nohighlight">\((n_x, n_y, n_z)\)</span> are the Cartesian orders.</p>
+<span class="math notranslate nohighlight">\(f(r)\)</span> is the function, and <span class="math notranslate nohighlight">\((n_x, n_y, n_z)\)</span> are the Cartesian orders.</p>
 <p>The spherical/pure moments with <span class="math notranslate nohighlight">\((l, m)\)</span> parameter are:</p>
 <div class="math notranslate nohighlight">
 \[m_{lm} = \int | \textbf{r} - \textbf{R}_c|^l S_l^m(\theta, \phi) f(\textbf{r})
@@ -507,8 +519,8 @@ corresponding to each integral/row of the output.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Computes the moment integral of the function on the <cite>m`th center for all orders.
-If `return_orders</cite> is true, then this also returns a list that describes what
+<dd class="field-even"><p>Computes the moment integral of the function on the <cite>m</cite>th center for all orders.
+If <cite>return_orders</cite> is true, then this also returns a list that describes what
 each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 </dd>
 <dt class="field-odd">Return type</dt>

@@ -146,10 +146,22 @@
 <li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#Example:-Electron-Density">Example: Electron Density</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Local-Properties">Local Properties</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Interpolation">Interpolation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Derivative-Interpolation">Derivative Interpolation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Local-Properties">Local Properties</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#Example:-Atomic-charges-from-molecular-electron-density">Example: Atomic charges from molecular electron density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Interpolation">Interpolation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#id1">Example: Electron Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Derivative-Interpolation">Derivative Interpolation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#Example:-Weizsacker-Kinetic-Energy-Density">Example: Weizsacker Kinetic Energy Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Solving-Poisson-Equation">Solving Poisson Equation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#Example:-Electrostatic-Potential">Example: Electrostatic Potential</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/cubic_grid.html">Cubic Grids</a><ul>
@@ -246,7 +258,7 @@
 <p>Atomic Grid Module.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="grid.atomgrid.AtomGrid">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AtomGrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rgrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degrees</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[50]</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sizes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lebedev'</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/atomgrid.py#L46-L918"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.atomgrid.AtomGrid" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AtomGrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rgrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degrees</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[50]</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sizes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lebedev'</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/atomgrid.py#L45-L917"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.atomgrid.AtomGrid" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="grid.basegrid.html#grid.basegrid.Grid" title="grid.basegrid.Grid"><code class="xref py py-class docutils literal notranslate"><span class="pre">Grid</span></code></a></p>
 <p>Atomic grid construction class for integrating three-dimensional functions.</p>
 <p>Atomic grid is composed of a radial grid <span class="math notranslate nohighlight">\(\{(r_i, w_i)\}_{i=1}^{N}\)</span> meant to
@@ -257,7 +269,7 @@ is associated with an Angular (Lebedev or Symmetric spherical t-design) grid
 location.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rgrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degrees</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[50]</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sizes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lebedev'</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/atomgrid.py#L59-L140"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.atomgrid.AtomGrid.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rgrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degrees</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[50]</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sizes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lebedev'</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/atomgrid.py#L58-L139"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.atomgrid.AtomGrid.__init__" title="Permalink to this definition"></a></dt>
 <dd><p>Construct atomic grid for given arguments.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -306,7 +318,7 @@ and “spherical” (for symmetric spherical t-design).</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.convert_cartesian_to_spherical">
-<span class="sig-name descname"><span class="pre">convert_cartesian_to_spherical</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/atomgrid.py#L427-L478"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.atomgrid.AtomGrid.convert_cartesian_to_spherical" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_cartesian_to_spherical</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/atomgrid.py#L426-L477"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.atomgrid.AtomGrid.convert_cartesian_to_spherical" title="Permalink to this definition"></a></dt>
 <dd><p>Convert a set of points from Cartesian to spherical coordinates.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{align}
@@ -351,7 +363,7 @@ in atomic units. If None, the atomic grid <cite>center</cite> will be used.</p><
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.from_preset">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_preset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atnum</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rgrid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lebedev'</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/atomgrid.py#L142-L228"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.atomgrid.AtomGrid.from_preset" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_preset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atnum</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rgrid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lebedev'</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/atomgrid.py#L141-L227"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.atomgrid.AtomGrid.from_preset" title="Permalink to this definition"></a></dt>
 <dd><p>Construct an atomic grid with pre-defined angular grids for a given atomic number.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -400,7 +412,7 @@ Chemical Physics, 149(20).</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.from_pruned">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_pruned</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rgrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_sectors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d_sectors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s_sectors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lebedev'</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/atomgrid.py#L230-L304"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.atomgrid.AtomGrid.from_pruned" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_pruned</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rgrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_sectors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d_sectors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s_sectors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lebedev'</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/atomgrid.py#L229-L303"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.atomgrid.AtomGrid.from_pruned" title="Permalink to this definition"></a></dt>
 <dd><p>Initialize AtomGrid class that splits radial sections into sectors which specified degrees.</p>
 <p>Given a sequence of radial sectors <span class="math notranslate nohighlight">\(\{a_i\}_{i=1}^Q\)</span>, a radius number <span class="math notranslate nohighlight">\(R\)</span>
 and angular degree sectors <span class="math notranslate nohighlight">\(\{L_i \}_{i=1}^{Q+1}\)</span>.  This assigned the degrees
@@ -446,7 +458,7 @@ and “spherical” (for symmetric spherical t-design).</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.get_localgrid">
 <span class="sig-name descname"><span class="pre">get_localgrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/basegrid.py#L148-L186"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.atomgrid.AtomGrid.get_localgrid" title="Permalink to this definition"></a></dt>
-<dd><p>Create a grid contain points within the given radius of center.</p>
+<dd><p>Create a grid containing points within the given radius of center.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -467,7 +479,7 @@ debugging.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.get_shell_grid">
-<span class="sig-name descname"><span class="pre">get_shell_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_sq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/atomgrid.py#L380-L425"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.atomgrid.AtomGrid.get_shell_grid" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_shell_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_sq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/atomgrid.py#L379-L424"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.atomgrid.AtomGrid.get_shell_grid" title="Permalink to this definition"></a></dt>
 <dd><p>Get the spherical integral grid at radial point from specified index.</p>
 <p>The spherical integration grid has points scaled with the ith radial point
 and weights multiplied by the ith weight of the radial grid.</p>
@@ -522,7 +534,7 @@ with its weights:</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.integrate_angular_coordinates">
-<span class="sig-name descname"><span class="pre">integrate_angular_coordinates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func_vals</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/atomgrid.py#L480-L527"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.atomgrid.AtomGrid.integrate_angular_coordinates" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">integrate_angular_coordinates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func_vals</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/atomgrid.py#L479-L526"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.atomgrid.AtomGrid.integrate_angular_coordinates" title="Permalink to this definition"></a></dt>
 <dd><p>Integrate the angular coordinates of a sequence of functions.</p>
 <p>Given a series of functions <span class="math notranslate nohighlight">\(f_k \in L^2(\mathbb{R}^3)\)</span>, this returns the values</p>
 <div class="math notranslate nohighlight">
@@ -544,7 +556,7 @@ for many types of functions.  This can also be one-dimensional.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.interpolate">
-<span class="sig-name descname"><span class="pre">interpolate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func_vals</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/atomgrid.py#L622-L744"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.atomgrid.AtomGrid.interpolate" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">interpolate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func_vals</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/atomgrid.py#L621-L743"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.atomgrid.AtomGrid.interpolate" title="Permalink to this definition"></a></dt>
 <dd><p>Return function that interpolates (and its derivatives) from function values.</p>
 <p>Any real-valued function <span class="math notranslate nohighlight">\(f(r, \theta, \phi)\)</span> can be decomposed as</p>
 <div class="math notranslate nohighlight">
@@ -566,7 +578,7 @@ The function takes the following attributes:</p>
 <dt>deriv<span class="classifier">int, optional</span></dt><dd><p>If deriv is zero, then only returns function values. If it is one, then
 returns the first derivative of the interpolated function with respect to either
 Cartesian or spherical coordinates. Only higher-order derivatives
-(<a href="#id5"><span class="problematic" id="id6">`</span></a>deriv`=2,3) are supported for the derivatives wrt to radial components.</p>
+(<cite>deriv</cite>=2,3) are supported for the derivatives wrt to radial components.</p>
 </dd>
 <dt>deriv_spherical<span class="classifier">bool</span></dt><dd><p>If True, then returns the derivatives with respect to spherical coordinates
 <span class="math notranslate nohighlight">\((r, \theta, \phi)\)</span>. Default False.</p>
@@ -622,7 +634,7 @@ if <cite>only_radial_derivs</cite> then derivative wrt to <span class="math notr
 <div class="math notranslate nohighlight">
 \[m_{n_x, n_y, n_z} = \int (x - X_c)^{n_x} (y - Y_c)^{n_y} (z - Z_c)^{n_z} f(r) dr,\]</div>
 <p>where <span class="math notranslate nohighlight">\(\textbf{R}_c = (X_c, Y_c, Z_c)\)</span> is the center of the moment,
-<span class="math notranslate nohighlight">\(\f(r)\)</span> is the density, and <span class="math notranslate nohighlight">\((n_x, n_y, n_z)\)</span> are the Cartesian orders.</p>
+<span class="math notranslate nohighlight">\(f(r)\)</span> is the function, and <span class="math notranslate nohighlight">\((n_x, n_y, n_z)\)</span> are the Cartesian orders.</p>
 <p>The spherical/pure moments with <span class="math notranslate nohighlight">\((l, m)\)</span> parameter are:</p>
 <div class="math notranslate nohighlight">
 \[m_{lm} = \int | \textbf{r} - \textbf{R}_c|^l S_l^m(\theta, \phi) f(\textbf{r})
@@ -649,8 +661,8 @@ corresponding to each integral/row of the output.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Computes the moment integral of the function on the <cite>m`th center for all orders.
-If `return_orders</cite> is true, then this also returns a list that describes what
+<dd class="field-even"><p>Computes the moment integral of the function on the <cite>m</cite>th center for all orders.
+If <cite>return_orders</cite> is true, then this also returns a list that describes what
 each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 </dd>
 <dt class="field-odd">Return type</dt>
@@ -683,7 +695,7 @@ each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.radial_component_splines">
-<span class="sig-name descname"><span class="pre">radial_component_splines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func_vals</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/atomgrid.py#L560-L620"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.atomgrid.AtomGrid.radial_component_splines" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">radial_component_splines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func_vals</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/atomgrid.py#L559-L619"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.atomgrid.AtomGrid.radial_component_splines" title="Permalink to this definition"></a></dt>
 <dd><p>Return spline to interpolate radial components wrt to expansion in real spherical harmonics.</p>
 <p>For each pt <span class="math notranslate nohighlight">\(r_i\)</span> of the atomic grid with associated angular degree <span class="math notranslate nohighlight">\(l_i\)</span>,
 the function <span class="math notranslate nohighlight">\(f(r_i, \theta, \phi)\)</span> is projected onto the spherical
@@ -693,7 +705,7 @@ harmonic expansion:</p>
 Y^m_l(\theta, \phi)\]</div>
 <p>where <span class="math notranslate nohighlight">\(Y^m_l\)</span> is the real Spherical harmonic of degree <span class="math notranslate nohighlight">\(l\)</span> and order <span class="math notranslate nohighlight">\(m\)</span>.
 The radial components <span class="math notranslate nohighlight">\(\rho^{lm}(r_i)\)</span> are calculated via integration on
-the :math:<a href="#id7"><span class="problematic" id="id8">`</span></a>i`th Lebedev/angular grid of the atomic grid:</p>
+the <span class="math notranslate nohighlight">\(i\)</span>th Lebedev/angular grid of the atomic grid:</p>
 <div class="math notranslate nohighlight">
 \[\rho^{lm}(r_i) = \int \int f(r_i, \theta, \phi) Y^m_l(\theta, \phi) \sin(\phi)
  d\theta d\phi,\]</div>
@@ -739,7 +751,7 @@ the zeroth order spline is first, followed by positive orders then negative.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.save">
-<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/atomgrid.py#L358-L378"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.atomgrid.AtomGrid.save" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/atomgrid.py#L357-L377"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.atomgrid.AtomGrid.save" title="Permalink to this definition"></a></dt>
 <dd><p>Save atomic grid attributes as a npz file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -761,7 +773,7 @@ the zeroth order spline is first, followed by positive orders then negative.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.spherical_average">
-<span class="sig-name descname"><span class="pre">spherical_average</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func_vals</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/atomgrid.py#L529-L558"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.atomgrid.AtomGrid.spherical_average" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">spherical_average</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func_vals</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/atomgrid.py#L528-L557"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.atomgrid.AtomGrid.spherical_average" title="Permalink to this definition"></a></dt>
 <dd><p>Return spline of the spherical average of a function.</p>
 <p>This function takes a function <span class="math notranslate nohighlight">\(f\)</span> evaluated on the atomic grid points and returns
 the spherical average of it defined as:</p>

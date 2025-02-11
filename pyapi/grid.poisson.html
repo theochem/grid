@@ -146,10 +146,22 @@
 <li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#Example:-Electron-Density">Example: Electron Density</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Local-Properties">Local Properties</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Interpolation">Interpolation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Derivative-Interpolation">Derivative Interpolation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Local-Properties">Local Properties</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#Example:-Atomic-charges-from-molecular-electron-density">Example: Atomic charges from molecular electron density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Interpolation">Interpolation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#id1">Example: Electron Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Derivative-Interpolation">Derivative Interpolation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#Example:-Weizsacker-Kinetic-Energy-Density">Example: Weizsacker Kinetic Energy Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Solving-Poisson-Equation">Solving Poisson Equation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#Example:-Electrostatic-Potential">Example: Electrostatic Potential</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/cubic_grid.html">Cubic Grids</a><ul>
@@ -252,7 +264,7 @@ over a centered atomic grid. It is recommended to use the boundary value problem
 for handing singularities near the origin of the atomic grid.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="grid.poisson.interpolate_laplacian">
-<span class="sig-name descname"><span class="pre">interpolate_laplacian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">molgrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_vals</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/poisson.py#L382-L496"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.poisson.interpolate_laplacian" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">interpolate_laplacian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">molgrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_vals</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/poisson.py#L383-L497"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.poisson.interpolate_laplacian" title="Permalink to this definition"></a></dt>
 <dd><p>Return a function that interpolates the Laplacian of a function.</p>
 <div class="math notranslate nohighlight">
 \[\nabla^2 f = \frac{1}{r}\frac{\partial^2 rf}{\partial r^2} - \frac{\hat{L}}{r^2},\]</div>
@@ -266,7 +278,7 @@ Expanding f in terms of spherical harmonic expansion, we get that</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>molgrid</strong> (<em>Union</em><em>[</em><a class="reference internal" href="grid.molgrid.html#grid.molgrid.MolGrid" title="grid.molgrid.MolGrid"><em>MolGrid</em></a><em>, </em><a class="reference internal" href="grid.atomgrid.html#grid.atomgrid.AtomGrid" title="grid.atomgrid.AtomGrid"><em>AtomGrid</em></a><em>]</em>) – Atomic grid that can integrate spherical functions and interpolate radial components.</p></li>
+<li><p><strong>molgrid</strong> (<a class="reference internal" href="grid.molgrid.html#grid.molgrid.MolGrid" title="grid.molgrid.MolGrid"><em>MolGrid</em></a><em> or </em><a class="reference internal" href="grid.atomgrid.html#grid.atomgrid.AtomGrid" title="grid.atomgrid.AtomGrid"><em>AtomGrid</em></a>) – Atomic grid that can integrate spherical functions and interpolate radial components.</p></li>
 <li><p><strong>func_vals</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – The function values evaluated on all <span class="math notranslate nohighlight">\(N\)</span> points on the atomic grid.</p></li>
 </ul>
 </dd>
@@ -291,13 +303,13 @@ powers of <span class="math notranslate nohighlight">\(r\)</span>, it is recomme
 
 <dl class="py function">
 <dt class="sig sig-object py" id="grid.poisson.solve_poisson_bvp">
-<span class="sig-name descname"><span class="pre">solve_poisson_bvp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">molgrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_large_pts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000000.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ode_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/poisson.py#L316-L379"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.poisson.solve_poisson_bvp" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">solve_poisson_bvp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">molgrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_large_pts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000000.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ode_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/poisson.py#L317-L380"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.poisson.solve_poisson_bvp" title="Permalink to this definition"></a></dt>
 <dd><p>Return interpolation of the solution to the Poisson equation solved as a boundary value problem.</p>
 <p>The Poisson equation solves for function <span class="math notranslate nohighlight">\(g\)</span> of the following:</p>
 <div class="math notranslate nohighlight">
 \[\nabla^2 g = (-4\pi) f,\]</div>
 <p>for a fixed function <span class="math notranslate nohighlight">\(f\)</span>, where <span class="math notranslate nohighlight">\(\nabla^2\)</span> is the Laplacian.  This
-is transformed to an set of ODE problems as a boundary value problem.</p>
+is transformed to an set of ODE problems as a boundary value problem. <a class="footnote-reference brackets" href="#id2" id="id1">1</a></p>
 <p>If boundary is not provided, then the boundary of <span class="math notranslate nohighlight">\(g\)</span> for large r is set to
 <span class="math notranslate nohighlight">\(\int \int \int f(r, \theta, \phi) / r\)</span>.  The solution <span class="math notranslate nohighlight">\(g\)</span> is assumed to be
 zero at the origin <span class="math notranslate nohighlight">\(g(0, \theta, \phi) = 0\)</span>.  Use <cite>solve_poisson_ivp</cite> if this assumption
@@ -305,7 +317,7 @@ isn’t needed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>molgrid</strong> (<em>Union</em><em>[</em><a class="reference internal" href="grid.molgrid.html#grid.molgrid.MolGrid" title="grid.molgrid.MolGrid"><em>MolGrid</em></a><em>, </em><a class="reference internal" href="grid.atomgrid.html#grid.atomgrid.AtomGrid" title="grid.atomgrid.AtomGrid"><em>AtomGrid</em></a><em>]</em>) – Molecular or atomic grid that is used for integration and expanding func into real spherical
+<li><p><strong>molgrid</strong> (<a class="reference internal" href="grid.molgrid.html#grid.molgrid.MolGrid" title="grid.molgrid.MolGrid"><em>MolGrid</em></a><em> or </em><a class="reference internal" href="grid.atomgrid.html#grid.atomgrid.AtomGrid" title="grid.atomgrid.AtomGrid"><em>AtomGrid</em></a>) – Molecular or atomic grid that is used for integration and expanding func into real spherical
 harmonic basis.</p></li>
 <li><p><strong>func_vals</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – The function values evaluated on all <span class="math notranslate nohighlight">\(N\)</span> points on the molecular grid.</p></li>
 <li><p><strong>transform</strong> (<a class="reference internal" href="grid.rtransform.html#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><em>BaseTransform</em></a><em>, </em><em>optional</em>) – Transformation from infinite domain <span class="math notranslate nohighlight">\(r \in [0, \infty)\)</span> to another
@@ -327,7 +339,7 @@ only.</p></li>
 </dl>
 <p class="rubric">References</p>
 <dl class="footnote brackets">
-<dt class="label" id="id1"><span class="brackets">1</span></dt>
+<dt class="label" id="id2"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
 <dd><p>Becke, A. D., &amp; Dickson, R. M. (1988). Numerical solution of Poisson`s equation in
 polyatomic molecules. The Journal of chemical physics, 89(5), 2993-2997.</p>
 </dd>
@@ -336,7 +348,7 @@ polyatomic molecules. The Journal of chemical physics, 89(5), 2993-2997.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="grid.poisson.solve_poisson_ivp">
-<span class="sig-name descname"><span class="pre">solve_poisson_ivp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">molgrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1000,</span> <span class="pre">1e-05)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ode_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/poisson.py#L166-L219"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.poisson.solve_poisson_ivp" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">solve_poisson_ivp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">molgrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1000,</span> <span class="pre">1e-05)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ode_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/poisson.py#L167-L220"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.poisson.solve_poisson_ivp" title="Permalink to this definition"></a></dt>
 <dd><p>Return interpolation of the solution to the Poisson equation solved as an initial value problem.</p>
 <p>The Poisson equation solves for function <span class="math notranslate nohighlight">\(g\)</span> of the following:</p>
 <div class="math notranslate nohighlight">
@@ -350,7 +362,7 @@ final interval <span class="math notranslate nohighlight">\(a\)</span> close to 
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>molgrid</strong> (<em>Union</em><em>[</em><a class="reference internal" href="grid.molgrid.html#grid.molgrid.MolGrid" title="grid.molgrid.MolGrid"><em>MolGrid</em></a><em>, </em><a class="reference internal" href="grid.atomgrid.html#grid.atomgrid.AtomGrid" title="grid.atomgrid.AtomGrid"><em>AtomGrid</em></a><em>]</em>) – Molecular or atomic grid that is used for integration and expanding func into real
+<li><p><strong>molgrid</strong> (<a class="reference internal" href="grid.molgrid.html#grid.molgrid.MolGrid" title="grid.molgrid.MolGrid"><em>MolGrid</em></a><em> or </em><a class="reference internal" href="grid.atomgrid.html#grid.atomgrid.AtomGrid" title="grid.atomgrid.AtomGrid"><em>AtomGrid</em></a>) – Molecular or atomic grid that is used for integration and expanding func into real
 spherical harmonic basis.</p></li>
 <li><p><strong>func_vals</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – The function values evaluated on all <span class="math notranslate nohighlight">\(N\)</span> points on the molecular grid.</p></li>
 <li><p><strong>transform</strong> (<a class="reference internal" href="grid.rtransform.html#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><em>BaseTransform</em></a><em>, </em><em>optional</em>) – Transformation from infinite domain <span class="math notranslate nohighlight">\(r \in [0, \infty)\)</span> to another

@@ -147,10 +147,22 @@
 <li class="toctree-l3"><a class="reference internal" href="molecular_grid.html#Example:-Electron-Density">Example: Electron Density</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="molecular_grid.html#Local-Properties">Local Properties</a></li>
-<li class="toctree-l2"><a class="reference internal" href="molecular_grid.html#Interpolation">Interpolation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="molecular_grid.html#Derivative-Interpolation">Derivative Interpolation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="molecular_grid.html#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="molecular_grid.html#Local-Properties">Local Properties</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="molecular_grid.html#Example:-Atomic-charges-from-molecular-electron-density">Example: Atomic charges from molecular electron density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="molecular_grid.html#Interpolation">Interpolation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="molecular_grid.html#id1">Example: Electron Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="molecular_grid.html#Derivative-Interpolation">Derivative Interpolation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="molecular_grid.html#Example:-Weizsacker-Kinetic-Energy-Density">Example: Weizsacker Kinetic Energy Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="molecular_grid.html#Solving-Poisson-Equation">Solving Poisson Equation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="molecular_grid.html#Example:-Electrostatic-Potential">Example: Electrostatic Potential</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="cubic_grid.html">Cubic Grids</a><ul>
@@ -245,10 +257,11 @@
 <h1>Construct Atomic Grid<a class="headerlink" href="#Construct-Atomic-Grid" title="Permalink to this heading"></a></h1>
 <p>Atomic gris are useful for evaluation, integration, interpolation, and differentiation in three-dimensional (3D) atomic domains. The are constructed by combining a radial and angular grid. The radial grid <span class="math notranslate nohighlight">\(\{(r_i, w_i)\}_{i=1}^{N}\)</span> covers the radius coordinate of spherical coordinates, and associted with each radius, there is an angular (Lebedev or Symmetric spherical t-design) grid <span class="math notranslate nohighlight">\(\{(\theta^i_j, \phi^i_j, w_j^i)\}_{j=1}^{M_i}\)</span> covering the angle coordinate of spherical
 coordinates.</p>
-<p>This notebook will go over different ways of constructing an <a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.atomgrid.html">AtomGrid</a>, which provides flexibility in the choice of radial and angular components.</p>
+<p>This notebook will go over different ways of constructing an <a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid">AtomGrid</a>, which provides flexibility in the choice of radial and angular components.</p>
 <div class="section" id="Atomic-Grid-AtomGrid">
 <h2>Atomic Grid <code class="docutils literal notranslate"><span class="pre">AtomGrid</span></code><a class="headerlink" href="#Atomic-Grid-AtomGrid" title="Permalink to this heading"></a></h2>
-<p><a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid">AtomGrid</a> builds an atomic grid instance given a radial grid and an array of angular grid degrees (or sizes) used for constructing angular grids at each radial grid point. So, in the first step a radial grid needs to be constructed. For more details on the radial and angular grids, see <a class="reference external" href="../notebooks/one_dimensional_grids.html">radial grids</a> and <a class="reference external" href="../notebooks/angular_grid.html">angular grids</a>.</p>
+<p><a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid">AtomGrid</a> builds an atomic grid instance given a radial grid and an array of angular grid degrees (or sizes) used for constructing angular grids at each radial grid point. So, in the first step a radial grid needs to be constructed. For more details on the radial and angular grids, see <a class="reference external" href="https://grid.qcdevs.org/notebooks/one_dimensional_grids.html">radial grids</a> and <a class="reference external" href="https://grid.qcdevs.org/notebooks/angular_grid.html">angular
+grids</a>.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>

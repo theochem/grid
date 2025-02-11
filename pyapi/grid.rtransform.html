@@ -146,10 +146,22 @@
 <li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#Example:-Electron-Density">Example: Electron Density</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Local-Properties">Local Properties</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Interpolation">Interpolation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Derivative-Interpolation">Derivative Interpolation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Local-Properties">Local Properties</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#Example:-Atomic-charges-from-molecular-electron-density">Example: Atomic charges from molecular electron density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Interpolation">Interpolation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#id1">Example: Electron Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Derivative-Interpolation">Derivative Interpolation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#Example:-Weizsacker-Kinetic-Energy-Density">Example: Weizsacker Kinetic Energy Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Solving-Poisson-Equation">Solving Poisson Equation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#Example:-Electrostatic-Potential">Example: Electrostatic Potential</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/cubic_grid.html">Cubic Grids</a><ul>
@@ -337,7 +349,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 <dd><p>Bases: <a class="reference internal" href="#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTransform</span></code></a></p>
 <p>Becke Transformation.</p>
 <p>The Becke transformation transforms from <span class="math notranslate nohighlight">\([-1, 1]\)</span> to <span class="math notranslate nohighlight">\([r_{min}, \infty)\)</span>
-according to</p>
+according to <a class="footnote-reference brackets" href="#id2" id="id1">1</a></p>
 <div class="math notranslate nohighlight">
 \[r(x) = R \frac{1 + x}{1 - x} + r_{min}.\]</div>
 <p>The inverse transformation is given by</p>
@@ -345,7 +357,7 @@ according to</p>
 \[x(r) = \frac{r - r_{min} - R} {r - r_{min} + R}.\]</div>
 <p class="rubric">References</p>
 <dl class="footnote brackets">
-<dt class="label" id="id1"><span class="brackets">1</span></dt>
+<dt class="label" id="id2"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
 <dd><p>Becke, Axel D. “A multicenter numerical integration scheme for polyatomic molecules.”
 The Journal of chemical physics 88.4 (1988): 2547-2553.</p>
 </dd>
@@ -2271,7 +2283,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 <dt class="sig sig-object py" id="grid.rtransform.MultiExpRTransform">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MultiExpRTransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trim_inf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/rtransform.py#L1381-L1529"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.rtransform.MultiExpRTransform" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTransform</span></code></a></p>
-<p>MultiExp Transformation class from <span class="math notranslate nohighlight">\([-1,1]\)</span> to <span class="math notranslate nohighlight">\([r_{min}, \infty)\)</span>.</p>
+<p>MultiExp Transformation class from <span class="math notranslate nohighlight">\([-1,1]\)</span> to <span class="math notranslate nohighlight">\([r_{min}, \infty)\)</span>. <a class="footnote-reference brackets" href="#id4" id="id3">2</a></p>
 <p>The transformation is given by</p>
 <div class="math notranslate nohighlight">
 \[r(x) = -R \log \left( \frac{x + 1}{2} \right) + r_{min}\]</div>
@@ -2280,7 +2292,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 \[x(r) = 2 \exp \left( \frac{-(r - r_{min})}{R} \right) - 1\]</div>
 <p class="rubric">References</p>
 <dl class="footnote brackets">
-<dt class="label" id="id2"><span class="brackets">2</span></dt>
+<dt class="label" id="id4"><span class="brackets"><a class="fn-backref" href="#id3">2</a></span></dt>
 <dd><p>Gill, Peter MW, and Siu-Hung Chien. “Radial quadrature for multiexponential integrands.”
 Journal of computational chemistry 24.6 (2003): 732-740.</p>
 </dd>

@@ -147,10 +147,22 @@
 <li class="toctree-l3"><a class="reference internal" href="#Example:-Electron-Density">Example: Electron Density</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#Local-Properties">Local Properties</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#Interpolation">Interpolation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#Derivative-Interpolation">Derivative Interpolation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Local-Properties">Local Properties</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Example:-Atomic-charges-from-molecular-electron-density">Example: Atomic charges from molecular electron density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Interpolation">Interpolation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Example: Electron Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Derivative-Interpolation">Derivative Interpolation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Example:-Weizsacker-Kinetic-Energy-Density">Example: Weizsacker Kinetic Energy Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Solving-Poisson-Equation">Solving Poisson Equation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Example:-Electrostatic-Potential">Example: Electrostatic Potential</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="cubic_grid.html">Cubic Grids</a><ul>
@@ -386,6 +398,8 @@ Integration of the electron density:  15.999988.
 </div>
 <div class="section" id="Local-Properties">
 <h2>Local Properties<a class="headerlink" href="#Local-Properties" title="Permalink to this heading"></a></h2>
+<div class="section" id="Example:-Atomic-charges-from-molecular-electron-density">
+<h3>Example: Atomic charges from molecular electron density<a class="headerlink" href="#Example:-Atomic-charges-from-molecular-electron-density" title="Permalink to this heading"></a></h3>
 <p>This example shows how to extract atomic grids from a molecular grid and integrate the electron density to get atomic charges.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
@@ -430,8 +444,11 @@ Atomic charge of the Oxygen atom (q = Z - N): -0.213951
 </pre></div></div>
 </div>
 </div>
+</div>
 <div class="section" id="Interpolation">
 <h2>Interpolation<a class="headerlink" href="#Interpolation" title="Permalink to this heading"></a></h2>
+<div class="section" id="id1">
+<h3>Example: Electron Density<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h3>
 <p>This example shows how to interpolate any function using molecular grids. The electron density is used again here as the example.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
@@ -464,8 +481,11 @@ Max Error= 0.000438; Mean Error= 0.000014; Std Dev Error= 0.000054
 </pre></div></div>
 </div>
 </div>
+</div>
 <div class="section" id="Derivative-Interpolation">
 <h2>Derivative Interpolation<a class="headerlink" href="#Derivative-Interpolation" title="Permalink to this heading"></a></h2>
+<div class="section" id="Example:-Weizsacker-Kinetic-Energy-Density">
+<h3>Example: Weizsacker Kinetic Energy Density<a class="headerlink" href="#Example:-Weizsacker-Kinetic-Energy-Density" title="Permalink to this heading"></a></h3>
 <p>The Weizsacker kinetic energy density is defined as:</p>
 <div class="math notranslate nohighlight">
 \[\tau_W (\textbf{r}) = \frac{1}{8} \frac{|\nabla \rho(\textbf{r}) |^2}{\rho(\textbf{r})}.\]</div>
@@ -505,8 +525,11 @@ Max Error= 0.003902; Mean Error= 0.000068; Std Dev Error= 0.000395
 </pre></div></div>
 </div>
 </div>
+</div>
 <div class="section" id="Solving-Poisson-Equation">
 <h2>Solving Poisson Equation<a class="headerlink" href="#Solving-Poisson-Equation" title="Permalink to this heading"></a></h2>
+<div class="section" id="Example:-Electrostatic-Potential">
+<h3>Example: Electrostatic Potential<a class="headerlink" href="#Example:-Electrostatic-Potential" title="Permalink to this heading"></a></h3>
 <p>The Poisson equation is defined as:</p>
 <div class="math notranslate nohighlight">
 \[\nabla^2 V(\textbf{r}) = - 4\pi \rho(\textbf{r}),\]</div>
@@ -563,6 +586,7 @@ Max Error= 0.003902; Mean Error= 0.000068; Std Dev Error= 0.000395
 <div class="highlight"><pre>
 Max Error= 0.021631; Mean Error= 0.003719; Std Dev Error= 0.003231
 </pre></div></div>
+</div>
 </div>
 </div>
 </div>

@@ -147,10 +147,22 @@
 <li class="toctree-l3"><a class="reference internal" href="molecular_grid.html#Example:-Electron-Density">Example: Electron Density</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="molecular_grid.html#Local-Properties">Local Properties</a></li>
-<li class="toctree-l2"><a class="reference internal" href="molecular_grid.html#Interpolation">Interpolation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="molecular_grid.html#Derivative-Interpolation">Derivative Interpolation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="molecular_grid.html#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="molecular_grid.html#Local-Properties">Local Properties</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="molecular_grid.html#Example:-Atomic-charges-from-molecular-electron-density">Example: Atomic charges from molecular electron density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="molecular_grid.html#Interpolation">Interpolation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="molecular_grid.html#id1">Example: Electron Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="molecular_grid.html#Derivative-Interpolation">Derivative Interpolation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="molecular_grid.html#Example:-Weizsacker-Kinetic-Energy-Density">Example: Weizsacker Kinetic Energy Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="molecular_grid.html#Solving-Poisson-Equation">Solving Poisson Equation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="molecular_grid.html#Example:-Electrostatic-Potential">Example: Electrostatic Potential</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="cubic_grid.html">Cubic Grids</a><ul>
@@ -276,7 +288,7 @@ Beta MO occupations : [0. 0.]
 </div>
 <div class="section" id="Construct-Atomic-Grid">
 <h2>Construct Atomic Grid<a class="headerlink" href="#Construct-Atomic-Grid" title="Permalink to this heading"></a></h2>
-<p>There are multiple ways to construct an atomic grid, for a complete description see the <a href="#id1"><span class="problematic" id="id2">`Atomic_Grid_Construction.ipynb &lt;&gt;`__</span></a>.</p>
+<p>There are multiple ways to construct an atomic grid, for a complete description see the <a class="reference external" href=".https://grid.qcdevs.org/notebooks/notebooks/atom_grid_construction.html">Atomic_Grid_Construction.ipynb</a>.</p>
 <p>Here we construct an atomic grid from a radial grid instance and the degrees of the angular grid centered at the position of <span class="math notranslate nohighlight">\(\textbf{He}\)</span> nucleus. The radial grid is constructed by specifying the number of radial grid points. For more details on the radial and angular grids see <a class="reference external" href="https://grid.qcdevs.org/notebooks/one_dimensional_grids.html">One_dimensional_grids.ipynb</a> and <a class="reference external" href="https://grid.qcdevs.org/notebooks/angular_grid.html">Angular_Grid.ipynb</a>.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:

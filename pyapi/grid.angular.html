@@ -146,10 +146,22 @@
 <li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#Example:-Electron-Density">Example: Electron Density</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Local-Properties">Local Properties</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Interpolation">Interpolation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Derivative-Interpolation">Derivative Interpolation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Local-Properties">Local Properties</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#Example:-Atomic-charges-from-molecular-electron-density">Example: Atomic charges from molecular electron density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Interpolation">Interpolation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#id1">Example: Electron Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Derivative-Interpolation">Derivative Interpolation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#Example:-Weizsacker-Kinetic-Energy-Density">Example: Weizsacker Kinetic Energy Density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Solving-Poisson-Equation">Solving Poisson Equation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#Example:-Electrostatic-Potential">Example: Electrostatic Potential</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/cubic_grid.html">Cubic Grids</a><ul>
@@ -248,40 +260,40 @@
 Their calculations were based on F77 translation by Dr. Christoph van Wuellen
 and these are the comments from that translation.</p>
 <p>This subroutine is part of a set of subroutines that generate
-Lebedev grids <span id="id1">[1-6]</span> for integration on a sphere. The original
-C-code <a class="footnote-reference brackets" href="#id5" id="id2">1</a> was kindly provided by Dr. Dmitri N. Laikov and
+Lebedev grids <a class="footnote-reference brackets" href="#id10" id="id1">1</a> <a class="footnote-reference brackets" href="#id11" id="id2">2</a> <a class="footnote-reference brackets" href="#id12" id="id3">3</a> <a class="footnote-reference brackets" href="#id13" id="id4">4</a> <a class="footnote-reference brackets" href="#id14" id="id5">5</a> <a class="footnote-reference brackets" href="#id15" id="id6">6</a> for integration on a sphere. The original
+C-code <a class="footnote-reference brackets" href="#id10" id="id7">1</a> was kindly provided by Dr. Dmitri N. Laikov and
 translated into Fortran by Dr. Christoph van Wuellen.
 This subroutine was translated from C to fortran77 by hand.
-Users of this code are asked to include reference <a class="footnote-reference brackets" href="#id5" id="id3">1</a> in their
+Users of this code are asked to include reference <a class="footnote-reference brackets" href="#id10" id="id8">1</a> in their
 publications, and in the user- and programmers-manuals
 describing their codes.
 This code was distributed through CCL (<a class="reference external" href="http://www.ccl.net/">http://www.ccl.net/</a>).</p>
-<p>The symmetric spherical t-design were obtained from reference <a class="footnote-reference brackets" href="#id11" id="id4">7</a>.</p>
+<p>The symmetric spherical t-design were obtained from reference <a class="footnote-reference brackets" href="#id16" id="id9">7</a>.</p>
 <p class="rubric">References</p>
 <p>The following references are for the Lebedev grid points.</p>
 <dl class="footnote brackets">
-<dt class="label" id="id5"><span class="brackets">1</span><span class="fn-backref">(<a href="#id2">1</a>,<a href="#id3">2</a>)</span></dt>
+<dt class="label" id="id10"><span class="brackets">1</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id7">2</a>,<a href="#id8">3</a>)</span></dt>
 <dd><p>V.I. Lebedev, and D.N. Laikov
 “A quadrature formula for the sphere of the 131st algebraic order of accuracy”
 Doklady Mathematics, Vol. 59, No. 3, 1999, pp. 477-481.</p>
 </dd>
-<dt class="label" id="id6"><span class="brackets">2</span></dt>
+<dt class="label" id="id11"><span class="brackets"><a class="fn-backref" href="#id2">2</a></span></dt>
 <dd><p>V.I. Lebedev “A quadrature formula for the sphere of 59th algebraic order of accuracy”
 Russian Acad. Sci. Dokl. Math., Vol. 50, 1995, pp. 283-286.</p>
 </dd>
-<dt class="label" id="id7"><span class="brackets">3</span></dt>
+<dt class="label" id="id12"><span class="brackets"><a class="fn-backref" href="#id3">3</a></span></dt>
 <dd><p>V.I. Lebedev, and A.L. Skorokhodov “Quadrature formulas of orders 41, 47, and 53 for
 the sphere” Russian Acad. Sci. Dokl. Math., Vol. 45, 1992, pp. 587-592.</p>
 </dd>
-<dt class="label" id="id8"><span class="brackets">4</span></dt>
+<dt class="label" id="id13"><span class="brackets"><a class="fn-backref" href="#id4">4</a></span></dt>
 <dd><p>V.I. Lebedev “Spherical quadrature formulas exact to orders 25-29”
 Siberian Mathematical Journal, Vol. 18, 1977, pp. 99-107.</p>
 </dd>
-<dt class="label" id="id9"><span class="brackets">5</span></dt>
+<dt class="label" id="id14"><span class="brackets"><a class="fn-backref" href="#id5">5</a></span></dt>
 <dd><p>V.I. Lebedev “Quadratures on a sphere” Computational Mathematics and Mathematical
 Physics, Vol. 16, 1976, pp. 10-24.</p>
 </dd>
-<dt class="label" id="id10"><span class="brackets">6</span></dt>
+<dt class="label" id="id15"><span class="brackets"><a class="fn-backref" href="#id6">6</a></span></dt>
 <dd><p>V.I. Lebedev “Values of the nodes and weights of ninth to seventeenth order Gauss-Markov
 quadrature formulae invariant under the octahedron group with inversion” Computational
 Mathematics and Mathematical Physics, Vol. 15, 1975, pp. 44-51.</p>
@@ -289,7 +301,7 @@ Mathematics and Mathematical Physics, Vol. 15, 1975, pp. 44-51.</p>
 </dl>
 <p>The following references are for the symmetric spherical t-design points:</p>
 <dl class="footnote brackets">
-<dt class="label" id="id11"><span class="brackets"><a class="fn-backref" href="#id4">7</a></span></dt>
+<dt class="label" id="id16"><span class="brackets"><a class="fn-backref" href="#id9">7</a></span></dt>
 <dd><p>R. S. Womersley, Efficient Spherical Designs with Good Geometric Properties.
 In: Dick J., Kuo F., Wozniakowski H. (eds) Contemporary Computational Mathematics -
 A Celebration of the 80th Birthday of Ian Sloan. Springer (2018) pp. 1243-1285
@@ -298,7 +310,7 @@ A Celebration of the 80th Birthday of Ian Sloan. Springer (2018) pp. 1243-1285
 </dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="grid.angular.AngularGrid">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AngularGrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">degree</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lebedev'</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/angular.py#L287-L564"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.angular.AngularGrid" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AngularGrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">degree</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lebedev'</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/angular.py#L287-L565"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.angular.AngularGrid" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="grid.basegrid.html#grid.basegrid.Grid" title="grid.basegrid.Grid"><code class="xref py py-class docutils literal notranslate"><span class="pre">Grid</span></code></a></p>
 <p>Angular grid for integrating functions on the unit sphere.</p>
 <p>This class numerically evaluates the surface integral of a function
@@ -308,20 +320,21 @@ A Celebration of the 80th Birthday of Ian Sloan. Springer (2018) pp. 1243-1285
  d\theta d\phi \approx \sum_{i}^{N} w_i f(\phi_i, \theta_i),\]</div>
 <p>where <span class="math notranslate nohighlight">\(S^2\)</span> is the unit-sphere parameterized by the quadrature points
 <span class="math notranslate nohighlight">\(\theta_i \in [0, 2\pi]\)</span> and <span class="math notranslate nohighlight">\(\phi_i \in [0, \pi)\)</span>, and
-<span class="math notranslate nohighlight">\(w^{ang}_i\)</span> are the weights of the <span class="math notranslate nohighlight">\(N\)</span> quadrature points.
-Just to clarify, the <span class="math notranslate nohighlight">\(4\pi\)</span> is included in the integration weights.</p>
+<span class="math notranslate nohighlight">\(w_{i}\)</span> are the weights of the <span class="math notranslate nohighlight">\(N\)</span> quadrature points. The
+<span class="math notranslate nohighlight">\(4\pi\)</span> normalization factor present in the original quadrature scheme
+is included in the integration weights.</p>
 <p>Two types of angular grids are supported: Lebedev-Laikov grid and symmetric
 spherical t-design. Specifically, for spherical t-design, the weights are constant
 value of <span class="math notranslate nohighlight">\(4 \pi / N\)</span>, where <span class="math notranslate nohighlight">\(N\)</span> is the number of points in the grid.
 The weights are chosen so that the spherical harmonics are normalized.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.angular.AngularGrid.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">degree</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lebedev'</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/angular.py#L309-L393"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.angular.AngularGrid.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">degree</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lebedev'</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/angular.py#L310-L394"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.angular.AngularGrid.__init__" title="Permalink to this definition"></a></dt>
 <dd><p>Generate angular grid for a given degree or size.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>degree</strong> (<em>int</em><em>, </em><em>optional</em>) – Maximum angular degree <span class="math notranslate nohighlight">\(l\)</span> of spherical harmonics that the angular grid
+<li><p><strong>degree</strong> (<em>int</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – Maximum angular degree <span class="math notranslate nohighlight">\(l\)</span> of spherical harmonics that the angular grid
 can integrate accurately. If the angular grid corresponding to the given angular
 degree is not supported, the next largest degree is used. If <cite>size</cite> is provided,
 <cite>degree</cite> is ignored.</p></li>
@@ -351,7 +364,7 @@ negative weights. See <a class="reference external" href="https://github.com/the
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.angular.AngularGrid.convert_angular_sizes_to_degrees">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">convert_angular_sizes_to_degrees</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sizes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/angular.py#L405-L431"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.angular.AngularGrid.convert_angular_sizes_to_degrees" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">convert_angular_sizes_to_degrees</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sizes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/angular.py#L406-L432"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.angular.AngularGrid.convert_angular_sizes_to_degrees" title="Permalink to this definition"></a></dt>
 <dd><p>Convert given Lebedev/Spherical design grid sizes to degrees.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -385,7 +398,7 @@ its size.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.angular.AngularGrid.get_localgrid">
 <span class="sig-name descname"><span class="pre">get_localgrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/basegrid.py#L148-L186"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.angular.AngularGrid.get_localgrid" title="Permalink to this definition"></a></dt>
-<dd><p>Create a grid contain points within the given radius of center.</p>
+<dd><p>Create a grid containing points within the given radius of center.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -428,7 +441,7 @@ with its weights:</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="grid.angular.AngularGrid.method">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">method</span></span><a class="headerlink" href="#grid.angular.AngularGrid.method" title="Permalink to this definition"></a></dt>
-<dd><p>Method used for constructing an angular grid.</p>
+<dd><p>Method used for constructing the angular grid.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>str</p>
@@ -444,7 +457,7 @@ with its weights:</p>
 <div class="math notranslate nohighlight">
 \[m_{n_x, n_y, n_z} = \int (x - X_c)^{n_x} (y - Y_c)^{n_y} (z - Z_c)^{n_z} f(r) dr,\]</div>
 <p>where <span class="math notranslate nohighlight">\(\textbf{R}_c = (X_c, Y_c, Z_c)\)</span> is the center of the moment,
-<span class="math notranslate nohighlight">\(\f(r)\)</span> is the density, and <span class="math notranslate nohighlight">\((n_x, n_y, n_z)\)</span> are the Cartesian orders.</p>
+<span class="math notranslate nohighlight">\(f(r)\)</span> is the function, and <span class="math notranslate nohighlight">\((n_x, n_y, n_z)\)</span> are the Cartesian orders.</p>
 <p>The spherical/pure moments with <span class="math notranslate nohighlight">\((l, m)\)</span> parameter are:</p>
 <div class="math notranslate nohighlight">
 \[m_{lm} = \int | \textbf{r} - \textbf{R}_c|^l S_l^m(\theta, \phi) f(\textbf{r})
@@ -471,8 +484,8 @@ corresponding to each integral/row of the output.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Computes the moment integral of the function on the <cite>m`th center for all orders.
-If `return_orders</cite> is true, then this also returns a list that describes what
+<dd class="field-even"><p>Computes the moment integral of the function on the <cite>m</cite>th center for all orders.
+If <cite>return_orders</cite> is true, then this also returns a list that describes what
 each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 </dd>
 <dt class="field-odd">Return type</dt>
