@@ -262,6 +262,22 @@
 <li><p><a class="reference internal" href="../pyapi/grid.cubic.html#grid.cubic.UniformGrid"><span class="std std-ref">UniformGrid</span></a> : Evenly spaced grid in three axes.</p></li>
 </ul>
 <p>See their API documentation for more information about the classes. This example illustrates how to use these grid classes for both visualization, interpolation (including differentiation), and integration, with a focus on usage in quantum chemistry. It is recommended for general usage to use the Tensor1DGrids and for quantum chemistry applications, to use the UniformGrid class.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="c1"># # Install packages in Google Colab</span>
+<span class="c1"># ! pip install qc-iodata</span>
+<span class="c1"># ! pip install qc-grid</span>
+<span class="c1"># ! pip install qc-gbasis</span>
+
+<span class="c1"># # Download the example files</span>
+<span class="c1"># from urllib.request import urlretrieve</span>
+<span class="c1"># urlretrieve(&quot;https://raw.githubusercontent.com/theochem/grid/refs/heads/master/examples/ch2o_q%2B1.fchk&quot;,&quot;ch2o_q+1.fchk&quot;)</span>
+<span class="c1"># urlretrieve(&quot;https://raw.githubusercontent.com/theochem/grid/refs/heads/master/examples/ch2o_q-1.fchk&quot;,&quot;ch2o_q-1.fchk&quot;)</span>
+</pre></div>
+</div>
+</div>
 <div class="section" id="Tensor-1D-Grids">
 <h2>Tensor 1D Grids<a class="headerlink" href="#Tensor-1D-Grids" title="Permalink to this heading"></a></h2>
 <p>The first grid is a tensor combination of three grids with points <span class="math notranslate nohighlight">\(\{p^1_i\}, \{p^2_i\}, \{p^3_i\}\)</span> and weights <span class="math notranslate nohighlight">\(\{w^1_i\}, \{w^2_i\}, \{w^3_i\}\)</span> such that the new set of points are <span class="math notranslate nohighlight">\(\{(p^1_i, p^2_j, p^3_k)\}\)</span> with weights <span class="math notranslate nohighlight">\(\{w^1_i \times w^2_j \times w^3_k\}\)</span>.</p>
@@ -321,7 +337,7 @@
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_cubic_grid_5_0.png" src="../_images/notebooks_cubic_grid_5_0.png" />
+<img alt="../_images/notebooks_cubic_grid_6_0.png" src="../_images/notebooks_cubic_grid_6_0.png" />
 </div>
 </div>
 <p>The Tensor1DGrids can now be easily constructed by passing in each of the three one-dimensional grids. These are then plotted</p>
@@ -357,7 +373,7 @@
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_cubic_grid_7_0.png" src="../_images/notebooks_cubic_grid_7_0.png" />
+<img alt="../_images/notebooks_cubic_grid_8_0.png" src="../_images/notebooks_cubic_grid_8_0.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -696,7 +712,7 @@ Derivative (using logarithm) in x-direction [ 0.30673882  0.24715189 -0.1054587 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_cubic_grid_16_0.png" src="../_images/notebooks_cubic_grid_16_0.png" />
+<img alt="../_images/notebooks_cubic_grid_17_0.png" src="../_images/notebooks_cubic_grid_17_0.png" />
 </div>
 </div>
 </div>
@@ -752,7 +768,7 @@ Atomic Numbers:
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_cubic_grid_19_1.png" src="../_images/notebooks_cubic_grid_19_1.png" />
+<img alt="../_images/notebooks_cubic_grid_20_1.png" src="../_images/notebooks_cubic_grid_20_1.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -802,7 +818,7 @@ The axes of the grid: [[ 0.00000000e+00  0.00000000e+00  1.00000000e-01]
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_cubic_grid_20_1.png" src="../_images/notebooks_cubic_grid_20_1.png" />
+<img alt="../_images/notebooks_cubic_grid_21_1.png" src="../_images/notebooks_cubic_grid_21_1.png" />
 </div>
 </div>
 </div>
@@ -893,7 +909,7 @@ The axes of the grid: [[ 0.00000000e+00  0.00000000e+00  1.00000000e-01]
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_cubic_grid_25_0.png" src="../_images/notebooks_cubic_grid_25_0.png" />
+<img alt="../_images/notebooks_cubic_grid_26_0.png" src="../_images/notebooks_cubic_grid_26_0.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -1028,42 +1044,42 @@ Negative values (blue) correspond to electrophilic regions
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_cubic_grid_31_0.png" src="../_images/notebooks_cubic_grid_31_0.png" />
+<img alt="../_images/notebooks_cubic_grid_32_0.png" src="../_images/notebooks_cubic_grid_32_0.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_cubic_grid_31_1.png" src="../_images/notebooks_cubic_grid_31_1.png" />
+<img alt="../_images/notebooks_cubic_grid_32_1.png" src="../_images/notebooks_cubic_grid_32_1.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_cubic_grid_31_2.png" src="../_images/notebooks_cubic_grid_31_2.png" />
+<img alt="../_images/notebooks_cubic_grid_32_2.png" src="../_images/notebooks_cubic_grid_32_2.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_cubic_grid_31_3.png" src="../_images/notebooks_cubic_grid_31_3.png" />
+<img alt="../_images/notebooks_cubic_grid_32_3.png" src="../_images/notebooks_cubic_grid_32_3.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_cubic_grid_31_4.png" src="../_images/notebooks_cubic_grid_31_4.png" />
+<img alt="../_images/notebooks_cubic_grid_32_4.png" src="../_images/notebooks_cubic_grid_32_4.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_cubic_grid_31_5.png" src="../_images/notebooks_cubic_grid_31_5.png" />
+<img alt="../_images/notebooks_cubic_grid_32_5.png" src="../_images/notebooks_cubic_grid_32_5.png" />
 </div>
 </div>
 </div>
@@ -1093,14 +1109,14 @@ Negative values (blue) correspond to electrophilic regions
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_cubic_grid_33_0.png" src="../_images/notebooks_cubic_grid_33_0.png" />
+<img alt="../_images/notebooks_cubic_grid_34_0.png" src="../_images/notebooks_cubic_grid_34_0.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_cubic_grid_33_1.png" src="../_images/notebooks_cubic_grid_33_1.png" />
+<img alt="../_images/notebooks_cubic_grid_34_1.png" src="../_images/notebooks_cubic_grid_34_1.png" />
 </div>
 </div>
 </div>

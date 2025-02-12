@@ -258,6 +258,21 @@
 <p><a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid">AtomGrid</a> constructs an atomic grid by combining a radial and angular components for evaluation, integration, interpolation, and differentiation in three-dimensional (3D) space. In quantum chemistry, this is typically used for computations of atomic properties. However, this is a general purpose grid that can be used for any function in 3D space.</p>
 <p>This notebook showcases various functionalities of <a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid">AtomGrid</a>. For computing properties on the grid, we use <span class="math notranslate nohighlight">\(\textbf{He}\)</span> in the triplet state (<span class="math notranslate nohighlight">\(1s^1 2s^1\)</span>) as an example. The corresponding wavefunction is obtained from formatted checkpoint file <code class="docutils literal notranslate"><span class="pre">&quot;doc/notebooks/He_t.fchk&quot;</span></code>. The <a class="reference external" href="https://github.com/theochem/iodata">qc-iodata</a> package is used for parsing the wavefuction data from the fchk file, and
 <a class="reference external" href="https://github.com/theochem/gbasis">qc-gbasis</a> package is used for analytical evaluation of various properties in the grid.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># # Install packages in Google Colab</span>
+<span class="c1"># ! pip install qc-iodata</span>
+<span class="c1"># ! pip install qc-grid</span>
+<span class="c1"># ! pip install qc-gbasis</span>
+
+<span class="c1"># # Download the example files</span>
+<span class="c1"># from urllib.request import urlretrieve</span>
+<span class="c1"># urlretrieve(&quot;https://raw.githubusercontent.com/theochem/grid/refs/heads/master/examples/He_t.fchk&quot;,&quot;He_t.fchk&quot;)</span>
+</pre></div>
+</div>
+</div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
@@ -426,7 +441,7 @@ Max difference between radial_dens_1 and radial_dens_2: 2.220446049250313e-16
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_atom_grid_8_1.png" src="../_images/notebooks_atom_grid_8_1.png" />
+<img alt="../_images/notebooks_atom_grid_9_1.png" src="../_images/notebooks_atom_grid_9_1.png" />
 </div>
 </div>
 <p>To identify the local maxima of radial electron density and corresponding radii, the <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.find_peaks.html">scipy.signal.find_peaks</a> is used.</p>

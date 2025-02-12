@@ -269,6 +269,21 @@
 \[\vec{\mu} = \sum_{i=1}^{N_{atoms}} Z_i (\vec{R_i} - \vec{R_c}) -
 \int (\vec{r} - \vec{R_c}) \rho(\vec{r}) dr,\]</div>
 <p>where <span class="math notranslate nohighlight">\(N_{atoms}\)</span> is the number of atoms, <span class="math notranslate nohighlight">\(Z_i\)</span> is the atomic charge of the ith atom, <span class="math notranslate nohighlight">\(\vec{R_i}\)</span> is the ith coordinate of the atom, <span class="math notranslate nohighlight">\(\vec{R_c}\)</span> is the center of the molecule and <span class="math notranslate nohighlight">\(\rho\)</span> is the electron density of the molecule.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># # Install packages in Google Colab</span>
+<span class="c1"># ! pip install qc-iodata</span>
+<span class="c1"># ! pip install qc-grid</span>
+<span class="c1"># ! pip install qc-gbasis</span>
+
+<span class="c1"># # Download the example files</span>
+<span class="c1"># from urllib.request import urlretrieve</span>
+<span class="c1"># urlretrieve(&quot;https://raw.githubusercontent.com/theochem/grid/refs/heads/master/examples/ch2o_q%2B0.fchk&quot;,&quot;ch2o_q+0.fchk&quot;)</span>
+</pre></div>
+</div>
+</div>
 <p>IOData is used to first read the wavefunction information of Formaldehyde.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:

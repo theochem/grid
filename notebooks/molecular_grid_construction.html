@@ -275,6 +275,21 @@ the numerical integral</p>
 w_A(r, \theta, \phi) f(r, \theta, \phi).\]</div>
 <p>For any general function <span class="math notranslate nohighlight">\(f: \mathbb{R}^3\rightarrow \mathbb{R}\)</span>, Grid package offers various grids in <a class="reference internal" href="../pyapi/grid.cubic.html"><span class="doc">Cubic</span></a> class for constructing hyper-rectangular grids. If <span class="math notranslate nohighlight">\(f\)</span> is periodic, then the <a class="reference internal" href="../pyapi/grid.periodicgrid.html"><span class="doc">periodic</span></a> module is useful.</p>
 <p><strong>Example: Formaldehyde</strong> This example computes the integral of the electron density of Formaldehyde obtained from Gaussian calculation. The integral of the electron density should be the sum of the atomic charges (16 for Formaldehyde).</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># # Install packages in Google Colab</span>
+<span class="c1"># ! pip install qc-iodata</span>
+<span class="c1"># ! pip install qc-grid</span>
+<span class="c1"># ! pip install qc-gbasis</span>
+
+<span class="c1"># # Download the example files</span>
+<span class="c1"># from urllib.request import urlretrieve</span>
+<span class="c1"># urlretrieve(&quot;https://raw.githubusercontent.com/theochem/grid/refs/heads/master/examples/ch2o_q%2B0.fchk&quot;,&quot;ch2o_q+0.fchk&quot;)</span>
+</pre></div>
+</div>
+</div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
