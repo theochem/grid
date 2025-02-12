@@ -24,7 +24,7 @@ from unittest import TestCase
 from grid.onedgrid import UniformInteger, GaussLegendre
 from grid.rtransform import BeckeRTransform, LinearInfiniteRTransform
 from grid.atomgrid import AtomGrid
-from grid.ngrid import Ngrid
+from grid.ngrid import MultiDomainGrid
 import pytest
 import itertools
 
@@ -46,37 +46,37 @@ class TestNgrid_linear(TestCase):
             self.linear_grid
         )
         # create a 3D grid with n equally spaced points between 0 and 1 along each axis
-        self.ngrid = Ngrid([self.linear_grid], 3)
+        self.ngrid = MultiDomainGrid([self.linear_grid], 3)
 
     def test_init_raises(self):
         """Assert that the init raises the correct error."""
         # case 1: the grid list is not given
         with self.assertRaises(ValueError):
-            Ngrid(grid_list=None)
+            MultiDomainGrid(grid_list=None)
         # case 2: the grid list is empty
         with self.assertRaises(ValueError):
-            Ngrid(grid_list=[])
+            MultiDomainGrid(grid_list=[])
         # case 3: the grid list is not a list of Grid
         with self.assertRaises(ValueError):
-            Ngrid(grid_list=[self.linear_grid, 1], n=None)
+            MultiDomainGrid(grid_list=[self.linear_grid, 1], num_domains=None)
         # case 4: n is negative
         with self.assertRaises(ValueError):
-            Ngrid(grid_list=[self.linear_grid], n=-1)
+            MultiDomainGrid(grid_list=[self.linear_grid], num_domains=-1)
         # case 5: n and the grid list have different lengths
         with self.assertRaises(ValueError):
-            Ngrid(grid_list=[self.linear_grid] * 3, n=2)
+            MultiDomainGrid(grid_list=[self.linear_grid] * 3, num_domains=2)
 
     def test_init(self):
         """Assert that the init works as expected."""
         # case 1: the grid list is given and n is None
-        ngrid = Ngrid(grid_list=[self.linear_grid, self.linear_grid, self.linear_grid])
+        ngrid = MultiDomainGrid(grid_list=[self.linear_grid, self.linear_grid, self.linear_grid])
         self.assertEqual(len(ngrid.grid_list), 3)
-        self.assertEqual(ngrid.n, None)
+        self.assertEqual(ngrid.num_domains, None)
 
         # case 2: the grid list is given (length 1) and n is not None
-        ngrid = Ngrid(grid_list=[self.linear_grid], n=3)
+        ngrid = MultiDomainGrid(grid_list=[self.linear_grid], num_domains=3)
         self.assertEqual(len(ngrid.grid_list), 1)
-        self.assertEqual(ngrid.n, 3)
+        self.assertEqual(ngrid.num_domains, 3)
 
     def test_single_grid_integration(self):
         """Assert that the integration works as expected for a single grid."""
@@ -86,7 +86,7 @@ class TestNgrid_linear(TestCase):
             return x**2
 
         # define a Ngrid with only one grid
-        ngrid = Ngrid(grid_list=[self.linear_grid])
+        ngrid = MultiDomainGrid(grid_list=[self.linear_grid])
         # integrate it
         result = ngrid.integrate(f)
         # check that the result is correct
@@ -100,7 +100,7 @@ class TestNgrid_linear(TestCase):
             return x**2 + y**2
 
         # define a Ngrid with two grids
-        ngrid = Ngrid(grid_list=[self.linear_grid], n=2)
+        ngrid = MultiDomainGrid(grid_list=[self.linear_grid], num_domains=2)
         # integrate it
         result = ngrid.integrate(f)
         # check that the result is correct
@@ -114,7 +114,7 @@ class TestNgrid_linear(TestCase):
             return x * y * z
 
         # define a Ngrid with three grids
-        ngrid = Ngrid(grid_list=[self.linear_grid], n=3)
+        ngrid = MultiDomainGrid(grid_list=[self.linear_grid], num_domains=3)
         # integrate it
         result = ngrid.integrate(f)
         # check that the result is correct
@@ -174,7 +174,7 @@ class TestNgrid_atom(TestCase):
         g = self.make_gaussian(self.center1, height, width)
 
         # define a Ngrid with only one atom grid
-        ngrid = Ngrid(grid_list=[self.atgrid1])
+        ngrid = MultiDomainGrid(grid_list=[self.atgrid1])
         # integrate it
         result = ngrid.integrate(g)
         ref_val = self.gaussian_integral(height, width)
@@ -195,7 +195,7 @@ class TestNgrid_atom(TestCase):
         func = lambda x, y: g1(x) * g2(y)
 
         # define a Ngrid with two grids
-        ngrid = Ngrid(grid_list=[self.atgrid1, self.atgrid2])
+        ngrid = MultiDomainGrid(grid_list=[self.atgrid1, self.atgrid2])
         # integrate it and compare with reference value
         result = ngrid.integrate(func)
         ref_val = self.gaussian_integral(height1, width1) * self.gaussian_integral(height2, width2)
@@ -220,7 +220,7 @@ class TestNgrid_atom(TestCase):
         func = lambda x, y, z: g1(x) * g2(y) * g3(z)
 
         # define a Ngrid with two grids
-        ngrid = Ngrid(grid_list=[self.atgrid1, self.atgrid2, self.atgrid3])
+        ngrid = MultiDomainGrid(grid_list=[self.atgrid1, self.atgrid2, self.atgrid3])
         # integrate it and compare with reference value
         result = ngrid.integrate(func)
         ref_val = (
@@ -323,7 +323,7 @@ class TestNgrid_mixed(TestCase):
         func = lambda x, y: g1(x) * g2(y)
 
         # define a Ngrid with only one atom grid
-        ngrid = Ngrid(grid_list=[self.onedgrid, self.atgrid1])
+        ngrid = MultiDomainGrid(grid_list=[self.onedgrid, self.atgrid1])
         # integrate it
         result = ngrid.integrate(func)
         ref_val = (
