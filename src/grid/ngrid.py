@@ -25,14 +25,29 @@ import itertools
 from numbers import Number
 
 
-class Ngrid(Grid):
+class MultiDomainGrid(Grid):
     r"""
-    Grid class for integration of N argument functions.
+    Grid class for integrating functions of multiple variables, each defined on a different grid.
 
-    This class is used for integrating functions of N arguments.
+    This class facilitates the numerical integration of functions with :math:`N` arguments
+    over a corresponding :math:`N`-dimensional domain using grid-based methods.
 
-    ..math::
-        \idotsint f(x_1, x_2, ..., x_N) dx_1 dx_2 ... dx_N
+    .. math::
+        \int \cdots \int f(x_1, x_2, \ldots, x_N) \, dx_1 dx_2 \cdots dx_N
+
+    The function to integrate must accept arguments :math:`\{x_i\}` that correspond to
+    the dimensions (point-wise) of the respective grids. Specifically:
+
+        - Each argument :math:`x_i` corresponds to a different grid.
+        - The dimensionality of each argument must match the dimensionality of a point of its
+          associated grid.
+
+    For example:
+
+    - For a function of the form :code:`f([x1, y1, z1], [x2, y2]) -> float`,
+      the first argument corresponds to a 3-dimensional grid, and the second argument
+      corresponds to a 2-dimensional grid.
+
 
     The function to integrate must have all arguments :math:`\{x_i\}` with the same dimension as the
     points of the corresponding grids (i.e. each of the arguments corresponds to a different grid).
@@ -40,51 +55,41 @@ class Ngrid(Grid):
     be described by a 3D grid and the second argument by a 2D grid.
     """
 
-    def __init__(self, grid_list=None, n=None, **kwargs):
+    def __init__(self, grid_list=None, num_domains=None):
         r"""
-        Initialize n particle grid.
-
-        At least one grid must be specified. If only one grid is specified, and a value for n bigger
-        than one is specified, the same grid will copied n times and one grid will used for each
-        particle. If more than one grid is specified, n will be ignored. In all cases, The function
-        to integrate must be a function with all arguments with the same dimension as the grid
-        points and must depend on a number of particles equal to the number of grids. For example, a
-        function of the form
-        f((x1,y1,z1), (x2,y2,z2), ..., (xn, yn, zn)) -> float where (xi, yi, zi) are the coordinates
-        of the i-th particle and n is the number of particles.
+        Initialize the MultiDomainGrid grid.
 
         Parameters
         ----------
         grid_list : list of Grid
-            List of grids, one Grid for each particle.
-        n : int
-            Number of particles.
+            A list of Grid objects, where each Grid corresponds to a separate argument
+            (integration domain) of the function to be integrated.
+            - At least one grid must be specified.
+            - The number of elements in `grid_list` should match the number of arguments
+              in the target function.
+        num_domains : int, optional
+            The number of integration domains.
+            - This parameter is optional and can only be specified when `grid_list` contains
+              exactly one grid.
+            - It must be a positive integer greater than 1.
+            - If specified, the function to integrate is considered to have `num_domains` arguments,
+              all defined over the same grid (i.e., the same set of points is used for each
+              argument).
         """
-        # check that grid_list is defined
-        if grid_list is None:
-            raise ValueError("The list must be specified")
-
-        # check that grid_list is not empty
+        if not isinstance(grid_list, list):
+            raise ValueError("The grid list must be defined")
         if len(grid_list) == 0:
             raise ValueError("The list must contain at least one grid")
-
-        # check that grid_list contains only Grid objects
         if not all(isinstance(grid, Grid) for grid in grid_list):
-            raise ValueError("The Grid list must contain only Grid objects")
-
-        if n is not None:
-            # check that n is non negative
-            if n < 0:
-                raise ValueError("n must be non negative")
-            # check that for n > 1, the number of grids is equal to n or 1
-            if len(grid_list) > 1 and len(grid_list) != n:
-                raise ValueError(
-                    "Conflicting values for n and the number of grids. \n"
-                    "If n is specified, the number of grids must be equal to n or 1."
-                )
+            raise ValueError("Invalid grid list. The list must contain only Grid objects")
+        if num_domains is not None:
+            if len(grid_list) != 1:
+                raise ValueError("The number of grids must be equal to 1 if grids_num is specified")
+            if not isinstance(num_domains, int) or num_domains < 1:
+                raise ValueError("grids_num must be a positive integer bigger than 1")
 
         self.grid_list = grid_list
-        self.n = n
+        self.num_domains = num_domains
 
     def integrate(self, callable, **call_kwargs):
         r"""
@@ -108,8 +113,8 @@ class Ngrid(Grid):
         if len(self.grid_list) == 0:
             raise ValueError("The list must contain at least one grid")
 
-        if len(self.grid_list) == 1 and self.n is not None and self.n > 1:
-            return self._n_integrate(self.grid_list * self.n, callable, **call_kwargs)
+        if len(self.grid_list) == 1 and self.num_domains is not None and self.num_domains > 1:
+            return self._n_integrate(self.grid_list * self.num_domains, callable, **call_kwargs)
         else:
             return self._n_integrate(self.grid_list, callable, **call_kwargs)
 
