@@ -42,6 +42,11 @@ with the following bibtex:
 
 Installation via pip can be done by the following command:
 ```bash
+pip install qc-grid
+```
+
+The development version from [github](https://github.com/theochem/grid) can also be installed via pip by:
+```bash
 pip install git+https://github.com/theochem/grid.git@master
 ```
 
@@ -50,9 +55,4 @@ Local installation can be done as:
 git clone https://github.com/theochem/grid.git
 cd grid
 pip install .
-```
-
-With later release in PyPi, Grid can be installed via
-```bash
-pip install qc-grid
 ```
