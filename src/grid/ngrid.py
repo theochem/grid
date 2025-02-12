@@ -91,6 +91,14 @@ class MultiDomainGrid(Grid):
         self.grid_list = grid_list
         self.num_domains = num_domains
 
+    @property
+    def size(self):
+        """int: the total number of points on the grid."""
+        if len(self.grid_list) == 1 and self.num_domains is not None:
+            return self.grid_list[0].size ** self.num_domains
+        else:
+            return np.prod([grid.size for grid in self.grid_list])
+
     def integrate(self, callable, **call_kwargs):
         r"""
         Integrate callable on the N particle grid.

@@ -66,6 +66,10 @@ class TestNgrid_linear(TestCase):
         with self.assertRaises(ValueError):
             MultiDomainGrid(grid_list=[self.linear_grid] * 3, num_domains=2)
 
+    def test_size(self):
+        """Assert that the size property works as expected."""
+        self.assertEqual(self.ngrid.size, 500**3)
+
     def test_init(self):
         """Assert that the init works as expected."""
         # case 1: the grid list is given and n is None
