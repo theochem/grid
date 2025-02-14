@@ -89,7 +89,12 @@ class MultiDomainGrid(Grid):
                 raise ValueError("grids_num must be a positive integer bigger than 1")
 
         self.grid_list = grid_list
-        self.num_domains = num_domains
+        self._num_domains = num_domains
+
+    @property
+    def num_domains(self):
+        """int: The number of integration domains."""
+        return self._num_domains if self._num_domains is not None else len(self.grid_list)
 
     @property
     def size(self):
