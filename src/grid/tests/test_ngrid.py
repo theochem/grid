@@ -298,7 +298,7 @@ class TestMultiDomainGrid_atom(TestCase):
         self.assertAlmostEqual(result, ref_val, places=6)
 
 
-class TestNgrid_mixed(TestCase):
+class TestMultiDomainGrid_mixed_dimension_grids(TestCase):
     """Ngrid tests class."""
 
     def setUp(self):
@@ -387,7 +387,7 @@ class TestNgrid_mixed(TestCase):
         # function is product of two gaussians
         func = lambda x, y: g1(x) * g2(y)
 
-        # define a Ngrid with only one atom grid
+        # define a MultiDomainGrid with only one atom grid
         ngrid = MultiDomainGrid(grid_list=[self.onedgrid, self.atgrid1])
         # integrate it
         result = ngrid.integrate(func)
