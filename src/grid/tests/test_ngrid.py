@@ -182,6 +182,10 @@ class TestMultiDomainGrid_linear(TestCase):
         # check that the result is correct
         self.assertAlmostEqual(ref_value, result, places=6)
 
+
+class TestMultiDomainGrid_atom(TestCase):
+    """MultiDomainGrid tests class."""
+
     def setUp(self):
         """Set up atomgrid to use in the tests."""
         # construct a radial grid with 150 points
@@ -207,7 +211,8 @@ class TestMultiDomainGrid_linear(TestCase):
             The width of the gaussian."""
 
         def f(x):
-            r = np.linalg.norm(center - x, axis=1)
+            # axis=1 is needed to broadcast the norm correctly in the 3D case
+            r = np.linalg.norm(center - x, axis=-1)
             return height * np.exp(-(r**2) / (2 * width**2))
 
         return f
@@ -231,8 +236,9 @@ class TestMultiDomainGrid_linear(TestCase):
         # define a function to integrate
         g = self.make_gaussian(self.center1, height, width)
 
-        # define a Ngrid with only one atom grid
+        # # define a MultiDomainGrid with only one atom grid
         ngrid = MultiDomainGrid(grid_list=[self.atgrid1])
+        ngrid.integrate(g)
         # integrate it
         result = ngrid.integrate(g)
         ref_val = self.gaussian_integral(height, width)
@@ -250,9 +256,10 @@ class TestMultiDomainGrid_linear(TestCase):
         g2 = self.make_gaussian(self.center2, height2, width2)
 
         # function is product of two gaussians
-        func = lambda x, y: g1(x) * g2(y)
+        def func(x, y):
+            return g1(x) * g2(y)
 
-        # define a Ngrid with two grids
+        # define a MultiDomainGrid with two grids
         ngrid = MultiDomainGrid(grid_list=[self.atgrid1, self.atgrid2])
         # integrate it and compare with reference value
         result = ngrid.integrate(func)
@@ -277,7 +284,7 @@ class TestMultiDomainGrid_linear(TestCase):
         # function is product of two gaussians
         func = lambda x, y, z: g1(x) * g2(y) * g3(z)
 
-        # define a Ngrid with two grids
+        # define a MultiDomainGrid with two grids
         ngrid = MultiDomainGrid(grid_list=[self.atgrid1, self.atgrid2, self.atgrid3])
         # integrate it and compare with reference value
         result = ngrid.integrate(func)
