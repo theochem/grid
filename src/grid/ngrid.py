@@ -64,17 +64,26 @@ class MultiDomainGrid(Grid):
         grid_list : list of Grid
             A list of Grid objects, where each Grid corresponds to a separate argument
             (integration domain) of the function to be integrated.
+
             - At least one grid must be specified.
             - The number of elements in `grid_list` should match the number of arguments
               in the target function.
+
         num_domains : int, optional
             The number of integration domains.
+
             - This parameter is optional and can only be specified when `grid_list` contains
               exactly one grid.
             - It must be a positive integer greater than 1.
             - If specified, the function to integrate is considered to have `num_domains` arguments,
               all defined over the same grid (i.e., the same set of points is used for each
               argument).
+
+        Returns
+        -------
+        MultiDomainGrid
+            A MultiDomainGrid object.
+
         """
         if not isinstance(grid_list, list):
             raise ValueError("The grid list must be defined")
@@ -108,7 +117,8 @@ class MultiDomainGrid(Grid):
     def weights(self):
         """Generator: Combined weights of the multi-dimensional grid.
 
-        Due to the combinatorial nature of the grid, the weights are returned as a generator"""
+        Due to the combinatorial nature of the grid, the weights are returned as a generator
+        """
         if len(self.grid_list) == 1 and self.num_domains is not None:
             # Single grid repeated for multiple domains
             weight_combinations = itertools.product(
@@ -125,7 +135,8 @@ class MultiDomainGrid(Grid):
         """Generator: Combined points of the multi-dimensional grid.
 
         Due to the combinatorial nature of the grid, the points are returned as a generator. Each
-        point is a tuple of the points of the individual grids."""
+        point is a tuple of the points of the individual grids.
+        """
         if len(self.grid_list) == 1 and self.num_domains is not None:
             # Single grid repeated for multiple domains
             points_combinations = itertools.product(
@@ -163,7 +174,6 @@ class MultiDomainGrid(Grid):
         float
             Integral of callable.
         """
-
         integral_value = 0.0
 
         if non_vectorized:
