@@ -104,32 +104,37 @@ class MultiDomainGrid(Grid):
         else:
             return np.prod([grid.size for grid in self.grid_list])
 
-    def integrate(self, callable, **call_kwargs):
-        r"""
-        Integrate callable on the N particle grid.
+    @property
+    def weights(self):
+        """Generator: Combined weights of the multi-dimensional grid.
 
-        Parameters
-        ----------
-        callable : callable
-            Callable to integrate. It must take a list of arguments (one for each particle) with
-            the same dimension as the grid points and return a float (e.g. a function of the form
-            f([x1,y1,z1], [x2,y2,z2]) -> float).
-        call_kwargs : dict
-            Keyword arguments that will be passed to callable.
-
-        Returns
-        -------
-        float
-            Integral of callable.
-        """
-        # check that grid_list is not empty
-        if len(self.grid_list) == 0:
-            raise ValueError("The list must contain at least one grid")
-
-        if len(self.grid_list) == 1 and self.num_domains is not None and self.num_domains > 1:
-            return self._n_integrate(self.grid_list * self.num_domains, callable, **call_kwargs)
+        Due to the combinatorial nature of the grid, the weights are returned as a generator"""
+        if len(self.grid_list) == 1 and self.num_domains is not None:
+            # Single grid repeated for multiple domains
+            weight_combinations = itertools.product(
+                self.grid_list[0].weights, repeat=self.num_domains
+            )
         else:
-            return self._n_integrate(self.grid_list, callable, **call_kwargs)
+            weight_combinations = itertools.product(*[grid.weights for grid in self.grid_list])
+
+        # Yield the product of weights for each combination
+        return (np.prod(combination) for combination in weight_combinations)
+
+    @property
+    def points(self):
+        """Generator: Combined points of the multi-dimensional grid.
+
+        Due to the combinatorial nature of the grid, the points are returned as a generator. Each
+        point is a tuple of the points of the individual grids."""
+        if len(self.grid_list) == 1 and self.num_domains is not None:
+            # Single grid repeated for multiple domains
+            points_combinations = itertools.product(
+                self.grid_list[0].points, repeat=self.num_domains
+            )
+        else:
+            points_combinations = itertools.product(*[grid.points for grid in self.grid_list])
+
+        return points_combinations
 
     def _n_integrate(self, grid_list, callable, **call_kwargs):
         r"""
