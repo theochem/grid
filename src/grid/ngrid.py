@@ -136,20 +136,27 @@ class MultiDomainGrid(Grid):
 
         return points_combinations
 
-    def _n_integrate(self, grid_list, callable, **call_kwargs):
+    def integrate(self, integrand_function, non_vectorized=False, integration_chunk_size=6000):
         r"""
-        Integrate callable on the space spanned domain union of the grids in grid_list.
+        Integrate callable on the N particle grid.
 
         Parameters
         ----------
-        grid_list : list of Grid
-            List of grids for each particle.
-        callable : callable
-            Callable to integrate. It must take a list of arguments (one for each particle) with
-            the same dimension as the grid points and return a float (e.g. a function of the form
-            f([x1,y1,z1], [x2,y2,z2]) -> float).
-        call_kwargs : dict
-            Keyword arguments for callable.
+        integrand : callable
+            Integrand function to integrate. It must take a list of arguments (one for each domain)
+            with the same dimension as the grid points used for the corresponding domain and return
+            a float (e.g. a function of the form f([x1,y1,z1], [x2,y2,z2]) -> float).
+        integration_chunk_size : int, optional
+            Number of points to integrate at once. This parameter can be used to control the
+            memory usage of the integration. Default is 1000.
+        non_vectorized : bool, optional
+            Set to True if the integrand is not vectorized. Default is False. If True, the integrand
+            will be called for each point of the grid separately without vectorization. This implies
+            a slower integration. Use this option if the integrand is not vectorized.
+        integration_chunk_size : int, optional
+            Number of points to integrate at once. This parameter can be used to control the
+            memory usage of the integration. Default is 6000. Values too large may cause memory
+            issues and values too small may cause accuracy issues.
 
         Returns
         -------
@@ -157,44 +164,62 @@ class MultiDomainGrid(Grid):
             Integral of callable.
         """
 
-        # if there is only one grid, perform the integration using the integrate method of the Grid
-        if len(grid_list) == 1:
-            vals = callable(grid_list[0].points, **call_kwargs)
-            return grid_list[0].integrate(vals)
+        integral_value = 0.0
+
+        if non_vectorized:
+            chunked_weights = _chunked_iterator(self.weights, integration_chunk_size)
+            # elementwise evaluation of the integrand for each point
+            values = (integrand_function(*point) for point in self.points)
+            chunked_values = _chunked_iterator(values, integration_chunk_size)
+
+            # calculate the integral in chunks to mitigate accuracy loss of sequential summation
+            for chunk_weights, chunk_values in zip(chunked_weights, chunked_values):
+                weights_array = np.array(list(chunk_weights))
+                values_array = np.array(list(chunk_values))
+                integral_value += np.sum(values_array * weights_array)
         else:
-            # The integration is performed by integrating the function over the last grid with all
-            # the other coordinates fixed for each possible combination of the other grids' points.
-            #
-            # Notes:
-            # -----
-            # - The combination of the other grids' points is generated using a generator so that
-            #   the memory usage is kept low.
-            # - The last grid is integrated using the integrate method of the Grid class.
+            # trivial case of one domain and vectorized integrand (use the grid's integrate method)
+            if self.num_domains == 1:
+                values = integrand_function(self.grid_list[0].points)
+                return self.grid_list[0].integrate(values)
 
-            # generate all possible combinations for the first n-1 grids
-            data = itertools.product(*[zip(grid.points, grid.weights) for grid in grid_list[:-1]])
+            # find the possible combinations of arguments but the last one
+            if len(self.grid_list) == 1:
+                pre_weights_combinations = itertools.product(
+                    self.grid_list[0].weights, repeat=self.num_domains - 1
+                )
+                pre_points_combinations = itertools.product(
+                    self.grid_list[0].points, repeat=self.num_domains - 1
+                )
+            else:
+                pre_weights_combinations = itertools.product(
+                    *[grid.weights for grid in self.grid_list[:-1]]
+                )
+                pre_points_combinations = itertools.product(
+                    *[grid.points for grid in self.grid_list[:-1]]
+                )
 
-            integral = 0.0
-            for i in data:
-                # Add a dimension to the point (two if it is a number)
-                to_point = lambda x: np.array([[x]]) if isinstance(x, Number) else x[None, :]
-                # extract points (convert to array, add dim) and corresponding weights combinations
-                points_comb = (to_point(j[0]) for j in i)
-                weights_comb = np.array([j[1] for j in i])
-                # define an auxiliar function that takes a single argument (a point of the last
-                # grid) but uses the other coordinates as fixed parameters i[0] and returns the
-                # value of the n particle function at that point (i.e. the value of the n particle
-                # function at the point defined by the last grid point and the other coordinates
-                # fixed by i[0])
-                aux_func = lambda x: callable(*points_comb, x, **call_kwargs)
+            # collapse the weights combinations into single weights
+            pre_weights = (np.prod(combination) for combination in pre_weights_combinations)
 
-                # calculate the value of the n particle function at each point of the last grid
-                vals = aux_func(grid_list[-1].points).flatten()
+            for pre_points_combination, pre_weight in zip(pre_points_combinations, pre_weights):
+                # transform the integrand to a partial integrand with the first N-1 arguments fixed
+                partial_integrand = lambda x: integrand_function(*pre_points_combination, x)
+                # calculate the values of the partial integrand for all points of the last grid
+                values = np.array(partial_integrand(self.grid_list[-1].points))
+                integral_value += pre_weight * self.grid_list[-1].integrate(np.array(values))
 
-                # Integrate the function over the last grid with all the other coordinates fixed.
-                # The result is multiplied by the product of the weights corresponding to the other
-                # grids' points (stored in i[1]).
-                # This is equivalent to integrating the n particle function over the coordinates of
-                # the last particle with the other coordinates fixed.
-                integral += grid_list[-1].integrate(vals) * np.prod(weights_comb)
-            return integral
+        return integral_value
+
+
+from itertools import islice
+
+
+def _chunked_iterator(iterator, size):
+    """Yield chunks from an iterator."""
+    iterator = iter(iterator)
+    while True:
+        chunk = list(islice(iterator, size))
+        if not chunk:
+            break
+        yield chunk
