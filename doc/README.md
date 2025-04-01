@@ -4,6 +4,11 @@ In-order to build the documentation locally, the following commands need to
 be runned. The html files are created in an folder called "build".
 
 ```bash
+# Run one of the following commands to install the required dependencies:
+pip install qc-grid[doc]
+# Or if you're installing from a local setup:
+# pip install .[doc]
+
 cd doc
 # # Generates API html for grid while ignoring the test and data folders.
 # Stores it in pyapi/
