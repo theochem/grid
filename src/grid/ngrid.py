@@ -22,17 +22,32 @@
 import numpy as np
 from grid.basegrid import Grid
 import itertools
-from numbers import Number
+from itertools import islice
 
 
-class Ngrid(Grid):
+class MultiDomainGrid(Grid):
     r"""
-    Grid class for integration of N argument functions.
+    Grid class for integrating functions of multiple variables, each defined on a different grid.
 
-    This class is used for integrating functions of N arguments.
+    This class facilitates the numerical integration of functions with :math:`N` arguments
+    over a corresponding :math:`N`-dimensional domain using grid-based methods.
 
-    ..math::
-        \idotsint f(x_1, x_2, ..., x_N) dx_1 dx_2 ... dx_N
+    .. math::
+        \int \cdots \int f(x_1, x_2, \ldots, x_N) \, dx_1 dx_2 \cdots dx_N
+
+    The function to integrate must accept arguments :math:`\{x_i\}` that correspond to
+    the dimensions (point-wise) of the respective grids. Specifically:
+
+        - Each argument :math:`x_i` corresponds to a different grid.
+        - The dimensionality of each argument must match the dimensionality of a point of its
+          associated grid.
+
+    For example:
+
+    - For a function of the form :code:`f([x1, y1, z1], [x2, y2]) -> float`,
+      the first argument corresponds to a 3-dimensional grid, and the second argument
+      corresponds to a 2-dimensional grid.
+
 
     The function to integrate must have all arguments :math:`\{x_i\}` with the same dimension as the
     points of the corresponding grids (i.e. each of the arguments corresponds to a different grid).
@@ -40,138 +55,218 @@ class Ngrid(Grid):
     be described by a 3D grid and the second argument by a 2D grid.
     """
 
-    def __init__(self, grid_list=None, n=None, **kwargs):
+    def __init__(self, grid_list=None, num_domains=None):
         r"""
-        Initialize n particle grid.
-
-        At least one grid must be specified. If only one grid is specified, and a value for n bigger
-        than one is specified, the same grid will copied n times and one grid will used for each
-        particle. If more than one grid is specified, n will be ignored. In all cases, The function
-        to integrate must be a function with all arguments with the same dimension as the grid
-        points and must depend on a number of particles equal to the number of grids. For example, a
-        function of the form
-        f((x1,y1,z1), (x2,y2,z2), ..., (xn, yn, zn)) -> float where (xi, yi, zi) are the coordinates
-        of the i-th particle and n is the number of particles.
+        Initialize the MultiDomainGrid grid.
 
         Parameters
         ----------
         grid_list : list of Grid
-            List of grids, one Grid for each particle.
-        n : int
-            Number of particles.
-        """
-        # check that grid_list is defined
-        if grid_list is None:
-            raise ValueError("The list must be specified")
+            A list of Grid objects, where each Grid corresponds to a separate argument
+            (integration domain) of the function to be integrated.
 
-        # check that grid_list is not empty
+            - At least one grid must be specified.
+            - The number of elements in `grid_list` should match the number of arguments
+              in the target function.
+
+        num_domains : int, optional
+            The number of integration domains.
+
+            - This parameter is optional and can only be specified when `grid_list` contains
+              exactly one grid.
+            - It must be a positive integer greater than 1.
+            - If specified, the function to integrate is considered to have `num_domains` arguments,
+              all defined over the same grid (i.e., the same set of points is used for each
+              argument).
+
+        Returns
+        -------
+        MultiDomainGrid
+            A MultiDomainGrid object.
+
+        """
+        if not isinstance(grid_list, list):
+            raise ValueError("The grid list must be defined")
         if len(grid_list) == 0:
             raise ValueError("The list must contain at least one grid")
-
-        # check that grid_list contains only Grid objects
         if not all(isinstance(grid, Grid) for grid in grid_list):
-            raise ValueError("The Grid list must contain only Grid objects")
-
-        if n is not None:
-            # check that n is non negative
-            if n < 0:
-                raise ValueError("n must be non negative")
-            # check that for n > 1, the number of grids is equal to n or 1
-            if len(grid_list) > 1 and len(grid_list) != n:
-                raise ValueError(
-                    "Conflicting values for n and the number of grids. \n"
-                    "If n is specified, the number of grids must be equal to n or 1."
-                )
+            raise ValueError("Invalid grid list. The list must contain only Grid objects")
+        if num_domains is not None:
+            if len(grid_list) != 1:
+                raise ValueError("The number of grids must be equal to 1 if grids_num is specified")
+            if not isinstance(num_domains, int) or num_domains < 1:
+                raise ValueError("grids_num must be a positive integer bigger than 1")
 
         self.grid_list = grid_list
-        self.n = n
+        self._num_domains = num_domains
 
-    def integrate(self, callable, **call_kwargs):
+    @property
+    def num_domains(self):
+        """int: The number of integration domains."""
+        return self._num_domains if self._num_domains is not None else len(self.grid_list)
+
+    @property
+    def size(self):
+        """int: the total number of points on the grid."""
+        if len(self.grid_list) == 1 and self.num_domains is not None:
+            return self.grid_list[0].size ** self.num_domains
+        else:
+            return np.prod([grid.size for grid in self.grid_list])
+
+    @property
+    def weights(self):
+        """
+        Generator yielding the combined weights of the multi-dimensional grid.
+
+        Because the multi-dimensional grid is formed combinatorially from multiple lower-dimensional
+        grids, the combined weights are returned as a generator for efficiency.
+
+        For a MultiDomainGrid formed from two grids, [(x11, y11), (x12, y12) ... (x1n, y1n)] and
+        [(x21, y21), (x22, y22) ... (x2m, y2m)], the combined weights are calculated as follows:
+        For each combination of points (x1, y1) from the first grid and (x2, y2) from the second
+        2D grid, the combined weight `w` is:
+            w = w1 * w2
+        where `w1` and `w2` are the weights from the individual grids corresponding to
+        (x1, y1) and (x2, y2), respectively.
+
+        Yields
+        ------
+        float
+            The product of the weights from each individual grid that make up a single
+            point in the multi-dimensional grid.
+        """
+
+        if len(self.grid_list) == 1 and self.num_domains is not None:
+            # Single grid repeated for multiple domains
+            weight_combinations = itertools.product(
+                self.grid_list[0].weights, repeat=self.num_domains
+            )
+        else:
+            weight_combinations = itertools.product(*[grid.weights for grid in self.grid_list])
+
+        # Yield the product of weights for each combination
+        return (np.prod(combination) for combination in weight_combinations)
+
+    @property
+    def points(self):
+        """Generator: Combined points of the multi-dimensional grid.
+
+        Due to the combinatorial nature of the grid, the points are returned as a generator. Each
+        point is a tuple of the points of the individual grids.
+
+        For a MultiDomainGrid formed from two grids, [(x11, y11), (x12, y12) ... (x1n, y1n)] and
+        [(x21, y21), (x22, y22) ... (x2m, y2m)], the combined points are calculated as follows:
+        For each combination of points (x1, y1) from the first grid and (x2, y2) from the second
+        2D grid, the combined point is a tuple of (x1i, y1i), (x2j, y2j) where (x1, y1) and (x2, y2)
+        are the points from the individual grids respectively.
+        """
+        if len(self.grid_list) == 1 and self.num_domains is not None:
+            # Single grid repeated for multiple domains
+            points_combinations = itertools.product(
+                self.grid_list[0].points, repeat=self.num_domains
+            )
+        else:
+            points_combinations = itertools.product(*[grid.points for grid in self.grid_list])
+
+        return points_combinations
+
+    def integrate(self, integrand_function, non_vectorized=False, integration_chunk_size=6000):
         r"""
         Integrate callable on the N particle grid.
 
         Parameters
         ----------
-        callable : callable
-            Callable to integrate. It must take a list of arguments (one for each particle) with
-            the same dimension as the grid points and return a float (e.g. a function of the form
-            f([x1,y1,z1], [x2,y2,z2]) -> float).
-        call_kwargs : dict
-            Keyword arguments that will be passed to callable.
+        integrand : callable
+            Integrand function to integrate. It must take a list of arguments (one for each domain)
+            with the same dimension as the grid points used for the corresponding domain and return
+            a float (e.g. a function of the form f([x1,y1,z1], [x2,y2,z2]) -> float).
+        integration_chunk_size : int, optional
+            Number of points to integrate at once. This parameter can be used to control the
+            memory usage of the integration. Default is 1000.
+        non_vectorized : bool, optional
+            Set to True if the integrand is not vectorized. Default is False. If True, the integrand
+            will be called for each point of the grid separately without vectorization. This implies
+            a slower integration. Use this option if the integrand is not vectorized.
+        integration_chunk_size : int, optional
+            Number of points to integrate at once. This parameter can be used to control the
+            memory usage of the integration. Default is 6000. Values too large may cause memory
+            issues and values too small may cause accuracy issues.
 
         Returns
         -------
         float
             Integral of callable.
         """
-        # check that grid_list is not empty
-        if len(self.grid_list) == 0:
-            raise ValueError("The list must contain at least one grid")
+        integral_value = 0.0
 
-        if len(self.grid_list) == 1 and self.n is not None and self.n > 1:
-            return self._n_integrate(self.grid_list * self.n, callable, **call_kwargs)
+        if non_vectorized:
+            chunked_weights = _chunked_iterator(self.weights, integration_chunk_size)
+            # elementwise evaluation of the integrand for each point
+            values = (integrand_function(*point) for point in self.points)
+            chunked_values = _chunked_iterator(values, integration_chunk_size)
+
+            # calculate the integral in chunks to mitigate accuracy loss of sequential summation
+            for chunk_weights, chunk_values in zip(chunked_weights, chunked_values):
+                weights_array = np.array(list(chunk_weights))
+                values_array = np.array(list(chunk_values))
+                integral_value += np.sum(values_array * weights_array)
         else:
-            return self._n_integrate(self.grid_list, callable, **call_kwargs)
+            # trivial case of one domain and vectorized integrand (use the grid's integrate method)
+            if self.num_domains == 1:
+                values = integrand_function(self.grid_list[0].points)
+                return self.grid_list[0].integrate(values)
 
-    def _n_integrate(self, grid_list, callable, **call_kwargs):
-        r"""
-        Integrate callable on the space spanned domain union of the grids in grid_list.
+            # find the possible combinations of arguments but the last one
+            if len(self.grid_list) == 1:
+                pre_weights_combinations = itertools.product(
+                    self.grid_list[0].weights, repeat=self.num_domains - 1
+                )
+                pre_points_combinations = itertools.product(
+                    self.grid_list[0].points, repeat=self.num_domains - 1
+                )
+            else:
+                pre_weights_combinations = itertools.product(
+                    *[grid.weights for grid in self.grid_list[:-1]]
+                )
+                pre_points_combinations = itertools.product(
+                    *[grid.points for grid in self.grid_list[:-1]]
+                )
 
-        Parameters
-        ----------
-        grid_list : list of Grid
-            List of grids for each particle.
-        callable : callable
-            Callable to integrate. It must take a list of arguments (one for each particle) with
-            the same dimension as the grid points and return a float (e.g. a function of the form
-            f([x1,y1,z1], [x2,y2,z2]) -> float).
-        call_kwargs : dict
-            Keyword arguments for callable.
+            # collapse the weights combinations into single weights
+            pre_weights = (np.prod(combination) for combination in pre_weights_combinations)
 
-        Returns
-        -------
-        float
-            Integral of callable.
-        """
+            for pre_points_combination, pre_weight in zip(pre_points_combinations, pre_weights):
+                # transform the integrand to a partial integrand with the first N-1 arguments fixed
+                partial_integrand = lambda x: integrand_function(*pre_points_combination, x)
+                # calculate the values of the partial integrand for all points of the last grid
+                values = np.array(partial_integrand(self.grid_list[-1].points))
+                integral_value += pre_weight * self.grid_list[-1].integrate(np.array(values))
 
-        # if there is only one grid, perform the integration using the integrate method of the Grid
-        if len(grid_list) == 1:
-            vals = callable(grid_list[0].points, **call_kwargs)
-            return grid_list[0].integrate(vals)
-        else:
-            # The integration is performed by integrating the function over the last grid with all
-            # the other coordinates fixed for each possible combination of the other grids' points.
-            #
-            # Notes:
-            # -----
-            # - The combination of the other grids' points is generated using a generator so that
-            #   the memory usage is kept low.
-            # - The last grid is integrated using the integrate method of the Grid class.
+        return integral_value
 
-            # generate all possible combinations for the first n-1 grids
-            data = itertools.product(*[zip(grid.points, grid.weights) for grid in grid_list[:-1]])
+    def get_localgrid(self, center, radius):
+        raise NotImplementedError(
+            "The get_local grid method is not implemented for multi-domain grids."
+        )
 
-            integral = 0.0
-            for i in data:
-                # Add a dimension to the point (two if it is a number)
-                to_point = lambda x: np.array([[x]]) if isinstance(x, Number) else x[None, :]
-                # extract points (convert to array, add dim) and corresponding weights combinations
-                points_comb = (to_point(j[0]) for j in i)
-                weights_comb = np.array([j[1] for j in i])
-                # define an auxiliar function that takes a single argument (a point of the last
-                # grid) but uses the other coordinates as fixed parameters i[0] and returns the
-                # value of the n particle function at that point (i.e. the value of the n particle
-                # function at the point defined by the last grid point and the other coordinates
-                # fixed by i[0])
-                aux_func = lambda x: callable(*points_comb, x, **call_kwargs)
+    def moments(
+        self,
+        orders: int,
+        centers: np.ndarray,
+        func_vals: np.ndarray,
+        type_mom: str = "cartesian",
+        return_orders: bool = False,
+    ):
+        raise NotImplementedError(
+            "The computation of moments is not implemented for multi-domain grids."
+        )
 
-                # calculate the value of the n particle function at each point of the last grid
-                vals = aux_func(grid_list[-1].points).flatten()
 
-                # Integrate the function over the last grid with all the other coordinates fixed.
-                # The result is multiplied by the product of the weights corresponding to the other
-                # grids' points (stored in i[1]).
-                # This is equivalent to integrating the n particle function over the coordinates of
-                # the last particle with the other coordinates fixed.
-                integral += grid_list[-1].integrate(vals) * np.prod(weights_comb)
-            return integral
+def _chunked_iterator(iterator, size):
+    """Yield chunks from an iterator."""
+    iterator = iter(iterator)
+    while True:
+        chunk = list(islice(iterator, size))
+        if not chunk:
+            break
+        yield chunk
