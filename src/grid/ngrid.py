@@ -115,10 +115,27 @@ class MultiDomainGrid(Grid):
 
     @property
     def weights(self):
-        """Generator: Combined weights of the multi-dimensional grid.
-
-        Due to the combinatorial nature of the grid, the weights are returned as a generator
         """
+        Generator yielding the combined weights of the multi-dimensional grid.
+
+        Because the multi-dimensional grid is formed combinatorially from multiple lower-dimensional
+        grids, the combined weights are returned as a generator for efficiency.
+
+        For a MultiDomainGrid formed from two grids, [(x11, y11), (x12, y12) ... (x1n, y1n)] and
+        [(x21, y21), (x22, y22) ... (x2m, y2m)], the combined weights are calculated as follows:
+        For each combination of points (x1, y1) from the first grid and (x2, y2) from the second
+        2D grid, the combined weight `w` is:
+            w = w1 * w2
+        where `w1` and `w2` are the weights from the individual grids corresponding to
+        (x1, y1) and (x2, y2), respectively.
+
+        Yields
+        ------
+        float
+            The product of the weights from each individual grid that make up a single
+            point in the multi-dimensional grid.
+        """
+
         if len(self.grid_list) == 1 and self.num_domains is not None:
             # Single grid repeated for multiple domains
             weight_combinations = itertools.product(
@@ -136,6 +153,12 @@ class MultiDomainGrid(Grid):
 
         Due to the combinatorial nature of the grid, the points are returned as a generator. Each
         point is a tuple of the points of the individual grids.
+
+        For a MultiDomainGrid formed from two grids, [(x11, y11), (x12, y12) ... (x1n, y1n)] and
+        [(x21, y21), (x22, y22) ... (x2m, y2m)], the combined points are calculated as follows:
+        For each combination of points (x1, y1) from the first grid and (x2, y2) from the second
+        2D grid, the combined point is a tuple of (x1i, y1i), (x2j, y2j) where (x1, y1) and (x2, y2)
+        are the points from the individual grids respectively.
         """
         if len(self.grid_list) == 1 and self.num_domains is not None:
             # Single grid repeated for multiple domains
