@@ -22,7 +22,7 @@
 import numpy as np
 from grid.basegrid import Grid
 import itertools
-from numbers import Number
+from itertools import islice
 
 
 class MultiDomainGrid(Grid):
@@ -221,8 +221,22 @@ class MultiDomainGrid(Grid):
 
         return integral_value
 
+    def get_localgrid(self, center, radius):
+        raise NotImplementedError(
+            "The get_local grid method is not implemented for multi-domain grids."
+        )
 
-from itertools import islice
+    def moments(
+        self,
+        orders: int,
+        centers: np.ndarray,
+        func_vals: np.ndarray,
+        type_mom: str = "cartesian",
+        return_orders: bool = False,
+    ):
+        raise NotImplementedError(
+            "The computation of moments is not implemented for multi-domain grids."
+        )
 
 
 def _chunked_iterator(iterator, size):
