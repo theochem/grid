@@ -75,10 +75,10 @@ def get_lm_from_horton_index(k):
     # Final check
     if abs(m) > l:
          # If k was invalid, recalculate l based on the fact that k < (l_true+1)^2
-         l_check = 0
-         while (l_check + 1)**2 <= k:
-             l_check += 1
-         l = l_check
+         corrected_l = 0
+         while (corrected_l + 1)**2 <= k:
+             corrected_l += 1
+         l = corrected_l
          # Recalculate m based on the corrected l
          if k == l*l:
              m = 0
@@ -88,7 +88,6 @@ def get_lm_from_horton_index(k):
               m = -(k - l*l) // 2
 
     return l, m
-
 def binomial_safe(n, k):
     """Safely compute binomial coefficient C(n, k), returning 0 if k < 0 or k > n."""
     if k < 0 or k > n:
