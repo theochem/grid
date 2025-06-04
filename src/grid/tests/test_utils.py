@@ -20,6 +20,10 @@
 """Utils function test file."""
 from unittest import TestCase
 
+import numpy as np
+import pytest
+from numpy.testing import assert_allclose, assert_almost_equal, assert_equal
+
 from grid.angular import AngularGrid
 from grid.utils import (
     convert_cart_to_sph,
@@ -29,11 +33,6 @@ from grid.utils import (
     get_cov_radii,
     solid_harmonics,
 )
-
-import numpy as np
-from numpy.testing import assert_allclose, assert_almost_equal, assert_equal
-
-import pytest
 
 
 class TestUtils(TestCase):
@@ -73,17 +72,17 @@ class TestUtils(TestCase):
         ])
         # fmt: on
         all_index = np.arange(1, 87)
-        bragg_bohr = get_cov_radii(all_index, type="bragg")
+        bragg_bohr = get_cov_radii(all_index, cov_type="bragg")
         assert_allclose(bragg_bohr, bragg_slater[1:] * 1.8897261339213)
-        cambridge_bohr = get_cov_radii(all_index, type="cambridge")
+        cambridge_bohr = get_cov_radii(all_index, cov_type="cambridge")
         assert_allclose(cambridge_bohr, cambridge[1:] * 1.8897261339213)
         all_index = np.arange(1, 97)
-        alvaraz_bohr = get_cov_radii(all_index, type="alvarez")
+        alvaraz_bohr = get_cov_radii(all_index, cov_type="alvarez")
         assert_allclose(alvaraz_bohr, alvarez[1:] * 1.8897261339213)
 
     def test_generate_real_spherical_is_accurate(self):
         r"""Test generated real spherical harmonic up to degree 3 is accurate."""
-        numb_pts = 100
+        numb_pts = 1000
         pts = np.random.uniform(-1.0, 1.0, size=(numb_pts, 3))
         sph_pts = convert_cart_to_sph(pts)
         r, theta, phi = sph_pts[:, 0], sph_pts[:, 1], sph_pts[:, 2]
@@ -95,6 +94,26 @@ class TestUtils(TestCase):
         # Test l=1, m=1, m=0
         assert_allclose(sph_h[2, :], np.sqrt(3.0 / (4.0 * np.pi)) * pts[:, 0] / r)
         assert_allclose(sph_h[3, :], np.sqrt(3.0 / (4.0 * np.pi)) * pts[:, 1] / r)
+        # Test l=2, m=0
+        assert_allclose(
+            sph_h[4, :],
+            np.sqrt(5.0 / (16.0 * np.pi)) * (3.0 * pts[:, 2] ** 2.0 - r**2.0) / r**2.0,
+        )
+        # Test l=2, m=1, -1
+        assert_allclose(
+            sph_h[5, :], np.sqrt(15.0 / (4.0 * np.pi)) * (pts[:, 0] * pts[:, 2]) / r**2.0
+        )
+        assert_allclose(
+            sph_h[6, :], np.sqrt(15.0 / (4.0 * np.pi)) * (pts[:, 1] * pts[:, 2]) / r**2.0
+        )
+        # Test l=2, m=2, -2
+        assert_allclose(
+            sph_h[7, :],
+            np.sqrt(15.0 / (16.0 * np.pi)) * (pts[:, 0] ** 2.0 - pts[:, 1] ** 2.0) / r**2.0,
+        )
+        assert_allclose(
+            sph_h[8, :], np.sqrt(15.0 / (4.0 * np.pi)) * (pts[:, 0] * pts[:, 1]) / r**2.0
+        )
 
     def test_generate_real_spherical_is_orthonormal(self):
         """Test generated real spherical harmonics is an orthonormal set."""
@@ -138,10 +157,8 @@ class TestUtils(TestCase):
         assert sph_h.shape == (1 + 3 + 5 + 7, 26)
         counter = 0
         for l_value in range(0, lmax + 1):
-            for m in (
-                [0]
-                + [x for x in range(1, l_value + 1)]
-                + [-x for x in range(1, l_value + 1)]
+            for _m in (
+                [0] + [x for x in range(1, l_value + 1)] + [-x for x in range(1, l_value + 1)]
             ):
                 # print(l_value, m)
                 re = sum(sph_h[counter, :] * wts)
@@ -206,7 +223,7 @@ class TestUtils(TestCase):
     def test_raise_errors(self):
         """Test raise proper errors."""
         with self.assertRaises(ValueError):
-            get_cov_radii(3, type="random")
+            get_cov_radii(3, cov_type="random")
         with self.assertRaises(ValueError):
             get_cov_radii(0)
         with self.assertRaises(ValueError):
@@ -247,9 +264,7 @@ def test_derivative_of_spherical_harmonics_with_finite_difference(numb_pts, max_
     assert_almost_equal(actual_answer[1, :], deriv_phi, decimal=3)
 
 
-@pytest.mark.parametrize(
-    "numb_pts, max_degree", [[5, 70], [1000, 4], [5000, 2], [100, 15]]
-)
+@pytest.mark.parametrize("numb_pts, max_degree", [[20, 70], [1000, 10], [5000, 7], [100, 15]])
 def test_spherical_harmonic_recursion_against_scipy(numb_pts, max_degree):
     r"""Test spherical harmonic recursion against SciPy implementation."""
     theta = np.array([1e-5])
@@ -261,9 +276,7 @@ def test_spherical_harmonic_recursion_against_scipy(numb_pts, max_degree):
     assert_allclose(pytho_sol, scipy_sol, atol=1e-10)
 
 
-@pytest.mark.parametrize(
-    "numb_pts, max_degree", [[1000, 4], [5000, 2], [100, 15], [10, 100]]
-)
+@pytest.mark.parametrize("numb_pts, max_degree", [[1000, 4], [5000, 2], [100, 15], [10, 100]])
 def test_solid_harmonics_for_few_degrees(numb_pts, max_degree):
     r"""Test solid harmonic for a few degrees against spherical harmonic implementation."""
     pts = np.random.uniform(-1, 1, size=(numb_pts, 3))
@@ -276,7 +289,7 @@ def test_solid_harmonics_for_few_degrees(numb_pts, max_degree):
     r_solid = np.ones((numb_pts,))  # r^0 = 1
     for l_deg in range(0, max_degree + 1):
         factor = np.sqrt(4.0 * np.pi / (2.0 * l_deg + 1.0))
-        for i_order in range(0, (2 * l_deg + 1)):
+        for _i_order in range(0, (2 * l_deg + 1)):
             assert_allclose(true[i_sph], sph_harm[i_sph] * r_solid * factor)
             i_sph += 1
         r_solid *= r  # Update r^l

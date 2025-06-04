@@ -19,12 +19,17 @@
 # --
 """Molecular grid class."""
 
-from typing import Union
+from __future__ import annotations
+
+import numpy as np
+import scipy.constants
 
 from grid.atomgrid import AtomGrid
 from grid.basegrid import Grid, LocalGrid, OneDGrid
-
-import numpy as np
+from grid.becke import BeckeWeights
+from grid.onedgrid import UniformInteger
+from grid.rtransform import PowerRTransform
+from grid.utils import _DEFAULT_POWER_RTRANSFORM_PARAMS
 
 
 class MolGrid(Grid):
@@ -34,43 +39,7 @@ class MolGrid(Grid):
     Molecular grid is defined here to be a weighted average of :math:`M` atomic grids
     (see AtomGrid). This is defined by a atom in molecule weights (or nuclear weight functions)
     :math:`w_n(r)` for each center n such that :math:`\sum^M_n w_n(r) = 1` for all points
-    :math:`r\in\mathbb{R}^3.`
-
-    Examples
-    --------
-    There are multiple methods of specifiying molecular grids.
-    This example chooses Becke weights as the atom in molecule/nuclear weights and the
-    radial grid is the same for all atoms.  Two atoms are considered with charges [1, 2],
-    respectively.
-    >>> from grid.becke BeckeWeights
-    >>> from grid.onedgrid import GaussLaguerre
-    >>> becke = BeckeWeights(order=3)
-    >>> rgrid = GaussLaguerre(100)
-    >>> charges = [1, 2]
-    >>> coords = np.array([[-1.0, 0.0, 0.0], [1.0, 0.0, 0.0]])
-    The default method is based on explicitly specifing the atomic grids (AtomGrids) for each atom.
-    >>> from grid.atomgrid import AtomGrid
-    >>> atgrid1 = AtomGrid(rgrid, degrees=5, center=coords[0])
-    >>> atgrid2 = AtomGrid(rgrid, degrees=10, center=coords[1])
-    >>> molgrid = MolGrid(charges, [atgrid1, atgrid2], aim_weights=becke)
-    The `from_size` method constructs AtomGrids with degree_size specified from integer size.
-    >>> size = 100  # Number of angular points used in each shell in the atomic grid.
-    >>> molgrid = MolGrid.from_size(charges, coords, rgrid, size=5, aim_weights=becke)
-    The `from_pruned` method is based on `AtomGrid.from_pruned` method on the idea
-    of spliting radial grid points into sectors that have the same angular degrees.
-    >>> sectors_r = [[0.5, 1., 1.5], [0.25, 0.5]]
-    >>> sectors_deg = [[3, 7, 5, 3], [3, 2, 2]]
-    >>> radius = 1.0
-    >>> mol_grid = MolGrid.from_pruned(charges, coords, rgrid, radius, becke,
-    >>>                                sectors_r=sectors_r, sectors_degree=sectors_deg)
-    The `from_preset` method is based on `AtomGrid.from_preset` method based on a string
-    specifying the size of each Levedev grid at each radial points.
-    >>> preset = "fine"  # Many choices available.
-    >>> molgrid = MolGrid.from_preset(charges, coords, rgrid, preset, aim_weights=becke)
-
-    The general way to integrate is the following.
-    >>> integrand = integrand_func(molgrid.points)
-    >>> integrate = molgrid.integrate(integrand)
+    :math:`r\in\mathbb{R}^3`\. [1]_
 
     References
     ----------
@@ -83,7 +52,7 @@ class MolGrid(Grid):
         self,
         atnums: np.ndarray,
         atgrids: list,
-        aim_weights: Union[callable, np.ndarray],
+        aim_weights: callable | np.ndarray,
         store: bool = False,
     ):
         r"""Initialize class.
@@ -95,10 +64,10 @@ class MolGrid(Grid):
         atgrids : list[AtomGrid]
             List of atomic grids of size :math:`M` for each atom in molecule.
         aim_weights : Callable or np.ndarray(\sum^M_n N_n,)
-            Atoms in molecule weights :math:`{ {w_n(r_k)}_k^{N_i}}_n^{M}`, where
+            Atoms in molecule weights :math:`{ {w_n(r_k)}_k^{N_i}}_n^{M}`\, where
             :math:`N_i` is the number of points in the ith atomic grid.
         store: bool
-            If true, then the atomic grids `atgrids` are stored as attribute `atgrids`.
+            If true, then the atomic grids `atgrids` are stored as attribute `atgrids`\.
 
         """
         # initialize these attributes
@@ -117,9 +86,7 @@ class MolGrid(Grid):
             self._atweights[start:end] = atom_grid.weights
 
         if callable(aim_weights):
-            self._aim_weights = aim_weights(
-                self._points, self._atcoords, atnums, self._indices
-            )
+            self._aim_weights = aim_weights(self._points, self._atcoords, atnums, self._indices)
 
         elif isinstance(aim_weights, np.ndarray):
             if aim_weights.size != size:
@@ -143,7 +110,7 @@ class MolGrid(Grid):
     @property
     def indices(self):
         r"""
-        Get the indices of the molecualr grid.
+        Get the indices of the molecular grid.
 
         Returns
         -------
@@ -221,61 +188,48 @@ class MolGrid(Grid):
         Return function that interpolates (and its derivatives) from function values.
 
         Consider a real-valued function :math:`f(r, \theta, \phi) = \sum_A f_A(r, \theta, \phi)`
-        written as a sum of atomic centers :math:`f_A(r, \theta, \phi)`.  Each of these
-        functions can be further decomposed based on the atom grid centered at :math:`A`:
+        written as a sum of atomic centers :math:`f_A(r, \theta, \phi)`\.  Each of these
+        functions can be further decomposed based on the atom grid centered at :math:`A`\:
 
         .. math::
             f_A(r, \theta, \phi) = \sum_l \sum_{m=-l}^l \sum_i \rho^A_{ilm}(r) Y_{lm}(\theta, \phi)
 
         A cubic spline is used to interpolate the radial functions :math:`\sum_i \rho^A_{ilm}(r)`
-        based on the atomic grid centered at :math:`A`.
+        based on the atomic grid centered at :math:`A`\.
         This is then multipled by the corresponding spherical harmonics at all
-        :math:`(\theta_j, \phi_j)` angles and summed to obtain approximation to :math:`f_A`. This
-        is then further summed over all centers to get :math:`f`.
+        :math:`(\theta_j, \phi_j)` angles and summed to obtain approximation to :math:`f_A`\. This
+        is then further summed over all centers to get :math:`f`\.
 
         Parameters
         ----------
-        func_vals : ndarray(\sum_i N_i ,)
-            The function values evaluated on all :math:`N_i` points on the :math:`i`th atomic grid.
+        func_vals: ndarray(\sum_i N_i,)
+            The function values evaluated on all :math:`N_i` points on the :math:`i`\th atomic grid.
 
         Returns
         -------
-        Callable[[ndarray(M, 3), int] -> ndarray(M)]
+        Callable[[ndarray(M, 3), int] -> ndarray(M)]:
             Callable function that interpolates the function and its derivative provided.
             The function takes the following attributes:
+
                 points : ndarray(N, 3)
-                Cartesian coordinates of :math:`N` points to evaluate the splines on.
+                    Cartesian coordinates of :math:`N` points to evaluate the splines on.
                 deriv : int, optional
                     If deriv is zero, then only returns function values. If it is one, then
                     returns the first derivative of the interpolated function with respect to either
                     Cartesian or spherical coordinates. Only higher-order derivatives
-                    (`deriv`=2,3) are supported for the derivatives wrt to radial components.
+                    (`deriv`\=2,3) are supported for the derivatives wrt to radial components.
                 deriv_spherical : bool
                     If True, then returns the derivatives with respect to spherical coordinates
-                    :math:`(r, \theta, \phi)`. Default False.
-                only_radial_derivs : bool
+                    :math:`(r, \theta, \phi)`\. Default False.
+                only_radial_deriv : bool
                     If true, then the derivative wrt to radius :math:`r` is returned.
-            and returns:
-                ndarray(M,...) :
+
+            This function returns the following.
+
+                ndarray(M,...):
                     The interpolated function values or its derivatives with respect to Cartesian
                     :math:`(x,y,z)` or if `deriv_spherical` then :math:`(r, \theta, \phi)` or
                     if `only_radial_derivs` then derivative wrt to :math:`r` is only returned.
-
-        Examples
-        --------
-        Consider the function (3x^2 + 4y^2 + 5z^2)
-        >>> def polynomial_func(pts) :
-        >>>     return 3.0 * points[:, 0]**2.0 + 4.0 * points[:, 1]**2.0 + 5.0 * points[:, 2]**2.0
-        Evaluate the polynomial over the molecular grid points and construct interpolation func.
-        >>> polynomial_vals = polynomial_func(molgrid.points)
-        >>> interpolate_func = molgrid.interpolate(polynomial_vals)
-        Use it to interpolate at new points.
-        >>> interpolate_vals = interpolate_func(new_pts)
-         # Can calculate first derivative wrt to Cartesian or spherical
-        >>> interpolate_derivs = interpolate_func(new_pts, deriv=1)
-        >>> interpolate_derivs_sph = interpolate_func(new_pts, deriv=1, deriv_spherical=True)
-        # Only higher-order derivatives are supported for the radius coordinate r.
-        >>> interpolated_derivs_radial = interpolate_func(new_pts, deriv=2, only_radial_derivs=True)
 
         """
         if self.atgrids is None:
@@ -291,13 +245,9 @@ class MolGrid(Grid):
             start_index = self.indices[i]
             final_index = self.indices[i + 1]
             atom_grid = self[i]
-            intepolate_funcs.append(
-                atom_grid.interpolate(func_vals_atom[start_index:final_index])
-            )
+            intepolate_funcs.append(atom_grid.interpolate(func_vals_atom[start_index:final_index]))
 
-        def interpolate_low(
-            points, deriv=0, deriv_spherical=False, only_radial_derivs=False
-        ):
+        def interpolate_low(points, deriv=0, deriv_spherical=False, only_radial_derivs=False):
             r"""Construct a spline like callable for intepolation.
 
             Parameters
@@ -311,7 +261,7 @@ class MolGrid(Grid):
                 for the derivatives wrt to radial components. `deriv=3` only returns a constant.
             deriv_spherical : bool
                 If True, then returns the derivatives with respect to spherical coordinates
-                :math:`(r, \theta, \phi)`. Default False.
+                :math:`(r, \theta, \phi)`\. Default False.
             only_radial_derivs : bool
                 If true, then the derivative wrt to radius :math:`r` is returned.
 
@@ -323,13 +273,9 @@ class MolGrid(Grid):
                 if `only_radial_derivs` then derivative wrt to :math:`r` is only returned.
 
             """
-            output = intepolate_funcs[0](
-                points, deriv, deriv_spherical, only_radial_derivs
-            )
+            output = intepolate_funcs[0](points, deriv, deriv_spherical, only_radial_derivs)
             for interpolate in intepolate_funcs[1:]:
-                output += interpolate(
-                    points, deriv, deriv_spherical, only_radial_derivs
-                )
+                output += interpolate(points, deriv, deriv_spherical, only_radial_derivs)
             return output
 
         return interpolate_low
@@ -339,10 +285,9 @@ class MolGrid(Grid):
         cls,
         atnums: np.ndarray,
         atcoords: np.ndarray,
-        rgrid: Union[OneDGrid, list, dict],
-        preset: Union[str, list, dict],
-        aim_weights: Union[callable, np.ndarray],
-        *_,
+        preset: str | list | dict,
+        rgrid: OneDGrid | list | dict | None = None,
+        aim_weights: callable | np.ndarray = None,
         rotate: int = 37,
         store: bool = False,
     ):
@@ -354,35 +299,60 @@ class MolGrid(Grid):
             Array of atomic numbers.
         atcoords : np.ndarray(M, 3)
             Atomic coordinates of atoms.
-        rgrid : (OneDGrid, list[OneDGrid], dict[int: OneDGrid])
-            One dimensional radial grid. If of type `OneDGrid` then this radial grid is used for
-            all atoms. If a list is provided,then ith grid correspond to the ith atom.  If
-            dictionary is provided, then the keys correspond to the `atnums[i]`attribute.
         preset : (str, list[str], dict[int: str])
-            Preset grid accuracy scheme, support "coarse", "medium", "fine",
-            "veryfine", "ultrafine", "insane".  If string is provided ,then preset is used
+            Preset grid accuracy scheme. If string is provided, then preset is used
             for all atoms, either it is specified by a list, or a dictionary whose keys
-            are from `atnums`.
-        aim_weights : Callable or np.ndarray(K,)
-            Atoms in molecule weights.
+            are from `atnums`\. These predefined grid specify the radial sectors and
+            their corresponding number of Lebedev grid points. Supported preset options include:
+            'coarse', 'medium', 'fine', 'veryfine', 'ultrafine', and 'insane'.
+            Other options include the "standard grids":
+            'sg_0', 'sg_1', 'sg_2', and 'sg_3', and the Ochsenfeld grids:
+            'g1', 'g2', 'g3', 'g4', 'g5', 'g6', and 'g7', with higher number indicating
+            greater accuracy but denser grid. See `Notes` for more information.
+        rgrid : (OneDGrid, list[OneDGrid], dict[int: OneDGrid], None), optional
+            One dimensional radial grid. If of type `OneDGrid` then this radial grid is used for
+            all atoms. If a list is provided, then ith grid correspond to the ith atom.  If
+            dictionary is provided, then the keys correspond to the `atnums[i]` attribute.
+            If None, a default radial grid (PowerRTransform of UniformInteger grid) is constructed
+            based on the given atomic numbers.
+        aim_weights : Callable or np.ndarray(K,), optional
+            Atoms in molecule weights. If None, then aim_weights is Becke weights with order=3.
         rotate : bool or int, optional
             Flag to set auto rotation for atomic grid, if given int, the number
             will be used as a seed to generate rantom matrix.
         store : bool, optional
             Store atomic grid as a class attribute.
 
+        Notes
+        -----
+        - The standard and Ochsenfeld presets were not designed with symmetric spherical t-design
+          in mind.
+        - The "standard grids" [2]_ "SG-0" and "SG-1" are designed for large molecules with LDA
+          (GGA) functionals, whereas "SG-2" and "SG-3" are designed for Meta-GGA functionals and
+          B95/Minnesota functionals, respectively.
+        - The Ochsenfeld pruned grids [3]_ are obtained based on the paper.
+
+        References
+        ----------
+        .. [2] Y. Shao, et al. Advances in molecular quantum chemistry contained in the Q-Chem 4
+               program package. Mol. Phys. 113, 184-215 (2015)
+        .. [3] Laqua, H., Kussmann, J., & Ochsenfeld, C. (2018). An improved molecular partitioning
+               scheme for numerical quadratures in density functional theory. The Journal of
+               Chemical Physics, 149(20).
+
         """
         # construct for a atom molecule
         if atcoords.ndim != 2:
             raise ValueError(
-                "The dimension of coordinates need to be 2\n"
-                f"got shape: {atcoords.ndim}"
+                "The dimension of coordinates need to be 2\n" f"got shape: {atcoords.ndim}"
             )
         if len(atnums) != atcoords.shape[0]:
             raise ValueError(
                 "shape of atomic nums does not match with coordinates\n"
                 f"atomic numbers: {atnums.shape}, coordinates: {atcoords.shape}"
             )
+        if aim_weights is None:
+            aim_weights = BeckeWeights(order=3)
         total_atm = len(atnums)
         atomic_grids = []
         for i in range(total_atm):
@@ -393,10 +363,11 @@ class MolGrid(Grid):
                 rad = rgrid[i]
             elif isinstance(rgrid, dict):
                 rad = rgrid[atnums[i]]
+            elif rgrid is None:
+                atnum = atnums[i]
+                rad = _generate_default_rgrid(atnum)
             else:
-                raise TypeError(
-                    f"not supported radial grid input; got input type: {type(rgrid)}"
-                )
+                raise TypeError(f"not supported radial grid input; got input type: {type(rgrid)}")
             # get proper grid type
             if isinstance(preset, str):
                 gd_type = preset
@@ -409,7 +380,7 @@ class MolGrid(Grid):
                     f"Not supported preset type; got preset {preset} with type {type(preset)}"
                 )
             at_grid = AtomGrid.from_preset(
-                rad, atnum=atnums[i], preset=gd_type, center=atcoords[i], rotate=rotate
+                atnum=atnums[i], preset=gd_type, rgrid=rad, center=atcoords[i], rotate=rotate
             )
             atomic_grids.append(at_grid)
         return cls(atnums, atomic_grids, aim_weights, store=store)
@@ -419,21 +390,14 @@ class MolGrid(Grid):
         cls,
         atnums: np.ndarray,
         atcoords: np.ndarray,
-        rgrid: OneDGrid,
         size: int,
-        aim_weights: Union[callable, np.ndarray],
+        rgrid: OneDGrid | None = None,
+        aim_weights: callable | np.ndarray = None,
         rotate: int = 37,
         store: bool = False,
     ):
         """
         Initialize a MolGrid instance with Horton Style input.
-
-        Example
-        -------
-        >>> onedg = UniformInteger(100) # number of points, oned grid before TF.
-        >>> rgrid = ExpRTransform(1e-5, 2e1).generate_radial(onedg) # radial grid
-        >>> becke = BeckeWeights(order=3)
-        >>> molgrid = MolGrid.from_size(atnums, atcoords, rgrid, 110, becke)
 
         Parameters
         ----------
@@ -441,12 +405,13 @@ class MolGrid(Grid):
             Atomic number of :math:`M` atoms in molecule.
         atcoords : np.ndarray(N, 3)
             Cartesian coordinates for each atoms
-        rgrid : OneDGrid
-            one dimension grid  to construct spherical grid
         size : int
-            Num of points on each shell of angular grid
-        aim_weights : Callable or np.ndarray(K,)
-            Atoms in molecule weights.
+            Number of points on each shell of angular grid.
+        rgrid : OneDGrid or None, optional
+            One-dimensional grid to construct the atomic grid. If none, then
+            default radial grid is generated based on atomic numbers.
+        aim_weights : Callable or np.ndarray(K,), optional
+            Atoms in molecule weights. If None, then aim_weights is Becke weights with order=3.
         rotate : bool or int , optional
             Flag to set auto rotation for atomic grid, if given int, the number
             will be used as a seed to generate rantom matrix.
@@ -459,24 +424,31 @@ class MolGrid(Grid):
             MolGrid instance with specified grid property
 
         """
-        at_grids = []
-        for i in range(len(atcoords)):
-            at_grids.append(
-                AtomGrid(rgrid, sizes=[size], center=atcoords[i], rotate=rotate)
+        if aim_weights is None:
+            aim_weights = BeckeWeights(order=3)
+        atgrids = []
+        for atnum, atcoord in zip(atnums, atcoords):
+            if rgrid is None:
+                rad_grid = _generate_default_rgrid(atnum)
+            else:
+                rad_grid = rgrid
+            atgrids.append(
+                AtomGrid(rad_grid, degrees=None, sizes=[size], center=atcoord, rotate=rotate)
             )
-        return cls(atnums, at_grids, aim_weights, store=store)
+        return cls(atnums, atgrids, aim_weights, store=store)
 
     @classmethod
     def from_pruned(
         cls,
         atnums: np.ndarray,
         atcoords: np.ndarray,
-        rgrid: Union[OneDGrid, list],
-        radius: Union[float, list],
-        aim_weights: Union[callable, np.ndarray],
-        sectors_r: np.ndarray,
-        sectors_degree: np.ndarray = None,
-        sectors_size: np.ndarray = None,
+        radius: float | list[float],
+        r_sectors: float | list[float],
+        d_sectors: int | list[list[int]] = 50,
+        *,
+        s_sectors: int | list[list[int]] | None = None,
+        rgrid: OneDGrid | list | None = None,
+        aim_weights: callable | np.ndarray | None = None,
         rotate: int = 37,
         store: bool = False,
     ):
@@ -488,33 +460,36 @@ class MolGrid(Grid):
         atnums: ndarray(M,)
             List of atomic numbers for each atom.
         atcoords: np.ndarray(M, 3)
-            Cartesian coordinates for each atoms
-        rgrid : OneDGrid or List[OneDGrid] or Dict[int: OneDGrid]
+            Three-dimensional Cartesian coordinates for each atoms in atomic units.
+        radius: float, List[float]
+            The atomic radius to be multiplied with `r_sectors` in atomic units (to make the
+            radial sectors atom specific). If float, then the same atomic radius is used for all
+            atoms, otherwise a list with :math:`M` elements is used, where :math:`M` is the number
+            of atoms in the molecule. If list, then the ith element is used for the ith atom.
+        r_sectors : list of List[float]
+            List of sequences of the boundary radius (in atomic units) specifying sectors of
+            the pruned radial grid of :math:`M` atoms. For the first atom, the first
+            sector is ``(0, radius*r_sectors[0][0])``\, then ``(radius*r_sectors[0][0],
+            radius*r_sectors[0][1])``\, and so on. See AtomGrid.from_pruned for more information.
+        d_sectors : int or list of List[int], optional
+            List of sequences of the angular degrees for radial sectors of :math:`M` atoms.
+            If a number is given, then the same number of degrees is used for all sectors of
+            all atoms.
+        s_sectors : int or list of List[int] or None, optional, keyword-only
+            List of sequences of angular sizes for each radial sector of of :math:`M` atoms.
+            If both `d_sectors` and `s_sectors` are given, `s_sectors` is used.
+        rgrid : OneDGrid or List[OneDGrid] or Dict[int: OneDGrid], optional
             One dimensional grid for the radial component.  If a list is provided,then ith
             grid correspond to the ith atom.  If dictionary is provided, then the keys are
-            correspond to the `atnums[i]` attribute.
-        radius: float, List[float]
-            The atomic radius to be multiplied with `r_sectors` (to make them atom specific).
-            If float, then the same atomic radius is used for all atoms, else a list specifies
-            it for each atom.
-        aim_weights: Callable or np.ndarray(\sum^M_n N_n,)
-            Atoms in molecule/nuclear weights :math:`{ {w_n(r_k)}_k^{N_i}}_n^{M}`, where
-            :math:`N_i` is the number of points in the ith atomic grid.
-        sectors_r: List[List], keyword-only argument
-            Each row is a sequence of boundary points specifying radial sectors of the pruned grid
-            for the `m`th atom. The first sector is ``[0, radius*sectors_r[0]]``, then
-            ``[radius*sectors_r[0], radius*sectors_r[1]]``, and so on.
-        sectors_degree: List[List], keyword-only argument
-            Each row is a sequence of Lebedev/angular degrees for each radial sector of the pruned
-            grid for the `m`th atom. If both `sectors_degree` and `sectors_size` are given,
-            `sectors_degree` is used.
-        sectors_size: List[List], keyword-only argument
-            Each row is a sequence of Lebedev sizes for each radial sector of the pruned grid
-            for the `m`th atom. If both `sectors_degree` and `sectors_size` are given,
-            `sectors_degree` is used.
+            correspond to the `atnums[i]` attribute. If None, then using atomic numbers it will
+            generate a default radial grid (PowerRTransform of UniformInteger grid).
+        aim_weights: Callable or np.ndarray(\sum^M_n N_n,), optional
+            Atoms in molecule/nuclear weights :math:`{ {w_n(r_k)}_k^{N_i}}_n^{M}`\, where
+            :math:`N_i` is the number of points in the ith atomic grid. If None, then aim_weights
+            is Becke weights with order=3.
         rotate : bool or int , optional
             Flag to set auto rotation for atomic grid, if given int, the number
-            will be used as a seed to generate rantom matrix.
+            will be used as a seed to generate random matrix.
         store : bool, optional
             Flag to store each original atomic grid information.
 
@@ -526,40 +501,60 @@ class MolGrid(Grid):
         """
         if atcoords.ndim != 2:
             raise ValueError(
-                "The dimension of coordinates need to be 2\n"
-                f"got shape: {atcoords.ndim}"
+                "The dimension of coordinates need to be 2\n" f"got shape: {atcoords.ndim}"
             )
+        if atnums.size != atcoords.shape[0]:
+            raise ValueError(
+                "The number of atoms in atomic numbers does not match with coordinates\n"
+                f"atomic numbers: {atnums.shape}, coordinates: {atcoords.shape}"
+            )
+        if aim_weights is None:
+            aim_weights = BeckeWeights(order=3)
 
         at_grids = []
-        num_atoms = len(atcoords)
-        # List of None is created, so that indexing is possible in the for-loop.
-        sectors_degree = (
-            [None] * num_atoms if sectors_degree is None else sectors_degree
-        )
-        sectors_size = [None] * num_atoms if sectors_size is None else sectors_size
-        radius_atom = (
-            [radius] * num_atoms if isinstance(radius, (float, np.float64)) else radius
-        )
-        for i in range(num_atoms):
+        natoms = len(atcoords)
+        # List of int is created, so that indexing is possible in the for-loop.
+        if isinstance(d_sectors, (int, np.integer)):
+            d_sectors = [d_sectors] * natoms
+        # If s_sectors given d_sectors is set to [None] for all atoms.
+        if s_sectors is not None:
+            d_sectors = [None] * natoms
+        # else s_sectors is set to [None] for all atoms.
+        else:
+            s_sectors = [None] * natoms
+
+        if len(d_sectors) != len(r_sectors):
+            raise ValueError(
+                "The number of angular sectors does not match with the number of radial sectors."
+                f"Got {len(d_sectors)} angular sectors and {len(r_sectors)} radial sectors."
+            )
+        if len(s_sectors) != len(r_sectors):
+            raise ValueError(
+                "The number of angular sectors does not match with the number of radial sectors."
+                f"Got {len(s_sectors)} angular sectors and {len(r_sectors)} radial sectors."
+            )
+
+        radius_atom = [radius] * natoms if isinstance(radius, (float, np.float64)) else radius
+        for i, atnum in enumerate(atnums):
             # get proper radial grid
             if isinstance(rgrid, OneDGrid):
                 rad = rgrid
             elif isinstance(rgrid, list):
                 rad = rgrid[i]
             elif isinstance(rgrid, dict):
-                rad = rgrid[atnums[i]]
+                rad = rgrid[atnum]
+            elif rgrid is None:
+                rad = _generate_default_rgrid(atnum)
             else:
-                raise TypeError(
-                    f"not supported radial grid input; got input type: {type(rgrid)}"
-                )
+                raise TypeError(f"Argument rgrid is not supported; got rgrid type: {type(rgrid)}")
 
             at_grids.append(
                 AtomGrid.from_pruned(
                     rad,
                     radius_atom[i],
-                    sectors_r=sectors_r[i],
-                    sectors_degree=sectors_degree[i],
-                    sectors_size=sectors_size[i],
+                    r_sectors=r_sectors[i],
+                    d_sectors=d_sectors[i],
+                    s_sectors=s_sectors[i],
                     center=atcoords[i],
                     rotate=rotate,
                 )
@@ -615,3 +610,35 @@ class MolGrid(Grid):
                 self._atcoords[index],
             )
         return self._atgrids[index]
+
+
+def _generate_default_rgrid(atnum: int):
+    r"""
+    Generate default radial transformation grid from default Horton.
+
+    See _DEFAULT_POWER_RTRANSFORM_PARAMS inside utils for information on how
+    it was determined
+
+    Parameters
+    ----------
+    atnum: int
+        Atomic Number.
+
+    Returns
+    -------
+    OneDGrid:
+        One-dimensional grid that was transformed using PowerRTransform.
+
+    """
+    if atnum in _DEFAULT_POWER_RTRANSFORM_PARAMS:
+        rmin, rmax, npt = _DEFAULT_POWER_RTRANSFORM_PARAMS[int(atnum)]
+        # Convert from Angstrom to atomic units
+        rmin = rmin * scipy.constants.angstrom / scipy.constants.value("atomic unit of length")
+        rmax = rmax * scipy.constants.angstrom / scipy.constants.value("atomic unit of length")
+        onedgrid = UniformInteger(npt)
+        rgrid = PowerRTransform(rmin, rmax).transform_1d_grid(onedgrid)
+        return rgrid
+    else:
+        raise ValueError(
+            f"Default rgrid parameter is not included for the" f" atomic number {atnum}."
+        )

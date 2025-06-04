@@ -22,9 +22,9 @@
 
 import warnings
 
-from grid.utils import get_cov_radii
-
 import numpy as np
+
+from grid.utils import get_cov_radii
 
 
 class BeckeWeights:
@@ -37,7 +37,8 @@ class BeckeWeights:
         ----------
         radii : dict, optional
             Dictionary of atomic number and corresponding atomic radius.
-            If None, Bragg-Slater empirically measured covalent radii are used.
+            If None, Bragg-Slater empirically measured covalent radii
+            (in atomic units) are used.
         order : int, optional
             Order of iteration for switching function.
 
@@ -103,12 +104,14 @@ class BeckeWeights:
         float or np.ndarray
             result of switching function
         """
-        for i in range(order):
+        for _i in range(order):
             x = 1.5 * x - 0.5 * x**3
         return x
 
     def generate_weights(self, points, atcoords, atnums, *, select=None, pt_ind=None):
         r"""Calculate Becke integration weights of points for select atom.
+
+        The units of the points and coordinates should match `radii` attribute.
 
         Parameters
         ----------
@@ -164,14 +167,17 @@ class BeckeWeights:
         if len(indices) != 0:
             warnings.warn(
                 f"Covalent radii for the following atom numbers {atnums[indices]} is nan."
-                f" Instead the radii with 1 less the atomic number is used."
+                f" Instead the radii with 1 less the atomic number is used.",
+                stacklevel=2,
             )
         radii = np.array(
             [
-                self._radii[num] if not np.isnan(self._radii[num])
-                # if n-1 radii is nan, use the n-2 instead
-                else np.nan_to_num(self._radii[num - 1])
-                or np.nan_to_num(self._radii[num - 2])
+                (
+                    self._radii[num]
+                    if not np.isnan(self._radii[num])
+                    # if n-1 radii is nan, use the n-2 instead
+                    else np.nan_to_num(self._radii[num - 1]) or np.nan_to_num(self._radii[num - 2])
+                )
                 for num in atnums
             ]
         )
@@ -237,14 +243,17 @@ class BeckeWeights:
         if len(indices) != 0:
             warnings.warn(
                 f"Covalent radii for the following atom numbers {atnums[indices]} is nan."
-                f" Instead the radii with 1 less the atomic number is used."
+                f" Instead the radii with 1 less the atomic number is used.",
+                stacklevel=2,
             )
         radii = np.array(
             [
-                self._radii[num] if not np.isnan(self._radii[num])
-                # if n-1 radii is nan, use the n-2 instead
-                else np.nan_to_num(self._radii[num - 1])
-                or np.nan_to_num(self._radii[num - 2])
+                (
+                    self._radii[num]
+                    if not np.isnan(self._radii[num])
+                    # if n-1 radii is nan, use the n-2 instead
+                    else np.nan_to_num(self._radii[num - 1]) or np.nan_to_num(self._radii[num - 2])
+                )
                 for num in atnums
             ]
         )
@@ -310,6 +319,8 @@ class BeckeWeights:
 
     def __call__(self, points, atcoords, atnums, indices):
         r"""Evaluate integration weights on the given grid points.
+
+        The units of the points and coordinates should match `radii` attribute.
 
         Parameters
         ----------

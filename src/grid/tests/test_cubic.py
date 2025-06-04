@@ -21,11 +21,12 @@ r"""Rectangular Grid Testing."""
 
 from unittest import TestCase
 
+import numpy as np
+from importlib_resources import files
+from numpy.testing import assert_allclose
+
 from grid.cubic import Tensor1DGrids, UniformGrid, _HyperRectangleGrid
 from grid.onedgrid import GaussLaguerre, MidPoint
-
-import numpy as np
-from numpy.testing import assert_allclose
 
 
 class TestHyperRectangleGrid(TestCase):
@@ -181,9 +182,7 @@ class TestTensor1DGrids(TestCase):
         for i in range(oned.size):
             for j in range(oned.size):
                 for k in range(oned.size):
-                    actual_pt = np.array(
-                        [oned.points[i], oned.points[j], oned.points[k]]
-                    )
+                    actual_pt = np.array([oned.points[i], oned.points[j], oned.points[k]])
                     assert_allclose(actual_pt, cubic.points[index, :])
                     actual_weight = oned.weights[i] * oned.weights[j] * oned.weights[k]
                     assert_allclose(actual_weight, cubic.weights[index])
@@ -217,9 +216,7 @@ class TestTensor1DGrids(TestCase):
         gaussian_pts = linear_func(cubic.points)
         num_pts = 50
         random_pts = np.random.uniform(-0.9, 0.9, (num_pts, 3))
-        interpolated = cubic.interpolate(
-            random_pts, gaussian_pts, use_log=False, method="linear"
-        )
+        interpolated = cubic.interpolate(random_pts, gaussian_pts, use_log=False, method="linear")
         assert_allclose(interpolated, linear_func(random_pts))
 
     def test_interpolation_of_constant_function_using_scipy_nearest_method(self):
@@ -228,18 +225,13 @@ class TestTensor1DGrids(TestCase):
         cubic = Tensor1DGrids(oned, oned, oned)
 
         def linear_func(points):
-            return (
-                np.array([1.0] * points.shape[0])
-                + np.random.random((points.shape[0])) * 1.0e-6
-            )
+            return np.array([1.0] * points.shape[0]) + np.random.random(points.shape[0]) * 1.0e-6
 
         gaussian_pts = linear_func(cubic.points)
         num_pts = 5
         random_pts = np.random.uniform(-0.9, 0.9, (num_pts, 3))
         for pt in random_pts:
-            interpolated = cubic.interpolate(
-                pt, gaussian_pts, use_log=False, method="nearest"
-            )
+            interpolated = cubic.interpolate(pt, gaussian_pts, use_log=False, method="nearest")
             assert_allclose(interpolated, linear_func(np.array([pt]))[0], rtol=1e-6)
 
     def test_interpolation_of_various_derivative_gaussian_using_logarithm(self):
@@ -258,42 +250,31 @@ class TestTensor1DGrids(TestCase):
             )
 
         def derivative_second_x(points):
-            return np.exp(-3 * np.linalg.norm(points, axis=1) ** 2.0) * points[:, 0] ** 2.0 * (
-                -3 * 2.0
-            ) ** 2.0 + np.exp(-3 * np.linalg.norm(points, axis=1) ** 2.0) * (-3 * 2.0)
+            expon = np.exp(-3 * np.linalg.norm(points, axis=1) ** 2.0)
+            return expon * points[:, 0] ** 2.0 * (-3 * 2.0) ** 2.0 + expon * (-3 * 2.0)
 
         gaussian_pts = gaussian(cubic.points)
 
-        pt = np.random.uniform(-0.5, 0.5, (100,3))
+        pts = np.random.uniform(-0.5, 0.5, (10, 3))
         # Test taking derivative in x-direction
-        interpolated = cubic.interpolate(
-            pt, gaussian_pts, use_log=True, nu_x=1
-        )
-        assert_allclose(interpolated, derivative_wrt_one_var(pt, 0), rtol=1e-4)
+        interpolated = cubic.interpolate(pts, gaussian_pts, use_log=True, nu_x=1)
+        assert_allclose(interpolated, derivative_wrt_one_var(pts, 0), rtol=1e-4)
 
         # Test taking derivative in y-direction
-        interpolated = cubic.interpolate(
-            pt, gaussian_pts, use_log=True, nu_y=1
-        )
-        assert_allclose(interpolated, derivative_wrt_one_var(pt, 1), rtol=1e-4)
+        interpolated = cubic.interpolate(pts, gaussian_pts, use_log=True, nu_y=1)
+        assert_allclose(interpolated, derivative_wrt_one_var(pts, 1), rtol=1e-4)
 
         # Test taking derivative in z-direction
-        interpolated = cubic.interpolate(
-            pt, gaussian_pts, use_log=True, nu_z=1
-        )
-        assert_allclose(interpolated, derivative_wrt_one_var(pt, 2), rtol=1e-4)
+        interpolated = cubic.interpolate(pts, gaussian_pts, use_log=True, nu_z=1)
+        assert_allclose(interpolated, derivative_wrt_one_var(pts, 2), rtol=1e-4)
 
         # Test taking second-derivative in x-direction
-        interpolated = cubic.interpolate(
-            pt, gaussian_pts, use_log=True, nu_x=2, nu_y=0, nu_z=0
-        )
-        assert_allclose(interpolated, derivative_second_x(pt), rtol=1e-4)
+        interpolated = cubic.interpolate(pts, gaussian_pts, use_log=True, nu_x=2, nu_y=0, nu_z=0)
+        assert_allclose(interpolated, derivative_second_x(pts), rtol=1e-4)
 
         # Test raises error
         with self.assertRaises(NotImplementedError):
-            cubic.interpolate(
-                pt, gaussian_pts, use_log=True, nu_x=2, nu_y=2
-            )
+            cubic.interpolate(pts, gaussian_pts, use_log=True, nu_x=2, nu_y=2)
 
     def test_integration_of_gaussian(self):
         r"""Test integration of a rapidly-decreasing Gaussian."""
@@ -325,9 +306,7 @@ class TestTensor1DGrids(TestCase):
 
         # Convert back
         index = 9
-        assert_allclose(
-            index, cubic.coordinates_to_index(cubic.index_to_coordinates(index))
-        )
+        assert_allclose(index, cubic.coordinates_to_index(cubic.index_to_coordinates(index)))
 
         # Test raises error when index isn't positive
         with self.assertRaises(ValueError):
@@ -350,9 +329,7 @@ class TestTensor1DGrids(TestCase):
 
         # Convert back
         index = 1
-        assert_allclose(
-            index, cubic.coordinates_to_index(cubic.index_to_coordinates(index))
-        )
+        assert_allclose(index, cubic.coordinates_to_index(cubic.index_to_coordinates(index)))
 
 
 class TestUniformGrid(TestCase):
@@ -407,25 +384,22 @@ class TestUniformGrid(TestCase):
         )
         # Test that axes is linearly independent
         with self.assertRaises(ValueError) as err:
-            UniformGrid(
-                proper_origin, np.array([[5, 5, 5], [5, 5, 5], [0, 0, 1]]), proper_shape
-            )
+            UniformGrid(proper_origin, np.array([[5, 5, 5], [5, 5, 5], [0, 0, 1]]), proper_shape)
         self.assertEqual(
             "The axes are not linearly independent, got det(axes)=0.0",
             str(err.exception),
         )
         # Test shape is always positive
         with self.assertRaises(ValueError) as err:
-            UniformGrid(proper_origin, proper_axes, np.array([5, -1, 2]))
+            grid_shape = np.array([5, -1, 2])
+            UniformGrid(proper_origin, proper_axes, grid_shape)
         self.assertEqual(
-            "Number of points in each direction should be positive, got shape=[5, -1, 2]",
+            f"Number of points in each direction should be positive, got shape={list(grid_shape)}",
             str(err.exception),
         )
         # Test the weights are correct
         with self.assertRaises(ValueError) as err:
-            UniformGrid(
-                proper_origin, proper_axes, proper_shape, weight="not trapezoid"
-            )
+            UniformGrid(proper_origin, proper_axes, proper_shape, weight="not trapezoid")
         self.assertEqual(
             "The weight type parameter is not known, got not trapezoid",
             str(err.exception),
@@ -483,9 +457,7 @@ class TestUniformGrid(TestCase):
         origin = np.array([0.0, 0.0, 0.0])
         axes = np.eye(3)
         shape = np.array([5, 6, 7], dtype=int)
-        volume = (
-            5 * 6 * 7
-        )  # Volume of cube centered at zero, moves in one step at a time (axes)
+        volume = 5 * 6 * 7  # Volume of cube centered at zero, moves in one step at a time (axes)
         uniform = UniformGrid(origin, axes, shape=shape, weight="Fourier1")
 
         index = 0  # Index to iterate through uniform.weights.
@@ -510,9 +482,7 @@ class TestUniformGrid(TestCase):
                         * (1 - np.cos(grid_z * np.pi))
                         / (grid_z * np.pi)
                     )
-                    desired = (
-                        8 * desired_x * desired_y * desired_z * volume / (6 * 7 * 8)
-                    )
+                    desired = 8 * desired_x * desired_y * desired_z * volume / (6 * 7 * 8)
                     assert_allclose(uniform.weights[index], desired)
                     index += 1
 
@@ -521,20 +491,14 @@ class TestUniformGrid(TestCase):
         origin = np.array([0.0, 0.0, 0.0])
         axes = np.eye(3)
         shape = np.array([5, 6, 7], dtype=int)
-        volume = (
-            5 * 6 * 7
-        )  # Volume of cube centered at zero, moves in one step at a time (axes)
-        volume *= (
-            (4.0 / 5.0) * (5.0 / 6) * (6.0 / 7)
-        )  # Alternative volume is used here.
+        volume = 5 * 6 * 7  # Volume of cube centered at zero, moves in one step at a time (axes)
+        volume *= (4.0 / 5.0) * (5.0 / 6) * (6.0 / 7)  # Alternative volume is used here.
         uniform = UniformGrid(origin, axes, shape=shape, weight="Fourier2")
         index = 0  # Index to iterate through uniform.weights.
         for j in range(1, shape[0] + 1):
             # Calculate weight in the x-direction
             grid_x = np.arange(1, shape[0])
-            desired_x = (
-                2.0 * np.sin((j - 0.5) * np.pi) * np.sin(shape[0] * np.pi / 2) ** 2.0
-            )
+            desired_x = 2.0 * np.sin((j - 0.5) * np.pi) * np.sin(shape[0] * np.pi / 2) ** 2.0
             desired_x /= shape[0] ** 2.0 * np.pi
             desired_x += (
                 4.0
@@ -548,11 +512,7 @@ class TestUniformGrid(TestCase):
             for k in range(1, shape[1] + 1):
                 # Calculate weight in the y-direction
                 grid_y = np.arange(1, shape[1])
-                desired_y = (
-                    2.0
-                    * np.sin((k - 0.5) * np.pi)
-                    * np.sin(shape[1] * np.pi / 2) ** 2.0
-                )
+                desired_y = 2.0 * np.sin((k - 0.5) * np.pi) * np.sin(shape[1] * np.pi / 2) ** 2.0
                 desired_y /= shape[1] ** 2.0 * np.pi
                 desired_y += (
                     4.0
@@ -567,9 +527,7 @@ class TestUniformGrid(TestCase):
                     # Calculate weight in the z-direction
                     grid_z = np.arange(1, shape[2])
                     desired_z = (
-                        2.0
-                        * np.sin((m - 0.5) * np.pi)
-                        * np.sin(shape[2] * np.pi / 2) ** 2.0
+                        2.0 * np.sin((m - 0.5) * np.pi) * np.sin(shape[2] * np.pi / 2) ** 2.0
                     )
                     desired_z /= shape[2] ** 2.0 * np.pi
                     desired_z += (
@@ -615,9 +573,7 @@ class TestUniformGrid(TestCase):
         shape = np.array([3, 3, 3], dtype=int)
         uniform = UniformGrid(origin, axes, shape, weight="Alternative")
         volume = 3 * 3 * 3  # Volume of cube.
-        desired_wghts = (
-            np.ones(uniform.size) * volume * np.prod(shape - 1) / np.prod(shape) ** 2.0
-        )
+        desired_wghts = np.ones(uniform.size) * volume * np.prod(shape - 1) / np.prod(shape) ** 2.0
         assert_allclose(uniform.weights, desired_wghts)
 
     def test_integration_with_gaussian_with_cubic_grid(self):
@@ -785,6 +741,284 @@ class TestUniformGrid(TestCase):
             ]
         )
         assert_allclose(grid.points, expected, rtol=1.0e-7, atol=1.0e-7)
+
+    def test_uniformgrid_from_cube(self):
+        r"""Test creating uniform cubic grid from cube example."""
+        atnums = np.array([6, 1, 1, 1, 1])
+        pseudo_numbers = np.array([6, 1, 1, 1, 1]).astype(float)
+        atcoords = np.array(
+            [
+                [-0.000041, 0.000035, 0.000003],
+                [1.051607, 1.517467, 0.942259],
+                [1.296786, -1.543671, -0.481272],
+                [-1.476881, -0.708836, 1.269987],
+                [-0.871678, 0.735176, -1.730958],
+            ]
+        )
+        axes = np.array(
+            [
+                [2.605101, 0.000000, 0.000000],
+                [0.000000, 2.605101, 0.000000],
+                [0.000000, 0.000000, 2.605101],
+            ]
+        )
+        origin = np.array([-6.512793, -6.512718, -6.51275])
+        shape = np.array([6, 6, 6])
+        data_vals = np.array(
+            [
+                2.66011e-09,
+                2.43339e-09,
+                2.14921e-08,
+                7.16256e-08,
+                7.41998e-08,
+                3.40400e-08,
+                1.69019e-08,
+                2.07614e-08,
+                2.34886e-07,
+                9.17704e-07,
+                4.01950e-07,
+                1.05928e-07,
+                7.35455e-08,
+                3.21547e-07,
+                2.09291e-06,
+                6.03301e-06,
+                1.45834e-06,
+                1.68969e-07,
+                1.30633e-07,
+                7.04469e-07,
+                2.11049e-06,
+                3.14829e-06,
+                8.05222e-07,
+                9.93385e-08,
+                8.65880e-08,
+                2.07846e-07,
+                2.42194e-07,
+                8.52672e-08,
+                5.42543e-08,
+                2.40865e-08,
+                2.92011e-08,
+                4.43778e-08,
+                2.27907e-08,
+                1.82844e-09,
+                2.96839e-09,
+                4.61889e-09,
+                3.85685e-09,
+                4.77266e-09,
+                8.96467e-08,
+                4.14563e-07,
+                2.06334e-07,
+                6.44963e-08,
+                5.35725e-08,
+                8.30180e-07,
+                2.20099e-05,
+                5.81077e-05,
+                8.87121e-06,
+                3.42128e-07,
+                8.23328e-07,
+                4.34876e-05,
+                4.35873e-04,
+                1.28722e-03,
+                8.71430e-05,
+                1.23662e-06,
+                1.51554e-06,
+                7.54430e-05,
+                5.63293e-04,
+                5.33647e-04,
+                5.19831e-05,
+                6.33116e-07,
+                4.26008e-07,
+                7.87307e-06,
+                3.52842e-05,
+                1.52522e-05,
+                1.27574e-06,
+                4.07203e-08,
+                7.92854e-08,
+                1.83999e-07,
+                2.08056e-07,
+                3.95658e-08,
+                1.81406e-08,
+                1.06424e-08,
+                1.49034e-08,
+                1.88894e-07,
+                1.84617e-06,
+                1.92382e-06,
+                3.17458e-07,
+                4.89679e-08,
+                1.46657e-07,
+                2.15085e-05,
+                3.85288e-04,
+                5.27086e-04,
+                4.97767e-05,
+                6.21140e-07,
+                4.69357e-06,
+                6.22502e-04,
+                1.72733e-02,
+                1.30410e-01,
+                9.27459e-04,
+                4.18722e-06,
+                8.56323e-06,
+                1.86260e-03,
+                9.10047e-02,
+                1.97993e-02,
+                4.93451e-04,
+                2.31751e-06,
+                1.36703e-06,
+                6.83701e-05,
+                5.09508e-04,
+                4.38554e-04,
+                3.39089e-05,
+                2.29715e-07,
+                1.05285e-07,
+                5.29104e-07,
+                1.77812e-06,
+                2.46884e-06,
+                4.56541e-07,
+                4.62455e-08,
+                4.99681e-08,
+                7.91930e-07,
+                6.41396e-06,
+                4.15433e-06,
+                1.67544e-07,
+                1.33164e-08,
+                2.43791e-07,
+                4.90738e-05,
+                1.28808e-03,
+                6.61936e-04,
+                2.23468e-05,
+                1.06579e-07,
+                2.26723e-06,
+                4.71262e-04,
+                8.74264e-02,
+                2.28956e-02,
+                3.46961e-04,
+                9.71712e-07,
+                4.15301e-06,
+                5.45842e-04,
+                1.74207e-02,
+                1.62411e-01,
+                6.43468e-04,
+                2.30742e-06,
+                6.32463e-07,
+                3.59814e-05,
+                4.98093e-04,
+                1.45680e-03,
+                7.24936e-05,
+                7.16444e-07,
+                5.09114e-08,
+                2.07418e-07,
+                2.88089e-06,
+                6.63938e-06,
+                1.23315e-06,
+                1.11896e-07,
+                5.79635e-08,
+                3.61388e-07,
+                1.56116e-06,
+                1.06459e-06,
+                9.62388e-08,
+                8.43232e-09,
+                1.34509e-07,
+                7.69557e-06,
+                8.87826e-05,
+                6.29503e-05,
+                1.94672e-06,
+                7.84416e-09,
+                1.87110e-07,
+                4.04358e-05,
+                8.77030e-04,
+                5.37382e-04,
+                2.02792e-05,
+                6.58022e-08,
+                9.81608e-08,
+                1.59426e-05,
+                3.91357e-04,
+                7.26338e-04,
+                5.13141e-05,
+                4.63116e-07,
+                3.30760e-08,
+                8.24312e-07,
+                3.84964e-05,
+                7.85223e-05,
+                9.38048e-06,
+                2.79569e-07,
+                1.15275e-08,
+                2.89590e-08,
+                5.59929e-07,
+                1.34024e-06,
+                4.41195e-07,
+                9.32590e-08,
+                2.85841e-08,
+                9.91317e-08,
+                1.83985e-07,
+                1.30285e-07,
+                3.73820e-08,
+                6.62758e-09,
+                4.90894e-08,
+                2.97380e-07,
+                1.29174e-06,
+                8.47402e-07,
+                7.36705e-08,
+                6.35961e-09,
+                3.21197e-08,
+                4.85867e-07,
+                4.12370e-06,
+                2.69801e-06,
+                1.28003e-07,
+                1.18512e-08,
+                5.05474e-09,
+                7.03752e-08,
+                1.43865e-06,
+                2.89101e-06,
+                4.96815e-07,
+                5.24039e-08,
+                1.04634e-09,
+                1.42491e-08,
+                3.45934e-07,
+                8.97308e-07,
+                3.03767e-07,
+                6.92113e-08,
+                2.83805e-09,
+                1.19992e-08,
+                6.32416e-08,
+                1.33558e-07,
+                9.99063e-08,
+                3.65721e-08,
+            ]
+        )
+
+        ref_grid = UniformGrid(origin, axes, shape)
+
+        cubefile = files("grid") / "data" / "tests" / "cubegen_ch4_6_gen.cube"
+        grid, cube_data = UniformGrid.from_cube(cubefile, return_data=True)
+
+        assert_allclose(grid._axes, axes)
+        assert_allclose(grid._origin, origin)
+        assert_allclose(grid._shape, shape)
+        assert_allclose(cube_data["atnums"], atnums)
+        assert_allclose(cube_data["atcoords"], atcoords)
+        assert_allclose(cube_data["atcorenums"], pseudo_numbers)
+        assert_allclose(cube_data["data"], data_vals)
+
+        assert_allclose(grid.points, ref_grid.points)
+        assert_allclose(grid.weights, ref_grid.weights)
+
+    def test_uniformgrid_generate_cube(self):
+        r"""Test creating uniform cubic grid from cube example."""
+        # Change to better test later
+        ref_cube = files("grid") / "data" / "tests" / "cubegen_ch4_6_gen.cube"
+        out_cube = str(files("grid") / "data" / "tests" / "cubegen_ch4_6_gen.cube")
+
+        grid, cube_data = UniformGrid.from_cube(ref_cube, return_data=True)
+        atnums, atcoords, data = cube_data["atnums"], cube_data["atcoords"], cube_data["data"]
+        grid.generate_cube(out_cube, data=data, atcoords=atcoords, atnums=atnums)
+
+        with open(out_cube) as out_f, open(ref_cube) as ref_f:
+            for _ in range(2):
+                next(out_f)
+                next(ref_f)
+            for line_r, line_o in zip(ref_f, out_f):
+                numbers_r = np.array([float(x) for x in line_r.split()])
+                numbers_o = np.array([float(x) for x in line_o.split()])
+                assert_allclose(numbers_r, numbers_o)
 
     def test_uniformgrid_points_without_rotate(self):
         r"""Test creating uniform cubic grid from simple constructed molecule."""

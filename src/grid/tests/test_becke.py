@@ -22,10 +22,11 @@
 
 from unittest import TestCase
 
-from grid.becke import BeckeWeights
-
 import numpy as np
+import pytest
 from numpy.testing import assert_allclose
+
+from grid.becke import BeckeWeights
 
 
 class TestBecke(TestCase):
@@ -79,14 +80,10 @@ class TestBecke(TestCase):
         weights = becke.generate_weights(centers, centers, nums, pt_ind=[0, 1, 2, 3])
         assert_allclose(weights, [1, 1, 1])
 
-        weights = becke.generate_weights(
-            centers, centers, nums, select=[0, 1], pt_ind=[0, 1, 3]
-        )
+        weights = becke.generate_weights(centers, centers, nums, select=[0, 1], pt_ind=[0, 1, 3])
         assert_allclose(weights, [1, 1, 0])
 
-        weights = becke.generate_weights(
-            centers, centers, nums, select=[2, 0], pt_ind=[0, 2, 3]
-        )
+        weights = becke.generate_weights(centers, centers, nums, select=[2, 0], pt_ind=[0, 2, 3])
         assert_allclose(weights, [0, 0, 0])
 
     def test_becke_compute_atom_weight(self):
@@ -139,10 +136,17 @@ class TestBecke(TestCase):
             pts[:, 1:] += np.random.rand(10, 2)
 
             becke = BeckeWeights(order=3)
-            wts = becke.generate_weights(pts, centers, nums, pt_ind=[0, 5, 10])
-            assert_allclose(wts, 0.5)
-            wts = becke.compute_weights(pts, centers, nums, pt_ind=[0, 5, 10])
-            assert_allclose(wts, 0.5)
+            # Make sure a warning was raised, since covalent radii are not defined
+            with pytest.warns(
+                UserWarning, match="Covalent radii for the following atom numbers [\\d+]*"
+            ):
+                wts = becke.generate_weights(pts, centers, nums, pt_ind=[0, 5, 10])
+                assert_allclose(wts, 0.5)
+            with pytest.warns(
+                UserWarning, match="Covalent radii for the following atom numbers [\\d+]*"
+            ):
+                wts = becke.compute_weights(pts, centers, nums, pt_ind=[0, 5, 10])
+                assert_allclose(wts, 0.5)
 
     def test_raise_errors(self):
         """Test errors raise."""
@@ -161,9 +165,7 @@ class TestBecke(TestCase):
         with self.assertRaises(ValueError):
             becke.generate_weights(points, centers, nums, select=[], pt_ind=[])
         with self.assertRaises(ValueError):
-            becke.generate_weights(
-                points, centers, nums, select=[0, 1], pt_ind=[0, 10, 50, 99]
-            )
+            becke.generate_weights(points, centers, nums, select=[0, 1], pt_ind=[0, 10, 50, 99])
         with self.assertRaises(ValueError):
             becke.compute_weights(points, centers, nums, select=[])
         with self.assertRaises(ValueError):
@@ -173,9 +175,7 @@ class TestBecke(TestCase):
         with self.assertRaises(ValueError):
             becke.compute_weights(points, centers, nums, select=[], pt_ind=[])
         with self.assertRaises(ValueError):
-            becke.compute_weights(
-                points, centers, nums, select=[0, 1], pt_ind=[0, 10, 50, 99]
-            )
+            becke.compute_weights(points, centers, nums, select=[0, 1], pt_ind=[0, 10, 50, 99])
         # error of order
         with self.assertRaises(ValueError):
             BeckeWeights({1: 0.5, 2: 0.8}, order=3.0)

@@ -1,0 +1,40 @@
+files: "src/"
+exclude: "doc/|examples/"
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v4.6.0
+  hooks:
+    - id: check-added-large-files                   # prevents giant files from being commit
+    - id: check-ast                                 # Check whether files parse as valid python.
+    - id: check-case-conflict                       # Checks conflict case-insensitive
+    - id: check-executables-have-shebangs
+    - id: check-json
+    - id: check-merge-conflict
+    - id: check-symlinks                            # Check for symlinks which don't point
+    - id: check-toml
+    - id: check-vcs-permalinks
+    - id: debug-statements                          # Check for debugger imports and py37 breakpt
+    - id: detect-private-key                        # Checks for the existence of private keys.
+    - id: destroyed-symlinks
+    - id: end-of-file-fixer                         # Makes sure files end in a newline
+    - id: fix-byte-order-marker                     # Removes UTF-8 byte order marker
+    - id: mixed-line-ending                         # Replaces or checks mixed line ending.
+    - id: pretty-format-json                        # Checks JSON are pretty
+      args: ["--autofix", "--no-sort-keys"]
+    - id: trailing-whitespace                       # Trims trailing whitespace.
+- repo: https://github.com/Lucas-C/pre-commit-hooks
+  rev: v1.5.5
+  hooks:
+    - id: remove-crlf
+- repo: https://github.com/psf/black
+  rev: 24.4.2
+  hooks:
+    - id: black
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  rev: 'v0.4.3'
+  hooks:
+    - id: ruff
+- repo: https://github.com/python-jsonschema/check-jsonschema
+  rev: 0.28.2
+  hooks:
+    - id: check-github-workflows

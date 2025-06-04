@@ -1,0 +1,46 @@
+name: Execute notebook
+
+on:
+  push:
+    branches:
+     - main
+    tags-ignore:
+      - '**'
+  pull_request:
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup python for notebook testing 3.9
+    # gbasis requires python 3.9
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.9
+
+    - name: Install dependencies for executing notebook
+      run: |
+        pip install --upgrade pip
+        pip install pytest pytest-md pytest-emoji
+        # Install jupyter 
+        pip install jupyterlab nbclient matplotlib
+        # Install iodata
+        pip install qc-iodata
+        # Install gbasis
+        git clone https://github.com/theochem/gbasis.git
+        cd gbasis
+        pip install .
+        # python -m pip install git+https://github.com/theochem/gbasis.git
+
+    - name: Install development version
+      run: |
+        pip install -e .
+
+    - id: jupyter
+      name: Jupyter Notebook Execution
+      run: jupyter execute ./examples/*.ipynb
+      shell: bash

@@ -738,7 +738,10 @@ class CubicProTransform(_HyperRectangleGrid):
         if is_boundary:
             return np.inf, np.inf
         # If it is a new point, with no nearby point, get a large initial guess.
-        elif indices[i_var] == 1:
+        elif indices[i_var] == 0 or indices[i_var] == 1:
+            # TODO: These boundary could be made more efficient, since if there is boundary pts
+            #       in the Theta-Grid, then indices[i_var] == 1 should be used, if there isn't
+            #       boundary points in theta-grid then indices[i_var] == 0 should be used.
             min = (np.min(self.promol.coords[:, i_var]) - 3.0) * 20.0
             max = (np.max(self.promol.coords[:, i_var]) + 3.0) * 20.0
             return min, max

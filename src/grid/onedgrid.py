@@ -20,11 +20,12 @@
 """1D integration grid."""
 
 
-from grid.basegrid import OneDGrid
+import warnings
 
 import numpy as np
-
 from scipy.special import roots_chebyu, roots_genlaguerre
+
+from grid.basegrid import OneDGrid
 
 
 class GaussLaguerre(OneDGrid):
@@ -36,15 +37,17 @@ class GaussLaguerre(OneDGrid):
     .. math::
         \int_{0}^{\infty} x^\alpha e^{-x} f(x) dx \approx \sum_{i=1}^n w_i f(x_i),
 
-    where :math:`\alpha > -1`.
+    where :math:`\alpha > -1`\.
 
-    However, to integrate function :math:`g(x)` over :math:`[0, \infty)`, this is re-written as:
+    However, to integrate function :math:`g(x)` over :math:`[0, \infty)`\, this is re-written as:
 
     .. math::
         \int_{0}^{\infty} g(x)dx \approx
         \sum_{i=1}^n \left(\frac{w_i}{x_i^\alpha e^{-x_i}}\right) g(x_i) = \sum_{i=1}^n w_i' g(x_i)
 
     """
+
+    name = "Gauss-Laguerre"
 
     def __init__(self, npoints: int, alpha: float = 0):
         r"""Generate grid on :math:`[0, \infty)` based on generalized Gauss-Laguerre quadrature.
@@ -63,9 +66,7 @@ class GaussLaguerre(OneDGrid):
 
         """
         if npoints <= 1:
-            raise ValueError(
-                f"Argument npoints must be an integer > 1, given {npoints}"
-            )
+            raise ValueError(f"Argument npoints must be an integer > 1, given {npoints}")
         if alpha <= -1:
             raise ValueError(f"Argument alpha must be larger than -1, given {alpha}")
         # compute points and weights for Generalized Gauss-Laguerre quadrature
@@ -93,6 +94,8 @@ class GaussLegendre(OneDGrid):
 
     """
 
+    name = "Gauss-Legendre"
+
     def __init__(self, npoints: int):
         r"""Generate grid on :math:`[-1, 1]` interval based on Gauss-Legendre quadrature.
 
@@ -108,16 +111,13 @@ class GaussLegendre(OneDGrid):
 
         Notes
         -----
-        - Only known to be accurate up to `npoints`=100 and may cause problems after
-        that amount.
+        - Only known to be accurate up to `npoints`\=100 and may cause problems after that amount.
 
         """
         if npoints <= 1:
-            raise ValueError(
-                f"Argument npoints must be an integer > 1, given {npoints}"
-            )
+            raise ValueError(f"Argument npoints must be an integer > 1, given {npoints}")
         # compute points and weights for Gauss-Legendre quadrature
-        # according to numpy's leggauss, the accuracy is only known up to `npoints=100`.
+        # according to numpy's leggauss, the accuracy is only known up to `npoints=100`\.
         points, weights = np.polynomial.legendre.leggauss(npoints)
         super().__init__(points, weights, (-1, 1))
 
@@ -133,13 +133,15 @@ class GaussChebyshev(OneDGrid):
         x_i =& \cos\left( \frac{2i-1}{2n}\pi \right) \\
         w_i =& \frac{\pi}{n}
 
-    However, to integrate a given function :math:`g(x)` over :math:`[-1, 1]`, this is re-written as:
+    However, to integrate a given function :math:`g(x)` over :math:`[-1, 1]`\, this is re-written as:
 
     .. math::
         \int_{-1}^{1}g(x)dx \approx \sum_{i=1}^n \left(w_i\sqrt{1-x_i^2}\right)g(x_i) =
         \sum_{i=1}^n w_i'g(x_i)
 
     """
+
+    name = "Gauss-Chebyshev"
 
     def __init__(self, npoints: int):
         r"""Generate grid on :math:`[-1, 1]` interval based on Gauss-Chebyshev quadrature.
@@ -156,9 +158,7 @@ class GaussChebyshev(OneDGrid):
 
         """
         if npoints <= 1:
-            raise ValueError(
-                f"Argument npoints must be an integer > 1, given {npoints}"
-            )
+            raise ValueError(f"Argument npoints must be an integer > 1, given {npoints}")
         # compute points and weights for Gauss-Chebyshev quadrature (Type 1)
         # points are generated in decreasing order (from +1 to -1), so the order is reversed to
         # correctly traverse [-1, 1] when making an instance of OneDGrid
@@ -178,6 +178,8 @@ class UniformInteger(OneDGrid):
 
     """
 
+    name = "Uniform-Integer"
+
     def __init__(self, npoints: int):
         r"""Generate grid on [0, npoints] interval using equally spaced uniform distribution.
 
@@ -193,9 +195,7 @@ class UniformInteger(OneDGrid):
 
         """
         if npoints <= 1:
-            raise ValueError(
-                f"Argument npoints must be an integer > 1, given {npoints}"
-            )
+            raise ValueError(f"Argument npoints must be an integer > 1, given {npoints}")
         points = np.arange(npoints)
         weights = np.ones(npoints)
         super().__init__(points, weights, (0, np.inf))
@@ -212,13 +212,15 @@ class GaussChebyshevType2(OneDGrid):
         x_i =& \cos\left( \frac{i}{n+1} \pi \right) \\
         w_i =& \frac{\pi}{n+1} \sin^2 \left( \frac{i}{n+1} \pi \right)
 
-    However, to integrate a given function :math:`g(x)` over :math:`[-1, 1]`, this is re-written as:
+    However, to integrate a given function :math:`g(x)` over :math:`[-1, 1]`\, this is re-written as:
 
     .. math::
         \int_{-1}^{1} g(x) dx \approx \sum_{i=1}^n \left(\frac{w_i}{\sqrt{1-x_i^2}}\right) g(x_i) =
         \sum_{i=1}^n w_i' g(x_i)
 
     """
+
+    name = "Gauss-Chebyshev-Type2"
 
     def __init__(self, npoints: int):
         r"""Generate grid on :math:`[-1, 1]` interval based on Gauss-Chebyshev Type 2.
@@ -235,9 +237,7 @@ class GaussChebyshevType2(OneDGrid):
 
         """
         if npoints < 1:
-            raise ValueError(
-                f"Argument npoints must be an integer > 1, given {npoints}"
-            )
+            raise ValueError(f"Argument npoints must be an integer > 1, given {npoints}")
         # compute points and weights for Gauss-Chebyshev quadrature (Type 2)
         points, weights = roots_chebyu(npoints)
         weights /= np.sqrt(1 - np.power(points, 2))
@@ -256,12 +256,14 @@ class GaussChebyshevLobatto(OneDGrid):
         w_{1} = w_{n} =& \frac{\pi}{2(n-1)} \\
         w_{i\neq 1,n} =& \frac{\pi}{n-1}
 
-    However, to integrate a given function :math:`g(x)` over :math:`[-1, 1]`, this is re-written as:
+    However, to integrate a given function :math:`g(x)` over :math:`[-1, 1]`\, this is re-written as:
 
     .. math::
         \int_{-1}^{1}g(x) dx \approx \sum_{i=1}^n \left(w_i \sqrt{1-x_i^2}\right) g(x_i) =
         \sum_{i=1}^n w_i' g(x_i)
     """
+
+    name = "Gauss-Chebyshev-Lobatto"
 
     def __init__(self, npoints: int):
         r"""Generate grid on :math:`[-1, 1]` interval based on Gauss-Chebyshev-Lobatto quadrature.
@@ -278,9 +280,7 @@ class GaussChebyshevLobatto(OneDGrid):
 
         """
         if npoints <= 1:
-            raise ValueError(
-                f"Argument npoints must be an integer > 1, given {npoints}"
-            )
+            raise ValueError(f"Argument npoints must be an integer > 1, given {npoints}")
 
         # generate points in ascending order, and then compute weights
         points = np.cos(np.arange(npoints) * np.pi / (npoints - 1))
@@ -306,6 +306,8 @@ class Trapezoidal(OneDGrid):
 
     """
 
+    name = "Trapezoidal-Lobatto"
+
     def __init__(self, npoints: int):
         r"""Generate grid on [-1, 1] interval based on Trapezoidal (Euler-Maclaurin) rule.
 
@@ -321,9 +323,7 @@ class Trapezoidal(OneDGrid):
 
         """
         if npoints <= 1:
-            raise ValueError(
-                f"Argument npoints must be an integer > 1, given {npoints}"
-            )
+            raise ValueError(f"Argument npoints must be an integer > 1, given {npoints}")
 
         points = -1 + (2 * np.arange(npoints) / (npoints - 1))
         weights = 2 * np.ones(npoints) / (npoints - 1)
@@ -332,9 +332,10 @@ class Trapezoidal(OneDGrid):
 
         super().__init__(points, weights, (-1, 1))
 
+
 class RectangleRuleSineEndPoints(OneDGrid):
     r"""
-    Rectangle-Rule Sine end points integral quadrature class.
+    Rectangle-Rule Sine end points integral quadrature class. [#]_
 
      .. math::
         \int_{-1}^{1} f(x) dx \approx& \sum_{i=1}^n w_i f(x_i) \\
@@ -342,15 +343,18 @@ class RectangleRuleSineEndPoints(OneDGrid):
         w_i =& \frac{2}{n+1} \sum_{m=1}^n \frac{\sin(m \pi x_i)(1-\cos(m \pi))}{m \pi}
 
     For consistency with other 1-D grids, the integration range is modified
-    by :math:`q=2x-1` to the interval :math:`[-1, 1]`, so that
+    by :math:`q=2x-1` to the interval :math:`[-1, 1]`\, so that
 
     .. math::
         2 \int_{0}^{1} f(x) dx = \int_{-1}^{1} f(q) dq
 
     References
     ----------
-    .. [1] Boyd, John P. Chebyshev and Fourier spectral methods. Courier Corporation, 2001.
+    .. [#] Boyd, John P. Chebyshev and Fourier spectral methods. Courier Corporation, 2001.
+
     """
+
+    name = "Rectangle-Rule-Sine"
 
     def __init__(self, npoints: int):
         r"""
@@ -368,9 +372,7 @@ class RectangleRuleSineEndPoints(OneDGrid):
 
         """
         if npoints <= 1:
-            raise ValueError(
-                f"Argument npoints must be an integer > 1, given {npoints}"
-            )
+            raise ValueError(f"Argument npoints must be an integer > 1, given {npoints}")
 
         points = np.arange(1, npoints + 1, 1) / (npoints + 1)
 
@@ -402,14 +404,14 @@ class RectangleRuleSineEndPoints(OneDGrid):
 #                 \frac{4}{n \pi} \sum_{m=1}^{n-1} \frac{\sin(m \pi x_i)\sin^2(m\pi /2)}{m}
 #
 #     For consistency with other 1-D grids, the integration range is modified
-#     by :math:`q=2x-1` to the interval :math:`[-1, 1]`, such that
+#     by :math:`q=2x-1` to the interval :math:`[-1, 1]`\, such that
 #
 #     .. math::
 #         2 \int_{0}^{1} f(x) dx = \int_{-1}^{1} f(q) dq
 #
 #     References
 #     ----------
-#     .. [1] Boyd, John P. Chebyshev and Fourier spectral methods. Courier Corporation, 2001.
+#     .. [#] Boyd, John P. Chebyshev and Fourier spectral methods. Courier Corporation, 2001.
 #
 #     """
 #
@@ -465,9 +467,11 @@ class TanhSinh(OneDGrid):
         w_i =& \frac{\frac{\pi}{2}\delta \cosh(i\delta)}{\cosh^2(\frac{\pi}{2}\sinh(i\delta))}
 
     This quadrature is useful when singularities or infinite derivatives exist on the
-    endpoints of :math:`[-1, 1]`.
+    endpoints of :math:`[-1, 1]`\.
 
     """
+
+    name = "Tanh-Sinh"
 
     def __init__(self, npoints: int, delta: float = 0.1):
         r"""Generate grid on :math:`[-1, 1]` interval based on Tanh-Sinh rule.
@@ -477,7 +481,7 @@ class TanhSinh(OneDGrid):
         npoints : int
             Number of grid points, which should be an odd integer.
         delta : float
-            The value of parameter :math:`\delta`, which is related with the size.
+            The value of parameter :math:`\delta`\, which is related with the size.
 
         Returns
         -------
@@ -486,13 +490,9 @@ class TanhSinh(OneDGrid):
 
         """
         if npoints <= 1:
-            raise ValueError(
-                f"Argument npoints must be an integer > 1, given {npoints}"
-            )
+            raise ValueError(f"Argument npoints must be an integer > 1, given {npoints}")
         if npoints % 2 == 0:
-            raise ValueError(
-                f"Argument npoints must be an odd integer, given {npoints}"
-            )
+            raise ValueError(f"Argument npoints must be an odd integer, given {npoints}")
 
         # compute summation indices & angle values
         j = int((1 - npoints) / 2) + np.arange(npoints)
@@ -524,6 +524,8 @@ class Simpson(OneDGrid):
         \end{cases}
 
     """
+
+    name = "Simpson"
 
     def __init__(self, npoints: int):
         r"""Generate grid on :math:`[-1,1]` interval based on Simpson rule.
@@ -566,6 +568,8 @@ class MidPoint(OneDGrid):
 
     """
 
+    name = "MidPoint"
+
     def __init__(self, npoints: int):
         r"""Generate grid on :math:`[-1, 1]` interval based on Mid-Point rule.
 
@@ -581,9 +585,7 @@ class MidPoint(OneDGrid):
 
         """
         if npoints <= 1:
-            raise ValueError(
-                f"Argument npoints must be an integer > 1, given {npoints}"
-            )
+            raise ValueError(f"Argument npoints must be an integer > 1, given {npoints}")
 
         points = -1 + (2 * np.arange(npoints) + 1) / npoints
         weights = 2 * np.ones(npoints) / npoints
@@ -592,7 +594,7 @@ class MidPoint(OneDGrid):
 
 
 class ClenshawCurtis(OneDGrid):
-    r"""Clenshow Curtis integral quadrature class.
+    r"""Clenshaw-Curtis integral quadrature class.
 
     The definition of this quadrature is:
 
@@ -600,22 +602,24 @@ class ClenshawCurtis(OneDGrid):
         \theta_i &= \pi (i - 1) / (n - 1) \\
         x_i &= \cos (\theta_i) \\
         w_i &= \frac{c_k}{n} \bigg(1 - \sum_{j=1}^{\lfloor n/2 \rfloor}
-            \frac{b_j}{4j^2 - 1} \cos(2j\theta_i) \bigg)
-        b_j = \begin{cases}
+            \frac{b_j}{4j^2 - 1} \cos(2j\theta_i) \bigg) \\
+        b_j &= \begin{cases}
             1 & \text{if } j = n/2 \\
             2 & \text{if } j < n/2
         \end{cases} \\
-        c_j = \begin{cases}
+        c_j &= \begin{cases}
             1 & \text{if } k = 0, n\\
             2 & else
         \end{cases}
 
-    where :math:k`=0,\cdots,n.
+    where :math:`k=0,\cdots ,n`\.
 
     If discontinuous, it is recommended to break the intervals at the discontinuities
     and handled separately.
 
     """
+
+    name = "Clenshaw-Curtis"
 
     def __init__(self, npoints: int):
         r"""Generate grid on :math:`[-1,1]` interval based on Clenshaw-Curtis method.
@@ -662,16 +666,18 @@ class FejerFirst(OneDGrid):
     The definition of this quadrature is:
 
     .. math::
-        \theta_i &= \frac{(2i - 1)\pi}{2n},
-        x_i &= \cos(\theta_i),
+        \theta_i &= \frac{(2i - 1)\pi}{2n}, \\
+        x_i &= \cos(\theta_i), \\
         w_i &= \frac{2}{n}\bigg(1 - 2 \sum_{j=1}^{\lfloor n/2 \rfloor}
             \frac{\cos(2j \theta_j)}{4 j^2 - 1} \bigg),
 
-    where :math:`k=1,\cdots, n`. It uses the zeros of the Chebyshev polynomial.
+    where :math:`k=1,\cdots, n`\. It uses the zeros of the Chebyshev polynomial.
     If discontinuous, it is recommended to break the intervals at the discontinuities
     and handled separately.
 
     """
+
+    name = "Fejer-First"
 
     def __init__(self, npoints: int):
         r"""Generate 1D grid on :math:`(-1,1)` interval based on Fejer's first rule.
@@ -714,7 +720,7 @@ class FejerSecond(OneDGrid):
     The definition of this quadrature is:
 
     .. math::
-        theta_i &= k \pi / n \\
+        \theta_i &= k \pi / n \\
         x_i &= \cos(\theta_i) \\
         w_i &= \frac{4 \sin(\theta_i)}{n} \sum_{j=1}^{\lfloor n/2 \rfloor}
             \frac{\sin(2j - 1)\theta_i}{2j - 1}\\
@@ -724,6 +730,8 @@ class FejerSecond(OneDGrid):
     recommended to break the intervals at the discontinuities and handled separately.
 
     """
+
+    name = "Fejer-Second"
 
     def __init__(self, npoints: int):
         r"""Generate grid on :math:`(-1,1)` interval based on Fejer's second rule.
@@ -776,27 +784,26 @@ def _derg2(x):
 
 def _g3(x):
     r"""Return an auxiliary function g3(x) for Trefethen transformation."""
-    return (1 / 53089) * (
-        40320 * x + 6720 * x**3 + 3024 * x**5 + 1800 * x**7 + 1225 * x**9
-    )
+    return (1 / 53089) * (40320 * x + 6720 * x**3 + 3024 * x**5 + 1800 * x**7 + 1225 * x**9)
 
 
 def _derg3(x):
     r"""Return the derivative function g3(x) for Trefethen transformation."""
-    return (1 / 53089) * (
-        40320 + 20160 * x**2 + 15120 * x**4 + 12600 * x**6 + 11025 * x**8
-    )
+    return (1 / 53089) * (40320 + 20160 * x**2 + 15120 * x**4 + 12600 * x**6 + 11025 * x**8)
 
 
 class TrefethenCC(OneDGrid):
     """
-    Trefethen polynomial transformation of Clenshaw-Curtis integral quadrature class.
+    Trefethen polynomial transformation of Clenshaw-Curtis integral quadrature class [#]_.
 
     References
     ----------
-    .. [1] Hale, Nicholas, and Lloyd N. Trefethen. "New quadrature formulas from conformal maps."
+    .. [#] Hale, Nicholas, and Lloyd N. Trefethen. "New quadrature formulas from conformal maps."
        SIAM Journal on Numerical Analysis 46.2 (2008): 930-948.
+
     """
+
+    name = "Trefethen-Polynomial-Transformation-Clenshaw-Curtis"
 
     def __init__(self, npoints: int, d: int = 9):
         r"""Generate 1D grid on :math:`[-1,1]` interval based on Trefethen-Clenshaw-Curtis.
@@ -806,7 +813,7 @@ class TrefethenCC(OneDGrid):
         npoints : int
             Number of points in the grid.
         d :
-            Odd degree of the Taylor series polynomial of :math:`\sin^{-1}`.
+            Odd degree of the Taylor series polynomial of :math:`\sin^{-1}`\.
             Only d=1,5,9 are supported.
 
         Returns
@@ -833,13 +840,16 @@ class TrefethenCC(OneDGrid):
 
 class TrefethenGC2(OneDGrid):
     """
-    Trefethen polynomial transformation of Gauss-Chebyshev of the second kind quadrature.
+    Trefethen polynomial transformation of Gauss-Chebyshev of the second kind quadrature [#]_.
 
     References
     ----------
-    .. [1] Hale, Nicholas, and Lloyd N. Trefethen. "New quadrature formulas from conformal maps."
+    .. [#] Hale, Nicholas, and Lloyd N. Trefethen. "New quadrature formulas from conformal maps."
        SIAM Journal on Numerical Analysis 46.2 (2008): 930-948.
+
     """
+
+    name = "Trefethen-Polynomial-Transformation-Gauss-Chebyshev-Type2"
 
     def __init__(self, npoints: int, d: int = 9):
         r"""Generate 1D grid on [-1,1] interval based on Trefethen-Gauss-Chebyshev.
@@ -849,7 +859,7 @@ class TrefethenGC2(OneDGrid):
         npoints : int
             Number of points in the grid.
         d : int
-            Odd degree of the Taylor series polynomial of :math:`\sin^{-1}`.
+            Odd degree of the Taylor series polynomial of :math:`\sin^{-1}`\.
             Only d=1,5,9 are supported.
 
         Returns
@@ -876,13 +886,16 @@ class TrefethenGC2(OneDGrid):
 
 class TrefethenGeneral(OneDGrid):
     """
-    Trefethen polynomial transformation of a general integral quadrature class.
+    Trefethen polynomial transformation of a general integral quadrature class [#]_.
 
     References
     ----------
-    .. [1] Hale, Nicholas, and Lloyd N. Trefethen. "New quadrature formulas from conformal maps."
+    .. [#] Hale, Nicholas, and Lloyd N. Trefethen. "New quadrature formulas from conformal maps."
        SIAM Journal on Numerical Analysis 46.2 (2008): 930-948.
+
     """
+
+    name = "Trefethen-Polynomial"
 
     def __init__(self, npoints: int, quadrature: OneDGrid, d=9):
         r"""Generate 1D grid on :math:`[-1,1]` interval based on Trefethen-General.
@@ -894,7 +907,7 @@ class TrefethenGeneral(OneDGrid):
         quadrature : OneDGrid
             General one-dimensional grid.
         d :
-            Odd degree of the Taylor series polynomial of :math:`\sin^{-1}`.
+            Odd degree of the Taylor series polynomial of :math:`\sin^{-1}`\.
             Only d=1,5,9 are supported.
 
         Returns
@@ -968,15 +981,18 @@ def _dergstrip(rho, s):
 
 
 class TrefethenStripCC(OneDGrid):
-    """Trefethen strip transformation of Clenshaw-Curtis quadrature.
+    """Trefethen strip transformation of Clenshaw-Curtis quadrature [#]_.
 
-     References
+    References
     ----------
-    .. [1] Hale, Nicholas, and Lloyd N. Trefethen. "New quadrature formulas from conformal maps."
+    .. [#] Hale, Nicholas, and Lloyd N. Trefethen. "New quadrature formulas from conformal maps."
        SIAM Journal on Numerical Analysis 46.2 (2008): 930-948.
+
     """
 
-    def __init__(self, npoints: int, rho=1.1):
+    name = "Trefethen-Strip-Transformation-Clenshaw-Curtis"
+
+    def __init__(self, npoints: int, rho: float = 1.1):
         r"""Generate grid on :math:`[-1,1]` interval based on Trefethen-Clenshaw-Curtis.
 
         Parameters
@@ -997,15 +1013,18 @@ class TrefethenStripCC(OneDGrid):
 
 
 class TrefethenStripGC2(OneDGrid):
-    """Trefethen strip transformation of the Gauss-Chebyshev of the second kind quadrature.
+    """Trefethen strip transformation of the Gauss-Chebyshev of the second kind quadrature [#]_.
 
-     References
+    References
     ----------
-    .. [1] Hale, Nicholas, and Lloyd N. Trefethen. "New quadrature formulas from conformal maps."
+    .. [#] Hale, Nicholas, and Lloyd N. Trefethen. "New quadrature formulas from conformal maps."
        SIAM Journal on Numerical Analysis 46.2 (2008): 930-948.
+
     """
 
-    def __init__(self, npoints: int, rho=1.1):
+    name = "Trefethen-Strip-Transformation-Gauss-Chebyshev-Type2"
+
+    def __init__(self, npoints: int, rho: float = 1.1):
         r"""Generate grid on :math:`[-1,1]` interval based on Trefethen-Gauss-Chebyshev.
 
         Parameters
@@ -1027,15 +1046,18 @@ class TrefethenStripGC2(OneDGrid):
 
 
 class TrefethenStripGeneral(OneDGrid):
-    """Trefethen Strip General integral quadrature class.
+    """Trefethen Strip General integral quadrature class [#]_.
 
-     References
+    References
     ----------
-    .. [1] Hale, Nicholas, and Lloyd N. Trefethen. "New quadrature formulas from conformal maps."
+    .. [#] Hale, Nicholas, and Lloyd N. Trefethen. "New quadrature formulas from conformal maps."
        SIAM Journal on Numerical Analysis 46.2 (2008): 930-948.
+
     """
 
-    def __init__(self, npoints: int, quadrature, rho=1.1):
+    name = "Trefethen-Strip-General"
+
+    def __init__(self, npoints: int, quadrature, rho: float = 1.1):
         r"""Generate grid on :math:`[-1,1]` interval based on Trefethen-General.
 
         Parameters
@@ -1054,3 +1076,309 @@ class TrefethenStripGeneral(OneDGrid):
         weights = _dergstrip(rho, grid.points) * grid.weights
 
         super().__init__(points, weights, (-1, 1))
+
+
+class ExpSinh(OneDGrid):
+    r"""Exponential-Hyperbolic Sine quadrature class.
+
+    The definition of this quadrature is:
+
+    .. math::
+        \int_{0}^{\infty} f(x) dx \approx
+        \sum_{k=-n}^n w_k f(x_k). \\
+        x_k = \exp \left(\frac{\pi}{2}\sinh(k h) \right) \\
+        w_k = \exp \left(\frac{\pi}{2}\sinh(k h) \right)\left(\frac{\pi h}{2} \cosh(k h) \right)
+
+    Warnings
+    --------
+    - Using this quadrature requires heavy parameter-tuning in-order to work.
+
+    """
+
+    name = "Exponential-Hyperbolic-Sine"
+
+    def __init__(self, npoints: int, h: float = 1.0):
+        r"""Generate 1D grid on :math:`(0, \infty)` interval based on exp-sinh quadrature.
+
+        Parameters
+        ----------
+        npoints : int
+            Number of grid points.
+        h : float
+            Value of parameter :math: `h` wich control the quadrature.
+
+        Returns
+        -------
+        OneDGrid
+            One-dimensional grid instance.
+
+        """
+        warnings.warn(
+            "Using this quadrature requires heavy parameter-tuning in-order to be applicable.",
+            stacklevel=2,
+        )
+        if h <= 0:
+            raise ValueError(f"The value of h must be bigger than 0, given {h}")
+        if npoints < 1:
+            raise ValueError(f"npoints must be bigger than 1, given {npoints}")
+        if npoints % 2 == 0:
+            raise ValueError(f"npoints must be odd, given {npoints}")
+        m = int((npoints - 1) / 2)
+        k = np.arange(-m, m + 1)
+        points = np.exp(np.pi * np.sinh(k * h) / 2)
+        weights = points * np.pi * h * np.cosh(k * h) / 2
+        super().__init__(points, weights, (0, np.inf))
+
+
+class LogExpSinh(OneDGrid):
+    r"""Logarithm-Exponential-Hyperbolic Sine quadrature class.
+
+    The definition of this quadrature is:
+
+    .. math::
+        \int_{0}^{\infty} f(x) dx \approx
+        \sum_{k=-n}^n w_k f(x_k). \\
+        x_k = \log \left( \exp \left(\frac{\pi}{2}\sinh(kh) \right) + 1\right) \\
+        w_k = \frac{\pi h\cosh(kh)\exp(\frac{\pi}{2}\sinh(kh))}
+        {2(\exp(\frac{\pi}{2}\sinh(kh))+1)}.
+
+    Warnings
+    --------
+    - Using this quadrature requires heavy parameter-tuning in-order to work.
+
+    """
+
+    name = "Logarithm-Exponential-Hyperbolic-Sine"
+
+    def __init__(self, npoints: int, h: float = 0.1):
+        r"""Generate 1D grid on :math:`(0, \infty)` interval based on log-exp-sinh quadrature.
+
+        Parameters
+        ----------
+        npoints : int
+            Number of grid points.
+        h : float
+            Value of parameter :math: `h` wich control the quadrature.
+
+        Returns
+        -------
+        OneDGrid
+            One-dimensional grid instance.
+
+        """
+        warnings.warn(
+            "Using this quadrature requires heavy parameter-tuning in-order to be applicable.",
+            stacklevel=2,
+        )
+        if h <= 0:
+            raise ValueError(f"The value of h must be bigger than 0, given {h}")
+        if npoints < 1:
+            raise ValueError(f"npoints must be bigger than 1, given {npoints}")
+        if npoints % 2 == 0:
+            raise ValueError(f"npoints must be odd, given {npoints}")
+        m = int((npoints - 1) / 2)
+        k = np.arange(-m, m + 1)
+        points = np.log(np.exp(np.pi * np.sinh(k * h) / 2) + 1)
+        weights = np.exp(np.pi * np.sinh(k * h) / 2) * np.pi * h * np.cosh(k * h) / 2
+        weights /= np.exp(np.pi * np.sinh(k * h) / 2) + 1
+        super().__init__(points, weights, (0, np.inf))
+
+
+class ExpExp(OneDGrid):
+    r"""Exponential-Exponential quadrature class.
+
+    The definition of this quadrature is:
+
+    .. math::
+        \int_{0}^{\infty} f(x) dx \approx
+        \sum_{k=-n}^n w_k f(x_k).  \\
+        x_k = e^{kh} e^{-e^{-kh}} \\
+        w_k = h e^{-e^{-kh}}\left( e^{kh} + 1 \right)
+
+    Warnings
+    --------
+    - Using this quadrature requires heavy parameter-tuning in-order to work.
+
+    """
+
+    name = "Exponential-Exponential"
+
+    def __init__(self, npoints: int, h: float = 0.1):
+        r"""Generate 1D grid on :math:`(0, \infty)` interval based on exp-exp quadrature.
+
+        Parameters
+        ----------
+        npoints : int
+            Number of grid points.
+        h : float
+            Value of parameter :math: `h` which control the quadrature.
+
+        Returns
+        -------
+        OneDGrid
+            One-dimensional grid instance.
+
+        """
+        warnings.warn(
+            "Using this quadrature requires heavy parameter-tuning in-order to be applicable.",
+            stacklevel=2,
+        )
+        if h <= 0:
+            raise ValueError(f"The value of h must be bigger than 0, given {h}")
+        if npoints < 1:
+            raise ValueError(f"npoints must be bigger than 1, given {npoints}")
+        if npoints % 2 == 0:
+            raise ValueError(f"npoints must be odd, given {npoints}")
+        m = int((npoints - 1) / 2)
+        k = np.arange(-m, m + 1)
+        points = np.exp(k * h) * np.exp(-np.exp(-k * h))
+        weights = h * np.exp(-np.exp(-k * h)) * (np.exp(k * h) + 1)
+        super().__init__(points, weights, (0, np.inf))
+
+
+class SingleTanh(OneDGrid):
+    r"""Hyperbolic Tan quadrature class.
+
+    The definition of this quadrature is:
+
+    .. math::
+        \int_{-1}^{1} f(x) dx \approx
+        \sum_{k=-n}^n w_k f(x_k). \\
+        x_k = \tanh{kh}  \\
+        w_k = \frac{h}{\cosh^2(kh)}
+
+    """
+
+    name = "Hyperbolic-Tan"
+
+    def __init__(self, npoints: int, h: float = 0.1):
+        r"""Generate 1D grid on :math:`(-1, +1)` interval based on tanh-sinh quadrature.
+
+        Parameters
+        ----------
+        npoints : int
+            Number of grid points.
+        h : float
+            Value of parameter :math: `h` which control the quadrature.
+
+        Returns
+        -------
+        OneDGrid
+            One-dimensional grid instance.
+
+        """
+        if h <= 0:
+            raise ValueError(f"The value of h must be bigger than 0, given {h}")
+        if npoints < 1:
+            raise ValueError(f"npoints must be bigger than 1, given {npoints}")
+        if npoints % 2 == 0:
+            raise ValueError(f"npoints must be odd, given {npoints}")
+        m = int((npoints - 1) / 2)
+        k = np.arange(-m, m + 1)
+        points = np.tanh(k * h)
+        weights = h / np.cosh(k * h) ** 2
+        super().__init__(points, weights, (-1, 1))
+
+
+class SingleExp(OneDGrid):
+    r"""Single exponential quadrature class.
+
+    The definition of this quadrature is:
+
+    .. math::
+        \int_{0}^{\infty} f(x) dx \approx
+        \sum_{k=-n}^n w_k f(x_k). \\
+        x_k = e^{kh}  \\
+        w_k = h e^{kh}.
+
+    Warnings
+    --------
+    - Using this quadrature requires heavy parameter-tuning in-order to work.
+
+    """
+
+    name = "Single-Exponential"
+
+    def __init__(self, npoints: int, h: float = 0.1):
+        r"""Generate 1D grid on :math:`(0, \infty)` interval based on exponential quadrature.
+
+        Parameters
+        ----------
+        npoints : int
+            Number of grid points.
+        h : float
+            Value of parameter :math: `h` which control the quadrature.
+
+        Returns
+        -------
+        OneDGrid
+            One-dimensional grid instance.
+
+        """
+        warnings.warn(
+            "Using this quadrature requires heavy parameter-tuning in-order to be applicable.",
+            stacklevel=2,
+        )
+        if h <= 0:
+            raise ValueError(f"The value of h must be bigger than 0, given {h}")
+        if npoints < 1:
+            raise ValueError(f"npoints must be bigger than 1, given {npoints}")
+        if npoints % 2 == 0:
+            raise ValueError(f"npoints must be odd, given {npoints}")
+        m = int((npoints - 1) / 2)
+        k = np.arange(-m, m + 1)
+        points = np.exp(k * h)
+        weights = h * np.exp(k * h)
+        super().__init__(points, weights, (0, np.inf))
+
+
+class SingleArcSinhExp(OneDGrid):
+    r"""Single Arc Hyperbolic Sine-Exponential quadrature class.
+
+    The definition of this quadrature is:
+
+    .. math::
+        \int_{0}^{\infty} f(x) dx \approx
+        \sum_{k=-n}^n w_k f(x_k). \\
+        x_k = \mbox{arcsinh}(e^{kh}) \\
+        w_k = \frac{h e^{kh}}{\sqrt{e^{2kh} + 1}}
+
+    Warnings
+    --------
+    - Using this quadrature requires heavy parameter-tuning in-order to work.
+
+    """
+
+    name = "Single-Arc-Hyperbolic-Sine-Exponential"
+
+    def __init__(self, npoints: int, h: float = 0.1):
+        r"""Generate 1D grid on :math:`(0, \infty)` interval based on tanh-sinh quadrature.
+
+        Parameters
+        ----------
+        npoints : int
+            Number of grid points.
+        h : float
+            Value of parameter :math: `h` which control the quadrature.
+
+        Returns
+        -------
+        OneDGrid
+            One-dimensional grid instance.
+
+        """
+        warnings.warn(
+            "Using this quadrature requires heavy parameter-tuning in-order to be applicable.",
+            stacklevel=2,
+        )
+        if h <= 0:
+            raise ValueError(f"The value of h must be bigger than 0, given {h}")
+        if npoints < 1:
+            raise ValueError(f"npoints must be bigger than 1, given {npoints}")
+        if npoints % 2 == 0:
+            raise ValueError(f"npoints must be odd, given {npoints}")
+        m = int((npoints - 1) / 2)
+        k = np.arange(-m, m + 1)
+        points = np.arcsinh(np.exp(k * h))
+        weights = h * np.exp(k * h) / np.sqrt(np.exp(2 * h * k) + 1)
+        super().__init__(points, weights, (0, np.inf))

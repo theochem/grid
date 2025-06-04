@@ -105,7 +105,7 @@ boundary conditions, is:
 
 .. math::
 
-    c'_\text{left} = \min_i x_i - r
+    c_\text{left} = \min_i x_i - r
 
 where :math:`x_i` is the position of grid point :math:`i` and :math:`r` is the
 radius of the sphere. We only need to consider translations by multiples of the
@@ -118,6 +118,8 @@ lattice vector:
 where :math:`a` is the length of the 1D lattice vector (and also the spacing
 between adjacent crystal planes). Similarly, for the right-most center, we
 have:
+
+.. math::
 
     c_\text{right} = c + a \left\lfloor \frac{\max_i x_i - c + r}{a} \right\rfloor
 
@@ -145,23 +147,22 @@ each lattice vector:
 
     \vec{c}_{j_1, \ldots, j_K} = \vec{c} + \sum_{k=1}^K \vec{a}_k j
     \quad \forall \, j \in \mathbb{Z} \quad \text{with} \quad
-    \left\lceil \min_i \tilde{x}_i - \tild{c} - \frac{r}{s_k} \right\rceil
+    \left\lceil \min_i \tilde{x}_i - \tilde{c} - \frac{r}{s_k} \right\rceil
     \le j \le
-    \left\lfloor \max_i \tilde{x}_i - \tild{c} + \frac{r}{s_k} \right\rfloor
+    \left\lfloor \max_i \tilde{x}_i - \tilde{c} + \frac{r}{s_k} \right\rfloor
 
-where :math:`\vec{a}_k` is lattice vector :math:`k`, :math:`\tilde{x}_i` is the
-fractional coordinate of grid point :math:`i`, :math:`\tilde{c}` is the
+where :math:`\vec{a}_k` is lattice vector :math:`k`\, :math:`\tilde{x}_i` is the
+fractional coordinate of grid point :math:`i`\, :math:`\tilde{c}` is the
 fractional coordinate of the center and :math:`s_k` is the spacing between
-adjacent crystal planes along the :math:`k`th lattice vector.
+adjacent crystal planes along the :math:`k`\th lattice vector.
 """
 import itertools
 import warnings
 
-from grid.basegrid import Grid, LocalGrid
-
 import numpy as np
-
 from scipy.spatial import cKDTree
+
+from grid.basegrid import Grid, LocalGrid
 
 
 class PeriodicGridWarning(Warning):
@@ -204,8 +205,8 @@ class PeriodicGrid(Grid):
     simply uses NumPy slicing: ``fnlocal = fnperiodic[localgrid.indices]``
 
     2) To add a periodic repetition of a local function to the parent grid, one
-    uses ``np.add.att(fnperiodic, localgrid.indices, fnlocal)``. One should not
-    use ``fnperiodic[localgrid.indices] += fnlocal``, because this will give
+    uses ``np.add.att(fnperiodic, localgrid.indices, fnlocal)``\. One should not
+    use ``fnperiodic[localgrid.indices] += fnlocal``\, because this will give
     wrong results when ``localgrid.indices`` contains the same index multiple
     times, which happens when the cutoff (hyper)sphere covers multiple primitive
     cells.
@@ -240,7 +241,7 @@ class PeriodicGrid(Grid):
             will have fractional coordinates in the interval [0, 1[. When False,
             a warning is raised when the fractional coordinates span an interval
             wider than 1.1, because this implies a degradation of efficiency of
-            ``get_localgrid``, which can be easily avoided.
+            ``get_localgrid``\, which can be easily avoided.
 
         """
         if realvecs is None:
@@ -318,6 +319,7 @@ class PeriodicGrid(Grid):
                     f"Interval spanned by fractional coordinates: {intvl_max} > 1.1. \n"
                     " ``get_localgrid`` will be inefficient.",
                     PeriodicGridWarning,
+                    stacklevel=2,
                 )
         # Call the constructor of the base class
         super().__init__(points, weights)
@@ -415,12 +417,12 @@ class PeriodicGrid(Grid):
         # Minimal and maximal values of the integer coefficients used in
         # to construct all relevant integer linear combinations (``ilc``) of
         # lattice vectors to translate the center.
-        ilc_min = np.ceil(
-            self._frac_intvls[:, 0] - frac_center - radius / self._spacings
-        ).astype(int)
-        ilc_max = np.floor(
-            self._frac_intvls[:, 1] - frac_center + radius / self._spacings
-        ).astype(int)
+        ilc_min = np.ceil(self._frac_intvls[:, 0] - frac_center - radius / self._spacings).astype(
+            int
+        )
+        ilc_max = np.floor(self._frac_intvls[:, 1] - frac_center + radius / self._spacings).astype(
+            int
+        )
         assert (ilc_min <= ilc_max).all()
 
         # C) Loop over all possible translations of the center
@@ -445,9 +447,7 @@ class PeriodicGrid(Grid):
             _displaced_center = (
                 np.array([displaced_center]) if center.ndim == 0 else displaced_center
             )
-            indices = np.array(
-                self._kdtree.query_ball_point(_displaced_center, radius, p=2.0)
-            )
+            indices = np.array(self._kdtree.query_ball_point(_displaced_center, radius, p=2.0))
             # The following line avoids some_array[indices] when indices == [].
             if len(indices) == 0:
                 continue

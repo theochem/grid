@@ -1,0 +1,12 @@
+Modules;Description
+:func:`One-dimensional Grids<grid.onedgrid>`; Integration of real-valued function over real line.
+:func:`Radial Transform<grid.rtransform>`; Transforming one-dimensional grids from one interval to another.
+:func:`Angular Grids<grid.angular>`; Integrating functions over sphere/angular coordinates.
+:func:`ODE<grid.ode>`; Solving linear ordinary differential equations.
+:func:`Poisson<grid.poisson>`; Solving the Poisson equation.
+:func:`Atomic Grid<grid.atomgrid>`; Integrating real-valued function over three-dimensional Euclidean space.
+:func:`Becke Weights<grid.becke>`; Type of nuclear weight function/atom in molecule weights.
+:func:`Hirshfield Weights<grid.hirshfeld>`; Type of nuclear weight function/atom in molecule weights.
+:func:`Molecular Grids<grid.molgrid>`;  Integration of general functions in three-dimensional space.
+:func:`Cubic Grids<grid.cubic>`;Hyper-Rectangular Grid in either two or three dimensions.
+:func:`Periodic Grids<grid.periodicgrid>`; Integrating periodic functions in 1, 2 or 3 dimensions.

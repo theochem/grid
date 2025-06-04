@@ -18,10 +18,15 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
 """Poisson test module."""
+import numpy as np
+import pytest
+from numpy.testing import assert_allclose
+from scipy.special import erf
+
 from grid.atomgrid import AtomGrid
 from grid.becke import BeckeWeights
-from grid.onedgrid import GaussLegendre, GaussLaguerre, OneDGrid, Trapezoidal
 from grid.molgrid import MolGrid
+from grid.onedgrid import GaussLaguerre, GaussLegendre, OneDGrid, Trapezoidal
 from grid.poisson import interpolate_laplacian, solve_poisson_bvp, solve_poisson_ivp
 from grid.rtransform import (
     BeckeRTransform,
@@ -31,12 +36,9 @@ from grid.rtransform import (
 )
 from grid.utils import convert_cart_to_sph, generate_real_spherical_harmonics
 
-import numpy as np
-from numpy.testing import assert_allclose
-
-import pytest
-
-from scipy.special import erf
+pytestmark = pytest.mark.filterwarnings(
+    "ignore:The coefficient of the leading Kth term is zero at some point"
+)
 
 
 def zero_func(pts, centers=None):
@@ -44,8 +46,10 @@ def zero_func(pts, centers=None):
     return np.array([0.0] * pts.shape[0])
 
 
-def gauss(pts, centers=np.zeros((1, 3)), alpha=1000.0):
+def gauss(pts, centers=None, alpha=1000.0):
     """Gaussian function for test."""
+    if centers is None:
+        centers = np.zeros((1, 3))
     output = np.zeros(len(pts))
     for cent in centers:
         r = np.linalg.norm(pts - cent, axis=1)
@@ -62,7 +66,9 @@ def spherical_harmonic(pts, centers=None):
     return -1 * spherical_harmonic[0, :] / (4.0 * np.pi * spherical[:, 0] ** 2.0)
 
 
-def charge_distribution(x, alpha=0.1, centers=np.array([[0.0, 0.0, 0.0]])):
+def charge_distribution(x, alpha=0.1, centers=None):
+    if centers is None:
+        centers = np.array([[0.0, 0.0, 0.0]])
     result = np.zeros(len(x))
     for cent in centers:
         r = np.linalg.norm(x - cent, axis=1)
@@ -70,12 +76,16 @@ def charge_distribution(x, alpha=0.1, centers=np.array([[0.0, 0.0, 0.0]])):
     return result
 
 
-def poisson_solution_to_charge_distribution(x, alpha=0.1, centers=np.array([[0.0, 0.0, 0.0]])):
+def poisson_solution_to_charge_distribution(x, alpha=0.1, centers=None):
+    if centers is None:
+        centers = np.array([[0.0, 0.0, 0.0]])
     result = np.zeros(len(x))
     for cent in centers:
         r_PC = np.linalg.norm(x - cent, axis=1)
-        desired = erf(np.sqrt(alpha) * r_PC) / r_PC
-        desired[r_PC == 0.0] = 0.0  # TODO: Take H`poital rule to calculate it
+        # Ignore divide by zero and nan
+        with np.errstate(divide="ignore", invalid="ignore"):
+            desired = erf(np.sqrt(alpha) * r_PC) / r_PC
+            desired[r_PC == 0.0] = 0.0
         result += desired
     return result
 
@@ -84,7 +94,7 @@ def test_interpolation_of_laplacian_with_spherical_harmonic():
     r"""Test the interpolation of Laplacian of spherical harmonic is eigenvector."""
     odg = OneDGrid(np.linspace(1e-5, 1, num=20), np.ones(20), (0, np.inf))
     degree = 6 * 2 + 2
-    atgrid = AtomGrid.from_pruned(odg, 1, sectors_r=[], sectors_degree=[degree])
+    atgrid = AtomGrid.from_pruned(odg, 1, r_sectors=[], d_sectors=[degree])
 
     def func(sph_points):
         # Spherical harmonic of degree 6 and order 0
@@ -125,7 +135,7 @@ def test_interpolation_of_laplacian_of_exponential():
     btf = BeckeRTransform(0.0, 1.5)
     radial = btf.transform_1d_grid(oned)
     degree = 10
-    atgrid = AtomGrid.from_pruned(radial, 1, sectors_r=[], sectors_degree=[degree])
+    atgrid = AtomGrid.from_pruned(radial, 1, r_sectors=[], d_sectors=[degree])
 
     def func(cart_pts):
         radius = np.linalg.norm(cart_pts, axis=1)
@@ -141,11 +151,7 @@ def test_interpolation_of_laplacian_of_exponential():
         spherical_pts = atgrid.convert_cartesian_to_spherical(grid)
         spherical_pts[:, 0][spherical_pts[:, 0] < 1e-6] = 1e-6
         # Laplacian of exponential is e^-x (x - 2) / x
-        desired = (
-            np.exp(-spherical_pts[:, 0])
-            * (spherical_pts[:, 0] - 2.0)
-            / spherical_pts[:, 0]
-        )
+        desired = np.exp(-spherical_pts[:, 0]) * (spherical_pts[:, 0] - 2.0) / spherical_pts[:, 0]
         assert_allclose(actual, desired, atol=1e-4, rtol=1e-6)
 
 
@@ -156,15 +162,17 @@ def test_interpolation_of_laplacian_with_unit_charge_distribution():
     btf = BeckeRTransform(1e-3, 1.5)
     radial = btf.transform_1d_grid(oned)
     degree = 10
-    atgrid = AtomGrid.from_pruned(radial, 1, sectors_r=[], sectors_degree=[degree])
+    atgrid = AtomGrid.from_pruned(radial, 1, r_sectors=[], d_sectors=[degree])
 
     laplace = interpolate_laplacian(atgrid, poisson_solution_to_charge_distribution(atgrid.points))
     true = laplace(atgrid.points)
-    assert_allclose(
-        -4.0 * np.pi * charge_distribution(atgrid.points), true, atol=1e-4, rtol=1e-7
-    )
+    assert_allclose(-4.0 * np.pi * charge_distribution(atgrid.points), true, atol=1e-4, rtol=1e-7)
 
 
+# Ignore scipy/bvp warning
+@pytest.mark.filterwarnings(
+    "ignore:(divide by zero encountered in divide|invalid value encountered in divide)"
+)
 @pytest.mark.parametrize(
     "oned, tf, remove_large_pts, centers",
     [
@@ -173,30 +181,24 @@ def test_interpolation_of_laplacian_with_unit_charge_distribution():
             Trapezoidal(250),
             BeckeRTransform(0.0, 1.5, trim_inf=True),
             1e6,
-            np.array([[0.0, 0.0, 0.0]])
+            np.array([[0.0, 0.0, 0.0]]),
         ],
         # Don't include the origin, instead minimum is at 1e-6
         [
             Trapezoidal(250),
             BeckeRTransform(1e-6, 1.5, trim_inf=True),
             1e6,
-            np.array([[0.0, 0.0, 0.0]])
+            np.array([[0.0, 0.0, 0.0]]),
         ],
         # Try out the Identity Transformation.
-        [
-            GaussLaguerre(100),
-            IdentityRTransform(),
-            None,
-            np.array([[0.0, 0.0, 0.0]])
-        ],
+        [GaussLaguerre(100), IdentityRTransform(), None, np.array([[0.0, 0.0, 0.0]])],
         # Multi-center example
         [
             GaussLegendre(100),
             BeckeRTransform(1e-5, R=1.5),
             10.0,
-            np.array([[0.0, 0.0, 0.0],
-                      [10.0, 0.0, 0.0]])
-        ]
+            np.array([[0.0, 0.0, 0.0], [10.0, 0.0, 0.0]]),
+        ],
     ],
 )
 def test_poisson_bvp_on_unit_charge_distribution(oned, tf, remove_large_pts, centers):
@@ -213,10 +215,7 @@ def test_poisson_bvp_on_unit_charge_distribution(oned, tf, remove_large_pts, cen
     else:
         becke = BeckeWeights(order=3)
         molgrids = MolGrid(
-            atnums=np.array([1] * len(centers)),
-            atgrids=atgrids,
-            aim_weights=becke,
-            store=True
+            atnums=np.array([1] * len(centers)), atgrids=atgrids, aim_weights=becke, store=True
         )
 
     potential = solve_poisson_bvp(
@@ -224,7 +223,7 @@ def test_poisson_bvp_on_unit_charge_distribution(oned, tf, remove_large_pts, cen
         charge_distribution(molgrids.points, centers=centers),
         InverseRTransform(tf),
         remove_large_pts=remove_large_pts,
-        include_origin=True
+        include_origin=True,
     )
     actual = potential(molgrids.points)
     desired = poisson_solution_to_charge_distribution(molgrids.points, centers=centers)
@@ -259,15 +258,16 @@ def test_poisson_bvp_gives_the_correct_laplacian(func, centers):
         molgrids = atgrids[0]
     else:
         becke = BeckeWeights(order=3)
-        molgrids = MolGrid(atnums=[1] * len(centers), atgrids=atgrids, aim_weights=becke,
-                           store=True)
+        molgrids = MolGrid(
+            atnums=[1] * len(centers), atgrids=atgrids, aim_weights=becke, store=True
+        )
 
     potential = solve_poisson_bvp(
         molgrids,
         func(molgrids.points, centers),
         InverseRTransform(btf),
         include_origin=True,
-        remove_large_pts=10.0
+        remove_large_pts=10.0,
     )
 
     # Get Laplacian of the potential
@@ -313,7 +313,9 @@ def test_poisson_ivp_gives_the_correct_laplacian(func, centers):
         molgrids = atgrids[0]
     else:
         becke = BeckeWeights(order=3)
-        molgrids = MolGrid(atnums=[1] * len(centers), atgrids=atgrids, aim_weights=becke, store=True)
+        molgrids = MolGrid(
+            atnums=[1] * len(centers), atgrids=atgrids, aim_weights=becke, store=True
+        )
 
     potential = solve_poisson_ivp(
         molgrids,
@@ -330,7 +332,7 @@ def test_poisson_ivp_gives_the_correct_laplacian(func, centers):
 
     # Check it is the same as func on atomic grid points.
     np.set_printoptions(threshold=np.inf)
-    err = np.abs(desired +func(molgrids.points) * 4.0 * np.pi)
+    np.abs(desired + func(molgrids.points) * 4.0 * np.pi)
     # TODO: Improve accuracy from one decimal place
     assert_allclose(desired, -func(molgrids.points) * 4.0 * np.pi, atol=1e-1)
 
@@ -370,10 +372,7 @@ def test_poisson_ivp_on_unit_charge_distribution(centers):
     else:
         becke = BeckeWeights(order=3)
         molgrids = MolGrid(
-            atnums=np.array([1] * ncenters),
-            atgrids=atgrids,
-            aim_weights=becke,
-            store=True
+            atnums=np.array([1] * ncenters), atgrids=atgrids, aim_weights=becke, store=True
         )
     potential = solve_poisson_ivp(
         molgrids,
@@ -388,7 +387,7 @@ def test_poisson_ivp_on_unit_charge_distribution(centers):
     pts = np.delete(pts, i_pts_zero, axis=0)  # Delete at those indices
     actual = potential(pts)
     desired = poisson_solution_to_charge_distribution(pts, centers=centers)
-    err = np.abs(desired - actual)
+    np.abs(desired - actual)
     assert_allclose(actual, desired, atol=1e-2)
 
     # Choose random points that are not zero

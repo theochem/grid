@@ -19,12 +19,12 @@
 # --
 """Radial grid test."""
 
+import numpy as np
+from numpy.testing import assert_almost_equal
+
 from grid.basegrid import OneDGrid
 from grid.onedgrid import UniformInteger
 from grid.rtransform import ExpRTransform, PowerRTransform
-
-import numpy as np
-from numpy.testing import assert_almost_equal
 
 
 def test_basics1():

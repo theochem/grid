@@ -1,0 +1,43 @@
+name: pytest
+
+on:
+  push:
+    branches:
+     - main
+     - master
+    tags-ignore:
+      - '**'
+  pull_request:
+
+jobs:
+  tests:
+    name: "Python ${{ matrix.py }} on OS ${{ matrix.os }}"
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        # os: ["ubuntu-latest", "windows-latest", "macos-latest"]
+        os: ["ubuntu-latest", "windows-latest"]
+        py: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+
+    steps:
+      - uses: "actions/checkout@v4"
+      - name: Setup python for test ${{ matrix.py }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.py }}
+      - name: Install dependencies for testing
+        run: |
+          pip install --upgrade pip
+          pip install pytest pytest-md pytest-emoji
+      - name: Install development version
+        run: |
+          pip install -e .
+      - name: Run pytest
+        uses: pavelzw/pytest-action@v2
+        with:
+          verbose: true
+          emoji: true
+          job-summary: true
+          click-to-expand: true
+          report-title: 'Test Report'

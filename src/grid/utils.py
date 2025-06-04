@@ -17,11 +17,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
-"""Utils function module."""
+"""Utility Module."""
+
 import numpy as np
-
 from scipy.special import sph_harm
-
 
 _bragg = np.array(
     [
@@ -310,45 +309,211 @@ _alvarez = np.array(
 )
 
 
-def get_cov_radii(atnums, type="bragg"):
-    """Get the covalent radii for given atomic number(s).
+# Obtained from https://www.chem.ualberta.ca/~massspec/atomic_mass_abund.pdf in atomic units
+# [1] G. Audi, A. H. Wapstra Nucl. Phys A. 1993, 565, 1-65
+# [2] G. Audi, A. H. Wapstra Nucl. Phys A. 1995, 595, 409-480.
+isotopic_masses = {
+    1: 1.007825,
+    2: 4.002603,
+    3: 7.016004,
+    4: 9.012182,
+    5: 11.009305,
+    6: 12.0,
+    7: 14.003074,
+    8: 15.994915,
+    9: 18.998403,
+    10: 19.992440,
+    11: 22.989770,
+    12: 23.985042,
+    13: 26.981538,
+    14: 27.976927,
+    15: 30.973762,
+    16: 31.972071,
+    17: 34.968853,
+    18: 39.962383,
+    19: 38.963707,
+    20: 39.962591,
+    21: 44.955910,
+    22: 47.947947,
+    23: 50.943964,
+    24: 51.940512,
+    25: 54.938050,
+    26: 55.934942,
+    27: 58.933200,
+    28: 57.935348,
+    29: 62.929601,
+    30: 63.929147,
+    31: 68.925581,
+    32: 73.921178,
+    33: 74.921596,
+    34: 79.916522,
+    35: 78.918338,
+    36: 83.911507,
+    37: 84.911789,
+    38: 87.905614,
+    39: 88.905848,
+    40: 89.904704,
+    41: 92.906378,
+    42: 97.905408,
+    43: 97.907216,
+    44: 101.904350,
+    45: 102.905504,
+    46: 105.903483,
+    47: 106.905093,
+    48: 113.903358,
+    49: 114.903878,
+    50: 119.902197,
+    51: 120.903818,
+    52: 129.906223,
+    53: 126.904468,
+    54: 131.904154,
+    55: 132.905447,
+    56: 137.905241,
+    57: 138.906348,
+    58: 139.905434,
+    59: 140.907648,
+    60: 141.907719,
+    61: 144.912744,
+    62: 151.919728,
+    63: 152.921226,
+    64: 157.924101,
+    65: 158.925343,
+    66: 161.926795,
+    67: 164.930319,
+    68: 165.930290,
+    69: 168.934211,
+    70: 173.938858,
+    71: 174.940768,
+    72: 179.946549,
+    73: 183.950933,
+    74: 186.955751,
+    75: 186.955751,
+    76: 191.961479,
+    77: 192.962924,
+    78: 194.964774,
+    79: 196.966552,
+    80: 201.970626,
+    81: 204.974412,
+    82: 207.976636,
+}
+
+r"""
+Obtained from theochem/horton/data/grids/tv-13.5.txt with the following preamble
+
+These grids were created by Toon Verstraelen in July 2013 in a second effort
+to generate tuned grids based on a series of diatomic benchmarks computed
+with the QZVP basis of Ahlrichs and coworkers. They are constructed to give
+on average 5 digits of precision for a variety of molecular integrals, using
+the Becke scheme with k=3.
+"""
+# Items are (rmin, rmax, npts) in angstrom, Meant for PowerRTransform
+_DEFAULT_POWER_RTRANSFORM_PARAMS = {
+    1: (2.577533167224667e-07, 16.276983371222354, 34),
+    2: (3.2755036736843646e-07, 20.13904927593614, 34),
+    3: (6.186114573134926e-09, 18.12176164518007, 71),
+    4: (1.4059661477491232e-08, 15.44201607973657, 59),
+    5: (3.273788764659501e-08, 13.56903494126234, 49),
+    6: (3.11827230204136e-08, 34.864731811979844, 59),
+    7: (3.401062176724264e-08, 14.764587345673986, 49),
+    8: (1.3926503705988068e-08, 15.016481365384685, 59),
+    9: (1.1147270392375693e-08, 12.748095827643704, 59),
+    10: (1.6588702526298265e-08, 18.151260320096828, 59),
+    11: (3.003120602822434e-09, 21.596666254555863, 85),
+    12: (5.9819613661137094e-09, 16.828409532166827, 71),
+    13: (7.58358121259898e-09, 21.572146722677854, 71),
+    14: (8.373611591213212e-09, 23.96629707958869, 71),
+    15: (2.297851714218129e-09, 16.418299079716235, 85),
+    16: (3.1813786400179616e-09, 22.79566890037017, 85),
+    17: (6.578265835890989e-09, 18.74786834668225, 71),
+    18: (2.7411385440998967e-09, 19.555180372886927, 85),
+    19: (1.089946590791849e-09, 20.952936209264042, 103),
+    20: (1.167544045884533e-09, 22.376677702840254, 103),
+    21: (1.10777797534853e-09, 21.260508469961408, 103),
+    22: (2.746202778795927e-09, 19.350116266638185, 85),
+    23: (2.9402748888394357e-09, 21.39933482952019, 85),
+    24: (2.7579341642634884e-09, 19.83428261878494, 85),
+    25: (2.506969959804919e-09, 17.92147397464149, 85),
+    26: (2.523212584292888e-09, 18.113798778890985, 85),
+    27: (4.744390728782565e-09, 34.30270780321776, 85),
+    28: (2.350841751293044e-09, 16.932289049448002, 85),
+    29: (9.843092065564594e-10, 18.888340007851557, 103),
+    30: (1.0768549234739597e-09, 20.652740486523665, 103),
+    31: (6.188017478991146e-10, 29.4174935749708, 123),
+    32: (3.055246063471103e-10, 37.391722877573585, 148),
+    33: (4.808816730665759e-10, 22.858274814681398, 123),
+    34: (6.632348945772076e-11, 16.198268042509657, 71),
+    35: (4.3301047214875017e-14, 16.309446059148527, 85),
+    36: (1.9525491942801685e-10, 23.897989168467937, 148),
+    37: (1.3116816051165964e-05, 25.107553485889394, 85),
+    38: (0.00012337243816711258, 20.15779186049731, 71),
+    39: (0.00026254231985602306, 18.42725236767048, 59),
+    40: (0.00022729864142629063, 19.240323445476516, 59),
+    41: (0.00022332978749485058, 18.43051033247378, 59),
+    42: (4.312335817136105e-05, 18.796698566238717, 59),
+    43: (0.0001439045024590461, 18.262366596363997, 49),
+    44: (0.0002705098774739686, 15.620015640557597, 49),
+    45: (3.666445913651392e-05, 16.50582512555016, 49),
+    46: (3.644416354245693e-05, 16.89283645207093, 59),
+    47: (4.076886839028324e-06, 15.848411073664625, 59),
+    48: (6.970977432467025e-07, 22.788090976720063, 71),
+    49: (6.295388435898326e-07, 16.528521880671736, 59),
+    50: (5.737464545147426e-08, 15.957552298428514, 71),
+    51: (4.2786625564460944e-08, 16.134070100096796, 71),
+    52: (2.92986601404113e-08, 15.709608688491917, 71),
+    53: (2.6372540021175668e-08, 15.904602040581757, 71),
+    54: (7.905521967940802e-09, 19.09928852814914, 71),
+    55: (0.001011462489909521, 24.757734721809108, 71),
+    56: (0.00038862580532087804, 22.298081065756328, 71),
+    57: (1.760652355460472e-05, 21.958172637007983, 71),
+    72: (0.0008857694481690485, 17.06721283130558, 59),
+    73: (0.0010898387425983486, 22.98828587346505, 59),
+    74: (0.0020116892152010754, 17.704162744894614, 49),
+    75: (0.001554112459865995, 17.462135046822063, 49),
+    76: (0.002694590130905911, 17.015182182896186, 49),
+    77: (0.0036410660971326883, 20.76895835571112, 59),
+    78: (0.005019006440323396, 17.81498800521723, 49),
+    79: (0.0009784761183226729, 15.080040644442699, 49),
+    80: (2.0642398272082567e-05, 20.018841788331276, 49),
+    81: (4.213213544795557e-06, 20.909208619831304, 71),
+    82: (2.5579357266911953e-06, 16.70520497941137, 59),
+}
+
+
+def get_cov_radii(atnums, cov_type="bragg"):
+    """
+    Get the covalent radii for given atomic number(s).
 
     Parameters
     ----------
     atnums : int or np.ndarray
-        atomic number of interested
-    type : str, default to bragg
-        types of covalent radii for elements.
-        "bragg": Bragg-Slater empirically measured covalent radii
-        "cambridge": Covalent radii from analysis of the Cambridge Database"
-        "alvarez": Covalent radii from https://doi.org/10.1039/B801115J
+        Atomic number(s) of the element(s) of interest.
+    cov_type : str, optional
+        Type of covalent radii for elements. Possible values are:
+        - "bragg": Bragg-Slater empirically measured covalent radii.
+        - "cambridge": Covalent radii from analysis of the Cambridge Database.
+        - "alvarez": Covalent radii from https://doi.org/10.1039/B801115J.
 
     Returns
     -------
     np.ndarray
-        covalent radii of desired atom(s)
+        Covalent radii of the desired atom(s) in atomic units.
 
-    Raises
-    ------
-    ValueError
-        Invalid covalent type, or input atomic number is 0
     """
     if isinstance(atnums, (int, np.integer)):
         atnums = np.array([atnums])
     if np.any(np.array(atnums) == 0):
-        raise ValueError("0 is not a valid atomic number")
-    if type == "bragg":
+        raise ValueError(f"0 is not a valid atomic number, got {atnums}")
+    if cov_type == "bragg":
         return _bragg[atnums]
-    elif type == "cambridge":
+    if cov_type == "cambridge":
         return _cambridge[atnums]
-    elif type == "alvarez":
+    if cov_type == "alvarez":
         return _alvarez[atnums]
-    else:
-        raise ValueError(f"Not supported radii type, got {type}")
+    raise ValueError(f"Not supported covalent radii type, got {cov_type}")
 
 
 def generate_real_spherical_harmonics_scipy(l_max: int, theta: np.ndarray, phi: np.ndarray):
-    r"""Generate real spherical harmonics up to degree :math:`l` and for all orders :math:`m`.
+    r"""Generate real spherical harmonics up to degree :math:`l` and for all orders :math:`m`\.
 
     The real spherical harmonics are defined as a function
     :math:`Y_{lm} : L^2(S^2) \rightarrow \mathbb{R}` such that
@@ -360,7 +525,7 @@ def generate_real_spherical_harmonics_scipy(l_max: int, theta: np.ndarray, phi: 
             \frac{1}{\sqrt{2}} (Y^{-|m|}_{l} + (-1)^m Y_l^m) & \text{if } m > 0
         \end{cases},
 
-    where :math:`l \in \mathbb{N}`, :math:`m \in \{-l_{max}, \cdots, l_{max} \}` and
+    where :math:`l \in \mathbb{N}`\, :math:`m \in \{-l_{max}, \cdots, l_{max} \}` and
     :math:`Y^m_l` is the complex spherical harmonic.
 
     Parameters
@@ -377,27 +542,24 @@ def generate_real_spherical_harmonics_scipy(l_max: int, theta: np.ndarray, phi: 
     Returns
     -------
     ndarray((l_max + 1)**2, N)
-        Value of real spherical harmonics of all orders :math:`m`,and degree
-        :math:`l` spherical harmonics. For each degree, the zeroth order
-        is stored, followed by positive orders then negative orders,ordered as:
-        :math:`(-l, -l + 1, \cdots -1)`.
+        Value of real spherical harmonics of all orders :math:`m`\, and degree
+        :math:`l` spherical harmonics. For each degree :math:`l`\,
+        the orders :math:`m` are in HORTON 2 order, i.e.
+        :math:`m=0, 1, -1, 2, -2, \cdots, l, -l`\.
 
-    Examples
-    --------
-    To obtain the l-th degree for all orders
-    >>> spherical_harmonic = generate_real_spherical_harmonics(5, theta, phi)
-    To obtain specific degrees, e.g. l=2
-    >>> desired_degree = 2
-    >>> spherical_harmonic[(desired_degree)**2: (desired_degree + 1)**2, :]
+    Notes
+    -----
+    - SciPy spherical harmonics is known (Jan 30, 2024) to give NaN when the degree is large,
+      for our experience, when l >= 86.
 
     """
     if l_max < 0:
-        raise ValueError(f"lmax needs to be >=0, got l_amx={l_max}")
+        raise ValueError(f"lmax should be non-negative, got l_amx={l_max}")
 
     total_sph = np.zeros((0, len(theta)), dtype=float)
     l_list = np.arange(l_max + 1)
     for l_val in l_list:
-        # generate m=0 real sphericla harmonic
+        # generate m=0 real spherical harmonic
         zero_real_sph = sph_harm(0, l_val, theta, phi).real
 
         # generate order m=positive real spherical harmonic
@@ -418,22 +580,23 @@ def generate_real_spherical_harmonics_scipy(l_max: int, theta: np.ndarray, phi: 
         # Convert to horton 2 order
         horton_ord = [[pos_real_sph[i], neg_real_sph[i]] for i in range(0, l_val)]
         horton_ord = tuple(x for sublist in horton_ord for x in sublist)
-        total_sph = np.vstack((total_sph, zero_real_sph) + horton_ord)
+        total_sph = np.vstack((total_sph, zero_real_sph, *horton_ord))
     return total_sph
 
 
 def generate_real_spherical_harmonics(l_max: int, theta: np.ndarray, phi: np.ndarray):
     r"""
-    Compute the real spherical harmonics recursively up to a maximum angular degree l.
+    Compute the real spherical harmonics recursively up to a maximum angular degree :math:`l`\. [1]_
+    [2]_
 
     .. math::
-        Y_l^m(\theta, \phi) = \frac{(2l + 1) (l - m)!}{4\pi (l + m)!} f(m, \theta)
+        Y_l^m(\theta, \phi) = \sqrt{\frac{(2l + 1) (l - m)!}{4\pi (l + m)!}} f(m, \theta)
         P_l^m(\cos(\phi)),
 
     where :math:`l` is the angular degree, :math:`m` is the order and
     :math:`f(m, \theta) = \sqrt{2} \cos(m \theta)` when :math:`m>0` otherwise
     :math:`f(m, \theta) = \sqrt{2} \sin(m\theta)`
-    when :math:`m<0`, and equal to one when :math:`m= 0`.  :math:`P_l^m` is the associated
+    when :math:`m<0`\, and equal to one when :math:`m= 0`\.  :math:`P_l^m` is the associated
     Legendre polynomial without the Conway phase factor.
     The angle :math:`\theta \in [0, 2\pi]` is the azimuthal angle and :math:`\phi \in [0, \pi]`
     is the polar angle.
@@ -452,23 +615,23 @@ def generate_real_spherical_harmonics(l_max: int, theta: np.ndarray, phi: np.nda
     Returns
     -------
     ndarray((l_max + 1)**2, N)
-        Value of real spherical harmonics of all orders :math:`m`,and degree
-        :math:`l` spherical harmonics. For each degree :math:`l`, the orders :math:`m` are
-        in Horton 2 order, i.e. :math:`m=0, 1, -1, 2, -2, \cdots, l, -l`.
+        Value of real spherical harmonics of all orders :math:`m`\,and degree
+        :math:`l` spherical harmonics. For each degree :math:`l`\, the orders :math:`m` are
+        in Horton 2 order, i.e. :math:`m=0, 1, -1, 2, -2, \cdots, l, -l`\.
 
     Notes
     -----
-    - The associated Legendre polynomials are computed using the forward recursion:
+    - The associated Legendre polynomials are computed using the forward recursion: [2]_
       :math:`P_l^m(\phi) = \frac{2l + 1}{l - m + 1}\cos(\phi) P_{l-1}^m(x) -
-      \frac{(l + m)}{l - m + 1} P_{l-1}^m(x)`, and
-      :math:`P_l^l(\phi) = (2l + 1) \sin(\phi) P_{l-1}^{l-1}(\phi)`.
+      \frac{(l + m)}{l - m + 1} P_{l-1}^m(x)`\, and
+      :math:`P_l^l(\phi) = (2l + 1) \sin(\phi) P_{l-1}^{l-1}(\phi)`\.
     - For higher maximum degree :math:`l_{max} > 1900` with double precision the computation
       of spherical harmonic will underflow within the range
-      :math:`20^\circ \leq \phi \leq 160^\circ`.  This code does not implement the
+      :math:`20^\circ \leq \phi \leq 160^\circ`\.  This code does not implement the
       modified recursion formulas in [2] and instead opts for higher precision defined
       by the computer system and np.longdouble.
     - The mapping from :math:`(l, m)` to the correct row index in the spherical harmonic array is
-      given by :math:`(l + 1)^2 + 2 * m - 1` if :math:`m > 0`, else it is :math:`(l+1)^2 + 2 |m|`.
+      given by :math:`(l + 1)^2 + 2 * m - 1` if :math:`m > 0`\, else it is :math:`(l+1)^2 + 2 |m|`\.
 
     References
     ----------
@@ -480,9 +643,9 @@ def generate_real_spherical_harmonics(l_max: int, theta: np.ndarray, phi: np.nda
 
     """
     numb_pts = len(theta)
-    sin_phi = np.sin(phi)
-    cos_phi = np.cos(phi)
-    spherical_harm = np.zeros(((l_max + 1) ** 2, numb_pts))
+    sin_phi = np.sin(phi, dtype=np.longdouble)
+    cos_phi = np.cos(phi, dtype=np.longdouble)
+    spherical_harm = np.zeros(((l_max + 1) ** 2, numb_pts), dtype=np.longdouble)
 
     # Forward recursion requires P_{l-1}^m, P_{l-2}^m, these are the two columns, respectively
     # the rows are the order m which ranges from 0 to l_max and p_leg[:l, :] gets updated every l
@@ -490,15 +653,20 @@ def generate_real_spherical_harmonics(l_max: int, theta: np.ndarray, phi: np.nda
     p_leg[0, :, :] = 1.0  # Initial conditions: P_0^0 = 1.0
 
     # the coefficients of the forward recursions and initial factor of spherical harmonic.
-    a_k = lambda l, m: (2.0 * (l - 1.0) + 1) / ((l - 1.0) - m + 1.0)
-    b_k = lambda l, m: (l - 1.0 + m) / (l - m)
-    fac_sph = lambda l, m: np.sqrt((2.0 * l + 1) / (4.0 * np.pi))  # Note (l-m)!/(l+m)! is moved
+    def a_k(deg, ord):
+        return (2.0 * (float(deg) - 1.0) + 1) / (float(deg) - 1.0 - float(ord) + 1.0)
+
+    def b_k(deg, ord):
+        return (float(deg) - 1.0 + float(ord)) / (float(deg) - float(ord))
+
+    def fac_sph(deg, ord):
+        return np.sqrt((2.0 * float(deg) + 1) / (4.0 * np.pi))  # Note (l-m)!/(l+m)! is moved
 
     # Go through each degree and then order and fill out
-    spherical_harm[0, :] = fac_sph(0, 0)  # Compute Y_0^0
+    spherical_harm[0, :] = fac_sph(0.0, 0.0)  # Compute Y_0^0
     i_sph = 1  # Index to start of spherical_harm
-    for l_deg in range(1, l_max + 1):
-        for m_ord in range(0, l_deg + 1):
+    for l_deg in np.arange(1, l_max + 1, dtype=int):
+        for m_ord in np.arange(0, l_deg + 1, dtype=int):
             if l_deg == m_ord:
                 # Do diagonal spherical harmonic Y_l^m, when l=m.
                 # Diagonal recursion: P_m^m = sin(phi) * P_{m-1}^{m-1} * (2 (l - 1) + 1)
@@ -506,7 +674,7 @@ def generate_real_spherical_harmonics(l_max: int, theta: np.ndarray, phi: np.nda
             else:
                 # Do forward recursion here and fill out Y_l^m and Y_l^{-m}
                 # Compute b_k P_{l-2}^m,  since m < l, then m < l - 2
-                second_fac = b_k(l_deg, m_ord) * p_leg[m_ord, 1] if m_ord <= l_deg - 2 else 0
+                second_fac = b_k(l_deg, m_ord) * p_leg[m_ord, 1] if m_ord <= l_deg - 2 else 0.0
                 # Update/re-define P_{l-2}^m to be equal to P_{l-1}^m
                 p_leg[m_ord, 1, :] = p_leg[m_ord, 0]
                 # Then update P_{l-1}^m := P_l^m := a_k cos(\phi) P_{l-1}^m - b_k P_{l, -2}^m
@@ -514,17 +682,21 @@ def generate_real_spherical_harmonics(l_max: int, theta: np.ndarray, phi: np.nda
             # Compute Y_l^{m} that has cosine(theta) and Y_l^{-m} that has sin(theta)
             if m_ord == 0:
                 # init factorial needed to compute (l-m)!/(l+m)!
-                factorial = (l_deg + 1.0) * l_deg
+                #  Turn the number into an array of longdouble type because of Overflow error
+                #  for high degrees, also add the square-root to mitigate it too
+                factorial = np.sqrt(np.array([(l_deg + 1.0) * l_deg], dtype=np.longdouble))
                 spherical_harm[i_sph, :] = fac_sph(l_deg, m_ord) * p_leg[m_ord, 0]
             else:
                 common_fact = (
-                    (p_leg[m_ord, 0] / np.sqrt(factorial)) * fac_sph(l_deg, m_ord) * np.sqrt(2.0)
+                    (p_leg[m_ord, 0] / factorial[0]) * fac_sph(l_deg, m_ord) * np.sqrt(2.0)
                 )
-                spherical_harm[i_sph, :] = common_fact * np.cos(m_ord * theta)
+                spherical_harm[i_sph, :] = common_fact * np.cos(float(m_ord) * theta)
                 i_sph += 1
-                spherical_harm[i_sph, :] = common_fact * np.sin(m_ord * theta)
+                spherical_harm[i_sph, :] = common_fact * np.sin(float(m_ord) * theta)
                 # Update (l-m)!/(l+m)!
-                factorial *= (l_deg + m_ord + 1.0) * (l_deg - m_ord)
+                factorial[0] *= np.sqrt(
+                    (float(l_deg) + float(m_ord) + 1.0) * (float(l_deg) - float(m_ord))
+                )
             i_sph += 1
     return spherical_harm
 
@@ -552,34 +724,36 @@ def generate_derivative_real_spherical_harmonics(l_max: int, theta: np.ndarray, 
     ndarray(2, (l_max^2 + 1)^2, M)
         Derivative of spherical harmonics, (theta first, then phi) of all degrees up to
         :math:`l_{max}` and orders :math:`m` in Horton 2 order, i.e.
-        :math:`m=0, 1, -1, \cdots, l, -l`.
+        :math:`m=0, 1, -1, \cdots, l, -l`\.
 
     Notes
     -----
     - The derivative with respect to :math:`\phi` is
 
     .. math::
-        \frac{\partial Y_l^m(\theta, \phi)}{\partial\phi} = -m Y_l^{-m}(\theta, \phi),
+        \frac{\partial Y_l^m(\theta, \phi)}{\partial\phi} = -m Y_l^{-m}(\theta, \phi)
+
     - The derivative with respect to :math:`\theta` is
 
     .. math::
         \frac{\partial Y_l^m(\theta, \phi)}{\partial\phi} = |m| \cot(\phi)
          \Re (Y_l^{|m|}(\theta, \phi)) + \sqrt{(n - |m|)(n + |m| + 1)}
          Re(e^{-i\theta} Y_l^{|m| + 1}(\theta, \phi))
-    for positive :math:`m` and for negative :math:`m`, the real projection :math:`\Re` is replaced
-    with the imaginary projection :math:`\Im`.
+
+    for positive :math:`m` and for negative :math:`m`\, the real projection :math:`\Re` is replaced
+    with the imaginary projection :math:`\Im`\.
 
     """
     num_pts = len(theta)
     # Shape (Derivs, Spherical, Pts)
-    output = np.zeros((2, int((l_max + 1) ** 2), num_pts))
+    output = np.zeros((2, int((l_max + 1) ** 2), num_pts), dtype=np.longdouble)
 
     complex_expon = np.exp(-theta * 1.0j)  # Needed for derivative wrt to phi
     l_list = np.arange(l_max + 1)
     sph_harm_vals = generate_real_spherical_harmonics(l_max, theta, phi)
     i_output = 0
     for l_val in l_list:
-        for m in [0] + sum([[x, -x] for x in range(1, l_val + 1)], []):
+        for m in [0, *sum([[x, -x] for x in range(1, l_val + 1)], [])]:
             # Take all spherical harmonics at degree l_val
             sph_harm_degree = sph_harm_vals[(l_val) ** 2 : (l_val + 1) ** 2, :]
 
@@ -587,19 +761,26 @@ def generate_derivative_real_spherical_harmonics(l_max: int, theta: np.ndarray, 
             # for complex spherical harmonic it is   i m Y^m_l,
             # Note ie^(i |m| x) = -sin(|m| x) + i cos(|m| x), then take real/imaginery component.
             # hence why the negative is in (-m).
-            # index_m maps m to index where (l, m)  is located in `sph_harm_degree`.
-            index_m = lambda m: 2 * m - 1 if m > 0 else int(2 * np.fabs(m))
-            output[0, i_output, :] = -m * sph_harm_degree[index_m(-m), :]
+            # index_m maps m to index where (l, m)  is located in `sph_harm_degree`\.
+            def index_m(m):
+                return 2 * m - 1 if m > 0 else int(2 * np.fabs(m))
+
+            output[0, i_output, :] = -float(m) * sph_harm_degree[index_m(-m), :]
 
             # Take derivative wrt to phi:
             with np.errstate(divide="ignore", invalid="ignore"):
                 cot_tangent = 1.0 / np.tan(phi)
             cot_tangent[np.abs(np.tan(phi)) < 1e-10] = 0.0
             # Calculate the derivative in two pieces:
-            fac = np.sqrt((l_val - np.abs(m)) * (l_val + np.abs(m) + 1))
-            output[1, i_output, :] = np.abs(m) * cot_tangent * sph_harm_degree[index_m(m), :]
+            fac = np.sqrt((l_val - np.abs(float(m))) * (l_val + np.abs(m) + 1))
+            output[1, i_output, :] = np.abs(float(m)) * cot_tangent * sph_harm_degree[index_m(m), :]
             # Compute it using SciPy, removing conway phase (-1)^m and multiply by 2^0.5.
-            sph_harm_m = fac * sph_harm(np.abs(m) + 1, l_val, theta, phi) * np.sqrt(2) * (-1) ** m
+            sph_harm_m = (
+                fac
+                * sph_harm(np.abs(float(m)) + 1, l_val, theta, phi)
+                * np.sqrt(2)
+                * (-1.0) ** float(m)
+            )
             if m >= 0:
                 if m < l_val:  # When m == l_val, then fac = 0
                     output[1, i_output, :] += np.real(complex_expon * sph_harm_m)
@@ -626,26 +807,30 @@ def solid_harmonics(l_max: int, sph_pts: np.ndarray):
     l_max : int
         Largest angular degree of the spherical harmonics.
     sph_pts : ndarray(M, 3)
-        Three-dimensional points in spherical coordinates :math:`(r, \theta, \phi)`, where
-        :math:`r\geq 0, \theta \in [0, 2\pi]` and :math:`\phi \in [0, \pi]`.
+        Three-dimensional points in spherical coordinates :math:`(r, \theta, \phi)`\, where
+        :math:`r\geq 0, \theta \in [0, 2\pi]` and :math:`\phi \in [0, \pi]`\.
 
     Returns
     -------
     ndarray((l_max + 1)^2, M)
-        The solid harmonics from degree :math:`l=0=, \cdots, l_{max}` and for all orders :math:`m`,
+        The solid harmonics from degree :math:`l=0=, \cdots, l_{max}` and for all orders :math:`m`\,
         ordered as :math:`m=0, 1, -1, 2, -2, \cdots, l, -l` evaluated on :math:`M` points.
 
     """
     r, theta, phi = sph_pts.T
     spherical_harm = generate_real_spherical_harmonics(l_max, theta, phi)
-    degrees = np.array(sum([[l_deg] * (2 * l_deg + 1) for l_deg in range(l_max + 1)], []))
+    degrees = np.array(
+        sum([[float(l_deg)] * (2 * l_deg + 1) for l_deg in np.arange(l_max + 1, dtype=int)], []),
+        dtype=np.longdouble,
+    )
     return (
         spherical_harm * r ** degrees[:, None] * np.sqrt(4.0 * np.pi / (2 * degrees[:, None] + 1))
     )
 
 
 def convert_derivative_from_spherical_to_cartesian(deriv_r, deriv_theta, deriv_phi, r, theta, phi):
-    r"""Convert the derivative form spherical coordinates to Cartesian.
+    r"""
+    Convert the derivative from spherical coordinates to Cartesian.
 
     If :math:`r` is zero, then the derivative wrt to theta and phi are set to zero.
     If :math:`\phi` is zero, then the derivative wrt to theta is set to zero.
@@ -692,19 +877,23 @@ def convert_derivative_from_spherical_to_cartesian(deriv_r, deriv_theta, deriv_p
 def convert_cart_to_sph(points, center=None):
     r"""Convert a set of points from cartesian to spherical coordinates.
 
+    The convention that :math:`\theta \in [-\pi, \pi]` and :math:`\phi \in [0, \pi)`
+    is chosen.
+
     Parameters
     ----------
     points : np.ndarray(n, 3)
         The (3-dimensional) Cartesian coordinates of points.
     center : np.ndarray(3,), list, optional
         Cartesian coordinates of the center of spherical coordinate system.
-        If `None`, origin is used.
+        If `None`\, origin is used.
 
     Returns
     -------
     np.ndarray(N, 3)
         Spherical coordinates of atoms respect to the center
-        [radius :math:`r`, azumuthal :math:`\theta`, polar :math:`\phi`]
+        [radius :math:`r`\, azumuthal :math:`\theta`\, polar :math:`\phi`]
+
     """
     if points.ndim != 2 or points.shape[1] != 3:
         raise ValueError(f"points array requires shape (N, 3), got: {points.ndim}")
@@ -726,21 +915,21 @@ def convert_cart_to_sph(points, center=None):
 
 def generate_orders_horton_order(order: int, type_ord: str, dim: int = 3):
     r"""
-    Generate all orders from an integer :math:`l`.
+    Generate all orders from an integer :math:`l`\.
 
-    For Cartesian, the orders are :math:`(n_x, n_y, n_z)` such that they sum to `order`.
-    If `dim=1,2`, then it generates Cartesian orders :math:`(n_x)`, :math:`(n_x, n_y)`,
-    respectively, such that they sum to `order`.
+    For Cartesian, the orders are :math:`(n_x, n_y, n_z)` such that they sum to `order`\.
+    If `dim=1,2`\, then it generates Cartesian orders :math:`(n_x)`\, :math:`(n_x, n_y)`\,
+    respectively, such that they sum to `order`\.
 
-    For radial, the orders is just the order :math:`l`.
+    For radial, the orders is just the order :math:`l`\.
 
     For pure, the orders :math:`(l, m)` following the order
-     :math:`[(l, 0), (l, 1), (l, -1), \cdots, (l, l), (l, -l)]`.
+    :math:`[(l, 0), (l, 1), (l, -1), \cdots, (l, l), (l, -l)]`\.
 
     Parameters
     ----------
     order: int
-        The order :math:`l`.
+        The order :math:`l`\.
     type_ord : str, optional
         The type of the order, it is either "cartesian", "radial", "pure" or "pure-radial".
     dim : int, optional
@@ -792,3 +981,64 @@ def generate_orders_horton_order(order: int, type_ord: str, dim: int = 3):
         raise ValueError(f"Type {type_ord} is not recognized.")
     orders = np.array(orders, dtype=int)
     return orders
+
+
+def dipole_moment_of_molecule(grid, density: np.ndarray, coords: np.ndarray, charges: np.ndarray):
+    r"""
+    Calculate the dipole of a molecule.
+
+    This is defined as the observable form a wavefunction :math:`\Psi`:
+
+    .. math::
+        \vec{\mu} = \int \Psi \hat{\mu} \Psi \vec{r}
+
+    which results in
+
+    .. math::
+        \vec{\mu} = \sum_{i=1}^{N_{atoms}} Z_i (\vec{R_i} - \vec{R_c}) -
+        \int ((\vec{r} - \vec{R_c})) \rho(\vec{r}) dr,
+
+    where :math:`N_{atoms}` is the number of atoms, :math:`Z_i` is the atomic charge of the
+    ith atom, :math:`\vec{R_i}` is the ith coordinate of the atom, :math:`\vec{R_c}` is the
+    center of mass of the molecule in atomic units and :math:`\rho` is the electron density
+    of the molecule.
+
+    Parameters
+    ----------
+    grid: Grid
+        The grid used to perform the integration.
+    density: ndarray
+        The electron density evaluated on points on `grid` object.
+    coords: ndarray[M, 3]
+        The coordinates of the atoms.
+    charges: ndarray[M]
+        The atomic charge of each atom.
+
+    Returns
+    -------
+    ndarray:
+        Returns array of size three corresponding to the dipole moment of a molecule.
+
+    """
+    # Calculate the center of mass of the molecule
+    masses = np.array([isotopic_masses[charge] for charge in charges])
+    center_mol = np.array([np.sum(coords * masses[:, None], axis=0) / np.sum(masses)])
+
+    # Calculate the Cartesian moments of the electron density
+    #     orders should be [[n_x, n_y, n_z]] = [[0, 0, 0], [1, 0, 0], [0, 1, 0], [0, 0, 1]]
+    #     integrals is \int \rho (x - X_c)^{n_x} (y - y_C) ^{n_y} (z - Z_c)^{n_x} dx dy dz
+    integrals, orders = grid.moments(
+        1, center_mol, density, type_mom="cartesian", return_orders=True
+    )
+
+    # calculate (X_a - X_c)**{n_x} (Y_a - Y_c)**{n_y} (Z_a - Z_c)**{n_z}
+    cent_pts_with_order = (coords - center_mol) ** orders[:, None]
+    # multiply over each corresponding moment axis (row)
+    cent_pts_with_order = np.prod(cent_pts_with_order, axis=2)
+    # calculate Z_a (X_a - X_c)**{n_x} (Y_a - Y_c)**{n_y} (Z_a - Z_c)**{n_z}
+    result = np.einsum("ij,j->i", cent_pts_with_order, charges)
+
+    # sum electric dipole moment and remove [0,0,0] moment value
+    result = (result - integrals.T).flatten()[1:]
+
+    return result
