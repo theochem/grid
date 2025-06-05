@@ -46,7 +46,7 @@ class TestTwoGaussianDiffCenters:
         params = _PromolParams(c, e, coord, dim=3)
         if return_obj:
             num_pts = int(2 / ss) + 1
-            weights = np.array([(2.0 / (num_pts - 2))] * num_pts)
+            weights = np.array([2.0 / (num_pts - 2)] * num_pts)
             if add_boundary:
                 l_bnd = -1.0
                 end_point = True
@@ -54,11 +54,16 @@ class TestTwoGaussianDiffCenters:
                 l_bnd = -0.99
                 end_point = False
             oned = OneDGrid(
-                np.linspace(l_bnd, 1, num=num_pts, endpoint=end_point), weights, domain=(-1, 1),
+                np.linspace(l_bnd, 1, num=num_pts, endpoint=end_point),
+                weights,
+                domain=(-1, 1),
             )
 
             obj = CubicProTransform(
-                [oned, oned, oned], params.c_m, params.e_m, params.coords,
+                [oned, oned, oned],
+                params.c_m,
+                params.e_m,
+                params.coords,
             )
             return params, obj
         return params
@@ -98,8 +103,9 @@ class TestTwoGaussianDiffCenters:
         desired = params.promolecular(grid)
         assert np.all(np.abs(np.array(true_ans) - desired) < 1e-8)
 
-    @pytest.mark.parametrize("pts, add_boundary", [[np.arange(-5.0, 5.0, 0.5), False],
-                                                   [np.arange(-5.0, 5.0, 0.5), True]])
+    @pytest.mark.parametrize(
+        "pts, add_boundary", [[np.arange(-5.0, 5.0, 0.5), False], [np.arange(-5.0, 5.0, 0.5), True]]
+    )
     def test_transforming_x_against_formula(self, pts, add_boundary):
         r"""Test transformming the X-transformation against analytic formula."""
         for pt in pts:
@@ -107,13 +113,9 @@ class TestTwoGaussianDiffCenters:
 
             def formula_transforming_x(x):
                 r"""Return closed form formula for transforming x coordinate."""
-                first_factor = (5.0 * np.pi ** 1.5 / (4 * 2 ** 0.5)) * (
-                    erf(2 ** 0.5 * (x - 1)) + 1.0
-                )
+                first_factor = (5.0 * np.pi**1.5 / (4 * 2**0.5)) * (erf(2**0.5 * (x - 1)) + 1.0)
 
-                sec_fac = ((10.0 * np.pi ** 1.5) / (6.0 * 3 ** 0.5)) * (
-                    erf(3.0 ** 0.5 * (x - 2)) + 1.0
-                )
+                sec_fac = ((10.0 * np.pi**1.5) / (6.0 * 3**0.5)) * (erf(3.0**0.5 * (x - 2)) + 1.0)
 
                 ans = (first_factor + sec_fac) / (
                     5.0 * (np.pi / 2) ** 1.5 + 10.0 * (np.pi / 3.0) ** 1.5
@@ -122,9 +124,13 @@ class TestTwoGaussianDiffCenters:
 
             assert np.abs(true_ans - formula_transforming_x(pt)) < 1e-8
 
-    @pytest.mark.parametrize("pts_xy, add_boundary",
-                             [[np.random.uniform(-10.0, 10.0, size=(100, 2)), False],
-                              [np.random.uniform(-10.0, 10.0, size=(100, 2)), True]])
+    @pytest.mark.parametrize(
+        "pts_xy, add_boundary",
+        [
+            [np.random.uniform(-10.0, 10.0, size=(100, 2)), False],
+            [np.random.uniform(-10.0, 10.0, size=(100, 2)), True],
+        ],
+    )
     def test_transforming_y_against_formula(self, pts_xy, add_boundary):
         r"""Test transforming the Y-transformation against analytic formula."""
         for x, y in pts_xy:
@@ -133,17 +139,9 @@ class TestTwoGaussianDiffCenters:
             def formula_transforming_y(x, y):
                 r"""Return closed form formula for transforming y coordinate."""
                 fac1 = 5.0 * np.sqrt(np.pi / 2.0) * np.exp(-2.0 * (x - 1) ** 2)
-                fac1 *= (
-                    np.sqrt(np.pi)
-                    * (erf(2.0 ** 0.5 * (y - 2)) + 1.0)
-                    / (2.0 * np.sqrt(2.0))
-                )
+                fac1 *= np.sqrt(np.pi) * (erf(2.0**0.5 * (y - 2)) + 1.0) / (2.0 * np.sqrt(2.0))
                 fac2 = 10.0 * np.sqrt(np.pi / 3.0) * np.exp(-3.0 * (x - 2.0) ** 2.0)
-                fac2 *= (
-                    np.sqrt(np.pi)
-                    * (erf(3.0 ** 0.5 * (y - 2)) + 1.0)
-                    / (2.0 * np.sqrt(3.0))
-                )
+                fac2 *= np.sqrt(np.pi) * (erf(3.0**0.5 * (y - 2)) + 1.0) / (2.0 * np.sqrt(3.0))
                 num = fac1 + fac2
 
                 dac1 = 5.0 * (np.pi / 2.0) * np.exp(-2.0 * (x - 1.0) ** 2.0)
@@ -153,9 +151,13 @@ class TestTwoGaussianDiffCenters:
 
             assert np.abs(true_ans - formula_transforming_y(x, y)) < 1e-8
 
-    @pytest.mark.parametrize("pts, add_boundary",
-                             [[np.random.uniform(-10.0, 10.0, size=(100, 3)), False],
-                              [np.random.uniform(-10.0, 10.0, size=(100, 3)), True]])
+    @pytest.mark.parametrize(
+        "pts, add_boundary",
+        [
+            [np.random.uniform(-10.0, 10.0, size=(100, 3)), False],
+            [np.random.uniform(-10.0, 10.0, size=(100, 3)), True],
+        ],
+    )
     def test_transforming_z_against_formula(self, pts, add_boundary):
         r"""Test transforming the Z-transformation against analytic formula."""
         params, obj = self.setUp(ss=0.5, return_obj=True, add_boundary=add_boundary)
@@ -163,25 +165,13 @@ class TestTwoGaussianDiffCenters:
         def formula_transforming_z(x, y, z):
             r"""Return closed form formula for transforming z coordinate."""
             a1, a2, a3 = (x - 1.0), (y - 2.0), (z - 3.0)
-            erfx = erf(2.0 ** 0.5 * a3) + 1.0
-            fac1 = (
-                5.0
-                * np.exp(-2.0 * (a1 ** 2.0 + a2 ** 2.0))
-                * erfx
-                * np.pi ** 0.5
-                / (2.0 * 2.0 ** 0.5)
-            )
+            erfx = erf(2.0**0.5 * a3) + 1.0
+            fac1 = 5.0 * np.exp(-2.0 * (a1**2.0 + a2**2.0)) * erfx * np.pi**0.5 / (2.0 * 2.0**0.5)
             b1, b2, b3 = (x - 2.0), (y - 2.0), (z - 2.0)
-            erfy = erf(3.0 ** 0.5 * b3) + 1.0
-            fac2 = (
-                10.0
-                * np.exp(-3.0 * (b1 ** 2.0 + b2 ** 2.0))
-                * erfy
-                * np.pi ** 0.5
-                / (2.0 * 3.0 ** 0.5)
-            )
-            den = 5.0 * (np.pi / 2.0) ** 0.5 * np.exp(-2.0 * (a1 ** 2.0 + a2 ** 2.0))
-            den += 10.0 * (np.pi / 3.0) ** 0.5 * np.exp(-3.0 * (b1 ** 2.0 + b2 ** 2.0))
+            erfy = erf(3.0**0.5 * b3) + 1.0
+            fac2 = 10.0 * np.exp(-3.0 * (b1**2.0 + b2**2.0)) * erfy * np.pi**0.5 / (2.0 * 3.0**0.5)
+            den = 5.0 * (np.pi / 2.0) ** 0.5 * np.exp(-2.0 * (a1**2.0 + a2**2.0))
+            den += 10.0 * (np.pi / 3.0) ** 0.5 * np.exp(-3.0 * (b1**2.0 + b2**2.0))
             return -1.0 + 2.0 * (fac1 + fac2) / den
 
         for x, y, z in pts:
@@ -199,8 +189,8 @@ class TestTwoGaussianDiffCenters:
         ss = 1.0
         params, obj = self.setUp(ss, return_obj=True)
         num_pt = int(2.0 / ss) + 1  # number of points in one-direction.
-        assert obj.points.shape == (num_pt ** 3, 3)
-        non_boundary_pt_index = num_pt ** 2 + num_pt + 1
+        assert obj.points.shape == (num_pt**3, 3)
+        non_boundary_pt_index = num_pt**2 + num_pt + 1
         real_pt = obj.points[non_boundary_pt_index]
         # Test that this point is not the boundary.
         assert real_pt[0] != np.inf
@@ -472,14 +462,12 @@ class TestOneGaussianAgainstNumerics:
         params = _PromolParams(c, e, coord, dim=3)
         if return_obj:
             num_pts = int(1 / ss) + 1
-            weights = np.array([(2.0 / (num_pts - 2))] * num_pts)
+            weights = np.array([2.0 / (num_pts - 2)] * num_pts)
             oned_x = OneDGrid(
                 np.linspace(-1, 1, num=num_pts, endpoint=True), weights, domain=(-1, 1)
             )
 
-            obj = CubicProTransform(
-                [oned_x, oned_x, oned_x], params.c_m, params.e_m, params.coords
-            )
+            obj = CubicProTransform([oned_x, oned_x, oned_x], params.c_m, params.e_m, params.coords)
             return params, obj
         return params
 
@@ -500,9 +488,7 @@ class TestOneGaussianAgainstNumerics:
             promol_x, promol_x_all = promolecular_in_x(grid, every_grid)
 
             # Integration over y and z cancel out from numerator and denominator.
-            actual = -1.0 + 2.0 * np.trapz(promol_x, grid) / np.trapz(
-                promol_x_all, every_grid
-            )
+            actual = -1.0 + 2.0 * np.trapz(promol_x, grid) / np.trapz(promol_x_all, every_grid)
             assert np.abs(true_ans - actual) < 1e-5
 
     @pytest.mark.parametrize("pts_xy", [np.random.uniform(-10.0, 10.0, size=(100, 2))])
@@ -524,9 +510,7 @@ class TestOneGaussianAgainstNumerics:
 
             # Integration over z cancel out from numerator and denominator.
             # Further, gaussian at a point does too.
-            actual = -1.0 + 2.0 * np.trapz(promol_y, grid) / np.trapz(
-                promol_y_all, every_grid
-            )
+            actual = -1.0 + 2.0 * np.trapz(promol_y, grid) / np.trapz(promol_y_all, every_grid)
             assert np.abs(true_ans - actual) < 1e-5
 
     @pytest.mark.parametrize("pts", [np.random.uniform(-10.0, 10.0, size=(100, 3))])
@@ -545,9 +529,7 @@ class TestOneGaussianAgainstNumerics:
             every_grid = np.arange(-5.0, 10.0, 0.00001)  # Full Integration
             promol_z_all, promol_z = promolecular_in_z(grid, every_grid)
 
-            actual = -1.0 + 2.0 * np.trapz(promol_z, grid) / np.trapz(
-                promol_z_all, every_grid
-            )
+            actual = -1.0 + 2.0 * np.trapz(promol_z, grid) / np.trapz(promol_z_all, every_grid)
             true_ans = _transform_coordinate([x, y, z], 2, self.setUp())
             assert np.abs(true_ans - actual) < 1e-4
 
@@ -596,14 +578,12 @@ class TestInterpolation:
         params = _PromolParams(c, e, coord, dim=3)
 
         num_pts = int(2 / ss) + 1
-        weights = np.array([(2.0 / (num_pts - 2))] * num_pts)
+        weights = np.array([2.0 / (num_pts - 2)] * num_pts)
         oned_x = OneDGrid(
             np.linspace(-1.0, 1.0, num=num_pts, endpoint=True), weights, domain=(-1, 1)
         )
 
-        obj = CubicProTransform(
-            [oned_x, oned_x, oned_x], params.c_m, params.e_m, params.coords
-        )
+        obj = CubicProTransform([oned_x, oned_x, oned_x], params.c_m, params.e_m, params.coords)
         return params, obj, [oned_x, oned_x, oned_x]
 
     def test_interpolate_cubic_function(self):
@@ -619,7 +599,7 @@ class TestInterpolation:
             (
                 np.random.uniform(1.0, 1.5, (100,)).T,
                 np.random.uniform(1.5, 2.5, (100,)).T,
-                np.random.uniform(2.5, 3.5, (100,)).T
+                np.random.uniform(2.5, 3.5, (100,)).T,
             )
         ).T
         actuals = obj.interpolate(grid, func(obj.points), oned_grids, use_log=False)
@@ -632,7 +612,7 @@ class TestInterpolation:
 
         # Function to interpolate.
         def func(pts, alpha=2.0):
-            return np.exp(-alpha * np.linalg.norm(pts - param.coords[0], axis=1)**2.0)
+            return np.exp(-alpha * np.linalg.norm(pts - param.coords[0], axis=1) ** 2.0)
 
         # Test over a grid. Pytest isn't used for effiency reasons.
         # TODO: the grid points need to be close to center to achieve good accuracy.
@@ -640,7 +620,7 @@ class TestInterpolation:
             (
                 np.random.uniform(0.75, 1.25, (100,)).T,
                 np.random.uniform(0.75, 2.25, (100,)).T,
-                np.random.uniform(3.75, 3.25, (100,)).T
+                np.random.uniform(3.75, 3.25, (100,)).T,
             )
         ).T
         actuals = obj.interpolate(real_grid, func(obj.points), oned_grids, use_log=True)
@@ -656,11 +636,12 @@ class TestInterpolation:
             return (pts[:, 0] - 1.0) * (pts[:, 1] - 2.0) * (pts[:, 2] - 3.0)
 
         def derivative(pts):
-            return np.vstack([
-                (pts[:, 1] - 2.0) * (pts[:, 2] - 3.0),
-                (pts[:, 0] - 1.0) * (pts[:, 2] - 3.0),
-                (pts[:, 0] - 1.0) * (pts[:, 1] - 2.0),
-            ]
+            return np.vstack(
+                [
+                    (pts[:, 1] - 2.0) * (pts[:, 2] - 3.0),
+                    (pts[:, 0] - 1.0) * (pts[:, 2] - 3.0),
+                    (pts[:, 0] - 1.0) * (pts[:, 1] - 2.0),
+                ]
             ).T
 
         # Test over a grid. Pytest isn't used for effiency reasons.
@@ -668,7 +649,7 @@ class TestInterpolation:
             (
                 np.random.uniform(1.0, 1.5, (100,)).T,
                 np.random.uniform(1.5, 2.5, (100,)).T,
-                np.random.uniform(2.5, 3.5, (100,)).T
+                np.random.uniform(2.5, 3.5, (100,)).T,
             )
         ).T
         actual = obj.interpolate(grid, func(obj.points), oned_grids, nu=1)
@@ -685,10 +666,11 @@ class TestInterpolation:
 
         def derivative(pts):
             x, y, z = pts[:, 0], pts[:, 1], pts[:, 2]
-            return np.vstack([
-                2.0 * (x - 1.0) * (y - 2.0) ** 2.0 * (z - 3.0) ** 2.0,
-                2.0 * (x - 1.0) ** 2.0 * (y - 2.0) * (z - 3.0) ** 2.0,
-                2.0 * (x - 1.0) ** 2.0 * (y - 2.0) ** 2.0 * (z - 3.0),
+            return np.vstack(
+                [
+                    2.0 * (x - 1.0) * (y - 2.0) ** 2.0 * (z - 3.0) ** 2.0,
+                    2.0 * (x - 1.0) ** 2.0 * (y - 2.0) * (z - 3.0) ** 2.0,
+                    2.0 * (x - 1.0) ** 2.0 * (y - 2.0) ** 2.0 * (z - 3.0),
                 ]
             ).T
 
@@ -697,7 +679,7 @@ class TestInterpolation:
             (
                 np.random.uniform(1.0, 1.5, (100,)).T,
                 np.random.uniform(1.5, 2.5, (100,)).T,
-                np.random.uniform(2.5, 3.5, (100,)).T
+                np.random.uniform(2.5, 3.5, (100,)).T,
             )
         ).T
         actual = obj.interpolate(grid, func(obj.points), oned_grids, nu=1, use_log=False)
@@ -724,9 +706,7 @@ class TestIntegration:
         params = _PromolParams(c, e, coord, dim=3)
         num_pts = int(1 / ss) + 1
         oned_x = GaussChebyshevLobatto(num_pts)
-        obj = CubicProTransform(
-            [oned_x, oned_x, oned_x], params.c_m, params.e_m, params.coords
-        )
+        obj = CubicProTransform([oned_x, oned_x, oned_x], params.c_m, params.e_m, params.coords)
         return params, obj
 
     def test_integration_perturbed_gaussian_with_promolecular_trick(self):
@@ -755,12 +735,10 @@ def test_padding_arrays():
     exps = np.array([[4.0, 5.0], [5.0, 6.0, 7.0, 8.0], [9.0]], dtype=object)
     coeff_pad, exps_pad = _pad_coeffs_exps_with_zeros(coeff, exps)
     coeff_desired = np.array(
-        [[1.0, 2.0, 0.0, 0.0], [1.0, 2.0, 3.0, 4.0], [5.0, 0.0, 0.0, 0.0]],
-        dtype=object
+        [[1.0, 2.0, 0.0, 0.0], [1.0, 2.0, 3.0, 4.0], [5.0, 0.0, 0.0, 0.0]], dtype=object
     )
     np.testing.assert_array_equal(coeff_desired, coeff_pad)
     exp_desired = np.array(
-        [[4.0, 5.0, 0.0, 0.0], [5.0, 6.0, 7.0, 8.0], [9.0, 0.0, 0.0, 0.0]],
-        dtype=object
+        [[4.0, 5.0, 0.0, 0.0], [5.0, 6.0, 7.0, 8.0], [9.0, 0.0, 0.0, 0.0]], dtype=object
     )
     np.testing.assert_array_equal(exp_desired, exps_pad)
