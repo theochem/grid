@@ -77,7 +77,7 @@ extend-exclude = ["doc/*", "doc/*/*"]
 [tool.pytest.ini_options]
 minversion = "7.0"
 testpaths = ["tests"]
-addopts = "-v"
+addopts = "-v --tb=short --no-header --disable-warnings"
 
 [tool.setuptools_scm]
 write_to = "src/grid/_version.py"

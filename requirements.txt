@@ -10,4 +10,10 @@ sphinx-autoapi
 nbsphinx
 sphinx_rtd_theme
 nbsphinx-link
-docutils==0.16  # Needed to show bullet points in sphinx_rtd_theme
+docutils >= 0.18  # Needed to show bullet points in sphinx_rtd_theme
+
+# Additional dependencies for electron density analysis
+pandas
+seaborn
+qc-iodata
+qc-gbasis
