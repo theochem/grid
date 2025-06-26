@@ -1,19 +1,12 @@
-# BFit Integration and Five Systems Test
+# Grid Integration Scripts
 
-Scripts for integrating BFit promolecular coefficients into Grid library and testing electron density integration on five molecular systems.
+Integration tools for combining quantum chemistry data with Grid library's CubicProTransform.
 
 ## Files
 
-### Core Scripts
-- `integrate_bfit_coefficients.py` - Integrates BFit data into Grid library _PromolParams
-- `five_systems_test.py` - Tests five molecular systems with performance analysis
-
-### Results
-- `../examples/BFit_Performance_Analysis.ipynb` - **Main results notebook** with comprehensive analysis
-
-### Data
-- `data/kl_slsqp_results.npz` - BFit coefficients and exponents
-- `data/*.fchk` - FCHK files for test systems
+- `gbasis_cubicpro_integration.py` - GBasis quantum chemistry data integration
+- `bfit_cubicpro_integration.py` - BFit promolecular parameter integration  
+- `test_grid_analysis.py` - Functionality and performance testing
 
 ## Requirements
 
@@ -25,62 +18,61 @@ pip install git+https://github.com/theochem/gbasis.git
 
 ## Usage
 
-### 1. Test BFit Integration
 ```bash
-python scripts/integrate_bfit_coefficients.py
+# Run individual integrators
+python gbasis_cubicpro_integration.py
+python bfit_cubicpro_integration.py
+
+# Run test suite
+python test_grid_analysis.py
 ```
 
-### 2. Run Five Systems Test
-```bash
-python scripts/five_systems_test.py
+## Test Architecture
+
+### Functionality Testing
+- **GBasis**: 5 molecules (He, H2, H2O, HCl, CH4) using 15³ grid
+- **BFit**: 6 elements (H, He, Li, C, N, O) using 15³ grid
+
+### Performance Testing  
+- **Grid sizes**: 5³, 8³, 10³, 12³, 15³, 18³, 20³, 25³, 50³
+- **Reference molecule**: H2O for performance scaling analysis
+
+## Results Summary
+
+| Method | Test Type | Average Result | Grid Size |
+|--------|-----------|----------------|-----------|
+| GBasis | 5 molecules | 0.92% error | 15³ |
+| BFit | 6 elements | All passed | 15³ |
+| Performance | 9 grid sizes | 0.01-33.75% error | 5³-50³ |
+
+## Grid Performance (H2O)
+
+| Grid | Points | Time | Error | Use Case |
+|------|--------|------|-------|----------|
+| 5³ | 125 | 0.13s | 33.75% | Quick preview |
+| 15³ | 3,375 | 2.65s | 0.17% | **Recommended** |
+| 25³ | 15,625 | 11.14s | 0.01% | High precision |
+| 50³ | 125,000 | 90.34s | 0.06% | Extreme precision |
+
+## API Reference
+
+### GBasis Integration
+```python
+from gbasis_cubicpro_integration import GBasisCubicProIntegrator
+
+integrator = GBasisCubicProIntegrator(grid_size=15)
+result = integrator.integrate_fchk("data/h2o.fchk")
 ```
 
-### 3. View Results
-```bash
-jupyter notebook examples/BFit_Performance_Analysis.ipynb
+### BFit Integration
+```python
+from bfit_cubicpro_integration import BFitCubicProIntegrator
+
+integrator = BFitCubicProIntegrator(grid_size=15)
+result = integrator.integrate_promolecular_density('C')
 ```
 
-## Test Systems
+## Data Requirements
 
-| System | Type | Expected Electrons | 
-|--------|------|-------------------|
-| Helium | Atom | 2 |
-| H2 | Homonuclear diatomic | 2 |
-| HCl | Heteronuclear diatomic | 18 |
-| CH4 | Small molecule | 10 |
-| H2O | Additional system | 10 |
-
-## Key Results
-
-### CubicProTransform Method
-- High precision integration (0.3% error across all systems)
-- Grid transformation time: < 0.001 seconds
-- Integration time: < 0.001 seconds per system
-- Consistent performance across diverse molecular types
-
-### GBasis Method  
-- Error range: 0.9-9.2% (system dependent)
-- Calculation time: 0.066-0.410 seconds
-- Provides quantum mechanical electron density benchmark
-- Grid size optimization: 16³-40³ points depending on system
-
-## Implementation
-
-### BFit Integration Process:
-1. **Data Loading**: Loads coefficients/exponents from kl_slsqp_results.npz
-2. **Coefficient Filtering**: Removes near-zero coefficients (threshold: 1e-12)
-3. **Parameter Creation**: Creates _PromolParams objects for molecular systems
-4. **Normalization**: Normalizes coefficients to match expected electron count
-5. **Grid Generation**: Uses CubicProTransform with GaussChebyshev quadrature
-
-### Testing Framework:
-- **CubicProTransform**: Uses `transform.promol.promolecular()` for density evaluation
-- **GBasis Integration**: Loads FCHK files with IOData, evaluates density with GBasis
-- **Performance Metrics**: Measures integration accuracy, timing, and grid efficiency
-- **Five Systems**: Validates across atoms, diatomics, and small molecules
-
-### Technical Details:
-- **Grid Integration**: `transform.integrate(promol_density)` method
-- **Density Matrix**: SCF one-electron reduced density matrices from FCHK
-- **Error Analysis**: Relative error vs expected electron count
-- **Grid Optimization**: Adaptive grid sizing (16³ to 40³ points)
+- **FCHK files**: `data/*.fchk` (He, H2, H2O, HCl, CH4)
+- **BFit data**: `data/kl_slsqp_results.npz`
