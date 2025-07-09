@@ -3,7 +3,7 @@
 BFit Data Processor
 
 Processes promolecular coefficients and exponents from theochem/BFit
-data files for integration with Grid library.
+data files for integration with CubicProTransform in Grid library.
 
 Note: This version handles s-type orbital data.
 """
@@ -78,24 +78,14 @@ ELEMENT_TO_ATOMIC_NUMBER = {
 
 @dataclass
 class BFitElementData:
-    """Store BFit data for a single element"""
+    """Store BFit s-type orbital data for a single element"""
 
     symbol: str
     atomic_number: int
-    coeffs: np.ndarray
-    exps: np.ndarray
+    coeffs_s: np.ndarray  # S-type coefficients
+    exps_s: np.ndarray  # S-type exponents
     num_s: int = 0
-    num_p: int = 0
-
-    @property
-    def coeffs_s(self) -> np.ndarray:
-        """S-type coefficients alias for compatibility"""
-        return self.coeffs
-
-    @property
-    def exps_s(self) -> np.ndarray:
-        """S-type exponents alias for compatibility"""
-        return self.exps
+    # TODO: P-types spherical Gaussians should be supported later. See PR #96 and #227
 
 
 class BFitDataProcessor:
@@ -144,10 +134,9 @@ class BFitDataProcessor:
                 element_data = BFitElementData(
                     symbol=symbol,
                     atomic_number=atomic_number,
-                    coeffs=coeffs,
-                    exps=exps,
+                    coeffs_s=coeffs,
+                    exps_s=exps,
                     num_s=len(coeffs),
-                    num_p=0,
                 )
 
                 self.element_data[symbol] = element_data
@@ -156,3 +145,31 @@ class BFitDataProcessor:
                 print(f"Error parsing element {symbol}: {e}")
 
         return self.element_data
+
+    def create_promol_params(self, symbols, coords, deps):
+        """Create promolecular parameters from BFit data
+
+        Args:
+            symbols: List of element symbols
+            coords: Array of atomic coordinates
+            deps: Dictionary containing dependencies (_PromolParams, _pad_coeffs_exps_with_zeros)
+
+        Returns:
+            _PromolParams object
+        """
+        all_coeffs, all_exps, all_coords = [], [], []
+
+        for i, symbol in enumerate(symbols):
+            element_data = self.element_data[symbol.lower()]
+            valid_mask = np.abs(element_data.coeffs_s) > 1e-12
+            if np.any(valid_mask):
+                all_coeffs.append(element_data.coeffs_s[valid_mask])
+                all_exps.append(element_data.exps_s[valid_mask])
+                # BFit has unnormalized coefficients, but PromolParams uses normalized coefficients
+                all_coeffs[-1] *= np.sqrt(all_exps[-1] / np.pi) ** 3
+                all_coords.append(coords[i])
+
+        coeffs_padded, exps_padded = deps["_pad_coeffs_exps_with_zeros"](all_coeffs, all_exps)
+        return deps["_PromolParams"](
+            c_m=coeffs_padded, e_m=exps_padded, coords=np.array(all_coords), dim=3
+        )

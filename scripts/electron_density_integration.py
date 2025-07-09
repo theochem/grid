@@ -51,43 +51,78 @@ def setup_environment():
         return None
 
 
-# Test systems data: (name, symbols, coords, expected_electrons, fchk_file)
+# Test systems: FCHK file paths for molecular systems
 SYSTEMS_DATA = [
-    ("Helium", ["he"], [[0, 0, 0]], 2, "data/He_t.fchk"),
-    ("H2", ["h", "h"], [[0, 0, -0.71], [0, 0, 0.71]], 2, "data/H2.fchk"),
-    ("HCl", ["h", "cl"], [[0, 0, -1.27], [0, 0, 1.27]], 18, "data/HCl.fchk"),
-    (
-        "CH4",
-        ["c", "h", "h", "h", "h"],
-        [
-            [0, 0, 0],
-            [1.085, 1.085, 1.085],
-            [1.085, -1.085, -1.085],
-            [-1.085, 1.085, -1.085],
-            [-1.085, -1.085, 1.085],
-        ],
-        10,
-        "data/CH4.fchk",
-    ),
-    (
-        "H2O",
-        ["o", "h", "h"],
-        [[0, 0, 0], [1.431, 0, 1.107], [-1.431, 0, 1.107]],
-        10,
-        "data/h2o.fchk",
-    ),
+    "data/He_t.fchk",
+    "data/H2.fchk",
+    "data/HCl.fchk",
+    "data/CH4.fchk",
+    "data/h2o.fchk",
 ]
+
+# Atomic number to element symbol mapping
+ATOMIC_NUMBER_TO_SYMBOL = {
+    1: "h",
+    2: "he",
+    3: "li",
+    4: "be",
+    5: "b",
+    6: "c",
+    7: "n",
+    8: "o",
+    9: "f",
+    10: "ne",
+    11: "na",
+    12: "mg",
+    13: "al",
+    14: "si",
+    15: "p",
+    16: "s",
+    17: "cl",
+    18: "ar",
+    19: "k",
+    20: "ca",
+}
 
 
 class System:
-    """Molecular system data container"""
+    """Molecular system data container that loads information from FCHK files"""
 
-    def __init__(self, name, symbols, coords, expected_electrons, fchk_file):
-        self.name = name
-        self.symbols = symbols
-        self.coords = np.array(coords)
-        self.expected_electrons = expected_electrons
+    def __init__(self, fchk_file, deps):
         self.fchk_file = fchk_file
+        self._load_from_fchk(deps)
+
+    def _load_from_fchk(self, deps):
+        """Load molecular information from FCHK file using iodata"""
+        if not os.path.exists(self.fchk_file):
+            raise FileNotFoundError(f"FCHK file not found: {self.fchk_file}")
+
+        try:
+            # Load molecular data
+            mol_data = deps["load_one"](self.fchk_file)
+
+            # Extract information
+            self.coords = mol_data.atcoords  # Atomic coordinates
+            atnums = mol_data.atnums  # Atomic numbers
+
+            # Convert atomic numbers to element symbols
+            self.symbols = [ATOMIC_NUMBER_TO_SYMBOL.get(num, f"Z{num}").lower() for num in atnums]
+
+            # Calculate expected number of electrons
+            self.expected_electrons = int(np.sum(atnums))
+
+            # Extract system name from title or filename
+            if hasattr(mol_data, "title") and mol_data.title:
+                self.name = mol_data.title.strip()
+            else:
+                # Use filename without extension as fallback
+                self.name = Path(self.fchk_file).stem
+
+        except Exception as e:
+            raise RuntimeError(f"Failed to load FCHK file {self.fchk_file}: {e}")
+
+    def __str__(self):
+        return f"{self.name}: {len(self.symbols)} atoms, {self.expected_electrons} electrons"
 
 
 def load_molecular_data(fchk_file, deps):
@@ -115,9 +150,8 @@ def run_uniform_grid_method(system, deps):
         return None, "Failed to load molecular data"
 
     try:
-        start_time = time.time()
-
-        # Create uniform grid
+        # Measure grid construction time
+        grid_start_time = time.time()
         grid = deps["UniformGrid"].from_molecule(
             mol_data["mol_data"].atnums,
             mol_data["mol_data"].atcoords,
@@ -126,41 +160,28 @@ def run_uniform_grid_method(system, deps):
             rotate=True,
             weight="Trapezoid",
         )
+        grid_construction_time = time.time() - grid_start_time
 
-        # Evaluate and integrate electron density
+        # Measure electron density evaluation and integration time
+        eval_start_time = time.time()
         rho = deps["evaluate_density"](mol_data["rdm"], mol_data["ao_basis"], grid.points)
         electrons = grid.integrate(rho)
-        total_time = time.time() - start_time
+        eval_integration_time = time.time() - eval_start_time
 
+        total_time = grid_construction_time + eval_integration_time
         rel_error = abs(electrons - system.expected_electrons) / system.expected_electrons
 
         return {
             "electrons": electrons,
             "rel_error": rel_error,
             "time": total_time,
+            "grid_time": grid_construction_time,
+            "eval_time": eval_integration_time,
             "points": grid.size,
         }, "Success"
 
     except Exception as e:
         return None, f"UniformGrid error: {str(e)}"
-
-
-def create_promol_params(bfit_processor, symbols, coords, deps):
-    """Create promolecular parameters from BFit data"""
-    all_coeffs, all_exps, all_coords = [], [], []
-
-    for i, symbol in enumerate(symbols):
-        element_data = bfit_processor.element_data[symbol.lower()]
-        valid_mask = np.abs(element_data.coeffs_s) > 1e-12
-        if np.any(valid_mask):
-            all_coeffs.append(element_data.coeffs_s[valid_mask])
-            all_exps.append(element_data.exps_s[valid_mask])
-            all_coords.append(coords[i])
-
-    coeffs_padded, exps_padded = deps["_pad_coeffs_exps_with_zeros"](all_coeffs, all_exps)
-    return deps["_PromolParams"](
-        c_m=coeffs_padded, e_m=exps_padded, coords=np.array(all_coords), dim=3
-    )
 
 
 def create_normalized_promol_params(system, bfit_processor, deps):
@@ -170,8 +191,8 @@ def create_normalized_promol_params(system, bfit_processor, deps):
     if missing:
         raise ValueError(f"Missing elements: {missing}")
 
-    # Create initial promolecular parameters
-    promol_params = create_promol_params(bfit_processor, system.symbols, system.coords, deps)
+    # Create initial promolecular parameters using BFitDataProcessor method
+    promol_params = bfit_processor.create_promol_params(system.symbols, system.coords, deps)
 
     # Normalize to match expected electron count
     norm_factor = system.expected_electrons / promol_params.integrate_all()
@@ -191,7 +212,8 @@ def run_transform_grid_method(system, bfit_processor, deps, grid_size=20):
         return None, "Failed to load molecular data"
 
     try:
-        start_time = time.time()
+        # Measure grid construction time (promol params + transform grid)
+        grid_start_time = time.time()
 
         # Create normalized promolecular parameters
         normalized_promol = create_normalized_promol_params(system, bfit_processor, deps)
@@ -204,18 +226,23 @@ def run_transform_grid_method(system, bfit_processor, deps, grid_size=20):
             normalized_promol.e_m,
             normalized_promol.coords,
         )
+        grid_construction_time = time.time() - grid_start_time
 
-        # Evaluate and integrate electron density
+        # Measure electron density evaluation and integration time
+        eval_start_time = time.time()
         rho = deps["evaluate_density"](mol_data["rdm"], mol_data["ao_basis"], transform.points)
         electrons = transform.integrate(rho)
-        total_time = time.time() - start_time
+        eval_integration_time = time.time() - eval_start_time
 
+        total_time = grid_construction_time + eval_integration_time
         rel_error = abs(electrons - system.expected_electrons) / system.expected_electrons
 
         return {
             "electrons": electrons,
             "rel_error": rel_error,
             "time": total_time,
+            "grid_time": grid_construction_time,
+            "eval_time": eval_integration_time,
             "points": transform.size,
         }, "Success"
 
@@ -291,9 +318,8 @@ def test_grid_sizes(system, bfit_processor, deps, grid_sizes=[8, 10, 12, 15, 18,
     # Test each grid size
     for grid_size in grid_sizes:
         try:
-            start_time = time.time()
-
-            # Create grid with specified size
+            # Measure grid construction time
+            grid_start_time = time.time()
             oned_grid = deps["GaussChebyshev"](grid_size)
             transform = deps["CubicProTransform"](
                 [oned_grid, oned_grid, oned_grid],
@@ -301,18 +327,23 @@ def test_grid_sizes(system, bfit_processor, deps, grid_sizes=[8, 10, 12, 15, 18,
                 normalized_promol.e_m,
                 normalized_promol.coords,
             )
+            grid_construction_time = time.time() - grid_start_time
 
-            # Evaluate and integrate electron density
+            # Measure electron density evaluation and integration time
+            eval_start_time = time.time()
             rho = deps["evaluate_density"](mol_data["rdm"], mol_data["ao_basis"], transform.points)
             electrons = transform.integrate(rho)
+            eval_integration_time = time.time() - eval_start_time
 
-            total_time = time.time() - start_time
+            total_time = grid_construction_time + eval_integration_time
             rel_error = abs(electrons - system.expected_electrons) / system.expected_electrons
 
             results[grid_size] = {
                 "electrons": electrons,
                 "rel_error": rel_error,
                 "time": total_time,
+                "grid_time": grid_construction_time,
+                "eval_time": eval_integration_time,
                 "points": transform.size,
             }
         except Exception:
@@ -324,14 +355,17 @@ def test_grid_sizes(system, bfit_processor, deps, grid_sizes=[8, 10, 12, 15, 18,
 def print_grid_size_results(system_name, results):
     """Print grid size test results in tabular format"""
     print(f"\n{system_name} - Transform Grid Size Performance:")
-    print(f"{'Grid':<8} {'Points':<10} {'Electrons':<10} {'Error%':<10} {'Time(s)':<8}")
-    print("-" * 52)
+    print(
+        f"{'Grid':<8} {'Points':<10} {'Electrons':<10} {'Error%':<10} {'Total(s)':<8} {'Grid(s)':<8} {'Eval(s)':<8}"
+    )
+    print("-" * 72)
 
     for grid_size in sorted(results.keys()):
         result = results[grid_size]
         print(
-            f"{grid_size}³{'':<5} {result['points']:<10} {result['electrons']:<10.3f} "
-            f"{result['rel_error']*100:<10.4f} {result['time']:<8.3f}"
+            f"{grid_size}^3{'':<5} {result['points']:<10} {result['electrons']:<10.3f} "
+            f"{result['rel_error']*100:<10.4f} {result['time']:<8.3f} "
+            f"{result['grid_time']:<8.3f} {result['eval_time']:<8.3f}"
         )
 
 
@@ -351,8 +385,20 @@ def main():
     if not bfit_processor:
         print("Warning: BFit processor unavailable - CubicProTransform will be skipped")
 
-    # Create test systems
-    systems = [System(*data) for data in SYSTEMS_DATA]
+    # Create test systems from FCHK files
+    systems = []
+    for fchk_file in SYSTEMS_DATA:
+        try:
+            system = System(fchk_file, deps)
+            systems.append(system)
+            print(f"Loaded: {system}")
+        except (FileNotFoundError, RuntimeError) as e:
+            print(f"Skipped {fchk_file}: {e}")
+
+    if not systems:
+        print("No valid systems found. Exiting.")
+        return
+
     results = {}
 
     print(f"\nTesting {len(systems)} molecular systems...")
@@ -368,7 +414,11 @@ def main():
             system_results["uniform"] = uniform_result
             print(
                 f"  Uniform: {uniform_result['electrons']:.3f} electrons "
-                f"({uniform_result['rel_error']*100:.4f}% error, {uniform_result['time']:.2f}s)"
+                f"({uniform_result['rel_error']*100:.4f}% error, {uniform_result['time']:.3f}s total)"
+            )
+            print(
+                f"    Grid construction: {uniform_result['grid_time']:.3f}s, "
+                f"Density evaluation: {uniform_result['eval_time']:.3f}s"
             )
         else:
             print(f"  Uniform: {status}")
@@ -380,7 +430,11 @@ def main():
                 system_results["transform"] = transform_result
                 print(
                     f"  Transform: {transform_result['electrons']:.3f} electrons "
-                    f"({transform_result['rel_error']*100:.4f}% error, {transform_result['time']:.2f}s)"
+                    f"({transform_result['rel_error']*100:.4f}% error, {transform_result['time']:.3f}s total)"
+                )
+                print(
+                    f"    Grid construction: {transform_result['grid_time']:.3f}s, "
+                    f"Density evaluation: {transform_result['eval_time']:.3f}s"
                 )
             else:
                 print(f"  Transform: {status}")
@@ -389,7 +443,6 @@ def main():
 
     # Print main comparison results
     print_results(systems, results)
-    print("\nMain comparison completed!")
 
     # Grid size performance analysis
     if bfit_processor:
