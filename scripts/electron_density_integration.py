@@ -266,15 +266,15 @@ def initialize_bfit_processor(deps):
 
 def print_results(systems, results):
     """Print comparison results in tabular format"""
-    print(f"\n{'='*100}")
+    print(f"\n{'='*140}")
     print("ELECTRON DENSITY INTEGRATION COMPARISON")
-    print(f"{'='*100}")
-    print(f"{'System':<8}  {'UniformGrid':<40} {'CubicProTransform':<40}")
+    print(f"{'='*140}")
+    print(f"{'System':<8}  {'UniformGrid':<65} {'CubicProTransform':<65}")
     print(
-        f"{'':>6} {'Expected':<8} {'Electrons':>10} {'Error%':>8} {'Time(s)':>8} {'Points':>10} "
-        f"{'Electrons':>10} {'Error%':>8} {'Time(s)':>8} {'Points':>10}"
+        f"{'':>6} {'Expected':<8} {'Electrons':>10} {'Error%':>8} {'Grid(s)':>8} {'Eval(s)':>8} {'Total(s)':>8} {'Points':>10} "
+        f"{'Electrons':>10} {'Error%':>8} {'Grid(s)':>8} {'Eval(s)':>8} {'Total(s)':>8} {'Points':>10}"
     )
-    print("-" * 100)
+    print("-" * 140)
 
     for system in systems:
         result = results.get(system.name, {})
@@ -285,69 +285,32 @@ def print_results(systems, results):
         if uniform:
             u_data = (
                 f"{uniform['electrons']:10.3f}{uniform['rel_error']*100:8.4f}"
-                f"{uniform['time']:8.2f}{uniform['points']:10d}"
+                f"{uniform['grid_time']:8.2f}{uniform['eval_time']:8.2f}{uniform['time']:8.2f}{uniform['points']:10d}"
             )
         else:
-            u_data = f"{'N/A':>36}"
+            u_data = f"{'N/A':>61}"
 
         if transform:
             t_data = (
                 f"{transform['electrons']:10.3f}{transform['rel_error']*100:8.4f}"
-                f"{transform['time']:8.2f}{transform['points']:10d}"
+                f"{transform['grid_time']:8.2f}{transform['eval_time']:8.2f}{transform['time']:8.2f}{transform['points']:10d}"
             )
         else:
-            t_data = f"{'N/A':>36}"
+            t_data = f"{'N/A':>61}"
 
         print(f"{system.name:<8} {system.expected_electrons:<8} {u_data} {t_data}")
 
 
 def test_grid_sizes(system, bfit_processor, deps, grid_sizes=[8, 10, 12, 15, 18, 20, 25]):
     """Test CubicProTransform performance with different grid sizes"""
-    mol_data = load_molecular_data(system.fchk_file, deps)
-    if not mol_data:
-        return None
-
-    try:
-        # Create normalized promolecular parameters (shared across all grid sizes)
-        normalized_promol = create_normalized_promol_params(system, bfit_processor, deps)
-    except ValueError:
-        return None
-
     results = {}
 
-    # Test each grid size
+    # Test each grid size by calling the existing run_transform_grid_method
     for grid_size in grid_sizes:
-        try:
-            # Measure grid construction time
-            grid_start_time = time.time()
-            oned_grid = deps["GaussChebyshev"](grid_size)
-            transform = deps["CubicProTransform"](
-                [oned_grid, oned_grid, oned_grid],
-                normalized_promol.c_m,
-                normalized_promol.e_m,
-                normalized_promol.coords,
-            )
-            grid_construction_time = time.time() - grid_start_time
-
-            # Measure electron density evaluation and integration time
-            eval_start_time = time.time()
-            rho = deps["evaluate_density"](mol_data["rdm"], mol_data["ao_basis"], transform.points)
-            electrons = transform.integrate(rho)
-            eval_integration_time = time.time() - eval_start_time
-
-            total_time = grid_construction_time + eval_integration_time
-            rel_error = abs(electrons - system.expected_electrons) / system.expected_electrons
-
-            results[grid_size] = {
-                "electrons": electrons,
-                "rel_error": rel_error,
-                "time": total_time,
-                "grid_time": grid_construction_time,
-                "eval_time": eval_integration_time,
-                "points": transform.size,
-            }
-        except Exception:
-            continue  # Skip failed grid sizes
+        result, status = run_transform_grid_method(system, bfit_processor, deps, grid_size)
+        if result is not None:  # Success case
+            results[grid_size] = result
+        # Skip failed grid sizes (when result is None)
 
     return results
 
