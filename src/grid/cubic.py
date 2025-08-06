@@ -26,6 +26,10 @@ from sympy.functions.combinatorial.numbers import bell
 
 from grid.basegrid import Grid, OneDGrid
 
+from collections import deque
+from typing import Optional, Callable
+from scipy.spatial import cKDTree
+
 
 class _HyperRectangleGrid(Grid):
     def __init__(self, points, weights, shape):
@@ -1013,3 +1017,175 @@ class UniformGrid(_HyperRectangleGrid):
                 row_data = data.flat[i : i + num_chunks]
                 f.write((row_data.size * " {:12.5E}").format(*row_data))
                 f.write("\n")
+
+
+class AdaptiveUniformGrid:
+    """This is a wrapper class that provides adaptive refinement for a UniformGrid instance.
+
+    This class takes a UniformGrid object and applies a recursive subdivision
+    algorithm to generate a new, non-uniform grid with points concentrated in
+    regions of high function error, leading to more efficient and accurate integration.
+
+    The main entry point is the `refinement` method."""
+
+    def __init__(self, uniform_grid: UniformGrid):
+        """initialization
+        Parameters
+        ----------
+        uniform_grid : UniformGrid
+            The coarse, uniform grid that will serve as the starting point for refinement."""
+        if not isinstance(uniform_grid, UniformGrid):
+            raise ValueError("The input grid should be a UniformGrid instance.")
+        self.grid = uniform_grid
+        self.ndim = uniform_grid.ndim
+
+    def _estimate_error(self, points: np.ndarray, evaluated_points: dict) -> np.ndarray:
+        """Estimates the error for each point based on the local gradient."""
+        errors = np.zeros(len(points))
+        if len(points) <= 1:
+            return errors
+
+        tree = cKDTree(points)
+        for i, point in enumerate(points):
+            distances, indices = tree.query(point, k=2)
+            closest_neighbor_points = points[indices[1]]
+            local_spacing = distances[1]
+
+            point_val = evaluated_points[tuple(point)]
+            neighbor_val = evaluated_points[tuple(closest_neighbor_points)]
+            grad_mag = abs(point_val - neighbor_val) / local_spacing
+
+            # Error : |grad(f)| * h
+            errors[i] = grad_mag * local_spacing
+        return errors
+
+    def _find_neighbors(self, point: np.ndarray, spacing: float) -> list:
+        """Notes on Neighbor Finding:
+        The standard method of finding neighbors by converting point indices to integer coordinates (i, j, k) is not used here.
+        This is because the adaptive refinement process adds new points that do not lie on the original structured grid.
+        For these new points, the index-based mapping will fail.
+        Therefore, I use real-world (x, y, z) coordinates and still implement the x ± (spacing/2) * a_i to find neighbors.
+        """
+        neighbors = []
+        for axis in self.grid.axes:
+            axis_direction = axis / np.linalg.norm(axis)
+            neighbors.append(point + spacing * axis_direction)
+            neighbors.append(point - spacing * axis_direction)
+        return neighbors
+
+    def refinement(
+        self, func: Callable, tolerance: float = 1e-4, min_spacing: Optional[float] = None
+    ) -> dict:
+        """Drives the adaptive refinement process and returns the results.
+
+        This method starts with the initial uniform grid, refines it according to
+        the function `func`, and returns the final results without modifying the
+        original grid object.
+
+        Parameters
+        ----------
+        func : Callable
+            The function to be integrated.
+        tolerance : float, optional
+            The error tolerance for a local point.
+        min_spacing : float, optional
+            The minimum allowed spacing for subdivision.
+
+        Returns
+        -------
+        dict
+            A dictionary containing the final integral value, the refined grid object,
+            and other statistics."""
+
+        # Initialization
+        initial_points = self.grid.points.copy()
+        initial_weights = self.grid.weights.copy()
+        initial_avg_spacing = np.mean([np.linalg.norm(axis) for axis in self.grid.axes])
+        if min_spacing is None:
+            min_spacing = initial_avg_spacing / 100
+
+        evaluated_points = {}
+        initial_values = func(initial_points)
+        for i, p in enumerate(initial_points):
+            evaluated_points[tuple(p)] = initial_values[i]
+
+        original_total_volume = np.sum(initial_weights)
+
+        # Refinement process
+        errors = self._estimate_error(initial_points, evaluated_points)
+        high_error_indices = np.where(errors > tolerance)[0]
+
+        if high_error_indices.size == 0:
+            final_integral = self.grid.integrate(initial_values)
+            return {
+                "integral": final_integral,
+                "final_grid": self.grid,
+                "num_points": len(initial_points),
+                "num_evaluations": len(evaluated_points),
+            }
+
+        final_points = []
+        unnormalized_weights = []
+
+        keep_mask = np.ones(len(initial_points), dtype=bool)
+        keep_mask[high_error_indices] = False
+
+        final_points.extend(list(initial_points[keep_mask]))
+        unnormalized_weights.extend(list(initial_weights[keep_mask]))
+
+        refinement_queue = deque(
+            [(initial_points[idx], initial_avg_spacing) for idx in high_error_indices]
+        )
+        processed_points_set = {tuple(p) for p in initial_points}
+
+        while refinement_queue:
+            point, spacing = refinement_queue.popleft()
+            half_spacing = spacing / 2
+            if half_spacing < min_spacing:
+                final_points.append(point)
+                unnormalized_weights.append(spacing**self.ndim)
+                continue
+
+            neighbors = self._find_neighbors(point, half_spacing)
+
+            new_points_to_eval = [p for p in neighbors if tuple(p) not in evaluated_points]
+            if new_points_to_eval:
+                new_values = func(np.array(new_points_to_eval))
+                for new_point, new_value in zip(new_points_to_eval, new_values):
+                    evaluated_points[tuple(new_point)] = new_value
+
+            local_error = 0
+            for neighbor in neighbors:
+                grad_mag = (
+                    abs(evaluated_points[tuple(point)] - evaluated_points[tuple(neighbor)])
+                    / half_spacing
+                )
+                local_error = max(local_error, grad_mag * half_spacing)
+
+            if local_error < tolerance:
+                final_points.append(point)
+                unnormalized_weights.append(spacing**self.ndim)
+            else:
+                refinement_queue.append((point, half_spacing))
+                for neighbor in neighbors:
+                    child_tuple = tuple(neighbor)
+                    if child_tuple not in processed_points_set:
+                        refinement_queue.append((neighbor, half_spacing))
+                        processed_points_set.add(child_tuple)
+
+        # Finalization
+        final_points = np.array(final_points)
+        final_weights = np.array(unnormalized_weights)
+        current_total_volume = np.sum(final_weights)
+        if current_total_volume > 0:
+            final_weights *= original_total_volume / current_total_volume
+        final_grid = Grid(final_points, final_weights)
+        final_values = np.array([evaluated_points[tuple(p)] for p in final_points])
+        final_integral = final_grid.integrate(final_values)
+
+        return {
+            "integral": final_integral,
+            "final_grid": final_grid,
+            "num_points": len(final_points),
+            "num_evaluations": len(evaluated_points),
+        }
