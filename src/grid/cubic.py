@@ -1046,17 +1046,30 @@ class AdaptiveUniformGrid:
             return errors
 
         tree = cKDTree(points)
+        k_neighbors = self.ndim * 2 + 1
         for i, point in enumerate(points):
-            distances, indices = tree.query(point, k=2)
-            closest_neighbor_points = points[indices[1]]
-            local_spacing = distances[1]
+            k = min(k_neighbors, len(points))
+            distances, indices = tree.query(point, k=k)
+            neighbor_points = points[indices[1:]]
+            neighbor_distances = distances[1:]
+            if len(neighbor_points) == 0:
+                continue
 
             point_val = evaluated_points[tuple(point)]
-            neighbor_val = evaluated_points[tuple(closest_neighbor_points)]
-            grad_mag = abs(point_val - neighbor_val) / local_spacing
 
-            # Error : |grad(f)| * h
-            errors[i] = grad_mag * local_spacing
+            max_grad_mag = 0.0
+            avg_local_spacing = np.mean(neighbor_distances)
+            for neighbor, dist in zip(neighbor_points, neighbor_distances):
+                if dist == 0:
+                    continue
+
+                neighbor_val = evaluated_points[tuple(neighbor)]
+                grad_mag = abs(point_val - neighbor_val) / dist
+                if grad_mag > max_grad_mag:
+                    max_grad_mag = grad_mag
+
+            errors[i] = max_grad_mag * avg_local_spacing
+
         return errors
 
     def _find_neighbors(self, point: np.ndarray, spacing: float) -> list:
@@ -1130,8 +1143,10 @@ class AdaptiveUniformGrid:
         keep_mask = np.ones(len(initial_points), dtype=bool)
         keep_mask[high_error_indices] = False
 
-        final_points.extend(list(initial_points[keep_mask]))
-        unnormalized_weights.extend(list(initial_weights[keep_mask]))
+        retained_points = initial_points[keep_mask]
+        final_points.extend(list(retained_points))
+        retained_weight = initial_avg_spacing ** self.ndim
+        unnormalized_weights.extend([retained_weight] * len(retained_points))
 
         refinement_queue = deque(
             [(initial_points[idx], initial_avg_spacing) for idx in high_error_indices]
@@ -1154,13 +1169,15 @@ class AdaptiveUniformGrid:
                 for new_point, new_value in zip(new_points_to_eval, new_values):
                     evaluated_points[tuple(new_point)] = new_value
 
-            local_error = 0
+            point_val = evaluated_points[tuple(point)]
+            max_grad_mag = 0
             for neighbor in neighbors:
-                grad_mag = (
-                    abs(evaluated_points[tuple(point)] - evaluated_points[tuple(neighbor)])
-                    / half_spacing
-                )
-                local_error = max(local_error, grad_mag * half_spacing)
+                neighbor_val = evaluated_points[tuple(neighbor)]
+                grad_mag = abs(point_val - neighbor_val) / half_spacing
+                if grad_mag > max_grad_mag:
+                    max_grad_mag = grad_mag
+
+            local_error = max_grad_mag * half_spacing
 
             if local_error < tolerance:
                 final_points.append(point)

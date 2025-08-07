@@ -1059,41 +1059,87 @@ class TestUniformGrid(TestCase):
 class TestAdaptiveUniformGrid:
     """Tests for the new AdaptiveUniformGrid wrapper class."""
 
-    def setup_method(self):
-        """Set up a coarse 3D UniformGrid before each test."""
-        origin = np.array([-2.0, -2.0, -2.0])
-        axes = np.diag([1.0, 1.0, 1.0])
-        shape = np.array([5, 5, 5])  # 125 initial points
-        self.uniform_grid = UniformGrid(origin, axes, shape, weight="Rectangle")
+    case_3d_single_peak = {
+        "id": "3D_Single_Peak",
+        "grid_setup": {
+            "origin": np.array([-2.0, -2.0, -2.0]),
+            "axes": np.diag([1.0, 1.0, 1.0]),
+            "shape": np.array([5, 5, 5]),
+        },
+        "func": lambda points: np.exp(-20 * np.sum(points ** 2, axis=1)),
+        # Analytical integral of exp(-a*r^2) in 3D is (pi/a)^(3/2)
+        "analytical_integral": (np.pi / 20) ** 1.5,
+        "tolerance": 1e-5
+    }
 
-        # Define a 3D function with a sharp peak for testing
-        self.sharp_3d_gaussian = lambda points: np.exp(-20 * np.sum(points**2, axis=1))
+    case_2d_single_peak = {
+        "id": "2D_Single_Peak_Centered",
+        "grid_setup": {
+            "origin": np.array([-4.0, -4.0]),
+            "axes": np.diag([1.0, 1.0]),
+            "shape": np.array([9, 9]),
+        },
+        "func": lambda points: np.exp(-50 * np.sum(points ** 2, axis=1)),
+        # Analytical integral of exp(-a*r^2) in 2D is pi/a
+        "analytical_integral": np.pi / 50,
+        "tolerance": 1e-4
+    }
 
-    def test_refinement_improves_accuracy(self):
+    case_2d_multi_peak = {
+        "id": "2D_Multi_Peak_Centered",
+        "grid_setup": {
+            "origin": np.array([-4.0, -4.0]),
+            "axes": np.diag([1.0, 1.0]),
+            "shape": np.array([9, 9]),
+        },
+        "func": lambda points: (
+            np.exp(-30 * np.sum((points - np.array([1.0, 1.0])) ** 2, axis=1)) +
+            np.exp(-30 * np.sum((points - np.array([-1.0, -1.0])) ** 2, axis=1))
+        ),
+        # Integral is the sum of two identical Gaussians
+        "analytical_integral": 2 * (np.pi / 30),
+        "tolerance": 1e-3
+    }
+
+    @pytest.mark.parametrize(
+        "test_case",
+        [case_3d_single_peak, case_2d_single_peak, case_2d_multi_peak],
+        ids=lambda tc: tc["id"]  # Use the 'id' field for clear test names in the report
+    )
+
+    def test_refinement_improves_accuracy(self, test_case):
         """
         Tests that the adaptively refined grid yields a more accurate integral.
         """
         # Arrange: Set up the test conditions and known values.
-        analytical_integral = (np.pi / 20) ** 1.5
-        adaptive_grid = AdaptiveUniformGrid(self.uniform_grid)
 
-        initial_values = self.sharp_3d_gaussian(self.uniform_grid.points)
-        initial_integral = self.uniform_grid.integrate(initial_values)
+        grid_setup = test_case["grid_setup"]
+        uniform_grid = UniformGrid(
+            grid_setup["origin"], grid_setup["axes"], grid_setup["shape"], weight="Rectangle"
+        )
+        test_func = test_case["func"]
+        analytical_integral = test_case["analytical_integral"]
+        tolerance = test_case["tolerance"]
+
+
+        adaptive_grid = AdaptiveUniformGrid(uniform_grid)
+
+        initial_values = test_func(uniform_grid.points)
+        initial_integral = uniform_grid.integrate(initial_values)
         initial_error = abs(initial_integral - analytical_integral)
 
-        result = adaptive_grid.refinement(func=self.sharp_3d_gaussian, tolerance=1e-5)
+        result = adaptive_grid.refinement(func=test_func, tolerance=tolerance)
 
         refined_integral = result["integral"]
         refined_error = abs(refined_integral - analytical_integral)
 
-        initial_num_points = self.uniform_grid.size
+        initial_num_points = uniform_grid.size
         refined_num_points = result["num_points"]
-
         error_reduction_factor = (
             initial_error / refined_error if refined_error > 0 else float("inf")
         )
 
-        print("\n--- Adaptive Accuracy Test Summary ---")
+        print(f"\n--- Test Scenario: {test_case['id']} ---")
         print(f"{'Metric':<25} | {'Initial':<25} | {'Refined':<25}")
         print("-" * 80)
         print(f"{'Number of Points':<25} | {initial_num_points:<25} | {refined_num_points:<25}")
@@ -1104,4 +1150,4 @@ class TestAdaptiveUniformGrid:
         print("--------------------------------------")
 
         assert refined_error < initial_error
-        assert result["num_points"] > self.uniform_grid.size
+        assert result["num_points"] > uniform_grid.size
