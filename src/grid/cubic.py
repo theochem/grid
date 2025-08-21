@@ -1129,15 +1129,17 @@ class AdaptiveUniformGrid:
         self, center_point: np.ndarray, spacings: np.ndarray
     ) -> np.ndarray:
         # Generate all subdivision points for uniform 3^D cube subdivision.
-        ranges = []
-        for dim in range(self.ndim):
-            offset = spacings[dim] / 3
-            dim_range = np.linspace(center_point[dim] - offset, center_point[dim] + offset, 3)
-            ranges.append(dim_range)
-
+        #  The number of subdivision points is 3^D
+        child_spacings = spacings / 3.0
+        # Generate all possible combinations of {0, +, -} such that
+        #   the first point is the `center_point` within the subdivision.
+        ranges = (np.array([0.0, -1.0, 1.0])[:, None] * child_spacings).T
         grids = np.meshgrid(*ranges, indexing="ij")
-        subdivision_points = np.column_stack([grid.ravel() for grid in grids])
-
+        points_spacing = np.column_stack([grid.ravel() for grid in grids])  # Shape: (3^D, 3)
+        # With the spacing in each dimension, multiply it by the axes of the cubic grid.
+        # here k = D, j = D, and the number of subdivision is i = 3^D.
+        spacing_axes = points_spacing @ self.axes_norm
+        subdivision_points = center_point + spacing_axes
         return subdivision_points
 
     def refinement(
