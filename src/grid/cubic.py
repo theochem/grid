@@ -1026,13 +1026,15 @@ class UniformGrid(_HyperRectangleGrid):
 
 
 class AdaptiveUniformGrid:
-    """This is a wrapper class that provides adaptive refinement for a UniformGrid instance.
+    """
+    This is a wrapper class that provides adaptive refinement for a UniformGrid instance.
 
     This class takes a UniformGrid object and applies a recursive subdivision
     algorithm to generate a new, non-uniform grid with points concentrated in
     regions of high function error, leading to more efficient and accurate integration.
 
-    The main entry point is the `refinement` method."""
+    The main entry point is the `refinement` method.
+    """
 
     def __init__(self, uniform_grid: UniformGrid):
         """Initialization.
@@ -1044,6 +1046,8 @@ class AdaptiveUniformGrid:
         """
         if not isinstance(uniform_grid, UniformGrid):
             raise ValueError("The input grid should be a UniformGrid instance.")
+        if uniform_grid.weight_scheme != "Rectangle":
+            raise ValueError(f"The weight scheme {uniform_grid.weight_scheme} should be Rectangle.")
         self.grid = uniform_grid
         self.ndim = uniform_grid.ndim
         self.axis_spacings = np.array([np.linalg.norm(axis) for axis in self.grid.axes])
@@ -1051,7 +1055,6 @@ class AdaptiveUniformGrid:
     def _get_func_values(
         self, points: np.ndarray, func: Callable, evaluated_points: dict
     ) -> np.ndarray:
-
         if len(points) == 0:
             return np.array([])
 
