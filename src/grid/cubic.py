@@ -1036,13 +1036,16 @@ class AdaptiveUniformGrid:
     The main entry point is the `refinement` method.
     """
 
-    def __init__(self, uniform_grid: UniformGrid):
+    def __init__(self, uniform_grid: UniformGrid, error_estimate = "quadrature"):
         """Initialization.
 
         Parameters
         ----------
         uniform_grid : UniformGrid
             The coarse, uniform grid that will serve as the starting point for refinement.
+        error_estimate: str, optional
+            The type of error used to choose which points to refine. Either
+            'quadrature' (suited for integration), or `gradient`. Default is 'quadrature'.
         """
         if not isinstance(uniform_grid, UniformGrid):
             raise ValueError("The input grid should be a UniformGrid instance.")
@@ -1051,6 +1054,28 @@ class AdaptiveUniformGrid:
         self.grid = uniform_grid
         self.ndim = uniform_grid.ndim
         self.axis_spacings = np.array([np.linalg.norm(axis) for axis in self.grid.axes])
+        self.axes_norm = self.grid.axes / self.axis_spacings
+        self.error_estimate = error_estimate
+
+        if self.error_estimate == "gradient":
+            # Build flat indices for (-) and (+) along each axis, grouped together
+            #  makes it faster to do central finite-difference
+            #  This should match the output order of `_generate_subdivision_points`.
+            #  in 3D- it is [[9, 18], [3, 6], [1, 2]] corresponding to each dimension
+            #  in 2D- it is [[3, 6], [1, 2]]
+            idx_pairs = []
+            shape = (3,) * self.ndim  # grid shape per axis
+            for i in range(self.ndim):
+                neg = [0] * self.ndim
+                neg[i] = 1  # index 1 corresponds to -1 offset
+                pos = [0] * self.ndim
+                pos[i] = 2  # index 2 corresponds to +1 offset
+                idx_pairs.append((
+                    np.ravel_multi_index(neg, shape),
+                    np.ravel_multi_index(pos, shape),
+                ))
+            idx_pairs = np.array(idx_pairs)
+            self._idx_pairs = idx_pairs
 
     def _get_func_values(
         self, points: np.ndarray, func: Callable, evaluated_points: dict
@@ -1086,8 +1111,26 @@ class AdaptiveUniformGrid:
 
         return values
 
-    def _estimate_error(
-        self, point: np.ndarray, func: Callable, spacings: np.ndarray, evaluated_points: dict
+    def _estimate_error(self, point, weight, func_vals, spacings, subdivision_points):
+        if self.error_estimate == "quadrature":
+            return self._estimate_error_quadrature(
+                point, weight, func_vals, spacings, subdivision_points
+            )
+        elif self.error_estimate == "gradient":
+            return self._estimate_error_gradient(
+                point, weight, func_vals, spacings, subdivision_points
+            )
+        raise ValueError(f"Could not recognize the type of error estimate {self.error_estimate}.")
+
+    def _estimate_error_quadrature(self, point, weight, func_vals, _, subdivision_points):
+        child_weight = weight / len(subdivision_points)
+        quad_at_pt = func_vals[0] * weight   # At the center point
+        quad_child = np.sum(func_vals * child_weight)
+        err = np.abs(quad_at_pt - quad_child)
+        return err
+
+    def _estimate_error_gradient(
+        self, point, _, func_vals, spacings, __
     ) -> float:
         """
         Estimate error using finite difference gradient approximation with batch evaluation.
