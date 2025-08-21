@@ -1207,15 +1207,13 @@ class AdaptiveUniformGrid:
         if min_spacing is None:
             min_spacing = np.min(self.axis_spacings) / 100
 
-        # Initialize caching system for function evaluations
-        evaluated_points = {}
-
-        initial_points = self.grid.points.copy()
-        initial_weights = self.grid.weights.copy()
+        points = self.grid.points.copy()
+        weights = self.grid.weights.copy()
         initial_spacings = self.axis_spacings.copy()
+        func_evals = func(points)
 
-        final_points = []
-        final_weights = []
+        # Refinement dequeue takes in 5 arguments:
+        #   (index of point, point, current spacing, current weight, depth)
         refinement_queue = deque()
 
         # Potentially do refinement on that satisfies this error criteria
@@ -1234,68 +1232,67 @@ class AdaptiveUniformGrid:
 
         # Process refinement queue
         while refinement_queue:
-            point, spacings, weight, depth = refinement_queue.popleft()
+            index, point, spacings, weight, depth = refinement_queue.popleft()
 
             if depth > max_depth or np.any(spacings < min_spacing):
-                final_points.append(point)
-                final_weights.append(weight)
                 continue
 
-            local_error = self._estimate_error(point, func, spacings, evaluated_points)
+            subdivision_pts = self._generate_subdivision_points(point, spacings)
 
-            if local_error < tolerance:
-                final_points.append(point)
-                final_weights.append(weight)
-            else:
-                subdivision_points = self._generate_subdivision_points(point, spacings)
-                num_sub_points = len(subdivision_points)  # 3^ndim
+            # Compute function values at the subdivision points
+            func_vals_center = func_evals[index]
+            func_vals_extra = func(subdivision_pts[1:])
+            func_vals_subdiv = np.concatenate(([func_vals_center], func_vals_extra))
 
-                child_weight = weight / num_sub_points
+            # Use the subdivision points and function values to compute the error
+            local_error = self._estimate_error(
+                point, weight, func_vals_subdiv, spacings, subdivision_pts
+            )
+
+            # Do refinement on the center point
+            if local_error > tolerance:
+                num_sub_points = len(subdivision_pts)  # 3^ndim
+
+                # Update the weight/spacing of that center point
+                weights[index] = weight / num_sub_points
                 child_spacings = spacings / 3
 
-                # Add all subdivision points back to queue for further processing
-                for sub_point in subdivision_points:
-                    refinement_queue.append(
-                        (sub_point, child_spacings.copy(), child_weight, depth + 1)
+                # Add center point back to the queue with updated weight and spacing
+                refinement_queue.append(
+                    (
+                        index,
+                        point,
+                        child_spacings.copy(),
+                        weights[index],
+                        depth + 1
                     )
+                )
 
-        if len(final_points) == 0:
-            # empty case
-            final_grid = Grid(np.array([]), np.array([]))
-            return {
-                "integral": 0.0,
-                "final_grid": final_grid,
-                "num_points": 0,
-                "num_evaluations": len(evaluated_points),
-            }
+                # Add all subdivision points back to queue for further processing
+                #   Ignore the first point since it is the center point, and added before.
+                for i_subpt, sub_point in enumerate(subdivision_pts[1:]):
+                    refinement_queue.append(
+                        (
+                            len(points) + i_subpt,
+                            sub_point,
+                            child_spacings.copy(),
+                            weights[index],
+                            depth + 1
+                        )
+                    )
+                # Add the points, func_evals and weights to the initial list.
+                points = np.vstack((points, subdivision_pts[1:]))
+                weights = np.append(
+                    weights,
+                    np.full((num_sub_points - 1), fill_value = weights[index])
+                )
+                func_evals = np.append(func_evals, func_vals_extra)
 
-        final_points = np.array(final_points)
-        final_weights = np.array(final_weights)
-
-        rounded_points = np.round(final_points, 10)
-        unique_rounded_points, first_indices, inverse_indices = np.unique(
-            rounded_points, axis=0, return_index=True, return_inverse=True
-        )
-        final_points_dedup = final_points[first_indices]
-        unique_weights = np.zeros(len(final_points_dedup))
-        np.add.at(unique_weights, inverse_indices, final_weights)
-        final_grid = Grid(final_points_dedup, unique_weights)
-        final_values = []
-        for point in final_points_dedup:
-            point_key = tuple(np.round(point, 10))  # Round for cache lookup
-            if point_key in evaluated_points:
-                final_values.append(evaluated_points[point_key])
-            else:
-                value = func(np.array([point]))[0]
-                evaluated_points[point_key] = value
-                final_values.append(value)
-
-        final_values = np.array(final_values)
-        final_integral = final_grid.integrate(final_values)
-
+        final_grid = Grid(points, weights)
+        final_integral = final_grid.integrate(func_evals)
         return {
             "integral": final_integral,
             "final_grid": final_grid,
-            "num_points": len(final_points_dedup),
-            "num_evaluations": len(evaluated_points),  # Accurate count of function evaluations
+            "num_points": len(final_grid.points),
+            "num_evaluations": len(final_grid.points),  # Accurate count of function evaluations
         }
