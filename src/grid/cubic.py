@@ -557,6 +557,7 @@ class UniformGrid(_HyperRectangleGrid):
         dim = self._origin.size
         # Make an array to store coordinates of grid points
         self._points = np.zeros((np.prod(shape), dim))
+        self._weight_scheme = weight
         if dim == 3:
             coords = np.array(
                 np.meshgrid(np.arange(shape[0]), np.arange(shape[1]), np.arange(shape[2]))
@@ -787,6 +788,11 @@ class UniformGrid(_HyperRectangleGrid):
     def origin(self):
         """Return the Cartesian coordinates of the uniform grid origin."""
         return self._origin
+
+    @property
+    def weight_scheme(self):
+        r"""Return the weight scheme of the uniform grid."""
+        return self._weight_scheme
 
     def save(self, filename):
         r"""
