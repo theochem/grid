@@ -1136,28 +1136,17 @@ class AdaptiveUniformGrid:
         Estimate error using finite difference gradient approximation with batch evaluation.
         Uses efficient batch function evaluation to minimize function call overhead.
         """
-        eps = np.min(spacings) * 0.1  # Adaptive epsilon for numerical stability
-
-        evaluation_points = [point]  # Center point
-
-        for dim in range(self.ndim):
-            h = np.zeros(self.ndim)
-            h[dim] = eps
-            forward_point = point + h
-            backward_point = point - h
-            evaluation_points.extend([forward_point, backward_point])
-
-        evaluation_points = np.array(evaluation_points)
-        values = self._get_func_values(evaluation_points, func, evaluated_points)
-
-        f_center = values[0]
         gradient_magnitude = 0.0
-
         for dim in range(self.ndim):
-            f_forward = values[1 + 2 * dim]
-            f_backward = values[1 + 2 * dim + 1]
+            # Grabs the minus and forward index
+            i_minus = self._idx_pairs[dim][0]
+            i_plus = self._idx_pairs[dim][1]
 
-            grad_dim = (f_forward - f_backward) / (2 * eps)
+            f_forward = func_vals[i_plus]
+            f_backward = func_vals[i_minus]
+
+            # The spacing between center point and i_minus/i_plus is spacing/3.0
+            grad_dim = (f_forward - f_backward) / (2 * spacings[dim] / 3.0)
             gradient_magnitude += grad_dim**2
 
         gradient_magnitude = np.sqrt(gradient_magnitude)
