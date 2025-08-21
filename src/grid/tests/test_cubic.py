@@ -28,10 +28,6 @@ from numpy.testing import assert_allclose
 from grid.cubic import Tensor1DGrids, UniformGrid, _HyperRectangleGrid
 from grid.onedgrid import GaussLaguerre, MidPoint
 
-import pytest
-import copy
-from grid.cubic import AdaptiveUniformGrid, Grid
-
 
 class TestHyperRectangleGrid(TestCase):
     r"""Test HyperRectangleGrid class."""
@@ -192,7 +188,7 @@ class TestTensor1DGrids(TestCase):
                     assert_allclose(actual_weight, cubic.weights[index])
                     index += 1
 
-    def test_interpolation_of_gaussian_vertorized(self):
+    def test_interpolation_of_gaussian_vectorized(self):
         r"""Test interpolation of a Gaussian function with vectorization."""
         oned = MidPoint(50)
         cubic = Tensor1DGrids(oned, oned, oned)
@@ -1054,54 +1050,3 @@ class TestUniformGrid(TestCase):
             ]
         )
         assert_allclose(grid.points, expected, rtol=1.0e-7, atol=1.0e-7)
-
-
-class TestAdaptiveUniformGrid:
-    """Tests for the new AdaptiveUniformGrid wrapper class."""
-
-    def setup_method(self):
-        """Set up a coarse 3D UniformGrid before each test."""
-        origin = np.array([-2.0, -2.0, -2.0])
-        axes = np.diag([1.0, 1.0, 1.0])
-        shape = np.array([5, 5, 5])  # 125 initial points
-        self.uniform_grid = UniformGrid(origin, axes, shape, weight="Rectangle")
-
-        # Define a 3D function with a sharp peak for testing
-        self.sharp_3d_gaussian = lambda points: np.exp(-20 * np.sum(points**2, axis=1))
-
-    def test_refinement_improves_accuracy(self):
-        """
-        Tests that the adaptively refined grid yields a more accurate integral.
-        """
-        # Arrange: Set up the test conditions and known values.
-        analytical_integral = (np.pi / 20) ** 1.5
-        adaptive_grid = AdaptiveUniformGrid(self.uniform_grid)
-
-        initial_values = self.sharp_3d_gaussian(self.uniform_grid.points)
-        initial_integral = self.uniform_grid.integrate(initial_values)
-        initial_error = abs(initial_integral - analytical_integral)
-
-        result = adaptive_grid.refinement(func=self.sharp_3d_gaussian, tolerance=1e-5)
-
-        refined_integral = result["integral"]
-        refined_error = abs(refined_integral - analytical_integral)
-
-        initial_num_points = self.uniform_grid.size
-        refined_num_points = result["num_points"]
-
-        error_reduction_factor = (
-            initial_error / refined_error if refined_error > 0 else float("inf")
-        )
-
-        print("\n--- Adaptive Accuracy Test Summary ---")
-        print(f"{'Metric':<25} | {'Initial':<25} | {'Refined':<25}")
-        print("-" * 80)
-        print(f"{'Number of Points':<25} | {initial_num_points:<25} | {refined_num_points:<25}")
-        print(f"{'Integration Error':<25} | {initial_error:<25.10e} | {refined_error:<25.10e}")
-        print("-" * 80)
-        print(f"Error Reduction Factor: {error_reduction_factor:.2f}x")
-        print(f"Point Count Increase: {refined_num_points - initial_num_points}")
-        print("--------------------------------------")
-
-        assert refined_error < initial_error
-        assert result["num_points"] > self.uniform_grid.size
