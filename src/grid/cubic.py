@@ -1148,18 +1148,24 @@ class AdaptiveUniformGrid:
         tolerance: float = 1e-4,
         min_spacing: Optional[float] = None,
         max_depth: int = 10,
+        refine_contrib_threshold: float = 1e-4
     ) -> dict:
         """
         Parameters
         ----------
         func : Callable
-            The function to be integrated.
+            The real-valued, scalar function to be integrated.
+             The function must be vectorized, and takes in ndarray(M,3) -> float.
         tolerance : float, optional
             The error tolerance for a local point.
         min_spacing : float, optional
             The minimum allowed spacing for subdivision.
         max_depth : int, optional
             Maximum refinement depth to prevent infinite loops.
+        refine_contrib_threshold: float, optional
+            Skip refinement for cells with |f(center)| V < refine_value_threshold,
+            where V is the volume element.
+            Prevents work in negligible regions. Units match f. Default: 0.0.
 
         Returns
         -------
@@ -1180,14 +1186,19 @@ class AdaptiveUniformGrid:
         final_weights = []
         refinement_queue = deque()
 
-        for i, point in enumerate(initial_points):
-            error = self._estimate_error(point, func, initial_spacings, evaluated_points)
-
-            if error > tolerance:
-                refinement_queue.append((point, initial_spacings.copy(), initial_weights[i], 0))
-            else:
-                final_points.append(point)
-                final_weights.append(initial_weights[i])
+        # Potentially do refinement on that satisfies this error criteria
+        #    Speeds up computation
+        indices = np.where(np.abs(func_evals) * weights > refine_contrib_threshold)[0]
+        for index in indices:
+            refinement_queue.append(
+                (
+                    index,
+                    points[index, :],
+                    initial_spacings.copy(),
+                    weights[index],
+                    0
+                )
+            )
 
         # Process refinement queue
         while refinement_queue:
