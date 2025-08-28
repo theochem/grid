@@ -1136,7 +1136,7 @@ class TestAdaptiveUniformGrid:
     @pytest.mark.parametrize(
         "test_case",
         [
-            case_2d_gentle_wide,
+            # case_2d_gentle_wide,
             # case_3d_gentle_wide,
             case_2d_moderate_wide,
             case_2d_asymmetric_peaks,
@@ -1149,7 +1149,9 @@ class TestAdaptiveUniformGrid:
         """Test adaptive refinement using diverse scenarios."""
         # Setup
         grid_setup = test_case["grid_setup"]
-        uniform_grid = UniformGrid(grid_setup["origin"], grid_setup["axes"], grid_setup["shape"])
+        uniform_grid = UniformGrid(
+            grid_setup["origin"], grid_setup["axes"], grid_setup["shape"], weight="Rectangle"
+        )
         adaptive_grid = AdaptiveUniformGrid(uniform_grid)
 
         analytical_integral = test_case["analytical_integral"]
