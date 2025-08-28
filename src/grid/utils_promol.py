@@ -161,10 +161,12 @@ class BFitDataProcessor:
 
         for i, symbol in enumerate(symbols):
             element_data = self.element_data[symbol.lower()]
-            all_coeffs.append(element_data.coeffs_s)
-            all_exps.append(element_data.exps_s)
-            all_coeffs[-1] *= np.sqrt(all_exps[-1] / np.pi) ** 3
-            all_coords.append(coords[i])
+            valid_mask = np.abs(element_data.coeffs_s) > 1e-12
+            if np.any(valid_mask):
+                all_coeffs.append(element_data.coeffs_s[valid_mask])
+                all_exps.append(element_data.exps_s[valid_mask])
+                all_coeffs[-1] *= np.sqrt(all_exps[-1] / np.pi) ** 3
+                all_coords.append(coords[i])
 
         coeffs_padded, exps_padded = deps["_pad_coeffs_exps_with_zeros"](all_coeffs, all_exps)
         return deps["_PromolParams"](
