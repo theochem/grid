@@ -700,6 +700,8 @@ class UniformGrid(_HyperRectangleGrid):
             - ``atnums``\: atomic numbers of the atoms in the molecule.
             - ``atcorenums``\: Pseudo-number of :math:`M` atoms in the molecule.
             - ``atcoords``\: Cartesian coordinates of :math:`M` atoms in the molecule.
+            - ``data``\: the grid data stored in a flattened one-dimensional array.
+            - ``unit``\: the unit of the grid (either "angstrom" or "bohr").
 
         """
         fname = str(fname)
