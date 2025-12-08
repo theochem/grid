@@ -706,7 +706,7 @@ class UniformGrid(_HyperRectangleGrid):
         if not fname.endswith(".cube"):
             raise ValueError("Argument fname should be a cube file with *.cube extension!")
 
-        with open(fname) as f:
+        with open(fname, "rt") as f:
             # skip the title and second line
             f.readline()
             f.readline()
@@ -726,8 +726,16 @@ class UniformGrid(_HyperRectangleGrid):
             shape0, axis0 = read_grid_line(f.readline())
             shape1, axis1 = read_grid_line(f.readline())
             shape2, axis2 = read_grid_line(f.readline())
-            shape = np.array([shape0, shape1, shape2], int)
-            axes = np.array([axis0, axis1, axis2])
+            axes = np.array([axis0, axis1, axis2], dtype=float)
+            # if shape0, shape1, shape2 are negative, the units are in bohr
+            # otherwise in angstrom
+            # https://gaussian.com/cubegen/
+            unit = "bohr" if shape0 < 0 else "angstrom"
+            # print out the units detected for clarity
+            print(f"Cube file units detected: {unit}")
+
+            # Convert negative shape values to positive
+            shape = np.array([abs(shape0), abs(shape1), abs(shape2)], dtype=int)
 
             # if return_data=False, only grid is returned
             if not return_data:
@@ -771,6 +779,7 @@ class UniformGrid(_HyperRectangleGrid):
                 "atcorenums": pseudo_numbers,
                 "atcoords": coordinates,
                 "data": data,
+                "unit": unit,
             }
         return cls(origin, axes, shape, weight), cube_data
 
