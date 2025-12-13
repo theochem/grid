@@ -50,7 +50,7 @@ jobs:
     # still need to build and set the PAT to get a rebuild on the pages job,
     # apart from that quite clean and nice
     - name: GitHub Pages Action
-      if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+      if: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') }}
       uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
