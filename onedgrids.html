@@ -1,26 +1,24 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>One-Dimensional Grids &mdash; grid  documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-      <link rel="stylesheet" type="text/css" href="_static/css/override.css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/override.css?v=064c4a14" />
 
   
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -251,17 +249,17 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="one-dimensional-grids">
-<h1>One-Dimensional Grids<a class="headerlink" href="#one-dimensional-grids" title="Permalink to this heading"></a></h1>
+  <section id="one-dimensional-grids">
+<h1>One-Dimensional Grids<a class="headerlink" href="#one-dimensional-grids" title="Link to this heading"></a></h1>
 <p>There are various choices of one dimensional grids for integrating functions over some finite or infinite
 intervals.</p>
-<table class="colwidths-given docutils align-center" id="id1">
-<caption><span class="caption-text">One-Dimensional Quadrature Grids With Explicit Solutions</span><a class="headerlink" href="#id1" title="Permalink to this table"></a></caption>
+<table class="docutils align-center" id="id1">
+<caption><span class="caption-text">One-Dimensional Quadrature Grids With Explicit Solutions</span><a class="headerlink" href="#id1" title="Link to this table"></a></caption>
 <colgroup>
-<col style="width: 13%" />
-<col style="width: 29%" />
-<col style="width: 29%" />
-<col style="width: 29%" />
+<col style="width: 12.9%" />
+<col style="width: 29.0%" />
+<col style="width: 29.0%" />
+<col style="width: 29.0%" />
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Grid</p></th>
@@ -279,7 +277,7 @@ intervals.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussChebyshevType2" title="grid.onedgrid.GaussChebyshevType2"><code class="xref py py-func docutils literal notranslate"><span class="pre">Gauss-Chebyshev</span> <span class="pre">Type2</span></code></a></p></td>
 <td><p><span class="math notranslate nohighlight">\([-1,1]\)</span></p></td>
 <td><p><span class="math notranslate nohighlight">\(\cos\left( \frac{i}{n+1} \pi \right)\)</span></p></td>
-<td><p><span class="math notranslate nohighlight">\(\frac{\pi}{n+1} \sin^2 \left( \frac{i}{n+1} \pi \right)\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\frac{\pi}{n+1} \sin^2 \left( \frac{i}{n+1} \pi \right)`\)</span></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="pyapi/grid.onedgrid.html#grid.onedgrid.GaussChebyshevLobatto" title="grid.onedgrid.GaussChebyshevLobatto"><code class="xref py py-func docutils literal notranslate"><span class="pre">Gauss-Chebyshev</span> <span class="pre">Lobatto</span></code></a></p></td>
 <td><p><span class="math notranslate nohighlight">\([-1,1]\)</span></p></td>
@@ -287,9 +285,9 @@ intervals.</p>
 <td><p><span class="math notranslate nohighlight">\(w_{1} = w_{n} = \frac{\pi}{2(n-1)}, \quad w_{i\neq 1,n} = \frac{\pi}{n-1}\)</span></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="pyapi/grid.onedgrid.html#grid.onedgrid.Trapezoidal" title="grid.onedgrid.Trapezoidal"><code class="xref py py-func docutils literal notranslate"><span class="pre">Trapezoidal</span> <span class="pre">Lobatto</span></code></a></p></td>
-<td><p><span class="math notranslate nohighlight">\([-1,1]\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\([-1,1]`\)</span></p></td>
 <td><p><span class="math notranslate nohighlight">\(-1 + 2 \left(\frac{i-1}{n-1}\right)\)</span></p></td>
-<td><p><span class="math notranslate nohighlight">\(w_1 = w_n = \frac{1}{n}, \quad w_{i\neq 1,n} = \frac{2}{n}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(w_1 = w_n = \frac{1}{n}, \quad w_{i\neq 1,n} = \frac{2}{n}`\)</span></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="pyapi/grid.onedgrid.html#grid.onedgrid.RectangleRuleSineEndPoints" title="grid.onedgrid.RectangleRuleSineEndPoints"><code class="xref py py-func docutils literal notranslate"><span class="pre">Rectangle-Rule</span> <span class="pre">Sine</span> <span class="pre">End</span> <span class="pre">Points</span></code></a></p></td>
 <td><p><span class="math notranslate nohighlight">\([-1,1]\)</span></p></td>
@@ -349,7 +347,7 @@ degree <span class="math notranslate nohighlight">\(2n - 1\)</span>:</p>
 <li><p><a class="reference internal" href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenStripGC2" title="grid.onedgrid.TrefethenStripGC2"><code class="xref py py-func docutils literal notranslate"><span class="pre">Trefethen</span> <span class="pre">Strip</span> <span class="pre">(Gauss-Chebyshev)</span></code></a>,</p></li>
 <li><p><a class="reference internal" href="pyapi/grid.onedgrid.html#grid.onedgrid.TrefethenStripGeneral" title="grid.onedgrid.TrefethenStripGeneral"><code class="xref py py-func docutils literal notranslate"><span class="pre">Trefethen</span> <span class="pre">Strip</span> <span class="pre">(General)</span></code></a>.</p></li>
 </ul>
-</div>
+</section>
 
 
            </div>

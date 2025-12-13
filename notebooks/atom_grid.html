@@ -1,27 +1,25 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Atom Grids &mdash; grid  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/override.css" />
-      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/override.css?v=064c4a14" />
+      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -253,8 +251,8 @@
            <div itemprop="articleBody">
              
   <p><a class="reference external" href="https://colab.research.google.com/github/theochem/grid/blob/master/examples/Atom_Grid.ipynb"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
-<div class="section" id="Atom-Grids">
-<h1>Atom Grids<a class="headerlink" href="#Atom-Grids" title="Permalink to this heading"></a></h1>
+<section id="Atom-Grids">
+<h1>Atom Grids<a class="headerlink" href="#Atom-Grids" title="Link to this heading"></a></h1>
 <p><a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid">AtomGrid</a> constructs an atomic grid by combining a radial and angular components for evaluation, integration, interpolation, and differentiation in three-dimensional (3D) space. In quantum chemistry, this is typically used for computations of atomic properties. However, this is a general purpose grid that can be used for any function in 3D space.</p>
 <p>This notebook showcases various functionalities of <a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid">AtomGrid</a>. For computing properties on the grid, we use <span class="math notranslate nohighlight">\(\textbf{He}\)</span> in the triplet state (<span class="math notranslate nohighlight">\(1s^1 2s^1\)</span>) as an example. The corresponding wavefunction is obtained from formatted checkpoint file <code class="docutils literal notranslate"><span class="pre">&quot;doc/notebooks/He_t.fchk&quot;</span></code>. The <a class="reference external" href="https://github.com/theochem/iodata">qc-iodata</a> package is used for parsing the wavefuction data from the fchk file, and
 <a class="reference external" href="https://github.com/theochem/gbasis">qc-gbasis</a> package is used for analytical evaluation of various properties in the grid.</p>
@@ -301,8 +299,8 @@ Alpha MO occupations: [1. 1.]
 Beta MO occupations : [0. 0.]
 </pre></div></div>
 </div>
-<div class="section" id="Construct-Atomic-Grid">
-<h2>Construct Atomic Grid<a class="headerlink" href="#Construct-Atomic-Grid" title="Permalink to this heading"></a></h2>
+<section id="Construct-Atomic-Grid">
+<h2>Construct Atomic Grid<a class="headerlink" href="#Construct-Atomic-Grid" title="Link to this heading"></a></h2>
 <p>There are multiple ways to construct an atomic grid, for a complete description see the <a class="reference external" href=".https://grid.qcdevs.org/notebooks/notebooks/atom_grid_construction.html">Atomic_Grid_Construction.ipynb</a>.</p>
 <p>Here we construct an atomic grid from a radial grid instance and the degrees of the angular grid centered at the position of <span class="math notranslate nohighlight">\(\textbf{He}\)</span> nucleus. The radial grid is constructed by specifying the number of radial grid points. For more details on the radial and angular grids see <a class="reference external" href="https://grid.qcdevs.org/notebooks/one_dimensional_grids.html">One_dimensional_grids.ipynb</a> and <a class="reference external" href="https://grid.qcdevs.org/notebooks/angular_grid.html">Angular_Grid.ipynb</a>.</p>
 <div class="nbinput docutils container">
@@ -350,8 +348,8 @@ AtomGrid angular degree: [23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23
 AtomGrid center        : [0. 0. 0.]
 </pre></div></div>
 </div>
-<div class="section" id="Example:-Integrate-Electron-Density">
-<h3>Example: Integrate Electron Density<a class="headerlink" href="#Example:-Integrate-Electron-Density" title="Permalink to this heading"></a></h3>
+<section id="Example:-Integrate-Electron-Density">
+<h3>Example: Integrate Electron Density<a class="headerlink" href="#Example:-Integrate-Electron-Density" title="Link to this heading"></a></h3>
 <p>To integrate a scalar function over the atomic grid, we first need to evaluate the function on the grid points. Here, we compute the electron density <span class="math notranslate nohighlight">\(\rho(\mathbf{r})\)</span> of the <span class="math notranslate nohighlight">\(\textbf{He}\)</span> in the triplet state (<span class="math notranslate nohighlight">\(1s^1 2s^1\)</span>) using the <a class="reference external" href="https://gbasis.qcdevs.org/_autosummary/gbasis.evals.html#gbasis.evals.density.evaluate_density">gbasis.evals.density</a> function of the <a class="reference external" href="https://github.com/theochem/gbasis">qc-gbasis</a> package. The wavefunction data are loaded from the
 formatted checkpoint file using <a class="reference external" href="https://iodata.readthedocs.io/en/latest/pyapi/iodata.api.html#iodata.api.load_one">load_one</a> function of <a class="reference external" href="https://github.com/theochem/iodata">qc-iodata</a>package. The density values are then integrated using the <a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.basegrid.html#grid.basegrid.Grid.integrate">AtomGrid.integrate</a> method.</p>
 <div class="nbinput docutils container">
@@ -388,9 +386,9 @@ Number of electrons in molecule : 2.0
 Integral of the electron density: 1.9999999911143622
 </pre></div></div>
 </div>
-</div>
-<div class="section" id="Example:-Calculate-Radial-Electron-Density-Distribution">
-<h3>Example: Calculate Radial Electron Density Distribution<a class="headerlink" href="#Example:-Calculate-Radial-Electron-Density-Distribution" title="Permalink to this heading"></a></h3>
+</section>
+<section id="Example:-Calculate-Radial-Electron-Density-Distribution">
+<h3>Example: Calculate Radial Electron Density Distribution<a class="headerlink" href="#Example:-Calculate-Radial-Electron-Density-Distribution" title="Link to this heading"></a></h3>
 <p>The radial distribution of the electron density describes the probability of finding an electron in the spherical shell between <span class="math notranslate nohighlight">\(r\)</span> and <span class="math notranslate nohighlight">\(r + dr\)</span>. This is calculated by integrating the electron density over the angular coordinates.</p>
 <div class="math notranslate nohighlight">
 \[\rho(r) = \int_\theta \int_\phi \rho(r, \theta, \phi) r^{2} sin(\phi) d\theta d\phi\]</div>
@@ -494,9 +492,9 @@ Number of electrons in atom            : 2.0
 Integral of the radial electron density: 1.9999999911143642
 </pre></div></div>
 </div>
-</div>
-<div class="section" id="Example:-Calculate-Classical-Coulomb-Repulsion-Energy">
-<h3>Example: Calculate Classical Coulomb Repulsion Energy<a class="headerlink" href="#Example:-Calculate-Classical-Coulomb-Repulsion-Energy" title="Permalink to this heading"></a></h3>
+</section>
+<section id="Example:-Calculate-Classical-Coulomb-Repulsion-Energy">
+<h3>Example: Calculate Classical Coulomb Repulsion Energy<a class="headerlink" href="#Example:-Calculate-Classical-Coulomb-Repulsion-Energy" title="Link to this heading"></a></h3>
 <p>The classical Coulomb repulsion energy <span class="math notranslate nohighlight">\(\mathbf{J}\)</span> is defined as:</p>
 <div class="math notranslate nohighlight">
 \[\mathbf{J} = \frac{1}{2} \int \int \frac{\rho(\mathbf{r}) \rho(\mathbf{r}')}{|\mathbf{r} - \mathbf{r}'|} d\mathbf{r} d\mathbf{r}'\]</div>
@@ -542,9 +540,9 @@ second grid can be either directly computed or obtained by interpolating from th
 Classic Coulomb Energy : 1.772374684606753 (hartree)
 </pre></div></div>
 </div>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
            </div>

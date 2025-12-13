@@ -1,27 +1,25 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Interpolation and Solving Poisson’s Equation &mdash; grid  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/override.css" />
-      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/override.css?v=064c4a14" />
+      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -253,10 +251,10 @@
            <div itemprop="articleBody">
              
   <p><a class="reference external" href="https://colab.research.google.com/github/theochem/grid/blob/master/examples/Interpolation_and_Poisson.ipynb"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
-<div class="section" id="Interpolation-and-Solving-Poisson's-Equation">
-<h1>Interpolation and Solving Poisson’s Equation<a class="headerlink" href="#Interpolation-and-Solving-Poisson's-Equation" title="Permalink to this heading"></a></h1>
-<div class="section" id="Details">
-<h2>Details<a class="headerlink" href="#Details" title="Permalink to this heading"></a></h2>
+<section id="Interpolation-and-Solving-Poisson's-Equation">
+<h1>Interpolation and Solving Poisson’s Equation<a class="headerlink" href="#Interpolation-and-Solving-Poisson's-Equation" title="Link to this heading"></a></h1>
+<section id="Details">
+<h2>Details<a class="headerlink" href="#Details" title="Link to this heading"></a></h2>
 <p>It is known based on the properties of the real spherical harmonics <span class="math notranslate nohighlight">\(Y_{lm}\)</span> that any <span class="math notranslate nohighlight">\(L_2\)</span> function <span class="math notranslate nohighlight">\(f : \mathbb{R}^3 \rightarrow \mathbb{R}\)</span> can be decomposed as</p>
 <div class="math notranslate nohighlight">
 \[f(r, \theta, \phi) = \sum_{l=0}^\infty \sum_{m=-l}^l w_{lm}(r) Y_{lm}(\theta, \phi),\]</div>
@@ -267,9 +265,9 @@
 <div class="math notranslate nohighlight">
 \[f(r, \theta, \phi) \approx \sum_{l=0}^{L_{max}} \sum_{m=-l}^l \tilde{w}_{lm}(r) Y_{lm}(\theta, \phi),\]</div>
 <p>where <span class="math notranslate nohighlight">\(L_{max}\)</span> is the maximum chosen degree <span class="math notranslate nohighlight">\(l\)</span> of the real spherical harmonics.</p>
-</div>
-<div class="section" id="Example:-Unit-charge-distribution">
-<h2>Example: Unit-charge distribution<a class="headerlink" href="#Example:-Unit-charge-distribution" title="Permalink to this heading"></a></h2>
+</section>
+<section id="Example:-Unit-charge-distribution">
+<h2>Example: Unit-charge distribution<a class="headerlink" href="#Example:-Unit-charge-distribution" title="Link to this heading"></a></h2>
 <p>This example tries to interpolate the unit-charge distribution given by <span class="math notranslate nohighlight">\(f(r, \theta, \phi) = \bigg( \frac{\alpha}{\pi} \bigg)^{1.5} e^{-\alpha r_A^2}\)</span>, where <span class="math notranslate nohighlight">\(\alpha = 0.25\)</span> and <span class="math notranslate nohighlight">\(r_A\)</span> is the radius centered at the coordinate <span class="math notranslate nohighlight">\([0, 1, 0]\)</span>. Since, this function does not depend on the angles, then <span class="math notranslate nohighlight">\(w_{lm} = 0\)</span> when <span class="math notranslate nohighlight">\(l &gt; 0\)</span>.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
@@ -348,9 +346,9 @@ Error difference between interpolation and true:
  7.26674645e-11 8.43535809e-11 5.25728962e-11 6.84093102e-11]
 </pre></div></div>
 </div>
-</div>
-<div class="section" id="Solving-Poisson-Equation">
-<h2>Solving Poisson Equation<a class="headerlink" href="#Solving-Poisson-Equation" title="Permalink to this heading"></a></h2>
+</section>
+<section id="Solving-Poisson-Equation">
+<h2>Solving Poisson Equation<a class="headerlink" href="#Solving-Poisson-Equation" title="Link to this heading"></a></h2>
 <p>The Poisson equation is defined as <span class="math notranslate nohighlight">\(\nabla^2 V = - 4\pi f(\vec{\textbf{r}})\)</span>, where <span class="math notranslate nohighlight">\(V\)</span> is the unknown potential, <span class="math notranslate nohighlight">\(\nabla^2\)</span> is the Laplacian and <span class="math notranslate nohighlight">\(f\)</span> is the charge distribution. It is well-known that the solution to this is given by <span class="math notranslate nohighlight">\(V(\vec{\textbf{r}}) = \int \frac{f(\vec{\textbf{r}}^\prime)}{|\vec{\textbf{r}} - \vec{\textbf{r}}^\prime| } d\vec{\textbf{r}}^\prime\)</span>. For the unit-charge distribution given above, the solution is given by
 <span class="math notranslate nohighlight">\(V(r, \theta, \phi) = \frac{\text{erf} \bigg[ \sqrt{\alpha} r_A \bigg]}{r_A},\)</span> where ERF is the error function. Grid offers two methods of solving the Poisson equation over an atomic grid. The recommended method is the <code class="docutils literal notranslate"><span class="pre">solve_poisson_bvp</span></code> and is used in this example.</p>
 <div class="nbinput docutils container">
@@ -399,8 +397,8 @@ The mean error: 1.1070838082577226e-06
 The standard dev: 4.600048234819135e-07
 </pre></div></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

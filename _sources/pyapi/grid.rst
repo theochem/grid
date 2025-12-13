@@ -27,5 +27,5 @@ Module contents
 
 .. automodule:: grid
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

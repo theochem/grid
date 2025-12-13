@@ -1,27 +1,25 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cubic Grids &mdash; grid  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/override.css" />
-      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/override.css?v=064c4a14" />
+      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -253,8 +251,8 @@
            <div itemprop="articleBody">
              
   <p><a class="reference external" href="https://colab.research.google.com/github/theochem/grid/blob/master/examples/Cubic_Grids.ipynb"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
-<div class="section" id="Cubic-Grids">
-<h1>Cubic Grids<a class="headerlink" href="#Cubic-Grids" title="Permalink to this heading"></a></h1>
+<section id="Cubic-Grids">
+<h1>Cubic Grids<a class="headerlink" href="#Cubic-Grids" title="Link to this heading"></a></h1>
 <p>Cubic grids are commonly found in many other packages and are useful for visualization, interpolation and integration purposes.</p>
 <p>In Grid, it offers two classes for constructing these cubic (or Hyper-rectangular) grids in three-dimensions:</p>
 <ul class="simple">
@@ -278,8 +276,8 @@
 </pre></div>
 </div>
 </div>
-<div class="section" id="Tensor-1D-Grids">
-<h2>Tensor 1D Grids<a class="headerlink" href="#Tensor-1D-Grids" title="Permalink to this heading"></a></h2>
+<section id="Tensor-1D-Grids">
+<h2>Tensor 1D Grids<a class="headerlink" href="#Tensor-1D-Grids" title="Link to this heading"></a></h2>
 <p>The first grid is a tensor combination of three grids with points <span class="math notranslate nohighlight">\(\{p^1_i\}, \{p^2_i\}, \{p^3_i\}\)</span> and weights <span class="math notranslate nohighlight">\(\{w^1_i\}, \{w^2_i\}, \{w^3_i\}\)</span> such that the new set of points are <span class="math notranslate nohighlight">\(\{(p^1_i, p^2_j, p^3_k)\}\)</span> with weights <span class="math notranslate nohighlight">\(\{w^1_i \times w^2_j \times w^3_k\}\)</span>.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
@@ -397,8 +395,8 @@ Coordinate of the fifth point: (0, 0, 5).
 Index of the (0, 0, 5) coordinate: 5.
 </pre></div></div>
 </div>
-<div class="section" id="Example-1:-Interpolation">
-<h3>Example 1: Interpolation<a class="headerlink" href="#Example-1:-Interpolation" title="Permalink to this heading"></a></h3>
+<section id="Example-1:-Interpolation">
+<h3>Example 1: Interpolation<a class="headerlink" href="#Example-1:-Interpolation" title="Link to this heading"></a></h3>
 <p>This example will attempt to interpolate a Gaussian, first on a subset of the points used for interpolation then later on random set of points.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
@@ -569,12 +567,12 @@ Derivative (using logarithm) in x-direction [ 0.30673882  0.24715189 -0.1054587 
   0.00239627].
 </pre></div></div>
 </div>
-</div>
-<div class="section" id="Example-2:-Visualization-of-2p_{z}-Orbital-using-Tensor-1D-Grid">
-<h3>Example 2: Visualization of <span class="math notranslate nohighlight">\(2p_{z}\)</span> Orbital using Tensor 1D Grid<a class="headerlink" href="#Example-2:-Visualization-of-2p_{z}-Orbital-using-Tensor-1D-Grid" title="Permalink to this heading"></a></h3>
+</section>
+<section id="Example-2:-Visualization-of-2p_{z}-Orbital-using-Tensor-1D-Grid">
+<h3>Example 2: Visualization of <span class="math notranslate nohighlight">\(2p_{z}\)</span> Orbital using Tensor 1D Grid<a class="headerlink" href="#Example-2:-Visualization-of-2p_{z}-Orbital-using-Tensor-1D-Grid" title="Link to this heading"></a></h3>
 <p>Given a function <span class="math notranslate nohighlight">\(f(x, y, z)\)</span>, (e.g. an atomic orbital or electron density) we can evaluate it on a cubic grid and visualize the distribution of the function in space using isosurface values. Here we define a function that plots every point in the grid with a corresponding absolute value of the function greater than a threshold value. The function is latter used to visualize the <span class="math notranslate nohighlight">\(2p_{z}\)</span> orbital.</p>
-<div class="section" id="i.-Utility-Function-For-Plotting-Isosurfaces">
-<h4>i. Utility Function For Plotting Isosurfaces<a class="headerlink" href="#i.-Utility-Function-For-Plotting-Isosurfaces" title="Permalink to this heading"></a></h4>
+<section id="i.-Utility-Function-For-Plotting-Isosurfaces">
+<h4>i. Utility Function For Plotting Isosurfaces<a class="headerlink" href="#i.-Utility-Function-For-Plotting-Isosurfaces" title="Link to this heading"></a></h4>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
@@ -682,9 +680,9 @@ def plot_isosurface(
 </pre></div>
 </div>
 </div>
-</div>
-<div class="section" id="ii.-Plot-2p_{z}-orbital-from-isosurface-value">
-<h4>ii. Plot <span class="math notranslate nohighlight">\(2p_{z}\)</span> orbital from isosurface value<a class="headerlink" href="#ii.-Plot-2p_{z}-orbital-from-isosurface-value" title="Permalink to this heading"></a></h4>
+</section>
+<section id="ii.-Plot-2p_{z}-orbital-from-isosurface-value">
+<h4>ii. Plot <span class="math notranslate nohighlight">\(2p_{z}\)</span> orbital from isosurface value<a class="headerlink" href="#ii.-Plot-2p_{z}-orbital-from-isosurface-value" title="Link to this heading"></a></h4>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
@@ -715,14 +713,14 @@ plot_isosurface(tensor_grid, psi_vals, target_x, title=&quot;$2p_{z}$ Isosurface
 <img alt="../_images/notebooks_cubic_grid_17_0.png" src="../_images/notebooks_cubic_grid_17_0.png" />
 </div>
 </div>
-</div>
-</div>
-</div>
-<div class="section" id="Uniform-Grid">
-<h2>Uniform Grid<a class="headerlink" href="#Uniform-Grid" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+</section>
+<section id="Uniform-Grid">
+<h2>Uniform Grid<a class="headerlink" href="#Uniform-Grid" title="Link to this heading"></a></h2>
 <p>This is type of cubic grid (a.k.a. rectilinear grid) with evenly-spaced points in each axes. It supports the same properties and functions as Tensor1DGrids.</p>
-<div class="section" id="Example-1:-Constructing-Uniform-Grid-Around-Formaldehyde-Anion">
-<h3>Example 1: Constructing Uniform Grid Around Formaldehyde Anion<a class="headerlink" href="#Example-1:-Constructing-Uniform-Grid-Around-Formaldehyde-Anion" title="Permalink to this heading"></a></h3>
+<section id="Example-1:-Constructing-Uniform-Grid-Around-Formaldehyde-Anion">
+<h3>Example 1: Constructing Uniform Grid Around Formaldehyde Anion<a class="headerlink" href="#Example-1:-Constructing-Uniform-Grid-Around-Formaldehyde-Anion" title="Link to this heading"></a></h3>
 <p>This example illustates the use of Grid with the <a class="reference external" href="https://github.com/theochem/iodata">IOData</a> package to construct a default grid around a molecule. The easiest method to do so is the “from_molecule” method. This example will showcase this for Formaldehyde anion. The <code class="docutils literal notranslate"><span class="pre">.fchk</span></code> files of which are read using the <a class="reference external" href="https://github.com/theochem/iodata">IOData</a> package and the <code class="docutils literal notranslate"><span class="pre">.fchk</span></code> files are included in <code class="docutils literal notranslate"><span class="pre">doc/notebooks/ch2o_q-1.fchk</span></code>.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
@@ -821,9 +819,9 @@ The axes of the grid: [[ 0.00000000e+00  0.00000000e+00  1.00000000e-01]
 <img alt="../_images/notebooks_cubic_grid_21_1.png" src="../_images/notebooks_cubic_grid_21_1.png" />
 </div>
 </div>
-</div>
-<div class="section" id="Example-2:-Calculate-and-Visualize-Dual-Descriptor-of-Formaldehyde">
-<h3>Example 2: Calculate and Visualize Dual Descriptor of Formaldehyde<a class="headerlink" href="#Example-2:-Calculate-and-Visualize-Dual-Descriptor-of-Formaldehyde" title="Permalink to this heading"></a></h3>
+</section>
+<section id="Example-2:-Calculate-and-Visualize-Dual-Descriptor-of-Formaldehyde">
+<h3>Example 2: Calculate and Visualize Dual Descriptor of Formaldehyde<a class="headerlink" href="#Example-2:-Calculate-and-Visualize-Dual-Descriptor-of-Formaldehyde" title="Link to this heading"></a></h3>
 <p>This example will illusrate on how to use UniformGrid to compute and visualize the dual descriptor of formaldehyde. The dual descriptor is a function of electron density and its derivatives and is defined as:</p>
 <div class="math notranslate nohighlight">
 \[f^{(2)}(r) = \Delta f(r) = (f^{+}(r) - f^{-}(r)\]</div>
@@ -835,8 +833,8 @@ The axes of the grid: [[ 0.00000000e+00  0.00000000e+00  1.00000000e-01]
 <p>then <span class="math notranslate nohighlight">\(f^{(2)}(r)\)</span> can be written as:</p>
 <div class="math notranslate nohighlight">
 \[f^{(2)}(r) = \rho_{N+1}(r) - \rho_{N-1}(r)\]</div>
-<div class="section" id="i.-Define-utility-function-to-calculate-the-dual-descriptor">
-<h4>i. Define utility function to calculate the dual descriptor<a class="headerlink" href="#i.-Define-utility-function-to-calculate-the-dual-descriptor" title="Permalink to this heading"></a></h4>
+<section id="i.-Define-utility-function-to-calculate-the-dual-descriptor">
+<h4>i. Define utility function to calculate the dual descriptor<a class="headerlink" href="#i.-Define-utility-function-to-calculate-the-dual-descriptor" title="Link to this heading"></a></h4>
 <p>The dual descriptor is evaluated at each grid point as the difference between the electron density of the anion and cation of formaldehyde. The electron density can be evaluated in the grid points using the <a class="reference external" href="https://github.com/theochem/gbasis">GBasis</a> package with the wavefunction read, as above.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
@@ -870,9 +868,9 @@ def compute_dual_descriptor(grid, rdm_an, rdm_cat, basis_an, basis_cat):
 </pre></div>
 </div>
 </div>
-</div>
-<div class="section" id="ii.-Calculate-and-visualize-dual-descriptor">
-<h4>ii. Calculate and visualize dual descriptor<a class="headerlink" href="#ii.-Calculate-and-visualize-dual-descriptor" title="Permalink to this heading"></a></h4>
+</section>
+<section id="ii.-Calculate-and-visualize-dual-descriptor">
+<h4>ii. Calculate and visualize dual descriptor<a class="headerlink" href="#ii.-Calculate-and-visualize-dual-descriptor" title="Link to this heading"></a></h4>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
@@ -921,13 +919,13 @@ Positive values (red) correspond to nucleophilic regions
 Negative values (blue) correspond to electrophilic regions
 </pre></div></div>
 </div>
-</div>
-</div>
-<div class="section" id="Example-3:-Integrate-The-Dual-Descriptor-Domains">
-<h3>Example 3: Integrate The Dual Descriptor Domains<a class="headerlink" href="#Example-3:-Integrate-The-Dual-Descriptor-Domains" title="Permalink to this heading"></a></h3>
+</section>
+</section>
+<section id="Example-3:-Integrate-The-Dual-Descriptor-Domains">
+<h3>Example 3: Integrate The Dual Descriptor Domains<a class="headerlink" href="#Example-3:-Integrate-The-Dual-Descriptor-Domains" title="Link to this heading"></a></h3>
 <p>All classes in <a class="reference external" href="https://github.com/theochem/grid">Grid</a> offers an easy method to integrate. Here we integrate the different lobes of the dual descriptor. This can be used to assess the relevance of electrophilic and nucleophilic regions of the molecule.</p>
-<div class="section" id="i.-Define-utility-function-to-extract-dual-descriptor-domains">
-<h4>i. Define utility function to extract dual descriptor domains<a class="headerlink" href="#i.-Define-utility-function-to-extract-dual-descriptor-domains" title="Permalink to this heading"></a></h4>
+<section id="i.-Define-utility-function-to-extract-dual-descriptor-domains">
+<h4>i. Define utility function to extract dual descriptor domains<a class="headerlink" href="#i.-Define-utility-function-to-extract-dual-descriptor-domains" title="Link to this heading"></a></h4>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
@@ -1008,9 +1006,9 @@ def get_domains(grid, vals, isovalue):
 </pre></div>
 </div>
 </div>
-</div>
-<div class="section" id="ii.-Select-and-integrate-the-positive-(electrophilic)-domains-of-the-dual-descriptor">
-<h4>ii. Select and integrate the positive (electrophilic) domains of the dual descriptor<a class="headerlink" href="#ii.-Select-and-integrate-the-positive-(electrophilic)-domains-of-the-dual-descriptor" title="Permalink to this heading"></a></h4>
+</section>
+<section id="ii.-Select-and-integrate-the-positive-(electrophilic)-domains-of-the-dual-descriptor">
+<h4>ii. Select and integrate the positive (electrophilic) domains of the dual descriptor<a class="headerlink" href="#ii.-Select-and-integrate-the-positive-(electrophilic)-domains-of-the-dual-descriptor" title="Link to this heading"></a></h4>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
@@ -1082,9 +1080,9 @@ p_domains, n_domains = get_domains(uniform_grid, dd, 0.03)
 <img alt="../_images/notebooks_cubic_grid_32_5.png" src="../_images/notebooks_cubic_grid_32_5.png" />
 </div>
 </div>
-</div>
-<div class="section" id="iii.-Select-and-integrate-the-negative-(nucleophilic)-domains-of-the-dual-descriptor">
-<h4>iii. Select and integrate the negative (nucleophilic) domains of the dual descriptor<a class="headerlink" href="#iii.-Select-and-integrate-the-negative-(nucleophilic)-domains-of-the-dual-descriptor" title="Permalink to this heading"></a></h4>
+</section>
+<section id="iii.-Select-and-integrate-the-negative-(nucleophilic)-domains-of-the-dual-descriptor">
+<h4>iii. Select and integrate the negative (nucleophilic) domains of the dual descriptor<a class="headerlink" href="#iii.-Select-and-integrate-the-negative-(nucleophilic)-domains-of-the-dual-descriptor" title="Link to this heading"></a></h4>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
@@ -1119,10 +1117,10 @@ p_domains, n_domains = get_domains(uniform_grid, dd, 0.03)
 <img alt="../_images/notebooks_cubic_grid_34_1.png" src="../_images/notebooks_cubic_grid_34_1.png" />
 </div>
 </div>
-</div>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
+</section>
 
 
            </div>

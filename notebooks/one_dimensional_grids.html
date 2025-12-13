@@ -1,27 +1,25 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>One-Dimensional and Radial Grids &mdash; grid  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/override.css" />
-      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/override.css?v=064c4a14" />
+      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -253,11 +251,11 @@
            <div itemprop="articleBody">
              
   <p><a class="reference external" href="https://colab.research.google.com/github/theochem/grid/blob/master/examples/One_dimensional_grids.ipynb"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
-<div class="section" id="One-Dimensional-and-Radial-Grids">
-<h1>One-Dimensional and Radial Grids<a class="headerlink" href="#One-Dimensional-and-Radial-Grids" title="Permalink to this heading"></a></h1>
+<section id="One-Dimensional-and-Radial-Grids">
+<h1>One-Dimensional and Radial Grids<a class="headerlink" href="#One-Dimensional-and-Radial-Grids" title="Link to this heading"></a></h1>
 <p>Grid supports several quadrature rules for one-dimensional grids, most of them in the [-1, 1] interval, within the <a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.basegrid.html#grid.basegrid.OneDGrid">OneDGrid</a> module.</p>
-<div class="section" id="Example:-Visualize-One-Dimensional-Grid-Points">
-<h2>Example: Visualize One-Dimensional Grid Points<a class="headerlink" href="#Example:-Visualize-One-Dimensional-Grid-Points" title="Permalink to this heading"></a></h2>
+<section id="Example:-Visualize-One-Dimensional-Grid-Points">
+<h2>Example: Visualize One-Dimensional Grid Points<a class="headerlink" href="#Example:-Visualize-One-Dimensional-Grid-Points" title="Link to this heading"></a></h2>
 <p>Here, we showcase some of the quadrature rules available each with a unique set of points. Click <a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.onedgrid.html">here</a> for a full list of one-dimensional grid classes and <a class="reference external" href="https://grid.qcdevs.org/onedgrids.html#one-dimensional-grids">here</a> for a condensed table containing most of the popular grids.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
@@ -306,9 +304,9 @@
 <img alt="../_images/notebooks_one_dimensional_grids_3_0.png" src="../_images/notebooks_one_dimensional_grids_3_0.png" />
 </div>
 </div>
-</div>
-<div class="section" id="Example:-Integration-of-One-Variable-Function-on-[-1,-1]">
-<h2>Example: Integration of One-Variable Function on <span class="math notranslate nohighlight">\([-1, 1]\)</span><a class="headerlink" href="#Example:-Integration-of-One-Variable-Function-on-[-1,-1]" title="Permalink to this heading"></a></h2>
+</section>
+<section id="Example:-Integration-of-One-Variable-Function-on-[-1,-1]">
+<h2>Example: Integration of One-Variable Function on <span class="math notranslate nohighlight">\([-1, 1]\)</span><a class="headerlink" href="#Example:-Integration-of-One-Variable-Function-on-[-1,-1]" title="Link to this heading"></a></h2>
 <p>The one-dimensional grids can accurately integrate one-variable functions over an interval (defined by their domain), even with a small number of points. Here, we numerically compute the integral below and compute the relative percent error. The analytical value of this integral is <span class="math notranslate nohighlight">\(\pi/2\)</span>.</p>
 <div class="math notranslate nohighlight">
 \[\int_{-1}^1 \sqrt{1 - x^2} dx \approx \sum_{i=0}^{N-1} w_i \sqrt{1 - x_i^2}\]</div>
@@ -400,14 +398,14 @@ Integral of sqrt(1-x^2) from -1 to 1:
 <img alt="../_images/notebooks_one_dimensional_grids_7_0.png" src="../_images/notebooks_one_dimensional_grids_7_0.png" />
 </div>
 </div>
-<div class="section" id="Radial-Grid:-Transformation-of-1D-Integration-Intervals">
-<h3>Radial Grid: Transformation of 1D-Integration Intervals<a class="headerlink" href="#Radial-Grid:-Transformation-of-1D-Integration-Intervals" title="Permalink to this heading"></a></h3>
+<section id="Radial-Grid:-Transformation-of-1D-Integration-Intervals">
+<h3>Radial Grid: Transformation of 1D-Integration Intervals<a class="headerlink" href="#Radial-Grid:-Transformation-of-1D-Integration-Intervals" title="Link to this heading"></a></h3>
 <p>Generally, areas where the integrand changes more rapidly demand a denser concentration of points. So, the <span class="math notranslate nohighlight">\([-1, 1]\)</span> interval is not suitable for most applications encountered in quantum chemistry, where the integrals are usually performed on <span class="math notranslate nohighlight">\([0,\infty)\)</span> domain. <a class="reference external" href="https://github.com/theochem/grid">Grid</a> supports several transformations of the one-dimensional grids to other intervals. Some of these transformations have a parameter that can be used to control the density of points
 across different ranges of the new interval. Click <a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.rtransform.html">here</a> for a full list of radial transformations and <a class="reference external" href="https://grid.qcdevs.org/radial_transf.html">here</a> for a condensed table with explicit formulas.</p>
-</div>
-</div>
-<div class="section" id="Visualize-Radial-Grid-Points">
-<h2>Visualize Radial Grid Points<a class="headerlink" href="#Visualize-Radial-Grid-Points" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+<section id="Visualize-Radial-Grid-Points">
+<h2>Visualize Radial Grid Points<a class="headerlink" href="#Visualize-Radial-Grid-Points" title="Link to this heading"></a></h2>
 <p>Here we visualize the OneDGrid points for different quadrature rules after a Becke transformation.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
@@ -454,9 +452,9 @@ across different ranges of the new interval. Click <a class="reference external"
 <img alt="../_images/notebooks_one_dimensional_grids_9_1.png" src="../_images/notebooks_one_dimensional_grids_9_1.png" />
 </div>
 </div>
-</div>
-<div class="section" id="Example:-Integration-of-One-Variable-Function-on-[0,-\infty]">
-<h2>Example: Integration of One-Variable Function on <span class="math notranslate nohighlight">\([0, \infty]\)</span><a class="headerlink" href="#Example:-Integration-of-One-Variable-Function-on-[0,-\infty]" title="Permalink to this heading"></a></h2>
+</section>
+<section id="Example:-Integration-of-One-Variable-Function-on-[0,-\infty]">
+<h2>Example: Integration of One-Variable Function on <span class="math notranslate nohighlight">\([0, \infty]\)</span><a class="headerlink" href="#Example:-Integration-of-One-Variable-Function-on-[0,-\infty]" title="Link to this heading"></a></h2>
 <p>This transformation tends to concentrate the points close to the origin. Because of this, it is usually used for defining radial grids for atoms where the function to integrate is rapidly varying close to the origin (e.g. the electron density is more concentrated close to the nucleus). Here, we integrate (which has the exact value of 2.0):</p>
 <div class="math notranslate nohighlight">
 \[\int_0^\infty x^2 e^{-x} dx\]</div>
@@ -538,8 +536,8 @@ Integration of r^2 * exp(-r) from 0 to infinity:
 <img alt="../_images/notebooks_one_dimensional_grids_12_0.png" src="../_images/notebooks_one_dimensional_grids_12_0.png" />
 </div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

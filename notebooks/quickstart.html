@@ -1,27 +1,25 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Quick Start &mdash; grid  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/override.css" />
-      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/override.css?v=064c4a14" />
+      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -253,12 +251,12 @@
            <div itemprop="articleBody">
              
   <p><a class="reference external" href="https://colab.research.google.com/github/theochem/grid/blob/master/examples/Quickstart.ipynb"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
-<div class="section" id="Quick-Start">
-<h1>Quick Start<a class="headerlink" href="#Quick-Start" title="Permalink to this heading"></a></h1>
+<section id="Quick-Start">
+<h1>Quick Start<a class="headerlink" href="#Quick-Start" title="Link to this heading"></a></h1>
 <p><a class="reference external" href="https://grid.qcdevs.org/index.html">qc-grid</a> is suitable for numerical integration, interpolation and differentiation of interest for the quantum chemistry community. While it remains versatile as a general-purpose tool for numerical integration, the primary focus of <code class="docutils literal notranslate"><span class="pre">qc-grid</span></code> is to fulfill requirements of computational and conceptual density functional theory problems, so it is centered around constructing atom-centered (Becke-Lebedev-type) molecular grids. This notebook provides a quick
 overview of the main features of <code class="docutils literal notranslate"><span class="pre">qc-grid</span></code>.</p>
-<div class="section" id="One-Dimensional-Grids">
-<h2>One-Dimensional Grids<a class="headerlink" href="#One-Dimensional-Grids" title="Permalink to this heading"></a></h2>
+<section id="One-Dimensional-Grids">
+<h2>One-Dimensional Grids<a class="headerlink" href="#One-Dimensional-Grids" title="Link to this heading"></a></h2>
 <p><a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.onedgrid.html">OneDGrid</a> constructs a one-dimensional (1D) grid for integrating along a line. The <code class="docutils literal notranslate"><span class="pre">qc-grid</span></code> package offers many different quadratures for 1D integration, some in interval <span class="math notranslate nohighlight">\([-1, 1]\)</span> and others on the positive-infinite strip <span class="math notranslate nohighlight">\([0, \infty)\)</span>. These are generally employed with a transformation to the <span class="math notranslate nohighlight">\([0, \infty)\)</span> interval and latter used as radial grids for constructing atomic grids.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
@@ -305,9 +303,9 @@ Radial grid r_max: 2335.872
 
 </pre></div></div>
 </div>
-</div>
-<div class="section" id="Angular-Grids">
-<h2>Angular Grids<a class="headerlink" href="#Angular-Grids" title="Permalink to this heading"></a></h2>
+</section>
+<section id="Angular-Grids">
+<h2>Angular Grids<a class="headerlink" href="#Angular-Grids" title="Link to this heading"></a></h2>
 <p><a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.angular.html#grid.angular.AngularGrid">AngularGrid</a> constructs an angular grid to span the surface of a sphere (with unit radius). Currently two types of angular grids are provided: Lebedev-Laikov and symmetric spherical t-design.</p>
 <p>The simplest way to construct an <code class="docutils literal notranslate"><span class="pre">AngularGrid</span></code> is to specify the <code class="docutils literal notranslate"><span class="pre">degree</span></code> which represents the maximum degree of spherical harmonics that the angular grid can integrate accurately on a unit sphere. If the provided <code class="docutils literal notranslate"><span class="pre">degree</span></code> is not available, the closest available <code class="docutils literal notranslate"><span class="pre">degree</span></code> is used.</p>
 <div class="nbinput docutils container">
@@ -353,9 +351,9 @@ t-design angular grid points shape : (32, 3)
 t-design angular grid weights shape: (32,)
 </pre></div></div>
 </div>
-</div>
-<div class="section" id="Atomic-Grid">
-<h2>Atomic Grid<a class="headerlink" href="#Atomic-Grid" title="Permalink to this heading"></a></h2>
+</section>
+<section id="Atomic-Grid">
+<h2>Atomic Grid<a class="headerlink" href="#Atomic-Grid" title="Link to this heading"></a></h2>
 <p><a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid">AtomGrid</a> constructs an atomic grid by combining a radial and angular grid to span the entire 3D space. This gris is typically used for evaluating and integrating functions centered on an atom.</p>
 <p>The simplest way to construct an <code class="docutils literal notranslate"><span class="pre">AtomGrid</span></code> is by providing an instance of radial grid and degree of the (Lebedev-Likov) angular grid. The grid is centered at origin by default, unless <code class="docutils literal notranslate"><span class="pre">center</span></code> argument is specified.</p>
 <div class="nbinput docutils container">
@@ -383,9 +381,9 @@ AtomGrid radial size : 31
 AtomGrid angular degrees: [11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11]
 </pre></div></div>
 </div>
-</div>
-<div class="section" id="Molecular-Grid">
-<h2>Molecular Grid<a class="headerlink" href="#Molecular-Grid" title="Permalink to this heading"></a></h2>
+</section>
+<section id="Molecular-Grid">
+<h2>Molecular Grid<a class="headerlink" href="#Molecular-Grid" title="Link to this heading"></a></h2>
 <p><a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.molgrid.html#grid.molgrid.MolGrid">MolGrid</a> constructs a grid by combining a set of atomic grids and atoms-in-molecules weight function. These weight functions are typically <a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.becke.html#grid.becke.BeckeWeights">BeckeWeights</a> resulting in Becke-Lebedev molecular grid which are the most commonly used grids in quantum chemistry.</p>
 <p>The simplest way to set up a molecular grid is by using the <a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.molgrid.html#grid.molgrid.MolGrid.from_preset">MolGrid.from_preset</a> method with an appropriate radial grid (a 1D grid spanning the <span class="math notranslate nohighlight">\([0, \infty)\)</span> domain). Here, we build a grid for <span class="math notranslate nohighlight">\(\mathrm{H}_{2}\)</span> molecule.</p>
 <div class="nbinput docutils container">
@@ -438,8 +436,8 @@ Molecular grid centers:
  [ 0.  1.  0.]]
 </pre></div></div>
 </div>
-<div class="section" id="Visualize-3D-Grid-Points">
-<h3>Visualize 3D Grid Points<a class="headerlink" href="#Visualize-3D-Grid-Points" title="Permalink to this heading"></a></h3>
+<section id="Visualize-3D-Grid-Points">
+<h3>Visualize 3D Grid Points<a class="headerlink" href="#Visualize-3D-Grid-Points" title="Link to this heading"></a></h3>
 <p>The figure shows that transformation applied the Gauss-Legendre 1D grid to obtain the radial grid, makes the grid more dense near the nuclei, where the integrand more likely to have higher values. The angular grid is composed of Lebedev-Laikov points, which are distributed uniformly over the sphere. The combination of the two grids results in a grid that is more dense near the nuclei and less dense away from the nuclei.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
@@ -478,9 +476,9 @@ Molecular grid centers:
 <img alt="../_images/notebooks_quickstart_10_0.png" src="../_images/notebooks_quickstart_10_0.png" />
 </div>
 </div>
-</div>
-<div class="section" id="Integrate-Electron-Density-on-the-Grid">
-<h3>Integrate Electron Density on the Grid<a class="headerlink" href="#Integrate-Electron-Density-on-the-Grid" title="Permalink to this heading"></a></h3>
+</section>
+<section id="Integrate-Electron-Density-on-the-Grid">
+<h3>Integrate Electron Density on the Grid<a class="headerlink" href="#Integrate-Electron-Density-on-the-Grid" title="Link to this heading"></a></h3>
 <p>To integrate the electron density on the grid, we need to first evaluate it on the grid points. Here, we will evaluate and integrate the electron density of the <span class="math notranslate nohighlight">\(\mathrm{H}_{2}^{+}\)</span> system. The wavefunction of the <span class="math notranslate nohighlight">\(\mathrm{H}_{2}^{+}\)</span> can be approximated as a linear combination of two hydrogen-like 1s atomic orbitals:</p>
 <div class="math notranslate nohighlight">
 \[\psi_{\mathrm{H}_{2}^{+}}(\mathbf{r}) = c_A\phi_{1s}(||\mathbf{r} - \mathbf{R}_A||) + c_B\phi_{1s}(||\mathbf{r} - \mathbf{R}_B||)\]</div>
@@ -544,9 +542,9 @@ Normalization constant (numerical) : 0.5613987044473437
 Integral of the electron density: 1.000000000000001 (expected to be 1)
 </pre></div></div>
 </div>
-</div>
-<div class="section" id="Interpolate-Electron-Density-on-the-Grid">
-<h3>Interpolate Electron Density on the Grid<a class="headerlink" href="#Interpolate-Electron-Density-on-the-Grid" title="Permalink to this heading"></a></h3>
+</section>
+<section id="Interpolate-Electron-Density-on-the-Grid">
+<h3>Interpolate Electron Density on the Grid<a class="headerlink" href="#Interpolate-Electron-Density-on-the-Grid" title="Link to this heading"></a></h3>
 <p>The <a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.molgrid.html#grid.molgrid.MolGrid.interpolate">grid.interpolate</a> functionality can be used to interpolate any scalar function at any point in space from evaluating the function on the grid points. Here, we use the electron density of <span class="math notranslate nohighlight">\(\mathrm{H}_{2}^{+}\)</span> evaluated on the molecular grid to interpolate the electron density on a set of uniformly distributed points in the xy-plane (stored in <code class="docutils literal notranslate"><span class="pre">points</span></code> variable).</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
@@ -594,8 +592,8 @@ Integral of the electron density: 1.000000000000001 (expected to be 1)
 <img alt="../_images/notebooks_quickstart_14_0.png" src="../_images/notebooks_quickstart_14_0.png" />
 </div>
 </div>
-<div class="section" id="Check-Interpolation-Accuracy">
-<h4>Check Interpolation Accuracy<a class="headerlink" href="#Check-Interpolation-Accuracy" title="Permalink to this heading"></a></h4>
+<section id="Check-Interpolation-Accuracy">
+<h4>Check Interpolation Accuracy<a class="headerlink" href="#Check-Interpolation-Accuracy" title="Link to this heading"></a></h4>
 <p>Here we compare the interpolated density values in the xy-planes to the actual values computed by the analytical expression.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
@@ -624,10 +622,10 @@ Compare interpolated and analytical electron density
 Maximum Absolute Different: 0.00024672773641039786
 </pre></div></div>
 </div>
-</div>
-</div>
-<div class="section" id="Differentiate-Electron-Density-on-the-Grid">
-<h3>Differentiate Electron Density on the Grid<a class="headerlink" href="#Differentiate-Electron-Density-on-the-Grid" title="Permalink to this heading"></a></h3>
+</section>
+</section>
+<section id="Differentiate-Electron-Density-on-the-Grid">
+<h3>Differentiate Electron Density on the Grid<a class="headerlink" href="#Differentiate-Electron-Density-on-the-Grid" title="Link to this heading"></a></h3>
 <p>Given the value of a scalar function on the grid points, the <a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.molgrid.html#grid.molgrid.MolGrid.interpolate">grid.interpolate</a> can also be used to find the function derivative at any point in space. Here, we find the gradient of the electron density of <span class="math notranslate nohighlight">\(\mathrm{H}_{2}^{+}\)</span> evaluated on a set of uniformly distributed points in a xy-plane (stored in <code class="docutils literal notranslate"><span class="pre">points</span></code> variable).</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
@@ -664,8 +662,8 @@ In a planar molecule, the gradient in the molecular plane should not have a z-co
 Maximum z-component of the interpolated gradient: 0.0001621612112471385
 </pre></div></div>
 </div>
-<div class="section" id="Check-interpolated-derivative-accuracy">
-<h4>Check interpolated derivative accuracy<a class="headerlink" href="#Check-interpolated-derivative-accuracy" title="Permalink to this heading"></a></h4>
+<section id="Check-interpolated-derivative-accuracy">
+<h4>Check interpolated derivative accuracy<a class="headerlink" href="#Check-interpolated-derivative-accuracy" title="Link to this heading"></a></h4>
 <p>Check the accuracy of the gradient by comparing it to the analytical gradient computed by the analytical expression.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
@@ -700,9 +698,9 @@ Maximum Absolute Difference in any component: 0.1649554955098528
 Mean Absolute Difference in any component: 0.005061691165558479
 </pre></div></div>
 </div>
-</div>
-<div class="section" id="Graphical-comparisons-of-the-accuracy">
-<h4>Graphical comparisons of the accuracy<a class="headerlink" href="#Graphical-comparisons-of-the-accuracy" title="Permalink to this heading"></a></h4>
+</section>
+<section id="Graphical-comparisons-of-the-accuracy">
+<h4>Graphical comparisons of the accuracy<a class="headerlink" href="#Graphical-comparisons-of-the-accuracy" title="Link to this heading"></a></h4>
 <p>Here, a graphical illustration is done to compare the accuracy of the interpolation of the derivative. It will be shown that the areas close to teh nuclei have the largest errors.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
@@ -782,10 +780,10 @@ Mean Absolute Difference in any component: 0.005061691165558479
 <img alt="../_images/notebooks_quickstart_23_0.png" src="../_images/notebooks_quickstart_23_0.png" />
 </div>
 </div>
-</div>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
+</section>
 
 
            </div>

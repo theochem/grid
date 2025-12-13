@@ -1,26 +1,24 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>grid.ode module &mdash; grid  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/override.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/override.css?v=064c4a14" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -253,8 +251,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="module-grid.ode">
-<span id="grid-ode-module"></span><h1>grid.ode module<a class="headerlink" href="#module-grid.ode" title="Permalink to this heading"></a></h1>
+  <section id="module-grid.ode">
+<span id="grid-ode-module"></span><h1>grid.ode module<a class="headerlink" href="#module-grid.ode" title="Link to this heading"></a></h1>
 <p>Linear ordinary differential equation solver.</p>
 <p>Solves a linear ordinary differential equation of order <span class="math notranslate nohighlight">\(K\)</span> of the form</p>
 <div class="math notranslate nohighlight">
@@ -268,10 +266,10 @@ to another domain <span class="math notranslate nohighlight">\(g(x)\)</span> for
 <span class="math notranslate nohighlight">\([0, \infty)\)</span>, to a finite interval.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="grid.ode.solve_ode_bvp">
-<span class="sig-name descname"><span class="pre">solve_ode_bvp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coeffs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bd_cond</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_nodes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_guess_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_derivatives</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/ode.py#L170-L279"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.ode.solve_ode_bvp" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">solve_ode_bvp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coeffs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bd_cond</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_nodes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_guess_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_derivatives</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/ode.py#L170-L279"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.ode.solve_ode_bvp" title="Link to this definition"></a></dt>
 <dd><p>Solve a linear ODE with boundary conditions.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – Points of the independent variable/domain.  If <cite>transform</cite> is provided, then
 these are the points that are to be transformed.</p></li>
@@ -298,12 +296,12 @@ If not provided, then random set of points from 0 to 1.</p></li>
 than its derivative. If false, it includes the derivatives up to <span class="math notranslate nohighlight">\(P-1\)</span>.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Interpolate function (scipy.interpolate.PPoly) instance whose input is the
 original domain <span class="math notranslate nohighlight">\(x\)</span> and output is an array of the function <span class="math notranslate nohighlight">\(y(x)\)</span> evaluated
 on the points and its derivatives wrt to <span class="math notranslate nohighlight">\(x\)</span> up to <span class="math notranslate nohighlight">\(K - 1\)</span>.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>callable</p>
 </dd>
 </dl>
@@ -311,10 +309,10 @@ on the points and its derivatives wrt to <span class="math notranslate nohighlig
 
 <dl class="py function">
 <dt class="sig sig-object py" id="grid.ode.solve_ode_ivp">
-<span class="sig-name descname"><span class="pre">solve_ode_ivp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_span</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coeffs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'DOP853'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_derivatives</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/ode.py#L52-L167"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.ode.solve_ode_ivp" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">solve_ode_ivp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_span</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coeffs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'DOP853'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_derivatives</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/ode.py#L52-L167"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.ode.solve_ode_ivp" title="Link to this definition"></a></dt>
 <dd><p>Solve a linear ODE as an initial value problem.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x_span</strong> (<em>(</em><em>int</em><em>, </em><em>int</em><em>)</em>) – The interval of integration <span class="math notranslate nohighlight">\((t_0, t_1)\)</span> from the first point to the second point.</p></li>
 <li><p><strong>fx</strong> (<em>callable</em>) – Right-hand function <span class="math notranslate nohighlight">\(f(x)\)</span>.</p></li>
@@ -332,18 +330,18 @@ than its derivative. If false, it includes the derivatives up to <span class="ma
 <li><p><strong>atol</strong> (<em>(</em><em>float</em><em>, </em><em>float</em><em>)</em><em>, </em><em>optional</em>) – The relative and absolute tolerance. See <cite>scipy.integrate.solve_ivp</cite> for more info.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Interpolate function (scipy.interpolate.PPoly) instance whose input is the
 original domain <span class="math notranslate nohighlight">\(x\)</span> and output is an array of the function <span class="math notranslate nohighlight">\(y(x)\)</span> evaluated
 on the points and its derivatives wrt to <span class="math notranslate nohighlight">\(x\)</span> up to <span class="math notranslate nohighlight">\(K - 1\)</span>.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>callable</p>
 </dd>
 </dl>
 </dd></dl>
 
-</div>
+</section>
 
 
            </div>

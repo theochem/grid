@@ -1,27 +1,25 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Molecular Grids &mdash; grid  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/override.css" />
-      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/override.css?v=064c4a14" />
+      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -253,8 +251,8 @@
            <div itemprop="articleBody">
              
   <p><a class="reference external" href="https://colab.research.google.com/github/theochem/grid/blob/master/examples/Molecular_Grid.ipynb"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
-<div class="section" id="Molecular-Grids">
-<h1>Molecular Grids<a class="headerlink" href="#Molecular-Grids" title="Permalink to this heading"></a></h1>
+<section id="Molecular-Grids">
+<h1>Molecular Grids<a class="headerlink" href="#Molecular-Grids" title="Link to this heading"></a></h1>
 <p>This example on Formaldehyde illustates all the features of using molecular grids.</p>
 <p>The format checkpoint file wavefunction is included in “doc/notebooks/ch2o_q+0.fchk” and is read using the <a class="reference external" href="https://github.com/theochem/iodata">IOData</a> package.</p>
 <div class="nbinput docutils container">
@@ -386,10 +384,10 @@ Transformed points
 </pre></div>
 </div>
 </div>
-<div class="section" id="Integration">
-<h2>Integration<a class="headerlink" href="#Integration" title="Permalink to this heading"></a></h2>
-<div class="section" id="Example:-Electron-Density">
-<h3>Example: Electron Density<a class="headerlink" href="#Example:-Electron-Density" title="Permalink to this heading"></a></h3>
+<section id="Integration">
+<h2>Integration<a class="headerlink" href="#Integration" title="Link to this heading"></a></h2>
+<section id="Example:-Electron-Density">
+<h3>Example: Electron Density<a class="headerlink" href="#Example:-Electron-Density" title="Link to this heading"></a></h3>
 <p>This example shows how to use molecular grids to integrate the electron density <span class="math notranslate nohighlight">\(\rho(\textbf{r})\)</span>. This should equal to the number of electrons 16 of Formaldehyde. This is calculated using the <a class="reference external" href="https://github.com/theochem/gbasis">gbasis</a> package</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
@@ -418,12 +416,12 @@ Transformed points
 Integration of the electron density:  15.999988.
 </pre></div></div>
 </div>
-</div>
-</div>
-<div class="section" id="Local-Properties">
-<h2>Local Properties<a class="headerlink" href="#Local-Properties" title="Permalink to this heading"></a></h2>
-<div class="section" id="Example:-Atomic-charges-from-molecular-electron-density">
-<h3>Example: Atomic charges from molecular electron density<a class="headerlink" href="#Example:-Atomic-charges-from-molecular-electron-density" title="Permalink to this heading"></a></h3>
+</section>
+</section>
+<section id="Local-Properties">
+<h2>Local Properties<a class="headerlink" href="#Local-Properties" title="Link to this heading"></a></h2>
+<section id="Example:-Atomic-charges-from-molecular-electron-density">
+<h3>Example: Atomic charges from molecular electron density<a class="headerlink" href="#Example:-Atomic-charges-from-molecular-electron-density" title="Link to this heading"></a></h3>
 <p>This example shows how to extract atomic grids from a molecular grid and integrate the electron density to get atomic charges.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
@@ -467,12 +465,12 @@ Integration of the Oxygen atom electron density on the Oxygen grid:  6.213951
 Atomic charge of the Oxygen atom (q = Z - N): -0.213951
 </pre></div></div>
 </div>
-</div>
-</div>
-<div class="section" id="Interpolation">
-<h2>Interpolation<a class="headerlink" href="#Interpolation" title="Permalink to this heading"></a></h2>
-<div class="section" id="id1">
-<h3>Example: Electron Density<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h3>
+</section>
+</section>
+<section id="Interpolation">
+<h2>Interpolation<a class="headerlink" href="#Interpolation" title="Link to this heading"></a></h2>
+<section id="id1">
+<h3>Example: Electron Density<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
 <p>This example shows how to interpolate any function using molecular grids. The electron density is used again here as the example.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
@@ -504,12 +502,12 @@ Atomic charge of the Oxygen atom (q = Z - N): -0.213951
 Max Error= 0.000438; Mean Error= 0.000014; Std Dev Error= 0.000054
 </pre></div></div>
 </div>
-</div>
-</div>
-<div class="section" id="Derivative-Interpolation">
-<h2>Derivative Interpolation<a class="headerlink" href="#Derivative-Interpolation" title="Permalink to this heading"></a></h2>
-<div class="section" id="Example:-Weizsacker-Kinetic-Energy-Density">
-<h3>Example: Weizsacker Kinetic Energy Density<a class="headerlink" href="#Example:-Weizsacker-Kinetic-Energy-Density" title="Permalink to this heading"></a></h3>
+</section>
+</section>
+<section id="Derivative-Interpolation">
+<h2>Derivative Interpolation<a class="headerlink" href="#Derivative-Interpolation" title="Link to this heading"></a></h2>
+<section id="Example:-Weizsacker-Kinetic-Energy-Density">
+<h3>Example: Weizsacker Kinetic Energy Density<a class="headerlink" href="#Example:-Weizsacker-Kinetic-Energy-Density" title="Link to this heading"></a></h3>
 <p>The Weizsacker kinetic energy density is defined as:</p>
 <div class="math notranslate nohighlight">
 \[\tau_W (\textbf{r}) = \frac{1}{8} \frac{|\nabla \rho(\textbf{r}) |^2}{\rho(\textbf{r})}.\]</div>
@@ -548,12 +546,12 @@ Max Error= 0.000438; Mean Error= 0.000014; Std Dev Error= 0.000054
 Max Error= 0.003902; Mean Error= 0.000068; Std Dev Error= 0.000395
 </pre></div></div>
 </div>
-</div>
-</div>
-<div class="section" id="Solving-Poisson-Equation">
-<h2>Solving Poisson Equation<a class="headerlink" href="#Solving-Poisson-Equation" title="Permalink to this heading"></a></h2>
-<div class="section" id="Example:-Electrostatic-Potential">
-<h3>Example: Electrostatic Potential<a class="headerlink" href="#Example:-Electrostatic-Potential" title="Permalink to this heading"></a></h3>
+</section>
+</section>
+<section id="Solving-Poisson-Equation">
+<h2>Solving Poisson Equation<a class="headerlink" href="#Solving-Poisson-Equation" title="Link to this heading"></a></h2>
+<section id="Example:-Electrostatic-Potential">
+<h3>Example: Electrostatic Potential<a class="headerlink" href="#Example:-Electrostatic-Potential" title="Link to this heading"></a></h3>
 <p>The Poisson equation is defined as:</p>
 <div class="math notranslate nohighlight">
 \[\nabla^2 V(\textbf{r}) = - 4\pi \rho(\textbf{r}),\]</div>
@@ -611,9 +609,9 @@ Max Error= 0.003902; Mean Error= 0.000068; Std Dev Error= 0.000395
 Max Error= 0.021631; Mean Error= 0.003719; Std Dev Error= 0.003231
 </pre></div></div>
 </div>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
            </div>

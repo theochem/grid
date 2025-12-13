@@ -1,27 +1,25 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Angular Grids &mdash; grid  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/override.css" />
-      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/override.css?v=064c4a14" />
+      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -253,11 +251,11 @@
            <div itemprop="articleBody">
              
   <p><a class="reference external" href="https://colab.research.google.com/github/theochem/grid/blob/master/examples/Angular_grid.ipynb"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
-<div class="section" id="Angular-Grids">
-<h1>Angular Grids<a class="headerlink" href="#Angular-Grids" title="Permalink to this heading"></a></h1>
+<section id="Angular-Grids">
+<h1>Angular Grids<a class="headerlink" href="#Angular-Grids" title="Link to this heading"></a></h1>
 <p>The <a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.angular.html#grid.angular.AngularGrid">angular</a> grid can be used for integrating over a spherical surface. Currently, two types of angular grids are supported: Lebedev-Laikov and symmetric spherical t-design.</p>
-<div class="section" id="Initialization-of-Angular-Grids">
-<h2>Initialization of Angular Grids<a class="headerlink" href="#Initialization-of-Angular-Grids" title="Permalink to this heading"></a></h2>
+<section id="Initialization-of-Angular-Grids">
+<h2>Initialization of Angular Grids<a class="headerlink" href="#Initialization-of-Angular-Grids" title="Link to this heading"></a></h2>
 <p>Angular grids can be initialized in three ways:</p>
 <ol class="arabic simple">
 <li><p>By specifying the degree of the grid</p></li>
@@ -365,9 +363,9 @@ Norm of symmetric spherical grid points is all one: True
 <img alt="../_images/notebooks_angular_grid_5_1.png" src="../_images/notebooks_angular_grid_5_1.png" />
 </div>
 </div>
-</div>
-<div class="section" id="Integral-of-Identity-Function">
-<h2>Integral of Identity Function<a class="headerlink" href="#Integral-of-Identity-Function" title="Permalink to this heading"></a></h2>
+</section>
+<section id="Integral-of-Identity-Function">
+<h2>Integral of Identity Function<a class="headerlink" href="#Integral-of-Identity-Function" title="Link to this heading"></a></h2>
 <p>The integral of the identity function over the unit-sphere <span class="math notranslate nohighlight">\(S^2\)</span> is <span class="math notranslate nohighlight">\(4 \pi\)</span>:</p>
 <div class="math notranslate nohighlight">
 \[\int_{0}^{2\pi} \int_0^{\pi} \sin(\phi) d\theta d\phi = 2 \pi \int_0^{\pi} \sin(\phi) d\phi = 4 \pi\]</div>
@@ -399,9 +397,9 @@ Numerical Integration (Levedev-Laikov grid)     :  12.566370614
 Numerical Integration (Symmetric Spherical grid):  12.566370614
 </pre></div></div>
 </div>
-</div>
-<div class="section" id="Integral-of-Spherical-Harmonic-Function">
-<h2>Integral of Spherical Harmonic Function<a class="headerlink" href="#Integral-of-Spherical-Harmonic-Function" title="Permalink to this heading"></a></h2>
+</section>
+<section id="Integral-of-Spherical-Harmonic-Function">
+<h2>Integral of Spherical Harmonic Function<a class="headerlink" href="#Integral-of-Spherical-Harmonic-Function" title="Link to this heading"></a></h2>
 <p>The real spherical harmonic functions <span class="math notranslate nohighlight">\(Y_{lm}\)</span> integrates to zero unless when <span class="math notranslate nohighlight">\(l=0, m=0\)</span>:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{align*}
@@ -489,9 +487,9 @@ Results of the integration of the spherical harmonics over the angular grid
 ----------------------------------------------------------------------------------
 </pre></div></div>
 </div>
-</div>
-<div class="section" id="Spherical-Harmonics-Are-Orthonormal">
-<h2>Spherical Harmonics Are Orthonormal<a class="headerlink" href="#Spherical-Harmonics-Are-Orthonormal" title="Permalink to this heading"></a></h2>
+</section>
+<section id="Spherical-Harmonics-Are-Orthonormal">
+<h2>Spherical Harmonics Are Orthonormal<a class="headerlink" href="#Spherical-Harmonics-Are-Orthonormal" title="Link to this heading"></a></h2>
 <p>The following showcases that the real spherical harmonics implemented in grid are orthonormal i.e.</p>
 <div class="math notranslate nohighlight">
 \[\int_{0}^{2\pi} \int_0^{\pi} Y_{l_1, m_1}(\theta, \phi)  Y_{l_2, m_2}(\theta, \phi)  \sin(\phi) d\theta d\phi = \delta_{l_1, l_2}\cdot \delta_{m_1, m_2}\]</div>
@@ -559,8 +557,8 @@ Integral of Y[2, 2] x Y[2, -2] over the angular grid is: -0.000000000
 Integral of Y[2, -2] x Y[2, -2] over the angular grid is:  1.000000000
 </pre></div></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

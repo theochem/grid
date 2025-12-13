@@ -1,26 +1,24 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>grid.ngrid module &mdash; grid  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/override.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/override.css?v=064c4a14" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -253,12 +251,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="module-grid.ngrid">
-<span id="grid-ngrid-module"></span><h1>grid.ngrid module<a class="headerlink" href="#module-grid.ngrid" title="Permalink to this heading"></a></h1>
+  <section id="module-grid.ngrid">
+<span id="grid-ngrid-module"></span><h1>grid.ngrid module<a class="headerlink" href="#module-grid.ngrid" title="Link to this heading"></a></h1>
 <p>Grid for N particle functions.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="grid.ngrid.MultiDomainGrid">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MultiDomainGrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_domains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/ngrid.py#L28-L262"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.ngrid.MultiDomainGrid" title="Permalink to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">MultiDomainGrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_domains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/ngrid.py#L28-L262"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.ngrid.MultiDomainGrid" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="grid.basegrid.html#grid.basegrid.Grid" title="grid.basegrid.Grid"><code class="xref py py-class docutils literal notranslate"><span class="pre">Grid</span></code></a></p>
 <p>Grid class for integrating functions of multiple variables, each defined on a different grid.</p>
 <p>This class facilitates the numerical integration of functions with <span class="math notranslate nohighlight">\(N\)</span> arguments
@@ -286,10 +284,10 @@ For example for a function of the form f((x1,y1,z1), (x2,y2)) -&gt; float the fi
 be described by a 3D grid and the second argument by a 2D grid.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.ngrid.MultiDomainGrid.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_domains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/ngrid.py#L58-L101"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.ngrid.MultiDomainGrid.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_domains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/ngrid.py#L58-L101"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.ngrid.MultiDomainGrid.__init__" title="Link to this definition"></a></dt>
 <dd><p>Initialize the MultiDomainGrid grid.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>grid_list</strong> (<em>list</em><em> of </em><a class="reference internal" href="grid.basegrid.html#grid.basegrid.Grid" title="grid.basegrid.Grid"><em>Grid</em></a>) – <p>A list of Grid objects, where each Grid corresponds to a separate argument
 (integration domain) of the function to be integrated.</p>
@@ -311,10 +309,10 @@ argument).</p></li>
 </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A MultiDomainGrid object.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#grid.ngrid.MultiDomainGrid" title="grid.ngrid.MultiDomainGrid">MultiDomainGrid</a></p>
 </dd>
 </dl>
@@ -322,10 +320,10 @@ argument).</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.ngrid.MultiDomainGrid.get_localgrid">
-<span class="sig-name descname"><span class="pre">get_localgrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/ngrid.py#L247-L250"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.ngrid.MultiDomainGrid.get_localgrid" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_localgrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/ngrid.py#L247-L250"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.ngrid.MultiDomainGrid.get_localgrid" title="Link to this definition"></a></dt>
 <dd><p>Create a grid containing points within the given radius of center.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>center</strong> (<em>float</em><em> or </em><em>np.array</em><em>(</em><em>M</em><em>,</em><em>)</em>) – Cartesian coordinates of the center of the local grid.</p></li>
 <li><p><strong>radius</strong> (<em>float</em>) – Radius of sphere around the center. When equal to np.inf, the
@@ -333,10 +331,10 @@ local grid coincides with the whole grid, which can be useful for
 debugging.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Instance of LocalGrid.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.LocalGrid" title="grid.basegrid.LocalGrid">LocalGrid</a></p>
 </dd>
 </dl>
@@ -344,10 +342,10 @@ debugging.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.ngrid.MultiDomainGrid.integrate">
-<span class="sig-name descname"><span class="pre">integrate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">integrand_function</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">non_vectorized</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">integration_chunk_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">6000</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/ngrid.py#L173-L245"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.ngrid.MultiDomainGrid.integrate" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">integrate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">integrand_function</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">non_vectorized</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">integration_chunk_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">6000</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/ngrid.py#L173-L245"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.ngrid.MultiDomainGrid.integrate" title="Link to this definition"></a></dt>
 <dd><p>Integrate callable on the N particle grid.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>integrand</strong> (<em>callable</em>) – Integrand function to integrate. It must take a list of arguments (one for each domain)
 with the same dimension as the grid points used for the corresponding domain and return
@@ -362,10 +360,10 @@ memory usage of the integration. Default is 6000. Values too large may cause mem
 issues and values too small may cause accuracy issues.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Integral of callable.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float</p>
 </dd>
 </dl>
@@ -373,7 +371,7 @@ issues and values too small may cause accuracy issues.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.ngrid.MultiDomainGrid.moments">
-<span class="sig-name descname"><span class="pre">moments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orders</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_mom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cartesian'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_orders</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/ngrid.py#L252-L262"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.ngrid.MultiDomainGrid.moments" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">moments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orders</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_mom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cartesian'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_orders</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/ngrid.py#L252-L262"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.ngrid.MultiDomainGrid.moments" title="Link to this definition"></a></dt>
 <dd><p>Compute the multipole moment integral of a function over centers.</p>
 <p>The Cartesian type moments are:</p>
 <div class="math notranslate nohighlight">
@@ -393,7 +391,7 @@ d\textbf{r},\]</div>
 \[m_{nlm} = \int | \textbf{r} - \textbf{R}_c|^{n+1} S_l^m(\theta, \phi) f(\textbf{r})
 d\textbf{r}\]</div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>orders</strong> (<em>int</em>) – Generates all orders with Horton order depending on the type of the multipole
 moment <cite>type_mom</cite>.</p></li>
@@ -405,12 +403,12 @@ grid.</p></li>
 corresponding to each integral/row of the output.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Computes the moment integral of the function at the <cite>m</cite>th center for all orders.
 If <cite>return_orders</cite> is true, then this also returns a list that describes what
 each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>ndarray(L, M), or (ndarray(L, M), list)</p>
 </dd>
 </dl>
@@ -418,10 +416,10 @@ each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="grid.ngrid.MultiDomainGrid.num_domains">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_domains</span></span><a class="headerlink" href="#grid.ngrid.MultiDomainGrid.num_domains" title="Permalink to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">num_domains</span></span><a class="headerlink" href="#grid.ngrid.MultiDomainGrid.num_domains" title="Link to this definition"></a></dt>
 <dd><p>The number of integration domains.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>int</p>
 </dd>
 </dl>
@@ -429,7 +427,7 @@ each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="grid.ngrid.MultiDomainGrid.points">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">points</span></span><a class="headerlink" href="#grid.ngrid.MultiDomainGrid.points" title="Permalink to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">points</span></span><a class="headerlink" href="#grid.ngrid.MultiDomainGrid.points" title="Link to this definition"></a></dt>
 <dd><p>Combined points of the multi-dimensional grid.</p>
 <p>Due to the combinatorial nature of the grid, the points are returned as a generator. Each
 point is a tuple of the points of the individual grids.</p>
@@ -439,7 +437,7 @@ For each combination of points (x1, y1) from the first grid and (x2, y2) from th
 2D grid, the combined point is a tuple of (x1i, y1i), (x2j, y2j) where (x1, y1) and (x2, y2)
 are the points from the individual grids respectively.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Generator</p>
 </dd>
 </dl>
@@ -447,10 +445,10 @@ are the points from the individual grids respectively.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.ngrid.MultiDomainGrid.save">
-<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/basegrid.py#L332-L343"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.ngrid.MultiDomainGrid.save" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/basegrid.py#L332-L343"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.ngrid.MultiDomainGrid.save" title="Link to this definition"></a></dt>
 <dd><p>Save the points and weights as a npz file.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>filename</strong> (<em>str</em>) – The path/name of the .npz file.</p>
 </dd>
 </dl>
@@ -458,10 +456,10 @@ are the points from the individual grids respectively.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="grid.ngrid.MultiDomainGrid.size">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">size</span></span><a class="headerlink" href="#grid.ngrid.MultiDomainGrid.size" title="Permalink to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">size</span></span><a class="headerlink" href="#grid.ngrid.MultiDomainGrid.size" title="Link to this definition"></a></dt>
 <dd><p>the total number of points on the grid.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>int</p>
 </dd>
 </dl>
@@ -469,7 +467,7 @@ are the points from the individual grids respectively.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="grid.ngrid.MultiDomainGrid.weights">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">weights</span></span><a class="headerlink" href="#grid.ngrid.MultiDomainGrid.weights" title="Permalink to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">weights</span></span><a class="headerlink" href="#grid.ngrid.MultiDomainGrid.weights" title="Link to this definition"></a></dt>
 <dd><p>Generator yielding the combined weights of the multi-dimensional grid.</p>
 <p>Because the multi-dimensional grid is formed combinatorially from multiple lower-dimensional
 grids, the combined weights are returned as a generator for efficiency.</p>
@@ -483,7 +481,7 @@ For each combination of points (x1, y1) from the first grid and (x2, y2) from th
 <p>where <cite>w1</cite> and <cite>w2</cite> are the weights from the individual grids corresponding to
 (x1, y1) and (x2, y2), respectively.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Yields</dt>
+<dt class="field-odd">Yields<span class="colon">:</span></dt>
 <dd class="field-odd"><p><em>float</em> – The product of the weights from each individual grid that make up a single
 point in the multi-dimensional grid.</p>
 </dd>
@@ -492,7 +490,7 @@ point in the multi-dimensional grid.</p>
 
 </dd></dl>
 
-</div>
+</section>
 
 
            </div>

@@ -1,26 +1,24 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Conventions &mdash; grid  documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-      <link rel="stylesheet" type="text/css" href="_static/css/override.css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/override.css?v=064c4a14" />
 
   
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -251,10 +249,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="conventions">
-<span id="id1"></span><h1>Conventions<a class="headerlink" href="#conventions" title="Permalink to this heading"></a></h1>
-<div class="section" id="spherical-coordinates">
-<h2>Spherical Coordinates<a class="headerlink" href="#spherical-coordinates" title="Permalink to this heading"></a></h2>
+  <section id="conventions">
+<span id="id1"></span><h1>Conventions<a class="headerlink" href="#conventions" title="Link to this heading"></a></h1>
+<section id="spherical-coordinates">
+<h2>Spherical Coordinates<a class="headerlink" href="#spherical-coordinates" title="Link to this heading"></a></h2>
 <p>Spherical coordinates <span class="math notranslate nohighlight">\((r, \theta, \phi)\)</span> is used extensively throughout the molecular, atomic,
 and angular grid modules.
 Particularly, the radius <span class="math notranslate nohighlight">\(r \in [0, \infty)\)</span>, azumuthal <span class="math notranslate nohighlight">\(\theta \in [-\pi, \pi]\)</span> and polar
@@ -290,9 +288,9 @@ Particularly, the radius <span class="math notranslate nohighlight">\(r \in [0, 
 </div>
 <p>With the convention that when <span class="math notranslate nohighlight">\(r=0\)</span>, then the angles within <span class="math notranslate nohighlight">\(\{(0, \theta_j, \phi_j)\}\)</span> in that shell is
 obtained from a angular grid <span class="math notranslate nohighlight">\(\{(\theta_j, \phi_j)\}\)</span> with some degree.</p>
-</div>
-<div class="section" id="spherical-harmonics">
-<h2>Spherical Harmonics<a class="headerlink" href="#spherical-harmonics" title="Permalink to this heading"></a></h2>
+</section>
+<section id="spherical-harmonics">
+<h2>Spherical Harmonics<a class="headerlink" href="#spherical-harmonics" title="Link to this heading"></a></h2>
 <p>The real spherical harmonics are defined using complex spherical harmonics:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}Y_{lm}(\theta, \phi) = \begin{cases}
@@ -320,33 +318,33 @@ to generate the real spherical harmonics:</p>
 <span class="n">spherical_harmonics</span> <span class="o">=</span> <span class="n">generate_real_spherical_harmonics</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="section" id="ordering">
-<h3>Ordering<a class="headerlink" href="#ordering" title="Permalink to this heading"></a></h3>
+<section id="ordering">
+<h3>Ordering<a class="headerlink" href="#ordering" title="Link to this heading"></a></h3>
 <p>The spherical harmonics are first ordered by the degree <span class="math notranslate nohighlight">\(l\)</span> in ascending order.</p>
 <p>For each degree <span class="math notranslate nohighlight">\(l\)</span>, the orders <span class="math notranslate nohighlight">\(m\)</span> are in HORTON2 order defined as:</p>
 <div class="math notranslate nohighlight">
 \[m = [0, 1, -1, 2, -2, \cdots, l, -l].\]</div>
-</div>
-</div>
-<div class="section" id="angular-grids">
-<h2>Angular Grids<a class="headerlink" href="#angular-grids" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+<section id="angular-grids">
+<h2>Angular Grids<a class="headerlink" href="#angular-grids" title="Link to this heading"></a></h2>
 <p>The <a class="reference internal" href="pyapi/grid.angular.html#grid.angular.AngularGrid" title="grid.angular.AngularGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">angular</span> <span class="pre">grids</span></code></a> is responsible for integrating functions over the unit-sphere.
 The quadrature weights are specifically chosen so that the spherical harmonics are orthonormal:</p>
 <div class="math notranslate nohighlight">
 \[\int_{-\pi}^{\pi} \int_0^{\pi} Y_{l_1}^{m_1} Y_{l_2}^{m_2} \sin(\phi) d\theta d\phi = \delta_{l_1, l_2} \delta_{m_1, m_2}\]</div>
 <p>Further, the quadrature weights are all chosen that the weights sum up to <span class="math notranslate nohighlight">\(4 \pi\)</span>.</p>
-<div class="section" id="nested-grids">
-<h3>Nested Grids<a class="headerlink" href="#nested-grids" title="Permalink to this heading"></a></h3>
+<section id="nested-grids">
+<h3>Nested Grids<a class="headerlink" href="#nested-grids" title="Link to this heading"></a></h3>
 <p>Angular grids of different degrees can be very close to one another. The following shows the mean with
 standard deviation and maximum distance between an angular grid of one degree and the consequent
 angular grid with higher degree.  The * indicates Lebedev-Laikov grids with negative weights.</p>
-<table class="colwidths-given docutils align-center" id="id2">
-<caption><span class="caption-text">Lebedev-Laikov Grids</span><a class="headerlink" href="#id2" title="Permalink to this table"></a></caption>
+<table class="docutils align-center" id="id2">
+<caption><span class="caption-text">Lebedev-Laikov Grids</span><a class="headerlink" href="#id2" title="Link to this table"></a></caption>
 <colgroup>
-<col style="width: 25%" />
-<col style="width: 25%" />
-<col style="width: 25%" />
-<col style="width: 25%" />
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Degree</p></th>
@@ -513,13 +511,13 @@ angular grid with higher degree.  The * indicates Lebedev-Laikov grids with nega
 </tr>
 </tbody>
 </table>
-<table class="colwidths-given docutils align-center" id="id3">
-<caption><span class="caption-text">Symmetric Spherical t-Design Grids</span><a class="headerlink" href="#id3" title="Permalink to this table"></a></caption>
+<table class="docutils align-center" id="id3">
+<caption><span class="caption-text">Symmetric Spherical t-Design Grids</span><a class="headerlink" href="#id3" title="Link to this table"></a></caption>
 <colgroup>
-<col style="width: 25%" />
-<col style="width: 25%" />
-<col style="width: 25%" />
-<col style="width: 25%" />
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Degree</p></th>
@@ -1341,9 +1339,9 @@ angular grid with higher degree.  The * indicates Lebedev-Laikov grids with nega
 </tr>
 </tbody>
 </table>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
            </div>
