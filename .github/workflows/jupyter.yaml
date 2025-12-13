@@ -14,19 +14,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v6
 
-    - name: Setup python for notebook testing 3.9
+    - name: Setup python for notebook testing 3.12
     # gbasis requires python 3.9
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
-        python-version: 3.9
+        python-version: 3.12
 
     - name: Install dependencies for executing notebook
       run: |
         pip install --upgrade pip
         pip install pytest pytest-md pytest-emoji
-        # Install jupyter 
+        # Install jupyter
         pip install jupyterlab nbclient matplotlib
         # Install iodata
         pip install qc-iodata
