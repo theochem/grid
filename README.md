@@ -8,7 +8,7 @@
 
 ## About
 Grid is a simple, free, and open-source Python library for numerical integration, interpolation and differentiation.
-Primarly intended for the quantum chemistry community to assist in density-functional (DFT) theory calculations,
+Primarily intended for the quantum chemistry community to assist in density-functional (DFT) theory calculations,
 including support for periodic boundary conditions.
 
 Please visit [**Grid Documentation**](https://grid.qcdevs.org/) for more information with

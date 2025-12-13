@@ -50,9 +50,9 @@ doc = [
     "sphinx-autoapi",
     "nbsphinx",
     "nbconvert",
-    "sphinx_rtd_theme",
+    "sphinx-rtd-theme>=3.0.0rc1",
     "sphinx_autodoc_typehints",
-    "docutils==0.16",  # Needed to show bullet points in sphinx_rtd_theme
+    "docutils >0.18,<0.22",  # Compatible with modern Sphinx versions
     "nbsphinx-link"
 ]
 
