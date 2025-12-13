@@ -10,7 +10,7 @@ on:
     types: [opened, synchronize, reopened, closed]
     branches:
       - main
-
+      - master
 
 permissions:
   contents: write
@@ -27,12 +27,12 @@ jobs:
       pages: write
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v6
 
     - name: Install development and distributions version
       run: |
         pip install --upgrade pip
-        pip install .[doc]
+        pip install ".[doc]"
         pip install pypandoc_binary
 
     - name: Setup pandoc
@@ -45,13 +45,13 @@ jobs:
     - name: Building documentation
       run: |
         sphinx-apidoc -a -o ./doc/pyapi/ ./src/grid ./src/grid/tests/ ./src/grid/test/ ./src/grid/data/ --separate
-        sphinx-build -M html doc _build 
+        sphinx-build -M html doc _build
 
     # still need to build and set the PAT to get a rebuild on the pages job,
     # apart from that quite clean and nice
     - name: GitHub Pages Action
-      #if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-      uses: peaceiris/actions-gh-pages@v3
+      if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+      uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: _build/html
