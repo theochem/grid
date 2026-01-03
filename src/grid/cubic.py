@@ -20,7 +20,7 @@
 r"""Hyper Rectangular Grid In Either Two or Three Dimensions."""
 
 import numpy as np
-from scipy.interpolate import CubicSpline, RegularGridInterpolator
+from scipy.interpolate import CubicSpline, RegularGridInterpolator, interpn
 from sympy import symbols
 from sympy.functions.combinatorial.numbers import bell
 
@@ -165,6 +165,20 @@ class _HyperRectangleGrid(Grid):
             interpolate = RegularGridInterpolator((x, y, z), values, method=method)
             return interpolate(points)
 
+        # Use scipy interpn for cubic interpolation when no derivatives are requested.
+        if method == "cubic" and nu_x == 0 and nu_y == 0 and nu_z == 0 and not use_log:
+            x, y, z = self.get_points_along_axes()
+            values_reshaped = values.reshape(self.shape)
+
+        return interpn(
+            (x, y, z),
+            values_reshaped,
+            points,
+            method="cubic",
+            bounds_error=False,
+            fill_value=None,
+        )
+
         # Interpolate the Z-Axis.
         def z_spline(z, x_index, y_index, nu_z=nu_z):
             # x_index, y_index is assumed to be in the grid while z is not assumed.
@@ -293,7 +307,8 @@ class _HyperRectangleGrid(Grid):
         r"""Convert grid point index to its (i, j) or (i, j, k) integer coordinates in the grid.
 
         For 3D grid it has a shape of :math:`(N_x, N_y, N_z)` denoting the number of points in
-        :math:`x`\, :math:`y`\, and :math:`z` directions. So, each grid point has a :math:`(i, j, k)`
+        :math:`x`\, :math:`y`\, and :math:`z` directions.
+        So, each grid point has a :math:`(i, j, k)`
         integer coordinate where :math:`0 <= i <= N_x - 1`\, :math:`0 <= j <= N_y - 1`\,
         and :math:`0 <= k <= N_z - 1`\.  Two-dimensional case similarly follows. Assumes
         the grid enumerates in the last coordinate first (with others fixed), following the
@@ -708,7 +723,7 @@ class UniformGrid(_HyperRectangleGrid):
         if not fname.endswith(".cube"):
             raise ValueError("Argument fname should be a cube file with *.cube extension!")
 
-        with open(fname, "rt") as f:
+        with open(fname) as f:
             # skip the title and second line
             f.readline()
             f.readline()
