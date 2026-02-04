@@ -729,10 +729,12 @@ class UniformGrid(_HyperRectangleGrid):
             shape1, axis1 = read_grid_line(f.readline())
             shape2, axis2 = read_grid_line(f.readline())
             axes = np.array([axis0, axis1, axis2], dtype=float)
-            # if shape0, shape1, shape2 are negative, the units are in bohr
-            # otherwise in angstrom
-            # https://gaussian.com/cubegen/
-            unit = "bohr" if shape0 < 0 else "angstrom"
+            # if shape0, shape1, shape2 are negative, the units are in angstrom
+            # otherwise in bohr.
+            # See https://gaussian.com/cubegen/
+            # "Negative values of npts <=-5 specify spacing of npts*10^-3 Angstroms"
+            # However, typically negative simply acts as a flag for Angstroms in many parsers/tools.
+            unit = "angstrom" if shape0 < 0 else "bohr"
             # print out the units detected for clarity
             print(f"Cube file units detected: {unit}")
 

@@ -1256,7 +1256,7 @@ class TestUniformGrid(TestCase):
         assert_allclose(cube_data["atcoords"], atcoords)
         assert_allclose(cube_data["atcorenums"], pseudo_numbers)
         assert_allclose(cube_data["data"], data_vals)
-        assert_equal(cube_data["unit"], "bohr")
+        assert_equal(cube_data["unit"], "angstrom")
 
         assert_allclose(grid.points, ref_grid.points)
         assert_allclose(grid.weights, ref_grid.weights)
@@ -1310,3 +1310,39 @@ class TestUniformGrid(TestCase):
             ]
         )
         assert_allclose(grid.points, expected, rtol=1.0e-7, atol=1.0e-7)
+
+    def test_cube_unit_detection(self):
+        r"""Test that negative vs positive shape in Cube files determines units (Angstrom vs Bohr)."""
+        import os
+        filename = "test_unit_detection_temp.cube"
+
+        def create_dummy_cube(fname, shape_sign=1):
+            with open(fname, 'w') as f:
+                f.write("Dummy Cube File\n")
+                f.write("OUTER LOOP\n")
+                f.write(f"    1    0.000000    0.000000    0.000000\n")  # Natoms, Origin
+                val = 10 * shape_sign
+                f.write(f"  {val}    0.100000    0.000000    0.000000\n") # N1, Axis1
+                f.write(f"  {val}    0.000000    0.100000    0.000000\n") # N2, Axis2
+                f.write(f"  {val}    0.000000    0.000000    0.100000\n") # N3, Axis3
+                f.write("    1    0.000000    0.000000    0.000000    0.000000\n") # Atom 1
+                for _ in range(10*10*10): # Data
+                    f.write(" 0.0")
+                f.write("\n")
+
+        try:
+            # Test 1: Positive Shape -> Bohr
+            create_dummy_cube(filename, shape_sign=1)
+            grid, data = UniformGrid.from_cube(filename, return_data=True)
+            assert_equal(data['unit'], 'bohr')
+            assert_equal(grid.shape, [10, 10, 10])
+
+            # Test 2: Negative Shape -> Angstrom
+            create_dummy_cube(filename, shape_sign=-1)
+            grid, data = UniformGrid.from_cube(filename, return_data=True)
+            assert_equal(data['unit'], 'angstrom')
+            assert_equal(grid.shape, [10, 10, 10])
+
+        finally:
+            if os.path.exists(filename):
+                os.remove(filename)
