@@ -25,6 +25,7 @@ from sympy import symbols
 from sympy.functions.combinatorial.numbers import bell
 
 from grid.basegrid import Grid, OneDGrid
+from .utils import ANGSTROM_TO_BOHR
 
 
 class _HyperRectangleGrid(Grid):
@@ -701,7 +702,6 @@ class UniformGrid(_HyperRectangleGrid):
             - ``atcorenums``\: Pseudo-number of :math:`M` atoms in the molecule.
             - ``atcoords``\: Cartesian coordinates of :math:`M` atoms in the molecule.
             - ``data``\: the grid data stored in a flattened one-dimensional array.
-            - ``unit``\: the unit of the grid (either "angstrom" or "bohr").
 
         """
         fname = str(fname)
@@ -715,12 +715,8 @@ class UniformGrid(_HyperRectangleGrid):
 
             def read_grid_line(line):
                 """Read a number and (x, y, z) coordinate from the cube file line."""
-                words = line.split()
-                return (
-                    int(words[0]),
-                    np.array([float(words[1]), float(words[2]), float(words[3])], float),
-                    # all coordinates in a cube file are in atomic units
-                )
+                npts, *vec = line.split()
+                return int(npts), np.asarray(vec, dtype=float)
 
             # number of atoms and origin of the grid
             natom, origin = read_grid_line(f.readline())
@@ -728,16 +724,18 @@ class UniformGrid(_HyperRectangleGrid):
             shape0, axis0 = read_grid_line(f.readline())
             shape1, axis1 = read_grid_line(f.readline())
             shape2, axis2 = read_grid_line(f.readline())
-            axes = np.array([axis0, axis1, axis2], dtype=float)
-            # if shape0, shape1, shape2 are negative, the units are in bohr
-            # otherwise in angstrom
+            axes = np.asarray([axis0, axis1, axis2], dtype=float)
+            # if shape0 is negative the units are in angstroms otherwise atomic units.
+            # this was verified with cube files generated from Gaussian on february 2026.
             # https://gaussian.com/cubegen/
-            unit = "bohr" if shape0 < 0 else "angstrom"
-            # print out the units detected for clarity
-            print(f"Cube file units detected: {unit}")
+            coordinates_in_angstrom = shape0 < 0
 
             # Convert negative shape values to positive
-            shape = np.array([abs(shape0), abs(shape1), abs(shape2)], dtype=int)
+            shape = np.abs(np.asarray([shape0, shape1, shape2], dtype=int))
+            if coordinates_in_angstrom:
+                print(f"Cube file units detected: angstrom, converting to atomic units grid.")
+                axes *= ANGSTROM_TO_BOHR
+                origin *= ANGSTROM_TO_BOHR
 
             # if return_data=False, only grid is returned
             if not return_data:
@@ -745,14 +743,9 @@ class UniformGrid(_HyperRectangleGrid):
 
             # otherwise, return the atomic numbers, coordinates, and the grid data as well
             def read_coordinate_line(line):
-                """Read atomic number and (x, y, z) coordinate from the cube file line."""
-                words = line.split()
-                return (
-                    int(words[0]),
-                    float(words[1]),
-                    np.array([float(words[2]), float(words[3]), float(words[4])], float),
-                    # all coordinates in a cube file are in atomic units
-                )
+                """Read atomic number, charge, and (x, y, z) coordinates from cube file line."""
+                atnum, charge, *coords = line.split()
+                return int(atnum), float(charge), np.asarray(coords, dtype=float)
 
             numbers = np.zeros(natom, int)
             # get the core charges
@@ -764,6 +757,9 @@ class UniformGrid(_HyperRectangleGrid):
                 # potentials were used.
                 if pseudo_numbers[i] == 0.0:
                     pseudo_numbers[i] = numbers[i]
+
+            if coordinates_in_angstrom:
+                coordinates *= ANGSTROM_TO_BOHR
 
             # load data stored in the cube file
             data = np.zeros(tuple(shape), float).ravel()
@@ -781,7 +777,6 @@ class UniformGrid(_HyperRectangleGrid):
                 "atcorenums": pseudo_numbers,
                 "atcoords": coordinates,
                 "data": data,
-                "unit": unit,
             }
         return cls(origin, axes, shape, weight), cube_data
 
