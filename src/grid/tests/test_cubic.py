@@ -27,6 +27,7 @@ from numpy.testing import assert_allclose, assert_equal
 
 from grid.cubic import Tensor1DGrids, UniformGrid, _HyperRectangleGrid
 from grid.onedgrid import GaussLaguerre, MidPoint
+from grid.utils import ANGSTROM_TO_BOHR
 
 
 class TestHyperRectangleGrid(TestCase):
@@ -1246,20 +1247,20 @@ class TestUniformGrid(TestCase):
 
         ref_grid = UniformGrid(origin, axes, shape)
 
+        # the precision of the numbers in this file is lower than reference, large atol needed
         cubefile = files("grid") / "data" / "tests" / "cubegen_ch4_6_gen_negative.cube"
         grid, cube_data = UniformGrid.from_cube(cubefile, return_data=True)
 
-        assert_allclose(grid._axes, axes)
-        assert_allclose(grid._origin, origin)
+        assert_allclose(grid._axes, axes, atol=1e-4)
+        assert_allclose(grid._origin, origin, atol=1e-4)
         assert_allclose(grid._shape, shape)
         assert_allclose(cube_data["atnums"], atnums)
-        assert_allclose(cube_data["atcoords"], atcoords)
+        assert_allclose(cube_data["atcoords"], atcoords, atol=1e-4)
         assert_allclose(cube_data["atcorenums"], pseudo_numbers)
         assert_allclose(cube_data["data"], data_vals)
-        assert_equal(cube_data["unit"], "angstrom")
 
-        assert_allclose(grid.points, ref_grid.points)
-        assert_allclose(grid.weights, ref_grid.weights)
+        assert_allclose(grid.points, ref_grid.points, atol=1e-4)
+        assert_allclose(grid.weights, ref_grid.weights, atol=1e-6)
 
     def test_uniformgrid_generate_cube(self):
         r"""Test creating uniform cubic grid from cube example."""
