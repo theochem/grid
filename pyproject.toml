@@ -30,7 +30,7 @@ classifiers = [
 dependencies = [
     "numpy>=1.16",
     "pytest>=8.0.0",
-    "scipy>=1.4",
+    "scipy>=1.15.0",
     "importlib_resources",
     "sympy",
 ]

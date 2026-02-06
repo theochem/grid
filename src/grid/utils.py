@@ -20,7 +20,7 @@
 """Utility Module."""
 
 import numpy as np
-from scipy.special import sph_harm
+from scipy.special import sph_harm_y
 
 _bragg = np.array(
     [
@@ -560,21 +560,23 @@ def generate_real_spherical_harmonics_scipy(l_max: int, theta: np.ndarray, phi: 
     l_list = np.arange(l_max + 1)
     for l_val in l_list:
         # generate m=0 real spherical harmonic
-        zero_real_sph = sph_harm(0, l_val, theta, phi).real
+        zero_real_sph = sph_harm_y(l_val, 0, phi, theta).real
 
-        # generate order m=positive real spherical harmonic
-        m_list_p = np.arange(1, l_val + 1, dtype=float)
+        # generate order m=positive real spherical harmonic: sqrt(2) * (-1)^m * Re(Y_l^m)
+        m_list_p = np.arange(1, l_val + 1, dtype=int)
         pos_real_sph = (
-            sph_harm(m_list_p[:, None], l_val, theta, phi).real
-            * np.sqrt(2)
-            * (-1) ** m_list_p[:, None]  # Remove Conway phase from SciPy
+            np.sqrt(2)
+            * (-1) ** m_list_p[:, None]
+            * sph_harm_y(l_val, m_list_p[:, None], phi, theta).real
+            # Remove Conway phase from SciPy
         )
-        # generate order m=negative real spherical harmonic
-        m_list_n = np.arange(-1, -l_val - 1, -1, dtype=float)
+        # generate order m=negative real spherical harmonic: sqrt(2) * (-1)^m * Im(Y_l^m)
         neg_real_sph = (
-            sph_harm(m_list_p[:, None], l_val, theta, phi).imag
-            * np.sqrt(2)
-            * (-1) ** m_list_n[:, None]  # Remove Conway phase from SciPy
+            np.sqrt(2)
+            * (-1) ** np.abs(m_list_p[:, None])
+            * sph_harm_y(
+                l_val, m_list_p[:, None], phi, theta
+            ).imag  # Remove Conway phase from SciPy
         )
 
         # Convert to horton 2 order
@@ -753,7 +755,8 @@ def generate_derivative_real_spherical_harmonics(l_max: int, theta: np.ndarray, 
     sph_harm_vals = generate_real_spherical_harmonics(l_max, theta, phi)
     i_output = 0
     for l_val in l_list:
-        for m in [0, *sum([[x, -x] for x in range(1, l_val + 1)], [])]:
+        m_values = [0] + [m for x in range(1, l_val + 1) for m in (x, -x)]
+        for m in m_values:
             # Take all spherical harmonics at degree l_val
             sph_harm_degree = sph_harm_vals[(l_val) ** 2 : (l_val + 1) ** 2, :]
 
@@ -777,7 +780,7 @@ def generate_derivative_real_spherical_harmonics(l_max: int, theta: np.ndarray, 
             # Compute it using SciPy, removing conway phase (-1)^m and multiply by 2^0.5.
             sph_harm_m = (
                 fac
-                * sph_harm(np.abs(float(m)) + 1, l_val, theta, phi)
+                * sph_harm_y(l_val, np.abs(int(m)) + 1, phi, theta)
                 * np.sqrt(2)
                 * (-1.0) ** float(m)
             )
