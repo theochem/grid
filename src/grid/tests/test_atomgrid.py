@@ -29,6 +29,7 @@ from numpy.testing import (
     assert_raises,
 )
 from scipy.spatial.transform import Rotation as R
+from scipy.integrate import trapezoid
 
 from grid.angular import LEBEDEV_DEGREES, AngularGrid
 from grid.atomgrid import AtomGrid, _get_rgrid_size
@@ -688,7 +689,7 @@ class TestAtomGrid:
 
         # Test the integral of spherical average is the integral of Gaussian e^(-x^2)e^(-y^2)...
         #   from -infinity to infinity which is equal to pi^(3/2)
-        integral = 4.0 * np.pi * np.trapz(y=spherical_avg(oned_grid) * oned_grid**2.0, x=oned_grid)
+        integral = 4.0 * np.pi * trapezoid(y=spherical_avg(oned_grid) * oned_grid**2.0, x=oned_grid)
         actual_integral = np.sqrt(np.pi) ** 3.0
         assert_allclose(actual_integral, integral)
 
