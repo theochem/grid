@@ -573,7 +573,7 @@ def generate_real_spherical_harmonics_scipy(l_max: int, theta: np.ndarray, phi: 
         # generate order m=negative real spherical harmonic: sqrt(2) * (-1)^m * Im(Y_l^m)
         neg_real_sph = (
             np.sqrt(2)
-            * (-1) ** np.abs(m_list_p[:, None])
+            * (-1) ** m_list_p[:, None]
             * sph_harm_y(
                 l_val, m_list_p[:, None], phi, theta
             ).imag  # Remove Conway phase from SciPy
