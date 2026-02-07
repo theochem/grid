@@ -810,6 +810,55 @@ class TestMolGrid(TestCase):
         occupation = mg.integrate(fn)
         assert_almost_equal(occupation, 2.5, decimal=5)
 
+    def test_get_atomic_property_constant(self):
+        """Test with constant property values"""
+        coords = np.array([[0, 0, -0.5], [0, 0, 0.5]])
+        mg = MolGrid.from_preset(
+            atnums=np.array([1, 1]),
+            atcoords=coords,
+            preset="coarse",
+            aim_weights=BeckeWeights(order=3),
+        )
+
+        property_values = np.ones(mg.size)
+        atomic_properties = mg.get_atomic_property(property_values)
+
+        assert atomic_properties.size == 2
+        assert_allclose(np.sum(atomic_properties), mg.integrate(property_values))
+
+    def test_get_atomic_property_wrong_size(self):
+        """Test error handling for wrong array size"""
+        coords = np.array([[0, 0, -0.5], [0, 0, 0.5]])
+        mg = MolGrid.from_preset(
+            atnums=np.array([1, 1]),
+            atcoords=coords,
+            preset="coarse",
+            aim_weights=BeckeWeights(order=3),
+        )
+
+        wrong_size = np.ones(mg.size + 1)
+        with pytest.raises(ValueError, match="property_values is not the same size as grid"):
+            mg.get_atomic_property(wrong_size)
+
+    def test_get_atomic_property_nonuniform(self):
+        """Test with non-uniform property(distance from origin)"""
+        coords = np.array([[0, 0, -0.5], [0, 0, 0.5]])
+        mg = MolGrid.from_preset(
+            atnums=np.array([1, 1]),
+            atcoords=coords,
+            preset="coarse",
+            aim_weights=BeckeWeights(order=3),
+        )
+
+        property_values = np.linalg.norm(mg.points, axis=1)
+        atomic_properties = mg.get_atomic_property(property_values)
+
+        # Due to symmetry, both atoms should have equal properties
+        assert atomic_properties.size == 2
+
+        assert_allclose(atomic_properties[0], atomic_properties[1], rtol=1e-3)
+        assert_allclose(np.sum(atomic_properties), mg.integrate(property_values), rtol=1e-3)
+
 
 def test_interpolation_with_gaussian_center():
     r"""Test interpolation with molecular grid of sum of two Gaussian examples."""
