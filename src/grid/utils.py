@@ -21,6 +21,11 @@
 
 import numpy as np
 from scipy.special import sph_harm_y
+from scipy.constants import physical_constants, angstrom
+
+_BOHR_RADIUS_M = physical_constants["Bohr radius"][0]
+BOHR_TO_ANGSTROM = _BOHR_RADIUS_M / angstrom
+ANGSTROM_TO_BOHR = 1.0 / BOHR_TO_ANGSTROM
 
 _bragg = np.array(
     [
