@@ -21,16 +21,15 @@ classifiers = [
     'Intended Audience :: Science/Research',
     "Intended Audience :: Education",
     "Natural Language :: English",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
 ]
 dependencies = [
-    "numpy>=1.16",
+    "numpy>=1.23.5",
     "pytest>=8.0.0",
-    "scipy>=1.4",
+    "scipy>=1.15.0",
     "importlib_resources",
     "sympy",
 ]
