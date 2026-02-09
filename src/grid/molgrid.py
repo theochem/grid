@@ -635,10 +635,11 @@ class MolGrid(Grid):
                 f"property_values must be of numpy array type, got {type(property_values)}"
             )
 
+        property_values = np.asarray(property_values).reshape(-1)
         if property_values.size != self.size:
             raise ValueError(
-                "property_values is not the same size as grid. \n"
-                f"property_values.size: {property_values.size}, self.size: {self.size}"
+                "property_values must be one-dimensional with the same length as the grid.\n"
+                f"property_values.shape: {property_values.shape}, expected: ({self.size},)"
             )
 
         # initialize output array
@@ -653,9 +654,7 @@ class MolGrid(Grid):
 
             # finding property of each atom
             atomic_property[i] = np.sum(
-                property_values[start_index:end_index]
-                * self.aim_weights[start_index:end_index]
-                * self.atweights[start_index:end_index]
+                property_values[start_index:end_index] * self.weights[start_index:end_index]
             )
 
         return atomic_property

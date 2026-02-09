@@ -837,7 +837,7 @@ class TestMolGrid(TestCase):
         )
 
         wrong_size = np.ones(mg.size + 1)
-        with pytest.raises(ValueError, match="property_values is not the same size as grid"):
+        with pytest.raises(ValueError, match="property_values must be one-dimensional"):
             mg.get_atomic_property(wrong_size)
 
     def test_get_atomic_property_nonuniform(self):
