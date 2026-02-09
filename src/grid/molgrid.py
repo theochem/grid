@@ -614,13 +614,19 @@ class MolGrid(Grid):
     def get_atomic_property(self, property_values):
         """Convert property at grid points to property per atom.
 
-        This method takes a property evaluated at all grid points and calculated how much
-        of that propery belongs to each atom in the molecule.
+        This method takes a property evaluated at all grid points and calculates how much
+        of that property belongs to each atom in the molecule.
 
         Parameters
         ----------
-        property_values : np.narray
+        property_values : np.ndarray
             Must have the same length as the number of points in the molecular grid.
+
+        Returns
+        -------
+        np.ndarray
+            One-dimensional array of length equal to the number of atoms, containing
+            the property value associated with each atom.
         """
 
         # check if the input is valid
