@@ -20,7 +20,7 @@
 r"""Hyper Rectangular Grid In Either Two or Three Dimensions."""
 
 import numpy as np
-from scipy.interpolate import CubicSpline, RegularGridInterpolator
+from scipy.interpolate import CubicSpline, RegularGridInterpolator, interpn
 from sympy import symbols
 from sympy.functions.combinatorial.numbers import bell
 
@@ -76,6 +76,23 @@ class _HyperRectangleGrid(Grid):
     def ndim(self):
         r"""Return the dimension of the grid."""
         return len(self._shape)
+
+    def is_orthogonal(self):
+        r"""Check if the coordinate axes are orthogonal.
+
+        Returns
+
+        bool :
+            True if the grid axes are orthogonal, False otherwise.
+        """
+        if hasattr(self, "_axes"):
+            return np.count_nonzero(self._axes - np.diag(np.diagonal(self._axes))) == 0
+        else:
+            try:
+                self.get_points_along_axes()
+                return True
+            except AttributeError:
+                return False
 
     def get_points_along_axes(self):
         r"""Return the points along each axes.
@@ -161,10 +178,15 @@ class _HyperRectangleGrid(Grid):
 
         # Use scipy if linear and nearest is requested and raise error if it's not cubic.
         if method in ["linear", "nearest"]:
-            x, y, z = self.get_points_along_axes()
-            values = values.reshape(self.shape)
-            interpolate = RegularGridInterpolator((x, y, z), values, method=method)
-            return interpolate(points)
+            if self.is_orthogonal():
+                # For orthogonal grids
+                x, y, z = self.get_points_along_axes()
+                values = values.reshape(self.shape)
+                interpolate = RegularGridInterpolator((x, y, z), values, method=method)
+                return interpolate(points)
+            else:
+                # For non-orthogonal grids
+                return self._interpolate_parallelepiped(points, values, method)
 
         # Interpolate the Z-Axis.
         def z_spline(z, x_index, y_index, nu_z=nu_z):
@@ -263,6 +285,60 @@ class _HyperRectangleGrid(Grid):
         interpolated = x_spline(points[:, 0], points[:, 1], points[:, 2], nu_x)
         return interpolated
 
+    def _interpolate_parallelepiped(self, points, values, method):
+        r"""Interpolate on non-orthogonal (parallelepiped) grids using scipy.interpn.
+
+        This method handles interpolation on grids with non-orthogonal cell vectors
+        by transforming coordinates to the grid's coordinate system.
+
+        Parameters
+        ----------
+        points : np.ndarray, shape (M, 3)
+            The 3D Cartesian coordinates of :math:`M` points for interpolation.
+        values : np.ndarray, shape (N,)
+            Function values at each of the :math:`N` grid points.
+        method : str
+            Interpolation method ('linear' or 'nearest').
+
+        Returns
+        -------
+        np.ndarray, shape (M,)
+            Interpolated values at the query points.
+        """
+        if not hasattr(self, "_axes") or not hasattr(self, "_origin"):
+            raise NotImplementedError(
+                "Parallelepiped interpolation is only supported for UniformGrid instances."
+            )
+
+        # Transform query points to grid coordinate system
+        # For a point p in Cartesian coordinates, the grid coordinates are:
+        # grid_coords = (p - origin) * axes^(-1)
+        points_grid_coords = (points - self._origin) @ np.linalg.inv(self._axes)
+
+        # Create coordinate arrays for each dimension using the grid's coordinate system
+        # For non-orthogonal grids, we need to use the grid coordinate system (0, 1, 2, ...)
+        coords = []
+        for i in range(self.ndim):
+            # Use the grid coordinate system (0, 1, 2, ...) for each dimension
+            coords_i = np.arange(self.shape[i])
+            coords.append(coords_i)
+
+        # Reshape values to match the grid shape
+        values_reshaped = values.reshape(self.shape)
+
+        # Use scipy.interpn for interpolation
+        # Note: interpn expects coordinates in the same order as the grid
+        result = interpn(
+            coords,
+            values_reshaped,
+            points_grid_coords,
+            method=method,
+            bounds_error=False,
+            fill_value=0.0,
+        )
+
+        return result
+
     def coordinates_to_index(self, indices):
         r"""Convert (i, j) or (i, j, k) integer coordinates to the grid point index.
 
@@ -294,7 +370,8 @@ class _HyperRectangleGrid(Grid):
         r"""Convert grid point index to its (i, j) or (i, j, k) integer coordinates in the grid.
 
         For 3D grid it has a shape of :math:`(N_x, N_y, N_z)` denoting the number of points in
-        :math:`x`\, :math:`y`\, and :math:`z` directions. So, each grid point has a :math:`(i, j, k)`
+        :math:`x`\, :math:`y`\, and :math:`z` directions. So, each grid point has a
+        :math:`(i, j, k)`
         integer coordinate where :math:`0 <= i <= N_x - 1`\, :math:`0 <= j <= N_y - 1`\,
         and :math:`0 <= k <= N_z - 1`\.  Two-dimensional case similarly follows. Assumes
         the grid enumerates in the last coordinate first (with others fixed), following the
@@ -941,13 +1018,10 @@ class UniformGrid(_HyperRectangleGrid):
             Index of the point in `points` closest to the grid point.
 
         """
-        # I'm not entirely certain that this method will work with non-orthogonal axes.
-        #    Added this just in case, cause I know it will work with orthogonal axes.
+        # For non-orthogonal axes, we need to use a more general approach
         if not np.count_nonzero(self.axes - np.diag(np.diagonal(self.axes))) == 0:
-            raise ValueError(
-                "Finding closest point only works when the 'axes' attribute"
-                " is a diagonal matrix."
-            )
+            # Use the general method for non-orthogonal axes
+            return self._closest_point_general(point, which)
 
         # Calculate step-size of the cube.
         step_sizes = np.array([np.linalg.norm(axis) for axis in self.axes])
@@ -966,6 +1040,41 @@ class UniformGrid(_HyperRectangleGrid):
         index = self.coordinates_to_index(coord)
 
         return index
+
+    def _closest_point_general(self, point, which="closest"):
+        r"""Find closest point for non-orthogonal axes using general method.
+
+        Parameters
+        ----------
+        point : np.ndarray, shape (3,)
+            Point in Cartesian coordinates.
+        which : str
+            If "closest", returns the closest index of the grid point.
+            If "origin", return the left-most, down-most closest index of the grid point.
+
+        Returns
+        -------
+        index : int
+            Index of the point in `points` closest to the grid point.
+        """
+        # Transform point to grid coordinate system
+        point_grid_coords = (point - self._origin) @ np.linalg.inv(self._axes)
+
+        if which == "origin":
+            # Round to smallest integer (floor)
+            coord = np.floor(point_grid_coords)
+        elif which == "closest":
+            # Round to nearest integer
+            coord = np.rint(point_grid_coords)
+        else:
+            raise ValueError("`which` parameter was not the standard options.")
+
+        # Ensure coordinates are within bounds
+        coord = np.clip(coord, 0, np.array(self.shape) - 1)
+        coord = coord.astype(int)
+
+        # Convert to index
+        return self.coordinates_to_index(coord)
 
     def generate_cube(self, fname, data, atcoords, atnums, pseudo_numbers=None):
         r"""Write the data evaluated on grid points into a cube file.

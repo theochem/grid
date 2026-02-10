@@ -671,16 +671,14 @@ class TestUniformGrid(TestCase):
             # Test wrong attribute.
             uniform.closest_point(pt, "not origin or closest")
 
-        # Test raises error with orthogonal axes.
+        # Test with non-orthogonal axes
         axes = np.array([[1.0, 0.0, 0.0], [1.0, 1.0, 1.0], [0.0, 0.0, 1.0]])
         uniform = UniformGrid(origin, axes, shape)
-        with self.assertRaises(ValueError) as err:
-            # Test wrong attribute.
-            uniform.closest_point(pt, "origin")
-        self.assertEqual(
-            "Finding closest point only works when the 'axes' attribute is a diagonal matrix.",
-            str(err.exception),
-        )
+        # This should work with the new implementation
+        index = uniform.closest_point(pt, "origin")
+        self.assertIsInstance(index, (int, np.integer))
+        self.assertGreaterEqual(index, 0)
+        self.assertLess(index, uniform.points.shape[0])
 
     def test_finding_closest_point_to_square_grid(self):
         r"""Test finding the closest point to a square grid."""
@@ -1311,3 +1309,61 @@ class TestUniformGrid(TestCase):
             ]
         )
         assert_allclose(grid.points, expected, rtol=1.0e-7, atol=1.0e-7)
+
+    def test_non_orthogonal_interpolation(self):
+        r"""Test interpolation on non-orthogonal (parallelepiped) grids."""
+        # Create a non-orthogonal grid with skewed axes
+        origin = np.array([0.0, 0.0, 0.0])
+        # Create a non-orthogonal axes matrix (parallelepiped)
+        axes = np.array(
+            [
+                [1.0, 0.0, 0.0],  # x-axis
+                [0.5, 1.0, 0.0],  # y-axis (skewed)
+                [0.0, 0.0, 1.0],  # z-axis
+            ]
+        )
+        shape = np.array([3, 3, 3])
+
+        grid = UniformGrid(origin, axes, shape)
+
+        # Test that the grid is detected as non-orthogonal
+        self.assertFalse(grid.is_orthogonal())
+
+        # Create a simple test function: f(x,y,z) = x + y + z
+        def test_func(points):
+            return points[:, 0] + points[:, 1] + points[:, 2]
+
+        # Evaluate function on grid points
+        func_vals = test_func(grid.points)
+
+        # Test interpolation at some query points
+        query_points = np.array([[0.5, 0.5, 0.5], [1.0, 1.0, 1.0], [0.25, 0.25, 0.25]])
+
+        # Test linear interpolation
+        interpolated = grid.interpolate(query_points, func_vals, method="linear")
+        expected = test_func(query_points)
+
+        # Check that interpolation is reasonably accurate
+        assert_allclose(interpolated, expected, rtol=1e-10, atol=1e-10)
+
+        # Test nearest neighbor interpolation
+        interpolated_nn = grid.interpolate(query_points, func_vals, method="nearest")
+        # For nearest neighbor, we expect some difference but should be reasonable
+        # Check that the results are not completely wrong (within a reasonable range)
+        self.assertTrue(np.all(np.abs(interpolated_nn - expected) < 2.0))
+
+    def test_orthogonal_detection(self):
+        r"""Test detection of orthogonal vs non-orthogonal grids."""
+        # Test orthogonal grid
+        origin = np.array([0.0, 0.0, 0.0])
+        axes_ortho = np.array([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]])
+        shape = np.array([3, 3, 3])
+
+        grid_ortho = UniformGrid(origin, axes_ortho, shape)
+        self.assertTrue(grid_ortho.is_orthogonal())
+
+        # Test non-orthogonal grid
+        axes_non_ortho = np.array([[1.0, 0.0, 0.0], [0.5, 1.0, 0.0], [0.0, 0.0, 1.0]])
+
+        grid_non_ortho = UniformGrid(origin, axes_non_ortho, shape)
+        self.assertFalse(grid_non_ortho.is_orthogonal())
