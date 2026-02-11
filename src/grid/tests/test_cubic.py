@@ -189,7 +189,7 @@ class TestTensor1DGrids(TestCase):
                     assert_allclose(actual_weight, cubic.weights[index])
                     index += 1
 
-    def test_interpolation_of_gaussian_vertorized(self):
+    def test_interpolation_of_gaussian_vectorized(self):
         r"""Test interpolation of a Gaussian function with vectorization."""
         oned = MidPoint(50)
         cubic = Tensor1DGrids(oned, oned, oned)
