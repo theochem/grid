@@ -29,6 +29,10 @@ from grid.cubic import Tensor1DGrids, UniformGrid, _HyperRectangleGrid
 from grid.onedgrid import GaussLaguerre, MidPoint
 from grid.utils import ANGSTROM_TO_BOHR
 
+import pytest
+import copy
+from grid.cubic import AdaptiveUniformGrid, Grid
+
 
 class TestHyperRectangleGrid(TestCase):
     r"""Test HyperRectangleGrid class."""
@@ -1311,3 +1315,148 @@ class TestUniformGrid(TestCase):
             ]
         )
         assert_allclose(grid.points, expected, rtol=1.0e-7, atol=1.0e-7)
+
+
+class TestAdaptiveUniformGrid:
+    case_2d_gentle_wide = {
+        "id": "2D_Gentle_Peak_Wide_Range",
+        "grid_setup": {
+            "origin": np.array([-10.0, -10.0]),
+            "axes": np.diag([2.0, 2.0]),
+            "shape": np.array([11, 11]),
+        },
+        "func": lambda points: np.exp(-0.1 * np.sum(points**2, axis=1)),
+        "analytical_integral": np.pi / 0.1,
+        "tolerance": 5e-3,
+    }
+
+    case_3d_gentle_wide = {
+        "id": "3D_Gentle_Peak_Wide_Range (Lightweight)",
+        "grid_setup": {
+            "origin": np.array([-5.0, -5.0, -5.0]),
+            "axes": np.diag([1.0, 1.0, 1.0]),
+            "shape": np.array([11, 11, 11]),
+        },
+        "func": lambda points: np.exp(-0.2 * np.sum(points**2, axis=1)),
+        "analytical_integral": (np.pi / 0.2) ** 1.5,
+        "tolerance": 5e-3,
+        "max_depth": 6,
+    }
+
+    case_2d_moderate_wide = {
+        "id": "2D_Moderate_Peak_Wide_Range",
+        "grid_setup": {
+            "origin": np.array([-5.0, -5.0]),
+            "axes": np.diag([1.0, 1.0]),
+            "shape": np.array([11, 11]),
+        },
+        "func": lambda points: np.exp(-2 * np.sum(points**2, axis=1)),
+        "analytical_integral": np.pi / 2,
+        "tolerance": 5e-3,
+    }
+
+    case_2d_asymmetric_peaks = {
+        "id": "2D_Asymmetric_Multi_Peak",
+        "grid_setup": {
+            "origin": np.array([-6.0, -6.0]),
+            "axes": np.diag([1.0, 1.0]),
+            "shape": np.array([13, 13]),
+        },
+        "func": lambda points: (
+            np.exp(-0.5 * np.sum((points - np.array([-3.0, -3.0])) ** 2, axis=1))
+            + np.exp(-3 * np.sum((points - np.array([2.0, 3.0])) ** 2, axis=1))
+        ),
+        "analytical_integral": (np.pi / 0.5) + (np.pi / 3),
+        "tolerance": 1e-3,
+    }
+
+    case_constant_function = {
+        "id": "Constant_Function_No_Refinement",
+        "grid_setup": {
+            "origin": np.array([-5.0, -5.0]),
+            "axes": np.diag([1.0, 1.0]),
+            "shape": np.array([11, 11]),
+        },
+        "func": lambda points: np.ones(len(points)),
+        "analytical_integral": 100.0,
+        "tolerance": 1e-3,
+    }
+
+    case_2d_sharp_legacy_wide = {
+        "id": "2D_Sharp_Peak_Legacy_Wide",
+        "grid_setup": {
+            "origin": np.array([-5.0, -5.0]),
+            "axes": np.diag([1.0, 1.0]),
+            "shape": np.array([11, 11]),
+        },
+        "func": lambda points: np.exp(-20 * np.sum(points**2, axis=1)),
+        "analytical_integral": np.pi / 20,
+        "tolerance": 0.1,
+    }
+
+    @pytest.mark.parametrize(
+        "test_case",
+        [
+            # case_2d_gentle_wide,
+            # case_3d_gentle_wide,
+            case_2d_moderate_wide,
+            case_2d_asymmetric_peaks,
+            case_constant_function,
+            case_2d_sharp_legacy_wide,
+        ],
+        ids=lambda tc: tc["id"],
+    )
+    def test_refinement_scenarios(self, test_case):
+        """Test adaptive refinement using diverse scenarios."""
+        # Setup
+        grid_setup = test_case["grid_setup"]
+        uniform_grid = UniformGrid(
+            grid_setup["origin"], grid_setup["axes"], grid_setup["shape"], weight="Rectangle"
+        )
+        adaptive_grid = AdaptiveUniformGrid(uniform_grid)
+
+        analytical_integral = test_case["analytical_integral"]
+
+        # Calculate initial error
+        initial_values = test_case["func"](uniform_grid.points)
+        initial_integral = uniform_grid.integrate(initial_values)
+        initial_error = abs(initial_integral - analytical_integral)
+        initial_num_points = uniform_grid.size
+
+        # Perform refinement
+        result = adaptive_grid.refinement(
+            func=test_case["func"],
+            tolerance=test_case["tolerance"],
+            max_depth=test_case.get("max_depth", 10),
+        )
+
+        # Get refinement results
+        refined_integral = result["integral"]
+        refined_error = abs(refined_integral - analytical_integral)
+        refined_num_points = result["num_points"]
+
+        # Detailed reporting
+        initial_error_rate = abs(initial_error / analytical_integral) * 100
+        refined_error_rate = abs(refined_error / analytical_integral) * 100
+        error_reduction = initial_error / refined_error if refined_error > 0 else float("inf")
+
+        print(f"\n=== {test_case['id']} ===")
+        print(f"{'Metric':<25} | {'Initial':<20} | {'Refined':<20}")
+        print("-" * 70)
+        print(f"{'Exact integral':<25} | {analytical_integral:<20.8f} | {'-':<20}")
+        print(f"{'Grid points':<25} | {initial_num_points:<20} | {refined_num_points:<20}")
+        print(f"{'Computed integral':<25} | {initial_integral:<20.8f} | {refined_integral:<20.8f}")
+        print(f"{'Absolute error':<25} | {initial_error:<20.8e} | {refined_error:<20.8e}")
+        print(f"{'Error rate (%)':<25} | {initial_error_rate:<20.4f} | {refined_error_rate:<20.4f}")
+        print(
+            f"{'Function evaluations':<25} | {initial_num_points:<20} | {result['num_evaluations']:<20}"
+        )
+        print(f"{'Error reduction':<25} | {'-':<20} | {error_reduction:<20.1f}x")
+        print("=" * 70)
+
+        # Assertions
+        if test_case["id"] == "Constant_Function_No_Refinement":
+            assert refined_num_points == initial_num_points
+        else:
+            assert refined_error < initial_error
+            assert refined_num_points >= initial_num_points
