@@ -1,0 +1,59 @@
+﻿============================= test session starts =============================
+platform win32 -- Python 3.13.1, pytest-9.0.2, pluggy-1.6.0 -- C:\Python313\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\valok\.gemini\antigravity\scratch\grid
+configfile: pyproject.toml
+plugins: anyio-4.9.0
+collecting ... collected 10 items
+
+src/grid/tests/test_maxdet.py::test_maxdet_constant PASSED               [ 10%]
+src/grid/tests/test_maxdet.py::test_maxdet_weights_positive PASSED       [ 20%]
+src/grid/tests/test_maxdet.py::test_maxdet_sum_weights PASSED            [ 30%]
+src/grid/tests/test_maxdet.py::test_maxdet_integration_spherical_harmonic[1] PASSED [ 40%]
+src/grid/tests/test_maxdet.py::test_maxdet_integration_spherical_harmonic[2] PASSED [ 50%]
+src/grid/tests/test_maxdet.py::test_maxdet_integration_spherical_harmonic[3] PASSED [ 60%]
+src/grid/tests/test_maxdet.py::test_maxdet_integration_spherical_harmonic[4] PASSED [ 70%]
+src/grid/tests/test_maxdet.py::test_maxdet_integration_spherical_harmonic[5] PASSED [ 80%]
+src/grid/tests/test_maxdet.py::test_maxdet_orthonormality PASSED         [ 90%]
+src/grid/tests/test_maxdet.py::test_integrate_method_interface FAILED    [100%]
+
+================================== FAILURES ===================================
+_______________________ test_integrate_method_interface _______________________
+
+    def test_integrate_method_interface():
+        # Test that integrate(function) and Grid.integrate(values) are consistent
+        grid = MaxDeterminantGrid(degree=2)
+        # R^2 = 1 on unit sphere
+        func = lambda p: p[:, 0]**2 + p[:, 1]**2 + p[:, 2]**2
+    
+        val1 = grid.integrate(func)
+>       val2 = grid.integrate(np.ones(grid.size))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+src\grid\tests\test_maxdet.py:74: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <grid.max_det.MaxDeterminantGrid object at 0x0000013422BCC4B0>
+function = array([1., 1., 1., 1., 1., 1., 1., 1., 1.])
+
+    def integrate(self, function):
+        r"""Integrate a function over the sphere.
+    
+        Parameters
+        ----------
+        function : callable
+            A function that accepts (N, 3) points and returns (N,) values.
+    
+        Returns
+        -------
+        float:
+            The integral of the function over the unit sphere.
+        """
+>       return np.sum(function(self.points) * self.weights)
+                      ^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: 'numpy.ndarray' object is not callable
+
+src\grid\max_det.py:86: TypeError
+=========================== short test summary info ===========================
+FAILED src/grid/tests/test_maxdet.py::test_integrate_method_interface - TypeError: 'numpy.ndarray' object is not callable
+========================= 1 failed, 9 passed in 1.23s =========================
