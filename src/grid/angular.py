@@ -282,6 +282,7 @@ SPHERICAL_DEGREES = dict([(v, k) for k, v in SPHERICAL_NPOINTS.items()])
 # Cache is used to store the angular grid
 LEBEDEV_CACHE = {}
 SPHERICAL_CACHE = {}
+MAXDET_CACHE = {}
 
 
 class AngularGrid(Grid):
@@ -300,8 +301,9 @@ class AngularGrid(Grid):
     :math:`4\pi` normalization factor present in the original quadrature scheme
     is included in the integration weights.
 
-    Two types of angular grids are supported: Lebedev-Laikov grid and symmetric
-    spherical t-design. Specifically, for spherical t-design, the weights are constant
+    Two types of angular grids are supported: Lebedev-Laikov grid, symmetric
+    spherical t-design, and maximum determinant points. 
+    Specifically, for spherical t-design, the weights are constant
     value of :math:`4 \pi / N`\, where :math:`N` is the number of points in the grid.
     The weights are chosen so that the spherical harmonics are normalized.
 
@@ -332,8 +334,8 @@ class AngularGrid(Grid):
             If True, then store the points and weights of the AngularGrid in cache
             to avoid duplicate grids that have the same `degree`\.
         method: str, optional, keyword-only
-            Method for constructing the angular grid. Options are "lebedev" (for Lebedev-Laikov)
-            and "spherical" (for symmetric spherical t-design).
+            Method for constructing the angular grid. Options are "lebedev" (for Lebedev-Laikov),
+            "spherical" (for symmetric spherical t-design), and "maxdet" (for maximum determinant).
 
         Returns
         -------
@@ -353,8 +355,10 @@ class AngularGrid(Grid):
             cache_dict = LEBEDEV_CACHE
         elif method == "spherical":
             cache_dict = SPHERICAL_CACHE
+        elif method == "maxdet":
+            cache_dict = MAXDET_CACHE
         else:
-            raise ValueError(f"Method {method} is not supported, choose 'lebedev' or 'spherical'")
+            raise ValueError(f"Method {method} is not supported, choose 'lebedev', 'spherical' or 'maxdet'")
 
         # allow only one of degree or size to be given
         if size is not None:
@@ -406,15 +410,15 @@ class AngularGrid(Grid):
     @staticmethod
     def convert_angular_sizes_to_degrees(sizes: np.ndarray, method: str):
         """
-        Convert given Lebedev/Spherical design grid sizes to degrees.
+        Convert given Lebedev/Spherical/Max-Det design grid sizes to degrees.
 
         Parameters
         ----------
         sizes : ndarray[int]
             Sequence of angular grid sizes (e.g., number of points for each atomic shell).
         method: str
-            Method for constructing the angular grid. Options are "lebedev" (for Lebedev-Laikov)
-            and "spherical" (for symmetric spherical t-design).
+            Method for constructing the angular grid. Options are "lebedev" (for Lebedev-Laikov),
+            "spherical" (for symmetric spherical t-design), and "maxdet" (for maximum determinant).
 
         Returns
         -------
@@ -448,8 +452,8 @@ class AngularGrid(Grid):
             degree is used for constructing the grid. Use None, if `degree` is given. If both
             `degree` and `size` are given `degree` is used for constructing the grid.
         method: str
-            Method for constructing the angular grid. Options are "lebedev" (for Lebedev-Laikov)
-            and "spherical" (for symmetric spherical t-design).
+            Method for constructing the angular grid. Options are "lebedev" (for Lebedev-Laikov),
+            "spherical" (for symmetric spherical t-design), and "maxdet" (for maximum determinant).
 
         Returns
         -------
@@ -464,8 +468,12 @@ class AngularGrid(Grid):
             dict_degrees, dict_npoints = LEBEDEV_DEGREES, LEBEDEV_NPOINTS
         elif method == "spherical":
             dict_degrees, dict_npoints = SPHERICAL_DEGREES, SPHERICAL_NPOINTS
+        elif method == "maxdet":
+            # For maxdet, N = (t+1)^2
+            from grid.max_det import MaxDeterminantGrid
+            return MaxDeterminantGrid._get_degree_and_size(degree, size)
         else:
-            raise ValueError(f"Method {method} is not supported, choose 'lebedev' or 'spherical'")
+            raise ValueError(f"Method {method} is not supported, choose 'lebedev', 'spherical' or 'maxdet'")
 
         # check whether degree and size are valid
         if not (degree is None or (isinstance(degree, (int, np.integer)) and degree >= 0)):
@@ -518,8 +526,8 @@ class AngularGrid(Grid):
         size : int
             Number of angular grid points.
         method: str
-            Method for constructing the angular grid. Options are "lebedev" (for Lebedev-Laikov)
-            and "spherical" (for symmetric spherical t-design).
+            Method for constructing the angular grid. Options are "lebedev" (for Lebedev-Laikov),
+            "spherical" (for symmetric spherical t-design), and "maxdet" (for maximum determinant).
 
         Returns
         -------
@@ -535,8 +543,13 @@ class AngularGrid(Grid):
         elif method == "spherical":
             dict_degrees, dict_npoints = SPHERICAL_DEGREES, SPHERICAL_NPOINTS
             file_path = "grid.data.spherical_design"
+        elif method == "maxdet":
+            from grid.max_det import MaxDeterminantGrid
+            # Reuse logic from MaxDeterminantGrid but ensure it follows the AngularGrid interface
+            grid = MaxDeterminantGrid(degree=degree, size=size, cache=False)
+            return grid.points, grid.weights / (4 * np.pi) # Undo the 4pi because it's added back in caller
         else:
-            raise ValueError(f"Method {method} is not supported, choose 'lebedev' or 'spherical'")
+            raise ValueError(f"Method {method} is not supported, choose 'lebedev', 'spherical' or 'maxdet'")
 
         # check whether degree and size are valid
         if not (degree is None or (isinstance(degree, (int, np.integer)) and degree >= 0)):

@@ -25,6 +25,7 @@ from unittest import TestCase
 import numpy as np
 import pytest
 from numpy.testing import (
+    assert_allclose,
     assert_almost_equal,
     assert_array_equal,
     assert_equal,
@@ -139,11 +140,11 @@ def test_integration_of_spherical_harmonic_up_to_degree(degree, method):
     #   Returns a three-dimensional array where [order m, degree l, points]
     sph_harm = generate_real_spherical_harmonics(degree, theta, phi)
     for l_deg in range(0, degree):
-        for m_ord in range(-l_deg, l_deg):
+        for m_ord in range(2 * l_deg + 1):
             sph_harm_one = sph_harm[l_deg**2 : (l_deg + 1) ** 2, :]
             if l_deg == 0 and m_ord == 0:
                 actual = np.sqrt(4.0 * np.pi)
-                assert_equal(actual, grid.integrate(sph_harm_one[m_ord, :]))
+                assert_allclose(actual, grid.integrate(sph_harm_one[m_ord, :]))
             else:
                 assert_almost_equal(0.0, grid.integrate(sph_harm_one[m_ord, :]))
 
@@ -176,9 +177,9 @@ def test_orthogonality_of_spherical_harmonic_up_to_degree_three(method):
     #   Returns a three dimensional array where [order m, degree l, points]
     sph_harm = generate_real_spherical_harmonics(degree, theta, phi)
     for l_deg in range(0, 4):
-        for m_ord in [0] + [x for x in range(1, l_deg + 1)] + [-x for x in range(1, l_deg + 1)]:
+        for m_ord in range(2 * l_deg + 1):
             for l2 in range(0, 4):
-                for m2 in [0] + [x for x in range(1, l2 + 1)] + [-x for x in range(1, l2 + 1)]:
+                for m2 in range(2 * l2 + 1):
                     sph_harm_one = sph_harm[l_deg**2 : (l_deg + 1) ** 2, :]
                     sph_harm_two = sph_harm[l2**2 : (l2 + 1) ** 2, :]
                     integral = grid.integrate(sph_harm_one[m_ord, :] * sph_harm_two[m2, :])

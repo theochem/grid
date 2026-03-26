@@ -91,6 +91,7 @@ Modules
     ./notebooks/quickstart
     One-Dimensional Grids <./notebooks/one_dimensional_grids>
     Angular Grids <./notebooks/angular_grid>
+    Max-Det Integration <./notebooks/max_det_integration>
     Atom Grid Construction <./notebooks/atom_grid_construction>
     Atom Grid Application <./notebooks/atom_grid>
     Molecular Grid Construction <./notebooks/molecular_grid_construction>

@@ -33,7 +33,7 @@ class MaxDeterminantGrid(Grid):
     
     Maximum determinant points (also known as Fekete or extremal points) 
     provide stable integration on the sphere with non-negative weights.
-    For degree $t$, the number of points is $N = (t+1)^2$.
+    For degree :math:`t`, the number of points is :math:`N = (t+1)^2`.
     """
 
     def __init__(self, degree: int | None = 10, *, size: int | None = None, cache: bool = True):
@@ -64,6 +64,31 @@ class MaxDeterminantGrid(Grid):
         # Consistent with AngularGrid, multiply weights by 4 pi
         super().__init__(points, weights * 4 * np.pi)
         self._degree = actual_degree
+
+    @staticmethod
+    def _get_degree_and_size(degree: int | None, size: int | None):
+        """Map the given degree and/or size to the degree and size of a supported maxdet grid."""
+        if degree is None and size is None:
+            raise ValueError("Both degree and size cannot be None.")
+        
+        if size is not None:
+            degree = int(np.ceil(np.sqrt(size))) - 1
+            
+        # Find the best supported degree
+        supported_degrees = []
+        data_path = files("grid.data.max_det")
+        for f in data_path.iterdir():
+            if f.name.startswith("maxdet_") and f.name.endswith(".npz"):
+                parts = f.name.replace(".npz", "").split("_")
+                supported_degrees.append(int(parts[1]))
+        
+        supported_degrees.sort()
+        idx = np.searchsorted(supported_degrees, degree)
+        if idx >= len(supported_degrees):
+            idx = len(supported_degrees) - 1
+            
+        actual_degree = supported_degrees[idx]
+        return actual_degree, (actual_degree + 1)**2
 
     @property
     def degree(self):

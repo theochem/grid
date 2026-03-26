@@ -89,8 +89,8 @@ class AtomGrid(Grid):
             spherical grids at each radial grid point. If the integer is zero, then no rotate
             is used.
         method: str, optional, keyword-only
-            Method for constructing the angular grid. Options are "lebedev" (for Lebedev-Laikov)
-            and "spherical" (for symmetric spherical t-design).
+            Method for constructing the angular grid. Options are "lebedev" (for Lebedev-Laikov),
+            "spherical" (for symmetric spherical t-design), and "maxdet" (for maximum determinant).
 
         """
         # check stage, if center is None, set to (0., 0., 0.)
@@ -172,8 +172,8 @@ class AtomGrid(Grid):
             Integer used as a seed for generating random rotation matrices to rotate the angular
             spherical grids at each radial grid point. If 0, then no rotate is made.
         method: str, optional
-            Method for constructing the angular grid. Options are "lebedev" (for Lebedev-Laikov)
-            and "spherical" (for symmetric spherical t-design).
+            Method for constructing the angular grid. Options are "lebedev" (for Lebedev-Laikov),
+            "spherical" (for symmetric spherical t-design), and "maxdet" (for maximum determinant).
 
         Notes
         -----
@@ -279,8 +279,8 @@ class AtomGrid(Grid):
             spherical grids at each radial grid point. If the integer is zero, then no rotate
             is used.
         method: str, optional
-            Method for constructing the angular grid. Options are "lebedev" (for Lebedev-Laikov)
-            and "spherical" (for symmetric spherical t-design).
+            Method for constructing the angular grid. Options are "lebedev" (for Lebedev-Laikov),
+            "spherical" (for symmetric spherical t-design), and "maxdet" (for maximum determinant).
 
         Returns
         -------
