@@ -26,6 +26,8 @@ import warnings
 from importlib_resources import files
 from grid.basegrid import Grid
 
+__all__ = ["MaxDeterminantGrid"]
+
 MAXDET_CACHE = {}
 
 class MaxDeterminantGrid(Grid):
@@ -61,12 +63,25 @@ class MaxDeterminantGrid(Grid):
         # Support mapping and loading
         points, weights, actual_degree = self._load_maxdet(degree, cache)
         
-        # Consistent with AngularGrid, multiply weights by 4 pi
-        super().__init__(points, weights * 4 * np.pi)
+        # Store raw unnormalized weights
+        super().__init__(points, weights)
         self._degree = actual_degree
 
     @staticmethod
-    def _get_degree_and_size(degree: int | None, size: int | None):
+    def _get_available_degrees():
+        if not hasattr(MaxDeterminantGrid, "_available_degrees"):
+            supported = []
+            data_path = files("grid.data.max_det")
+            for f in data_path.iterdir():
+                if f.name.startswith("maxdet_") and f.name.endswith(".npz"):
+                    parts = f.name.replace(".npz", "").split("_")
+                    supported.append(int(parts[1]))
+            supported.sort()
+            MaxDeterminantGrid._available_degrees = supported
+        return MaxDeterminantGrid._available_degrees
+
+    @classmethod
+    def _get_degree_and_size(cls, degree: int | None, size: int | None):
         """Map the given degree and/or size to the degree and size of a supported maxdet grid."""
         if degree is None and size is None:
             raise ValueError("Both degree and size cannot be None.")
@@ -74,15 +89,10 @@ class MaxDeterminantGrid(Grid):
         if size is not None:
             degree = int(np.ceil(np.sqrt(size))) - 1
             
-        # Find the best supported degree
-        supported_degrees = []
-        data_path = files("grid.data.max_det")
-        for f in data_path.iterdir():
-            if f.name.startswith("maxdet_") and f.name.endswith(".npz"):
-                parts = f.name.replace(".npz", "").split("_")
-                supported_degrees.append(int(parts[1]))
-        
-        supported_degrees.sort()
+        supported_degrees = cls._get_available_degrees()
+        if not supported_degrees:
+            raise FileNotFoundError("No precomputed maximum determinant points found in grid.data.max_det")
+            
         idx = np.searchsorted(supported_degrees, degree)
         if idx >= len(supported_degrees):
             idx = len(supported_degrees) - 1
@@ -111,44 +121,28 @@ class MaxDeterminantGrid(Grid):
             The integral of the function/arrays over the unit sphere.
         """
         if len(args) == 1 and callable(args[0]):
-            return np.sum(args[0](self.points) * self.weights)
-        return super().integrate(*args)
+            return 4 * np.pi * np.sum(args[0](self.points) * self.weights)
+        return 4 * np.pi * super().integrate(*args)
 
     def _load_maxdet(self, degree, cache):
         """Internal loader for precomputed max-det points."""
-        # Find the best supported degree
-        supported_degrees = []
-        data_path = files("grid.data.max_det")
-        for f in data_path.iterdir():
-            if f.name.startswith("maxdet_") and f.name.endswith(".npz"):
-                parts = f.name.replace(".npz", "").split("_")
-                supported_degrees.append(int(parts[1]))
+        actual_degree, size = self._get_degree_and_size(degree, None)
+        supported_degrees = self._get_available_degrees()
         
-        if not supported_degrees:
-            raise FileNotFoundError("No precomputed maximum determinant points found in grid.data.max_det")
-        
-        supported_degrees.sort()
-        idx = np.searchsorted(supported_degrees, degree)
-        if idx >= len(supported_degrees):
-            idx = len(supported_degrees) - 1
+        if degree is not None and degree > supported_degrees[-1]:
             warnings.warn(f"Degree {degree} is larger than maximum supported {supported_degrees[-1]}. Using {supported_degrees[-1]}.", RuntimeWarning)
-        
-        actual_degree = supported_degrees[idx]
         
         if cache and actual_degree in MAXDET_CACHE:
             return MAXDET_CACHE[actual_degree] + (actual_degree,)
 
-        # Find the filename for this degree
-        filename = None
-        for f in data_path.iterdir():
-            if f.name.startswith(f"maxdet_{actual_degree}_") and f.name.endswith(".npz"):
-                filename = f.name
-                break
+        data_path = files("grid.data.max_det")
+        filename = f"maxdet_{actual_degree}_{size}.npz"
+        filepath = data_path.joinpath(filename)
         
-        if filename is None:
+        if not filepath.exists():
              raise FileNotFoundError(f"Missing data for degree {actual_degree}")
 
-        data = np.load(data_path.joinpath(filename))
+        data = np.load(filepath)
         points, weights = data["points"], data["weights"]
         
         if cache:

@@ -30,7 +30,7 @@ def save_as_npz(degree, npts, points, weights, target_dir):
     np.savez(filepath, degree=degree, size=npts, points=points, weights=weights)
 
 if __name__ == "__main__":
-    target_dir = r"C:\Users\valok\.gemini\antigravity\scratch\grid\src\grid\data\max_det"
+    target_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src", "grid", "data", "max_det"))
     if not os.path.exists(target_dir):
         os.makedirs(target_dir)
     

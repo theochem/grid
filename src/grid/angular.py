@@ -282,7 +282,6 @@ SPHERICAL_DEGREES = dict([(v, k) for k, v in SPHERICAL_NPOINTS.items()])
 # Cache is used to store the angular grid
 LEBEDEV_CACHE = {}
 SPHERICAL_CACHE = {}
-MAXDET_CACHE = {}
 
 
 class AngularGrid(Grid):
@@ -356,7 +355,7 @@ class AngularGrid(Grid):
         elif method == "spherical":
             cache_dict = SPHERICAL_CACHE
         elif method == "maxdet":
-            cache_dict = MAXDET_CACHE
+            cache_dict = None
         else:
             raise ValueError(f"Method {method} is not supported, choose 'lebedev', 'spherical' or 'maxdet'")
 
@@ -373,16 +372,16 @@ class AngularGrid(Grid):
         # map degree and size to the supported (i.e., pre-computed) degree and size
         degree, size = self._get_degree_and_size(degree=degree, size=size, method=method)
         # load pre-computed angular points & weights and make angular grid
-        if degree not in cache_dict:
+        if cache_dict is not None and degree in cache_dict:
+            points, weights = cache_dict[degree]
+        else:
             points, weights = self._load_precomputed_angular_grid(degree, size, method)
             # store the points and weights in cache_dict which updates the global cache
             # dictionary for the given method (i.e., LEBEDEV_CACHE or SPHERICAL_CACHE)
             # in this case, if another instance of AngularGrid is created with the same degree,
             # the points and weights are not recomputed.
-            if cache:
+            if cache and cache_dict is not None:
                 cache_dict[degree] = points, weights
-        else:
-            points, weights = cache_dict[degree]
         self._degree = degree
         # Multiply weights by 4 pi, so that the spherical harmonics are orthonormal,
         #   etc. \int Y_l1 Y_l2 = \delta_{l1, l2}
@@ -545,9 +544,9 @@ class AngularGrid(Grid):
             file_path = "grid.data.spherical_design"
         elif method == "maxdet":
             from grid.max_det import MaxDeterminantGrid
-            # Reuse logic from MaxDeterminantGrid but ensure it follows the AngularGrid interface
+            # MaxDeterminantGrid stores raw (unnormalized) weights
             grid = MaxDeterminantGrid(degree=degree, size=size, cache=False)
-            return grid.points, grid.weights / (4 * np.pi) # Undo the 4pi because it's added back in caller
+            return grid.points, grid.weights
         else:
             raise ValueError(f"Method {method} is not supported, choose 'lebedev', 'spherical' or 'maxdet'")
 

@@ -5,3 +5,5 @@ include grid.data.lebedev/*.npz
 include grid.data.spherical_design/*.npz
 include grid.data.prune_grid/*.npz
 include grid.data.proatoms/*.npz
+include grid.data.max_det/*.npz
+

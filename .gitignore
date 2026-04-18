@@ -126,3 +126,6 @@ nosetests.xml
 coverage.xml
 *,cover
 .pytest_cache/
+output.txt
+results.txt
+_version.py

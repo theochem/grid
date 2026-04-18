@@ -16,10 +16,10 @@ def test_maxdet_weights_positive():
     assert np.all(grid.weights > 0)
 
 def test_maxdet_sum_weights():
-    # Sum of weights should be 4*pi
+    # Sum of raw unnormalized weights should be 1.0
     for d in [1, 2, 5, 10]:
         grid = MaxDeterminantGrid(degree=d)
-        assert np.allclose(np.sum(grid.weights), 4 * np.pi)
+        assert np.allclose(np.sum(grid.weights), 1.0)
 
 @pytest.mark.parametrize("degree", [1, 2, 3, 4, 5])
 def test_maxdet_integration_spherical_harmonic(degree):
@@ -38,8 +38,8 @@ def test_maxdet_integration_spherical_harmonic(degree):
         for m_idx in range(2 * l_deg + 1):
             integral = np.sum(sph_harm_l[m_idx, :] * grid.weights)
             if l_deg == 0:
-                # Integral of Y_00 = 1/sqrt(4pi) is sqrt(4pi)
-                assert np.allclose(integral, np.sqrt(4 * np.pi))
+                # Integral of Y_00 = 1/sqrt(4pi). With unnormalized weights, it evaluates to 1/sqrt(4pi) * 1.0
+                assert np.allclose(integral, 1.0 / np.sqrt(4 * np.pi))
             else:
                 # Integral of Y_lm (l > 0) is 0
                 assert np.abs(integral) < 1e-10
@@ -61,7 +61,7 @@ def test_maxdet_orthonormality():
     for i in range(num_harmonics):
         for j in range(num_harmonics):
             integral = np.sum(sph_harm[i, :] * sph_harm[j, :] * grid.weights)
-            expected = 1.0 if i == j else 0.0
+            expected = 1.0 / (4 * np.pi) if i == j else 0.0
             assert np.allclose(integral, expected, atol=1e-10)
 
 def test_integrate_method_interface():
