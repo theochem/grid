@@ -97,11 +97,11 @@ class TestLebedev(TestCase):
             AngularGrid._get_degree_and_size(degree=None, size=None, method="gibberish")
         with self.assertRaises(ValueError):
             AngularGrid._get_degree_and_size(degree=None, size=None, method="lebedev")
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             AngularGrid._get_degree_and_size(degree=-1, size=None, method="lebedev")
         with self.assertRaises(ValueError):
             AngularGrid._get_degree_and_size(degree=132, size=None, method="lebedev")
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             AngularGrid._get_degree_and_size(degree=None, size=-1, method="lebedev")
         with self.assertRaises(ValueError):
             AngularGrid._get_degree_and_size(degree=None, size=6000, method="lebedev")
@@ -117,11 +117,11 @@ class TestLebedev(TestCase):
             AngularGrid(degree=None)
         with self.assertRaises(ValueError):
             AngularGrid(degree=None, size=6000)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             AngularGrid(degree=None, size=-1)
         with self.assertRaises(ValueError):
             AngularGrid(degree=132)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             AngularGrid(degree=-2)
         with self.assertWarns(RuntimeWarning):
             AngularGrid(degree=5, size=10)

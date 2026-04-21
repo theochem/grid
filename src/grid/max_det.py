@@ -121,7 +121,13 @@ class MaxDeterminantGrid(Grid):
             The integral of the function/arrays over the unit sphere.
         """
         if len(args) == 1 and callable(args[0]):
-            return 4 * np.pi * np.sum(args[0](self.points) * self.weights)
+            values = np.asarray(args[0](self.points))
+            if values.ndim != 1 or values.shape != (self.size,):
+                raise ValueError(
+                    f"Callable passed to integrate must return a 1-D array with shape {(self.size,)}, "
+                    f"got shape {values.shape}."
+                )
+            return 4 * np.pi * super().integrate(values)
         return 4 * np.pi * super().integrate(*args)
 
     def _load_maxdet(self, degree, cache):

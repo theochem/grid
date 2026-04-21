@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 from grid.max_det import MaxDeterminantGrid
-from grid.utils import generate_real_spherical_harmonics, convert_cart_to_sph
+from grid.utils import generate_real_spherical_harmonics
 
 def test_maxdet_constant():
     # Integral of constant 1 over S^2 should be 4*pi

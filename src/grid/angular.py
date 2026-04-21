@@ -462,6 +462,12 @@ class AngularGrid(Grid):
             assigning the degree and size.
 
         """
+        # Validate inputs first (applies to all methods)
+        if not (degree is None or (isinstance(degree, (int, np.integer)) and degree >= 0)):
+            raise TypeError(f"Argument degree should be a non-negative integer, got {degree}")
+        if not (size is None or (isinstance(size, (int, np.integer)) and size > 0)):
+            raise TypeError(f"Argument size should be a positive integer when given, got {size}")
+
         # assign the dictionary of degrees and number of points to use
         if method == "lebedev":
             dict_degrees, dict_npoints = LEBEDEV_DEGREES, LEBEDEV_NPOINTS
@@ -473,12 +479,6 @@ class AngularGrid(Grid):
             return MaxDeterminantGrid._get_degree_and_size(degree, size)
         else:
             raise ValueError(f"Method {method} is not supported, choose 'lebedev', 'spherical' or 'maxdet'")
-
-        # check whether degree and size are valid
-        if not (degree is None or (isinstance(degree, (int, np.integer)) and degree >= 0)):
-            raise ValueError(f"Argument degree should be a positive integer or None, got {degree}!")
-        if not (size is None or (isinstance(size, (int, np.integer)) and size >= 0)):
-            raise ValueError(f"Argument size should be a positive integer or None, got {size}!")
 
         if degree and size:
             warnings.warn(
