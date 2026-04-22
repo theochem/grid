@@ -20,7 +20,7 @@
 """Utility Module."""
 
 import numpy as np
-from scipy.special import sph_harm_y
+from scipy.special import sph_harm_y, sph_harm_y_all
 from scipy.constants import physical_constants, angstrom
 
 _BOHR_RADIUS_M = physical_constants["Bohr radius"][0]
@@ -561,33 +561,41 @@ def generate_real_spherical_harmonics_scipy(l_max: int, theta: np.ndarray, phi: 
     if l_max < 0:
         raise ValueError(f"lmax should be non-negative, got l_amx={l_max}")
 
+    theta = np.asarray(theta)
+    phi = np.asarray(phi)
+
+    if theta.shape != phi.shape:
+        raise ValueError("theta and phi must have the same shape")
+
+    # sph_vals (i, j) corresponds to degree i and order j for all 0 <= i <= n and -m <= j <= m
+    sph_vals = sph_harm_y_all(l_max, l_max, phi, theta)
+
+    # Orders m arranged to match sph_vals column layout:
+    # first non-negative m (0, 1, ..., l_max), then negative m (-l_max, ..., -1)
+    m_list = np.concatenate([np.arange(0, l_max + 1), np.arange(-l_max, 0)])
+
+    # Remove Conway phase from SciPy and apply sqrt(2) factor for m != 0
+    phase_cor = np.where(m_list == 0, 1.0, np.sqrt(2) * (-1) ** np.abs(m_list))
+    no_phase = np.einsum("j, ijk -> ijk", phase_cor, sph_vals)
+
     total_sph = np.zeros((0, len(theta)), dtype=float)
-    l_list = np.arange(l_max + 1)
-    for l_val in l_list:
-        # generate m=0 real spherical harmonic
-        zero_real_sph = sph_harm_y(l_val, 0, phi, theta).real
+    for l_val in range(l_max + 1):
+        # spherical harmonics for degree l_val and all orders m = 0, 1, ..., l_val, -l_val, ..., -1
+        sph_degree_pos = no_phase[l_val, : l_val + 1]  # m = 0..l_val
 
-        # generate order m=positive real spherical harmonic: sqrt(2) * (-1)^m * Re(Y_l^m)
-        m_list_p = np.arange(1, l_val + 1, dtype=int)
-        pos_real_sph = (
-            np.sqrt(2)
-            * (-1) ** m_list_p[:, None]
-            * sph_harm_y(l_val, m_list_p[:, None], phi, theta).real
-            # Remove Conway phase from SciPy
-        )
-        # generate order m=negative real spherical harmonic: sqrt(2) * (-1)^m * Im(Y_l^m)
-        neg_real_sph = (
-            np.sqrt(2)
-            * (-1) ** m_list_p[:, None]
-            * sph_harm_y(
-                l_val, m_list_p[:, None], phi, theta
-            ).imag  # Remove Conway phase from SciPy
-        )
+        zero_real_sph = sph_degree_pos[0].real
+        pos_real_sph = sph_degree_pos[1:].real
+        # negative m real is the imaginary part of the positive m spherical harmonic
+        neg_real_sph = sph_degree_pos[1:].imag
 
-        # Convert to horton 2 order
-        horton_ord = [[pos_real_sph[i], neg_real_sph[i]] for i in range(0, l_val)]
-        horton_ord = tuple(x for sublist in horton_ord for x in sublist)
-        total_sph = np.vstack((total_sph, zero_real_sph, *horton_ord))
+        # Build HORTON order for this l: 0, +1, -1, +2, -2, ...
+        degree_block = np.empty((2 * l_val + 1, len(theta)), dtype=float)
+        degree_block[0] = zero_real_sph
+        degree_block[1::2] = pos_real_sph  # positive m real part in the odd rows
+        degree_block[2::2] = neg_real_sph  # negative m real part in the even rows
+
+        total_sph = np.vstack((total_sph, degree_block))
+
     return total_sph
 
 
