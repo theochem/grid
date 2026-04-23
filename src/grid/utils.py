@@ -578,23 +578,18 @@ def generate_real_spherical_harmonics_scipy(l_max: int, theta: np.ndarray, phi: 
     phase_cor = np.where(m_list == 0, 1.0, np.sqrt(2) * (-1) ** np.abs(m_list))
     no_phase = np.einsum("j, ijk -> ijk", phase_cor, sph_vals)
 
-    total_sph = np.zeros((0, len(theta)), dtype=float)
+    n_pts = len(theta)
+    total_sph = np.empty(((l_max + 1) ** 2, n_pts), dtype=float)
     for l_val in range(l_max + 1):
         # spherical harmonics for degree l_val and all orders m = 0, 1, ..., l_val, -l_val, ..., -1
         sph_degree_pos = no_phase[l_val, : l_val + 1]  # m = 0..l_val
-
-        zero_real_sph = sph_degree_pos[0].real
-        pos_real_sph = sph_degree_pos[1:].real
+        # degrees before l_val sum_k=0^(l_val-1) (2k+1) = l_val^2
+        row_start = l_val**2
+        row_end = (l_val + 1) ** 2
+        total_sph[row_start] = sph_degree_pos[0].real  # m = 0 real part
+        total_sph[row_start + 1 : row_end : 2] = sph_degree_pos[1:].real  # m > 0 real part
         # negative m real is the imaginary part of the positive m spherical harmonic
-        neg_real_sph = sph_degree_pos[1:].imag
-
-        # Build HORTON order for this l: 0, +1, -1, +2, -2, ...
-        degree_block = np.empty((2 * l_val + 1, len(theta)), dtype=float)
-        degree_block[0] = zero_real_sph
-        degree_block[1::2] = pos_real_sph  # positive m real part in the odd rows
-        degree_block[2::2] = neg_real_sph  # negative m real part in the even rows
-
-        total_sph = np.vstack((total_sph, degree_block))
+        total_sph[row_start + 2 : row_end : 2] = sph_degree_pos[1:].imag
 
     return total_sph
 
