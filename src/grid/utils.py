@@ -20,7 +20,7 @@
 """Utility Module."""
 
 import numpy as np
-from scipy.special import sph_harm_y
+from scipy.special import sph_harm_y, sph_harm_y_all
 from scipy.constants import physical_constants, angstrom
 
 _BOHR_RADIUS_M = physical_constants["Bohr radius"][0]
@@ -554,40 +554,46 @@ def generate_real_spherical_harmonics_scipy(l_max: int, theta: np.ndarray, phi: 
 
     Notes
     -----
-    - SciPy spherical harmonics is known (Jan 30, 2024) to give NaN when the degree is large,
-      for our experience, when l >= 86.
-
+    - Spherical harmonics in SciPy may return NaNs for large degrees due to numerical
+      instability in associated Legendre functions. We tested up to
+      :math:`l_{max} = 600` without NaNs.
     """
     if l_max < 0:
-        raise ValueError(f"lmax should be non-negative, got l_amx={l_max}")
+        raise ValueError(f"lmax should be non-negative, got l_max={l_max}")
 
-    total_sph = np.zeros((0, len(theta)), dtype=float)
-    l_list = np.arange(l_max + 1)
-    for l_val in l_list:
-        # generate m=0 real spherical harmonic
-        zero_real_sph = sph_harm_y(l_val, 0, phi, theta).real
+    theta = np.asarray(theta)
+    phi = np.asarray(phi)
 
-        # generate order m=positive real spherical harmonic: sqrt(2) * (-1)^m * Re(Y_l^m)
-        m_list_p = np.arange(1, l_val + 1, dtype=int)
-        pos_real_sph = (
-            np.sqrt(2)
-            * (-1) ** m_list_p[:, None]
-            * sph_harm_y(l_val, m_list_p[:, None], phi, theta).real
-            # Remove Conway phase from SciPy
-        )
-        # generate order m=negative real spherical harmonic: sqrt(2) * (-1)^m * Im(Y_l^m)
-        neg_real_sph = (
-            np.sqrt(2)
-            * (-1) ** m_list_p[:, None]
-            * sph_harm_y(
-                l_val, m_list_p[:, None], phi, theta
-            ).imag  # Remove Conway phase from SciPy
+    if theta.shape != phi.shape:
+        raise ValueError("theta and phi must have the same shape")
+
+    if theta.ndim != 1 or phi.ndim != 1:
+        raise ValueError(
+            f"theta and phi must be 1D arrays, got theta.ndim={theta.ndim}, phi.ndim={phi.ndim}"
         )
 
-        # Convert to horton 2 order
-        horton_ord = [[pos_real_sph[i], neg_real_sph[i]] for i in range(0, l_val)]
-        horton_ord = tuple(x for sublist in horton_ord for x in sublist)
-        total_sph = np.vstack((total_sph, zero_real_sph, *horton_ord))
+    # sph_vals (i, j) corresponds to degree i and order j for all 0 <= i <= n and -m <= j <= m
+    sph_vals = sph_harm_y_all(l_max, l_max, phi, theta)
+
+    # Remove Conway phase from SciPy and apply sqrt(2) factor for m != 0.
+    # Only non-negative orders m = 0..l_max are used below.
+    phase_cor_pos = np.ones(l_max + 1, dtype=float)
+    if l_max > 0:
+        phase_cor_pos[1:] = np.sqrt(2) * (-1.0) ** np.arange(1, l_max + 1)
+
+    n_pts = len(theta)
+    total_sph = np.empty(((l_max + 1) ** 2, n_pts), dtype=float)
+    for l_val in range(l_max + 1):
+        # spherical harmonics for degree l_val and non-negative orders m = 0..l_val
+        sph_degree_pos = sph_vals[l_val, : l_val + 1] * phase_cor_pos[: l_val + 1, None]
+        # degrees before l_val sum_k=0^(l_val-1) (2k+1) = l_val^2
+        row_start = l_val**2
+        row_end = (l_val + 1) ** 2
+        total_sph[row_start] = sph_degree_pos[0].real  # m = 0 real part
+        total_sph[row_start + 1 : row_end : 2] = sph_degree_pos[1:].real  # m > 0 real part
+        # negative m real is the imaginary part of the positive m spherical harmonic
+        total_sph[row_start + 2 : row_end : 2] = sph_degree_pos[1:].imag
+
     return total_sph
 
 

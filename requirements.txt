@@ -1,6 +1,6 @@
-numpy>=1.16
-pytest>=2.6
-scipy>=1.4
+pytestnumpy>=1.23.5
+pytest>=8.0.0
+scipy>=1.15.0
 matplotlib
 importlib_resources
 sympy
