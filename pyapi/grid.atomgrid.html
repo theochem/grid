@@ -272,20 +272,20 @@ location.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>rgrid</strong> (<a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><em>OneDGrid</em></a>) – The (one-dimensional) radial grid representing the radius of spherical grids.</p></li>
-<li><p><strong>degrees</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>dtype=int</em><em>) or </em><em>list</em><em>, </em><em>optional</em>) – Sequence of angular grid degrees used for constructing spherical grids at each
+<li><p><strong>rgrid</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">OneDGrid</span></code></a></span>) – The (one-dimensional) radial grid representing the radius of spherical grids.</p></li>
+<li><p><strong>degrees</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code> | <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Sequence of angular grid degrees used for constructing spherical grids at each
 radial grid point.
 If only one degree is given, the specified degree is used for all spherical grids.
 If the given degree is not supported, the next largest degree is used.</p></li>
-<li><p><strong>sizes</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>dtype=int</em><em>) or </em><em>list</em><em>, </em><em>keyword-only</em>) – Sequence of angular grid sizes used for constructing spherical grids at each radial
+<li><p><strong>sizes</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code> | <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></span>) – Sequence of angular grid sizes used for constructing spherical grids at each radial
 grid point. If only one size is given, the specified size is used for all spherical
 grids. If the given size is not supported, the next largest size is used. If both
 <cite>degrees</cite> and <cite>sizes</cite> are given, <cite>size</cite> are used for constructing the angular grid.</p></li>
-<li><p><strong>center</strong> (<em>ndarray</em><em>(</em><em>3</em><em>,</em><em>)</em><em>, </em><em>optional</em><em>, </em><em>keyword-only</em>) – Cartesian coordinates of the grid center. If <cite>None</cite>, the origin is used.</p></li>
-<li><p><strong>rotate</strong> (<em>int</em><em>, </em><em>optional</em><em>, </em><em>keyword-only</em>) – Integer used as a seed for generating random rotation matrices to rotate the angular
+<li><p><strong>center</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Cartesian coordinates of the grid center. If <cite>None</cite>, the origin is used.</p></li>
+<li><p><strong>rotate</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Integer used as a seed for generating random rotation matrices to rotate the angular
 spherical grids at each radial grid point. If the integer is zero, then no rotate
 is used.</p></li>
-<li><p><strong>method</strong> (<em>str</em><em>, </em><em>optional</em><em>, </em><em>keyword-only</em>) – Method for constructing the angular grid. Options are “lebedev” (for Lebedev-Laikov)
+<li><p><strong>method</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Method for constructing the angular grid. Options are “lebedev” (for Lebedev-Laikov)
 and “spherical” (for symmetric spherical t-design).</p></li>
 </ul>
 </dd>
@@ -332,9 +332,9 @@ from the Angular grid with the degree at <span class="math notranslate nohighlig
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em><em>, </em><em>optional</em>) – Three-dimensions Cartesian coordinates of points in atomic units.
+<li><p><strong>points</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Three-dimensions Cartesian coordinates of points in atomic units.
 If None, the atomic grid <cite>points</cite> will be used.</p></li>
-<li><p><strong>center</strong> (<em>ndarray</em><em>(</em><em>3</em><em>,</em><em>)</em><em>, </em><em>optional</em>) – Three-dimensional Cartesian coordinates of the center of coordinate system
+<li><p><strong>center</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Three-dimensional Cartesian coordinates of the center of coordinate system
 in atomic units. If None, the atomic grid <cite>center</cite> will be used.</p></li>
 </ul>
 </dd>
@@ -366,21 +366,21 @@ in atomic units. If None, the atomic grid <cite>center</cite> will be used.</p><
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>atnum</strong> (<em>int</em>) – The atomic number.</p></li>
-<li><p><strong>preset</strong> (<em>str</em><em>, </em><em>optional</em>) – The name of pre-defined grid specifying the radial sectors and their corresponding
+<li><p><strong>atnum</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – The atomic number.</p></li>
+<li><p><strong>preset</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – The name of pre-defined grid specifying the radial sectors and their corresponding
 number of angular grid points. Supported options include our custom presets:
 ‘coarse’, ‘medium’, ‘fine’, ‘veryfine’, ‘ultrafine’, and ‘insane’, as well as,
 other standard pre-defined grids including:
 ‘sg_0’, ‘sg_1’, ‘sg_2’, and ‘sg_3’, and the Ochsenfeld grids:
 ‘g1’, ‘g2’, ‘g3’, ‘g4’, ‘g5’, ‘g6’, and ‘g7’, with higher number indicating
 greater accuracy but denser grid. See <cite>Notes</cite> for more information.</p></li>
-<li><p><strong>rgrid</strong> (<a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><em>OneDGrid</em></a><em>, </em><em>optional</em>) – The 1D radial grid representing the radius of spherical grids.
+<li><p><strong>rgrid</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">OneDGrid</span></code></a></span>) – The 1D radial grid representing the radius of spherical grids.
 If None, a default radial grid (PowerRTransform of UniformInteger grid) for the give
 <cite>atnum</cite> is constructed.</p></li>
-<li><p><strong>center</strong> (<em>ndarray</em><em>(</em><em>3</em><em>,</em><em>)</em><em>, </em><em>optional</em>) – Cartesian coordinates of the grid center. If <cite>None</cite>, the origin is used.</p></li>
-<li><p><strong>rotate</strong> (<em>int</em><em>, </em><em>optional</em>) – Integer used as a seed for generating random rotation matrices to rotate the angular
+<li><p><strong>center</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Cartesian coordinates of the grid center. If <cite>None</cite>, the origin is used.</p></li>
+<li><p><strong>rotate</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Integer used as a seed for generating random rotation matrices to rotate the angular
 spherical grids at each radial grid point. If 0, then no rotate is made.</p></li>
-<li><p><strong>method</strong> (<em>str</em><em>, </em><em>optional</em>) – Method for constructing the angular grid. Options are “lebedev” (for Lebedev-Laikov)
+<li><p><strong>method</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Method for constructing the angular grid. Options are “lebedev” (for Lebedev-Laikov)
 and “spherical” (for symmetric spherical t-design).</p></li>
 </ul>
 </dd>
@@ -427,22 +427,22 @@ to the following radial points:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>rgrid</strong> (<a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><em>OneDGrid</em></a>) – The (one-dimensional) radial grid representing the radius of spherical grids.</p></li>
-<li><p><strong>radius</strong> (<em>float</em>) – The atomic radius to be multiplied with <cite>r_sectors</cite> in atomic units
+<li><p><strong>rgrid</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">OneDGrid</span></code></a></span>) – The (one-dimensional) radial grid representing the radius of spherical grids.</p></li>
+<li><p><strong>radius</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – The atomic radius to be multiplied with <cite>r_sectors</cite> in atomic units
 (to make the radial sectors atom specific).</p></li>
-<li><p><strong>r_sectors</strong> (<em>list</em><em> or </em><em>ndarray</em><em>(</em><em>S</em><em>,</em><em>)</em>) – Sequence of boundary radius (in atomic units) specifying sectors of the pruned radial
+<li><p><strong>r_sectors</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> | <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Sequence of boundary radius (in atomic units) specifying sectors of the pruned radial
 grid. The first sector is <code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">radius*r_sectors[0])</span></code>, then <code class="docutils literal notranslate"><span class="pre">(radius*r_sectors[0],</span>
 <span class="pre">radius*r_sectors[1])</span></code>, and so on.</p></li>
-<li><p><strong>d_sectors</strong> (<em>list</em><em> or </em><em>ndarray</em><em>(</em><em>S + 1</em><em>, </em><em>dtype=int</em><em>) or </em><em>None</em>) – Sequence of angular degrees for each radial sector of <cite>r_sectors</cite> in the pruned grid.
+<li><p><strong>d_sectors</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> | <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Sequence of angular degrees for each radial sector of <cite>r_sectors</cite> in the pruned grid.
 If None, then <cite>s_sectors</cite> should be given.</p></li>
-<li><p><strong>s_sectors</strong> (<em>list</em><em> or </em><em>ndarray</em><em>(</em><em>S + 1</em><em>, </em><em>dtype=int</em><em>) or </em><em>None</em><em>, </em><em>optional</em><em>, </em><em>keyword-only</em>) – Sequence of angular sizes for each radial sector of <cite>r_sectors</cite> in the pruned grid.
+<li><p><strong>s_sectors</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> | <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Sequence of angular sizes for each radial sector of <cite>r_sectors</cite> in the pruned grid.
 If both <cite>d_sectors</cite> and <cite>s_sectors</cite> are given, <cite>s_sectors</cite> is used.</p></li>
-<li><p><strong>center</strong> (<em>ndarray</em><em>(</em><em>3</em><em>,</em><em>)</em><em>, </em><em>optional</em>) – Three-dimensional Cartesian coordinates of the grid center in atomic units.
+<li><p><strong>center</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Three-dimensional Cartesian coordinates of the grid center in atomic units.
 If None, the origin is used.</p></li>
-<li><p><strong>rotate</strong> (<em>int</em><em>, </em><em>optional</em>) – Integer used as a seed for generating random rotation matrices to rotate the angular
+<li><p><strong>rotate</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Integer used as a seed for generating random rotation matrices to rotate the angular
 spherical grids at each radial grid point. If the integer is zero, then no rotate
 is used.</p></li>
-<li><p><strong>method</strong> (<em>str</em><em>, </em><em>optional</em>) – Method for constructing the angular grid. Options are “lebedev” (for Lebedev-Laikov)
+<li><p><strong>method</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Method for constructing the angular grid. Options are “lebedev” (for Lebedev-Laikov)
 and “spherical” (for symmetric spherical t-design).</p></li>
 </ul>
 </dd>
@@ -487,8 +487,8 @@ and weights multiplied by the ith weight of the radial grid.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>index</strong> (<em>int</em>) – Index of radial points.</p></li>
-<li><p><strong>r_sq</strong> (<em>bool</em><em>, </em><em>default True</em>) – If true, multiplies the angular grid weights with r**2.</p></li>
+<li><p><strong>index</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Index of radial points.</p></li>
+<li><p><strong>r_sq</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If true, multiplies the angular grid weights with r**2.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -542,7 +542,7 @@ with its weights:</p>
 <p>on each radial point <span class="math notranslate nohighlight">\(r_i\)</span> in the atomic grid.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>func_vals</strong> (<em>ndarray</em><em>(</em><em>...</em><em>, </em><em>N</em><em>)</em>) – The function values evaluated on all <span class="math notranslate nohighlight">\(N\)</span> points on the atomic grid
+<dd class="field-odd"><p><strong>func_vals</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – The function values evaluated on all <span class="math notranslate nohighlight">\(N\)</span> points on the atomic grid
 for many types of functions.  This can also be one-dimensional.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -566,7 +566,7 @@ This is then multiplied by the corresponding spherical harmonics at all
 <span class="math notranslate nohighlight">\((\theta_j, \phi_j)\)</span> angles and summed to obtain the equation above.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>func_vals</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – The function values evaluated on all <span class="math notranslate nohighlight">\(N\)</span> points on the atomic grid.</p>
+<dd class="field-odd"><p><strong>func_vals</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – The function values evaluated on all <span class="math notranslate nohighlight">\(N\)</span> points on the atomic grid.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><p>Callable function that interpolates the function and its derivative provided.
@@ -650,13 +650,13 @@ d\textbf{r}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>orders</strong> (<em>int</em>) – Generates all orders with Horton order depending on the type of the multipole
+<li><p><strong>orders</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Generates all orders with Horton order depending on the type of the multipole
 moment <cite>type_mom</cite>.</p></li>
-<li><p><strong>centers</strong> (<em>ndarray</em><em>(</em><em>M</em><em>,  </em><em>3</em><em>)</em>) – The centers <span class="math notranslate nohighlight">\(\textbf{R}_c\)</span> of the moments to compute from.</p></li>
-<li><p><strong>func_vals</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – The function <span class="math notranslate nohighlight">\(f\)</span> is evaluated at all <span class="math notranslate nohighlight">\(N\)</span> points on the integration
+<li><p><strong>centers</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – The centers <span class="math notranslate nohighlight">\(\textbf{R}_c\)</span> of the moments to compute from.</p></li>
+<li><p><strong>func_vals</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – The function <span class="math notranslate nohighlight">\(f\)</span> is evaluated at all <span class="math notranslate nohighlight">\(N\)</span> points on the integration
 grid.</p></li>
-<li><p><strong>type_mom</strong> (<em>str</em>) – The type of multipole moments: “cartesian”, “pure”, “radial” and “pure-radial”.</p></li>
-<li><p><strong>return_orders</strong> (<em>bool</em>) – If true, it will also return a list of size <span class="math notranslate nohighlight">\(L\)</span> of the orders
+<li><p><strong>type_mom</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – The type of multipole moments: “cartesian”, “pure”, “radial” and “pure-radial”.</p></li>
+<li><p><strong>return_orders</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If true, it will also return a list of size <span class="math notranslate nohighlight">\(L\)</span> of the orders
 corresponding to each integral/row of the output.</p></li>
 </ul>
 </dd>
@@ -712,7 +712,7 @@ the <span class="math notranslate nohighlight">\(i\)</span>th Lebedev/angular gr
 <p>and then interpolated using a cubic spline over all radial points of the atomic grid.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>func_vals</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – The function values evaluated on all <span class="math notranslate nohighlight">\(N\)</span> points on the atomic grid.</p>
+<dd class="field-odd"><p><strong>func_vals</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – The function values evaluated on all <span class="math notranslate nohighlight">\(N\)</span> points on the atomic grid.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A list of size <span class="math notranslate nohighlight">\((l_{max}/2 + 1)^2\)</span> of  CubicSpline object for interpolating the
@@ -783,7 +783,7 @@ the spherical average of it defined as:</p>
 matches the full integral <span class="math notranslate nohighlight">\(\int \int \int f(x,y,z)dxdydz\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>func_vals</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – The function values evaluated on all <span class="math notranslate nohighlight">\(N\)</span> points on the atomic grid.</p>
+<dd class="field-odd"><p><strong>func_vals</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – The function values evaluated on all <span class="math notranslate nohighlight">\(N\)</span> points on the atomic grid.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Cubic spline with input r in the positive real axis and output <span class="math notranslate nohighlight">\(f_{avg}(r)\)</span>.</p>

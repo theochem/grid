@@ -379,10 +379,10 @@ The Journal of chemical physics 88.4 (1988): 2547-2553.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>rmin</strong> (<em>float</em>) – The minimum coordinate <span class="math notranslate nohighlight">\(r_{min}\)</span> in the transformed interval
+<li><p><strong>rmin</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – The minimum coordinate <span class="math notranslate nohighlight">\(r_{min}\)</span> in the transformed interval
 <span class="math notranslate nohighlight">\([r_{min}, \infty)\)</span>.</p></li>
-<li><p><strong>R</strong> (<em>float</em>) – The scale factor used in the transformation.</p></li>
-<li><p><strong>trim_inf</strong> (<em>bool</em><em>, </em><em>optional</em>) – Flag to trim infinite value in transformed array. If True, it will
+<li><p><strong>R</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – The scale factor used in the transformation.</p></li>
+<li><p><strong>trim_inf</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – Flag to trim infinite value in transformed array. If True, it will
 replace np.inf with 1e16. This may cause unexpected errors in the
 following operations.</p></li>
 </ul>
@@ -409,7 +409,7 @@ following operations.</p></li>
 \[\frac{dr_i}{dx_i} = 2R \frac{1}{(1-x)^2}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>np.array</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One-dimensional array in the domain <span class="math notranslate nohighlight">\([-1, 1]\)</span>.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One-dimensional array in the domain <span class="math notranslate nohighlight">\([-1, 1]\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>First derivative of Becke transformation at each point.</p>
@@ -428,7 +428,7 @@ following operations.</p></li>
 \[\frac{d^2r}{dx^2} = 4R \frac{1}{1-x^3}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>np.array</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One-dimensional array in the domain <span class="math notranslate nohighlight">\([-1, 1]\)</span>.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One-dimensional array in the domain <span class="math notranslate nohighlight">\([-1, 1]\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Second derivative of Becke transformation at each point.</p>
@@ -447,7 +447,7 @@ following operations.</p></li>
 \[\frac{d^3r}{dx^3} = 12R \frac{1}{1 - x^4}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>np.array</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One-dimensional array in the domain <span class="math notranslate nohighlight">\([-1, 1]\)</span>.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One-dimensional array in the domain <span class="math notranslate nohighlight">\([-1, 1]\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Third derivative of Becke transformation at each point.</p>
@@ -476,9 +476,9 @@ following operations.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>array</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One-dimensional array in the domain <span class="math notranslate nohighlight">\([-1, 1]\)</span>.</p></li>
-<li><p><strong>rmin</strong> (<em>float</em>) – Minimum value for transformed array.</p></li>
-<li><p><strong>radius</strong> (<em>float</em>) – Atomic radius of interest.</p></li>
+<li><p><strong>array</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One-dimensional array in the domain <span class="math notranslate nohighlight">\([-1, 1]\)</span>.</p></li>
+<li><p><strong>rmin</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Minimum value for transformed array.</p></li>
+<li><p><strong>radius</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Atomic radius of interest.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -498,7 +498,7 @@ following operations.</p></li>
 \[x_i = \frac{r_i - r_{min} - R} {r_i - r_{min} + R}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>r</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One-dimensional array in the codomain <span class="math notranslate nohighlight">\([r_{min}, \infty)\)</span>.</p>
+<dd class="field-odd"><p><strong>r</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One-dimensional array in the codomain <span class="math notranslate nohighlight">\([r_{min}, \infty)\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>One dimensional array in <span class="math notranslate nohighlight">\([-1, 1]\)</span>.</p>
@@ -528,7 +528,7 @@ following operations.</p></li>
 \[r_i = R \frac{1 + x_i}{1 - x_i} + r_{min}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One-dimensional array in the domain <span class="math notranslate nohighlight">\([-1, 1]\)</span>.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One-dimensional array in the domain <span class="math notranslate nohighlight">\([-1, 1]\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Transformed array located between <span class="math notranslate nohighlight">\([r_min, \infty)\)</span>.</p>
@@ -587,9 +587,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>rmin</strong> (<em>float</em>) – Minimum value for transformed points.</p></li>
-<li><p><strong>rmax</strong> (<em>float</em>) – Maximum value for transformed points.</p></li>
-<li><p><strong>b</strong> (<em>float</em>) – Maximum <span class="math notranslate nohighlight">\(b\)</span> of a prespecified radial grid <span class="math notranslate nohighlight">\([0, b]\)</span> such that
+<li><p><strong>rmin</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Minimum value for transformed points.</p></li>
+<li><p><strong>rmax</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Maximum value for transformed points.</p></li>
+<li><p><strong>b</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Maximum <span class="math notranslate nohighlight">\(b\)</span> of a prespecified radial grid <span class="math notranslate nohighlight">\([0, b]\)</span> such that
 <span class="math notranslate nohighlight">\(b\)</span> maps to <cite>rmax</cite>. If None, then the maximum is taken and stored from the
 grid that is transformed initially.</p></li>
 </ul>
@@ -625,7 +625,7 @@ grid that is transformed initially.</p></li>
 <dd><p>Compute the first derivative of exponential transform.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One-dimensional array in the domain of the transformation.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One-dimensional array in the domain of the transformation.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>First derivative of transformation at x.</p>
@@ -642,7 +642,7 @@ grid that is transformed initially.</p></li>
 <dd><p>Compute the second derivative of exponential transform.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One-dimensional array in the domain of the transformation.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One-dimensional array in the domain of the transformation.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Second derivative of transformation at x.</p>
@@ -659,7 +659,7 @@ grid that is transformed initially.</p></li>
 <dd><p>Compute the third derivative of exponential transform.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One-dimensional array in the domain of the transformation.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One-dimensional array in the domain of the transformation.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Third derivative of transformation at x.</p>
@@ -690,7 +690,7 @@ grid that is transformed initially.</p></li>
 <p>where <span class="math notranslate nohighlight">\(b\)</span> is a prespecified parameter</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>r</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One-dimensional array in the domain of the transformation.</p>
+<dd class="field-odd"><p><strong>r</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One-dimensional array in the domain of the transformation.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Inverse transformation at r.</p>
@@ -738,7 +738,7 @@ grid that is transformed initially.</p></li>
 <p>where <span class="math notranslate nohighlight">\(b\)</span> is a prespecified parameter that maps to <span class="math notranslate nohighlight">\(r_{max}\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One-dimensional array in the domain of the transformation.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One-dimensional array in the domain of the transformation.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The transformation of x in the co-domain of the transformation.</p>
@@ -798,9 +798,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>rmin</strong> (<em>float</em>) – The minimum coordinate for transformed radial array.</p></li>
-<li><p><strong>rmax</strong> (<em>float</em>) – The maximum coordinate for transformed radial array.</p></li>
-<li><p><strong>m</strong> (<em>integer m &gt; 0</em>) – Free parameter, m must be &gt; 0.</p></li>
+<li><p><strong>rmin</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – The minimum coordinate for transformed radial array.</p></li>
+<li><p><strong>rmax</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – The maximum coordinate for transformed radial array.</p></li>
+<li><p><strong>m</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Free parameter, m must be &gt; 0.</p></li>
 <li><p><strong>trim_inf</strong> (<em>bool</em><em>, </em><em>optional</em>) – Flag to trim infinite value in transformed array. If True, it will
 replace np.inf with 1e16. This may cause unexpected errors in the
 following operations.</p></li>
@@ -831,7 +831,7 @@ following operations.</p></li>
     + r_{min})(1 + x)^m\right)^2}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>ndarrray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimensional array in <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One dimensional array in <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The first derivative of Handy transformation at each point.</p>
@@ -848,7 +848,7 @@ following operations.</p></li>
 <dd><p>Compute the second derivative of modified Handy transformation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>ndarrray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimensional array in <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One dimensional array in <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The second derivative of Handy transformation at each point.</p>
@@ -865,7 +865,7 @@ following operations.</p></li>
 <dd><p>Compute the third derivative of modified Handy transformation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>ndarrray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimensional array in <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One dimensional array in <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The third derivative of Handy transformation at each point.</p>
@@ -898,7 +898,7 @@ following operations.</p></li>
     } - 1\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>r</strong> (<em>ndarrray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimensional array in <span class="math notranslate nohighlight">\([r_{min},\infty)\)</span>.</p>
+<dd class="field-odd"><p><strong>r</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One dimensional array in <span class="math notranslate nohighlight">\([r_{min},\infty)\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The original one dimensional array in <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
@@ -952,7 +952,7 @@ following operations.</p></li>
       - (1 + x_i)^m (r_{max} - r_{min} - 2^m )} + r_{min}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimensional array in <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One dimensional array in <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>One dimensional array in <span class="math notranslate nohighlight">\([r_{min},r_{max}]\)</span>.</p>
@@ -1017,9 +1017,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>rmin</strong> (<em>float</em>) – The minimum coordinate for transformed radial array.</p></li>
-<li><p><strong>R</strong> (<em>float</em>) – The scale factor for transformed radial array.</p></li>
-<li><p><strong>m</strong> (<em>integer m &gt; 0</em>) – Free parameter, m must be &gt; 0.</p></li>
+<li><p><strong>rmin</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – The minimum coordinate for transformed radial array.</p></li>
+<li><p><strong>R</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – The scale factor for transformed radial array.</p></li>
+<li><p><strong>m</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Free parameter, m must be &gt; 0.</p></li>
 <li><p><strong>trim_inf</strong> (<em>bool</em><em>, </em><em>optional</em>) – Flag to trim infinite value in transformed array. If True, it will
 replace np.inf with 1e16. This may cause unexpected errors in the
 following operations.</p></li>
@@ -1047,7 +1047,7 @@ following operations.</p></li>
 \[\frac{dr}{dx} = 2mR \frac{(1+x)^{m-1}}{(1-x)^{m+1}}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimensional array with values between <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One dimensional array with values between <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The first derivative of Handy transformation at each point.</p>
@@ -1066,7 +1066,7 @@ following operations.</p></li>
 \[\frac{d^2r}{dx^2} = 4mR (m + x) \frac{(1+x)^{m-2}}{(1-x)^{m+2}}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimensional array in <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One dimensional array in <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The second derivative of Handy transformation at each point.</p>
@@ -1117,7 +1117,7 @@ following operations.</p></li>
            {\sqrt[m]{r_i-r_{min}} + \sqrt[m]{R}}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>r</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimensional array in <span class="math notranslate nohighlight">\([r_{min},\infty)\)</span>.</p>
+<dd class="field-odd"><p><strong>r</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One dimensional array in <span class="math notranslate nohighlight">\([r_{min},\infty)\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>One-dimensional array in <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
@@ -1158,7 +1158,7 @@ following operations.</p></li>
 \[r_i = R \left( \frac{1+x_i}{1-x_i} \right)^m + r_{min}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimensional array in <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One dimensional array in <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>One dimensional array in <span class="math notranslate nohighlight">\([r_{min},\infty)\)</span>.</p>
@@ -1213,8 +1213,8 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>a</strong> (<em>float</em>) – parameter a to determine hyperbolic function</p></li>
-<li><p><strong>b</strong> (<em>float</em>) – parameter b to determine hyperbolic function</p></li>
+<li><p><strong>a</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – parameter a to determine hyperbolic function</p></li>
+<li><p><strong>b</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – parameter b to determine hyperbolic function</p></li>
 </ul>
 </dd>
 </dl>
@@ -1259,7 +1259,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 <dd><p>Compute the first derivative of hyperbolic transformation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One-dimensional array in the domain of the transformation <span class="math notranslate nohighlight">\([0,\infty)\)</span>.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One-dimensional array in the domain of the transformation <span class="math notranslate nohighlight">\([0,\infty)\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>First derivative of transformation at x.</p>
@@ -1276,7 +1276,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 <dd><p>Compute the second derivative of hyperbolic transformation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One-dimensional array in the domain of the transformation <span class="math notranslate nohighlight">\([0,\infty)\)</span>.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One-dimensional array in the domain of the transformation <span class="math notranslate nohighlight">\([0,\infty)\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Second derivative of transformation at x.</p>
@@ -1293,7 +1293,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 <dd><p>Compute the third derivative of hyperbolic transformation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One-dimensional array in the domain of the transformation <span class="math notranslate nohighlight">\([0,\infty)\)</span>.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One-dimensional array in the domain of the transformation <span class="math notranslate nohighlight">\([0,\infty)\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Third derivative of transformation at x.</p>
@@ -1323,7 +1323,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 \[x(r) = \frac{r}{a + br}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>r</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One-dimensional array in the domain of the transformation <span class="math notranslate nohighlight">\([0,\infty)\)</span>.</p>
+<dd class="field-odd"><p><strong>r</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One-dimensional array in the domain of the transformation <span class="math notranslate nohighlight">\([0,\infty)\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Inverse transformation at r.</p>
@@ -1343,7 +1343,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 <p>where <span class="math notranslate nohighlight">\(b ( N - 1) \geq 1\)</span>, and <span class="math notranslate nohighlight">\(N\)</span> is the number of points in x.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One-dimensional array in the domain of the transformation <span class="math notranslate nohighlight">\([0,\infty)\)</span>.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One-dimensional array in the domain of the transformation <span class="math notranslate nohighlight">\([0,\infty)\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The transformation of x to the co-domain of the transformation.</p>
@@ -1413,7 +1413,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 <dd><p>Compute the first derivative of identity transform.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimension numpy array located in <span class="math notranslate nohighlight">\([0, \infty)\)</span>.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One dimension numpy array located in <span class="math notranslate nohighlight">\([0, \infty)\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>First derivative of identity transformation at x.</p>
@@ -1430,7 +1430,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 <dd><p>Compute the second derivative of identity transform.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimension numpy array located in <span class="math notranslate nohighlight">\([0, \infty)\)</span>.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One dimension numpy array located in <span class="math notranslate nohighlight">\([0, \infty)\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Second derivative of identity transformation at x.</p>
@@ -1447,7 +1447,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 <dd><p>Compute the third derivative of identity transform.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimension numpy array located in <span class="math notranslate nohighlight">\([0, \infty)\)</span>.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One dimension numpy array located in <span class="math notranslate nohighlight">\([0, \infty)\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Third derivative of identity transformation at x.</p>
@@ -1475,7 +1475,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 <dd><p>Compute the inverse of identity transform.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>r</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimension numpy array located in <span class="math notranslate nohighlight">\([0, \infty)\)</span>.</p>
+<dd class="field-odd"><p><strong>r</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One dimension numpy array located in <span class="math notranslate nohighlight">\([0, \infty)\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Inverse transformation of the identity transformation at x.</p>
@@ -1494,7 +1494,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 \[r_i = x_i\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimension numpy array located in <span class="math notranslate nohighlight">\([0, \infty)\)</span>.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One dimension numpy array located in <span class="math notranslate nohighlight">\([0, \infty)\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Identity transformation at each point x.</p>
@@ -1541,7 +1541,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 <dd><p>Construct InverseRTransform instance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>transform</strong> (<a class="reference internal" href="#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><em>BaseTransform</em></a>) – One-dimension transformation instance.</p>
+<dd class="field-odd"><p><strong>transform</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTransform</span></code></a></span>) – One-dimension transformation instance.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1565,7 +1565,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 \[\frac{dx}{dr} = (\frac{dr}{dx})^{-1}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>r</strong> (<em>np.array</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One-dimensional array in the co-domain r of the original transformation.</p>
+<dd class="field-odd"><p><strong>r</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One-dimensional array in the co-domain r of the original transformation.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>First derivative of the inverse transformation at each point r.</p>
@@ -1584,7 +1584,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 \[\frac{d^2 x}{dr^2} = - \frac{d^2 r}{dx^2} (\frac{dx}{dr})^3\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>r</strong> (<em>np.array</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One-dimensional array in the co-domain r of the original transformation.</p>
+<dd class="field-odd"><p><strong>r</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One-dimensional array in the co-domain r of the original transformation.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Second derivative of the inverse transformation at each point r.</p>
@@ -1604,7 +1604,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
                    + 3 (\frac{d^2 r}{dx^2})^2 (\frac{dx}{dr})^5\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>r</strong> (<em>np.array</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One-dimensional array in the co-domain r of the original transformation.</p>
+<dd class="field-odd"><p><strong>r</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One-dimensional array in the co-domain r of the original transformation.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Third derivative of inverse transformation at each point r.</p>
@@ -1634,7 +1634,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 transformation (i.e. OriginTF.transform).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>np.ndarray</em>) – One-dimension array in the domain x of the original transformation.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One-dimension array in the domain x of the original transformation.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>One-dimensional array in the co-domain r of the original transformation.</p>
@@ -1653,7 +1653,7 @@ transformation (i.e. OriginTF.transform).</p>
 transformation (i.e. OriginTF.inverse).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>r</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One-dimensional array in the co-domain r of the original transformation.</p>
+<dd class="field-odd"><p><strong>r</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One-dimensional array in the co-domain r of the original transformation.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Original one-dimensional array in the domain x of the original transformation.</p>
@@ -1719,9 +1719,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>rmin</strong> (<em>float</em>) – The minimum coordinate for transformed radial array.</p></li>
-<li><p><strong>R</strong> (<em>float</em>) – The scale factor for transformed radial array.</p></li>
-<li><p><strong>k</strong> (<em>integer k &gt; 0</em>) – Free parameter, k must be &gt; 0.</p></li>
+<li><p><strong>rmin</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – The minimum coordinate for transformed radial array.</p></li>
+<li><p><strong>R</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – The scale factor for transformed radial array.</p></li>
+<li><p><strong>k</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Free parameter, k must be &gt; 0.</p></li>
 <li><p><strong>trim_inf</strong> (<em>bool</em><em>, </em><em>optional</em>) – Flag to trim infinite value in transformed array. If True, it will
 replace np.inf with 1e16. This may cause unexpected errors in the
 following operations.</p></li>
@@ -1749,7 +1749,7 @@ following operations.</p></li>
 \[\frac{dr}{dx} = kR \frac{(1+x_i)^{k-1}}{2^k-(1+x_i)^k}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimensional  array with values between <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One dimensional  array with values between <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The first derivative of Knowles transformation at each point.</p>
@@ -1769,7 +1769,7 @@ following operations.</p></li>
 \left(2^k(k-1) + (1+x_i)^k \right)}{\left( 2^k-(1+x_i)^k\right)^2}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimensional array in <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One dimensional array in <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The second derivative of Knowles transformation at each point.</p>
@@ -1791,7 +1791,7 @@ following operations.</p></li>
 \right)}{\left( 2^k - (1+x_i)^k \right)^3}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimensional array with values between <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One dimensional array with values between <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The third derivative of Knowles transformation at each point.</p>
@@ -1821,7 +1821,7 @@ following operations.</p></li>
 \[x_i = 2 \sqrt[k]{1-\exp \left( -\frac{r_i-r_{min}}{R}\right)}-1\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>r</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One-dimensional array in <span class="math notranslate nohighlight">\([r_{min},\infty)\)</span>.</p>
+<dd class="field-odd"><p><strong>r</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One-dimensional array in <span class="math notranslate nohighlight">\([r_{min},\infty)\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The inverse transformation in <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
@@ -1862,7 +1862,7 @@ following operations.</p></li>
 \[r_i = r_{min} - R \log \left( 1 - 2^{-k} (x_i + 1)^k \right)\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimensional array in <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One dimensional array in <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>One dimensional array in <span class="math notranslate nohighlight">\([r_{min},\infty)\)</span>.</p>
@@ -1917,8 +1917,8 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>rmin</strong> (<em>float</em>) – Minimum value for transformed interval.</p></li>
-<li><p><strong>rmax</strong> (<em>float</em>) – Maximum value for transformed interval.</p></li>
+<li><p><strong>rmin</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Minimum value for transformed interval.</p></li>
+<li><p><strong>rmax</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Maximum value for transformed interval.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1943,7 +1943,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 \[\frac{dr}{dx} = \frac{r_{max} - r_{min}}{2}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>ndarray</em>) – One-dimensional array in the domain <span class="math notranslate nohighlight">\([-1, 1]\)</span>.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One-dimensional array in the domain <span class="math notranslate nohighlight">\([-1, 1]\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>First order derivative at given points.</p>
@@ -1962,7 +1962,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 \[\frac{d^2 r}{dx^2} = 0\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>ndarray</em>) – One-dimensional array in the domain <span class="math notranslate nohighlight">\([-1, 1]\)</span>.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One-dimensional array in the domain <span class="math notranslate nohighlight">\([-1, 1]\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Second order derivative at given points.</p>
@@ -1981,7 +1981,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 \[\frac{d^2 r}{dx^2} = 0\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>ndarray</em>) – One-dimensional array in the domain <span class="math notranslate nohighlight">\([-1, 1]\)</span>.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One-dimensional array in the domain <span class="math notranslate nohighlight">\([-1, 1]\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Third order derivative at given points.</p>
@@ -2011,7 +2011,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 \[x_i = \frac{2 r_i - (r_{max} + r_{min})}{r_{max} - r_{min}}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>r</strong> (<em>ndarray</em>) – One-dimensional array in the co-domain <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span>.</p>
+<dd class="field-odd"><p><strong>r</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One-dimensional array in the co-domain <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>One-dimensional array in the domain <span class="math notranslate nohighlight">\([-1, 1]\)</span>.</p>
@@ -2031,7 +2031,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 <p>This transformation maps <span class="math notranslate nohighlight">\(r_i(-1) = r_{min}\)</span> and <span class="math notranslate nohighlight">\(r_i(1) = r_{max}\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>ndarray</em>) – One-dimensional array in the domain <span class="math notranslate nohighlight">\([-1, 1]\)</span>.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One-dimensional array in the domain <span class="math notranslate nohighlight">\([-1, 1]\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Transformed points between <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span></p>
@@ -2091,9 +2091,9 @@ to <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>rmin</strong> (<em>float</em>) – Define the lower end of the linear transform</p></li>
-<li><p><strong>rmax</strong> (<em>float</em>) – Define the upper end of the linear transform</p></li>
-<li><p><strong>b</strong> (<em>float</em>) – Maximum <span class="math notranslate nohighlight">\(b\)</span> of a prespecified radial grid <span class="math notranslate nohighlight">\([0, b]\)</span> such that
+<li><p><strong>rmin</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Define the lower end of the linear transform</p></li>
+<li><p><strong>rmax</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Define the upper end of the linear transform</p></li>
+<li><p><strong>b</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Maximum <span class="math notranslate nohighlight">\(b\)</span> of a prespecified radial grid <span class="math notranslate nohighlight">\([0, b]\)</span> such that
 <span class="math notranslate nohighlight">\(b\)</span> maps to <cite>rmax</cite>. If None, then the maximum is taken and stored from the
 grid that is transformed initially.</p></li>
 </ul>
@@ -2129,7 +2129,7 @@ grid that is transformed initially.</p></li>
 <dd><p>Compute the first derivative of linear transformation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One-dimensional array in the domain <span class="math notranslate nohighlight">\([0, \infty)\)</span>.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One-dimensional array in the domain <span class="math notranslate nohighlight">\([0, \infty)\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>First derivative of transformation at x.</p>
@@ -2146,7 +2146,7 @@ grid that is transformed initially.</p></li>
 <dd><p>Compute the second derivative of linear transformation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One-dimensional array in the domain <span class="math notranslate nohighlight">\([0, \infty)\)</span>.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One-dimensional array in the domain <span class="math notranslate nohighlight">\([0, \infty)\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Second derivative of transformation at x.</p>
@@ -2163,7 +2163,7 @@ grid that is transformed initially.</p></li>
 <dd><p>Compute the third derivative of linear transformation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One-dimensional array in the domain <span class="math notranslate nohighlight">\([0, \infty)\)</span>.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One-dimensional array in the domain <span class="math notranslate nohighlight">\([0, \infty)\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Third derivative of transformation at x.</p>
@@ -2193,7 +2193,7 @@ grid that is transformed initially.</p></li>
 \[x_i = (r - r_{min}) / frac{b}{r_{max} - r_{min}}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>r</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One-dimensional array in the domain <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span>.</p>
+<dd class="field-odd"><p><strong>r</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One-dimensional array in the domain <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Inverse of transformation from coordinate <span class="math notranslate nohighlight">\(r\)</span> to <span class="math notranslate nohighlight">\(x\)</span>.</p>
@@ -2242,7 +2242,7 @@ grid that is transformed initially.</p></li>
 equally-spaced integers from 0 to N-1, to <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One-dimensional array in the domain <span class="math notranslate nohighlight">\([0, \infty)\)</span>.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One-dimensional array in the domain <span class="math notranslate nohighlight">\([0, \infty)\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Transformed points between <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span>.</p>
@@ -2315,8 +2315,8 @@ Journal of computational chemistry 24.6 (2003): 732-740.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>rmin</strong> (<em>float</em>) – The minimum coordinate for transformed radial array.</p></li>
-<li><p><strong>R</strong> (<em>float</em>) – The scale factor for transformed radial array.</p></li>
+<li><p><strong>rmin</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – The minimum coordinate for transformed radial array.</p></li>
+<li><p><strong>R</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – The scale factor for transformed radial array.</p></li>
 <li><p><strong>trim_inf</strong> (<em>bool</em><em>, </em><em>optional</em>) – Flag to trim infinite value in transformed array. If True, it will
 replace np.inf with 1e16. This may cause unexpected errors in the
 following operations.</p></li>
@@ -2344,7 +2344,7 @@ following operations.</p></li>
 \[\frac{dr}{dx} = -\frac{R}{1+x}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimensional in <span class="math notranslate nohighlight">\([-1, 1]\)</span>.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One dimensional in <span class="math notranslate nohighlight">\([-1, 1]\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The first derivative of MultiExp transformation at each point.</p>
@@ -2363,7 +2363,7 @@ following operations.</p></li>
 \[\frac{d^2r}{dx^2} = \frac{R}{(1 + x)^2}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimensional in <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One dimensional in <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The second derivative of MultiExp transformation at each point.</p>
@@ -2382,7 +2382,7 @@ following operations.</p></li>
 \[\frac{d^3r}{dx^3} = -\frac{2R}{(1 + x)^3}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimensional array in <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One dimensional array in <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The third derivative of MultiExp transformation at each point.</p>
@@ -2412,7 +2412,7 @@ following operations.</p></li>
 \[x_i = 2 \exp \left( \frac{-(r_i - r_{min})}{R} \right) - 1\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>r</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One-dimensional array in <span class="math notranslate nohighlight">\([r_{min}, \infty)\)</span>.</p>
+<dd class="field-odd"><p><strong>r</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One-dimensional array in <span class="math notranslate nohighlight">\([r_{min}, \infty)\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The inverse of transformation in <span class="math notranslate nohighlight">\([-1, 1]\)</span>.</p>
@@ -2442,7 +2442,7 @@ following operations.</p></li>
 \[r_i = -R \log \left( \frac{x_i + 1}{2} \right) + r_{min}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One dimensional array with values between <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One dimensional array with values between <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Transformed array located between <span class="math notranslate nohighlight">\([r_{min},\infty)\)</span>.</p>
@@ -2497,9 +2497,9 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>rmin</strong> (<em>float</em>) – Minimum value for transformed points</p></li>
-<li><p><strong>rmax</strong> (<em>float</em>) – Maximum value for transformed points</p></li>
-<li><p><strong>b</strong> (<em>float</em>) – The parameter b that maps to <span class="math notranslate nohighlight">\(r_{max}\)</span>.</p></li>
+<li><p><strong>rmin</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Minimum value for transformed points</p></li>
+<li><p><strong>rmax</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Maximum value for transformed points</p></li>
+<li><p><strong>b</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – The parameter b that maps to <span class="math notranslate nohighlight">\(r_{max}\)</span>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -2533,7 +2533,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 <dd><p>Compute first derivative of power transform.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One-dimensional array in the domain of the transformation <span class="math notranslate nohighlight">\([0,\infty)\)</span>.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One-dimensional array in the domain of the transformation <span class="math notranslate nohighlight">\([0,\infty)\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>First derivative of transformation at x.</p>
@@ -2550,7 +2550,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 <dd><p>Compute second derivative of power transform.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One-dimensional array in the domain of the transformation <span class="math notranslate nohighlight">\([0,\infty)\)</span>.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One-dimensional array in the domain of the transformation <span class="math notranslate nohighlight">\([0,\infty)\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Second derivative of transformation at x.</p>
@@ -2567,7 +2567,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 <dd><p>Compute third derivative of power transform.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One-dimensional array in the domain of the transformation <span class="math notranslate nohighlight">\([0,\infty)\)</span>.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One-dimensional array in the domain of the transformation <span class="math notranslate nohighlight">\([0,\infty)\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Third derivative of transformation at x.</p>
@@ -2598,7 +2598,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 <p>such that <span class="math notranslate nohighlight">\(r(b) = r_{max}\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>r</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One-dimensional array in the co-domain of the transformation.</p>
+<dd class="field-odd"><p><strong>r</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One-dimensional array in the co-domain of the transformation.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Inverse of transformation at r.</p>
@@ -2646,7 +2646,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 <p>such that <span class="math notranslate nohighlight">\(r(b) = r_{max}\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – One-dimensional array in the domain of the transformation <span class="math notranslate nohighlight">\([0,\infty)\)</span>.</p>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – One-dimensional array in the domain of the transformation <span class="math notranslate nohighlight">\([0,\infty)\)</span>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The transformation of x to the co-domain of the transformation.</p>

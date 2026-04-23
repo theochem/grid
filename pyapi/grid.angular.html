@@ -340,16 +340,16 @@ The weights are chosen so that the spherical harmonics are normalized.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>degree</strong> (<em>int</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – Maximum angular degree <span class="math notranslate nohighlight">\(l\)</span> of spherical harmonics that the angular grid
+<li><p><strong>degree</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Maximum angular degree <span class="math notranslate nohighlight">\(l\)</span> of spherical harmonics that the angular grid
 can integrate accurately. If the angular grid corresponding to the given angular
 degree is not supported, the next largest degree is used. If <cite>size</cite> is provided,
 <cite>degree</cite> is ignored.</p></li>
-<li><p><strong>size</strong> (<em>int</em><em> or </em><em>None</em><em>, </em><em>optional</em><em>, </em><em>keyword-only</em>) – Number of angular grid points. If the angular grid corresponding to the given size is
+<li><p><strong>size</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Number of angular grid points. If the angular grid corresponding to the given size is
 not supported, the next largest size is used. If both <cite>degree</cite> and <cite>size</cite> are given,
 <cite>size</cite> is used for constructing the angular grid.</p></li>
-<li><p><strong>cache</strong> (<em>bool</em><em>, </em><em>optional</em><em>, </em><em>keyword-only</em>) – If True, then store the points and weights of the AngularGrid in cache
+<li><p><strong>cache</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If True, then store the points and weights of the AngularGrid in cache
 to avoid duplicate grids that have the same <cite>degree</cite>.</p></li>
-<li><p><strong>method</strong> (<em>str</em><em>, </em><em>optional</em><em>, </em><em>keyword-only</em>) – Method for constructing the angular grid. Options are “lebedev” (for Lebedev-Laikov)
+<li><p><strong>method</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Method for constructing the angular grid. Options are “lebedev” (for Lebedev-Laikov)
 and “spherical” (for symmetric spherical t-design).</p></li>
 </ul>
 </dd>
@@ -375,8 +375,8 @@ negative weights. See <a class="reference external" href="https://github.com/the
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>sizes</strong> (<em>ndarray</em><em>[</em><em>int</em><em>]</em>) – Sequence of angular grid sizes (e.g., number of points for each atomic shell).</p></li>
-<li><p><strong>method</strong> (<em>str</em>) – Method for constructing the angular grid. Options are “lebedev” (for Lebedev-Laikov)
+<li><p><strong>sizes</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Sequence of angular grid sizes (e.g., number of points for each atomic shell).</p></li>
+<li><p><strong>method</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Method for constructing the angular grid. Options are “lebedev” (for Lebedev-Laikov)
 and “spherical” (for symmetric spherical t-design).</p></li>
 </ul>
 </dd>
@@ -479,13 +479,13 @@ d\textbf{r}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>orders</strong> (<em>int</em>) – Generates all orders with Horton order depending on the type of the multipole
+<li><p><strong>orders</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Generates all orders with Horton order depending on the type of the multipole
 moment <cite>type_mom</cite>.</p></li>
-<li><p><strong>centers</strong> (<em>ndarray</em><em>(</em><em>M</em><em>,  </em><em>3</em><em>)</em>) – The centers <span class="math notranslate nohighlight">\(\textbf{R}_c\)</span> of the moments to compute from.</p></li>
-<li><p><strong>func_vals</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – The function <span class="math notranslate nohighlight">\(f\)</span> is evaluated at all <span class="math notranslate nohighlight">\(N\)</span> points on the integration
+<li><p><strong>centers</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – The centers <span class="math notranslate nohighlight">\(\textbf{R}_c\)</span> of the moments to compute from.</p></li>
+<li><p><strong>func_vals</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – The function <span class="math notranslate nohighlight">\(f\)</span> is evaluated at all <span class="math notranslate nohighlight">\(N\)</span> points on the integration
 grid.</p></li>
-<li><p><strong>type_mom</strong> (<em>str</em>) – The type of multipole moments: “cartesian”, “pure”, “radial” and “pure-radial”.</p></li>
-<li><p><strong>return_orders</strong> (<em>bool</em>) – If true, it will also return a list of size <span class="math notranslate nohighlight">\(L\)</span> of the orders
+<li><p><strong>type_mom</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – The type of multipole moments: “cartesian”, “pure”, “radial” and “pure-radial”.</p></li>
+<li><p><strong>return_orders</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If true, it will also return a list of size <span class="math notranslate nohighlight">\(L\)</span> of the orders
 corresponding to each integral/row of the output.</p></li>
 </ul>
 </dd>

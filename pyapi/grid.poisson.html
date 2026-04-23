@@ -276,8 +276,8 @@ Expanding f in terms of spherical harmonic expansion, we get that</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>molgrid</strong> (<a class="reference internal" href="grid.molgrid.html#grid.molgrid.MolGrid" title="grid.molgrid.MolGrid"><em>MolGrid</em></a><em> or </em><a class="reference internal" href="grid.atomgrid.html#grid.atomgrid.AtomGrid" title="grid.atomgrid.AtomGrid"><em>AtomGrid</em></a>) – Atomic grid that can integrate spherical functions and interpolate radial components.</p></li>
-<li><p><strong>func_vals</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – The function values evaluated on all <span class="math notranslate nohighlight">\(N\)</span> points on the atomic grid.</p></li>
+<li><p><strong>molgrid</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="grid.molgrid.html#grid.molgrid.MolGrid" title="grid.molgrid.MolGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">MolGrid</span></code></a> | <a class="reference internal" href="grid.atomgrid.html#grid.atomgrid.AtomGrid" title="grid.atomgrid.AtomGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGrid</span></code></a></span>) – Atomic grid that can integrate spherical functions and interpolate radial components.</p></li>
+<li><p><strong>func_vals</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – The function values evaluated on all <span class="math notranslate nohighlight">\(N\)</span> points on the atomic grid.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -315,17 +315,17 @@ isn’t needed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>molgrid</strong> (<a class="reference internal" href="grid.molgrid.html#grid.molgrid.MolGrid" title="grid.molgrid.MolGrid"><em>MolGrid</em></a><em> or </em><a class="reference internal" href="grid.atomgrid.html#grid.atomgrid.AtomGrid" title="grid.atomgrid.AtomGrid"><em>AtomGrid</em></a>) – Molecular or atomic grid that is used for integration and expanding func into real spherical
+<li><p><strong>molgrid</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="grid.molgrid.html#grid.molgrid.MolGrid" title="grid.molgrid.MolGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">MolGrid</span></code></a> | <a class="reference internal" href="grid.atomgrid.html#grid.atomgrid.AtomGrid" title="grid.atomgrid.AtomGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGrid</span></code></a></span>) – Molecular or atomic grid that is used for integration and expanding func into real spherical
 harmonic basis.</p></li>
-<li><p><strong>func_vals</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – The function values evaluated on all <span class="math notranslate nohighlight">\(N\)</span> points on the molecular grid.</p></li>
-<li><p><strong>transform</strong> (<a class="reference internal" href="grid.rtransform.html#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><em>BaseTransform</em></a><em>, </em><em>optional</em>) – Transformation from infinite domain <span class="math notranslate nohighlight">\(r \in [0, \infty)\)</span> to another
+<li><p><strong>func_vals</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – The function values evaluated on all <span class="math notranslate nohighlight">\(N\)</span> points on the molecular grid.</p></li>
+<li><p><strong>transform</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="grid.rtransform.html#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTransform</span></code></a></span>) – Transformation from infinite domain <span class="math notranslate nohighlight">\(r \in [0, \infty)\)</span> to another
 domain that is a finite.</p></li>
-<li><p><strong>boundary</strong> (<em>float</em><em>, </em><em>optional</em>) – The boundary value of <span class="math notranslate nohighlight">\(g\)</span> in the limit of r to infinity.</p></li>
-<li><p><strong>include_origin</strong> (<em>bool</em><em>, </em><em>optional</em>) – If true, will add r=0 point when solving for the ode only. If false, it is recommended
+<li><p><strong>boundary</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – The boundary value of <span class="math notranslate nohighlight">\(g\)</span> in the limit of r to infinity.</p></li>
+<li><p><strong>include_origin</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If true, will add r=0 point when solving for the ode only. If false, it is recommended
 to have many radial points near the origin.</p></li>
-<li><p><strong>remove_large_pts</strong> (<em>float</em><em>, </em><em>optional</em>) – If true, will remove any points larger than <cite>remove_large_pts</cite> when solving for the ode
+<li><p><strong>remove_large_pts</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – If true, will remove any points larger than <cite>remove_large_pts</cite> when solving for the ode
 only.</p></li>
-<li><p><strong>ode_params</strong> (<em>dict</em><em>, </em><em>optional</em>) – The parameters for the ode solver. See <cite>grid.ode.solve_ode_bvp</cite> for all options.</p></li>
+<li><p><strong>ode_params</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – The parameters for the ode solver. See <cite>grid.ode.solve_ode_bvp</cite> for all options.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -361,16 +361,16 @@ final interval <span class="math notranslate nohighlight">\(a\)</span> close to 
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>molgrid</strong> (<a class="reference internal" href="grid.molgrid.html#grid.molgrid.MolGrid" title="grid.molgrid.MolGrid"><em>MolGrid</em></a><em> or </em><a class="reference internal" href="grid.atomgrid.html#grid.atomgrid.AtomGrid" title="grid.atomgrid.AtomGrid"><em>AtomGrid</em></a>) – Molecular or atomic grid that is used for integration and expanding func into real
+<li><p><strong>molgrid</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="grid.molgrid.html#grid.molgrid.MolGrid" title="grid.molgrid.MolGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">MolGrid</span></code></a> | <a class="reference internal" href="grid.atomgrid.html#grid.atomgrid.AtomGrid" title="grid.atomgrid.AtomGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGrid</span></code></a></span>) – Molecular or atomic grid that is used for integration and expanding func into real
 spherical harmonic basis.</p></li>
-<li><p><strong>func_vals</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>)</em>) – The function values evaluated on all <span class="math notranslate nohighlight">\(N\)</span> points on the molecular grid.</p></li>
-<li><p><strong>transform</strong> (<a class="reference internal" href="grid.rtransform.html#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><em>BaseTransform</em></a><em>, </em><em>optional</em>) – Transformation from infinite domain <span class="math notranslate nohighlight">\(r \in [0, \infty)\)</span> to another
+<li><p><strong>func_vals</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – The function values evaluated on all <span class="math notranslate nohighlight">\(N\)</span> points on the molecular grid.</p></li>
+<li><p><strong>transform</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="grid.rtransform.html#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTransform</span></code></a></span>) – Transformation from infinite domain <span class="math notranslate nohighlight">\(r \in [0, \infty)\)</span> to another
 domain that is a finite.</p></li>
-<li><p><strong>r_interval</strong> (<em>tuple</em><em>, </em><em>optional</em>) – The interval <span class="math notranslate nohighlight">\((b, a)\)</span> of <span class="math notranslate nohighlight">\(r\)</span> for which the ODE solver will start from and end,
+<li><p><strong>r_interval</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></span>) – The interval <span class="math notranslate nohighlight">\((b, a)\)</span> of <span class="math notranslate nohighlight">\(r\)</span> for which the ODE solver will start from and end,
 where <span class="math notranslate nohighlight">\(b&gt;a\)</span>. The value <span class="math notranslate nohighlight">\(b\)</span> should be large as it determines the asymptotic
 region of <span class="math notranslate nohighlight">\(g\)</span> and value <span class="math notranslate nohighlight">\(a\)</span> is recommended to be small but not zero depending
 on <span class="math notranslate nohighlight">\(f\)</span>.</p></li>
-<li><p><strong>ode_params</strong> (<em>dict</em><em>, </em><em>optional</em>) – The parameters for the ode solver. See <cite>grid.ode.solve_ode_ivp</cite> for all options.</p></li>
+<li><p><strong>ode_params</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – The parameters for the ode solver. See <cite>grid.ode.solve_ode_ivp</cite> for all options.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
