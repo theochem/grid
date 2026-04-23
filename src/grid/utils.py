@@ -558,7 +558,7 @@ def generate_real_spherical_harmonics_scipy(l_max: int, theta: np.ndarray, phi: 
     in associated Legendre functions. We tested up to :math:`l_{max} = 600` without NaNs.
     """
     if l_max < 0:
-        raise ValueError(f"lmax should be non-negative, got l_amx={l_max}")
+        raise ValueError(f"lmax should be non-negative, got l_max={l_max}")
 
     theta = np.asarray(theta)
     phi = np.asarray(phi)
