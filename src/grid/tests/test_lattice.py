@@ -182,7 +182,7 @@ class TestLattice(TestCase):
 
         # Exact integral over [0,1]^2: int_0^1 int_0^1 (x+y) dx dy = 1
         expected = 1.0
-        assert_allclose(integral, expected, rtol=1e-2)
+        assert_allclose(integral, expected, rtol=1e-3)
 
     def test_integration_of_quadratic_function(self):
         r"""Test integration of f(x) = x^2 on unit interval."""
@@ -300,3 +300,69 @@ class TestLattice(TestCase):
         finally:
             if os.path.exists(filename):
                 os.unlink(filename)
+
+    def test_getitem_single_index(self):
+        r"""Test that indexing a Lattice returns a valid Grid."""
+        from grid.basegrid import Grid
+
+        n_points = 1024
+        dimension = 2
+        lattice = Lattice(n_points=n_points, dimension=dimension)
+
+        sub = lattice[0]
+        assert isinstance(sub, Grid)
+        assert_equal(sub.size, 1)
+        assert_allclose(sub.points[0], lattice.points[0])
+        assert_allclose(sub.weights[0], lattice.weights[0])
+
+    def test_getitem_slice(self):
+        r"""Test that slicing a Lattice returns a valid Grid."""
+        from grid.basegrid import Grid
+
+        n_points = 1024
+        dimension = 2
+        lattice = Lattice(n_points=n_points, dimension=dimension)
+
+        sub = lattice[10:20]
+        assert isinstance(sub, Grid)
+        assert_equal(sub.size, 10)
+        assert_allclose(sub.points, lattice.points[10:20])
+        assert_allclose(sub.weights, lattice.weights[10:20])
+
+    def test_integration_of_smooth_function(self):
+        r"""Test integration of sin(pi*x)*sin(pi*y)*sin(pi*z) on [0,1]^3."""
+        n_points = 4096
+        dimension = 3
+        lattice = Lattice(n_points=n_points, dimension=dimension)
+
+        func_vals = np.prod(np.sin(np.pi * lattice.points), axis=1)
+        integral = lattice.integrate(func_vals)
+
+        expected = (2.0 / np.pi) ** 3
+        assert_allclose(integral, expected, rtol=1e-3)
+
+    def test_error_convergence(self):
+        r"""Test that integration error decreases as N doubles."""
+        dimension = 2
+        exact = (2.0 / np.pi) ** 2
+        errors = []
+        for k in range(8, 15):
+            n = 2**k
+            lat = Lattice(n_points=n, dimension=dimension)
+            fvals = np.prod(np.sin(np.pi * lat.points), axis=1)
+            error = abs(lat.integrate(fvals) - exact)
+            errors.append(error)
+        # Each doubling should reduce error
+        for i in range(len(errors) - 1):
+            assert errors[i + 1] < errors[i]
+
+    def test_interpolation_raises_error_for_high_dimension(self):
+        r"""Test that interpolation raises error for dimension > 10."""
+        n_points = 1024
+        dimension = 11
+        lattice = Lattice(n_points=n_points, dimension=dimension)
+        func_vals = np.ones(n_points)
+
+        with self.assertRaises(ValueError) as err:
+            lattice.interpolate(np.zeros((1, dimension)), func_vals)
+        self.assertIn("infeasible", str(err.exception))

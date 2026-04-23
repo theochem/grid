@@ -269,6 +269,28 @@ class Lattice(Grid):
         """str: Name of the lattice rule used."""
         return self._rule
 
+    def __getitem__(self, index):
+        """Return a subset of the grid as a base Grid object.
+
+        Slicing a Lattice returns a plain Grid because the subset
+        of a lattice rule is not itself a valid lattice rule.
+
+        Parameters
+        ----------
+        index : int or slice
+            Index or slice for selecting grid points.
+
+        Returns
+        -------
+        Grid
+            A Grid object containing the selected points and weights.
+
+        """
+        if isinstance(index, int):
+            return Grid(np.array([self.points[index]]), np.array([self.weights[index]]))
+        else:
+            return Grid(np.array(self.points[index]), np.array(self.weights[index]))
+
     def interpolate(self, new_points, values):
         r"""Interpolate function values at new points using linear interpolation.
 
@@ -292,6 +314,12 @@ class Lattice(Grid):
         if values.shape[0] != self.size:
             raise ValueError(
                 f"values must have length {self.size}, got {values.shape[0]}"
+            )
+        if self._dimension > 10:
+            raise ValueError(
+                f"Interpolation uses Delaunay triangulation which is infeasible "
+                f"for dimension > 10, got dimension={self._dimension}. "
+                f"Consider using an alternative interpolation method."
             )
         new_points = np.asarray(new_points)
         if new_points.ndim == 1:
