@@ -567,6 +567,11 @@ def generate_real_spherical_harmonics_scipy(l_max: int, theta: np.ndarray, phi: 
     if theta.shape != phi.shape:
         raise ValueError("theta and phi must have the same shape")
 
+    if theta.ndim != 1 or phi.ndim != 1:
+        raise ValueError(
+            f"theta and phi must be 1D arrays, got theta.ndim={theta.ndim}, phi.ndim={phi.ndim}"
+        )
+
     # sph_vals (i, j) corresponds to degree i and order j for all 0 <= i <= n and -m <= j <= m
     sph_vals = sph_harm_y_all(l_max, l_max, phi, theta)
 
