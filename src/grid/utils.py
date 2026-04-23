@@ -554,8 +554,9 @@ def generate_real_spherical_harmonics_scipy(l_max: int, theta: np.ndarray, phi: 
 
     Notes
     -----
-    - Spherical harmonics in SciPy may return NaNs for large degrees due to numerical instability
-    in associated Legendre functions. We tested up to :math:`l_{max} = 600` without NaNs.
+    - Spherical harmonics in SciPy may return NaNs for large degrees due to numerical
+      instability in associated Legendre functions. We tested up to
+      :math:`l_{max} = 600` without NaNs.
     """
     if l_max < 0:
         raise ValueError(f"lmax should be non-negative, got l_max={l_max}")
