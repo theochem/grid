@@ -570,19 +570,17 @@ def generate_real_spherical_harmonics_scipy(l_max: int, theta: np.ndarray, phi: 
     # sph_vals (i, j) corresponds to degree i and order j for all 0 <= i <= n and -m <= j <= m
     sph_vals = sph_harm_y_all(l_max, l_max, phi, theta)
 
-    # Orders m arranged to match sph_vals column layout:
-    # first non-negative m (0, 1, ..., l_max), then negative m (-l_max, ..., -1)
-    m_list = np.concatenate([np.arange(0, l_max + 1), np.arange(-l_max, 0)])
-
-    # Remove Conway phase from SciPy and apply sqrt(2) factor for m != 0
-    phase_cor = np.where(m_list == 0, 1.0, np.sqrt(2) * (-1) ** np.abs(m_list))
-    no_phase = np.einsum("j, ijk -> ijk", phase_cor, sph_vals)
+    # Remove Conway phase from SciPy and apply sqrt(2) factor for m != 0.
+    # Only non-negative orders m = 0..l_max are used below.
+    phase_cor_pos = np.ones(l_max + 1, dtype=float)
+    if l_max > 0:
+        phase_cor_pos[1:] = np.sqrt(2) * (-1.0) ** np.arange(1, l_max + 1)
 
     n_pts = len(theta)
     total_sph = np.empty(((l_max + 1) ** 2, n_pts), dtype=float)
     for l_val in range(l_max + 1):
-        # spherical harmonics for degree l_val and all orders m = 0, 1, ..., l_val, -l_val, ..., -1
-        sph_degree_pos = no_phase[l_val, : l_val + 1]  # m = 0..l_val
+        # spherical harmonics for degree l_val and non-negative orders m = 0..l_val
+        sph_degree_pos = sph_vals[l_val, : l_val + 1] * phase_cor_pos[: l_val + 1, None]
         # degrees before l_val sum_k=0^(l_val-1) (2k+1) = l_val^2
         row_start = l_val**2
         row_end = (l_val + 1) ** 2
