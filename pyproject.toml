@@ -52,7 +52,8 @@ doc = [
     "sphinx-rtd-theme>=3.0.0rc1",
     "sphinx_autodoc_typehints",
     "docutils >0.18,<0.22",  # Compatible with modern Sphinx versions
-    "nbsphinx-link"
+    "nbsphinx-link",
+    "matplotlib"
 ]
 
 [tool.black]
