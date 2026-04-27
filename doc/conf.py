@@ -67,7 +67,7 @@ html_sourcelink_suffix = ""
 # .. nbinfo::
 #  The corresponding file can be obtained from:
 #  - Jupyter Notebook: :download:`{{docname+".ipynb"}}`
-#  - Interactive Jupyter Notebook: :raw-html:`<a href="https://mybinder.org/v2/gh/theochem/procrustes/master?filepath=doc%2Fnotebooks%2F/{{ docname }}.ipynb"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a>`    """
+#  - Interactive Jupyter Notebook: :raw-html:`<a href="https://mybinder.org/v2/gh/theochem/grid/master?filepath=doc%2Fnotebooks%2F/{{ docname }}.ipynb"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a>`    """
 
 
 # Add any paths that contain templates here, relative to this directory.
