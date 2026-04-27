@@ -76,7 +76,7 @@ line-length = 100
 # E is pycodestyle
 # F is pyflakes
 # UP is pyupgrade - automatically updates syntax
-# B is flake8-bugbear
+# B is bugbear rules
 # I is sort imports alphabetically
 # PGH is pygrep-hooks
 # PL is pylint
