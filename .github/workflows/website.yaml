@@ -44,7 +44,8 @@ jobs:
       # Build the API docs
       - name: Build the API documentation
         run: |
-          sphinx-apidoc -o website/_autosummary src/grid src/grid/tests/ src/grid/test/ src/grid/data/ -e -f
+          rm -rf website/pyapi
+          python -m sphinx.ext.apidoc -o website/pyapi src/grid src/grid/tests/ src/grid/test/ src/grid/data/ -e -f
 
       # Copy notebooks into the book so CI always builds from grid/notebooks
       - name: Stage notebooks for website build

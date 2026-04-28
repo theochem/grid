@@ -58,15 +58,15 @@ The [Grid source code](https://github.com/theochem/grid) is hosted on GitHub and
 
 | Module | Purpose |
 | --- | --- |
-| [`grid.onedgrid`](_autosummary/grid.onedgrid) | One-dimensional quadrature grids and integration |
-| [`grid.rtransform`](_autosummary/grid.rtransform) | Radial transformations between intervals |
-| [`grid.angular`](_autosummary/grid.angular) | Angular grids for spherical integration |
-| [`grid.atomgrid`](_autosummary/grid.atomgrid) | Atomic grids for 3D integration |
-| [`grid.molgrid`](_autosummary/grid.molgrid) | Molecular grids with atom-in-molecule weights |
-| [`grid.becke`](_autosummary/grid.becke) | Becke weight functions |
-| [`grid.hirshfeld`](_autosummary/grid.hirshfeld) | Hirshfeld weight functions |
-| [`grid.cubic`](_autosummary/grid.cubic) | Hyper-rectangular grids in 2D or 3D |
-| [`grid.periodicgrid`](_autosummary/grid.periodicgrid) | Periodic grids for 1D, 2D, or 3D |
-| [`grid.ode`](_autosummary/grid.ode) | ODE solver |
-| [`grid.poisson`](_autosummary/grid.poisson) | Poisson equation solver |
-| [`grid.utils`](_autosummary/grid.utils) | Utility functions for coordinate transformations and spherical harmonics |
+| [`grid.onedgrid`](pyapi/grid.onedgrid) | One-dimensional quadrature grids and integration |
+| [`grid.rtransform`](pyapi/grid.rtransform) | Radial transformations between intervals |
+| [`grid.angular`](pyapi/grid.angular) | Angular grids for spherical integration |
+| [`grid.atomgrid`](pyapi/grid.atomgrid) | Atomic grids for 3D integration |
+| [`grid.molgrid`](pyapi/grid.molgrid) | Molecular grids with atom-in-molecule weights |
+| [`grid.becke`](pyapi/grid.becke) | Becke weight functions |
+| [`grid.hirshfeld`](pyapi/grid.hirshfeld) | Hirshfeld weight functions |
+| [`grid.cubic`](pyapi/grid.cubic) | Hyper-rectangular grids in 2D or 3D |
+| [`grid.periodicgrid`](pyapi/grid.periodicgrid) | Periodic grids for 1D, 2D, or 3D |
+| [`grid.ode`](pyapi/grid.ode) | ODE solver |
+| [`grid.poisson`](pyapi/grid.poisson) | Poisson equation solver |
+| [`grid.utils`](pyapi/grid.utils) | Utility functions for coordinate transformations and spherical harmonics |

@@ -40,30 +40,34 @@ parts:
 
   - caption: API Documentation
     chapters:
-      - file: _autosummary/grid
+      - file: pyapi/grid
         title: grid
         sections:
-          - file: _autosummary/grid.onedgrid
-            title: grid.onedgrid
-          - file: _autosummary/grid.rtransform
-            title: grid.rtransform
-          - file: _autosummary/grid.angular
+          - file: pyapi/grid.angular
             title: grid.angular
-          - file: _autosummary/grid.atomgrid
+          - file: pyapi/grid.atomgrid
             title: grid.atomgrid
-          - file: _autosummary/grid.molgrid
-            title: grid.molgrid
-          - file: _autosummary/grid.becke
+          - file: pyapi/grid.basegrid
+            title: grid.basegrid
+          - file: pyapi/grid.becke
             title: grid.becke
-          - file: _autosummary/grid.hirshfeld
-            title: grid.hirshfeld
-          - file: _autosummary/grid.cubic
+          - file: pyapi/grid.cubic
             title: grid.cubic
-          - file: _autosummary/grid.periodicgrid
-            title: grid.periodicgrid
-          - file: _autosummary/grid.ode
+          - file: pyapi/grid.hirshfeld
+            title: grid.hirshfeld
+          - file: pyapi/grid.molgrid
+            title: grid.molgrid
+          - file: pyapi/grid.ngrid
+            title: grid.ngrid
+          - file: pyapi/grid.ode
             title: grid.ode
-          - file: _autosummary/grid.poisson
+          - file: pyapi/grid.onedgrid
+            title: grid.onedgrid
+          - file: pyapi/grid.periodicgrid
+            title: grid.periodicgrid
+          - file: pyapi/grid.poisson
             title: grid.poisson
-          - file: _autosummary/grid.utils
+          - file: pyapi/grid.rtransform
+            title: grid.rtransform
+          - file: pyapi/grid.utils
             title: grid.utils
