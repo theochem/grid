@@ -18,20 +18,20 @@ Please use the following citation in any publication using grid library:
   *J. Chem. Phys. 160 (17), 172503 (2024).*
   https://doi.org/10.1063/5.0202240
 
-```bibtex
-@article{grid,
-    author = {Tehrani, Alireza and Yang, Xiaotian Derrick and Martínez-González, Marco and Pujal, Leila and Hernández-Esparza, Raymundo and Chan, Matthew and Vöhringer-Martinez, Esteban and Verstraelen, Toon and Ayers, Paul W. and Heidar-Zadeh, Farnaz},
-    title = {Grid: A Python library for molecular integration, interpolation, differentiation, and more},
-    journal = {The Journal of Chemical Physics},
-    volume = {160},
-    number = {17},
-    pages = {172503},
-    year = {2024},
-    month = {05},
-    doi = {10.1063/5.0202240},
-    url = {https://doi.org/10.1063/5.0202240},
-}
-```
+.. code-block:: bibtex
+
+   @article{grid,
+       author = {Tehrani, Alireza and Yang, Xiaotian Derrick and Martínez-González, Marco and Pujal, Leila and Hernández-Esparza, Raymundo and Chan, Matthew and Vöhringer-Martinez, Esteban and Verstraelen, Toon and Ayers, Paul W. and Heidar-Zadeh, Farnaz},
+       title = {Grid: A Python library for molecular integration, interpolation, differentiation, and more},
+       journal = {The Journal of Chemical Physics},
+       volume = {160},
+       number = {17},
+       pages = {172503},
+       year = {2024},
+       month = {05},
+       doi = {10.1063/5.0202240},
+       url = {https://doi.org/10.1063/5.0202240},
+   }
 
 The `Grid source code <https://github.com/theochem/grid>`_ is hosted on GitHub and is released under the
 GNU General Public License v3.0. We welcome
