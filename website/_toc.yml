@@ -8,7 +8,7 @@ parts:
     chapters:
       - file: installation
         title: Installation
-      - file: tutorial/onedgrids
+      - file: onedgrids
         title: One-Dimensional Grids
       - file: radial_transf
         title: Radial Transformations
@@ -18,7 +18,8 @@ parts:
   - caption: Example Tutorials
     chapters:
       - file: tutorial/Quickstart
-      - file: One_dimensional_grids
+        title: Quickstart
+      - file: tutorial/One_dimensional_grids
         title: One-Dimensional Grids
       - file: tutorial/Angular_grid
         title: Angular Grids
