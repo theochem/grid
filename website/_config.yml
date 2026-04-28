@@ -17,23 +17,12 @@ latex:
 
 sphinx:
   extra_extensions:
-  - 'sphinx.ext.githubpages'
   - 'sphinx.ext.autodoc'
   - 'sphinx.ext.autosummary'
   config:
     mathjax_path: https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
-    autosummary_generate: True
+    autosummary_generate: False
     add_module_names: True
-    html_theme_options:
-      show_navbar_depth: 1
-      max_navbar_depth: 4
-      collapse_navbar: False
-    exclude_patterns:
-      - README.md
-      - markdown.md
-      - markdown-notebooks.md
-      - tutorial/JCP_Paper.ipynb
-      - tutorial/Ngrid.ipynb
 
 
 #Read LaTeX

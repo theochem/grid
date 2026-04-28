@@ -40,34 +40,4 @@ parts:
 
   - caption: API Documentation
     chapters:
-      - file: pyapi/grid
-        title: grid
-        sections:
-          - file: pyapi/grid.angular
-            title: grid.angular
-          - file: pyapi/grid.atomgrid
-            title: grid.atomgrid
-          - file: pyapi/grid.basegrid
-            title: grid.basegrid
-          - file: pyapi/grid.becke
-            title: grid.becke
-          - file: pyapi/grid.cubic
-            title: grid.cubic
-          - file: pyapi/grid.hirshfeld
-            title: grid.hirshfeld
-          - file: pyapi/grid.molgrid
-            title: grid.molgrid
-          - file: pyapi/grid.ngrid
-            title: grid.ngrid
-          - file: pyapi/grid.ode
-            title: grid.ode
-          - file: pyapi/grid.onedgrid
-            title: grid.onedgrid
-          - file: pyapi/grid.periodicgrid
-            title: grid.periodicgrid
-          - file: pyapi/grid.poisson
-            title: grid.poisson
-          - file: pyapi/grid.rtransform
-            title: grid.rtransform
-          - file: pyapi/grid.utils
-            title: grid.utils
+      - file: pyapi/grid.rst

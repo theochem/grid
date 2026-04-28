@@ -47,11 +47,11 @@ jobs:
           rm -rf website/pyapi
           python -m sphinx.ext.apidoc -o website/pyapi src/grid src/grid/tests/ src/grid/test/ src/grid/data/ -e -f
 
-      # Copy notebooks into the book so CI always builds from grid/notebooks
-      - name: Stage notebooks for website build
+      # Copy examples into the book so CI always builds from grid/examples
+      - name: Stage examples for website build
         run: |
           rm -rf website/tutorial
-          cp -r notebooks website/tutorial
+          cp -r examples/ website/tutorial
 
       # Build the book
       - name: Build the website

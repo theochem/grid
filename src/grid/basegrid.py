@@ -114,7 +114,7 @@ class Grid:
     def integrate(self, *value_arrays):
         r"""Integrate over the whole grid for given multiple value arrays.
 
-        Product of all value_arrays will be computed element-wise then integrated on the grid
+        Product of all input arrays will be computed element-wise then integrated on the grid
         with its weights:
 
         .. math::
@@ -122,7 +122,7 @@ class Grid:
 
         Parameters
         ----------
-        *value_arrays : np.ndarray(N, )
+        value_arrays : tuple[np.ndarray]
             One or multiple value array to integrate.
 
         Returns
