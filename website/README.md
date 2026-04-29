@@ -6,7 +6,7 @@ be runned. The html files are created in an folder called "_build".
 ```bash
 # # Generates API html for grid while ignoring the test and data folders.
 # Stores it in pyapi/
-sphinx-apidoc --separate -o website/_autosummary grid -M -f
+sphinx-apidoc --separate -o website/pyapi grid -M -f
 # Build the html files
 jupyter-book build ./website/
 ```
@@ -19,11 +19,11 @@ After running the commands above, you'll need to go inside the  "./website/_buil
 
 ```bash
 git branch -a
-# Should be something like origin/gh-pages/ where origin is the remote to the theochem/gbasis Github
+# Should be something like origin/gh-pages/ where origin is the remote to the theochem/grid Github
 git checkout gh-pages
-cd ..  # Get out of gh-pages and go back to gbasis folder
+cd ..  # Get out of gh-pages and go back to grid folder
 ```
-Now, paste and overwrite all of the files in gh-pages with the html. Then commit and push to the `gh-pages` branch of the theochem/gbasis
+Now, paste and overwrite all of the files in gh-pages with the html. Then commit and push to the `gh-pages` branch of the theochem/grid
 ```bash
 git add ./*
 git commit -m "Update website"

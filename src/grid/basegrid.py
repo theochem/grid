@@ -122,8 +122,8 @@ class Grid:
 
         Parameters
         ----------
-        value_arrays : tuple[np.ndarray]
-            One or multiple value array to integrate.
+        *value_arrays : np.ndarray of shape (N,)
+            One or more value arrays to integrate.
 
         Returns
         -------
