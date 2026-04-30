@@ -1,8 +1,8 @@
 # Grid
 
-[![Python Version](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://docs.python.org/3/whatsnew/3.9.html)
+[![Python Version](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://docs.python.org/3/whatsnew/3.10.html)
 [![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/)
-[![GitHub Actions CI Tox Status](https://github.com/theochem/grid/actions/workflows/pytest.yaml/badge.svg)](https://github.com/theochem/grid/actions/workflows/pytest.yaml)
+[![GitHub Actions CI Status](https://github.com/theochem/grid/actions/workflows/pytest.yaml/badge.svg)](https://github.com/theochem/grid/actions/workflows/pytest.yaml)
 [![GitHub contributors](https://img.shields.io/github/contributors/theochem/grid.svg)](https://github.com/theochem/grid/graphs/contributors)
 [![Code Style](https://img.shields.io/badge/code%20style-black-black.svg)](https://black.readthedocs.io/en/stable/)
 
@@ -19,9 +19,12 @@ https://github.com/theochem/grid/issues/new) or email [qcdevs@gmail.com]().
 
 
 ## Citation
-Please use the cite the following [publication](https://doi.org/10.1063/5.0202240) when you use `Grid`:
+Please cite Grid using the following reference:
 
-> Tehrani, A., Yang, X.D., Martínez-González, M., Pujal, L., Hernández-Esparza, R., Chan, M., Vöhringer-Martinez, E., Verstraelen, T., Ayers, P.W. and Heidar-Zadeh, F., 2024. Grid: A Python library for molecular integration, interpolation, differentiation, and more. The Journal of Chemical Physics, 160(17), 172503.
+> **Grid: A Python library for molecular integration, interpolation, differentiation, and more.**
+> Alireza Tehrani, Xiaotian Derrick Yang, Marco Martínez-González, Leila Pujal, Raymundo Hernández-Esparza, Matthew Chan, Esteban Vöhringer-Martinez, Toon Verstraelen, Paul W. Ayers, Farnaz Heidar-Zadeh,
+> *J. Chem. Phys. 160 (17), 172503 (2024).*
+> https://doi.org/10.1063/5.0202240
 
 with the following bibtex:
 
@@ -47,7 +50,7 @@ pip install qc-grid
 
 The development version from [github](https://github.com/theochem/grid) can also be installed via pip by:
 ```bash
-pip install git+https://github.com/theochem/grid.git@master
+pip install git+https://github.com/theochem/grid.git
 ```
 
 Local installation can be done as:

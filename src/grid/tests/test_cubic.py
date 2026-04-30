@@ -22,7 +22,7 @@ r"""Rectangular Grid Testing."""
 from unittest import TestCase
 
 import numpy as np
-from importlib_resources import files
+from importlib.resources import files
 from numpy.testing import assert_allclose, assert_equal
 
 from grid.cubic import Tensor1DGrids, UniformGrid, _HyperRectangleGrid

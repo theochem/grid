@@ -25,7 +25,7 @@ import warnings
 
 import numpy as np
 import scipy.constants
-from importlib_resources import files
+from importlib.resources import files
 from scipy.interpolate import CubicSpline
 from scipy.spatial.transform import Rotation as R
 
