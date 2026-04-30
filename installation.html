@@ -47,7 +47,6 @@
               <p class="caption" role="heading"><span class="caption-text">User Documentation</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#downloading-code">Downloading Code</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#dependencies">Dependencies</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id1">Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#building-documentation">Building Documentation</a></li>
@@ -249,62 +248,47 @@
              
   <section id="installation">
 <span id="usr-installation"></span><h1>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h1>
-<section id="downloading-code">
-<h2>Downloading Code<a class="headerlink" href="#downloading-code" title="Link to this heading"></a></h2>
-<p>The latest code can be obtained through theochem (<a class="reference external" href="https://github.com/theochem/grid">https://github.com/theochem/grid</a>) in Github,</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/theochem/grid.git
-</pre></div>
-</div>
-</section>
 <section id="dependencies">
 <span id="usr-py-depend"></span><h2>Dependencies<a class="headerlink" href="#dependencies" title="Link to this heading"></a></h2>
-<p>The following dependencies will be necessary for Procrustes to build properly,</p>
+<p>The following dependencies are required for Grid:</p>
 <ul class="simple">
-<li><p>Python &gt;= 3.0: <a class="reference external" href="http://www.python.org/">http://www.python.org/</a></p></li>
-<li><p>NumPy &gt;= 1.16.0: <a class="reference external" href="http://www.numpy.org/">http://www.numpy.org/</a></p></li>
-<li><p>SciPy &gt;= 1.4.0: <a class="reference external" href="http://www.scipy.org/">http://www.scipy.org/</a></p></li>
-<li><p>Sphinx &gt;= 2.3.0: <a class="reference external" href="https://www.sphinx-doc.org/">https://www.sphinx-doc.org/</a></p></li>
+<li><p>Python &gt;= 3.10: <a class="reference external" href="http://www.python.org/">http://www.python.org/</a></p></li>
+<li><p>NumPy &gt;= 1.23.5: <a class="reference external" href="http://www.numpy.org/">http://www.numpy.org/</a></p></li>
+<li><p>SciPy &gt;= 1.15.0: <a class="reference external" href="http://www.scipy.org/">http://www.scipy.org/</a></p></li>
 <li><p>SymPy &gt;= 1.4.0: <a class="reference external" href="https://www.sympy.org/en/index.html">https://www.sympy.org/en/index.html</a></p></li>
-<li><p>PyTest &gt;= 5.4.3: <a class="reference external" href="https://docs.pytest.org/">https://docs.pytest.org/</a></p></li>
-<li><p>QA requirement: Tox &gt;= 4.0.0: <a class="reference external" href="https://tox.wiki/en/latest/">https://tox.wiki/en/latest/</a></p></li>
-<li><p>Sphinx &gt;= 2.3.0, if one wishes to build the documentation locally:
-<a class="reference external" href="https://www.sphinx-doc.org/">https://www.sphinx-doc.org/</a></p></li>
+<li><p>PyTest &gt;= 8.0.0: <a class="reference external" href="https://docs.pytest.org/">https://docs.pytest.org/</a> (for running tests)</p></li>
+<li><p>Sphinx &gt;= 2.3.0: <a class="reference external" href="https://www.sphinx-doc.org/">https://www.sphinx-doc.org/</a> (for building docs)</p></li>
 </ul>
 </section>
 <section id="id1">
 <h2>Installation<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
-<p>Installation via pip can be done by the following command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/theochem/grid.git@master
-</pre></div>
-</div>
-<p>With later release in PyPi, Grid can be installed via</p>
+<p>Install the latest release from PyPI:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>qc-grid
 </pre></div>
 </div>
-<p>Grid can also be installed by cloning via git,</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/theochem/grid.git
+<p>Install the latest development version directly from GitHub:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/theochem/grid.git
 </pre></div>
 </div>
-<p>Then installation via pip can be done by going into the directory where Grid is downloaded to and running,</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>grid
+<p>Install from a local clone:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/theochem/grid.git
+<span class="nb">cd</span><span class="w"> </span>grid
 pip<span class="w"> </span>install<span class="w"> </span>.
 </pre></div>
 </div>
-<p>Successful installation can be checked by running the tests,</p>
+<p>Check the installation by running:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pytest<span class="w"> </span>--pyargs<span class="w"> </span>grid
 </pre></div>
 </div>
 </section>
 <section id="building-documentation">
 <h2>Building Documentation<a class="headerlink" href="#building-documentation" title="Link to this heading"></a></h2>
-<p>The following shows how to build the documentation using sphinx to the folder <cite>_build</cite>.</p>
-<blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>./doc
+<p>Build the documentation using Sphinx in the <cite>_build</cite> folder:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>./doc
 ./gen_api.sh
 sphinx-build<span class="w"> </span>-b<span class="w"> </span>html<span class="w"> </span>.<span class="w"> </span>_build
 </pre></div>
 </div>
-</div></blockquote>
 </section>
 </section>
 
