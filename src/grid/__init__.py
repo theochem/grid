@@ -19,7 +19,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
 """Grid Module."""
-# flake8: noqa
+# ruff: noqa: F401,F403
 
 
 from grid.angular import *

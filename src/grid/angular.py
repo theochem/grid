@@ -70,7 +70,7 @@ import warnings
 from bisect import bisect_left
 
 import numpy as np
-from importlib_resources import files
+from importlib.resources import files
 
 from grid.basegrid import Grid
 
