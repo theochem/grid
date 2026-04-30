@@ -1,0 +1,5 @@
+jupyter-book==1.0.2
+matplotlib
+numpy>=1.23.5
+scipy>=1.15.0
+sympy>=1.4.0

@@ -1,0 +1,43 @@
+# Table of contents
+# Learn more at https://jupyterbook.org/customize/toc.html
+
+format: jb-book
+root: intro
+parts:
+  - caption: User Documentation
+    chapters:
+      - file: installation
+        title: Installation
+      - file: onedgrids
+        title: One-Dimensional Grids
+      - file: radial_transf
+        title: Radial Transformations
+      - file: conventions
+        title: Conventions
+
+  - caption: Example Tutorials
+    chapters:
+      - file: tutorial/Quickstart
+        title: Quickstart
+      - file: tutorial/One_dimensional_grids
+        title: One-Dimensional Grids
+      - file: tutorial/Angular_grid
+        title: Angular Grids
+      - file: tutorial/Atom_Grid_Construction
+        title: Atom Grid Construction
+      - file: tutorial/Atom_Grid
+        title: Atom Grid Application
+      - file: tutorial/Molecular_Grid_Construction
+        title: Molecular Grid Construction
+      - file: tutorial/Molecular_Grid
+        title: Molecular Grid Application
+      - file: tutorial/Cubic_Grids
+        title: Cubic Grids
+      - file: tutorial/Interpolation_and_Poisson
+        title: Interpolation and Poisson
+      - file: tutorial/Multipole_Moments
+        title: Multipole Moments
+
+  - caption: API Documentation
+    chapters:
+      - file: pyapi/grid.rst

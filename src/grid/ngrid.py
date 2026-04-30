@@ -124,8 +124,8 @@ class MultiDomainGrid(Grid):
         For a MultiDomainGrid formed from two grids, [(x11, y11), (x12, y12) ... (x1n, y1n)] and
         [(x21, y21), (x22, y22) ... (x2m, y2m)], the combined weights are calculated as follows:
         For each combination of points (x1, y1) from the first grid and (x2, y2) from the second
-        2D grid, the combined weight `w` is:
-            w = w1 * w2
+        2D grid, the combined weight ``w`` is ``w1 * w2``.
+
         where `w1` and `w2` are the weights from the individual grids corresponding to
         (x1, y1) and (x2, y2), respectively.
 
