@@ -1,0 +1,1393 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Cubic Grids &#8212; Welcome to Grid Documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'tutorial/Cubic_Grids';</script>
+    <link rel="icon" href="../_static/grid_logo_website.svg"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Interpolation and Solving Poisson’s Equation" href="Interpolation_and_Poisson.html" />
+    <link rel="prev" title="Molecular Grids" href="Molecular_Grid.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/grid_logo_website.svg" class="logo__image only-light" alt="Welcome to Grid Documentation - Home"/>
+    <img src="../_static/grid_logo_website.svg" class="logo__image only-dark pst-js-only" alt="Welcome to Grid Documentation - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    Welcome to Grid’s Documentation!
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Documentation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../onedgrids.html">One-Dimensional Grids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../radial_transf.html">Radial Transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../conventions.html">Conventions</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Example Tutorials</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="Quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="One_dimensional_grids.html">One-Dimensional Grids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Angular_grid.html">Angular Grids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Atom_Grid_Construction.html">Atom Grid Construction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Atom_Grid.html">Atom Grid Application</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Molecular_Grid_Construction.html">Molecular Grid Construction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Molecular_Grid.html">Molecular Grid Application</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Cubic Grids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Interpolation_and_Poisson.html">Interpolation and Poisson</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Multipole_Moments.html">Multipole Moments</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../pyapi/grid.html">grid package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.angular.html">grid.angular module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.atomgrid.html">grid.atomgrid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.basegrid.html">grid.basegrid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.becke.html">grid.becke module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.cubic.html">grid.cubic module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.hirshfeld.html">grid.hirshfeld module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.molgrid.html">grid.molgrid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.ngrid.html">grid.ngrid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.ode.html">grid.ode module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.onedgrid.html">grid.onedgrid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.periodicgrid.html">grid.periodicgrid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.poisson.html">grid.poisson module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.rtransform.html">grid.rtransform module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.utils.html">grid.utils module</a></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://colab.research.google.com/github/theochem/grid/blob/master/website/tutorial/Cubic_Grids.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Colab"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Colab logo" src="../_static/images/logo_colab.png">
+  </span>
+<span class="btn__text-container">Colab</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="initThebeSBT()"
+  class="btn btn-sm btn-launch-thebe dropdown-item"
+  title="Launch Thebe"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-play"></i>
+  </span>
+<span class="btn__text-container">Live Code</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/theochem/grid" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/theochem/grid/issues/new?title=Issue%20on%20page%20%2Ftutorial/Cubic_Grids.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/tutorial/Cubic_Grids.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Cubic Grids</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tensor-1d-grids">Tensor 1D Grids</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-1-interpolation">Example 1: Interpolation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-2-visualization-of-2p-z-orbital-using-tensor-1d-grid">Example 2: Visualization of <span class="math notranslate nohighlight">\(2p_{z}\)</span> Orbital using Tensor 1D Grid</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#i-utility-function-for-plotting-isosurfaces">i. Utility Function For Plotting Isosurfaces</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ii-plot-2p-z-orbital-from-isosurface-value">ii. Plot <span class="math notranslate nohighlight">\(2p_{z}\)</span> orbital from isosurface value</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#uniform-grid">Uniform Grid</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-1-constructing-uniform-grid-around-formaldehyde-anion">Example 1: Constructing Uniform Grid Around Formaldehyde Anion</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-2-calculate-and-visualize-dual-descriptor-of-formaldehyde">Example 2: Calculate and Visualize Dual Descriptor of Formaldehyde</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#i-define-utility-function-to-calculate-the-dual-descriptor">i. Define utility function to calculate the dual descriptor</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ii-calculate-and-visualize-dual-descriptor">ii. Calculate and visualize dual descriptor</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-3-integrate-the-dual-descriptor-domains">Example 3: Integrate The Dual Descriptor Domains</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#i-define-utility-function-to-extract-dual-descriptor-domains">i. Define utility function to extract dual descriptor domains</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ii-select-and-integrate-the-positive-electrophilic-domains-of-the-dual-descriptor">ii. Select and integrate the positive (electrophilic) domains of the dual descriptor</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#iii-select-and-integrate-the-negative-nucleophilic-domains-of-the-dual-descriptor">iii. Select and integrate the negative (nucleophilic) domains of the dual descriptor</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <p><a class="reference external" href="https://colab.research.google.com/github/theochem/grid/blob/master/examples/Cubic_Grids.ipynb"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
+<section id="cubic-grids">
+<h1>Cubic Grids<a class="headerlink" href="#cubic-grids" title="Link to this heading">#</a></h1>
+<p>Cubic grids are commonly found in many other packages and are useful for visualization, interpolation and integration purposes.</p>
+<p>In Grid, it offers two classes for constructing these cubic (or Hyper-rectangular) grids in three-dimensions:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../pyapi/grid.cubic.html#grid.cubic.Tensor1DGrids"><span class="std std-ref">Tensor1DGrids</span></a> : Tensor product of three one-dimensional grids.</p></li>
+<li><p><a class="reference internal" href="../pyapi/grid.cubic.html#grid.cubic.UniformGrid"><span class="std std-ref">UniformGrid</span></a> : Evenly spaced grid in three axes.</p></li>
+</ul>
+<p>See their API documentation for more information about the classes.
+This example illustrates how to use these grid classes for both visualization, interpolation (including differentiation), and integration, with a focus on usage in quantum chemistry.  It is recommended for general usage to use the Tensor1DGrids and for quantum chemistry applications, to use the UniformGrid class.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span># # Install packages in Google Colab
+# ! pip install qc-iodata
+# ! pip install qc-grid
+# ! pip install qc-gbasis
+
+# # Download the example files
+# from urllib.request import urlretrieve
+# urlretrieve(&quot;https://raw.githubusercontent.com/theochem/grid/refs/heads/master/examples/ch2o_q%2B1.fchk&quot;,&quot;ch2o_q+1.fchk&quot;)
+# urlretrieve(&quot;https://raw.githubusercontent.com/theochem/grid/refs/heads/master/examples/ch2o_q-1.fchk&quot;,&quot;ch2o_q-1.fchk&quot;)
+</pre></div>
+</div>
+</div>
+</div>
+<section id="tensor-1d-grids">
+<h2>Tensor 1D Grids<a class="headerlink" href="#tensor-1d-grids" title="Link to this heading">#</a></h2>
+<p>The first grid is a tensor combination of three grids with points <span class="math notranslate nohighlight">\(\{p^1_i\}, \{p^2_i\}, \{p^3_i\}\)</span> and weights <span class="math notranslate nohighlight">\(\{w^1_i\}, \{w^2_i\}, \{w^3_i\}\)</span> such that the new set of points are <span class="math notranslate nohighlight">\(\{(p^1_i, p^2_j, p^3_k)\}\)</span> with weights <span class="math notranslate nohighlight">\(\{w^1_i \times w^2_j \times w^3_k\}\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>%matplotlib inline
+from grid.onedgrid import UniformInteger
+from grid.rtransform import LinearInfiniteRTransform
+from grid.cubic import Tensor1DGrids
+import numpy as np
+
+limit = 10
+# Construct a grid between -10 and 10 on the real line.
+npoints = 50
+oned_gridx = UniformInteger(npoints)
+oned_gridx = LinearInfiniteRTransform(-limit, limit).transform_1d_grid(oned_gridx)
+
+# Construct another grid between -0.5 and 0.5 on the real line
+npoints = 45
+oned_gridy = UniformInteger(npoints)
+oned_gridy = LinearInfiniteRTransform(-limit, limit).transform_1d_grid(oned_gridy)
+
+# Construct another grid between -10 and 10 on the real line
+npoints = 55
+oned_gridz = UniformInteger(npoints)
+oned_gridz = LinearInfiniteRTransform(-limit, limit).transform_1d_grid(oned_gridz)
+
+# Constructing the tensor product grid.
+tensor_grid = Tensor1DGrids(oned_gridx, oned_gridy, oned_gridz)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Each of the individual grids axes are plotted.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>import matplotlib.pyplot as plt
+from mpl_toolkits import mplot3d
+
+fig = plt.figure()
+ax = plt.axes(projection=&#39;3d&#39;)
+ax.scatter(oned_gridx.points, [0] *  len(oned_gridx.points), [0] *  len(oned_gridx.points), color=&quot;k&quot;, label=&quot;Points on x-axis&quot;)
+ax.scatter( [0] *  len(oned_gridy.points), oned_gridy.points, [0] *  len(oned_gridy.points), color=&quot;m&quot;, label=&quot;Points on y-axis&quot;)
+ax.scatter( [0] *  len(oned_gridz.points), [0] *  len(oned_gridz.points), oned_gridz.points , color=&quot;b&quot;, label=&quot;Points on z-axis&quot;)
+ax.set_xlabel(&quot;X-axis&quot;)
+ax.set_ylabel(&quot;Y-axis&quot;)
+ax.set_zlabel(&quot;Z-axis&quot;)
+plt.legend()
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/1e9ec5744a6bbb2a3bbe4cdc95695f84e22bda4a9ce145553c6bea280ce9726a.png" src="../_images/1e9ec5744a6bbb2a3bbe4cdc95695f84e22bda4a9ce145553c6bea280ce9726a.png" />
+</div>
+</div>
+<p>The Tensor1DGrids can now be easily constructed by passing in each of the three one-dimensional grids.  These are then plotted</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>fig = plt.figure()
+ax = plt.axes(projection=&#39;3d&#39;)
+ax.scatter(tensor_grid.points[:, 0], tensor_grid.points[:, 1], tensor_grid.points[:, 2], color=&quot;m&quot;, alpha=0.01)
+ax.set_xlabel(&quot;X-axis&quot;)
+ax.set_ylabel(&quot;Y-axis&quot;)
+ax.set_zlabel(&quot;Z-axis&quot;)
+plt.title(&quot;Tensor Product of Three One-Dimensional Grids&quot;)
+plt.show()
+
+print(f&quot;Points of the grid: {tensor_grid.points}&quot;)
+print(f&quot;Weights of the grid: {tensor_grid.weights}.&quot;)
+print(f&quot;The number of points: {tensor_grid.size}&quot;)
+print(f&quot;The number of dimensions: {tensor_grid.ndim}.&quot;)
+print(f&quot;The origin of the grid: {tensor_grid.origin}.&quot;)
+print(f&quot;The shape of the grid: {tensor_grid.shape}.&quot;)
+
+# Conversion from indices i to coordinates (i, j, k) to points
+coordinate = tensor_grid.index_to_coordinates(5)
+print(f&quot;Coordinate of the fifth point: {coordinate}.&quot;)
+index = tensor_grid.coordinates_to_index((0, 0, 5))
+print(f&quot;Index of the (0, 0, 5) coordinate: {index}.&quot;)
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/54d31c0ad7d3015c27ac37f57190316e3d696cddf01a445ddaf299b9780b136c.png" src="../_images/54d31c0ad7d3015c27ac37f57190316e3d696cddf01a445ddaf299b9780b136c.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Points of the grid: [[-10.         -10.         -10.        ]
+ [-10.         -10.          -9.62962963]
+ [-10.         -10.          -9.25925926]
+ ...
+ [ 10.          10.           9.25925926]
+ [ 10.          10.           9.62962963]
+ [ 10.          10.          10.        ]]
+Weights of the grid: [0.06871435 0.06871435 0.06871435 ... 0.06871435 0.06871435 0.06871435].
+The number of points: 123750
+The number of dimensions: 3.
+The origin of the grid: [-10. -10. -10.].
+The shape of the grid: (50, 45, 55).
+Coordinate of the fifth point: (0, 0, 5).
+Index of the (0, 0, 5) coordinate: 5.
+</pre></div>
+</div>
+</div>
+</div>
+<section id="example-1-interpolation">
+<h3>Example 1: Interpolation<a class="headerlink" href="#example-1-interpolation" title="Link to this heading">#</a></h3>
+<p>This example will attempt to interpolate a Gaussian, first on a subset of the points used for interpolation then later on random set of points.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span># Interpolation of a Gaussian
+gaussian = lambda pts: np.exp(-np.linalg.norm(pts, axis=1)**2.0)
+gaus_vals = gaussian(tensor_grid.points)
+
+# Interpolation evaluated on subset of the same points used for interpolation
+subset = tensor_grid.points[np.random.choice(range(tensor_grid.size), 10)]
+true_vals = gaussian(subset)
+
+print(&quot;Interpolate using linear method.&quot;)
+interpol = tensor_grid.interpolate(subset, gaus_vals, use_log=False, method=&quot;linear&quot;)
+print(&quot;The errors are: &quot;, np.abs(interpol - true_vals))
+print(f&quot;Maximum error is {np.max(np.abs(interpol - true_vals))} \n&quot;)
+
+print(&quot;Interpolate using linear method applying the logarithm.&quot;)
+interpol = tensor_grid.interpolate(subset, gaus_vals, use_log=True, method=&quot;linear&quot;)
+print(&quot;The errors are: &quot;, np.abs(interpol - true_vals))
+print(f&quot;Maximum error is {np.max(np.abs(interpol - true_vals))} \n&quot;)
+
+print(&quot;Interpolate using cubic splines&quot;)
+interpol = tensor_grid.interpolate(subset, gaus_vals, use_log=False, method=&quot;cubic&quot;)
+print(&quot;The errors are: &quot;, np.abs(interpol - true_vals))
+print(f&quot;Maximum error is {np.max(np.abs(interpol - true_vals))} \n&quot;)
+
+print(&quot;Inteprolate using cubic splines appling the logarithm&quot;)
+interpol = tensor_grid.interpolate(subset, gaus_vals, use_log=True, method=&quot;cubic&quot;)
+print(&quot;The errors are: &quot;, np.abs(interpol - true_vals))
+print(f&quot;Maximum error is {np.max(np.abs(interpol - true_vals))} \n&quot;)
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Interpolate using linear method.
+The errors are:  [0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+Maximum error is 0.0 
+
+Interpolate using linear method applying the logarithm.
+The errors are:  [171.46716217  70.30215474  78.32720365  32.11924387 130.53013235
+  28.19417151  35.37443308  85.77553134  85.69913673  26.65532941]
+Maximum error is 171.4671621664289 
+
+Interpolate using cubic splines
+The errors are:  [0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+Maximum error is 0.0 
+
+Inteprolate using cubic splines appling the logarithm
+The errors are:  [0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+Maximum error is 0.0 
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span># Interpolate at random set of points
+random_pts = np.random.uniform(-1, 1, (25, 3))
+true_vals = gaussian(random_pts)
+
+print(&quot;Interpolate using linear method.&quot;)
+interpol = tensor_grid.interpolate(random_pts, gaus_vals, use_log=False, method=&quot;linear&quot;)
+print(&quot;The errors are: &quot;, np.abs(interpol - true_vals))
+print(f&quot;Maximum error is {np.max(np.abs(interpol - true_vals))} \n&quot;)
+# The logarithm is first applied to the Gaussian functions to be easier to interpolate at.
+print(&quot;Interpolate using linear method applying the logarithm.&quot;)
+interpol = tensor_grid.interpolate(random_pts, gaus_vals, use_log=True, method=&quot;linear&quot;)
+print(&quot;The errors are: &quot;, np.abs(interpol - true_vals))
+print(f&quot;Maximum error is {np.max(np.abs(interpol - true_vals))} \n&quot;)
+# Rather then interpolate using linearly, this used the cubic
+print(&quot;Interpolate using cubic splines&quot;)
+interpol = tensor_grid.interpolate(random_pts, gaus_vals, use_log=False, method=&quot;cubic&quot;)
+print(&quot;The errors are: &quot;, np.abs(interpol - true_vals))
+print(f&quot;Maximum error is {np.max(np.abs(interpol - true_vals))} \n&quot;)
+# Same as above but the logarithm is applied.
+print(&quot;Inteprolate using cubic splines appling the logarithm&quot;)
+interpol = tensor_grid.interpolate(random_pts, gaus_vals, use_log=True, method=&quot;cubic&quot;)
+print(&quot;The errors are: &quot;, np.abs(interpol - true_vals))
+print(f&quot;Maximum error is {np.max(np.abs(interpol - true_vals))} \n&quot;)
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Interpolate using linear method.
+The errors are:  [0.01233929 0.00172326 0.01414473 0.00302718 0.03765561 0.00854703
+ 0.00573863 0.0096147  0.06938564 0.00885821 0.03244877 0.00313253
+ 0.00879784 0.02016751 0.00573694 0.014182   0.00269118 0.01196634
+ 0.00416348 0.05229362 0.00944945 0.00436619 0.02369888 0.01221546
+ 0.03681424]
+Maximum error is 0.0693856422879573 
+
+Interpolate using linear method applying the logarithm.
+The errors are:  [1.5443592  1.71594526 1.34273699 1.80571319 1.18542439 1.62956061
+ 1.63051993 1.45611032 1.11876818 1.40452868 1.24498067 2.56010903
+ 1.54114751 1.13349723 1.88518539 1.45877593 1.86029613 1.40771558
+ 2.29762085 1.07745488 1.60149404 2.39484291 1.27974207 1.19860893
+ 1.19903943]
+Maximum error is 2.560109034575345 
+
+Interpolate using cubic splines
+The errors are:  [3.86592728e-04 4.22040488e-04 1.66738913e-04 4.13390441e-04
+ 1.01639001e-03 4.34750401e-05 5.16147392e-05 9.61299995e-05
+ 1.64110278e-03 5.10977886e-04 1.88314046e-04 1.11520856e-04
+ 5.16837466e-04 8.08227555e-04 1.77906599e-04 2.64324388e-05
+ 1.57194487e-04 3.27801023e-04 2.26379162e-04 1.25083661e-03
+ 2.33331268e-04 4.52028716e-04 3.51733200e-04 8.65339717e-04
+ 8.68365576e-04]
+Maximum error is 0.0016411027780264265 
+
+Inteprolate using cubic splines appling the logarithm
+The errors are:  [5.55111512e-17 5.55111512e-17 1.66533454e-16 1.11022302e-16
+ 0.00000000e+00 0.00000000e+00 0.00000000e+00 1.11022302e-16
+ 1.11022302e-16 0.00000000e+00 0.00000000e+00 4.16333634e-17
+ 1.11022302e-16 0.00000000e+00 8.32667268e-17 1.66533454e-16
+ 5.55111512e-17 1.11022302e-16 5.55111512e-17 1.11022302e-16
+ 1.11022302e-16 1.11022302e-16 1.11022302e-16 1.11022302e-16
+ 0.00000000e+00]
+Maximum error is 1.6653345369377348e-16 
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span># Derivative can be interpolated
+# X-derivative
+deriv_x = tensor_grid.interpolate(random_pts, gaus_vals, use_log=False, nu_x=1, nu_y=0, nu_z=0, method=&quot;cubic&quot;)
+print(f&quot;Derivative in x-direction {deriv_x}.&quot;)
+# Y-derivative
+deriv_y = tensor_grid.interpolate(random_pts, gaus_vals, use_log=False, nu_x=0, nu_y=1, nu_z=0, method=&quot;cubic&quot;)
+# Z-derivative
+deriv_z = tensor_grid.interpolate(random_pts, gaus_vals, use_log=False, nu_x=0, nu_y=0, nu_z=1, method=&quot;cubic&quot;)
+# XY- derivative
+deriv_xy = tensor_grid.interpolate(random_pts, gaus_vals, use_log=False, nu_x=1, nu_y=1, nu_z=0, method=&quot;cubic&quot;)
+# The logarithm can be used to interpolate derivatives on single points only (mixed derivative are not supported)
+derivs = []
+for pt in random_pts:
+    deriv_x = tensor_grid.interpolate(np.array([pt]), gaus_vals, use_log=True, nu_x=1, nu_y=0, nu_z=0, method=&quot;cubic&quot;)
+    derivs.append(deriv_x[0])
+print(f&quot;Derivative (using logarithm) in x-direction {np.array(derivs)}.&quot;)
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Derivative in x-direction [ 0.30734258  0.24753392 -0.10164385 -0.35502454  0.62256378 -0.4806336
+ -0.27490521  0.64421173  0.50708235 -0.62589627 -0.02271022 -0.18075862
+ -0.46666906 -0.35434171 -0.07220761  0.37371807 -0.07209604  0.47252084
+  0.18407512 -0.08490725  0.31419978 -0.18812879  0.11677048  0.27183554
+  0.00227194].
+Derivative (using logarithm) in x-direction [ 0.30673882  0.24715189 -0.1054587  -0.35469932  0.62461378 -0.48053782
+ -0.27527774  0.64168648  0.50556283 -0.62694789 -0.02390025 -0.17964052
+ -0.46912167 -0.35324203 -0.07340006  0.37428065 -0.07338858  0.4747938
+  0.18456838 -0.08932495  0.31453276 -0.18754882  0.12127639  0.27184459
+  0.00239627].
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="example-2-visualization-of-2p-z-orbital-using-tensor-1d-grid">
+<h3>Example 2: Visualization of <span class="math notranslate nohighlight">\(2p_{z}\)</span> Orbital using Tensor 1D Grid<a class="headerlink" href="#example-2-visualization-of-2p-z-orbital-using-tensor-1d-grid" title="Link to this heading">#</a></h3>
+<p>Given a function <span class="math notranslate nohighlight">\(f(x, y, z)\)</span>, (e.g. an atomic orbital or electron density) we can evaluate it on a cubic grid and visualize the distribution of the function in space using isosurface values. Here we define a function that plots every point in the grid with a corresponding absolute value of the function greater than a threshold value. The function is latter used to visualize the <span class="math notranslate nohighlight">\(2p_{z}\)</span> orbital.</p>
+<section id="i-utility-function-for-plotting-isosurfaces">
+<h4>i. Utility Function For Plotting Isosurfaces<a class="headerlink" href="#i-utility-function-for-plotting-isosurfaces" title="Link to this heading">#</a></h4>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span># Function to plot grid points bigger than a given threshold
+def plot_isosurface(
+    grid, vals, isovalue, *, both_signs=True, at_data=None, noticks=False, title=None
+):
+    &quot;&quot;&quot;Plot grid points with values bigger than isovalue.
+
+    The function plots the grid points with absolute values bigger than isovalue.
+
+    Parameters
+    ----------
+    grid : Grid
+        Cartesian grid (it can be uniform or TensorProductGrid) with 3 dimensions.
+    vals : ndarray
+        Values of the function on the grid points.
+    isovalue : float
+        Value of the isosurface to plot.
+    both_signs : bool, optional
+        If True, plot points with negative values too. The default is True.
+    at_data : tuple, optional
+        Tuple containing the atomic coordinates and atomic labels. If not None,
+        it should be a tuple containing (atcoords, atlabels) where atcoords is
+        a ndarray of shape (natoms, 3) containing the atomic coordinates in
+        bohr and atlabels is a list of length natoms containing the atomic labels.
+    title : str, optional
+        Title of the plot. The default is None.
+    &quot;&quot;&quot;
+    # indices of points with values close to isovalue
+    idx_p_vals = np.where(vals &gt; isovalue)
+    idx_n_vals = np.where(vals &lt; -isovalue)
+
+    # points with values close to isovalue
+    p_pts = grid.points[idx_p_vals]
+    n_pts = grid.points[idx_n_vals]
+
+    xmin, xmax = np.min(grid.points[:, 0]), np.max(grid.points[:, 0])
+    ymin, ymax = np.min(grid.points[:, 1]), np.max(grid.points[:, 1])
+    zmin, zmax = np.min(grid.points[:, 2]), np.max(grid.points[:, 2])
+
+    fig = plt.figure()
+    ax = plt.axes(projection=&quot;3d&quot;)
+    if noticks:
+        ax.set_xticks([])
+        ax.set_yticks([])
+        ax.set_zticks([])
+
+    if at_data is not None:
+        if len(at_data) != 2:
+            raise ValueError(&quot;at_data should be a tuple containing (atcoords, atlabels)&quot;)
+
+        atcoords, atlabels = at_data
+        if atcoords.shape[0] != len(atlabels):
+            raise ValueError(&quot;atcoords and atlabels should have the same length&quot;)
+
+        # if there are more than 2 atoms set the view point perpendicular to the molecular plane
+        if len(atlabels) &gt; 2:
+            # Calculate the centroid of atomic coordinates
+            centroid = np.mean(atcoords, axis=0)
+            # Center the atomic coordinates by subtracting the centroid from each point
+            centered_coords = atcoords - centroid
+            # Perform Singular Value Decomposition (SVD) on the centered coordinates
+            _, _, V = np.linalg.svd(centered_coords)
+            # The normal vector the molecular plane is the last column of the V matrix
+            normal_vector = V[-1]
+            # Set the view point perpendicular to the plane
+            ax.view_init(
+                elev=np.degrees(np.arcsin(normal_vector[2])),
+                azim=np.degrees(np.arctan2(normal_vector[1], normal_vector[0])),
+            )
+
+        # plot the atomic centers
+        for i in range(len(atlabels)):
+            ax.text(
+                atcoords[i, 0],
+                atcoords[i, 1],
+                atcoords[i, 2],
+                atlabels[i],
+                color=&quot;k&quot;,
+                fontsize=12,
+                horizontalalignment=&quot;center&quot;,
+                verticalalignment=&quot;center&quot;,
+            )
+    # set axis limits
+    ax.set_xlim((xmin, xmax))
+    ax.set_ylim((ymin, ymax))
+    ax.set_zlim((zmin, zmax))
+    
+    # plot points with values bigger than isovalue
+    ax.scatter(
+        p_pts[:, 0], p_pts[:, 1], p_pts[:, 2], alpha=0.01, color=&quot;r&quot;, label=f&quot;Positive values&quot;
+    )
+    if both_signs:
+        ax.scatter(
+            n_pts[:, 0], n_pts[:, 1], n_pts[:, 2], alpha=0.01, color=&quot;b&quot;, label=f&quot;Negative values&quot;
+        )
+    legend = plt.legend(loc=&quot;upper right&quot;)
+    for lh in legend.get_lines():
+        lh.set_alpha(1)
+    if title is not None:
+        plt.title(title)
+    plt.show()
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="ii-plot-2p-z-orbital-from-isosurface-value">
+<h4>ii. Plot <span class="math notranslate nohighlight">\(2p_{z}\)</span> orbital from isosurface value<a class="headerlink" href="#ii-plot-2p-z-orbital-from-isosurface-value" title="Link to this heading">#</a></h4>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>import matplotlib.pyplot as plt
+import numpy as np
+
+# define 2pz orbital function
+def psi_2pz(x, y, z, a_0):
+    r = np.sqrt(x**2 + y**2 + z**2)
+    return np.exp(-r / (2 * a_0)) * z
+
+
+# Evaluate the function on the grid.
+psi_vals = psi_2pz(*tensor_grid.points.T, a_0=1.0)
+
+point_idx = target_x = 0.15
+tolerance = 1e-2
+
+plot_isosurface(tensor_grid, psi_vals, target_x, title=&quot;$2p_{z}$ Isosurface (0.15 a.u.)&quot;)
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/fe8822b81c987116a884096b4dc81c680cbc00260b1524ef8ae2ed3447faf1b8.png" src="../_images/fe8822b81c987116a884096b4dc81c680cbc00260b1524ef8ae2ed3447faf1b8.png" />
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="uniform-grid">
+<h2>Uniform Grid<a class="headerlink" href="#uniform-grid" title="Link to this heading">#</a></h2>
+<p>This is type of cubic grid (a.k.a. rectilinear grid) with evenly-spaced points in each axes.  It supports the same properties and functions as Tensor1DGrids.</p>
+<section id="example-1-constructing-uniform-grid-around-formaldehyde-anion">
+<h3>Example 1: Constructing Uniform Grid Around Formaldehyde Anion<a class="headerlink" href="#example-1-constructing-uniform-grid-around-formaldehyde-anion" title="Link to this heading">#</a></h3>
+<p>This example illustates the use of Grid with the <a class="reference external" href="https://github.com/theochem/iodata">IOData</a> package to construct a default grid around a molecule.
+The easiest method to do so is the “from_molecule” method.  This example will showcase this for Formaldehyde anion. The <code class="docutils literal notranslate"><span class="pre">.fchk</span></code> files of which are read using the <a class="reference external" href="https://github.com/theochem/iodata">IOData</a> package and the <code class="docutils literal notranslate"><span class="pre">.fchk</span></code> files are included in <code class="docutils literal notranslate"><span class="pre">doc/notebooks/ch2o_q-1.fchk</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>from iodata import load_one
+
+# Load the wavefunction information about ch2o
+mol_anion = load_one(&quot;ch2o_q-1.fchk&quot;)
+
+# Get the atomic coordinates and numbers
+atcoords = mol_anion.atcoords
+atnums = mol_anion.atnums
+print(f&quot;Atomic Coordinates \n {atcoords}&quot;)
+print(f&quot;Atomic Numbers: \n {atnums}&quot;)
+
+fig = plt.figure()
+ax = plt.axes(projection=&#39;3d&#39;)
+ax.scatter(atcoords[:, 0], atcoords[:, 1], atcoords[:, 2], color=&quot;k&quot;, s=50)
+ax.set_xlabel(&quot;X-axis&quot;)
+ax.set_ylabel(&quot;Y-axis&quot;)
+ax.set_zlabel(&quot;Z-axis&quot;)
+plt.title(&quot;Atomic coordinates of Formaldehyde.&quot;)
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Atomic Coordinates 
+ [[-1.23259516e-32  1.00530930e-32  1.27229733e+00]
+ [ 0.00000000e+00 -1.32254311e-32 -9.95825669e-01]
+ [ 0.00000000e+00  1.77311490e+00 -2.10171229e+00]
+ [-2.17143949e-16 -1.77311490e+00 -2.10171229e+00]]
+Atomic Numbers: 
+ [8 6 1 1]
+</pre></div>
+</div>
+<img alt="../_images/58c116fa898e334baf5fae94d46f5bb8182f5ca97ca7bd8c6196ad4037a81043.png" src="../_images/58c116fa898e334baf5fae94d46f5bb8182f5ca97ca7bd8c6196ad4037a81043.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>from grid.cubic import UniformGrid
+
+# Construct uniform grid
+uniform_grid = UniformGrid.from_molecule(atnums, atcoords, spacing=0.1, extension=2.0, rotate=True)
+
+
+print(f&quot;The number of points: {uniform_grid.size}&quot;)
+print(f&quot;The number of dimensions: {uniform_grid.ndim}.&quot;)
+print(f&quot;The shape of the grid: {uniform_grid.shape}.&quot;)
+print(f&quot;The origin of the grid: {uniform_grid.origin}.&quot;)
+print(f&quot;The axes of the grid: {uniform_grid.axes}.&quot;)
+
+
+fig = plt.figure()
+ax = plt.axes(projection=&#39;3d&#39;)
+ax.scatter(atcoords[:, 0], atcoords[:, 1], atcoords[:, 2], color=&quot;k&quot;, s=50)
+ax.scatter(uniform_grid.points[:, 0], uniform_grid.points[:, 1], uniform_grid.points[:, 2], color=&quot;m&quot;, alpha=0.01)
+ax.set_xlabel(&quot;X-axis&quot;)
+ax.set_ylabel(&quot;Y-axis&quot;)
+ax.set_zlabel(&quot;Z-axis&quot;)
+plt.title(&quot;Atomic coordinates of Formaldehyde.&quot;)
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The number of points: 224960
+The number of dimensions: 3.
+The shape of the grid: [74 76 40].
+The origin of the grid: [-2.   3.8 -3.7].
+The axes of the grid: [[ 0.00000000e+00  0.00000000e+00  1.00000000e-01]
+ [ 0.00000000e+00 -1.00000000e-01  0.00000000e+00]
+ [ 1.00000000e-01  1.11022302e-17  0.00000000e+00]].
+</pre></div>
+</div>
+<img alt="../_images/b84cbe34404a065e05fc5fa30409bf52777f58bb6fdac4e1d28fdc7a677f1276.png" src="../_images/b84cbe34404a065e05fc5fa30409bf52777f58bb6fdac4e1d28fdc7a677f1276.png" />
+</div>
+</div>
+</section>
+<section id="example-2-calculate-and-visualize-dual-descriptor-of-formaldehyde">
+<h3>Example 2: Calculate and Visualize Dual Descriptor of Formaldehyde<a class="headerlink" href="#example-2-calculate-and-visualize-dual-descriptor-of-formaldehyde" title="Link to this heading">#</a></h3>
+<p>This example will illusrate on how to use UniformGrid to compute and visualize the dual descriptor of formaldehyde. The dual descriptor is a function of electron density and its derivatives and is defined as:</p>
+<div class="math notranslate nohighlight">
+\[f^{(2)}(r) = \Delta f(r) = (f^{+}(r) - f^{-}(r)\]</div>
+<p>where <span class="math notranslate nohighlight">\(f^{+}(r)\)</span> and <span class="math notranslate nohighlight">\(f^{-}(r)\)</span> are the Fukui functions defined as:</p>
+<div class="math notranslate nohighlight">
+\[f^{+}(r) = \left(\frac{\partial \rho(r)}{\partial \rho^2}\right)^{+}_{\upsilon(r)} = \rho_{N+1}(r) - \rho_{N}(r)\]</div>
+<div class="math notranslate nohighlight">
+\[f^{-}(r) = \left(\frac{\partial \rho(r)}{\partial \rho^2}\right)^{-}_{\upsilon(r)} = \rho_{N}(r) - \rho_{N-1}(r)\]</div>
+<p>then <span class="math notranslate nohighlight">\(f^{(2)}(r)\)</span> can be written as:</p>
+<div class="math notranslate nohighlight">
+\[f^{(2)}(r) = \rho_{N+1}(r) - \rho_{N-1}(r)\]</div>
+<section id="i-define-utility-function-to-calculate-the-dual-descriptor">
+<h4>i. Define utility function to calculate the dual descriptor<a class="headerlink" href="#i-define-utility-function-to-calculate-the-dual-descriptor" title="Link to this heading">#</a></h4>
+<p>The dual descriptor is evaluated at each grid point as the difference between the electron density of the anion and cation of formaldehyde. The electron density can be evaluated in the grid points using the <a class="reference external" href="https://github.com/theochem/gbasis">GBasis</a> package with the wavefunction read, as above.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>from gbasis.evals.density import evaluate_density
+
+# define function to compute dual descriptor on a grid
+def compute_dual_descriptor(grid, rdm_an, rdm_cat, basis_an, basis_cat):
+    &quot;&quot;&quot;Compute dual descriptor on a grid.
+
+    Parameters
+    ----------
+    grid : Grid
+        Grid object.
+    rdm_an : np.ndarray
+        1-RDM of the anion.
+    rdm_cat : np.ndarray
+        1-RDM of the cation.
+    basis_an : list
+        Basis set of the anion.
+    basis_cat : list
+        Basis set of the cation.
+    &quot;&quot;&quot;
+    # evaluate electron density of cation and anion on the grid
+    dens_vals_cat = evaluate_density(rdm_cat, basis_cat, grid.points)
+    dens_vals_an = evaluate_density(rdm_an, basis_an, grid.points)
+
+    # compute dual descriptor on the grid
+    return dens_vals_an - dens_vals_cat
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="ii-calculate-and-visualize-dual-descriptor">
+<h4>ii. Calculate and visualize dual descriptor<a class="headerlink" href="#ii-calculate-and-visualize-dual-descriptor" title="Link to this heading">#</a></h4>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>from iodata import load_one
+from gbasis.wrappers import from_iodata
+
+# load formaldehyde cation and anion fchk files
+mol_cation = load_one(&quot;ch2o_q+1.fchk&quot;)
+
+# Construct molecular basis from wave-function information read by IOData
+basis_cat = from_iodata(mol_cation)
+basis_an = from_iodata(mol_anion)
+
+# get rdms for cation and anion
+rdm_cat = mol_cation.one_rdms[&quot;scf&quot;]
+rdm_an = mol_anion.one_rdms[&quot;scf&quot;]
+
+# compute dual descriptor on the grid
+dd = compute_dual_descriptor(uniform_grid, rdm_an, rdm_cat, basis_an, basis_cat)
+
+# plot dual descriptor isosurface
+mol_data = (atcoords, [&quot;O&quot;, &quot;C&quot;, &quot;H&quot;, &quot;H&quot;])
+plot_isosurface(
+    uniform_grid, dd, 0.03, at_data=mol_data, title=&quot;Dual Descriptor Isosurface&quot;, noticks=True
+)
+
+print(f&quot;Positive values (red) correspond to nucleophilic regions&quot;)
+print(f&quot;Negative values (blue) correspond to electrophilic regions&quot;)
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/e99c67c3539c99fc68a0639d7e26ae53234d7d2a4c17b630c68acd2df8744d7d.png" src="../_images/e99c67c3539c99fc68a0639d7e26ae53234d7d2a4c17b630c68acd2df8744d7d.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Positive values (red) correspond to nucleophilic regions
+Negative values (blue) correspond to electrophilic regions
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="example-3-integrate-the-dual-descriptor-domains">
+<h3>Example 3: Integrate The Dual Descriptor Domains<a class="headerlink" href="#example-3-integrate-the-dual-descriptor-domains" title="Link to this heading">#</a></h3>
+<p>All classes in <a class="reference external" href="https://github.com/theochem/grid">Grid</a> offers an easy method to integrate. Here we integrate the different lobes of the dual descriptor. This can be used to assess the relevance of electrophilic and nucleophilic regions of the molecule.</p>
+<section id="i-define-utility-function-to-extract-dual-descriptor-domains">
+<h4>i. Define utility function to extract dual descriptor domains<a class="headerlink" href="#i-define-utility-function-to-extract-dual-descriptor-domains" title="Link to this heading">#</a></h4>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span># define utility function for grouping grid points in domains
+from itertools import combinations
+from scipy.sparse.csgraph import connected_components
+
+
+# function to get grid points indices for same sign connected points with absolute
+# value  greater than a threshold (select domain defined by isovalue)
+def get_domains(grid, vals, isovalue):
+    &quot;&quot;&quot;Get grid points indices for domains with same sign connected points.
+
+    The function returns the indices of the grid points that belong to the same domain. A domain
+    is defined by a set of connected points with the same sign and absolute value greater than
+    isovalue.
+
+    Parameters
+    ----------
+    grid : Grid
+        Cartesian grid (it can be uniform or TensorProductGrid) with 3 dimensions.
+    vals : ndarray
+        Values of the function on the grid points.
+    isovalue : float
+        Value of the isosurface used to define the domains.
+
+    Returns
+    -------
+    tuple
+        Tuple containing two lists. The first list contains domains with positive values and the
+        second list contains domains with negative values. Each domain is a np.array with the
+        indexes of the grid points that belong to the same domain.
+    &quot;&quot;&quot;
+    # indices of points with value modulus greater than isovalue
+    idx_p_vals = np.where(vals &gt; isovalue)[0]  # positive values
+    idx_n_vals = np.where(vals &lt; -isovalue)[0]  # negative values
+
+    # create adjacency matrix selected points with same sign
+    p_vals_adj = np.zeros((len(idx_p_vals), len(idx_p_vals)))
+    n_vals_adj = np.zeros((len(idx_n_vals), len(idx_n_vals)))
+
+    # try all combinations of selected points with same sign (positive values)
+    for i, j in combinations(range(len(idx_p_vals)), 2):
+        # get coordinate indices of the points
+        i_coord_idx = np.array(grid.index_to_coordinates(idx_p_vals[i]))
+        j_coord_idx = np.array(grid.index_to_coordinates(idx_p_vals[j]))
+        # two points are adjacent if they differ by at most 1 in each coordinate index
+        if np.max(np.abs(i_coord_idx - j_coord_idx)) == 1:
+            p_vals_adj[i, j] = 1
+
+    # try all combinations of selected points with same sign (negative values)
+    for i, j in combinations(range(len(idx_n_vals)), 2):
+        i_coord_idx = np.array(grid.index_to_coordinates(idx_n_vals[i]))
+        j_coord_idx = np.array(grid.index_to_coordinates(idx_n_vals[j]))
+        # two points are adjacent if they differ by at most 1 in each coordinate
+        if np.max(np.abs(i_coord_idx - j_coord_idx)) == 1:
+            n_vals_adj[i, j] = 1
+
+    # returns an array of integers, each integer represents domain and the indexes where
+    # it appear are the points belonging to that domain
+    # example: [0,1,0,0,1,1] -&gt; points 0,2,3 belong to domain 0
+    #                        -&gt; points 1,4,5 belong to domain 1
+    p_groups = connected_components(p_vals_adj, directed=False)[1]
+    n_groups = connected_components(n_vals_adj, directed=False)[1]
+
+    # creates a list with the domains. Each element of the list is a np.array with the indexes
+    # of the selected points that belong to the same domain.
+    # example: [0,1,0,0,1,1] -&gt; [[0,2,3],[1,4,5]]
+    p_domains = list([np.where(p_groups == i)[0] for i in range(max(p_groups) + 1)])
+    n_domains = list([np.where(n_groups == i)[0] for i in range(max(n_groups) + 1)])
+
+    # transform indexes of selected points to indexes of all grid points for each domain
+    p_domains = [idx_p_vals[domain] for domain in p_domains]
+    n_domains = [idx_n_vals[domain] for domain in n_domains]
+
+    return p_domains, n_domains
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="ii-select-and-integrate-the-positive-electrophilic-domains-of-the-dual-descriptor">
+<h4>ii. Select and integrate the positive (electrophilic) domains of the dual descriptor<a class="headerlink" href="#ii-select-and-integrate-the-positive-electrophilic-domains-of-the-dual-descriptor" title="Link to this heading">#</a></h4>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span># get dual descriptor domains, integrate and plot them
+p_domains, n_domains = get_domains(uniform_grid, dd, 0.03)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>for domain in p_domains:
+    domain_vals = dd.copy()
+    domain_mask = np.isin(np.arange(len(dd)), domain, invert=True)
+    domain_vals[domain_mask] = 0.0
+
+    plot_isosurface(
+        uniform_grid,
+        domain_vals,
+        0.001,
+        at_data=mol_data,
+        title=f&quot;Domain   Integral: {uniform_grid.integrate(domain_vals):.3f}&quot;,
+        noticks=True,
+    )
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/c96d93ef71b41c820c2f13ea540d66cd580f368a647cdd54594dea8482b6a6b5.png" src="../_images/c96d93ef71b41c820c2f13ea540d66cd580f368a647cdd54594dea8482b6a6b5.png" />
+<img alt="../_images/00cb389083a619fc360b5c73b889d8bebf6cdf389946858328249df3d530d4fe.png" src="../_images/00cb389083a619fc360b5c73b889d8bebf6cdf389946858328249df3d530d4fe.png" />
+<img alt="../_images/3231f723e52684e24908fa7f677dbc9c0b92b3a83c17629967acc1f77ad3eae3.png" src="../_images/3231f723e52684e24908fa7f677dbc9c0b92b3a83c17629967acc1f77ad3eae3.png" />
+<img alt="../_images/1dda28bd2075a70a21954b85811a125b0c135e33cd9c38aca6fff93ca7a21f16.png" src="../_images/1dda28bd2075a70a21954b85811a125b0c135e33cd9c38aca6fff93ca7a21f16.png" />
+<img alt="../_images/8ec23ef4fab6f7fe7a937e9e64b3962e0a896b2d5c55a49f39339317cc4690de.png" src="../_images/8ec23ef4fab6f7fe7a937e9e64b3962e0a896b2d5c55a49f39339317cc4690de.png" />
+<img alt="../_images/a17a0f20a4b585e1d8d4bb56454994c1f6512582145986ef825e03a42aa2eb24.png" src="../_images/a17a0f20a4b585e1d8d4bb56454994c1f6512582145986ef825e03a42aa2eb24.png" />
+</div>
+</div>
+</section>
+<section id="iii-select-and-integrate-the-negative-nucleophilic-domains-of-the-dual-descriptor">
+<h4>iii. Select and integrate the negative (nucleophilic) domains of the dual descriptor<a class="headerlink" href="#iii-select-and-integrate-the-negative-nucleophilic-domains-of-the-dual-descriptor" title="Link to this heading">#</a></h4>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>for domain in n_domains:
+    domain_vals = dd.copy()
+    domain_mask = np.isin(np.arange(len(dd)), domain, invert=True)
+    domain_vals[domain_mask] = 0.0
+
+    plot_isosurface(
+        uniform_grid,
+        domain_vals,
+        0.001,
+        at_data=mol_data,
+        title=f&quot;Domain Integral: {uniform_grid.integrate(domain_vals):.3f}&quot;,
+        noticks=True,
+    )
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/361186e8ff2037d857b9dd7641f3b85d51c66bcd32a6c437dbe98a94576e3cb3.png" src="../_images/361186e8ff2037d857b9dd7641f3b85d51c66bcd32a6c437dbe98a94576e3cb3.png" />
+<img alt="../_images/2ef619355b9e47906df0c2fde30a9078f17e0ffc250a7718aaeba7af2053a77e.png" src="../_images/2ef619355b9e47906df0c2fde30a9078f17e0ffc250a7718aaeba7af2053a77e.png" />
+</div>
+</div>
+</section>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "theochem/grid",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./tutorial"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="Molecular_Grid.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Molecular Grids</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="Interpolation_and_Poisson.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Interpolation and Solving Poisson’s Equation</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tensor-1d-grids">Tensor 1D Grids</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-1-interpolation">Example 1: Interpolation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-2-visualization-of-2p-z-orbital-using-tensor-1d-grid">Example 2: Visualization of <span class="math notranslate nohighlight">\(2p_{z}\)</span> Orbital using Tensor 1D Grid</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#i-utility-function-for-plotting-isosurfaces">i. Utility Function For Plotting Isosurfaces</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ii-plot-2p-z-orbital-from-isosurface-value">ii. Plot <span class="math notranslate nohighlight">\(2p_{z}\)</span> orbital from isosurface value</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#uniform-grid">Uniform Grid</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-1-constructing-uniform-grid-around-formaldehyde-anion">Example 1: Constructing Uniform Grid Around Formaldehyde Anion</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-2-calculate-and-visualize-dual-descriptor-of-formaldehyde">Example 2: Calculate and Visualize Dual Descriptor of Formaldehyde</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#i-define-utility-function-to-calculate-the-dual-descriptor">i. Define utility function to calculate the dual descriptor</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ii-calculate-and-visualize-dual-descriptor">ii. Calculate and visualize dual descriptor</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-3-integrate-the-dual-descriptor-domains">Example 3: Integrate The Dual Descriptor Domains</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#i-define-utility-function-to-extract-dual-descriptor-domains">i. Define utility function to extract dual descriptor domains</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ii-select-and-integrate-the-positive-electrophilic-domains-of-the-dual-descriptor">ii. Select and integrate the positive (electrophilic) domains of the dual descriptor</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#iii-select-and-integrate-the-negative-nucleophilic-domains-of-the-dual-descriptor">iii. Select and integrate the negative (nucleophilic) domains of the dual descriptor</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By The QC-Devs Community
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2022-2024.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

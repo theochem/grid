@@ -1,261 +1,446 @@
 
-
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="../">
-<head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>grid.atomgrid module &mdash; grid  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/override.css?v=064c4a14" />
 
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>grid.atomgrid module &#8212; Welcome to Grid Documentation</title>
   
-      <script src="../_static/jquery.js?v=5d32c60e"></script>
-      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
-      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
-      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
-      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
-    <script src="../_static/js/theme.js"></script>
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'pyapi/grid.atomgrid';</script>
+    <link rel="icon" href="../_static/grid_logo_website.svg"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="grid.basegrid module" href="grid.basegrid.html" />
-    <link rel="prev" title="grid.angular module" href="grid.angular.html" /> 
-</head>
+    <link rel="prev" title="grid.angular module" href="grid.angular.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
-          
-          
-          <a href="../index.html">
-            
-              <img src="../_static/grid_logo_website.svg" class="logo" alt="Logo"/>
-          </a>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">User Documentation</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../installation.html#dependencies">Dependencies</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../installation.html#id1">Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../installation.html#building-documentation">Building Documentation</a></li>
-</ul>
-</li>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/grid_logo_website.svg" class="logo__image only-light" alt="Welcome to Grid Documentation - Home"/>
+    <img src="../_static/grid_logo_website.svg" class="logo__image only-dark pst-js-only" alt="Welcome to Grid Documentation - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    Welcome to Grid’s Documentation!
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Documentation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../onedgrids.html">One-Dimensional Grids</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../radial_transf.html">Radial Transformations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../conventions.html">Conventions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../conventions.html#spherical-coordinates">Spherical Coordinates</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../conventions.html#spherical-harmonics">Spherical Harmonics</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../conventions.html#ordering">Ordering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../conventions.html">Conventions</a></li>
 </ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../conventions.html#angular-grids">Angular Grids</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../conventions.html#nested-grids">Nested Grids</a></li>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Example Tutorials</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/Quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/One_dimensional_grids.html">One-Dimensional Grids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/Angular_grid.html">Angular Grids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/Atom_Grid_Construction.html">Atom Grid Construction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/Atom_Grid.html">Atom Grid Application</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/Molecular_Grid_Construction.html">Molecular Grid Construction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/Molecular_Grid.html">Molecular Grid Application</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/Cubic_Grids.html">Cubic Grids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/Interpolation_and_Poisson.html">Interpolation and Poisson</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/Multipole_Moments.html">Multipole Moments</a></li>
 </ul>
-</li>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="grid.html">grid package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="grid.angular.html">grid.angular module</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">grid.atomgrid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="grid.basegrid.html">grid.basegrid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="grid.becke.html">grid.becke module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="grid.cubic.html">grid.cubic module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="grid.hirshfeld.html">grid.hirshfeld module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="grid.molgrid.html">grid.molgrid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="grid.ngrid.html">grid.ngrid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="grid.ode.html">grid.ode module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="grid.onedgrid.html">grid.onedgrid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="grid.periodicgrid.html">grid.periodicgrid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="grid.poisson.html">grid.poisson module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="grid.rtransform.html">grid.rtransform module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="grid.utils.html">grid.utils module</a></li>
 </ul>
-</li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Example Tutorials</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/quickstart.html">Quick Start</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/quickstart.html#One-Dimensional-Grids">One-Dimensional Grids</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/quickstart.html#Angular-Grids">Angular Grids</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/quickstart.html#Atomic-Grid">Atomic Grid</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/quickstart.html#Molecular-Grid">Molecular Grid</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/quickstart.html#Visualize-3D-Grid-Points">Visualize 3D Grid Points</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/quickstart.html#Integrate-Electron-Density-on-the-Grid">Integrate Electron Density on the Grid</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/quickstart.html#Interpolate-Electron-Density-on-the-Grid">Interpolate Electron Density on the Grid</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../notebooks/quickstart.html#Check-Interpolation-Accuracy">Check Interpolation Accuracy</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/quickstart.html#Differentiate-Electron-Density-on-the-Grid">Differentiate Electron Density on the Grid</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../notebooks/quickstart.html#Check-interpolated-derivative-accuracy">Check interpolated derivative accuracy</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../notebooks/quickstart.html#Graphical-comparisons-of-the-accuracy">Graphical comparisons of the accuracy</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/one_dimensional_grids.html">One-Dimensional Grids</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/one_dimensional_grids.html#Example:-Visualize-One-Dimensional-Grid-Points">Example: Visualize One-Dimensional Grid Points</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/one_dimensional_grids.html#Example:-Integration-of-One-Variable-Function-on-[-1,-1]">Example: Integration of One-Variable Function on <span class="math notranslate nohighlight">\([-1, 1]\)</span></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/one_dimensional_grids.html#Radial-Grid:-Transformation-of-1D-Integration-Intervals">Radial Grid: Transformation of 1D-Integration Intervals</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/one_dimensional_grids.html#Visualize-Radial-Grid-Points">Visualize Radial Grid Points</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/one_dimensional_grids.html#Example:-Integration-of-One-Variable-Function-on-[0,-\infty]">Example: Integration of One-Variable Function on <span class="math notranslate nohighlight">\([0, \infty]\)</span></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/angular_grid.html">Angular Grids</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/angular_grid.html#Initialization-of-Angular-Grids">Initialization of Angular Grids</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/angular_grid.html#Integral-of-Identity-Function">Integral of Identity Function</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/angular_grid.html#Integral-of-Spherical-Harmonic-Function">Integral of Spherical Harmonic Function</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/angular_grid.html#Spherical-Harmonics-Are-Orthonormal">Spherical Harmonics Are Orthonormal</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/atom_grid_construction.html">Atom Grid Construction</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/atom_grid_construction.html#Atomic-Grid-AtomGrid">Atomic Grid <code class="docutils literal notranslate"><span class="pre">AtomGrid</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/atom_grid_construction.html#Plot-AtomGrid-Points">Plot <code class="docutils literal notranslate"><span class="pre">AtomGrid</span></code> Points</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/atom_grid_construction.html#Pruned-Grids-AtomGrid.from_pruned">Pruned Grids <code class="docutils literal notranslate"><span class="pre">AtomGrid.from_pruned</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/atom_grid_construction.html#Preset-Grids-AtomGrid.from_preset">Preset Grids <code class="docutils literal notranslate"><span class="pre">AtomGrid.from_preset</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/atom_grid_construction.html#Multiple-Centered-AtomGrids">Multiple Centered AtomGrids</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/atom_grid.html">Atom Grid Application</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/atom_grid.html#Construct-Atomic-Grid">Construct Atomic Grid</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/atom_grid.html#Example:-Integrate-Electron-Density">Example: Integrate Electron Density</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/atom_grid.html#Example:-Calculate-Radial-Electron-Density-Distribution">Example: Calculate Radial Electron Density Distribution</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/atom_grid.html#Example:-Calculate-Classical-Coulomb-Repulsion-Energy">Example: Calculate Classical Coulomb Repulsion Energy</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/molecular_grid_construction.html">Molecular Grid Construction</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid_construction.html#Molecular-Grid-Details">Molecular Grid Details</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid_construction.html#Construction-of-Molecular-Grid">Construction of Molecular Grid</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid_construction.html#Constructor">Constructor</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid_construction.html#from_preset-method">from_preset method</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid_construction.html#from_size-method">from_size method</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid_construction.html#from_pruned-method">from_pruned method</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/molecular_grid.html">Molecular Grid Application</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Integration">Integration</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#Example:-Electron-Density">Example: Electron Density</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Local-Properties">Local Properties</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#Example:-Atomic-charges-from-molecular-electron-density">Example: Atomic charges from molecular electron density</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Interpolation">Interpolation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#id1">Example: Electron Density</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Derivative-Interpolation">Derivative Interpolation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#Example:-Weizsacker-Kinetic-Energy-Density">Example: Weizsacker Kinetic Energy Density</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Solving-Poisson-Equation">Solving Poisson Equation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#Example:-Electrostatic-Potential">Example: Electrostatic Potential</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/cubic_grid.html">Cubic Grids</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/cubic_grid.html#Tensor-1D-Grids">Tensor 1D Grids</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/cubic_grid.html#Example-1:-Interpolation">Example 1: Interpolation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/cubic_grid.html#Example-2:-Visualization-of-2p_{z}-Orbital-using-Tensor-1D-Grid">Example 2: Visualization of <span class="math notranslate nohighlight">\(2p_{z}\)</span> Orbital using Tensor 1D Grid</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../notebooks/cubic_grid.html#i.-Utility-Function-For-Plotting-Isosurfaces">i. Utility Function For Plotting Isosurfaces</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../notebooks/cubic_grid.html#ii.-Plot-2p_{z}-orbital-from-isosurface-value">ii. Plot <span class="math notranslate nohighlight">\(2p_{z}\)</span> orbital from isosurface value</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/cubic_grid.html#Uniform-Grid">Uniform Grid</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/cubic_grid.html#Example-1:-Constructing-Uniform-Grid-Around-Formaldehyde-Anion">Example 1: Constructing Uniform Grid Around Formaldehyde Anion</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/cubic_grid.html#Example-2:-Calculate-and-Visualize-Dual-Descriptor-of-Formaldehyde">Example 2: Calculate and Visualize Dual Descriptor of Formaldehyde</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../notebooks/cubic_grid.html#i.-Define-utility-function-to-calculate-the-dual-descriptor">i. Define utility function to calculate the dual descriptor</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../notebooks/cubic_grid.html#ii.-Calculate-and-visualize-dual-descriptor">ii. Calculate and visualize dual descriptor</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/cubic_grid.html#Example-3:-Integrate-The-Dual-Descriptor-Domains">Example 3: Integrate The Dual Descriptor Domains</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../notebooks/cubic_grid.html#i.-Define-utility-function-to-extract-dual-descriptor-domains">i. Define utility function to extract dual descriptor domains</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../notebooks/cubic_grid.html#ii.-Select-and-integrate-the-positive-(electrophilic)-domains-of-the-dual-descriptor">ii. Select and integrate the positive (electrophilic) domains of the dual descriptor</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../notebooks/cubic_grid.html#iii.-Select-and-integrate-the-negative-(nucleophilic)-domains-of-the-dual-descriptor">iii. Select and integrate the negative (nucleophilic) domains of the dual descriptor</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/interpolation_poisson.html">Interpolation and Solving Poisson’s Equation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/interpolation_poisson.html#Details">Details</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/interpolation_poisson.html#Example:-Unit-charge-distribution">Example: Unit-charge distribution</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/interpolation_poisson.html#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/multipole_moments.html">Multipole Moments</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="modules.html">grid</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="grid.html">grid package</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="grid.html#submodules">Submodules</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="grid.angular.html">grid.angular module</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">grid.atomgrid module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="grid.basegrid.html">grid.basegrid module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="grid.becke.html">grid.becke module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="grid.cubic.html">grid.cubic module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="grid.hirshfeld.html">grid.hirshfeld module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="grid.molgrid.html">grid.molgrid module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="grid.ngrid.html">grid.ngrid module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="grid.ode.html">grid.ode module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="grid.onedgrid.html">grid.onedgrid module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="grid.periodicgrid.html">grid.periodicgrid module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="grid.poisson.html">grid.poisson module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="grid.rtransform.html">grid.rtransform module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="grid.utils.html">grid.utils module</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="grid.html#module-grid">Module contents</a></li>
-</ul>
-</li>
-</ul>
-</li>
+</details></li>
 </ul>
 
-        </div>
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
       </div>
-    </nav>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">grid</a>
-      </nav>
+<div class="sbt-scroll-pixel-helper"></div>
 
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="modules.html">grid</a></li>
-          <li class="breadcrumb-item"><a href="grid.html">grid package</a></li>
-      <li class="breadcrumb-item active">grid.atomgrid module</li>
-      <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/pyapi/grid.atomgrid.rst" rel="nofollow"> View page source</a>
-      </li>
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/theochem/grid" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/theochem/grid/issues/new?title=Issue%20on%20page%20%2Fpyapi/grid.atomgrid.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
   </ul>
-  <hr/>
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/pyapi/grid.atomgrid.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>grid.atomgrid module</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.atomgrid.AtomGrid"><code class="docutils literal notranslate"><span class="pre">AtomGrid</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.atomgrid.AtomGrid.basis"><code class="docutils literal notranslate"><span class="pre">AtomGrid.basis</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.atomgrid.AtomGrid.center"><code class="docutils literal notranslate"><span class="pre">AtomGrid.center</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.atomgrid.AtomGrid.convert_cartesian_to_spherical"><code class="docutils literal notranslate"><span class="pre">AtomGrid.convert_cartesian_to_spherical()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.atomgrid.AtomGrid.degrees"><code class="docutils literal notranslate"><span class="pre">AtomGrid.degrees</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.atomgrid.AtomGrid.from_preset"><code class="docutils literal notranslate"><span class="pre">AtomGrid.from_preset()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.atomgrid.AtomGrid.from_pruned"><code class="docutils literal notranslate"><span class="pre">AtomGrid.from_pruned()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.atomgrid.AtomGrid.get_shell_grid"><code class="docutils literal notranslate"><span class="pre">AtomGrid.get_shell_grid()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.atomgrid.AtomGrid.indices"><code class="docutils literal notranslate"><span class="pre">AtomGrid.indices</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.atomgrid.AtomGrid.integrate_angular_coordinates"><code class="docutils literal notranslate"><span class="pre">AtomGrid.integrate_angular_coordinates()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.atomgrid.AtomGrid.interpolate"><code class="docutils literal notranslate"><span class="pre">AtomGrid.interpolate()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.atomgrid.AtomGrid.l_max"><code class="docutils literal notranslate"><span class="pre">AtomGrid.l_max</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.atomgrid.AtomGrid.method"><code class="docutils literal notranslate"><span class="pre">AtomGrid.method</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.atomgrid.AtomGrid.n_shells"><code class="docutils literal notranslate"><span class="pre">AtomGrid.n_shells</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.atomgrid.AtomGrid.points"><code class="docutils literal notranslate"><span class="pre">AtomGrid.points</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.atomgrid.AtomGrid.radial_component_splines"><code class="docutils literal notranslate"><span class="pre">AtomGrid.radial_component_splines()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.atomgrid.AtomGrid.rgrid"><code class="docutils literal notranslate"><span class="pre">AtomGrid.rgrid</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.atomgrid.AtomGrid.rotate"><code class="docutils literal notranslate"><span class="pre">AtomGrid.rotate</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.atomgrid.AtomGrid.save"><code class="docutils literal notranslate"><span class="pre">AtomGrid.save()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.atomgrid.AtomGrid.spherical_average"><code class="docutils literal notranslate"><span class="pre">AtomGrid.spherical_average()</span></code></a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
   <section id="module-grid.atomgrid">
-<span id="grid-atomgrid-module"></span><h1>grid.atomgrid module<a class="headerlink" href="#module-grid.atomgrid" title="Link to this heading"></a></h1>
+<span id="grid-atomgrid-module"></span><h1>grid.atomgrid module<a class="headerlink" href="#module-grid.atomgrid" title="Link to this heading">#</a></h1>
 <p>Atomic Grid Module.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="grid.atomgrid.AtomGrid">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">AtomGrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rgrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degrees</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[50]</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">sizes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lebedev'</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/atomgrid.py#L45-L917"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.atomgrid.AtomGrid" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grid.atomgrid.</span></span><span class="sig-name descname"><span class="pre">AtomGrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rgrid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><span class="pre">OneDGrid</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">degrees</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[50]</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sizes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'lebedev'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.atomgrid.AtomGrid" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="grid.basegrid.html#grid.basegrid.Grid" title="grid.basegrid.Grid"><code class="xref py py-class docutils literal notranslate"><span class="pre">Grid</span></code></a></p>
 <p>Atomic grid construction class for integrating three-dimensional functions.</p>
 <p>Atomic grid is composed of a radial grid <span class="math notranslate nohighlight">\(\{(r_i, w_i)\}_{i=1}^{N}\)</span> meant to
@@ -264,58 +449,21 @@ is associated with an Angular (Lebedev or Symmetric spherical t-design) grid
 <span class="math notranslate nohighlight">\(\{(\theta^i_j, \phi^i_j, w_j^i)\}_{j=1}^{M_i}\)</span> that integrates over a sphere
 (angles in spherical coordinates).  The atomic grid points can also be centered at a given
 location.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rgrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degrees</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[50]</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">sizes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lebedev'</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/atomgrid.py#L58-L139"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.atomgrid.AtomGrid.__init__" title="Link to this definition"></a></dt>
-<dd><p>Construct atomic grid for given arguments.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>rgrid</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">OneDGrid</span></code></a></span>) – The (one-dimensional) radial grid representing the radius of spherical grids.</p></li>
-<li><p><strong>degrees</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code> | <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Sequence of angular grid degrees used for constructing spherical grids at each
-radial grid point.
-If only one degree is given, the specified degree is used for all spherical grids.
-If the given degree is not supported, the next largest degree is used.</p></li>
-<li><p><strong>sizes</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code> | <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></span>) – Sequence of angular grid sizes used for constructing spherical grids at each radial
-grid point. If only one size is given, the specified size is used for all spherical
-grids. If the given size is not supported, the next largest size is used. If both
-<cite>degrees</cite> and <cite>sizes</cite> are given, <cite>size</cite> are used for constructing the angular grid.</p></li>
-<li><p><strong>center</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Cartesian coordinates of the grid center. If <cite>None</cite>, the origin is used.</p></li>
-<li><p><strong>rotate</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Integer used as a seed for generating random rotation matrices to rotate the angular
-spherical grids at each radial grid point. If the integer is zero, then no rotate
-is used.</p></li>
-<li><p><strong>method</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Method for constructing the angular grid. Options are “lebedev” (for Lebedev-Laikov)
-and “spherical” (for symmetric spherical t-design).</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py property">
 <dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.basis">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">basis</span></span><a class="headerlink" href="#grid.atomgrid.AtomGrid.basis" title="Link to this definition"></a></dt>
-<dd><p>Generate spherical harmonic basis evaluated on atomic grid points.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ndarray(N, 3)</p>
-</dd>
-</dl>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">basis</span></span><a class="headerlink" href="#grid.atomgrid.AtomGrid.basis" title="Link to this definition">#</a></dt>
+<dd><p>ndarray(N, 3): Generate spherical harmonic basis evaluated on atomic grid points.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.center">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">center</span></span><a class="headerlink" href="#grid.atomgrid.AtomGrid.center" title="Link to this definition"></a></dt>
-<dd><p>Cartesian coordinates of the grid center.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ndarray(3,)</p>
-</dd>
-</dl>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">center</span></span><a class="headerlink" href="#grid.atomgrid.AtomGrid.center" title="Link to this definition">#</a></dt>
+<dd><p>ndarray(3,): Cartesian coordinates of the grid center.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.convert_cartesian_to_spherical">
-<span class="sig-name descname"><span class="pre">convert_cartesian_to_spherical</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/atomgrid.py#L426-L477"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.atomgrid.AtomGrid.convert_cartesian_to_spherical" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_cartesian_to_spherical</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.atomgrid.AtomGrid.convert_cartesian_to_spherical" title="Link to this definition">#</a></dt>
 <dd><p>Convert a set of points from Cartesian to spherical coordinates.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{align}
@@ -328,90 +476,96 @@ If the <cite>points</cite> attribute is not specified, then atomic grid points a
 and the canonical choice when <span class="math notranslate nohighlight">\(r=0\)</span>, is the points
 <span class="math notranslate nohighlight">\((r=0, \theta_j, \phi_j)\)</span> where <span class="math notranslate nohighlight">\((\theta_j, \phi_j)\)</span> come
 from the Angular grid with the degree at <span class="math notranslate nohighlight">\(r=0\)</span>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>points</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Three-dimensions Cartesian coordinates of points in atomic units.
-If None, the atomic grid <cite>points</cite> will be used.</p></li>
-<li><p><strong>center</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Three-dimensional Cartesian coordinates of the center of coordinate system
-in atomic units. If None, the atomic grid <cite>center</cite> will be used.</p></li>
-</ul>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>points<span class="classifier">ndarray(N, 3), optional</span></dt><dd><p>Three-dimensions Cartesian coordinates of points in atomic units.
+If None, the atomic grid <cite>points</cite> will be used.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Spherical coordinates of points respect to the center denoted as
-(radius <span class="math notranslate nohighlight">\(r\)</span>, azimuthal <span class="math notranslate nohighlight">\(\theta\)</span>, polar <span class="math notranslate nohighlight">\(\phi\)</span>).</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ndarray(N, 3)</p>
+<dt>center<span class="classifier">ndarray(3,), optional</span></dt><dd><p>Three-dimensional Cartesian coordinates of the center of coordinate system
+in atomic units. If None, the atomic grid <cite>center</cite> will be used.</p>
 </dd>
 </dl>
+</section>
+<section id="returns">
+<h2>Returns<a class="headerlink" href="#returns" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>ndarray(N, 3)</dt><dd><p>Spherical coordinates of points respect to the center denoted as
+(radius <span class="math notranslate nohighlight">\(r\)</span>, azimuthal <span class="math notranslate nohighlight">\(\theta\)</span>, polar <span class="math notranslate nohighlight">\(\phi\)</span>).</p>
+</dd>
+</dl>
+</section>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.degrees">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">degrees</span></span><a class="headerlink" href="#grid.atomgrid.AtomGrid.degrees" title="Link to this definition"></a></dt>
-<dd><p>Return the degree of each angular grid at each radial point.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ndarray(L,)</p>
-</dd>
-</dl>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">degrees</span></span><a class="headerlink" href="#grid.atomgrid.AtomGrid.degrees" title="Link to this definition">#</a></dt>
+<dd><p>ndarray(L,): Return the degree of each angular grid at each radial point.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.from_preset">
-<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_preset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atnum</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rgrid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lebedev'</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/atomgrid.py#L141-L227"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.atomgrid.AtomGrid.from_preset" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_preset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atnum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rgrid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><span class="pre">OneDGrid</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'lebedev'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.atomgrid.AtomGrid.from_preset" title="Link to this definition">#</a></dt>
 <dd><p>Construct an atomic grid with pre-defined angular grids for a given atomic number.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>atnum</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – The atomic number.</p></li>
-<li><p><strong>preset</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – The name of pre-defined grid specifying the radial sectors and their corresponding
+<section id="id1">
+<h2>Parameters<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>atnum<span class="classifier">int</span></dt><dd><p>The atomic number.</p>
+</dd>
+<dt>preset<span class="classifier">str, optional</span></dt><dd><p>The name of pre-defined grid specifying the radial sectors and their corresponding
 number of angular grid points. Supported options include our custom presets:
 ‘coarse’, ‘medium’, ‘fine’, ‘veryfine’, ‘ultrafine’, and ‘insane’, as well as,
 other standard pre-defined grids including:
 ‘sg_0’, ‘sg_1’, ‘sg_2’, and ‘sg_3’, and the Ochsenfeld grids:
 ‘g1’, ‘g2’, ‘g3’, ‘g4’, ‘g5’, ‘g6’, and ‘g7’, with higher number indicating
-greater accuracy but denser grid. See <cite>Notes</cite> for more information.</p></li>
-<li><p><strong>rgrid</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">OneDGrid</span></code></a></span>) – The 1D radial grid representing the radius of spherical grids.
+greater accuracy but denser grid. See <cite>Notes</cite> for more information.</p>
+</dd>
+<dt>rgrid<span class="classifier">OneDGrid, optional</span></dt><dd><p>The 1D radial grid representing the radius of spherical grids.
 If None, a default radial grid (PowerRTransform of UniformInteger grid) for the give
-<cite>atnum</cite> is constructed.</p></li>
-<li><p><strong>center</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Cartesian coordinates of the grid center. If <cite>None</cite>, the origin is used.</p></li>
-<li><p><strong>rotate</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Integer used as a seed for generating random rotation matrices to rotate the angular
-spherical grids at each radial grid point. If 0, then no rotate is made.</p></li>
-<li><p><strong>method</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Method for constructing the angular grid. Options are “lebedev” (for Lebedev-Laikov)
-and “spherical” (for symmetric spherical t-design).</p></li>
-</ul>
+<cite>atnum</cite> is constructed.</p>
+</dd>
+<dt>center<span class="classifier">ndarray(3,), optional</span></dt><dd><p>Cartesian coordinates of the grid center. If <cite>None</cite>, the origin is used.</p>
+</dd>
+<dt>rotate<span class="classifier">int, optional</span></dt><dd><p>Integer used as a seed for generating random rotation matrices to rotate the angular
+spherical grids at each radial grid point. If 0, then no rotate is made.</p>
+</dd>
+<dt>method: str, optional</dt><dd><p>Method for constructing the angular grid. Options are “lebedev” (for Lebedev-Laikov)
+and “spherical” (for symmetric spherical t-design).</p>
 </dd>
 </dl>
-<p class="rubric">Notes</p>
+</section>
+<section id="notes">
+<h2>Notes<a class="headerlink" href="#notes" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p>The standard and Ochsenfeld presets were not designed with symmetric spherical t-design
 in mind.</p></li>
-<li><p>The “standard grids” <a class="footnote-reference brackets" href="#id3" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> “SG-0” and “SG-1” are designed for large molecules with
+<li><p>The “standard grids” <a class="footnote-reference brackets" href="#id4" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> “SG-0” and “SG-1” are designed for large molecules with
 LDA (GGA) functionals, whereas “SG-2” and “SG-3” are designed for Meta-GGA functionals
 and B95/Minnesota functionals, respectively.</p></li>
-<li><p>The Ochsenfeld pruned grids <a class="footnote-reference brackets" href="#id4" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a> are obtained based on the paper.</p></li>
+<li><p>The Ochsenfeld pruned grids <a class="footnote-reference brackets" href="#id5" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a> are obtained based on the paper.</p></li>
 </ul>
-<p class="rubric">References</p>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading">#</a></h2>
 <aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id3" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id4" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">1</a><span class="fn-bracket">]</span></span>
 <p>Y. Shao, et al. Advances in molecular quantum chemistry contained in the Q-Chem 4
 program package. Mol. Phys. 113, 184-215 (2015)</p>
 </aside>
-<aside class="footnote brackets" id="id4" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">2</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id5" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">2</a><span class="fn-bracket">]</span></span>
 <p>Laqua, H., Kussmann, J., &amp; Ochsenfeld, C. (2018). An improved molecular partitioning
 scheme for numerical quadratures in density functional theory. The Journal of
 Chemical Physics, 149(20).</p>
 </aside>
 </aside>
+</section>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.from_pruned">
-<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_pruned</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rgrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_sectors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d_sectors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">s_sectors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lebedev'</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/atomgrid.py#L229-L303"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.atomgrid.AtomGrid.from_pruned" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_pruned</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rgrid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><span class="pre">OneDGrid</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_sectors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d_sectors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s_sectors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'lebedev'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.atomgrid.AtomGrid.from_pruned" title="Link to this definition">#</a></dt>
 <dd><p>Initialize AtomGrid class that splits radial sections into sectors which specified degrees.</p>
 <p>Given a sequence of radial sectors <span class="math notranslate nohighlight">\(\{a_i\}_{i=1}^Q\)</span>, a radius number <span class="math notranslate nohighlight">\(R\)</span>
 and angular degree sectors <span class="math notranslate nohighlight">\(\{L_i \}_{i=1}^{Q+1}\)</span>.  This assigned the degrees
@@ -423,139 +577,104 @@ to the following radial points:</p>
     \vdots \\
     &amp;L_{Q+1} \text{ when } R a_{Q} &lt; r.
 \end{align*}\end{split}\]</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>rgrid</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">OneDGrid</span></code></a></span>) – The (one-dimensional) radial grid representing the radius of spherical grids.</p></li>
-<li><p><strong>radius</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – The atomic radius to be multiplied with <cite>r_sectors</cite> in atomic units
-(to make the radial sectors atom specific).</p></li>
-<li><p><strong>r_sectors</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> | <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Sequence of boundary radius (in atomic units) specifying sectors of the pruned radial
+<section id="id6">
+<h2>Parameters<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>rgrid<span class="classifier">OneDGrid</span></dt><dd><p>The (one-dimensional) radial grid representing the radius of spherical grids.</p>
+</dd>
+<dt>radius<span class="classifier">float</span></dt><dd><p>The atomic radius to be multiplied with <cite>r_sectors</cite> in atomic units
+(to make the radial sectors atom specific).</p>
+</dd>
+<dt>r_sectors<span class="classifier">list or ndarray(S,)</span></dt><dd><p>Sequence of boundary radius (in atomic units) specifying sectors of the pruned radial
 grid. The first sector is <code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">radius*r_sectors[0])</span></code>, then <code class="docutils literal notranslate"><span class="pre">(radius*r_sectors[0],</span>
-<span class="pre">radius*r_sectors[1])</span></code>, and so on.</p></li>
-<li><p><strong>d_sectors</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> | <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Sequence of angular degrees for each radial sector of <cite>r_sectors</cite> in the pruned grid.
-If None, then <cite>s_sectors</cite> should be given.</p></li>
-<li><p><strong>s_sectors</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> | <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Sequence of angular sizes for each radial sector of <cite>r_sectors</cite> in the pruned grid.
-If both <cite>d_sectors</cite> and <cite>s_sectors</cite> are given, <cite>s_sectors</cite> is used.</p></li>
-<li><p><strong>center</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Three-dimensional Cartesian coordinates of the grid center in atomic units.
-If None, the origin is used.</p></li>
-<li><p><strong>rotate</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Integer used as a seed for generating random rotation matrices to rotate the angular
+<span class="pre">radius*r_sectors[1])</span></code>, and so on.</p>
+</dd>
+<dt>d_sectors<span class="classifier">list or ndarray(S + 1, dtype=int) or None</span></dt><dd><p>Sequence of angular degrees for each radial sector of <cite>r_sectors</cite> in the pruned grid.
+If None, then <cite>s_sectors</cite> should be given.</p>
+</dd>
+<dt>s_sectors<span class="classifier">list or ndarray(S + 1, dtype=int) or None, optional, keyword-only</span></dt><dd><p>Sequence of angular sizes for each radial sector of <cite>r_sectors</cite> in the pruned grid.
+If both <cite>d_sectors</cite> and <cite>s_sectors</cite> are given, <cite>s_sectors</cite> is used.</p>
+</dd>
+<dt>center<span class="classifier">ndarray(3,), optional</span></dt><dd><p>Three-dimensional Cartesian coordinates of the grid center in atomic units.
+If None, the origin is used.</p>
+</dd>
+<dt>rotate<span class="classifier">int, optional</span></dt><dd><p>Integer used as a seed for generating random rotation matrices to rotate the angular
 spherical grids at each radial grid point. If the integer is zero, then no rotate
-is used.</p></li>
-<li><p><strong>method</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Method for constructing the angular grid. Options are “lebedev” (for Lebedev-Laikov)
-and “spherical” (for symmetric spherical t-design).</p></li>
-</ul>
+is used.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Generated AtomGrid instance for this special init method.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#grid.atomgrid.AtomGrid" title="grid.atomgrid.AtomGrid">AtomGrid</a></p>
+<dt>method: str, optional</dt><dd><p>Method for constructing the angular grid. Options are “lebedev” (for Lebedev-Laikov)
+and “spherical” (for symmetric spherical t-design).</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.get_localgrid">
-<span class="sig-name descname"><span class="pre">get_localgrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/basegrid.py#L148-L186"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.atomgrid.AtomGrid.get_localgrid" title="Link to this definition"></a></dt>
-<dd><p>Create a grid containing points within the given radius of center.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>center</strong> (<em>float</em><em> or </em><em>np.array</em><em>(</em><em>M</em><em>,</em><em>)</em>) – Cartesian coordinates of the center of the local grid.</p></li>
-<li><p><strong>radius</strong> (<em>float</em>) – Radius of sphere around the center. When equal to np.inf, the
-local grid coincides with the whole grid, which can be useful for
-debugging.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Instance of LocalGrid.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.LocalGrid" title="grid.basegrid.LocalGrid">LocalGrid</a></p>
+</section>
+<section id="id7">
+<h2>Returns<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>AtomGrid</dt><dd><p>Generated AtomGrid instance for this special init method.</p>
 </dd>
 </dl>
+</section>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.get_shell_grid">
-<span class="sig-name descname"><span class="pre">get_shell_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_sq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/atomgrid.py#L379-L424"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.atomgrid.AtomGrid.get_shell_grid" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_shell_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_sq</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.atomgrid.AtomGrid.get_shell_grid" title="Link to this definition">#</a></dt>
 <dd><p>Get the spherical integral grid at radial point from specified index.</p>
 <p>The spherical integration grid has points scaled with the ith radial point
 and weights multiplied by the ith weight of the radial grid.</p>
 <p>Note that when <span class="math notranslate nohighlight">\(r=0\)</span> then the Cartesian points are all zeros.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>index</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Index of radial points.</p></li>
-<li><p><strong>r_sq</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If true, multiplies the angular grid weights with r**2.</p></li>
-</ul>
+<section id="id8">
+<h2>Parameters<a class="headerlink" href="#id8" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>index<span class="classifier">int</span></dt><dd><p>Index of radial points.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Instance of AngularGrid for the given radial index position and weights.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="grid.angular.html#grid.angular.AngularGrid" title="grid.angular.AngularGrid">AngularGrid</a></p>
+<dt>r_sq<span class="classifier">bool, default True</span></dt><dd><p>If true, multiplies the angular grid weights with r**2.</p>
 </dd>
 </dl>
+</section>
+<section id="id9">
+<h2>Returns<a class="headerlink" href="#id9" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>AngularGrid</dt><dd><p>Instance of AngularGrid for the given radial index position and weights.</p>
+</dd>
+</dl>
+</section>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.indices">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">indices</span></span><a class="headerlink" href="#grid.atomgrid.AtomGrid.indices" title="Link to this definition"></a></dt>
-<dd><p>Indices saved for each spherical shell.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ndarray(M+1,)</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.integrate">
-<span class="sig-name descname"><span class="pre">integrate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">value_arrays</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/basegrid.py#L114-L146"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.atomgrid.AtomGrid.integrate" title="Link to this definition"></a></dt>
-<dd><p>Integrate over the whole grid for given multiple value arrays.</p>
-<p>Product of all value_arrays will be computed element-wise then integrated on the grid
-with its weights:</p>
-<div class="math notranslate nohighlight">
-\[\int w(x) \prod_i f_i(x) dx.\]</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>*value_arrays</strong> (<em>np.ndarray</em><em>(</em><em>N</em><em>, </em><em>)</em>) – One or multiple value array to integrate.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The calculated integral over given integrand or function</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">indices</span></span><a class="headerlink" href="#grid.atomgrid.AtomGrid.indices" title="Link to this definition">#</a></dt>
+<dd><p>ndarray(M+1,): Indices saved for each spherical shell.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.integrate_angular_coordinates">
-<span class="sig-name descname"><span class="pre">integrate_angular_coordinates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func_vals</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/atomgrid.py#L479-L526"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.atomgrid.AtomGrid.integrate_angular_coordinates" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">integrate_angular_coordinates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func_vals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.atomgrid.AtomGrid.integrate_angular_coordinates" title="Link to this definition">#</a></dt>
 <dd><p>Integrate the angular coordinates of a sequence of functions.</p>
 <p>Given a series of functions <span class="math notranslate nohighlight">\(f_k \in L^2(\mathbb{R}^3)\)</span>, this returns the values</p>
 <div class="math notranslate nohighlight">
 \[f_k(r_i) = \int \int f(r_i, \theta, \phi) sin(\phi) d\theta d\phi\]</div>
 <p>on each radial point <span class="math notranslate nohighlight">\(r_i\)</span> in the atomic grid.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>func_vals</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – The function values evaluated on all <span class="math notranslate nohighlight">\(N\)</span> points on the atomic grid
+<section id="id10">
+<h2>Parameters<a class="headerlink" href="#id10" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>func_vals<span class="classifier">ndarray(…, N)</span></dt><dd><p>The function values evaluated on all <span class="math notranslate nohighlight">\(N\)</span> points on the atomic grid
 for many types of functions.  This can also be one-dimensional.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The function <span class="math notranslate nohighlight">\(f_{...}(r_i)\)</span> on each <span class="math notranslate nohighlight">\(M\)</span> radial points.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ndarray(…, M)</p>
+</dl>
+</section>
+<section id="id11">
+<h2>Returns<a class="headerlink" href="#id11" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>ndarray(…, M) :</dt><dd><p>The function <span class="math notranslate nohighlight">\(f_{...}(r_i)\)</span> on each <span class="math notranslate nohighlight">\(M\)</span> radial points.</p>
 </dd>
 </dl>
+</section>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.interpolate">
-<span class="sig-name descname"><span class="pre">interpolate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func_vals</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/atomgrid.py#L621-L743"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.atomgrid.AtomGrid.interpolate" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">interpolate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func_vals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.atomgrid.AtomGrid.interpolate" title="Link to this definition">#</a></dt>
 <dd><p>Return function that interpolates (and its derivatives) from function values.</p>
 <p>Any real-valued function <span class="math notranslate nohighlight">\(f(r, \theta, \phi)\)</span> can be decomposed as</p>
 <div class="math notranslate nohighlight">
@@ -563,12 +682,17 @@ for many types of functions.  This can also be one-dimensional.</p>
 <p>A cubic spline is used to interpolate the radial functions <span class="math notranslate nohighlight">\(\sum_i \rho_{ilm}(r)\)</span>.
 This is then multiplied by the corresponding spherical harmonics at all
 <span class="math notranslate nohighlight">\((\theta_j, \phi_j)\)</span> angles and summed to obtain the equation above.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>func_vals</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – The function values evaluated on all <span class="math notranslate nohighlight">\(N\)</span> points on the atomic grid.</p>
+<section id="id12">
+<h2>Parameters<a class="headerlink" href="#id12" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>func_vals<span class="classifier">ndarray(N,)</span></dt><dd><p>The function values evaluated on all <span class="math notranslate nohighlight">\(N\)</span> points on the atomic grid.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><p>Callable function that interpolates the function and its derivative provided.
+</dl>
+</section>
+<section id="id13">
+<h2>Returns<a class="headerlink" href="#id13" title="Link to this heading">#</a></h2>
+<dl>
+<dt>Callable[[ndarray(M, 3), int] -&gt; ndarray(M)]:</dt><dd><p>Callable function that interpolates the function and its derivative provided.
 The function takes the following attributes:</p>
 <blockquote>
 <div><dl class="simple">
@@ -595,106 +719,38 @@ if <cite>only_radial_derivs</cite> then derivative wrt to <span class="math notr
 </dd>
 </dl>
 </div></blockquote>
-</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Callable[[ndarray(M, 3), int] -&gt; ndarray(M)]</p>
 </dd>
 </dl>
+</section>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.l_max">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">l_max</span></span><a class="headerlink" href="#grid.atomgrid.AtomGrid.l_max" title="Link to this definition"></a></dt>
-<dd><p>Largest angular degree L value in angular grids.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>int</p>
-</dd>
-</dl>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">l_max</span></span><a class="headerlink" href="#grid.atomgrid.AtomGrid.l_max" title="Link to this definition">#</a></dt>
+<dd><p>int: Largest angular degree L value in angular grids.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.method">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">method</span></span><a class="headerlink" href="#grid.atomgrid.AtomGrid.method" title="Link to this definition"></a></dt>
-<dd><p>Method used for constructing an angular grid.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.moments">
-<span class="sig-name descname"><span class="pre">moments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orders</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_mom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cartesian'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_orders</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/basegrid.py#L188-L330"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.atomgrid.AtomGrid.moments" title="Link to this definition"></a></dt>
-<dd><p>Compute the multipole moment integral of a function over centers.</p>
-<p>The Cartesian type moments are:</p>
-<div class="math notranslate nohighlight">
-\[m_{n_x, n_y, n_z} = \int (x - X_c)^{n_x} (y - Y_c)^{n_y} (z - Z_c)^{n_z} f(r) dr,\]</div>
-<p>where <span class="math notranslate nohighlight">\(\textbf{R}_c = (X_c, Y_c, Z_c)\)</span> is the center of the moment,
-<span class="math notranslate nohighlight">\(f(r)\)</span> is the function, and <span class="math notranslate nohighlight">\((n_x, n_y, n_z)\)</span> are the Cartesian orders.</p>
-<p>The spherical/pure moments with <span class="math notranslate nohighlight">\((l, m)\)</span> parameter are:</p>
-<div class="math notranslate nohighlight">
-\[m_{lm} = \int | \textbf{r} - \textbf{R}_c|^l S_l^m(\theta, \phi) f(\textbf{r})
-d\textbf{r},\]</div>
-<p>where <span class="math notranslate nohighlight">\(S_l^m\)</span> is a regular, real solid harmonic.</p>
-<p>The radial moments with <span class="math notranslate nohighlight">\(n\)</span> parameter are:</p>
-<div class="math notranslate nohighlight">
-\[m_n = \int | \textbf{r} - \textbf{R}_c|^{n} f(\textbf{r}) d\textbf{r}\]</div>
-<p>The radial combined with spherical/pure moments <span class="math notranslate nohighlight">\((n, l, m)\)</span> are:</p>
-<div class="math notranslate nohighlight">
-\[m_{nlm} = \int | \textbf{r} - \textbf{R}_c|^{n+1} S_l^m(\theta, \phi) f(\textbf{r})
-d\textbf{r}\]</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>orders</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Generates all orders with Horton order depending on the type of the multipole
-moment <cite>type_mom</cite>.</p></li>
-<li><p><strong>centers</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – The centers <span class="math notranslate nohighlight">\(\textbf{R}_c\)</span> of the moments to compute from.</p></li>
-<li><p><strong>func_vals</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – The function <span class="math notranslate nohighlight">\(f\)</span> is evaluated at all <span class="math notranslate nohighlight">\(N\)</span> points on the integration
-grid.</p></li>
-<li><p><strong>type_mom</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – The type of multipole moments: “cartesian”, “pure”, “radial” and “pure-radial”.</p></li>
-<li><p><strong>return_orders</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If true, it will also return a list of size <span class="math notranslate nohighlight">\(L\)</span> of the orders
-corresponding to each integral/row of the output.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Computes the moment integral of the function at the <cite>m</cite>th center for all orders.
-If <cite>return_orders</cite> is true, then this also returns a list that describes what
-each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,…].</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ndarray(L, M), or (ndarray(L, M), list)</p>
-</dd>
-</dl>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">method</span></span><a class="headerlink" href="#grid.atomgrid.AtomGrid.method" title="Link to this definition">#</a></dt>
+<dd><p>str: Method used for constructing an angular grid.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.n_shells">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">n_shells</span></span><a class="headerlink" href="#grid.atomgrid.AtomGrid.n_shells" title="Link to this definition"></a></dt>
-<dd><p>Number of shells in radial points.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>int</p>
-</dd>
-</dl>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_shells</span></span><a class="headerlink" href="#grid.atomgrid.AtomGrid.n_shells" title="Link to this definition">#</a></dt>
+<dd><p>int: Number of shells in radial points.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.points">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">points</span></span><a class="headerlink" href="#grid.atomgrid.AtomGrid.points" title="Link to this definition"></a></dt>
-<dd><p>3D Cartesian coordinates of the grid points in atomic units.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ndarray(N, 3)</p>
-</dd>
-</dl>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">points</span></span><a class="headerlink" href="#grid.atomgrid.AtomGrid.points" title="Link to this definition">#</a></dt>
+<dd><p>ndarray(N, 3): 3D Cartesian coordinates of the grid points in atomic units.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.radial_component_splines">
-<span class="sig-name descname"><span class="pre">radial_component_splines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func_vals</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/atomgrid.py#L559-L619"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.atomgrid.AtomGrid.radial_component_splines" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">radial_component_splines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func_vals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.atomgrid.AtomGrid.radial_component_splines" title="Link to this definition">#</a></dt>
 <dd><p>Return spline to interpolate radial components wrt to expansion in real spherical harmonics.</p>
 <p>For each pt <span class="math notranslate nohighlight">\(r_i\)</span> of the atomic grid with associated angular degree <span class="math notranslate nohighlight">\(l_i\)</span>,
 the function <span class="math notranslate nohighlight">\(f(r_i, \theta, \phi)\)</span> is projected onto the spherical
@@ -709,70 +765,54 @@ the <span class="math notranslate nohighlight">\(i\)</span>th Lebedev/angular gr
 \[\rho^{lm}(r_i) = \int \int f(r_i, \theta, \phi) Y^m_l(\theta, \phi) \sin(\phi)
  d\theta d\phi,\]</div>
 <p>and then interpolated using a cubic spline over all radial points of the atomic grid.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>func_vals</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – The function values evaluated on all <span class="math notranslate nohighlight">\(N\)</span> points on the atomic grid.</p>
+<section id="id14">
+<h2>Parameters<a class="headerlink" href="#id14" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>func_vals<span class="classifier">ndarray(N,)</span></dt><dd><p>The function values evaluated on all <span class="math notranslate nohighlight">\(N\)</span> points on the atomic grid.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A list of size <span class="math notranslate nohighlight">\((l_{max}/2 + 1)^2\)</span> of  CubicSpline object for interpolating the
+</dl>
+</section>
+<section id="id15">
+<h2>Returns<a class="headerlink" href="#id15" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>list[scipy.PPoly]</dt><dd><p>A list of size <span class="math notranslate nohighlight">\((l_{max}/2 + 1)^2\)</span> of  CubicSpline object for interpolating the
 coefficients <span class="math notranslate nohighlight">\(\rho^{lm}(r)\)</span>. The input of spline is array
 of <span class="math notranslate nohighlight">\(N\)</span> points on <span class="math notranslate nohighlight">\([0, \infty)\)</span> and the output is <span class="math notranslate nohighlight">\(\{\rho^{lm}(r_i)\}\)</span>.
 The list starts with degrees <span class="math notranslate nohighlight">\(l=0,\cdots l_{max}\)</span>, and the for each degree,
 the zeroth order spline is first, followed by positive orders then negative.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list[scipy.PPoly]</p>
-</dd>
 </dl>
+</section>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.rgrid">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">rgrid</span></span><a class="headerlink" href="#grid.atomgrid.AtomGrid.rgrid" title="Link to this definition"></a></dt>
-<dd><p>The radial grid representing the radius of spherical grids.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="grid.basegrid.html#grid.basegrid.OneDGrid" title="grid.basegrid.OneDGrid">OneDGrid</a></p>
-</dd>
-</dl>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rgrid</span></span><a class="headerlink" href="#grid.atomgrid.AtomGrid.rgrid" title="Link to this definition">#</a></dt>
+<dd><p>OneDGrid: The radial grid representing the radius of spherical grids.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.rotate">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">rotate</span></span><a class="headerlink" href="#grid.atomgrid.AtomGrid.rotate" title="Link to this definition"></a></dt>
-<dd><p>Integer representing the seed for rotating the angular grid.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>int</p>
-</dd>
-</dl>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rotate</span></span><a class="headerlink" href="#grid.atomgrid.AtomGrid.rotate" title="Link to this definition">#</a></dt>
+<dd><p>int: Integer representing the seed for rotating the angular grid.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.save">
-<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/atomgrid.py#L357-L377"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.atomgrid.AtomGrid.save" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.atomgrid.AtomGrid.save" title="Link to this definition">#</a></dt>
 <dd><p>Save atomic grid attributes as a npz file.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>filename</strong> (<em>str</em>) – The path/name of the .npz file.</p>
+<section id="id16">
+<h2>Parameters<a class="headerlink" href="#id16" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>filename: str</dt><dd><p>The path/name of the .npz file.</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.size">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">size</span></span><a class="headerlink" href="#grid.atomgrid.AtomGrid.size" title="Link to this definition"></a></dt>
-<dd><p>the total number of points on the grid.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>int</p>
-</dd>
-</dl>
+</section>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.spherical_average">
-<span class="sig-name descname"><span class="pre">spherical_average</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func_vals</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/atomgrid.py#L528-L557"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.atomgrid.AtomGrid.spherical_average" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">spherical_average</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func_vals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.atomgrid.AtomGrid.spherical_average" title="Link to this definition">#</a></dt>
 <dd><p>Return spline of the spherical average of a function.</p>
 <p>This function takes a function <span class="math notranslate nohighlight">\(f\)</span> evaluated on the atomic grid points and returns
 the spherical average of it defined as:</p>
@@ -780,63 +820,166 @@ the spherical average of it defined as:</p>
 \[f_{avg}(r) := \frac{\int \int f(r, \theta, \phi) \sin(\phi) d\theta d\phi}{4 \pi}.\]</div>
 <p>The definition is chosen such that <span class="math notranslate nohighlight">\(\int f_{avg}(r) 4\pi r^2 dr\)</span>
 matches the full integral <span class="math notranslate nohighlight">\(\int \int \int f(x,y,z)dxdydz\)</span>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>func_vals</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – The function values evaluated on all <span class="math notranslate nohighlight">\(N\)</span> points on the atomic grid.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Cubic spline with input r in the positive real axis and output <span class="math notranslate nohighlight">\(f_{avg}(r)\)</span>.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>CubicSpline</p>
+<section id="id17">
+<h2>Parameters<a class="headerlink" href="#id17" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>func_vals<span class="classifier">ndarray(N,)</span></dt><dd><p>The function values evaluated on all <span class="math notranslate nohighlight">\(N\)</span> points on the atomic grid.</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="grid.atomgrid.AtomGrid.weights">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">weights</span></span><a class="headerlink" href="#grid.atomgrid.AtomGrid.weights" title="Link to this definition"></a></dt>
-<dd><p>the weights of each grid point.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>np.ndarray(N,)</p>
+</section>
+<section id="id18">
+<h2>Returns<a class="headerlink" href="#id18" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>CubicSpline:</dt><dd><p>Cubic spline with input r in the positive real axis and output <span class="math notranslate nohighlight">\(f_{avg}(r)\)</span>.</p>
 </dd>
 </dl>
+</section>
 </dd></dl>
 
 </dd></dl>
 
 </section>
 
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "theochem/grid",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./pyapi"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
 
-           </div>
-          </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="grid.angular.html" class="btn btn-neutral float-left" title="grid.angular module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="grid.basegrid.html" class="btn btn-neutral float-right" title="grid.basegrid module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+                </article>
+              
 
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Copyright 2024, QC-Devs.</p>
-  </div>
-
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
-
-</footer>
-        </div>
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="grid.angular.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">grid.angular module</p>
       </div>
-    </section>
-  </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
+    </a>
+    <a class="right-next"
+       href="grid.basegrid.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">grid.basegrid module</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
-</body>
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.atomgrid.AtomGrid"><code class="docutils literal notranslate"><span class="pre">AtomGrid</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.atomgrid.AtomGrid.basis"><code class="docutils literal notranslate"><span class="pre">AtomGrid.basis</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.atomgrid.AtomGrid.center"><code class="docutils literal notranslate"><span class="pre">AtomGrid.center</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.atomgrid.AtomGrid.convert_cartesian_to_spherical"><code class="docutils literal notranslate"><span class="pre">AtomGrid.convert_cartesian_to_spherical()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.atomgrid.AtomGrid.degrees"><code class="docutils literal notranslate"><span class="pre">AtomGrid.degrees</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.atomgrid.AtomGrid.from_preset"><code class="docutils literal notranslate"><span class="pre">AtomGrid.from_preset()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.atomgrid.AtomGrid.from_pruned"><code class="docutils literal notranslate"><span class="pre">AtomGrid.from_pruned()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.atomgrid.AtomGrid.get_shell_grid"><code class="docutils literal notranslate"><span class="pre">AtomGrid.get_shell_grid()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.atomgrid.AtomGrid.indices"><code class="docutils literal notranslate"><span class="pre">AtomGrid.indices</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.atomgrid.AtomGrid.integrate_angular_coordinates"><code class="docutils literal notranslate"><span class="pre">AtomGrid.integrate_angular_coordinates()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.atomgrid.AtomGrid.interpolate"><code class="docutils literal notranslate"><span class="pre">AtomGrid.interpolate()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.atomgrid.AtomGrid.l_max"><code class="docutils literal notranslate"><span class="pre">AtomGrid.l_max</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.atomgrid.AtomGrid.method"><code class="docutils literal notranslate"><span class="pre">AtomGrid.method</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.atomgrid.AtomGrid.n_shells"><code class="docutils literal notranslate"><span class="pre">AtomGrid.n_shells</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.atomgrid.AtomGrid.points"><code class="docutils literal notranslate"><span class="pre">AtomGrid.points</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.atomgrid.AtomGrid.radial_component_splines"><code class="docutils literal notranslate"><span class="pre">AtomGrid.radial_component_splines()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.atomgrid.AtomGrid.rgrid"><code class="docutils literal notranslate"><span class="pre">AtomGrid.rgrid</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.atomgrid.AtomGrid.rotate"><code class="docutils literal notranslate"><span class="pre">AtomGrid.rotate</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.atomgrid.AtomGrid.save"><code class="docutils literal notranslate"><span class="pre">AtomGrid.save()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.atomgrid.AtomGrid.spherical_average"><code class="docutils literal notranslate"><span class="pre">AtomGrid.spherical_average()</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By The QC-Devs Community
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2022-2024.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
 </html>

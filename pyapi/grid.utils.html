@@ -1,310 +1,483 @@
 
-
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="../">
-<head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>grid.utils module &mdash; grid  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/override.css?v=064c4a14" />
 
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>grid.utils module &#8212; Welcome to Grid Documentation</title>
   
-      <script src="../_static/jquery.js?v=5d32c60e"></script>
-      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
-      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
-      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
-      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
-    <script src="../_static/js/theme.js"></script>
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'pyapi/grid.utils';</script>
+    <link rel="icon" href="../_static/grid_logo_website.svg"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="prev" title="grid.rtransform module" href="grid.rtransform.html" /> 
-</head>
+    <link rel="prev" title="grid.rtransform module" href="grid.rtransform.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
-          
-          
-          <a href="../index.html">
-            
-              <img src="../_static/grid_logo_website.svg" class="logo" alt="Logo"/>
-          </a>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">User Documentation</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../installation.html#dependencies">Dependencies</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../installation.html#id1">Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../installation.html#building-documentation">Building Documentation</a></li>
-</ul>
-</li>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/grid_logo_website.svg" class="logo__image only-light" alt="Welcome to Grid Documentation - Home"/>
+    <img src="../_static/grid_logo_website.svg" class="logo__image only-dark pst-js-only" alt="Welcome to Grid Documentation - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    Welcome to Grid’s Documentation!
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Documentation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../onedgrids.html">One-Dimensional Grids</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../radial_transf.html">Radial Transformations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../conventions.html">Conventions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../conventions.html#spherical-coordinates">Spherical Coordinates</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../conventions.html#spherical-harmonics">Spherical Harmonics</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../conventions.html#ordering">Ordering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../conventions.html">Conventions</a></li>
 </ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../conventions.html#angular-grids">Angular Grids</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../conventions.html#nested-grids">Nested Grids</a></li>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Example Tutorials</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/Quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/One_dimensional_grids.html">One-Dimensional Grids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/Angular_grid.html">Angular Grids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/Atom_Grid_Construction.html">Atom Grid Construction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/Atom_Grid.html">Atom Grid Application</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/Molecular_Grid_Construction.html">Molecular Grid Construction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/Molecular_Grid.html">Molecular Grid Application</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/Cubic_Grids.html">Cubic Grids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/Interpolation_and_Poisson.html">Interpolation and Poisson</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/Multipole_Moments.html">Multipole Moments</a></li>
 </ul>
-</li>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="grid.html">grid package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="grid.angular.html">grid.angular module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="grid.atomgrid.html">grid.atomgrid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="grid.basegrid.html">grid.basegrid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="grid.becke.html">grid.becke module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="grid.cubic.html">grid.cubic module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="grid.hirshfeld.html">grid.hirshfeld module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="grid.molgrid.html">grid.molgrid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="grid.ngrid.html">grid.ngrid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="grid.ode.html">grid.ode module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="grid.onedgrid.html">grid.onedgrid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="grid.periodicgrid.html">grid.periodicgrid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="grid.poisson.html">grid.poisson module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="grid.rtransform.html">grid.rtransform module</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">grid.utils module</a></li>
 </ul>
-</li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Example Tutorials</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/quickstart.html">Quick Start</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/quickstart.html#One-Dimensional-Grids">One-Dimensional Grids</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/quickstart.html#Angular-Grids">Angular Grids</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/quickstart.html#Atomic-Grid">Atomic Grid</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/quickstart.html#Molecular-Grid">Molecular Grid</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/quickstart.html#Visualize-3D-Grid-Points">Visualize 3D Grid Points</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/quickstart.html#Integrate-Electron-Density-on-the-Grid">Integrate Electron Density on the Grid</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/quickstart.html#Interpolate-Electron-Density-on-the-Grid">Interpolate Electron Density on the Grid</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../notebooks/quickstart.html#Check-Interpolation-Accuracy">Check Interpolation Accuracy</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/quickstart.html#Differentiate-Electron-Density-on-the-Grid">Differentiate Electron Density on the Grid</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../notebooks/quickstart.html#Check-interpolated-derivative-accuracy">Check interpolated derivative accuracy</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../notebooks/quickstart.html#Graphical-comparisons-of-the-accuracy">Graphical comparisons of the accuracy</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/one_dimensional_grids.html">One-Dimensional Grids</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/one_dimensional_grids.html#Example:-Visualize-One-Dimensional-Grid-Points">Example: Visualize One-Dimensional Grid Points</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/one_dimensional_grids.html#Example:-Integration-of-One-Variable-Function-on-[-1,-1]">Example: Integration of One-Variable Function on <span class="math notranslate nohighlight">\([-1, 1]\)</span></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/one_dimensional_grids.html#Radial-Grid:-Transformation-of-1D-Integration-Intervals">Radial Grid: Transformation of 1D-Integration Intervals</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/one_dimensional_grids.html#Visualize-Radial-Grid-Points">Visualize Radial Grid Points</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/one_dimensional_grids.html#Example:-Integration-of-One-Variable-Function-on-[0,-\infty]">Example: Integration of One-Variable Function on <span class="math notranslate nohighlight">\([0, \infty]\)</span></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/angular_grid.html">Angular Grids</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/angular_grid.html#Initialization-of-Angular-Grids">Initialization of Angular Grids</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/angular_grid.html#Integral-of-Identity-Function">Integral of Identity Function</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/angular_grid.html#Integral-of-Spherical-Harmonic-Function">Integral of Spherical Harmonic Function</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/angular_grid.html#Spherical-Harmonics-Are-Orthonormal">Spherical Harmonics Are Orthonormal</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/atom_grid_construction.html">Atom Grid Construction</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/atom_grid_construction.html#Atomic-Grid-AtomGrid">Atomic Grid <code class="docutils literal notranslate"><span class="pre">AtomGrid</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/atom_grid_construction.html#Plot-AtomGrid-Points">Plot <code class="docutils literal notranslate"><span class="pre">AtomGrid</span></code> Points</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/atom_grid_construction.html#Pruned-Grids-AtomGrid.from_pruned">Pruned Grids <code class="docutils literal notranslate"><span class="pre">AtomGrid.from_pruned</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/atom_grid_construction.html#Preset-Grids-AtomGrid.from_preset">Preset Grids <code class="docutils literal notranslate"><span class="pre">AtomGrid.from_preset</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/atom_grid_construction.html#Multiple-Centered-AtomGrids">Multiple Centered AtomGrids</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/atom_grid.html">Atom Grid Application</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/atom_grid.html#Construct-Atomic-Grid">Construct Atomic Grid</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/atom_grid.html#Example:-Integrate-Electron-Density">Example: Integrate Electron Density</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/atom_grid.html#Example:-Calculate-Radial-Electron-Density-Distribution">Example: Calculate Radial Electron Density Distribution</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/atom_grid.html#Example:-Calculate-Classical-Coulomb-Repulsion-Energy">Example: Calculate Classical Coulomb Repulsion Energy</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/molecular_grid_construction.html">Molecular Grid Construction</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid_construction.html#Molecular-Grid-Details">Molecular Grid Details</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid_construction.html#Construction-of-Molecular-Grid">Construction of Molecular Grid</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid_construction.html#Constructor">Constructor</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid_construction.html#from_preset-method">from_preset method</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid_construction.html#from_size-method">from_size method</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid_construction.html#from_pruned-method">from_pruned method</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/molecular_grid.html">Molecular Grid Application</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Integration">Integration</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#Example:-Electron-Density">Example: Electron Density</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Local-Properties">Local Properties</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#Example:-Atomic-charges-from-molecular-electron-density">Example: Atomic charges from molecular electron density</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Interpolation">Interpolation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#id1">Example: Electron Density</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Derivative-Interpolation">Derivative Interpolation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#Example:-Weizsacker-Kinetic-Energy-Density">Example: Weizsacker Kinetic Energy Density</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/molecular_grid.html#Solving-Poisson-Equation">Solving Poisson Equation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/molecular_grid.html#Example:-Electrostatic-Potential">Example: Electrostatic Potential</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/cubic_grid.html">Cubic Grids</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/cubic_grid.html#Tensor-1D-Grids">Tensor 1D Grids</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/cubic_grid.html#Example-1:-Interpolation">Example 1: Interpolation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/cubic_grid.html#Example-2:-Visualization-of-2p_{z}-Orbital-using-Tensor-1D-Grid">Example 2: Visualization of <span class="math notranslate nohighlight">\(2p_{z}\)</span> Orbital using Tensor 1D Grid</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../notebooks/cubic_grid.html#i.-Utility-Function-For-Plotting-Isosurfaces">i. Utility Function For Plotting Isosurfaces</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../notebooks/cubic_grid.html#ii.-Plot-2p_{z}-orbital-from-isosurface-value">ii. Plot <span class="math notranslate nohighlight">\(2p_{z}\)</span> orbital from isosurface value</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/cubic_grid.html#Uniform-Grid">Uniform Grid</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/cubic_grid.html#Example-1:-Constructing-Uniform-Grid-Around-Formaldehyde-Anion">Example 1: Constructing Uniform Grid Around Formaldehyde Anion</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/cubic_grid.html#Example-2:-Calculate-and-Visualize-Dual-Descriptor-of-Formaldehyde">Example 2: Calculate and Visualize Dual Descriptor of Formaldehyde</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../notebooks/cubic_grid.html#i.-Define-utility-function-to-calculate-the-dual-descriptor">i. Define utility function to calculate the dual descriptor</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../notebooks/cubic_grid.html#ii.-Calculate-and-visualize-dual-descriptor">ii. Calculate and visualize dual descriptor</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/cubic_grid.html#Example-3:-Integrate-The-Dual-Descriptor-Domains">Example 3: Integrate The Dual Descriptor Domains</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../notebooks/cubic_grid.html#i.-Define-utility-function-to-extract-dual-descriptor-domains">i. Define utility function to extract dual descriptor domains</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../notebooks/cubic_grid.html#ii.-Select-and-integrate-the-positive-(electrophilic)-domains-of-the-dual-descriptor">ii. Select and integrate the positive (electrophilic) domains of the dual descriptor</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../notebooks/cubic_grid.html#iii.-Select-and-integrate-the-negative-(nucleophilic)-domains-of-the-dual-descriptor">iii. Select and integrate the negative (nucleophilic) domains of the dual descriptor</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/interpolation_poisson.html">Interpolation and Solving Poisson’s Equation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/interpolation_poisson.html#Details">Details</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/interpolation_poisson.html#Example:-Unit-charge-distribution">Example: Unit-charge distribution</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/interpolation_poisson.html#Solving-Poisson-Equation">Solving Poisson Equation</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/multipole_moments.html">Multipole Moments</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="modules.html">grid</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="grid.html">grid package</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="grid.html#submodules">Submodules</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="grid.angular.html">grid.angular module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="grid.atomgrid.html">grid.atomgrid module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="grid.basegrid.html">grid.basegrid module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="grid.becke.html">grid.becke module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="grid.cubic.html">grid.cubic module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="grid.hirshfeld.html">grid.hirshfeld module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="grid.molgrid.html">grid.molgrid module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="grid.ngrid.html">grid.ngrid module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="grid.ode.html">grid.ode module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="grid.onedgrid.html">grid.onedgrid module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="grid.periodicgrid.html">grid.periodicgrid module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="grid.poisson.html">grid.poisson module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="grid.rtransform.html">grid.rtransform module</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">grid.utils module</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="grid.html#module-grid">Module contents</a></li>
-</ul>
-</li>
-</ul>
-</li>
+</details></li>
 </ul>
 
-        </div>
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
       </div>
-    </nav>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">grid</a>
-      </nav>
+<div class="sbt-scroll-pixel-helper"></div>
 
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="modules.html">grid</a></li>
-          <li class="breadcrumb-item"><a href="grid.html">grid package</a></li>
-      <li class="breadcrumb-item active">grid.utils module</li>
-      <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/pyapi/grid.utils.rst" rel="nofollow"> View page source</a>
-      </li>
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/theochem/grid" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/theochem/grid/issues/new?title=Issue%20on%20page%20%2Fpyapi/grid.utils.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
   </ul>
-  <hr/>
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/pyapi/grid.utils.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>grid.utils module</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.utils.convert_cart_to_sph"><code class="docutils literal notranslate"><span class="pre">convert_cart_to_sph()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.utils.convert_derivative_from_spherical_to_cartesian"><code class="docutils literal notranslate"><span class="pre">convert_derivative_from_spherical_to_cartesian()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.utils.dipole_moment_of_molecule"><code class="docutils literal notranslate"><span class="pre">dipole_moment_of_molecule()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.utils.generate_derivative_real_spherical_harmonics"><code class="docutils literal notranslate"><span class="pre">generate_derivative_real_spherical_harmonics()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.utils.generate_orders_horton_order"><code class="docutils literal notranslate"><span class="pre">generate_orders_horton_order()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.utils.generate_real_spherical_harmonics"><code class="docutils literal notranslate"><span class="pre">generate_real_spherical_harmonics()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.utils.generate_real_spherical_harmonics_scipy"><code class="docutils literal notranslate"><span class="pre">generate_real_spherical_harmonics_scipy()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.utils.get_cov_radii"><code class="docutils literal notranslate"><span class="pre">get_cov_radii()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.utils.isotopic_masses"><code class="docutils literal notranslate"><span class="pre">isotopic_masses</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.utils.solid_harmonics"><code class="docutils literal notranslate"><span class="pre">solid_harmonics()</span></code></a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
   <section id="module-grid.utils">
-<span id="grid-utils-module"></span><h1>grid.utils module<a class="headerlink" href="#module-grid.utils" title="Link to this heading"></a></h1>
+<span id="grid-utils-module"></span><h1>grid.utils module<a class="headerlink" href="#module-grid.utils" title="Link to this heading">#</a></h1>
 <p>Utility Module.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="grid.utils.convert_cart_to_sph">
-<span class="sig-name descname"><span class="pre">convert_cart_to_sph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/utils.py#L891-L927"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.utils.convert_cart_to_sph" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">grid.utils.</span></span><span class="sig-name descname"><span class="pre">convert_cart_to_sph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.utils.convert_cart_to_sph" title="Link to this definition">#</a></dt>
 <dd><p>Convert a set of points from cartesian to spherical coordinates.</p>
 <p>The convention that <span class="math notranslate nohighlight">\(\theta \in [-\pi, \pi]\)</span> and <span class="math notranslate nohighlight">\(\phi \in [0, \pi)\)</span>
 is chosen.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>points</strong> (<em>np.ndarray</em><em>(</em><em>n</em><em>, </em><em>3</em><em>)</em>) – The (3-dimensional) Cartesian coordinates of points.</p></li>
-<li><p><strong>center</strong> (<em>np.ndarray</em><em>(</em><em>3</em><em>,</em><em>)</em><em>, </em><em>list</em><em>, </em><em>optional</em>) – Cartesian coordinates of the center of spherical coordinate system.
-If <cite>None</cite>, origin is used.</p></li>
-</ul>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>points<span class="classifier">np.ndarray(n, 3)</span></dt><dd><p>The (3-dimensional) Cartesian coordinates of points.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Spherical coordinates of atoms respect to the center
-[radius <span class="math notranslate nohighlight">\(r\)</span>, azumuthal <span class="math notranslate nohighlight">\(\theta\)</span>, polar <span class="math notranslate nohighlight">\(\phi\)</span>]</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>np.ndarray(N, 3)</p>
+<dt>center<span class="classifier">np.ndarray(3,), list, optional</span></dt><dd><p>Cartesian coordinates of the center of spherical coordinate system.
+If <cite>None</cite>, origin is used.</p>
 </dd>
 </dl>
+</section>
+<section id="returns">
+<h2>Returns<a class="headerlink" href="#returns" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>np.ndarray(N, 3)</dt><dd><p>Spherical coordinates of atoms respect to the center
+[radius <span class="math notranslate nohighlight">\(r\)</span>, azumuthal <span class="math notranslate nohighlight">\(\theta\)</span>, polar <span class="math notranslate nohighlight">\(\phi\)</span>]</p>
+</dd>
+</dl>
+</section>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="grid.utils.convert_derivative_from_spherical_to_cartesian">
-<span class="sig-name descname"><span class="pre">convert_derivative_from_spherical_to_cartesian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">deriv_r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deriv_theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deriv_phi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/utils.py#L845-L888"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.utils.convert_derivative_from_spherical_to_cartesian" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">grid.utils.</span></span><span class="sig-name descname"><span class="pre">convert_derivative_from_spherical_to_cartesian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">deriv_r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deriv_theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deriv_phi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.utils.convert_derivative_from_spherical_to_cartesian" title="Link to this definition">#</a></dt>
 <dd><p>Convert the derivative from spherical coordinates to Cartesian.</p>
 <p>If <span class="math notranslate nohighlight">\(r\)</span> is zero, then the derivative wrt to theta and phi are set to zero.
 If <span class="math notranslate nohighlight">\(\phi\)</span> is zero, then the derivative wrt to theta is set to zero.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>deriv_r</strong> (<em>float</em><em>, </em><em>float</em><em>, </em><em>float</em>) – Derivative wrt to spherical coordinates</p></li>
-<li><p><strong>deriv_theta</strong> (<em>float</em><em>, </em><em>float</em><em>, </em><em>float</em>) – Derivative wrt to spherical coordinates</p></li>
-<li><p><strong>deriv_phi</strong> (<em>float</em><em>, </em><em>float</em><em>, </em><em>float</em>) – Derivative wrt to spherical coordinates</p></li>
-<li><p><strong>r</strong> (<em>float</em><em>, </em><em>float</em><em>, </em><em>float</em>) – The spherical points where the derivative is taken.</p></li>
-<li><p><strong>theta</strong> (<em>float</em><em>, </em><em>float</em><em>, </em><em>float</em>) – The spherical points where the derivative is taken.</p></li>
-<li><p><strong>phi</strong> (<em>float</em><em>, </em><em>float</em><em>, </em><em>float</em>) – The spherical points where the derivative is taken.</p></li>
-</ul>
+<section id="id1">
+<h2>Parameters<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>deriv_r, deriv_theta, deriv_phi<span class="classifier">float, float, float</span></dt><dd><p>Derivative wrt to spherical coordinates</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The derivative wrt to (x, y, z) Cartesian coordinates.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ndarray(3,)</p>
+<dt>r, theta, phi<span class="classifier">float, float, float</span></dt><dd><p>The spherical points where the derivative is taken.</p>
 </dd>
 </dl>
+</section>
+<section id="id2">
+<h2>Returns<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>ndarray(3,) :</dt><dd><p>The derivative wrt to (x, y, z) Cartesian coordinates.</p>
+</dd>
+</dl>
+</section>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="grid.utils.dipole_moment_of_molecule">
-<span class="sig-name descname"><span class="pre">dipole_moment_of_molecule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">charges</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/utils.py#L1000-L1058"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.utils.dipole_moment_of_molecule" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">grid.utils.</span></span><span class="sig-name descname"><span class="pre">dipole_moment_of_molecule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">charges</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.utils.dipole_moment_of_molecule" title="Link to this definition">#</a></dt>
 <dd><p>Calculate the dipole of a molecule.</p>
 <p>This is defined as the observable form a wavefunction <span class="math notranslate nohighlight">\(\Psi\)</span>:</p>
 <div class="math notranslate nohighlight">
@@ -317,50 +490,58 @@ If <span class="math notranslate nohighlight">\(\phi\)</span> is zero, then the 
 ith atom, <span class="math notranslate nohighlight">\(\vec{R_i}\)</span> is the ith coordinate of the atom, <span class="math notranslate nohighlight">\(\vec{R_c}\)</span> is the
 center of mass of the molecule in atomic units and <span class="math notranslate nohighlight">\(\rho\)</span> is the electron density
 of the molecule.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>grid</strong> (<a class="reference internal" href="grid.basegrid.html#grid.basegrid.Grid" title="grid.basegrid.Grid"><em>Grid</em></a>) – The grid used to perform the integration.</p></li>
-<li><p><strong>density</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – The electron density evaluated on points on <cite>grid</cite> object.</p></li>
-<li><p><strong>coords</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – The coordinates of the atoms.</p></li>
-<li><p><strong>charges</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – The atomic charge of each atom.</p></li>
-</ul>
+<section id="id3">
+<h2>Parameters<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>grid: Grid</dt><dd><p>The grid used to perform the integration.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Returns array of size three corresponding to the dipole moment of a molecule.</p>
+<dt>density: ndarray</dt><dd><p>The electron density evaluated on points on <cite>grid</cite> object.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ndarray</p>
+<dt>coords: ndarray[M, 3]</dt><dd><p>The coordinates of the atoms.</p>
+</dd>
+<dt>charges: ndarray[M]</dt><dd><p>The atomic charge of each atom.</p>
 </dd>
 </dl>
+</section>
+<section id="id4">
+<h2>Returns<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>ndarray:</dt><dd><p>Returns array of size three corresponding to the dipole moment of a molecule.</p>
+</dd>
+</dl>
+</section>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="grid.utils.generate_derivative_real_spherical_harmonics">
-<span class="sig-name descname"><span class="pre">generate_derivative_real_spherical_harmonics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/utils.py#L717-L809"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.utils.generate_derivative_real_spherical_harmonics" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">grid.utils.</span></span><span class="sig-name descname"><span class="pre">generate_derivative_real_spherical_harmonics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.utils.generate_derivative_real_spherical_harmonics" title="Link to this definition">#</a></dt>
 <dd><p>Generate derivatives of real spherical harmonics.</p>
 <p>If <span class="math notranslate nohighlight">\(\phi\)</span> is zero, then the first component of the derivative wrt to
 <span class="math notranslate nohighlight">\(phi\)</span> is set to zero.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>l_max</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Largest angular degree of the spherical harmonics.</p></li>
-<li><p><strong>theta</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Azimuthal angle <span class="math notranslate nohighlight">\(\theta \in [0, 2\pi]\)</span> that are being evaluated on.
-If this angle is outside of bounds, then periodicity is used.</p></li>
-<li><p><strong>phi</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Polar angle <span class="math notranslate nohighlight">\(\phi \in [0, \pi]\)</span> that are being evaluated on.
-If this angle is outside of bounds, then periodicity is used.</p></li>
-</ul>
+<section id="id5">
+<h2>Parameters<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>l_max<span class="classifier">int</span></dt><dd><p>Largest angular degree of the spherical harmonics.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Derivative of spherical harmonics, (theta first, then phi) of all degrees up to
+<dt>theta<span class="classifier">np.ndarray(N,)</span></dt><dd><p>Azimuthal angle <span class="math notranslate nohighlight">\(\theta \in [0, 2\pi]\)</span> that are being evaluated on.
+If this angle is outside of bounds, then periodicity is used.</p>
+</dd>
+<dt>phi<span class="classifier">np.ndarray(N,)</span></dt><dd><p>Polar angle <span class="math notranslate nohighlight">\(\phi \in [0, \pi]\)</span> that are being evaluated on.
+If this angle is outside of bounds, then periodicity is used.</p>
+</dd>
+</dl>
+</section>
+<section id="id6">
+<h2>Returns<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>ndarray(2, (l_max^2 + 1)^2, M)</dt><dd><p>Derivative of spherical harmonics, (theta first, then phi) of all degrees up to
 <span class="math notranslate nohighlight">\(l_{max}\)</span> and orders <span class="math notranslate nohighlight">\(m\)</span> in Horton 2 order, i.e.
 <span class="math notranslate nohighlight">\(m=0, 1, -1, \cdots, l, -l\)</span>.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ndarray(2, (l_max^2 + 1)^2, M)</p>
-</dd>
 </dl>
-<p class="rubric">Notes</p>
+</section>
+<section id="notes">
+<h2>Notes<a class="headerlink" href="#notes" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p>The derivative with respect to <span class="math notranslate nohighlight">\(\phi\)</span> is</p></li>
 </ul>
@@ -375,11 +556,12 @@ If this angle is outside of bounds, then periodicity is used.</p></li>
  Re(e^{-i\theta} Y_l^{|m| + 1}(\theta, \phi))\]</div>
 <p>for positive <span class="math notranslate nohighlight">\(m\)</span> and for negative <span class="math notranslate nohighlight">\(m\)</span>, the real projection <span class="math notranslate nohighlight">\(\Re\)</span> is replaced
 with the imaginary projection <span class="math notranslate nohighlight">\(\Im\)</span>.</p>
+</section>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="grid.utils.generate_orders_horton_order">
-<span class="sig-name descname"><span class="pre">generate_orders_horton_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_ord</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/utils.py#L930-L997"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.utils.generate_orders_horton_order" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">grid.utils.</span></span><span class="sig-name descname"><span class="pre">generate_orders_horton_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_ord</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.utils.generate_orders_horton_order" title="Link to this definition">#</a></dt>
 <dd><p>Generate all orders from an integer <span class="math notranslate nohighlight">\(l\)</span>.</p>
 <p>For Cartesian, the orders are <span class="math notranslate nohighlight">\((n_x, n_y, n_z)\)</span> such that they sum to <cite>order</cite>.
 If <cite>dim=1,2</cite>, then it generates Cartesian orders <span class="math notranslate nohighlight">\((n_x)\)</span>, <span class="math notranslate nohighlight">\((n_x, n_y)\)</span>,
@@ -387,30 +569,33 @@ respectively, such that they sum to <cite>order</cite>.</p>
 <p>For radial, the orders is just the order <span class="math notranslate nohighlight">\(l\)</span>.</p>
 <p>For pure, the orders <span class="math notranslate nohighlight">\((l, m)\)</span> following the order
 <span class="math notranslate nohighlight">\([(l, 0), (l, 1), (l, -1), \cdots, (l, l), (l, -l)]\)</span>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>order</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – The order <span class="math notranslate nohighlight">\(l\)</span>.</p></li>
-<li><p><strong>type_ord</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – The type of the order, it is either “cartesian”, “radial”, “pure” or “pure-radial”.</p></li>
-<li><p><strong>dim</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – The dimension of the orders for only Cartesian.</p></li>
-</ul>
+<section id="id7">
+<h2>Parameters<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>order: int</dt><dd><p>The order <span class="math notranslate nohighlight">\(l\)</span>.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Each row is a list of <cite>D</cite> integers (e.g. <span class="math notranslate nohighlight">\((n_x, n_y, n_z)\)</span> or <span class="math notranslate nohighlight">\((l, m)\)</span>).
+<dt>type_ord<span class="classifier">str, optional</span></dt><dd><p>The type of the order, it is either “cartesian”, “radial”, “pure” or “pure-radial”.</p>
+</dd>
+<dt>dim<span class="classifier">int, optional</span></dt><dd><p>The dimension of the orders for only Cartesian.</p>
+</dd>
+</dl>
+</section>
+<section id="id8">
+<h2>Returns<a class="headerlink" href="#id8" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>ndarray(3 * <cite>order</cite> , D)</dt><dd><p>Each row is a list of <cite>D</cite> integers (e.g. <span class="math notranslate nohighlight">\((n_x, n_y, n_z)\)</span> or <span class="math notranslate nohighlight">\((l, m)\)</span>).
 The output is in Horton 2 order. e.g. order=2 it’s
 [[2, 0, 0], [1, 1, 0], [1, 0, 1], [0, 2, 0], ….]</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ndarray(3 * <cite>order</cite> , D)</p>
-</dd>
 </dl>
+</section>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="grid.utils.generate_real_spherical_harmonics">
-<span class="sig-name descname"><span class="pre">generate_real_spherical_harmonics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/utils.py#L600-L714"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.utils.generate_real_spherical_harmonics" title="Link to this definition"></a></dt>
-<dd><p>Compute the real spherical harmonics recursively up to a maximum angular degree <span class="math notranslate nohighlight">\(l\)</span>. <a class="footnote-reference brackets" href="#id4" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>
-<a class="footnote-reference brackets" href="#id5" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a></p>
+<span class="sig-prename descclassname"><span class="pre">grid.utils.</span></span><span class="sig-name descname"><span class="pre">generate_real_spherical_harmonics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.utils.generate_real_spherical_harmonics" title="Link to this definition">#</a></dt>
+<dd><p>Compute the real spherical harmonics recursively up to a maximum angular degree <span class="math notranslate nohighlight">\(l\)</span>. <a class="footnote-reference brackets" href="#id15" id="id9" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>
+<a class="footnote-reference brackets" href="#id16" id="id10" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a></p>
 <div class="math notranslate nohighlight">
 \[Y_l^m(\theta, \phi) = \sqrt{\frac{(2l + 1) (l - m)!}{4\pi (l + m)!}} f(m, \theta)
 P_l^m(\cos(\phi)),\]</div>
@@ -421,28 +606,32 @@ when <span class="math notranslate nohighlight">\(m&lt;0\)</span>, and equal to 
 Legendre polynomial without the Conway phase factor.
 The angle <span class="math notranslate nohighlight">\(\theta \in [0, 2\pi]\)</span> is the azimuthal angle and <span class="math notranslate nohighlight">\(\phi \in [0, \pi]\)</span>
 is the polar angle.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>l_max</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Largest angular degree of the spherical harmonics.</p></li>
-<li><p><strong>theta</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Azimuthal angle <span class="math notranslate nohighlight">\(\theta \in [0, 2\pi]\)</span> that are being evaluated on.
-If this angle is outside of bounds, then periodicity is used.</p></li>
-<li><p><strong>phi</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Polar angle <span class="math notranslate nohighlight">\(\phi \in [0, \pi]\)</span> that are being evaluated on.
-If this angle is outside of bounds, then periodicity is used.</p></li>
-</ul>
+<section id="id11">
+<h2>Parameters<a class="headerlink" href="#id11" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>l_max<span class="classifier">int</span></dt><dd><p>Largest angular degree of the spherical harmonics.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Value of real spherical harmonics of all orders <span class="math notranslate nohighlight">\(m\)</span>,and degree
+<dt>theta<span class="classifier">np.ndarray(N,)</span></dt><dd><p>Azimuthal angle <span class="math notranslate nohighlight">\(\theta \in [0, 2\pi]\)</span> that are being evaluated on.
+If this angle is outside of bounds, then periodicity is used.</p>
+</dd>
+<dt>phi<span class="classifier">np.ndarray(N,)</span></dt><dd><p>Polar angle <span class="math notranslate nohighlight">\(\phi \in [0, \pi]\)</span> that are being evaluated on.
+If this angle is outside of bounds, then periodicity is used.</p>
+</dd>
+</dl>
+</section>
+<section id="id12">
+<h2>Returns<a class="headerlink" href="#id12" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>ndarray((l_max + 1)**2, N)</dt><dd><p>Value of real spherical harmonics of all orders <span class="math notranslate nohighlight">\(m\)</span>,and degree
 <span class="math notranslate nohighlight">\(l\)</span> spherical harmonics. For each degree <span class="math notranslate nohighlight">\(l\)</span>, the orders <span class="math notranslate nohighlight">\(m\)</span> are
 in Horton 2 order, i.e. <span class="math notranslate nohighlight">\(m=0, 1, -1, 2, -2, \cdots, l, -l\)</span>.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ndarray((l_max + 1)**2, N)</p>
-</dd>
 </dl>
-<p class="rubric">Notes</p>
+</section>
+<section id="id13">
+<h2>Notes<a class="headerlink" href="#id13" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p>The associated Legendre polynomials are computed using the forward recursion: <a class="footnote-reference brackets" href="#id5" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>
+<li><p>The associated Legendre polynomials are computed using the forward recursion: <a class="footnote-reference brackets" href="#id16" id="id14" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>
 <span class="math notranslate nohighlight">\(P_l^m(\phi) = \frac{2l + 1}{l - m + 1}\cos(\phi) P_{l-1}^m(x) -
 \frac{(l + m)}{l - m + 1} P_{l-1}^m(x)\)</span>, and
 <span class="math notranslate nohighlight">\(P_l^l(\phi) = (2l + 1) \sin(\phi) P_{l-1}^{l-1}(\phi)\)</span>.</p></li>
@@ -454,26 +643,29 @@ by the computer system and np.longdouble.</p></li>
 <li><p>The mapping from <span class="math notranslate nohighlight">\((l, m)\)</span> to the correct row index in the spherical harmonic array is
 given by <span class="math notranslate nohighlight">\((l + 1)^2 + 2 * m - 1\)</span> if <span class="math notranslate nohighlight">\(m &gt; 0\)</span>, else it is <span class="math notranslate nohighlight">\((l+1)^2 + 2 |m|\)</span>.</p></li>
 </ul>
-<p class="rubric">References</p>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading">#</a></h2>
 <aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id4" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id15" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id9">1</a><span class="fn-bracket">]</span></span>
 <p>Colombo, Oscar L. Numerical methods for harmonic analysis on the sphere.
 Ohio State Univ Columbus Dept of Geodetic Science And Surveying, 1981.</p>
 </aside>
-<aside class="footnote brackets" id="id5" role="doc-footnote">
+<aside class="footnote brackets" id="id16" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></span>
-<span class="backrefs">(<a role="doc-backlink" href="#id2">1</a>,<a role="doc-backlink" href="#id3">2</a>)</span>
+<span class="backrefs">(<a role="doc-backlink" href="#id10">1</a>,<a role="doc-backlink" href="#id14">2</a>)</span>
 <p>Holmes, Simon A., and Will E. Featherstone. “A unified approach to the Clenshaw
 summation and the recursive computation of very high degree and order normalised
 associated Legendre functions.” Journal of Geodesy 76.5 (2002): 279-299.</p>
 </aside>
 </aside>
+</section>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="grid.utils.generate_real_spherical_harmonics_scipy">
-<span class="sig-name descname"><span class="pre">generate_real_spherical_harmonics_scipy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/utils.py#L520-L597"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.utils.generate_real_spherical_harmonics_scipy" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">grid.utils.</span></span><span class="sig-name descname"><span class="pre">generate_real_spherical_harmonics_scipy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.utils.generate_real_spherical_harmonics_scipy" title="Link to this definition">#</a></dt>
 <dd><p>Generate real spherical harmonics up to degree <span class="math notranslate nohighlight">\(l\)</span> and for all orders <span class="math notranslate nohighlight">\(m\)</span>.</p>
 <p>The real spherical harmonics are defined as a function
 <span class="math notranslate nohighlight">\(Y_{lm} : L^2(S^2) \rightarrow \mathbb{R}\)</span> such that</p>
@@ -485,60 +677,67 @@ associated Legendre functions.” Journal of Geodesy 76.5 (2002): 279-299.</p>
 \end{cases},\end{split}\]</div>
 <p>where <span class="math notranslate nohighlight">\(l \in \mathbb{N}\)</span>, <span class="math notranslate nohighlight">\(m \in \{-l_{max}, \cdots, l_{max} \}\)</span> and
 <span class="math notranslate nohighlight">\(Y^m_l\)</span> is the complex spherical harmonic.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>l_max</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Largest angular degree of the spherical harmonics.</p></li>
-<li><p><strong>theta</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Azimuthal angle <span class="math notranslate nohighlight">\(\theta \in [0, 2\pi]\)</span> that are being evaluated on.
-If this angle is outside of bounds, then periodicity is used.</p></li>
-<li><p><strong>phi</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Polar angle <span class="math notranslate nohighlight">\(\phi \in [0, \pi]\)</span> that are being evaluated on.
-If this angle is outside of bounds, then periodicity is used.</p></li>
-</ul>
+<section id="id17">
+<h2>Parameters<a class="headerlink" href="#id17" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>l_max<span class="classifier">int</span></dt><dd><p>Largest angular degree of the spherical harmonics.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Value of real spherical harmonics of all orders <span class="math notranslate nohighlight">\(m\)</span>, and degree
+<dt>theta<span class="classifier">np.ndarray(N,)</span></dt><dd><p>Azimuthal angle <span class="math notranslate nohighlight">\(\theta \in [0, 2\pi]\)</span> that are being evaluated on.
+If this angle is outside of bounds, then periodicity is used.</p>
+</dd>
+<dt>phi<span class="classifier">np.ndarray(N,)</span></dt><dd><p>Polar angle <span class="math notranslate nohighlight">\(\phi \in [0, \pi]\)</span> that are being evaluated on.
+If this angle is outside of bounds, then periodicity is used.</p>
+</dd>
+</dl>
+</section>
+<section id="id18">
+<h2>Returns<a class="headerlink" href="#id18" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>ndarray((l_max + 1)**2, N)</dt><dd><p>Value of real spherical harmonics of all orders <span class="math notranslate nohighlight">\(m\)</span>, and degree
 <span class="math notranslate nohighlight">\(l\)</span> spherical harmonics. For each degree <span class="math notranslate nohighlight">\(l\)</span>,
 the orders <span class="math notranslate nohighlight">\(m\)</span> are in HORTON 2 order, i.e.
 <span class="math notranslate nohighlight">\(m=0, 1, -1, 2, -2, \cdots, l, -l\)</span>.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ndarray((l_max + 1)**2, N)</p>
-</dd>
 </dl>
-<p class="rubric">Notes</p>
+</section>
+<section id="id19">
+<h2>Notes<a class="headerlink" href="#id19" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p>Spherical harmonics in SciPy may return NaNs for large degrees due to numerical
 instability in associated Legendre functions. We tested up to
 <span class="math notranslate nohighlight">\(l_{max} = 600\)</span> without NaNs.</p></li>
 </ul>
+</section>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="grid.utils.get_cov_radii">
-<span class="sig-name descname"><span class="pre">get_cov_radii</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atnums</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cov_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'bragg'</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/utils.py#L487-L517"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.utils.get_cov_radii" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">grid.utils.</span></span><span class="sig-name descname"><span class="pre">get_cov_radii</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atnums</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cov_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'bragg'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.utils.get_cov_radii" title="Link to this definition">#</a></dt>
 <dd><p>Get the covalent radii for given atomic number(s).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>atnums</strong> (<em>int</em><em> or </em><em>np.ndarray</em>) – Atomic number(s) of the element(s) of interest.</p></li>
-<li><p><strong>cov_type</strong> (<em>str</em><em>, </em><em>optional</em>) – Type of covalent radii for elements. Possible values are:
+<section id="id20">
+<h2>Parameters<a class="headerlink" href="#id20" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>atnums<span class="classifier">int or np.ndarray</span></dt><dd><p>Atomic number(s) of the element(s) of interest.</p>
+</dd>
+<dt>cov_type<span class="classifier">str, optional</span></dt><dd><p>Type of covalent radii for elements. Possible values are:
 - “bragg”: Bragg-Slater empirically measured covalent radii.
 - “cambridge”: Covalent radii from analysis of the Cambridge Database.
-- “alvarez”: Covalent radii from <a class="reference external" href="https://doi.org/10.1039/B801115J">https://doi.org/10.1039/B801115J</a>.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Covalent radii of the desired atom(s) in atomic units.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>np.ndarray</p>
+- “alvarez”: Covalent radii from <a class="reference external" href="https://doi.org/10.1039/B801115J">https://doi.org/10.1039/B801115J</a>.</p>
 </dd>
 </dl>
+</section>
+<section id="id21">
+<h2>Returns<a class="headerlink" href="#id21" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>np.ndarray</dt><dd><p>Covalent radii of the desired atom(s) in atomic units.</p>
+</dd>
+</dl>
+</section>
 </dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="grid.utils.isotopic_masses">
-<span class="sig-name descname"><span class="pre">isotopic_masses</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{1:</span> <span class="pre">1.007825,</span> <span class="pre">2:</span> <span class="pre">4.002603,</span> <span class="pre">3:</span> <span class="pre">7.016004,</span> <span class="pre">4:</span> <span class="pre">9.012182,</span> <span class="pre">5:</span> <span class="pre">11.009305,</span> <span class="pre">6:</span> <span class="pre">12.0,</span> <span class="pre">7:</span> <span class="pre">14.003074,</span> <span class="pre">8:</span> <span class="pre">15.994915,</span> <span class="pre">9:</span> <span class="pre">18.998403,</span> <span class="pre">10:</span> <span class="pre">19.99244,</span> <span class="pre">11:</span> <span class="pre">22.98977,</span> <span class="pre">12:</span> <span class="pre">23.985042,</span> <span class="pre">13:</span> <span class="pre">26.981538,</span> <span class="pre">14:</span> <span class="pre">27.976927,</span> <span class="pre">15:</span> <span class="pre">30.973762,</span> <span class="pre">16:</span> <span class="pre">31.972071,</span> <span class="pre">17:</span> <span class="pre">34.968853,</span> <span class="pre">18:</span> <span class="pre">39.962383,</span> <span class="pre">19:</span> <span class="pre">38.963707,</span> <span class="pre">20:</span> <span class="pre">39.962591,</span> <span class="pre">21:</span> <span class="pre">44.95591,</span> <span class="pre">22:</span> <span class="pre">47.947947,</span> <span class="pre">23:</span> <span class="pre">50.943964,</span> <span class="pre">24:</span> <span class="pre">51.940512,</span> <span class="pre">25:</span> <span class="pre">54.93805,</span> <span class="pre">26:</span> <span class="pre">55.934942,</span> <span class="pre">27:</span> <span class="pre">58.9332,</span> <span class="pre">28:</span> <span class="pre">57.935348,</span> <span class="pre">29:</span> <span class="pre">62.929601,</span> <span class="pre">30:</span> <span class="pre">63.929147,</span> <span class="pre">31:</span> <span class="pre">68.925581,</span> <span class="pre">32:</span> <span class="pre">73.921178,</span> <span class="pre">33:</span> <span class="pre">74.921596,</span> <span class="pre">34:</span> <span class="pre">79.916522,</span> <span class="pre">35:</span> <span class="pre">78.918338,</span> <span class="pre">36:</span> <span class="pre">83.911507,</span> <span class="pre">37:</span> <span class="pre">84.911789,</span> <span class="pre">38:</span> <span class="pre">87.905614,</span> <span class="pre">39:</span> <span class="pre">88.905848,</span> <span class="pre">40:</span> <span class="pre">89.904704,</span> <span class="pre">41:</span> <span class="pre">92.906378,</span> <span class="pre">42:</span> <span class="pre">97.905408,</span> <span class="pre">43:</span> <span class="pre">97.907216,</span> <span class="pre">44:</span> <span class="pre">101.90435,</span> <span class="pre">45:</span> <span class="pre">102.905504,</span> <span class="pre">46:</span> <span class="pre">105.903483,</span> <span class="pre">47:</span> <span class="pre">106.905093,</span> <span class="pre">48:</span> <span class="pre">113.903358,</span> <span class="pre">49:</span> <span class="pre">114.903878,</span> <span class="pre">50:</span> <span class="pre">119.902197,</span> <span class="pre">51:</span> <span class="pre">120.903818,</span> <span class="pre">52:</span> <span class="pre">129.906223,</span> <span class="pre">53:</span> <span class="pre">126.904468,</span> <span class="pre">54:</span> <span class="pre">131.904154,</span> <span class="pre">55:</span> <span class="pre">132.905447,</span> <span class="pre">56:</span> <span class="pre">137.905241,</span> <span class="pre">57:</span> <span class="pre">138.906348,</span> <span class="pre">58:</span> <span class="pre">139.905434,</span> <span class="pre">59:</span> <span class="pre">140.907648,</span> <span class="pre">60:</span> <span class="pre">141.907719,</span> <span class="pre">61:</span> <span class="pre">144.912744,</span> <span class="pre">62:</span> <span class="pre">151.919728,</span> <span class="pre">63:</span> <span class="pre">152.921226,</span> <span class="pre">64:</span> <span class="pre">157.924101,</span> <span class="pre">65:</span> <span class="pre">158.925343,</span> <span class="pre">66:</span> <span class="pre">161.926795,</span> <span class="pre">67:</span> <span class="pre">164.930319,</span> <span class="pre">68:</span> <span class="pre">165.93029,</span> <span class="pre">69:</span> <span class="pre">168.934211,</span> <span class="pre">70:</span> <span class="pre">173.938858,</span> <span class="pre">71:</span> <span class="pre">174.940768,</span> <span class="pre">72:</span> <span class="pre">179.946549,</span> <span class="pre">73:</span> <span class="pre">183.950933,</span> <span class="pre">74:</span> <span class="pre">186.955751,</span> <span class="pre">75:</span> <span class="pre">186.955751,</span> <span class="pre">76:</span> <span class="pre">191.961479,</span> <span class="pre">77:</span> <span class="pre">192.962924,</span> <span class="pre">78:</span> <span class="pre">194.964774,</span> <span class="pre">79:</span> <span class="pre">196.966552,</span> <span class="pre">80:</span> <span class="pre">201.970626,</span> <span class="pre">81:</span> <span class="pre">204.974412,</span> <span class="pre">82:</span> <span class="pre">207.976636}</span></span><a class="headerlink" href="#grid.utils.isotopic_masses" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">grid.utils.</span></span><span class="sig-name descname"><span class="pre">isotopic_masses</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{1:</span> <span class="pre">1.007825,</span> <span class="pre">2:</span> <span class="pre">4.002603,</span> <span class="pre">3:</span> <span class="pre">7.016004,</span> <span class="pre">4:</span> <span class="pre">9.012182,</span> <span class="pre">5:</span> <span class="pre">11.009305,</span> <span class="pre">6:</span> <span class="pre">12.0,</span> <span class="pre">7:</span> <span class="pre">14.003074,</span> <span class="pre">8:</span> <span class="pre">15.994915,</span> <span class="pre">9:</span> <span class="pre">18.998403,</span> <span class="pre">10:</span> <span class="pre">19.99244,</span> <span class="pre">11:</span> <span class="pre">22.98977,</span> <span class="pre">12:</span> <span class="pre">23.985042,</span> <span class="pre">13:</span> <span class="pre">26.981538,</span> <span class="pre">14:</span> <span class="pre">27.976927,</span> <span class="pre">15:</span> <span class="pre">30.973762,</span> <span class="pre">16:</span> <span class="pre">31.972071,</span> <span class="pre">17:</span> <span class="pre">34.968853,</span> <span class="pre">18:</span> <span class="pre">39.962383,</span> <span class="pre">19:</span> <span class="pre">38.963707,</span> <span class="pre">20:</span> <span class="pre">39.962591,</span> <span class="pre">21:</span> <span class="pre">44.95591,</span> <span class="pre">22:</span> <span class="pre">47.947947,</span> <span class="pre">23:</span> <span class="pre">50.943964,</span> <span class="pre">24:</span> <span class="pre">51.940512,</span> <span class="pre">25:</span> <span class="pre">54.93805,</span> <span class="pre">26:</span> <span class="pre">55.934942,</span> <span class="pre">27:</span> <span class="pre">58.9332,</span> <span class="pre">28:</span> <span class="pre">57.935348,</span> <span class="pre">29:</span> <span class="pre">62.929601,</span> <span class="pre">30:</span> <span class="pre">63.929147,</span> <span class="pre">31:</span> <span class="pre">68.925581,</span> <span class="pre">32:</span> <span class="pre">73.921178,</span> <span class="pre">33:</span> <span class="pre">74.921596,</span> <span class="pre">34:</span> <span class="pre">79.916522,</span> <span class="pre">35:</span> <span class="pre">78.918338,</span> <span class="pre">36:</span> <span class="pre">83.911507,</span> <span class="pre">37:</span> <span class="pre">84.911789,</span> <span class="pre">38:</span> <span class="pre">87.905614,</span> <span class="pre">39:</span> <span class="pre">88.905848,</span> <span class="pre">40:</span> <span class="pre">89.904704,</span> <span class="pre">41:</span> <span class="pre">92.906378,</span> <span class="pre">42:</span> <span class="pre">97.905408,</span> <span class="pre">43:</span> <span class="pre">97.907216,</span> <span class="pre">44:</span> <span class="pre">101.90435,</span> <span class="pre">45:</span> <span class="pre">102.905504,</span> <span class="pre">46:</span> <span class="pre">105.903483,</span> <span class="pre">47:</span> <span class="pre">106.905093,</span> <span class="pre">48:</span> <span class="pre">113.903358,</span> <span class="pre">49:</span> <span class="pre">114.903878,</span> <span class="pre">50:</span> <span class="pre">119.902197,</span> <span class="pre">51:</span> <span class="pre">120.903818,</span> <span class="pre">52:</span> <span class="pre">129.906223,</span> <span class="pre">53:</span> <span class="pre">126.904468,</span> <span class="pre">54:</span> <span class="pre">131.904154,</span> <span class="pre">55:</span> <span class="pre">132.905447,</span> <span class="pre">56:</span> <span class="pre">137.905241,</span> <span class="pre">57:</span> <span class="pre">138.906348,</span> <span class="pre">58:</span> <span class="pre">139.905434,</span> <span class="pre">59:</span> <span class="pre">140.907648,</span> <span class="pre">60:</span> <span class="pre">141.907719,</span> <span class="pre">61:</span> <span class="pre">144.912744,</span> <span class="pre">62:</span> <span class="pre">151.919728,</span> <span class="pre">63:</span> <span class="pre">152.921226,</span> <span class="pre">64:</span> <span class="pre">157.924101,</span> <span class="pre">65:</span> <span class="pre">158.925343,</span> <span class="pre">66:</span> <span class="pre">161.926795,</span> <span class="pre">67:</span> <span class="pre">164.930319,</span> <span class="pre">68:</span> <span class="pre">165.93029,</span> <span class="pre">69:</span> <span class="pre">168.934211,</span> <span class="pre">70:</span> <span class="pre">173.938858,</span> <span class="pre">71:</span> <span class="pre">174.940768,</span> <span class="pre">72:</span> <span class="pre">179.946549,</span> <span class="pre">73:</span> <span class="pre">183.950933,</span> <span class="pre">74:</span> <span class="pre">186.955751,</span> <span class="pre">75:</span> <span class="pre">186.955751,</span> <span class="pre">76:</span> <span class="pre">191.961479,</span> <span class="pre">77:</span> <span class="pre">192.962924,</span> <span class="pre">78:</span> <span class="pre">194.964774,</span> <span class="pre">79:</span> <span class="pre">196.966552,</span> <span class="pre">80:</span> <span class="pre">201.970626,</span> <span class="pre">81:</span> <span class="pre">204.974412,</span> <span class="pre">82:</span> <span class="pre">207.976636}</span></em><a class="headerlink" href="#grid.utils.isotopic_masses" title="Link to this definition">#</a></dt>
 <dd><p>Obtained from theochem/horton/data/grids/tv-13.5.txt with the following preamble</p>
 <p>These grids were created by Toon Verstraelen in July 2013 in a second effort
 to generate tuned grids based on a series of diatomic benchmarks computed
@@ -549,58 +748,151 @@ the Becke scheme with k=3.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="grid.utils.solid_harmonics">
-<span class="sig-name descname"><span class="pre">solid_harmonics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sph_pts</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/theochem/grid/blob/master/src/grid/utils.py#L812-L842"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grid.utils.solid_harmonics" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">grid.utils.</span></span><span class="sig-name descname"><span class="pre">solid_harmonics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sph_pts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.utils.solid_harmonics" title="Link to this definition">#</a></dt>
 <dd><p>Generate the solid harmonics from zero to a maximum angular degree.</p>
 <div class="math notranslate nohighlight">
 \[R_l^m(r, \theta, \phi) = \sqrt{\frac{4\pi}{2l + 1}} r^l Y_l^m(\theta, \phi)\]</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>l_max</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Largest angular degree of the spherical harmonics.</p></li>
-<li><p><strong>sph_pts</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Three-dimensional points in spherical coordinates <span class="math notranslate nohighlight">\((r, \theta, \phi)\)</span>, where
-<span class="math notranslate nohighlight">\(r\geq 0, \theta \in [0, 2\pi]\)</span> and <span class="math notranslate nohighlight">\(\phi \in [0, \pi]\)</span>.</p></li>
-</ul>
+<section id="id22">
+<h2>Parameters<a class="headerlink" href="#id22" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>l_max<span class="classifier">int</span></dt><dd><p>Largest angular degree of the spherical harmonics.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The solid harmonics from degree <span class="math notranslate nohighlight">\(l=0=, \cdots, l_{max}\)</span> and for all orders <span class="math notranslate nohighlight">\(m\)</span>,
-ordered as <span class="math notranslate nohighlight">\(m=0, 1, -1, 2, -2, \cdots, l, -l\)</span> evaluated on <span class="math notranslate nohighlight">\(M\)</span> points.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ndarray((l_max + 1)^2, M)</p>
+<dt>sph_pts<span class="classifier">ndarray(M, 3)</span></dt><dd><p>Three-dimensional points in spherical coordinates <span class="math notranslate nohighlight">\((r, \theta, \phi)\)</span>, where
+<span class="math notranslate nohighlight">\(r\geq 0, \theta \in [0, 2\pi]\)</span> and <span class="math notranslate nohighlight">\(\phi \in [0, \pi]\)</span>.</p>
 </dd>
 </dl>
+</section>
+<section id="id23">
+<h2>Returns<a class="headerlink" href="#id23" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>ndarray((l_max + 1)^2, M)</dt><dd><p>The solid harmonics from degree <span class="math notranslate nohighlight">\(l=0=, \cdots, l_{max}\)</span> and for all orders <span class="math notranslate nohighlight">\(m\)</span>,
+ordered as <span class="math notranslate nohighlight">\(m=0, 1, -1, 2, -2, \cdots, l, -l\)</span> evaluated on <span class="math notranslate nohighlight">\(M\)</span> points.</p>
+</dd>
+</dl>
+</section>
 </dd></dl>
 
 </section>
 
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "theochem/grid",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./pyapi"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
 
-           </div>
-          </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="grid.rtransform.html" class="btn btn-neutral float-left" title="grid.rtransform module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-    </div>
+                </article>
+              
 
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Copyright 2024, QC-Devs.</p>
-  </div>
-
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
-
-</footer>
-        </div>
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="grid.rtransform.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">grid.rtransform module</p>
       </div>
-    </section>
-  </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
-</body>
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.utils.convert_cart_to_sph"><code class="docutils literal notranslate"><span class="pre">convert_cart_to_sph()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.utils.convert_derivative_from_spherical_to_cartesian"><code class="docutils literal notranslate"><span class="pre">convert_derivative_from_spherical_to_cartesian()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.utils.dipole_moment_of_molecule"><code class="docutils literal notranslate"><span class="pre">dipole_moment_of_molecule()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.utils.generate_derivative_real_spherical_harmonics"><code class="docutils literal notranslate"><span class="pre">generate_derivative_real_spherical_harmonics()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.utils.generate_orders_horton_order"><code class="docutils literal notranslate"><span class="pre">generate_orders_horton_order()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.utils.generate_real_spherical_harmonics"><code class="docutils literal notranslate"><span class="pre">generate_real_spherical_harmonics()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.utils.generate_real_spherical_harmonics_scipy"><code class="docutils literal notranslate"><span class="pre">generate_real_spherical_harmonics_scipy()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.utils.get_cov_radii"><code class="docutils literal notranslate"><span class="pre">get_cov_radii()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.utils.isotopic_masses"><code class="docutils literal notranslate"><span class="pre">isotopic_masses</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.utils.solid_harmonics"><code class="docutils literal notranslate"><span class="pre">solid_harmonics()</span></code></a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By The QC-Devs Community
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2022-2024.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
 </html>
