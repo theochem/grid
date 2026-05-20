@@ -31,7 +31,7 @@ from numpy.testing import (
 from scipy.spatial.transform import Rotation as R
 from scipy.integrate import trapezoid
 
-from grid.angular import LEBEDEV_DEGREES, AngularGrid
+from grid.angular import LEBEDEV_DEGREES, SPHERICAL_DEGREES, MAX_DET_DEGREES, AngularGrid
 from grid.atomgrid import AtomGrid, _get_rgrid_size
 from grid.basegrid import Grid, OneDGrid
 from grid.onedgrid import GaussLaguerre, GaussLegendre, UniformInteger
@@ -337,8 +337,14 @@ class TestAtomGrid:
     @pytest.mark.parametrize("method", ["lebedev", "spherical", "maxdet"])
     def test_spherical_complete(self, method):
         """Test atomic grid consistence for spherical integral."""
-        num_pts = len(LEBEDEV_DEGREES)
-        pts = UniformInteger(num_pts)
+        degree_maps = {
+            "lebedev": LEBEDEV_DEGREES,
+            "spherical": SPHERICAL_DEGREES,
+            "maxdet": MAX_DET_DEGREES,
+        }
+        degree_map = degree_maps[method]
+        num_shells = len(degree_map)
+        pts = UniformInteger(num_shells)
         for _ in range(10):
             start = np.random.rand() * 1e-5
             end = np.random.rand() * 10 + 10
@@ -346,10 +352,10 @@ class TestAtomGrid:
             rad_grid = tf.transform_1d_grid(pts)
             atgrid = AtomGrid(
                 rad_grid,
-                degrees=list(LEBEDEV_DEGREES.keys()),
+                degrees=list(degree_map.keys()),
                 method=method,
             )
-            values = np.random.rand(len(LEBEDEV_DEGREES))
+            values = np.random.rand(len(degree_map))
             pt_val = np.zeros(atgrid.size)
             for index, value in enumerate(values):
                 pt_val[atgrid._indices[index] : atgrid._indices[index + 1]] = value
