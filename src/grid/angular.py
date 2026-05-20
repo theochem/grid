@@ -592,7 +592,7 @@ class AngularGrid(Grid):
         self._degree = degree
         # Multiply weights by 4 pi, so that the spherical harmonics are orthonormal,
         #   etc. \int Y_l1 Y_l2 = \delta_{l1, l2}
-        # (not necesary for maxdet, already normalized to 4 pi / N)
+        # (not necessary for maxdet, already normalized to 4 pi / N)
         if method == "maxdet":
             super().__init__(points, weights)
         else:
