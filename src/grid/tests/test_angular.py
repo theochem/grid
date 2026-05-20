@@ -19,7 +19,6 @@
 # --
 """Test lebedev grid."""
 
-
 from unittest import TestCase
 
 import numpy as np
@@ -127,7 +126,7 @@ class TestLebedev(TestCase):
 
 
 @pytest.mark.parametrize("degree", [5, 10, 100])
-@pytest.mark.parametrize("method", ["lebedev", "spherical"])
+@pytest.mark.parametrize("method", ["lebedev", "spherical", "maxdet"])
 def test_integration_of_spherical_harmonic_up_to_degree(degree, method):
     r"""Test integration of spherical harmonic is accurate."""
     grid = AngularGrid(degree=degree, method=method)
@@ -148,7 +147,7 @@ def test_integration_of_spherical_harmonic_up_to_degree(degree, method):
                 assert_almost_equal(0.0, grid.integrate(sph_harm_one[m_ord, :]))
 
 
-@pytest.mark.parametrize("method", ["lebedev", "spherical"])
+@pytest.mark.parametrize("method", ["lebedev", "spherical", "maxdet"])
 def test_integration_of_spherical_harmonic_not_accurate_beyond_degree(method):
     r"""Test integration of spherical harmonic of degree higher than grid is not accurate."""
     grid = AngularGrid(degree=3, method=method)
@@ -163,7 +162,7 @@ def test_integration_of_spherical_harmonic_not_accurate_beyond_degree(method):
     assert np.abs(grid.integrate(sph_harm[(6) ** 2, :])) > 1e-8
 
 
-@pytest.mark.parametrize("method", ["lebedev", "spherical"])
+@pytest.mark.parametrize("method", ["lebedev", "spherical", "maxdet"])
 def test_orthogonality_of_spherical_harmonic_up_to_degree_three(method):
     r"""Test orthogonality of spherical harmonic up to degree 3 is accurate."""
     degree = 3
