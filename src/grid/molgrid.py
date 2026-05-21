@@ -611,6 +611,54 @@ class MolGrid(Grid):
             )
         return self._atgrids[index]
 
+    def get_atomic_property(self, property_values):
+        """Convert property at grid points to property per atom.
+
+        This method takes a property evaluated at all grid points and calculates how much
+        of that property belongs to each atom in the molecule.
+
+        Parameters
+        ----------
+        property_values : np.ndarray
+            Must have the same length as the number of points in the molecular grid.
+
+        Returns
+        -------
+        np.ndarray
+            One-dimensional array of length equal to the number of atoms, containing
+            the property value associated with each atom.
+        """
+
+        # check if the input is valid
+        if not isinstance(property_values, np.ndarray):
+            raise TypeError(
+                f"property_values must be of numpy array type, got {type(property_values)}"
+            )
+
+        property_values = np.asarray(property_values).reshape(-1)
+        if property_values.size != self.size:
+            raise ValueError(
+                "property_values must be one-dimensional with the same length as the grid.\n"
+                f"property_values.shape: {property_values.shape}, expected: ({self.size},)"
+            )
+
+        # initialize output array
+        num_atoms = len(self.atcoords)
+        atomic_property = np.zeros(num_atoms)
+
+        # calculate property for each atom
+        for i in range(num_atoms):
+            # get the range of grid points for each atom
+            start_index = self.indices[i]
+            end_index = self.indices[i + 1]
+
+            # finding property of each atom
+            atomic_property[i] = np.sum(
+                property_values[start_index:end_index] * self.weights[start_index:end_index]
+            )
+
+        return atomic_property
+
 
 def _generate_default_rgrid(atnum: int):
     r"""
