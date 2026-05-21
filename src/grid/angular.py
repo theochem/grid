@@ -557,7 +557,9 @@ class AngularGrid(Grid):
             dict_degrees, dict_npoints = MAX_DET_DEGREES, MAX_DET_NPOINTS
             file_path = "grid.data.maxdet"
         else:
-            raise ValueError(f"Method {method} is not supported, choose 'lebedev' or 'spherical'")
+            raise ValueError(
+                f"Method {method} is not supported, choose 'lebedev', 'spherical', or 'maxdet'"
+            )
 
         # check whether degree and size are valid
         if not (degree is None or (isinstance(degree, (int, np.integer)) and degree >= 0)):
