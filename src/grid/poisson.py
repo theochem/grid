@@ -102,13 +102,37 @@ def _solve_poisson_ivp_atomgrid(
     # Following takes the integral of f(x), to generate the bounds at very large r.
     # The calculation of the bounds is explained below.
     sph_o_l = generate_real_spherical_harmonics(0, np.array([0.1]), np.array([0.1]))
+    
+    # Adaptive r_interval[0] based on density decay
+    r_pts = atomgrid.rgrid.points
+    density_abs = np.abs(func_vals)
+    
+    # func_vals is 1D array over the 3D grid (N_radial * N_angular). 
+    # Reshape and sum over angular points to get radial density distribution.
+    n_radial = len(r_pts)
+    if len(density_abs) % n_radial == 0:
+        n_angular = len(density_abs) // n_radial
+        # In grid, points are typically ordered (r_0, ang_0), (r_0, ang_1) etc.
+        # So reshape to (n_radial, n_angular) and sum
+        density_abs = density_abs.reshape(n_radial, n_angular).sum(axis=1)
+        
+    cumsum = np.cumsum(density_abs)
+    if cumsum[-1] > 0:
+        idx = np.searchsorted(cumsum, 0.99 * cumsum[-1])
+        r_99 = r_pts[min(idx, len(r_pts) - 1)]
+        r_max = r_99 * 10
+        if r_max > r_interval[0]:
+            r_max = r_interval[0]
+        if transform is not None and r_max > transform.domain[1]:
+            r_max = transform.domain[1]
+        r_interval = (r_max, r_interval[1])
+
     r_max = r_interval[0]
     boundary = atomgrid.integrate(func_vals) / sph_o_l[0, 0]
 
     # Set up default ode parameters if it isn't set up already.
     if ode_params is None:
         ode_params = dict({})
-    ode_params.setdefault("method", "DOP853")
     ode_params.setdefault("rtol", 1e-8)
     ode_params.setdefault("atol", 1e-6)
 
@@ -140,6 +164,21 @@ def _solve_poisson_ivp_atomgrid(
             else:
                 ivp = [0.0, 0.0]
 
+            # If the source term is effectively zero for l>0, skip integration to avoid 
+            # numerical noise amplification in the IVP solver.
+            max_val = np.max(np.abs(radial_components[i_spline](atomgrid.rgrid.points)))
+            if l_deg > 0 and max_val < 1e-12:
+                def make_zero_spline():
+                    def zero_spline(r_pts, deriv=0):
+                        return np.zeros_like(r_pts)
+                    return zero_spline
+                splines.append(make_zero_spline())
+                i_spline += 1
+                continue
+
+            if not isinstance(ode_params, dict):
+                ode_params = {}
+            ode_params.setdefault("method", "DOP853")
             # Solve ode
             u_lm = solve_ode_ivp(
                 r_interval,
@@ -151,8 +190,25 @@ def _solve_poisson_ivp_atomgrid(
                 **ode_params,
             )
 
+            def make_safe_spline(spline_orig, is_monopole, boundary_val, r_max_val, r_min_val):
+                def safe_spline(r_pts):
+                    r_pts_clipped = np.clip(r_pts, r_min_val, r_max_val)
+                    vals = spline_orig(r_pts_clipped)
+                    # For r > r_max, return analytic continuation to avoid extrapolation blowup
+                    mask = r_pts > r_max_val
+                    if np.any(mask):
+                        # Ensure we don't modify the array in-place if it's read-only
+                        vals = np.array(vals)
+                        if is_monopole:
+                            vals[mask] = boundary_val / r_pts[mask]
+                        else:
+                            vals[mask] = 0.0
+                    return vals
+                return safe_spline
+
             i_spline += 1
-            splines.append(u_lm)
+            splines.append(make_safe_spline(u_lm, (l_deg == 0 and m_ord == 0), boundary, r_max, r_interval[1]))
+
 
     def interpolate(points):
         # Need atomgrid to center the points to the atomic grid, then convert to spherical.

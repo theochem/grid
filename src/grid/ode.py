@@ -144,20 +144,31 @@ def solve_ode_ivp(
             )
         y0 = np.hstack(([y0[0]], y_derivs))
 
-    res = solve_ivp(
-        func,
-        x_span,
-        y0=y0,
-        dense_output=True,
-        vectorized=True,
-        rtol=rtol,
-        atol=atol,
-        method=method,
-    )
+    methods_chain = ["RK45", "DOP853", "BDF", "Radau", "LSODA"]
+    if method in methods_chain:
+        methods_chain.remove(method)
+    methods_chain.insert(0, method)
 
-    # raise error if didn't converge
-    if res.status != 0:
-        raise ValueError(f"The ode solver didn't converge, got status: {res.status}")
+    res = None
+    for m in methods_chain:
+        res = solve_ivp(
+            func,
+            x_span,
+            y0=y0,
+            dense_output=True,
+            vectorized=True,
+            rtol=rtol,
+            atol=atol,
+            method=m,
+        )
+        if res.status == 0:
+            break
+        warnings.warn(
+            f"ODE solver method {m} failed with status {res.status}. Trying next method.",
+            stacklevel=2,
+        )
+    else:
+        raise RuntimeError(f"All ODE solver methods failed. Last status: {res.status}")
 
     if transform is not None:
         # Transform the function so that it's input is the original variable and
