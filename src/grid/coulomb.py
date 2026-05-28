@@ -31,6 +31,10 @@ from scipy.special import erf
 
 __all__ = ["coulomb_gaussian_p", "coulomb_gaussian_s", "coulomb_potential"]
 
+# Distance threshold below which the r->0 analytical limit is used
+# instead of erf(x)/x to avoid division by zero at atomic nuclei.
+_R_ZERO_THRESHOLD = 1e-12
+
 
 def coulomb_gaussian_s(r: np.ndarray, alpha: float, normalized: bool = True) -> np.ndarray:
     r"""Compute the exact Coulomb potential of an s-type Gaussian charge density.
@@ -65,9 +69,11 @@ def coulomb_gaussian_s(r: np.ndarray, alpha: float, normalized: bool = True) -> 
     np.ndarray
         Coulomb potential evaluated at the radial distances.
     """
+    if alpha <= 0:
+        raise ValueError(f"Gaussian exponent alpha must be strictly positive; got {alpha}")
     r = np.asarray(r, dtype=float)
     out = np.empty_like(r)
-    mask_zero = r < 1e-12
+    mask_zero = r < _R_ZERO_THRESHOLD
     mask_nonzero = ~mask_zero
 
     r_nonzero = r[mask_nonzero]
@@ -119,9 +125,11 @@ def coulomb_gaussian_p(r: np.ndarray, beta: float, normalized: bool = True) -> n
     np.ndarray
         Coulomb potential evaluated at the radial distances.
     """
+    if beta <= 0:
+        raise ValueError(f"Gaussian exponent beta must be strictly positive; got {beta}")
     r = np.asarray(r, dtype=float)
     out = np.empty_like(r)
-    mask_zero = r < 1e-12
+    mask_zero = r < _R_ZERO_THRESHOLD
     mask_nonzero = ~mask_zero
 
     r_nonzero = r[mask_nonzero]
@@ -184,6 +192,21 @@ def coulomb_potential(
     expons_s = np.asarray(expons_s, dtype=float)
     centers_s = np.asarray(centers_s, dtype=float)
 
+    # Validate that all s-type arrays describe the same number of Gaussians
+    n_s = len(coeffs_s)
+    if len(expons_s) != n_s or len(centers_s) != n_s:
+        raise ValueError(
+            "coeffs_s, expons_s, and centers_s must have the same length; "
+            f"got {len(coeffs_s)}, {len(expons_s)}, and {len(centers_s)}"
+        )
+
+    # Validate that p-type arguments are either all provided or all omitted
+    p_args = (coeffs_p, expons_p, centers_p)
+    if any(a is not None for a in p_args) and not all(a is not None for a in p_args):
+        raise ValueError(
+            "coeffs_p, expons_p, and centers_p must either all be provided or all be None"
+        )
+
     V = np.zeros(len(points))
 
     # Accumulate s-type potential
@@ -192,10 +215,18 @@ def coulomb_potential(
         V += c * coulomb_gaussian_s(r, alpha, normalized=normalized)
 
     # Accumulate p-type potential if present
-    if coeffs_p is not None and expons_p is not None and centers_p is not None:
+    if coeffs_p is not None:
         coeffs_p = np.asarray(coeffs_p, dtype=float)
         expons_p = np.asarray(expons_p, dtype=float)
         centers_p = np.asarray(centers_p, dtype=float)
+
+        # Validate that all p-type arrays describe the same number of Gaussians
+        n_p = len(coeffs_p)
+        if len(expons_p) != n_p or len(centers_p) != n_p:
+            raise ValueError(
+                "coeffs_p, expons_p, and centers_p must have the same length; "
+                f"got {len(coeffs_p)}, {len(expons_p)}, and {len(centers_p)}"
+            )
 
         for c, beta, center in zip(coeffs_p, expons_p, centers_p):
             r = np.linalg.norm(points - center, axis=-1)
