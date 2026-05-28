@@ -87,38 +87,17 @@ def test_adaptive_r_interval():
     
     used_r_intervals = []
     
-    original_solve = _solve_poisson_ivp_atomgrid
-    
-    def mock_solve(atomgrid, func_vals, transform, r_interval, ode_params=None):
-        r_pts = atomgrid.rgrid.points
-        density_abs = np.abs(func_vals)
-        n_radial = len(r_pts)
-        if len(density_abs) % n_radial == 0:
-            n_angular = len(density_abs) // n_radial
-            density_abs = density_abs.reshape(n_radial, n_angular).sum(axis=1)
-        cumsum = np.cumsum(density_abs)
-        if cumsum[-1] > 0:
-            idx = np.searchsorted(cumsum, 0.99 * cumsum[-1])
-            r_99 = r_pts[min(idx, len(r_pts) - 1)]
-            r_max = r_99 * 10
-            if r_max > r_interval[0]:
-                r_max = r_interval[0]
-            if transform is not None and r_max > transform.domain[1]:
-                r_max = transform.domain[1]
-            used_r_intervals.append(r_max)
-        else:
-            used_r_intervals.append(r_interval[0])
-        return original_solve(atomgrid, func_vals, transform, r_interval, ode_params)
-        
-    import grid.poisson
-    grid.poisson._solve_poisson_ivp_atomgrid = mock_solve
-    
-    try:
+    import grid.ode
+    original_solve_ode_ivp = grid.ode.solve_ode_ivp
+    def mock_solve_ode_ivp(r_interval, *args, **kwargs):
+        used_r_intervals.append(r_interval)
+        return original_solve_ode_ivp(r_interval, *args, **kwargs)
+
+    with patch("grid.poisson.solve_ode_ivp", side_effect=mock_solve_ode_ivp):
         solve_poisson_ivp(atgrid, density_compact, InverseRTransform(btf), r_interval=(20.0, 1e-3))
         solve_poisson_ivp(atgrid, density_diffuse, InverseRTransform(btf), r_interval=(20.0, 1e-3))
-    finally:
-        grid.poisson._solve_poisson_ivp_atomgrid = original_solve
-        
-    assert len(used_r_intervals) == 2
-    r_max_compact, r_max_diffuse = used_r_intervals
+
+    assert len(used_r_intervals) >= 2
+    r_max_compact = used_r_intervals[0][0]
+    r_max_diffuse = used_r_intervals[-1][0]
     assert r_max_compact < r_max_diffuse

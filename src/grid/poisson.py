@@ -105,18 +105,13 @@ def _solve_poisson_ivp_atomgrid(
     
     # Adaptive r_interval[0] based on density decay
     r_pts = atomgrid.rgrid.points
-    density_abs = np.abs(func_vals)
+    radial_weights = atomgrid.rgrid.weights
     
-    # func_vals is 1D array over the 3D grid (N_radial * N_angular). 
-    # Reshape and sum over angular points to get radial density distribution.
-    n_radial = len(r_pts)
-    if len(density_abs) % n_radial == 0:
-        n_angular = len(density_abs) // n_radial
-        # In grid, points are typically ordered (r_0, ang_0), (r_0, ang_1) etc.
-        # So reshape to (n_radial, n_angular) and sum
-        density_abs = density_abs.reshape(n_radial, n_angular).sum(axis=1)
+    # Use the 0th radial component (spherically averaged density) with integration weights
+    radial_density_abs = np.abs(radial_components[0](r_pts))
+    integrand = radial_density_abs * (r_pts**2) * radial_weights
         
-    cumsum = np.cumsum(density_abs)
+    cumsum = np.cumsum(integrand)
     if cumsum[-1] > 0:
         idx = np.searchsorted(cumsum, 0.99 * cumsum[-1])
         r_99 = r_pts[min(idx, len(r_pts) - 1)]
@@ -133,6 +128,7 @@ def _solve_poisson_ivp_atomgrid(
     # Set up default ode parameters if it isn't set up already.
     if ode_params is None:
         ode_params = dict({})
+    ode_params.setdefault("method", "DOP853")
     ode_params.setdefault("rtol", 1e-8)
     ode_params.setdefault("atol", 1e-6)
 
@@ -168,17 +164,9 @@ def _solve_poisson_ivp_atomgrid(
             # numerical noise amplification in the IVP solver.
             max_val = np.max(np.abs(radial_components[i_spline](atomgrid.rgrid.points)))
             if l_deg > 0 and max_val < 1e-12:
-                def make_zero_spline():
-                    def zero_spline(r_pts, deriv=0):
-                        return np.zeros_like(r_pts)
-                    return zero_spline
-                splines.append(make_zero_spline())
+                splines.append(lambda r_pts: np.zeros_like(r_pts))
                 i_spline += 1
                 continue
-
-            if not isinstance(ode_params, dict):
-                ode_params = {}
-            ode_params.setdefault("method", "DOP853")
             # Solve ode
             u_lm = solve_ode_ivp(
                 r_interval,
