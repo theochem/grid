@@ -27,41 +27,55 @@ from grid.coulomb import coulomb_gaussian_p, coulomb_gaussian_s, coulomb_potenti
 
 
 def test_coulomb_gaussian_s():
-    # Test r=0 limit
-    assert_allclose(
-        coulomb_gaussian_s(0.0, 2.0, normalized=True), 2.0 * np.sqrt(2.0) / np.sqrt(np.pi)
-    )
-    assert_allclose(coulomb_gaussian_s(0.0, 2.0, normalized=False), 2.0 * np.pi / 2.0)
+    alpha = 2.0
 
-    # Test nonzero r
+    # Test r=0 limit (normalized)
+    result = coulomb_gaussian_s(0.0, alpha, normalized=True)
+    expected = 2.0 * np.sqrt(alpha) / np.sqrt(np.pi)
+    assert_allclose(result, expected)
+
+    # Test r=0 limit (unnormalized)
+    result = coulomb_gaussian_s(0.0, alpha, normalized=False)
+    expected = 2.0 * np.pi / alpha
+    assert_allclose(result, expected)
+
+    # Test nonzero r (normalized)
     r = np.array([1.5, 3.0])
-    # normalized
-    assert_allclose(coulomb_gaussian_s(r, 2.0, normalized=True), erf(np.sqrt(2.0) * r) / r)
-    # unnormalized
-    assert_allclose(
-        coulomb_gaussian_s(r, 2.0, normalized=False),
-        (np.pi / 2.0) ** 1.5 * erf(np.sqrt(2.0) * r) / r,
-    )
+    result = coulomb_gaussian_s(r, alpha, normalized=True)
+    expected = erf(np.sqrt(alpha) * r) / r
+    assert_allclose(result, expected)
+
+    # Test nonzero r (unnormalized)
+    result = coulomb_gaussian_s(r, alpha, normalized=False)
+    expected = (np.pi / alpha) ** 1.5 * erf(np.sqrt(alpha) * r) / r
+    assert_allclose(result, expected)
 
 
 def test_coulomb_gaussian_p():
-    # Test r=0 limit
-    assert_allclose(
-        coulomb_gaussian_p(0.0, 3.0, normalized=True),
-        10.0 / 3.0 * np.sqrt(3.0) / np.sqrt(np.pi),
-    )
-    assert_allclose(coulomb_gaussian_p(0.0, 3.0, normalized=False), 5.0 * np.pi / 9.0)
+    beta = 3.0
 
-    # Test nonzero r
+    # Test r=0 limit (normalized)
+    result = coulomb_gaussian_p(0.0, beta, normalized=True)
+    expected = 10.0 / 3.0 * np.sqrt(beta) / np.sqrt(np.pi)
+    assert_allclose(result, expected)
+
+    # Test r=0 limit (unnormalized)
+    result = coulomb_gaussian_p(0.0, beta, normalized=False)
+    expected = 5.0 * np.pi / beta**2
+    assert_allclose(result, expected)
+
+    # Test nonzero r (normalized)
     r = np.array([0.5, 2.0])
-    # normalized
-    exact_norm = erf(np.sqrt(3.0) * r) / r + 4.0 / 3.0 * np.sqrt(3.0 / np.pi) * np.exp(-3.0 * r**2)
-    assert_allclose(coulomb_gaussian_p(r, 3.0, normalized=True), exact_norm)
-    # unnormalized
-    exact_unnorm = 1.5 * (np.pi**1.5 / 3.0**2.5) * erf(
-        np.sqrt(3.0) * r
-    ) / r + 2.0 * np.pi / 9.0 * np.exp(-3.0 * r**2)
-    assert_allclose(coulomb_gaussian_p(r, 3.0, normalized=False), exact_unnorm)
+    result = coulomb_gaussian_p(r, beta, normalized=True)
+    expected = erf(np.sqrt(beta) * r) / r + 4.0 / 3.0 * np.sqrt(beta / np.pi) * np.exp(-beta * r**2)
+    assert_allclose(result, expected)
+
+    # Test nonzero r (unnormalized)
+    result = coulomb_gaussian_p(r, beta, normalized=False)
+    expected = 1.5 * (np.pi**1.5 / beta**2.5) * erf(
+        np.sqrt(beta) * r
+    ) / r + 2.0 * np.pi / beta**2 * np.exp(-beta * r**2)
+    assert_allclose(result, expected)
 
 
 def test_coulomb_potential():

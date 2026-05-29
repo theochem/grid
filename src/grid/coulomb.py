@@ -71,23 +71,18 @@ def coulomb_gaussian_s(r: np.ndarray, alpha: float, normalized: bool = True) -> 
     """
     if alpha <= 0:
         raise ValueError(f"Gaussian exponent alpha must be strictly positive; got {alpha}")
-    r = np.asarray(r, dtype=float)
-    out = np.empty_like(r)
-    mask_zero = r < _R_ZERO_THRESHOLD
-    mask_nonzero = ~mask_zero
-
-    r_nonzero = r[mask_nonzero]
+    r = np.atleast_1d(np.asarray(r, dtype=float))
     sqrt_a = np.sqrt(alpha)
+    out = np.empty_like(r)
+    np.divide(erf(sqrt_a * r), r, out=out, where=r >= _R_ZERO_THRESHOLD)
+    # safe division
+    out[r < _R_ZERO_THRESHOLD] = 2.0 * sqrt_a / np.sqrt(np.pi)
 
     if normalized:
-        out[mask_nonzero] = erf(sqrt_a * r_nonzero) / r_nonzero
-        out[mask_zero] = 2.0 * sqrt_a / np.sqrt(np.pi)
-    else:
-        prefactor = (np.pi / alpha) ** 1.5
-        out[mask_nonzero] = prefactor * erf(sqrt_a * r_nonzero) / r_nonzero
-        out[mask_zero] = prefactor * 2.0 * sqrt_a / np.sqrt(np.pi)
+        return out
 
-    return out
+    prefactor = (np.pi / alpha) ** 1.5
+    return prefactor * out
 
 
 def coulomb_gaussian_p(r: np.ndarray, beta: float, normalized: bool = True) -> np.ndarray:
@@ -127,28 +122,20 @@ def coulomb_gaussian_p(r: np.ndarray, beta: float, normalized: bool = True) -> n
     """
     if beta <= 0:
         raise ValueError(f"Gaussian exponent beta must be strictly positive; got {beta}")
-    r = np.asarray(r, dtype=float)
-    out = np.empty_like(r)
-    mask_zero = r < _R_ZERO_THRESHOLD
-    mask_nonzero = ~mask_zero
-
-    r_nonzero = r[mask_nonzero]
+    r = np.atleast_1d(np.asarray(r, dtype=float))
     sqrt_b = np.sqrt(beta)
+    term1 = np.zeros_like(r)
+    np.divide(erf(sqrt_b * r), r, out=term1, where=r >= _R_ZERO_THRESHOLD)
+    # safe at r=0
+    term2 = (4.0 / 3.0) * (sqrt_b / np.sqrt(np.pi)) * np.exp(-beta * r**2)
+    out = term1 + term2
+    out[r < _R_ZERO_THRESHOLD] = (10.0 / 3.0) * (sqrt_b / np.sqrt(np.pi))
 
     if normalized:
-        out[mask_nonzero] = erf(sqrt_b * r_nonzero) / r_nonzero + (4.0 / 3.0) * (
-            sqrt_b / np.sqrt(np.pi)
-        ) * np.exp(-beta * r_nonzero**2)
-        out[mask_zero] = (10.0 / 3.0) * (sqrt_b / np.sqrt(np.pi))
-    else:
-        term1_pref = 1.5 * (np.pi**1.5) / (beta**2.5)
-        term2_pref = 2.0 * np.pi / (beta**2)
-        out[mask_nonzero] = term1_pref * erf(sqrt_b * r_nonzero) / r_nonzero + term2_pref * np.exp(
-            -beta * r_nonzero**2
-        )
-        out[mask_zero] = 5.0 * np.pi / (beta**2)
+        return out
 
-    return out
+    prefactor = 1.5 * (np.pi**1.5) / (beta**2.5)
+    return prefactor * out
 
 
 def coulomb_potential(
