@@ -11,6 +11,7 @@ Submodules
    grid.atomgrid
    grid.basegrid
    grid.becke
+   grid.coulomb
    grid.cubic
    grid.hirshfeld
    grid.molgrid
