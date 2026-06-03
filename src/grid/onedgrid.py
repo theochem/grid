@@ -897,7 +897,7 @@ class TrefethenGeneral(OneDGrid):
 
     name = "Trefethen-Polynomial"
 
-    def __init__(self, npoints: int, quadrature: OneDGrid, d=9):
+    def __init__(self, npoints: int, quadrature: OneDGrid, d=9, **quadrature_params):
         r"""Generate 1D grid on :math:`[-1,1]` interval based on Trefethen-General.
 
         Parameters
@@ -909,6 +909,8 @@ class TrefethenGeneral(OneDGrid):
         d :
             Odd degree of the Taylor series polynomial of :math:`\sin^{-1}`\.
             Only d=1,5,9 are supported.
+        quadrature_params : dict
+            Additional parameters to pass to the General one-dimensional grid.
 
         Returns
         -------
@@ -918,7 +920,7 @@ class TrefethenGeneral(OneDGrid):
         if not issubclass(quadrature, OneDGrid):
             raise TypeError(f"Quadrature {type(OneDGrid)} should be of type OneDgrid.")
 
-        grid = quadrature(npoints)
+        grid = quadrature(npoints, **quadrature_params)
 
         if d == 1:
             points = grid.points
@@ -1057,7 +1059,7 @@ class TrefethenStripGeneral(OneDGrid):
 
     name = "Trefethen-Strip-General"
 
-    def __init__(self, npoints: int, quadrature, rho: float = 1.1):
+    def __init__(self, npoints: int, quadrature, rho: float = 1.1, **quadrature_params):
         r"""Generate grid on :math:`[-1,1]` interval based on Trefethen-General.
 
         Parameters
@@ -1071,7 +1073,7 @@ class TrefethenStripGeneral(OneDGrid):
             One-dimensional grid instance.
 
         """
-        grid = quadrature(npoints)
+        grid = quadrature(npoints, **quadrature_params)
         points = _gstrip(rho, grid.points)
         weights = _dergstrip(rho, grid.points) * grid.weights
 
