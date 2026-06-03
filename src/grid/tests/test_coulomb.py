@@ -67,14 +67,16 @@ def test_coulomb_gaussian_p():
     # Test nonzero r (normalized)
     r = np.array([0.5, 2.0])
     result = coulomb_gaussian_p(r, beta, normalized=True)
-    expected = erf(np.sqrt(beta) * r) / r + 4.0 / 3.0 * np.sqrt(beta / np.pi) * np.exp(-beta * r**2)
-    assert_allclose(result, expected)
+    expected_normalized = (
+        erf(np.sqrt(beta) * r) / r
+        + (4.0 / 3.0) * np.sqrt(beta / np.pi) * np.exp(-beta * r**2)
+    )
+    assert_allclose(result, expected_normalized)
 
     # Test nonzero r (unnormalized)
     result = coulomb_gaussian_p(r, beta, normalized=False)
-    expected = 1.5 * (np.pi**1.5 / beta**2.5) * erf(
-        np.sqrt(beta) * r
-    ) / r + 2.0 * np.pi / beta**2 * np.exp(-beta * r**2)
+    prefactor = (3.0 / 2.0) * (np.pi ** (3.0 / 2.0)) / (beta ** (5.0 / 2.0))
+    expected = prefactor * expected_normalized
     assert_allclose(result, expected)
 
 
@@ -82,14 +84,14 @@ def test_coulomb_potential():
     points = np.array([[0.1, 0.2, 0.3], [1.0, 1.0, 1.0]])
     centers_s = np.array([[0.0, 0.0, 0.0], [1.0, 1.0, 1.0]])
     coeffs_s = np.array([0.5, 2.0])
-    expons_s = np.array([1.5, 0.8])
+    alphas_s = np.array([1.5, 0.8])
 
     # Only s-type
-    v_s = coulomb_potential(points, centers_s, coeffs_s, expons_s, normalized=True)
+    v_s = coulomb_potential(points, centers_s, coeffs_s, alphas_s, normalized=True)
 
     # Check explicitly
     v_expected = np.zeros(len(points))
-    for c, alpha, center in zip(coeffs_s, expons_s, centers_s):
+    for c, alpha, center in zip(coeffs_s, alphas_s, centers_s):
         r = np.linalg.norm(points - center, axis=1)
         with np.errstate(divide="ignore", invalid="ignore"):
             val = erf(np.sqrt(alpha) * r) / r
