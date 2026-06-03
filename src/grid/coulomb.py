@@ -187,12 +187,17 @@ def coulomb_potential(
     alphas_s = np.asarray(alphas_s, dtype=float)
     centers_s = np.asarray(centers_s, dtype=float)
 
-    # Validate that all s-type arrays describe the same number of Gaussians
-    n_s = len(coeffs_s)
-    if len(alphas_s) != n_s or len(centers_s) != n_s:
+    if points.ndim != 2 or points.shape[1] != 3:
+        raise ValueError(f"points must have shape (N, 3); got {points.shape}")
+    if centers_s.ndim != 2 or centers_s.shape[1] != 3:
+        raise ValueError(f"centers_s must have shape (Ks, 3); got {centers_s.shape}")
+    if coeffs_s.ndim != 1 or coeffs_s.shape[0] != centers_s.shape[0]:
         raise ValueError(
-            "coeffs_s, alphas_s, and centers_s must have the same length; "
-            f"got {len(coeffs_s)}, {len(alphas_s)}, and {len(centers_s)}"
+            f"coeffs_s must have shape (Ks,); got {coeffs_s.shape} with centers_s shape {centers_s.shape}"
+        )
+    if alphas_s.ndim != 1 or alphas_s.shape[0] != centers_s.shape[0]:
+        raise ValueError(
+            f"alphas_s must have shape (Ks,); got {alphas_s.shape} with centers_s shape {centers_s.shape}"
         )
 
     # Validate that p-type arguments are either all provided or all omitted
@@ -202,7 +207,24 @@ def coulomb_potential(
             "coeffs_p, alphas_p, and centers_p must either all be provided or all be None"
         )
 
-    V = np.zeros(len(points))
+    p_gaussians_present = coeffs_p is not None
+    if p_gaussians_present:
+        coeffs_p = np.asarray(coeffs_p, dtype=float)
+        alphas_p = np.asarray(alphas_p, dtype=float)
+        centers_p = np.asarray(centers_p, dtype=float)
+
+        if centers_p.ndim != 2 or centers_p.shape[1] != 3:
+            raise ValueError(f"centers_p must have shape (Kp, 3); got {centers_p.shape}")
+        if coeffs_p.ndim != 1 or coeffs_p.shape[0] != centers_p.shape[0]:
+            raise ValueError(
+                f"coeffs_p must have shape (Kp,); got {coeffs_p.shape} with centers_p shape {centers_p.shape}"
+            )
+        if alphas_p.ndim != 1 or alphas_p.shape[0] != centers_p.shape[0]:
+            raise ValueError(
+                f"alphas_p must have shape (Kp,); got {alphas_p.shape} with centers_p shape {centers_p.shape}"
+            )
+
+    V = np.zeros(points.shape[0], dtype=points.dtype)
 
     # Accumulate s-type potential
     for c, alpha, center in zip(coeffs_s, alphas_s, centers_s):
@@ -210,19 +232,7 @@ def coulomb_potential(
         V += c * coulomb_gaussian_s(r, alpha, normalized=normalized)
 
     # Accumulate p-type potential if present
-    if coeffs_p is not None:
-        coeffs_p = np.asarray(coeffs_p, dtype=float)
-        alphas_p = np.asarray(alphas_p, dtype=float)
-        centers_p = np.asarray(centers_p, dtype=float)
-
-        # Validate that all p-type arrays describe the same number of Gaussians
-        n_p = len(coeffs_p)
-        if len(alphas_p) != n_p or len(centers_p) != n_p:
-            raise ValueError(
-                "coeffs_p, alphas_p, and centers_p must have the same length; "
-                f"got {len(coeffs_p)}, {len(alphas_p)}, and {len(centers_p)}"
-            )
-
+    if p_gaussians_present:
         for c, alpha, center in zip(coeffs_p, alphas_p, centers_p):
             r = np.linalg.norm(points - center, axis=-1)
             V += c * coulomb_gaussian_p(r, alpha, normalized=normalized)
