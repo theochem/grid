@@ -35,3 +35,5 @@ from grid.onedgrid import *
 from grid.periodicgrid import *
 from grid.rtransform import *
 from grid.ngrid import *
+from grid.coulomb import *
+

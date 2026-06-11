@@ -23,7 +23,12 @@ import numpy as np
 from numpy.testing import assert_allclose
 from scipy.special import erf
 
-from grid.coulomb import coulomb_gaussian_p, coulomb_gaussian_s, coulomb_potential
+from grid.coulomb import (
+    coulomb_gaussian_p,
+    coulomb_gaussian_s,
+    coulomb_potential,
+    load_atomic_gaussian_params,
+)
 
 
 def test_coulomb_gaussian_s():
@@ -99,3 +104,29 @@ def test_coulomb_potential():
         v_expected += c * val
 
     assert_allclose(v_s, v_expected)
+
+
+def test_load_atomic_gaussian_params():
+
+    # Helper func to check array shapes and non-negativity
+    def _check_params(coeffs, alphas):
+        assert isinstance(coeffs, np.ndarray)
+        assert isinstance(alphas, np.ndarray)
+        assert len(coeffs) == len(alphas) > 0
+        assert np.all(coeffs >= 0)
+        assert np.all(alphas > 0)
+        
+    # Test valid elements using symbols (case-insensitive and with spaces)
+    for symbol in ("H", " C ", "cl", "N", "O"):
+        _check_params(*load_atomic_gaussian_params(symbol))
+
+    # Test valid elements using atomic numbers
+    for atnum in (1, 6, 7, 8, 17):
+        _check_params(*load_atomic_gaussian_params(atnum))
+
+    # Symbol and atomic number must resolve to identical arrays
+    c1, a1 = load_atomic_gaussian_params("Cl")
+    c2, a2 = load_atomic_gaussian_params(17)
+    assert_allclose(c1, c2)
+    assert_allclose(a1, a2)
+

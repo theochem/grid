@@ -26,10 +26,18 @@ of s-type and p-type Gaussian functions.
 
 from __future__ import annotations
 
+import json
+from importlib.resources import files
 import numpy as np
 from scipy.special import erf
 
-__all__ = ["coulomb_gaussian_p", "coulomb_gaussian_s", "coulomb_potential"]
+
+__all__ = [
+    "coulomb_gaussian_p",
+    "coulomb_gaussian_s",
+    "coulomb_potential",
+    "load_atomic_gaussian_params",
+]
 
 # Distance threshold below which the r->0 analytical limit is used
 # instead of erf(x)/x to avoid division by zero at atomic nuclei.
@@ -238,3 +246,71 @@ def coulomb_potential(
             V += c * coulomb_gaussian_p(r, alpha, normalized=normalized)
 
     return V
+
+
+_ATNUM_TO_JSON_KEY = {
+    1: "H",
+    6: "C",
+    7: "N",
+    8: "O",
+    17: "Cl"
+}
+_ATOMIC_GAUSS_PARAMS_CACHE: dict | None = None
+
+
+def load_atomic_gaussian_params(element: str | int) -> tuple[np.ndarray, np.ndarray]:
+    """Load pre-fitted s-type Gaussian parameters for a given element.
+
+    Parameters
+    ----------
+    element : str or int
+        Element symbol (case-insensitive, e.g., "H", "C") or atomic number (e.g., 1, 6).
+
+    Returns
+    -------
+    coeffs_s : np.ndarray
+        Coefficients of the normalized s-type Gaussians.
+    alphas_s : np.ndarray
+        Exponents of the s-type Gaussians.
+
+    Raises
+    ------
+    ValueError
+        If pre-fitted parameters are not available for the element.
+    TypeError
+        If the element parameter has an invalid type.
+    """
+    if isinstance(element, str):
+        # title() maps e.g. "cl" -> "Cl", "H" -> "H" — matching JSON key casing exactly
+        json_symbol = element.strip().title()
+        if json_symbol not in _ATNUM_TO_JSON_KEY.values():
+            raise ValueError(
+                f"Pre-fitted Gaussian parameters are not available for element symbol: '{element}'"
+            )
+
+    elif isinstance(element, (int, np.integer)):
+        atnum = int(element)
+        json_symbol = _ATNUM_TO_JSON_KEY.get(atnum)
+        if json_symbol is None:
+            raise ValueError(
+                f"Pre-fitted Gaussian parameters are not available for atomic number: {atnum}"
+            )
+    else:
+        raise TypeError(f"element must be a string or integer; got {type(element)}")
+
+    global _ATOMIC_GAUSS_PARAMS_CACHE
+    if _ATOMIC_GAUSS_PARAMS_CACHE is None:
+        try:
+            path = files("grid.data").joinpath("atomic_gauss_params.json")
+            with path.open("r", encoding="utf-8") as f:
+                _ATOMIC_GAUSS_PARAMS_CACHE = json.load(f)
+        except Exception as e:
+            raise ValueError(
+                f"Could not load pre-fitted Gaussian parameters from data: {e}"
+            ) from e
+
+    data = _ATOMIC_GAUSS_PARAMS_CACHE[json_symbol]
+    coeffs_s = np.asarray(data["coeffs_s"], dtype=float)
+    alphas_s = np.asarray(data["alphas_s"], dtype=float)
+
+    return coeffs_s, alphas_s
