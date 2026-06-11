@@ -6,3 +6,4 @@ include grid.data.spherical_design/*.npz
 include grid.data.maxdet/*.npz
 include grid.data.prune_grid/*.npz
 include grid.data.proatoms/*.npz
+include grid.data/atomic_gauss_params.json
