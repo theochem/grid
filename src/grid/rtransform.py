@@ -97,6 +97,34 @@ class BaseTransform(ABC):
             raise ZeroDivisionError("First derivative of original transformation has 0 value")
         return -d2 / d1**3
 
+    def deriv3_inverse(self, r):
+        r"""Compute the third derivative of the inverse transformation.
+
+        .. math::
+            \frac{d^3 x(r)}{dr^3} =
+            -\left.\frac{d^3 r}{dx^3}\right|_{x = x(r)}
+            \left(\left.\frac{dr}{dx}\right|_{x = x(r)}\right)^{-4}
+            + 3 \left(\left.\frac{d^2 r}{dx^2}\right|_{x = x(r)}\right)^2
+            \left(\left.\frac{dr}{dx}\right|_{x = x(r)}\right)^{-5}
+
+        Parameters
+        ----------
+        r : float or np.ndarray
+            Point or points in the transformation codomain.
+
+        Returns
+        -------
+        float or np.ndarray
+            Third derivative of the inverse transformation evaluated at ``r``.
+        """
+        x = self.inverse(r)
+        d1 = self.deriv(x)
+        d2 = self.deriv2(x)
+        d3 = self.deriv3(x)
+        if np.any(d1 == 0):
+            raise ZeroDivisionError("First derivative of original transformation has 0 value")
+        return (3 * d2**2 - d1 * d3) / d1**5
+
     @property
     def domain(self):
         """tuple: Transformation domain."""
