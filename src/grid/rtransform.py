@@ -72,6 +72,31 @@ class BaseTransform(ABC):
             raise ZeroDivisionError("First derivative of original transformation has 0 value")
         return 1 / d1
 
+    def deriv2_inverse(self, r):
+        r"""Compute the second derivative of the inverse transformation.
+
+        .. math::
+            \frac{d^2 x(r)}{dr^2} =
+            -\left.\frac{d^2 r}{dx^2}\right|_{x = x(r)}
+            \left(\left.\frac{dr}{dx}\right|_{x = x(r)}\right)^{-3}
+
+        Parameters
+        ----------
+        r : float or np.ndarray
+            Point or points in the transformation codomain.
+
+        Returns
+        -------
+        float or np.ndarray
+            Second derivative of the inverse transformation evaluated at ``r``.
+        """
+        x = self.inverse(r)
+        d1 = self.deriv(x)
+        d2 = self.deriv2(x)
+        if np.any(d1 == 0):
+            raise ZeroDivisionError("First derivative of original transformation has 0 value")
+        return -d2 / d1**3
+
     @property
     def domain(self):
         """tuple: Transformation domain."""
