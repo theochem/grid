@@ -172,6 +172,52 @@ class TestTransform(TestCase):
         inv = InverseRTransform(btf)
         self._deriv_finite_diff(0, 20, inv)
 
+    def test_deriv_inverse(self):
+        """Test first inverse-derivative method against finite difference."""
+        btf = BeckeRTransform(0.1, 1.1)
+        points = np.array([0.2, 1.5, 7.0])
+        eps = 1e-4
+        # 4th-order centered stencil for the first derivative of inverse(r)
+        # f'(r) ~= [f(r-2h) - 8f(r-h) + 8f(r+h) - f(r+2h)] / (12h)
+        deriv_fd = (
+            btf.inverse(points - 2 * eps)
+            - 8 * btf.inverse(points - eps)
+            + 8 * btf.inverse(points + eps)
+            - btf.inverse(points + 2 * eps)
+        ) / (12 * eps)
+        assert_allclose(btf.deriv_inverse(points), deriv_fd, rtol=1e-5)
+
+    def test_deriv2_inverse(self):
+        """Test second inverse-derivative method against finite difference."""
+        btf = BeckeRTransform(0.1, 1.1)
+        points = np.array([0.2, 1.5, 7.0])
+        eps = 1e-4
+        # 4th-order centered stencil for the second derivative of inverse(r)
+        # f''(r) ~= [-f(r+2h) + 16f(r+h) - 30f(r) + 16f(r-h) - f(r-2h)] / (12h^2)
+        deriv2_fd = (
+            -btf.inverse(points + 2 * eps)
+            + 16 * btf.inverse(points + eps)
+            - 30 * btf.inverse(points)
+            + 16 * btf.inverse(points - eps)
+            - btf.inverse(points - 2 * eps)
+        ) / (12 * eps**2)
+        assert_allclose(btf.deriv2_inverse(points), deriv2_fd, rtol=1e-4)
+
+    def test_deriv3_inverse(self):
+        """Test third inverse-derivative method against finite difference."""
+        btf = BeckeRTransform(0.1, 1.1)
+        points = np.array([0.2, 1.5, 7.0])
+        eps = 1e-3
+        # 4-point centered stencil for the third derivative of inverse(r)
+        # f'''(r) ~= [f(r+2h) - 2f(r+h) + 2f(r-h) - f(r-2h)] / (2h^3)
+        deriv3_fd = (
+            btf.inverse(points + 2 * eps)
+            - 2 * btf.inverse(points + eps)
+            + 2 * btf.inverse(points - eps)
+            - btf.inverse(points - 2 * eps)
+        ) / (2 * eps**3)
+        assert_allclose(btf.deriv3_inverse(points), deriv3_fd, rtol=1e-4)
+
     def test_becke_inverse_inverse(self):
         """Test inverse of inverse of Becke transformation."""
         btf = BeckeRTransform(0.1, 1.1)
