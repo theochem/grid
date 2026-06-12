@@ -19,7 +19,6 @@
 # --
 """Transformation from 1D intervals [a, b] to other 1D intervals [c, d]."""
 
-
 import warnings
 from abc import ABC, abstractmethod
 from numbers import Number
@@ -51,6 +50,27 @@ class BaseTransform(ABC):
     @abstractmethod
     def deriv3(self, x):
         """Abstract method for the third derivative of transformation."""
+
+    def deriv_inverse(self, r):
+        r"""Compute the first derivative of the inverse transformation.
+
+        .. math::
+            \frac{d x(r)}{dr} = \left(\left.\frac{dr}{dx}\right|_{x = x(r)}\right)^{-1}
+
+        Parameters
+        ----------
+        r : float or np.ndarray
+            Point or points in the transformation codomain.
+
+        Returns
+        -------
+        float or np.ndarray
+            First derivative of the inverse transformation evaluated at ``r``.
+        """
+        d1 = self.deriv(self.inverse(r))
+        if np.any(d1 == 0):
+            raise ZeroDivisionError("First derivative of original transformation has 0 value")
+        return 1 / d1
 
     @property
     def domain(self):
