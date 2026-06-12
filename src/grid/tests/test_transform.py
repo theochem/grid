@@ -187,6 +187,16 @@ class TestTransform(TestCase):
         ) / (12 * eps)
         assert_allclose(btf.deriv_inverse(points), deriv_fd, rtol=1e-5)
 
+        # test for scalar
+        point = 0.5
+        deriv_fd_scalar = (
+            btf.inverse(point - 2 * eps)
+            - 8 * btf.inverse(point - eps)
+            + 8 * btf.inverse(point + eps)
+            - btf.inverse(point + 2 * eps)
+        ) / (12 * eps)
+        assert_allclose(btf.deriv_inverse(point), deriv_fd_scalar, rtol=1e-5)
+
     def test_deriv2_inverse(self):
         """Test second inverse-derivative method against finite difference."""
         btf = BeckeRTransform(0.1, 1.1)
@@ -203,6 +213,17 @@ class TestTransform(TestCase):
         ) / (12 * eps**2)
         assert_allclose(btf.deriv2_inverse(points), deriv2_fd, rtol=1e-4)
 
+        # test for scalar
+        point = 0.5
+        deriv2_fd_scalar = (
+            -btf.inverse(point + 2 * eps)
+            + 16 * btf.inverse(point + eps)
+            - 30 * btf.inverse(point)
+            + 16 * btf.inverse(point - eps)
+            - btf.inverse(point - 2 * eps)
+        ) / (12 * eps**2)
+        assert_allclose(btf.deriv2_inverse(point), deriv2_fd_scalar, rtol=1e-4)
+
     def test_deriv3_inverse(self):
         """Test third inverse-derivative method against finite difference."""
         btf = BeckeRTransform(0.1, 1.1)
@@ -217,6 +238,16 @@ class TestTransform(TestCase):
             - btf.inverse(points - 2 * eps)
         ) / (2 * eps**3)
         assert_allclose(btf.deriv3_inverse(points), deriv3_fd, rtol=1e-4)
+
+        # test for scalar
+        point = 0.5
+        deriv3_fd_scalar = (
+            btf.inverse(point + 2 * eps)
+            - 2 * btf.inverse(point + eps)
+            + 2 * btf.inverse(point - eps)
+            - btf.inverse(point - 2 * eps)
+        ) / (2 * eps**3)
+        assert_allclose(btf.deriv3_inverse(point), deriv3_fd_scalar, rtol=1e-4)
 
     def test_becke_inverse_inverse(self):
         """Test inverse of inverse of Becke transformation."""
