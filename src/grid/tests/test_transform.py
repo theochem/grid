@@ -75,6 +75,31 @@ def test_becke_r_transform_find_parameter(x_points, r_min, expected_R):
     assert_allclose(transformed_center, expected_R, rtol=1e-5)
 
 
+@pytest.mark.parametrize(
+    "x_points, r_min, r_max",
+    [
+        pytest.param(x_points_cases[0], 0.1, 1.1, id="r_min=0.1,R=1.1"),
+        pytest.param(x_points_cases[1], 0.2, 1.3, id="r_min=0.2,R=1.3"),
+    ],
+)
+def test_becke_r_transform_forward_inverse_consistency(x_points, r_min, r_max):
+    """Test BeckeRTransform forward and inverse consistency."""
+    becke_transform = BeckeRTransform(r_min, r_max)
+
+    # Transform the x_points and then apply the inverse transform
+    transformed_points = becke_transform.transform(x_points)
+    inverse_transformed_points = becke_transform.inverse(transformed_points)
+
+    # Check that the inverse transformed points are close to the original x_points
+    assert_allclose(inverse_transformed_points, x_points, rtol=1e-5)
+
+    # test transform and inverse for scalar values
+    for x_scalar in x_points:
+        transformed_scalar = becke_transform.transform(x_scalar)
+        inverse_transformed_scalar = becke_transform.inverse(transformed_scalar)
+        assert_allclose(inverse_transformed_scalar, x_scalar, rtol=1e-5)
+
+
 class TestTransform(TestCase):
     """Transform testcase class."""
 
