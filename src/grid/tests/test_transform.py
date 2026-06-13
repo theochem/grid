@@ -180,17 +180,33 @@ def test_becke_r_transform_derivatives(x_points, r_min, R):
     """Test BeckeRTransform derivatives against finite difference."""
     becke_transform = BeckeRTransform(r_min, R)
     # test first, second, and third derivatives against finite difference
-    d1 = becke_transform.deriv(x_points)
-    d2 = becke_transform.deriv2(x_points)
-    d3 = becke_transform.deriv3(x_points)
-
-    fd_d1 = compute_fd_deriv(becke_transform.transform, x_points, eps=1e-4, order=1)
-    fd_d2 = compute_fd_deriv(becke_transform.transform, x_points, eps=1e-4, order=2)
-    fd_d3 = compute_fd_deriv(becke_transform.transform, x_points, eps=1e-4, order=3)
-
-    assert_allclose(d1, fd_d1, rtol=1e-5, atol=1e-8, err_msg="First derivative mismatch")
-    assert_allclose(d2, fd_d2, rtol=1e-4, atol=1e-6, err_msg="Second derivative mismatch")
-    assert_allclose(d3, fd_d3, rtol=1e-3, atol=1e-5, err_msg="Third derivative mismatch")
+    first_derivative = becke_transform.deriv(x_points)
+    first_derivative_fd = compute_fd_deriv(becke_transform.transform, x_points, eps=1e-4, order=1)
+    assert_allclose(
+        first_derivative,
+        first_derivative_fd,
+        rtol=1e-5,
+        atol=1e-8,
+        err_msg="First derivative mismatch",
+    )
+    second_derivative = becke_transform.deriv2(x_points)
+    second_derivative_fd = compute_fd_deriv(becke_transform.transform, x_points, eps=1e-4, order=2)
+    assert_allclose(
+        second_derivative,
+        second_derivative_fd,
+        rtol=1e-4,
+        atol=1e-6,
+        err_msg="Second derivative mismatch",
+    )
+    third_derivative = becke_transform.deriv3(x_points)
+    third_derivative_fd = compute_fd_deriv(becke_transform.transform, x_points, eps=1e-4, order=3)
+    assert_allclose(
+        third_derivative,
+        third_derivative_fd,
+        rtol=1e-3,
+        atol=1e-5,
+        err_msg="Third derivative mismatch",
+    )
 
 
 @pytest.mark.parametrize(
@@ -268,6 +284,40 @@ def test_linear_transform_forward_inverse_consistency():
         transformed_num = ltf.transform(x_scalar)
         roundtrip_scalar = ltf.inverse(transformed_num)
         assert_almost_equal(roundtrip_scalar, x_scalar)
+
+
+def test_linear_transform_derivatives():
+    """Test finite diff for linear derivs."""
+    ltf = LinearFiniteRTransform(0.1, 10)
+    x_values = np.sort(np.random.uniform(-1, 1, 50))
+
+    first_derivative = ltf.deriv(x_values)
+    first_derivative_fd = compute_fd_deriv(ltf.transform, x_values, eps=1e-4, order=1)
+    assert_allclose(first_derivative, first_derivative_fd, rtol=1e-5, atol=1e-8)
+
+    # tolerances are looser for higher derivatives due to numerical noise in finite difference
+    second_derivative = ltf.deriv2(x_values)
+    second_derivative_fd = compute_fd_deriv(ltf.transform, x_values, eps=1e-4, order=2)
+    assert_allclose(second_derivative, second_derivative_fd, rtol=1e-4, atol=1e-6)
+
+    third_derivative = ltf.deriv3(x_values)
+    third_derivative_fd = compute_fd_deriv(ltf.transform, x_values, eps=1e-4, order=3)
+    assert_allclose(third_derivative, third_derivative_fd, rtol=1e-3, atol=2e-3)
+
+    for x_scalar in x_values:
+        x_scalar = np.float64(x_scalar)
+
+        first_derivative = ltf.deriv(x_scalar)
+        first_derivative_fd = compute_fd_deriv(ltf.transform, x_scalar, eps=1e-4, order=1)
+        assert_allclose(first_derivative, first_derivative_fd, rtol=1e-5, atol=1e-8)
+
+        second_derivative = ltf.deriv2(x_scalar)
+        second_derivative_fd = compute_fd_deriv(ltf.transform, x_scalar, eps=1e-4, order=2)
+        assert_allclose(second_derivative, second_derivative_fd, rtol=1e-4, atol=1e-6)
+
+        third_derivative = ltf.deriv3(x_scalar)
+        third_derivative_fd = compute_fd_deriv(ltf.transform, x_scalar, eps=1e-4, order=3)
+        assert_allclose(third_derivative, third_derivative_fd, rtol=1e-3, atol=2e-3)
 
 
 class TestTransform(TestCase):
