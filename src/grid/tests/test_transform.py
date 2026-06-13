@@ -236,6 +236,26 @@ def test_becke_r_transform_inverse_derivatives(x_points, r_min, R):
     )
 
 
+def test_becke_integral():
+    """Test transform integral."""
+    btf = BeckeRTransform(0.00001, 1.0)
+
+    def gauss(x):
+        return np.exp(-(x**2))
+
+    ref_result = np.sqrt(np.pi) / 2
+
+    oned = GaussLegendre(20)
+    rad = btf.transform_1d_grid(oned)
+    result = rad.integrate(gauss(rad.points))
+    assert_almost_equal(result, ref_result, decimal=5)
+
+    oned = GaussChebyshev(20)
+    rad = btf.transform_1d_grid(oned)
+    result = rad.integrate(gauss(rad.points))
+    assert_almost_equal(result, ref_result, decimal=3)
+
+
 class TestTransform(TestCase):
     """Transform testcase class."""
 
