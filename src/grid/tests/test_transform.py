@@ -40,6 +40,42 @@ x_points_cases = [np.linspace(-0.9, 0.9, 19), np.linspace(-0.9, 0.9, 10)]
 r_val_cases = [-0.9, 0.9]
 
 
+def compute_fd_deriv(function, x, eps, order):
+    """Calculate finite difference derivatives of a function at a point x."""
+    if order == 1:
+        # 4th-order centered stencil for the first derivative of inverse(r)
+        # f'(r) ~= [f(r-2h) - 8f(r-h) + 8f(r+h) - f(r+2h)] / (12h)
+        return (
+            function(x - 2 * eps)
+            - 8 * function(x - eps)
+            + 8 * function(x + eps)
+            - function(x + 2 * eps)
+        ) / (12 * eps)
+
+    if order == 2:
+        # 4th-order centered stencil for the second derivative of inverse(r)
+        # f''(r) ~= [-f(r+2h) + 16f(r+h) - 30f(r) + 16f(r-h) - f(r-2h)] / (12h^2)
+        return (
+            -function(x + 2 * eps)
+            + 16 * function(x + eps)
+            - 30 * function(x)
+            + 16 * function(x - eps)
+            - function(x - 2 * eps)
+        ) / (12 * eps**2)
+
+    elif order == 3:
+        # 4-point centered stencil for the third derivative of inverse(r)
+        # f'''(r) ~= [f(r+2h) - 2f(r+h) + 2f(r-h) - f(r-2h)] / (2h^3)
+        return (
+            function(x + 2 * eps)
+            - 2 * function(x + eps)
+            + 2 * function(x - eps)
+            - function(x - 2 * eps)
+        ) / (2 * eps**3)
+    else:
+        raise ValueError("Only first, second, and third derivatives are supported.")
+
+
 def test_becke_r_transform_init():
     """Test BeckeRTransform initialization."""
     btf = BeckeRTransform(0.1, 1.2)
