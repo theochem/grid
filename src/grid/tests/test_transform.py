@@ -169,6 +169,30 @@ def test_becke_r_transform_convert_inf(value, expected):
     assert_almost_equal(converted_array[3], expected)
 
 
+@pytest.mark.parametrize(
+    "x_points, r_min, R",
+    [
+        pytest.param(x_points_cases[0], 0.1, 1.2, id="r_min=0.1,R=1.2"),
+        pytest.param(x_points_cases[1], 0.2, 1.3, id="r_min=0.2,R=1.3"),
+    ],
+)
+def test_becke_r_transform_derivatives(x_points, r_min, R):
+    """Test BeckeRTransform derivatives against finite difference."""
+    becke_transform = BeckeRTransform(r_min, R)
+    # test first, second, and third derivatives against finite difference
+    d1 = becke_transform.deriv(x_points)
+    d2 = becke_transform.deriv2(x_points)
+    d3 = becke_transform.deriv3(x_points)
+
+    fd_d1 = compute_fd_deriv(becke_transform.transform, x_points, eps=1e-4, order=1)
+    fd_d2 = compute_fd_deriv(becke_transform.transform, x_points, eps=1e-4, order=2)
+    fd_d3 = compute_fd_deriv(becke_transform.transform, x_points, eps=1e-4, order=3)
+
+    assert_allclose(d1, fd_d1, rtol=1e-5, atol=1e-8, err_msg="First derivative mismatch")
+    assert_allclose(d2, fd_d2, rtol=1e-4, atol=1e-6, err_msg="Second derivative mismatch")
+    assert_allclose(d3, fd_d3, rtol=1e-3, atol=1e-5, err_msg="Third derivative mismatch")
+
+
 class TestTransform(TestCase):
     """Transform testcase class."""
 
