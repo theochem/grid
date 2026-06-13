@@ -112,6 +112,27 @@ def test_becke_r_transform_trimmed_infinity_roundtrip():
     assert_allclose(inverse_transformed_points, x_points)
 
 
+@pytest.mark.parametrize(
+    "value, expected",
+    [
+        pytest.param(-np.inf, -1e16, id="negative-inf"),
+        pytest.param(np.inf, 1e16, id="positive-inf"),
+    ],
+)
+def test_becke_r_transform_convert_inf(value, expected):
+    """Test BeckeRTransform infinity replacement for scalars and arrays."""
+    becke_transform = BeckeRTransform(0.1, 1.1, trim_inf=True)
+
+    # test that +/- inf is converted to +/- 1e16 for scalar input
+    # scalar test
+    result = becke_transform._convert_inf(value)
+    assert_almost_equal(result, expected)
+    # array test
+    test_array = np.array([0.1, 0.2, 0.3, value, 0.5])
+    converted_array = becke_transform._convert_inf(test_array)
+    assert_almost_equal(converted_array[3], expected)
+
+
 class TestTransform(TestCase):
     """Transform testcase class."""
 
