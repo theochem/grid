@@ -100,6 +100,18 @@ def test_becke_r_transform_forward_inverse_consistency(x_points, r_min, r_max):
         assert_allclose(inverse_transformed_scalar, x_scalar, rtol=1e-5)
 
 
+def test_becke_r_transform_trimmed_infinity_roundtrip():
+    """Test BeckeRTransform roundtrip when infinities are trimmed during the transform."""
+    x_points = np.linspace(-1, 1, 21)
+    r_param = BeckeRTransform.find_parameter(x_points, 0.1, 1.2)
+    becke_transform = BeckeRTransform(0.1, r_param, trim_inf=True)
+
+    transformed_points = becke_transform.transform(x_points)
+    inverse_transformed_points = becke_transform.inverse(transformed_points)
+
+    assert_allclose(inverse_transformed_points, x_points)
+
+
 class TestTransform(TestCase):
     """Transform testcase class."""
 
