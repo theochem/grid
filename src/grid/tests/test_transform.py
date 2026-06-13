@@ -84,17 +84,17 @@ def test_becke_r_transform_init():
 
 
 @pytest.mark.parametrize(
-    "x_points, r_min, expected_R",
+    "x_points, r_min, R",
     [
         pytest.param(x_points_cases[0], 0.1, 1.2, id="r_min=0.1,R=1.2"),
         pytest.param(x_points_cases[1], 0.2, 1.3, id="r_min=0.2,R=1.3"),
     ],
 )
-def test_becke_r_transform_find_parameter(x_points, r_min, expected_R):
+def test_becke_r_transform_find_parameter(x_points, r_min, R):
     """Test BeckeRTransform find_parameter method."""
 
     # find r parameter, such that transformed grid center point is R_ref
-    r_param = BeckeRTransform.find_parameter(x_points, r_min, expected_R)
+    r_param = BeckeRTransform.find_parameter(x_points, r_min, R)
 
     becke_transform = BeckeRTransform(r_min, r_param)
     if len(x_points) % 2 == 1:
@@ -103,12 +103,12 @@ def test_becke_r_transform_find_parameter(x_points, r_min, expected_R):
         center_point_x = (x_points[len(x_points) // 2 - 1] + x_points[len(x_points) // 2]) / 2
 
     # check that calculated r_param is close to reference value
-    ref_rparam = (expected_R - r_min) * (1 - center_point_x) / (1 + center_point_x)
+    ref_rparam = (R - r_min) * (1 - center_point_x) / (1 + center_point_x)
     assert_allclose(r_param, ref_rparam, rtol=1e-5)
 
-    # check that transformed center point is close to expected_R
+    # check that transformed center point is close to R
     transformed_center = becke_transform.transform(center_point_x)
-    assert_allclose(transformed_center, expected_R, rtol=1e-5)
+    assert_allclose(transformed_center, R, rtol=1e-5)
 
 
 @pytest.mark.parametrize(
