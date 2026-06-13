@@ -256,6 +256,20 @@ def test_becke_integral():
     assert_almost_equal(result, ref_result, decimal=3)
 
 
+def test_linear_transform_forward_inverse_consistency():
+    """Test linear transformation."""
+    ltf = LinearFiniteRTransform(0.1, 10)
+    x_values = np.sort(np.random.uniform(-1, 1, 50))
+    transformed = ltf.transform(x_values)
+    roundtrip = ltf.inverse(transformed)
+    assert_allclose(roundtrip, x_values)
+
+    for x_scalar in x_values:
+        transformed_num = ltf.transform(x_scalar)
+        roundtrip_scalar = ltf.inverse(transformed_num)
+        assert_almost_equal(roundtrip_scalar, x_scalar)
+
+
 class TestTransform(TestCase):
     """Transform testcase class."""
 
