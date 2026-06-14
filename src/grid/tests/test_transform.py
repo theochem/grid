@@ -355,6 +355,28 @@ def test_linear_transform_inverse_derivatives():
         assert_allclose(third_derivative, third_derivative_fd, rtol=1e-3, atol=2e-3)
 
 
+def test_raise_errors():
+    """Test that errors are raised for invalid inputs."""
+    # Parameter error (R must be greater than r_min)
+    with pytest.raises(ValueError):
+        BeckeRTransform.find_parameter(np.arange(5), 0.5, 0.1)
+
+    btf = BeckeRTransform(0.1, 1.1)
+
+    # Transform requires array-like numeric input
+    with pytest.raises(TypeError):
+        btf.transform("dafasdf")
+
+    # transform_1d_grid requires a OneDGrid instance
+    with pytest.raises(TypeError):
+        btf.transform_1d_grid(np.arange(3))
+
+    # Singular transform leads to division by zero in inverse derivatives
+    singular_btf = BeckeRTransform(0.1, 0)
+    with pytest.raises(ZeroDivisionError):
+        singular_btf.deriv_inverse(0.5)
+
+
 class TestTransform(TestCase):
     """Transform testcase class."""
 
