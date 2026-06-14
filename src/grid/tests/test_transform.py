@@ -40,38 +40,33 @@ x_points_cases = [np.linspace(-0.9, 0.9, 19), np.linspace(-0.9, 0.9, 10)]
 r_val_cases = [-0.9, 0.9]
 
 
-def compute_fd_deriv(function, x, eps, order):
+def compute_fd_deriv(fcn, x, eps, order):
     """Calculate finite difference derivatives of a function at a point x."""
+
     if order == 1:
         # 4th-order centered stencil for the first derivative of inverse(r)
         # f'(r) ~= [f(r-2h) - 8f(r-h) + 8f(r+h) - f(r+2h)] / (12h)
-        return (
-            function(x - 2 * eps)
-            - 8 * function(x - eps)
-            + 8 * function(x + eps)
-            - function(x + 2 * eps)
-        ) / (12 * eps)
+        return (fcn(x - 2 * eps) - 8 * fcn(x - eps) + 8 * fcn(x + eps) - fcn(x + 2 * eps)) / (
+            12 * eps
+        )
 
     if order == 2:
         # 4th-order centered stencil for the second derivative of inverse(r)
         # f''(r) ~= [-f(r+2h) + 16f(r+h) - 30f(r) + 16f(r-h) - f(r-2h)] / (12h^2)
         return (
-            -function(x + 2 * eps)
-            + 16 * function(x + eps)
-            - 30 * function(x)
-            + 16 * function(x - eps)
-            - function(x - 2 * eps)
+            -fcn(x + 2 * eps)
+            + 16 * fcn(x + eps)
+            - 30 * fcn(x)
+            + 16 * fcn(x - eps)
+            - fcn(x - 2 * eps)
         ) / (12 * eps**2)
 
     elif order == 3:
         # 4-point centered stencil for the third derivative of inverse(r)
         # f'''(r) ~= [f(r+2h) - 2f(r+h) + 2f(r-h) - f(r-2h)] / (2h^3)
-        return (
-            function(x + 2 * eps)
-            - 2 * function(x + eps)
-            + 2 * function(x - eps)
-            - function(x - 2 * eps)
-        ) / (2 * eps**3)
+        return (fcn(x + 2 * eps) - 2 * fcn(x + eps) + 2 * fcn(x - eps) - fcn(x - 2 * eps)) / (
+            2 * eps**3
+        )
     else:
         raise ValueError("Only first, second, and third derivatives are supported.")
 
@@ -402,6 +397,83 @@ def test_multiexp_rtransform_forward_inverse_consistency(x_points):
         transformed_point = metf.transform(point)
         roundtrip_point = metf.inverse(transformed_point)
         assert_allclose(roundtrip_point, point)
+
+
+def test_multiexp_rtransform_derivatives():
+    """Test finite diff for multiexp rtransform. derivatives"""
+    metf = MultiExpRTransform(0.1, 10)
+    x_values = np.sort(np.random.uniform(-1, 1, 50))
+
+    first_derivative = metf.deriv(x_values)
+    first_derivative_fd = compute_fd_deriv(metf.transform, x_values, eps=1e-4, order=1)
+    assert_allclose(first_derivative, first_derivative_fd, rtol=1e-5, atol=1e-8)
+
+    # tolerances are looser for higher derivatives due to numerical noise in finite difference
+    second_derivative = metf.deriv2(x_values)
+    second_derivative_fd = compute_fd_deriv(metf.transform, x_values, eps=1e-4, order=2)
+    assert_allclose(second_derivative, second_derivative_fd, rtol=1e-4, atol=1e-6)
+
+    third_derivative = metf.deriv3(x_values)
+    third_derivative_fd = compute_fd_deriv(metf.transform, x_values, eps=1e-4, order=3)
+    assert_allclose(third_derivative, third_derivative_fd, rtol=1e-3, atol=2e-3)
+
+    for x_scalar in x_values:
+        x_scalar = np.float64(x_scalar)
+
+        first_derivative = metf.deriv(x_scalar)
+        first_derivative_fd = compute_fd_deriv(metf.transform, x_scalar, eps=1e-4, order=1)
+        assert_allclose(first_derivative, first_derivative_fd, rtol=1e-5, atol=1e-8)
+
+        second_derivative = metf.deriv2(x_scalar)
+        second_derivative_fd = compute_fd_deriv(metf.transform, x_scalar, eps=1e-4, order=2)
+        assert_allclose(second_derivative, second_derivative_fd, rtol=1e-4, atol=1e-6)
+
+        third_derivative = metf.deriv3(x_scalar)
+        third_derivative_fd = compute_fd_deriv(metf.transform, x_scalar, eps=1e-4, order=3)
+        assert_allclose(third_derivative, third_derivative_fd, rtol=1e-3, atol=2e-3)
+
+
+@pytest.mark.parametrize(
+    "x_points, r_min, R",
+    [
+        pytest.param(x_points_cases[0], 0.1, 1.2, id="r_min=0.1,R=1.2"),
+        pytest.param(x_points_cases[1], 0.2, 1.3, id="r_min=0.2,R=1.3"),
+    ],
+)
+def test_multiexp_r_transform_inverse_derivatives(x_points, r_min, R):
+    """Test BeckeRTransform inverse derivatives against finite difference."""
+    transform = MultiExpRTransform(r_min, R)
+    r_points = transform.transform(x_points)
+
+    first_derivative = transform.deriv_inverse(r_points)
+    first_derivative_fd = compute_fd_deriv(transform.inverse, r_points, eps=1e-4, order=1)
+    assert_allclose(
+        first_derivative,
+        first_derivative_fd,
+        rtol=1e-5,
+        atol=1e-8,
+        err_msg="First inverse derivative mismatch",
+    )
+
+    second_derivative = transform.deriv2_inverse(r_points)
+    second_derivative_fd = compute_fd_deriv(transform.inverse, r_points, eps=1e-4, order=2)
+    assert_allclose(
+        second_derivative,
+        second_derivative_fd,
+        rtol=1e-4,
+        atol=1e-6,
+        err_msg="Second inverse derivative mismatch",
+    )
+
+    third_derivative = transform.deriv3_inverse(r_points)
+    third_derivative_fd = compute_fd_deriv(transform.inverse, r_points, eps=1e-3, order=3)
+    assert_allclose(
+        third_derivative,
+        third_derivative_fd,
+        rtol=1e-4,
+        atol=1e-5,
+        err_msg="Third inverse derivative mismatch",
+    )
 
 
 class TestTransform(TestCase):
