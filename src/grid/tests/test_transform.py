@@ -355,7 +355,7 @@ def test_linear_transform_inverse_derivatives():
         assert_allclose(third_derivative, third_derivative_fd, rtol=1e-3, atol=2e-3)
 
 
-def test_raise_errors():
+def test_becke_rtransform_raise_errors():
     """Test that errors are raised for invalid inputs."""
     # Parameter error (R must be greater than r_min)
     with pytest.raises(ValueError):
@@ -375,6 +375,33 @@ def test_raise_errors():
     singular_btf = BeckeRTransform(0.1, 0)
     with pytest.raises(ZeroDivisionError):
         singular_btf.deriv_inverse(0.5)
+
+
+def test_multiexp_rtransform_init():
+    """Test MultiExp initializaiton."""
+    btf = MultiExpRTransform(0.1, 1.2)
+    assert btf.R == 1.2
+    assert btf.rmin == 0.1
+
+
+@pytest.mark.parametrize("x_points", x_points_cases)
+def test_multiexp_rtransform_forward_inverse_consistency(x_points):
+    """Test MultiExpRTransform forward/inverse consistency and pointwise agreement."""
+
+    metf = MultiExpRTransform(0.1, 1.1)
+
+    # Forward transform on full array
+    transformed_points = metf.transform(x_points)
+    roundtrip_points = metf.inverse(transformed_points)
+
+    # Inverse transform should recover original array
+    assert_allclose(roundtrip_points, x_points)
+
+    # Forward transform on single points
+    for point in x_points:
+        transformed_point = metf.transform(point)
+        roundtrip_point = metf.inverse(transformed_point)
+        assert_allclose(roundtrip_point, point)
 
 
 class TestTransform(TestCase):
