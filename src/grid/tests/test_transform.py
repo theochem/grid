@@ -504,6 +504,40 @@ def test_knowles_rtransform_forward_inverse_consistency(x_points):
         assert_allclose(roundtrip_point, point)
 
 
+def test_knowles_rtransform_derivatives():
+    """Test finite diff for multiexp rtransform. derivatives"""
+    ktf = KnowlesRTransform(0.1, 1.1, 2)
+    x_values = np.sort(np.random.uniform(-1, 1, 50))
+
+    first_derivative = ktf.deriv(x_values)
+    first_derivative_fd = compute_fd_deriv(ktf.transform, x_values, eps=1e-4, order=1)
+    assert_allclose(first_derivative, first_derivative_fd, rtol=1e-5, atol=1e-8)
+
+    # tolerances are looser for higher derivatives due to numerical noise in finite difference
+    second_derivative = ktf.deriv2(x_values)
+    second_derivative_fd = compute_fd_deriv(ktf.transform, x_values, eps=1e-4, order=2)
+    assert_allclose(second_derivative, second_derivative_fd, rtol=1e-4, atol=1e-6)
+
+    third_derivative = ktf.deriv3(x_values)
+    third_derivative_fd = compute_fd_deriv(ktf.transform, x_values, eps=1e-4, order=3)
+    assert_allclose(third_derivative, third_derivative_fd, rtol=1e-3, atol=2e-3)
+
+    for x_scalar in x_values:
+        x_scalar = np.float64(x_scalar)
+
+        first_derivative = ktf.deriv(x_scalar)
+        first_derivative_fd = compute_fd_deriv(ktf.transform, x_scalar, eps=1e-4, order=1)
+        assert_allclose(first_derivative, first_derivative_fd, rtol=1e-5, atol=1e-8)
+
+        second_derivative = ktf.deriv2(x_scalar)
+        second_derivative_fd = compute_fd_deriv(ktf.transform, x_scalar, eps=1e-4, order=2)
+        assert_allclose(second_derivative, second_derivative_fd, rtol=1e-4, atol=1e-6)
+
+        third_derivative = ktf.deriv3(x_scalar)
+        third_derivative_fd = compute_fd_deriv(ktf.transform, x_scalar, eps=1e-4, order=3)
+        assert_allclose(third_derivative, third_derivative_fd, rtol=1e-3, atol=2e-3)
+
+
 class TestTransform(TestCase):
     """Transform testcase class."""
 
