@@ -538,6 +538,42 @@ def test_knowles_rtransform_derivatives():
         assert_allclose(third_derivative, third_derivative_fd, rtol=1e-3, atol=2e-3)
 
 
+@pytest.mark.parametrize("x_points", x_points_cases)
+def test_knowles_r_transform_inverse_derivatives(x_points):
+    """Test KnowlesRTransform  inverse derivatives against finite difference."""
+    transform = KnowlesRTransform(0.1, 1.1, 2)
+    r_points = transform.transform(x_points)
+
+    first_derivative = transform.deriv_inverse(r_points)
+    first_derivative_fd = compute_fd_deriv(transform.inverse, r_points, eps=1e-4, order=1)
+    assert_allclose(
+        first_derivative,
+        first_derivative_fd,
+        rtol=1e-5,
+        atol=1e-8,
+        err_msg="First inverse derivative mismatch",
+    )
+
+    second_derivative = transform.deriv2_inverse(r_points)
+    second_derivative_fd = compute_fd_deriv(transform.inverse, r_points, eps=1e-4, order=2)
+    assert_allclose(
+        second_derivative,
+        second_derivative_fd,
+        rtol=1e-4,
+        atol=1e-6,
+        err_msg="Second inverse derivative mismatch",
+    )
+
+    third_derivative = transform.deriv3_inverse(r_points)
+    third_derivative_fd = compute_fd_deriv(transform.inverse, r_points, eps=1e-4, order=3)
+    assert_allclose(
+        third_derivative,
+        third_derivative_fd,
+        rtol=5e-3,
+        atol=1e-5,
+    )
+
+
 class TestTransform(TestCase):
     """Transform testcase class."""
 
