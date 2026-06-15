@@ -574,6 +574,21 @@ def test_knowles_r_transform_inverse_derivatives(x_points):
     )
 
 
+@pytest.mark.parametrize(
+    "rmin, rmax, m",
+    [
+        (0.1, 1.2, 2),
+        (0.1, 1.1, 2),
+    ],
+)
+def test_handy_rtransform_init(rmin, rmax, m):
+    """Test HandyRTransform initialization."""
+    btf = HandyRTransform(rmin, rmax, m)
+    assert btf.R == rmax
+    assert btf.m == m
+    assert btf.rmin == rmin
+
+
 class TestTransform(TestCase):
     """Transform testcase class."""
 
