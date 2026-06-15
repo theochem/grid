@@ -400,7 +400,7 @@ def test_multiexp_rtransform_forward_inverse_consistency(x_points):
 
 
 def test_multiexp_rtransform_derivatives():
-    """Test finite diff for multiexp rtransform. derivatives"""
+    """Test MultiExpRTransform derivatives against finite difference."""
     metf = MultiExpRTransform(0.1, 10)
     x_values = np.sort(np.random.uniform(-1, 1, 50))
 
@@ -441,7 +441,7 @@ def test_multiexp_rtransform_derivatives():
     ],
 )
 def test_multiexp_r_transform_inverse_derivatives(x_points, r_min, R):
-    """Test BeckeRTransform inverse derivatives against finite difference."""
+    """Test MultiExpRTransform inverse derivatives against finite difference."""
     transform = MultiExpRTransform(r_min, R)
     r_points = transform.transform(x_points)
 
@@ -477,7 +477,7 @@ def test_multiexp_r_transform_inverse_derivatives(x_points, r_min, R):
 
 
 def test_knowles_rtransform_init():
-    """Test MultiExp initializaiton."""
+    """Test KnowlesRTransform initializaiton."""
     ktf = KnowlesRTransform(0.1, 1.2, 2)
     assert ktf.R == 1.2
     assert ktf.rmin == 0.1
@@ -486,7 +486,7 @@ def test_knowles_rtransform_init():
 
 @pytest.mark.parametrize("x_points", x_points_cases)
 def test_knowles_rtransform_forward_inverse_consistency(x_points):
-    """Test MultiExpRTransform forward/inverse consistency and pointwise agreement."""
+    """Test KnowlesRTransform forward/inverse consistency and pointwise agreement."""
 
     ktf = KnowlesRTransform(0.1, 1.1, 2)
 
@@ -505,7 +505,7 @@ def test_knowles_rtransform_forward_inverse_consistency(x_points):
 
 
 def test_knowles_rtransform_derivatives():
-    """Test finite diff for multiexp rtransform. derivatives"""
+    """Test KnowlesRTransform derivatives against finite difference."""
     ktf = KnowlesRTransform(0.1, 1.1, 2)
     x_values = np.sort(np.random.uniform(-1, 1, 50))
 
