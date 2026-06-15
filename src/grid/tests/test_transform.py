@@ -476,6 +476,14 @@ def test_multiexp_r_transform_inverse_derivatives(x_points, r_min, R):
     )
 
 
+def test_knowles_rtransform_init():
+    """Test MultiExp initializaiton."""
+    ktf = KnowlesRTransform(0.1, 1.2, 2)
+    assert ktf.R == 1.2
+    assert ktf.rmin == 0.1
+    assert ktf.k == 2
+
+
 class TestTransform(TestCase):
     """Transform testcase class."""
 
