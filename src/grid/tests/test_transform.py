@@ -484,6 +484,26 @@ def test_knowles_rtransform_init():
     assert ktf.k == 2
 
 
+@pytest.mark.parametrize("x_points", x_points_cases)
+def test_knowles_rtransform_forward_inverse_consistency(x_points):
+    """Test MultiExpRTransform forward/inverse consistency and pointwise agreement."""
+
+    ktf = KnowlesRTransform(0.1, 1.1, 2)
+
+    # Forward transform on full array
+    transformed_points = ktf.transform(x_points)
+    roundtrip_points = ktf.inverse(transformed_points)
+
+    # Inverse transform should recover original array
+    assert_allclose(roundtrip_points, x_points)
+
+    # Forward transform on single points
+    for point in x_points:
+        transformed_point = ktf.transform(point)
+        roundtrip_point = ktf.inverse(transformed_point)
+        assert_allclose(roundtrip_point, point)
+
+
 class TestTransform(TestCase):
     """Transform testcase class."""
 
