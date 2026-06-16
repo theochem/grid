@@ -662,6 +662,20 @@ def test_handy_r_transform_inverse_derivatives(x_points):
     assert_allclose(third_derivative, third_derivative_fd, rtol=5e-3, atol=1e-4)
 
 
+@pytest.mark.parametrize(
+    "rmin, rmax, m",
+    [
+        (0.1, 10.0, 2),
+    ],
+)
+def test_handymod_rtransform_init(rmin, rmax, m):
+    """Test HandyModRTransform initialization."""
+    btf = HandyModRTransform(rmin, rmax, m)
+    assert np.isclose(btf.rmin, rmin)
+    assert np.isclose(btf.rmax, rmax)
+    assert btf.m == m
+
+
 class TestTransform(TestCase):
     """Transform testcase class."""
 
