@@ -27,6 +27,7 @@ from numpy.testing import assert_allclose, assert_almost_equal
 
 from grid.onedgrid import GaussChebyshev, GaussLegendre, UniformInteger
 from grid.rtransform import (
+    BaseTransform,
     BeckeRTransform,
     HandyModRTransform,
     HandyRTransform,
@@ -111,6 +112,42 @@ VALID_TRANSFORM_CASES = [
     transformation_case(LinearFiniteRTransform, dict(rmin=0.1, rmax=10)),
     transformation_case(LinearFiniteRTransform, dict(rmin=0.1, rmax=10)),
 ]
+
+
+def test_base_transform_convert_inf():
+    """Test conversion of infinite values for both array and scalar inputs."""
+
+    class DummyTransform(BaseTransform):
+        def transform(self, x):
+            pass
+
+        def inverse(self, x):
+            pass
+
+        def deriv(self, x):
+            pass
+
+        def deriv2(self, x):
+            pass
+
+        def deriv3(self, x):
+            pass
+
+    tf = DummyTransform()
+
+    # Array case
+    input_vals = np.array([-np.inf, -1.0, 0.0, 1.0, np.inf])
+    results = tf._convert_inf(input_vals)
+    expected = np.array([-1e16, -1.0, 0.0, 1.0, 1e16])
+    assert_allclose(expected, results)
+
+    # Scalar cases
+    assert tf._convert_inf(np.inf) == 1e16
+    assert tf._convert_inf(-np.inf) == -1e16
+
+    # Finite scalar passthrough
+    assert tf._convert_inf(2.5) == 2.5
+    assert tf._convert_inf(-3.2) == -3.2
 
 
 @pytest.mark.parametrize("transform_class, kwargs", INVALID_INITIALIZE_CASES)
