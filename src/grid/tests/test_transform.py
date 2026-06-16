@@ -79,13 +79,14 @@ def transformation_case(transform_class, kwargs):
         id=f"{transform_class.__name__}[{param_str}]",
     )
 
-
+# cases for testing init raises on invalid initialization parameters
 INVALID_INITIALIZE_CASES = [
     transformation_case(KnowlesRTransform, dict(rmin=0.1, R=1.0, k=0)),
     transformation_case(HandyModRTransform, dict(rmin=0.1, rmax=10.0, m=0)),
     transformation_case(HandyModRTransform, dict(rmin=10.0, rmax=0.1, m=2)),
 ]
 
+# cases of bounded transforms with domain [-1, 1]; verify raises on out-of-domain inputs
 BOUNDED_DOMAIN_CASES = [
     transformation_case(BeckeRTransform, dict(rmin=0.1, R=1.2)),
     transformation_case(KnowlesRTransform, dict(rmin=0.1, R=1.2, k=2)),
