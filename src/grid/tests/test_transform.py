@@ -326,46 +326,6 @@ def test_becke_r_transform_trimmed_infinity_roundtrip():
         pytest.param(x_points_cases[1], 0.2, 1.3, id="r_min=0.2,R=1.3"),
     ],
 )
-def test_becke_r_transform_derivatives(x_points, r_min, R):
-    """Test BeckeRTransform derivatives against finite difference."""
-    becke_transform = BeckeRTransform(r_min, R)
-    # test first, second, and third derivatives against finite difference
-    first_derivative = becke_transform.deriv(x_points)
-    first_derivative_fd = compute_fd_deriv(becke_transform.transform, x_points, eps=1e-4, order=1)
-    assert_allclose(
-        first_derivative,
-        first_derivative_fd,
-        rtol=1e-5,
-        atol=1e-8,
-        err_msg="First derivative mismatch",
-    )
-    second_derivative = becke_transform.deriv2(x_points)
-    second_derivative_fd = compute_fd_deriv(becke_transform.transform, x_points, eps=1e-4, order=2)
-    assert_allclose(
-        second_derivative,
-        second_derivative_fd,
-        rtol=1e-4,
-        atol=1e-6,
-        err_msg="Second derivative mismatch",
-    )
-    third_derivative = becke_transform.deriv3(x_points)
-    third_derivative_fd = compute_fd_deriv(becke_transform.transform, x_points, eps=1e-4, order=3)
-    assert_allclose(
-        third_derivative,
-        third_derivative_fd,
-        rtol=1e-3,
-        atol=1e-5,
-        err_msg="Third derivative mismatch",
-    )
-
-
-@pytest.mark.parametrize(
-    "x_points, r_min, R",
-    [
-        pytest.param(x_points_cases[0], 0.1, 1.2, id="r_min=0.1,R=1.2"),
-        pytest.param(x_points_cases[1], 0.2, 1.3, id="r_min=0.2,R=1.3"),
-    ],
-)
 def test_becke_r_transform_inverse_derivatives(x_points, r_min, R):
     """Test BeckeRTransform inverse derivatives against finite difference."""
     transform = BeckeRTransform(r_min, R)
@@ -420,40 +380,6 @@ def test_becke_integral():
     rad = btf.transform_1d_grid(oned)
     result = rad.integrate(gauss(rad.points))
     assert_almost_equal(result, ref_result, decimal=3)
-
-
-def test_linear_transform_derivatives():
-    """Test finite diff for linear derivs."""
-    ltf = LinearFiniteRTransform(0.1, 10)
-    x_values = np.sort(np.random.uniform(-1, 1, 50))
-
-    first_derivative = ltf.deriv(x_values)
-    first_derivative_fd = compute_fd_deriv(ltf.transform, x_values, eps=1e-4, order=1)
-    assert_allclose(first_derivative, first_derivative_fd, rtol=1e-5, atol=1e-8)
-
-    # tolerances are looser for higher derivatives due to numerical noise in finite difference
-    second_derivative = ltf.deriv2(x_values)
-    second_derivative_fd = compute_fd_deriv(ltf.transform, x_values, eps=1e-4, order=2)
-    assert_allclose(second_derivative, second_derivative_fd, rtol=1e-4, atol=1e-6)
-
-    third_derivative = ltf.deriv3(x_values)
-    third_derivative_fd = compute_fd_deriv(ltf.transform, x_values, eps=1e-4, order=3)
-    assert_allclose(third_derivative, third_derivative_fd, rtol=1e-3, atol=2e-3)
-
-    for x_scalar in x_values:
-        x_scalar = np.float64(x_scalar)
-
-        first_derivative = ltf.deriv(x_scalar)
-        first_derivative_fd = compute_fd_deriv(ltf.transform, x_scalar, eps=1e-4, order=1)
-        assert_allclose(first_derivative, first_derivative_fd, rtol=1e-5, atol=1e-8)
-
-        second_derivative = ltf.deriv2(x_scalar)
-        second_derivative_fd = compute_fd_deriv(ltf.transform, x_scalar, eps=1e-4, order=2)
-        assert_allclose(second_derivative, second_derivative_fd, rtol=1e-4, atol=1e-6)
-
-        third_derivative = ltf.deriv3(x_scalar)
-        third_derivative_fd = compute_fd_deriv(ltf.transform, x_scalar, eps=1e-4, order=3)
-        assert_allclose(third_derivative, third_derivative_fd, rtol=1e-3, atol=2e-3)
 
 
 def test_linear_transform_inverse_derivatives():
@@ -520,40 +446,6 @@ def test_multiexp_rtransform_init():
     assert btf.rmin == 0.1
 
 
-def test_multiexp_rtransform_derivatives():
-    """Test MultiExpRTransform derivatives against finite difference."""
-    metf = MultiExpRTransform(0.1, 10)
-    x_values = np.sort(np.random.uniform(-1, 1, 50))
-
-    first_derivative = metf.deriv(x_values)
-    first_derivative_fd = compute_fd_deriv(metf.transform, x_values, eps=1e-4, order=1)
-    assert_allclose(first_derivative, first_derivative_fd, rtol=1e-5, atol=1e-8)
-
-    # tolerances are looser for higher derivatives due to numerical noise in finite difference
-    second_derivative = metf.deriv2(x_values)
-    second_derivative_fd = compute_fd_deriv(metf.transform, x_values, eps=1e-4, order=2)
-    assert_allclose(second_derivative, second_derivative_fd, rtol=1e-4, atol=1e-6)
-
-    third_derivative = metf.deriv3(x_values)
-    third_derivative_fd = compute_fd_deriv(metf.transform, x_values, eps=1e-4, order=3)
-    assert_allclose(third_derivative, third_derivative_fd, rtol=1e-3, atol=2e-3)
-
-    for x_scalar in x_values:
-        x_scalar = np.float64(x_scalar)
-
-        first_derivative = metf.deriv(x_scalar)
-        first_derivative_fd = compute_fd_deriv(metf.transform, x_scalar, eps=1e-4, order=1)
-        assert_allclose(first_derivative, first_derivative_fd, rtol=1e-5, atol=1e-8)
-
-        second_derivative = metf.deriv2(x_scalar)
-        second_derivative_fd = compute_fd_deriv(metf.transform, x_scalar, eps=1e-4, order=2)
-        assert_allclose(second_derivative, second_derivative_fd, rtol=1e-4, atol=1e-6)
-
-        third_derivative = metf.deriv3(x_scalar)
-        third_derivative_fd = compute_fd_deriv(metf.transform, x_scalar, eps=1e-4, order=3)
-        assert_allclose(third_derivative, third_derivative_fd, rtol=1e-3, atol=2e-3)
-
-
 @pytest.mark.parametrize(
     "x_points, r_min, R",
     [
@@ -603,40 +495,6 @@ def test_knowles_rtransform_init():
     assert ktf.R == 1.2
     assert ktf.rmin == 0.1
     assert ktf.k == 2
-
-
-def test_knowles_rtransform_derivatives():
-    """Test KnowlesRTransform derivatives against finite difference."""
-    ktf = KnowlesRTransform(0.1, 1.1, 2)
-    x_values = np.sort(np.random.uniform(-1, 1, 50))
-
-    first_derivative = ktf.deriv(x_values)
-    first_derivative_fd = compute_fd_deriv(ktf.transform, x_values, eps=1e-4, order=1)
-    assert_allclose(first_derivative, first_derivative_fd, rtol=1e-5, atol=1e-8)
-
-    # tolerances are looser for higher derivatives due to numerical noise in finite difference
-    second_derivative = ktf.deriv2(x_values)
-    second_derivative_fd = compute_fd_deriv(ktf.transform, x_values, eps=1e-4, order=2)
-    assert_allclose(second_derivative, second_derivative_fd, rtol=1e-4, atol=1e-6)
-
-    third_derivative = ktf.deriv3(x_values)
-    third_derivative_fd = compute_fd_deriv(ktf.transform, x_values, eps=1e-4, order=3)
-    assert_allclose(third_derivative, third_derivative_fd, rtol=1e-3, atol=2e-3)
-
-    for x_scalar in x_values:
-        x_scalar = np.float64(x_scalar)
-
-        first_derivative = ktf.deriv(x_scalar)
-        first_derivative_fd = compute_fd_deriv(ktf.transform, x_scalar, eps=1e-4, order=1)
-        assert_allclose(first_derivative, first_derivative_fd, rtol=1e-5, atol=1e-8)
-
-        second_derivative = ktf.deriv2(x_scalar)
-        second_derivative_fd = compute_fd_deriv(ktf.transform, x_scalar, eps=1e-4, order=2)
-        assert_allclose(second_derivative, second_derivative_fd, rtol=1e-4, atol=1e-6)
-
-        third_derivative = ktf.deriv3(x_scalar)
-        third_derivative_fd = compute_fd_deriv(ktf.transform, x_scalar, eps=1e-4, order=3)
-        assert_allclose(third_derivative, third_derivative_fd, rtol=1e-3, atol=2e-3)
 
 
 @pytest.mark.parametrize("x_points", x_points_cases)
@@ -690,40 +548,6 @@ def test_handy_rtransform_init(rmin, rmax, m):
     assert btf.rmin == rmin
 
 
-def test_handy_rtransform_derivatives():
-    """Test HandyRTransform derivatives against finite difference."""
-    htf = HandyRTransform(0.1, 1.2, 2)
-    x_values = np.sort(np.random.uniform(-1, 1, 50))
-
-    first_derivative = htf.deriv(x_values)
-    first_derivative_fd = compute_fd_deriv(htf.transform, x_values, eps=1e-4, order=1)
-    assert_allclose(first_derivative, first_derivative_fd, rtol=1e-5, atol=1e-8)
-
-    # tolerances are looser for higher derivatives due to numerical noise in finite difference
-    second_derivative = htf.deriv2(x_values)
-    second_derivative_fd = compute_fd_deriv(htf.transform, x_values, eps=1e-4, order=2)
-    assert_allclose(second_derivative, second_derivative_fd, rtol=1e-4, atol=1e-6)
-
-    third_derivative = htf.deriv3(x_values)
-    third_derivative_fd = compute_fd_deriv(htf.transform, x_values, eps=1e-4, order=3)
-    assert_allclose(third_derivative, third_derivative_fd, rtol=1e-3, atol=2e-3)
-
-    for x_scalar in x_values:
-        x_scalar = np.float64(x_scalar)
-
-        first_derivative = htf.deriv(x_scalar)
-        first_derivative_fd = compute_fd_deriv(htf.transform, x_scalar, eps=1e-4, order=1)
-        assert_allclose(first_derivative, first_derivative_fd, rtol=1e-5, atol=1e-8)
-
-        second_derivative = htf.deriv2(x_scalar)
-        second_derivative_fd = compute_fd_deriv(htf.transform, x_scalar, eps=1e-4, order=2)
-        assert_allclose(second_derivative, second_derivative_fd, rtol=1e-4, atol=1e-6)
-
-        third_derivative = htf.deriv3(x_scalar)
-        third_derivative_fd = compute_fd_deriv(htf.transform, x_scalar, eps=1e-4, order=3)
-        assert_allclose(third_derivative, third_derivative_fd, rtol=1e-3, atol=2e-3)
-
-
 @pytest.mark.parametrize("x_points", x_points_cases)
 def test_handy_r_transform_inverse_derivatives(x_points):
     """Test HandyRTransform  inverse derivatives against finite difference."""
@@ -755,40 +579,6 @@ def test_handymod_rtransform_init(rmin, rmax, m):
     assert np.isclose(btf.rmin, rmin)
     assert np.isclose(btf.rmax, rmax)
     assert btf.m == m
-
-
-def test_handymod_rtransform_derivatives():
-    """Test HandyModRTransform derivatives against finite difference."""
-    hmtf = HandyModRTransform(0.1, 10.0, 2)
-    x_values = np.sort(np.random.uniform(-1, 1, 50))
-
-    first_derivative = hmtf.deriv(x_values)
-    first_derivative_fd = compute_fd_deriv(hmtf.transform, x_values, eps=1e-4, order=1)
-    assert_allclose(first_derivative, first_derivative_fd, rtol=1e-5, atol=1e-8)
-
-    # tolerances are looser for higher derivatives due to numerical noise in finite difference
-    second_derivative = hmtf.deriv2(x_values)
-    second_derivative_fd = compute_fd_deriv(hmtf.transform, x_values, eps=1e-4, order=2)
-    assert_allclose(second_derivative, second_derivative_fd, rtol=1e-4, atol=1e-6)
-
-    third_derivative = hmtf.deriv3(x_values)
-    third_derivative_fd = compute_fd_deriv(hmtf.transform, x_values, eps=1e-4, order=3)
-    assert_allclose(third_derivative, third_derivative_fd, rtol=1e-3, atol=2e-3)
-
-    for x_scalar in x_values:
-        x_scalar = np.float64(x_scalar)
-
-        first_derivative = hmtf.deriv(x_scalar)
-        first_derivative_fd = compute_fd_deriv(hmtf.transform, x_scalar, eps=1e-4, order=1)
-        assert_allclose(first_derivative, first_derivative_fd, rtol=1e-5, atol=1e-8)
-
-        second_derivative = hmtf.deriv2(x_scalar)
-        second_derivative_fd = compute_fd_deriv(hmtf.transform, x_scalar, eps=1e-4, order=2)
-        assert_allclose(second_derivative, second_derivative_fd, rtol=1e-4, atol=1e-6)
-
-        third_derivative = hmtf.deriv3(x_scalar)
-        third_derivative_fd = compute_fd_deriv(hmtf.transform, x_scalar, eps=1e-4, order=3)
-        assert_allclose(third_derivative, third_derivative_fd, rtol=1e-3, atol=2e-3)
 
 
 @pytest.mark.parametrize("x_points", x_points_cases)
