@@ -167,6 +167,26 @@ def test_bounded_domain_raises(transform_class, kwargs):
         tf.transform_1d_grid(rad)
 
 
+@pytest.mark.parametrize("x_points", x_points_cases)
+@pytest.mark.parametrize("transform_class, kwargs", VALID_TRANSFORM_CASES)
+def test_deriv_method(x_points, transform_class, kwargs):
+    """Test that derivative method works correctly for different transform classes."""
+    transformation = transform_class(**kwargs)
+    first_derivative = transformation.deriv(x_points)
+    first_derivative_fd = compute_fd_deriv(transformation.transform, x_points, eps=1e-4, order=1)
+    assert np.allclose(first_derivative, first_derivative_fd, atol=1e-6)
+
+    for x_scalar in x_points:
+        x_scalar = np.float64(x_scalar)
+
+        first_derivative_scalar = transformation.deriv(x_scalar)
+        first_derivative_fd_scalar = compute_fd_deriv(
+            transformation.transform, x_scalar, eps=1e-4, order=1
+        )
+
+        assert_allclose(first_derivative_scalar, first_derivative_fd_scalar, rtol=1e-5, atol=1e-8)
+
+
 def test_becke_r_transform_init():
     """Test BeckeRTransform initialization."""
     btf = BeckeRTransform(0.1, 1.2)
