@@ -71,6 +71,29 @@ def compute_fd_deriv(fcn, x, eps, order):
         raise ValueError("Only first, second, and third derivatives are supported.")
 
 
+def transformation_case(transform_class, kwargs):
+    param_str = ",".join(f"{k}={v}" for k, v in kwargs.items())
+    return pytest.param(
+        transform_class,
+        kwargs,
+        id=f"{transform_class.__name__}[{param_str}]",
+    )
+
+
+INVALID_INITIALIZE_CASES = [
+    transformation_case(KnowlesRTransform, dict(rmin=0.1, R=1.0, k=0)),
+    transformation_case(HandyModRTransform, dict(rmin=0.1, rmax=10.0, m=0)),
+    transformation_case(HandyModRTransform, dict(rmin=10.0, rmax=0.1, m=2)),
+]
+
+
+@pytest.mark.parametrize("transform_class, kwargs", INVALID_INITIALIZE_CASES)
+def test_init_raises(transform_class, kwargs):
+    """Test that transform classes raise ValueError on invalid initialization parameters."""
+    with pytest.raises(ValueError):
+        transform_class(**kwargs)
+
+
 def test_becke_r_transform_init():
     """Test BeckeRTransform initialization."""
     btf = BeckeRTransform(0.1, 1.2)
