@@ -676,6 +676,26 @@ def test_handymod_rtransform_init(rmin, rmax, m):
     assert btf.m == m
 
 
+@pytest.mark.parametrize("x_points", x_points_cases)
+def test_handymod_rtransform_forward_inverse_consistency(x_points):
+    """Test HandyModRTransform forward/inverse consistency and pointwise agreement."""
+
+    hmtf = HandyModRTransform(0.1, 10.0, 2)
+
+    # Forward transform on full array
+    transformed_points = hmtf.transform(x_points)
+    roundtrip_points = hmtf.inverse(transformed_points)
+
+    # Inverse transform should recover original array
+    assert_allclose(roundtrip_points, x_points)
+
+    # Forward transform on single points
+    for point in x_points:
+        transformed_point = hmtf.transform(point)
+        roundtrip_point = hmtf.inverse(transformed_point)
+        assert_allclose(roundtrip_point, point)
+
+
 class TestTransform(TestCase):
     """Transform testcase class."""
 
