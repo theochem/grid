@@ -169,6 +169,27 @@ def test_bounded_domain_raises(transform_class, kwargs):
 
 @pytest.mark.parametrize("x_points", x_points_cases)
 @pytest.mark.parametrize("transform_class, kwargs", VALID_TRANSFORM_CASES)
+def test_forward_inverse_consistency(x_points, transform_class, kwargs):
+    """Test forward and inverse consistency for all valid transforms."""
+
+    transformation = transform_class(**kwargs)
+
+    transformed_points = transformation.transform(x_points)
+    inverse_transformed_points = transformation.inverse(transformed_points)
+
+    assert_allclose(inverse_transformed_points, x_points, rtol=1e-5)
+
+    for x_scalar in x_points:
+        x_scalar = np.float64(x_scalar)
+
+        transformed_scalar = transformation.transform(x_scalar)
+        inverse_transformed_scalar = transformation.inverse(transformed_scalar)
+
+        assert_allclose(inverse_transformed_scalar, x_scalar, rtol=1e-5)
+
+
+@pytest.mark.parametrize("x_points", x_points_cases)
+@pytest.mark.parametrize("transform_class, kwargs", VALID_TRANSFORM_CASES)
 def test_deriv_method(x_points, transform_class, kwargs):
     """Test that derivative method works correctly for different transform classes."""
     transformation = transform_class(**kwargs)
