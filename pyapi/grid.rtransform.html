@@ -407,7 +407,10 @@
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.rtransform.BaseTransform.codomain"><code class="docutils literal notranslate"><span class="pre">BaseTransform.codomain</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.rtransform.BaseTransform.deriv"><code class="docutils literal notranslate"><span class="pre">BaseTransform.deriv()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.rtransform.BaseTransform.deriv2"><code class="docutils literal notranslate"><span class="pre">BaseTransform.deriv2()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.rtransform.BaseTransform.deriv2_inverse"><code class="docutils literal notranslate"><span class="pre">BaseTransform.deriv2_inverse()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.rtransform.BaseTransform.deriv3"><code class="docutils literal notranslate"><span class="pre">BaseTransform.deriv3()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.rtransform.BaseTransform.deriv3_inverse"><code class="docutils literal notranslate"><span class="pre">BaseTransform.deriv3_inverse()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.rtransform.BaseTransform.deriv_inverse"><code class="docutils literal notranslate"><span class="pre">BaseTransform.deriv_inverse()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.rtransform.BaseTransform.domain"><code class="docutils literal notranslate"><span class="pre">BaseTransform.domain</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.rtransform.BaseTransform.inverse"><code class="docutils literal notranslate"><span class="pre">BaseTransform.inverse()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.rtransform.BaseTransform.transform"><code class="docutils literal notranslate"><span class="pre">BaseTransform.transform()</span></code></a></li>
@@ -576,9 +579,81 @@
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="grid.rtransform.BaseTransform.deriv2_inverse">
+<span class="sig-name descname"><span class="pre">deriv2_inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BaseTransform.deriv2_inverse" title="Link to this definition">#</a></dt>
+<dd><p>Compute the second derivative of the inverse transformation.</p>
+<div class="math notranslate nohighlight">
+\[\frac{d^2 x(r)}{dr^2} =
+-\left.\frac{d^2 r}{dx^2}\right|_{x = x(r)}
+\left(\left.\frac{dr}{dx}\right|_{x = x(r)}\right)^{-3}\]</div>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>r<span class="classifier">float or np.ndarray</span></dt><dd><p>Point or points in the transformation codomain.</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h2>Returns<a class="headerlink" href="#returns" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>float or np.ndarray</dt><dd><p>Second derivative of the inverse transformation evaluated at <code class="docutils literal notranslate"><span class="pre">r</span></code>.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.BaseTransform.deriv3">
 <em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">deriv3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BaseTransform.deriv3" title="Link to this definition">#</a></dt>
 <dd><p>Abstract method for the third derivative of transformation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grid.rtransform.BaseTransform.deriv3_inverse">
+<span class="sig-name descname"><span class="pre">deriv3_inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BaseTransform.deriv3_inverse" title="Link to this definition">#</a></dt>
+<dd><p>Compute the third derivative of the inverse transformation.</p>
+<div class="math notranslate nohighlight">
+\[\frac{d^3 x(r)}{dr^3} =
+-\left.\frac{d^3 r}{dx^3}\right|_{x = x(r)}
+\left(\left.\frac{dr}{dx}\right|_{x = x(r)}\right)^{-4}
++ 3 \left(\left.\frac{d^2 r}{dx^2}\right|_{x = x(r)}\right)^2
+\left(\left.\frac{dr}{dx}\right|_{x = x(r)}\right)^{-5}\]</div>
+<section id="id1">
+<h2>Parameters<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>r<span class="classifier">float or np.ndarray</span></dt><dd><p>Point or points in the transformation codomain.</p>
+</dd>
+</dl>
+</section>
+<section id="id2">
+<h2>Returns<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>float or np.ndarray</dt><dd><p>Third derivative of the inverse transformation evaluated at <code class="docutils literal notranslate"><span class="pre">r</span></code>.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grid.rtransform.BaseTransform.deriv_inverse">
+<span class="sig-name descname"><span class="pre">deriv_inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BaseTransform.deriv_inverse" title="Link to this definition">#</a></dt>
+<dd><p>Compute the first derivative of the inverse transformation.</p>
+<div class="math notranslate nohighlight">
+\[\frac{d x(r)}{dr} = \left(\left.\frac{dr}{dx}\right|_{x = x(r)}\right)^{-1}\]</div>
+<section id="id3">
+<h2>Parameters<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>r<span class="classifier">float or np.ndarray</span></dt><dd><p>Point or points in the transformation codomain.</p>
+</dd>
+</dl>
+</section>
+<section id="id4">
+<h2>Returns<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>float or np.ndarray</dt><dd><p>First derivative of the inverse transformation evaluated at <code class="docutils literal notranslate"><span class="pre">r</span></code>.</p>
+</dd>
+</dl>
+</section>
 </dd></dl>
 
 <dl class="py property">
@@ -609,15 +684,15 @@
                        &amp;\approx \sum_{i=1}^N g(r(x_i)) \frac{dr}{dx}(x_i) w_i  \\
                        &amp;\approx \sum_{i=1}^N g(r(x_i)) \frac{dr}{dx}(x_i) w^r_n \\
 w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
-<section id="parameters">
-<h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading">#</a></h2>
+<section id="id5">
+<h2>Parameters<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>oned_grid<span class="classifier">OneDGrid</span></dt><dd><p>An instance of one-dimensional grid.</p>
 </dd>
 </dl>
 </section>
-<section id="returns">
-<h2>Returns<a class="headerlink" href="#returns" title="Link to this heading">#</a></h2>
+<section id="id6">
+<h2>Returns<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>OneDGrid</dt><dd><p>Transformed one-dimensional grid spanning a different domain.</p>
 </dd>
@@ -633,7 +708,7 @@ w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
 <dd><p>Bases: <a class="reference internal" href="#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTransform</span></code></a></p>
 <p>Becke Transformation.</p>
 <p>The Becke transformation transforms from <span class="math notranslate nohighlight">\([-1, 1]\)</span> to <span class="math notranslate nohighlight">\([r_{min}, \infty)\)</span>
-according to <a class="footnote-reference brackets" href="#id2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a></p>
+according to <a class="footnote-reference brackets" href="#id8" id="id7" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a></p>
 <div class="math notranslate nohighlight">
 \[r(x) = R \frac{1 + x}{1 - x} + r_{min}.\]</div>
 <p>The inverse transformation is given by</p>
@@ -642,8 +717,8 @@ according to <a class="footnote-reference brackets" href="#id2" id="id1" role="d
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Link to this heading">#</a></h2>
 <aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id2" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id8" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id7">1</a><span class="fn-bracket">]</span></span>
 <p>Becke, Axel D. “A multicenter numerical integration scheme for polyatomic molecules.”
 The Journal of chemical physics 88.4 (1988): 2547-2553.</p>
 </aside>
@@ -660,15 +735,15 @@ The Journal of chemical physics 88.4 (1988): 2547-2553.</p>
 <dd><p>Compute the first derivative of Becke transformation.</p>
 <div class="math notranslate nohighlight">
 \[\frac{dr_i}{dx_i} = 2R \frac{1}{(1-x)^2}\]</div>
-<section id="id3">
-<h3>Parameters<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<section id="id9">
+<h3>Parameters<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>x<span class="classifier">np.array(N,)</span></dt><dd><p>One-dimensional array in the domain <span class="math notranslate nohighlight">\([-1, 1]\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id4">
-<h3>Returns<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<section id="id10">
+<h3>Returns<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>np.ndarray(N,)</dt><dd><p>First derivative of Becke transformation at each point.</p>
 </dd>
@@ -682,15 +757,15 @@ The Journal of chemical physics 88.4 (1988): 2547-2553.</p>
 <dd><p>Compute the second derivative of Becke transformation.</p>
 <div class="math notranslate nohighlight">
 \[\frac{d^2r}{dx^2} = 4R \frac{1}{1-x^3}\]</div>
-<section id="id5">
-<h3>Parameters<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<section id="id11">
+<h3>Parameters<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>x<span class="classifier">np.array(N,)</span></dt><dd><p>One-dimensional array in the domain <span class="math notranslate nohighlight">\([-1, 1]\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id6">
-<h3>Returns<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<section id="id12">
+<h3>Returns<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>np.ndarray(N,)</dt><dd><p>Second derivative of Becke transformation at each point.</p>
 </dd>
@@ -704,15 +779,15 @@ The Journal of chemical physics 88.4 (1988): 2547-2553.</p>
 <dd><p>Compute the third derivative of Becke transformation.</p>
 <div class="math notranslate nohighlight">
 \[\frac{d^3r}{dx^3} = 12R \frac{1}{1 - x^4}\]</div>
-<section id="id7">
-<h3>Parameters<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<section id="id13">
+<h3>Parameters<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>x<span class="classifier">np.array(N,)</span></dt><dd><p>One-dimensional array in the domain <span class="math notranslate nohighlight">\([-1, 1]\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id8">
-<h3>Returns<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<section id="id14">
+<h3>Returns<a class="headerlink" href="#id14" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>np.ndarray(N,)</dt><dd><p>Third derivative of Becke transformation at each point.</p>
 </dd>
@@ -724,8 +799,8 @@ The Journal of chemical physics 88.4 (1988): 2547-2553.</p>
 <dt class="sig sig-object py" id="grid.rtransform.BeckeRTransform.find_parameter">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">find_parameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BeckeRTransform.find_parameter" title="Link to this definition">#</a></dt>
 <dd><p>Compute R such that half of the points in <span class="math notranslate nohighlight">\([r_{min}, \infty)\)</span> are within radius.</p>
-<section id="id9">
-<h3>Parameters<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<section id="id15">
+<h3>Parameters<a class="headerlink" href="#id15" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>array<span class="classifier">np.ndarray(N,)</span></dt><dd><p>One-dimensional array in the domain <span class="math notranslate nohighlight">\([-1, 1]\)</span>.</p>
 </dd>
@@ -735,8 +810,8 @@ The Journal of chemical physics 88.4 (1988): 2547-2553.</p>
 </dd>
 </dl>
 </section>
-<section id="id10">
-<h3>Returns<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+<section id="id16">
+<h3>Returns<a class="headerlink" href="#id16" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>float :</dt><dd><p>The optimal value of scale factor R.</p>
 </dd>
@@ -750,15 +825,15 @@ The Journal of chemical physics 88.4 (1988): 2547-2553.</p>
 <dd><p>Transform <span class="math notranslate nohighlight">\([r_{mi}n, \infty)\)</span> back to original <span class="math notranslate nohighlight">\([-1, 1]\)</span>.</p>
 <div class="math notranslate nohighlight">
 \[x_i = \frac{r_i - r_{min} - R} {r_i - r_{min} + R}\]</div>
-<section id="id11">
-<h3>Parameters<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
+<section id="id17">
+<h3>Parameters<a class="headerlink" href="#id17" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>r<span class="classifier">np.ndarray(N,)</span></dt><dd><p>One-dimensional array in the codomain <span class="math notranslate nohighlight">\([r_{min}, \infty)\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id12">
-<h3>Returns<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
+<section id="id18">
+<h3>Returns<a class="headerlink" href="#id18" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>np.ndarray(N,)</dt><dd><p>One dimensional array in <span class="math notranslate nohighlight">\([-1, 1]\)</span>.</p>
 </dd>
@@ -778,15 +853,15 @@ The Journal of chemical physics 88.4 (1988): 2547-2553.</p>
 <dd><p>Transform from <span class="math notranslate nohighlight">\([-1, 1]\)</span> to <span class="math notranslate nohighlight">\([r_{min}, \infty)\)</span>.</p>
 <div class="math notranslate nohighlight">
 \[r_i = R \frac{1 + x_i}{1 - x_i} + r_{min}\]</div>
-<section id="id13">
-<h3>Parameters<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
+<section id="id19">
+<h3>Parameters<a class="headerlink" href="#id19" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>x<span class="classifier">np.ndarray(N,)</span></dt><dd><p>One-dimensional array in the domain <span class="math notranslate nohighlight">\([-1, 1]\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id14">
-<h3>Returns<a class="headerlink" href="#id14" title="Link to this heading">#</a></h3>
+<section id="id20">
+<h3>Returns<a class="headerlink" href="#id20" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>np.ndarray(N,)</dt><dd><p>Transformed array located between <span class="math notranslate nohighlight">\([r_min, \infty)\)</span>.</p>
 </dd>
@@ -823,8 +898,8 @@ The Journal of chemical physics 88.4 (1988): 2547-2553.</p>
 <dt class="sig sig-object py" id="grid.rtransform.ExpRTransform.deriv">
 <span class="sig-name descname"><span class="pre">deriv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.ExpRTransform.deriv" title="Link to this definition">#</a></dt>
 <dd><p>Compute the first derivative of exponential transform.</p>
-<section id="id15">
-<h2>Parameters<a class="headerlink" href="#id15" title="Link to this heading">#</a></h2>
+<section id="id21">
+<h2>Parameters<a class="headerlink" href="#id21" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>x<span class="classifier">ndarray(N,)</span></dt><dd><p>One-dimensional array in the domain of the transformation.</p>
 </dd>
@@ -843,15 +918,15 @@ The Journal of chemical physics 88.4 (1988): 2547-2553.</p>
 <dt class="sig sig-object py" id="grid.rtransform.ExpRTransform.deriv2">
 <span class="sig-name descname"><span class="pre">deriv2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.ExpRTransform.deriv2" title="Link to this definition">#</a></dt>
 <dd><p>Compute the second derivative of exponential transform.</p>
-<section id="id16">
-<h2>Parameters<a class="headerlink" href="#id16" title="Link to this heading">#</a></h2>
+<section id="id22">
+<h2>Parameters<a class="headerlink" href="#id22" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>x<span class="classifier">ndarray(N,)</span></dt><dd><p>One-dimensional array in the domain of the transformation.</p>
 </dd>
 </dl>
 </section>
-<section id="id17">
-<h2>Return<a class="headerlink" href="#id17" title="Link to this heading">#</a></h2>
+<section id="id23">
+<h2>Return<a class="headerlink" href="#id23" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>ndarray(N,)</dt><dd><p>Second derivative of transformation at x.</p>
 </dd>
@@ -863,15 +938,15 @@ The Journal of chemical physics 88.4 (1988): 2547-2553.</p>
 <dt class="sig sig-object py" id="grid.rtransform.ExpRTransform.deriv3">
 <span class="sig-name descname"><span class="pre">deriv3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.ExpRTransform.deriv3" title="Link to this definition">#</a></dt>
 <dd><p>Compute the third derivative of exponential transform.</p>
-<section id="id18">
-<h2>Parameters<a class="headerlink" href="#id18" title="Link to this heading">#</a></h2>
+<section id="id24">
+<h2>Parameters<a class="headerlink" href="#id24" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>x<span class="classifier">ndarray(N,)</span></dt><dd><p>One-dimensional array in the domain of the transformation.</p>
 </dd>
 </dl>
 </section>
-<section id="id19">
-<h2>Return<a class="headerlink" href="#id19" title="Link to this heading">#</a></h2>
+<section id="id25">
+<h2>Return<a class="headerlink" href="#id25" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>ndarray(N,)</dt><dd><p>Third derivative of transformation at x.</p>
 </dd>
@@ -886,15 +961,15 @@ The Journal of chemical physics 88.4 (1988): 2547-2553.</p>
 <div class="math notranslate nohighlight">
 \[x(r_i) = \frac{\log\big(\frac{r}{r_{min}} \big) b}{\log(\frac{r_{max}}{r_{min}})},\]</div>
 <p>where <span class="math notranslate nohighlight">\(b\)</span> is a prespecified parameter</p>
-<section id="id20">
-<h2>Parameters<a class="headerlink" href="#id20" title="Link to this heading">#</a></h2>
+<section id="id26">
+<h2>Parameters<a class="headerlink" href="#id26" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>r<span class="classifier">ndarray(N,)</span></dt><dd><p>One-dimensional array in the domain of the transformation.</p>
 </dd>
 </dl>
 </section>
-<section id="id21">
-<h2>Return<a class="headerlink" href="#id21" title="Link to this heading">#</a></h2>
+<section id="id27">
+<h2>Return<a class="headerlink" href="#id27" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>ndarray(N,)</dt><dd><p>Inverse transformation at r.</p>
 </dd>
@@ -927,15 +1002,15 @@ The Journal of chemical physics 88.4 (1988): 2547-2553.</p>
 <div class="math notranslate nohighlight">
 \[r = r_{min} e^{x \log\bigg(\frac{r_{max}}{r_{min} / b}  \bigg)},\]</div>
 <p>where <span class="math notranslate nohighlight">\(b\)</span> is a prespecified parameter that maps to <span class="math notranslate nohighlight">\(r_{max}\)</span>.</p>
-<section id="id22">
-<h2>Parameters<a class="headerlink" href="#id22" title="Link to this heading">#</a></h2>
+<section id="id28">
+<h2>Parameters<a class="headerlink" href="#id28" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>x<span class="classifier">ndarray(N,)</span></dt><dd><p>One-dimensional array in the domain of the transformation.</p>
 </dd>
 </dl>
 </section>
-<section id="id23">
-<h2>Return<a class="headerlink" href="#id23" title="Link to this heading">#</a></h2>
+<section id="id29">
+<h2>Return<a class="headerlink" href="#id29" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>ndarray(N,)</dt><dd><p>The transformation of x in the co-domain of the transformation.</p>
 </dd>
@@ -971,15 +1046,15 @@ The Journal of chemical physics 88.4 (1988): 2547-2553.</p>
     2^m m (r_{max}-r_{min})(2^m-r_{max}+r_{min}-1)(1+x)^{m-1}}
     {\left( 2^m (2^m-1-r_{max}+r_{min})-(2^m-r_{max}
     + r_{min})(1 + x)^m\right)^2}\]</div>
-<section id="id24">
-<h2>Parameters<a class="headerlink" href="#id24" title="Link to this heading">#</a></h2>
+<section id="id30">
+<h2>Parameters<a class="headerlink" href="#id30" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>x: ndarrray(N,)</dt><dd><p>One dimensional array in <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id25">
-<h2>Returns<a class="headerlink" href="#id25" title="Link to this heading">#</a></h2>
+<section id="id31">
+<h2>Returns<a class="headerlink" href="#id31" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>ndarrray(N,)</dt><dd><p>The first derivative of Handy transformation at each point.</p>
 </dd>
@@ -991,15 +1066,15 @@ The Journal of chemical physics 88.4 (1988): 2547-2553.</p>
 <dt class="sig sig-object py" id="grid.rtransform.HandyModRTransform.deriv2">
 <span class="sig-name descname"><span class="pre">deriv2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyModRTransform.deriv2" title="Link to this definition">#</a></dt>
 <dd><p>Compute the second derivative of modified Handy transformation.</p>
-<section id="id26">
-<h2>Parameters<a class="headerlink" href="#id26" title="Link to this heading">#</a></h2>
+<section id="id32">
+<h2>Parameters<a class="headerlink" href="#id32" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>x: ndarrray(N,)</dt><dd><p>One dimensional array in <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id27">
-<h2>Returns<a class="headerlink" href="#id27" title="Link to this heading">#</a></h2>
+<section id="id33">
+<h2>Returns<a class="headerlink" href="#id33" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>ndarrray(N,)</dt><dd><p>The second derivative of Handy transformation at each point.</p>
 </dd>
@@ -1011,15 +1086,15 @@ The Journal of chemical physics 88.4 (1988): 2547-2553.</p>
 <dt class="sig sig-object py" id="grid.rtransform.HandyModRTransform.deriv3">
 <span class="sig-name descname"><span class="pre">deriv3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HandyModRTransform.deriv3" title="Link to this definition">#</a></dt>
 <dd><p>Compute the third derivative of modified Handy transformation.</p>
-<section id="id28">
-<h2>Parameters<a class="headerlink" href="#id28" title="Link to this heading">#</a></h2>
+<section id="id34">
+<h2>Parameters<a class="headerlink" href="#id34" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>x: ndarrray(N,)</dt><dd><p>One dimensional array in <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id29">
-<h2>Returns<a class="headerlink" href="#id29" title="Link to this heading">#</a></h2>
+<section id="id35">
+<h2>Returns<a class="headerlink" href="#id35" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>ndarrray(N,)</dt><dd><p>The third derivative of Handy transformation at each point.</p>
 </dd>
@@ -1036,15 +1111,15 @@ The Journal of chemical physics 88.4 (1988): 2547-2553.</p>
     \frac{(r_i - r_{min})(r_{max} - r_{min} - 2^m + 1)}
     {(r_i - r_{min})(r_{max} - r_{min} - 2^m) + r_{max} - r_{min}}
     } - 1\]</div>
-<section id="id30">
-<h2>Parameters<a class="headerlink" href="#id30" title="Link to this heading">#</a></h2>
+<section id="id36">
+<h2>Parameters<a class="headerlink" href="#id36" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>r<span class="classifier">ndarrray(N,)</span></dt><dd><p>One dimensional array in <span class="math notranslate nohighlight">\([r_{min},\infty)\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id31">
-<h2>Returns<a class="headerlink" href="#id31" title="Link to this heading">#</a></h2>
+<section id="id37">
+<h2>Returns<a class="headerlink" href="#id37" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>ndarrray(N,)</dt><dd><p>The original one dimensional array in <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
 </dd>
@@ -1078,15 +1153,15 @@ The Journal of chemical physics 88.4 (1988): 2547-2553.</p>
 \[r_i = \frac{(1+x_i)^m (r_{max} - r_{min})}
     { 2^m (1 - 2^m + r_{max} - r_{min})
       - (1 + x_i)^m (r_{max} - r_{min} - 2^m )} + r_{min}\]</div>
-<section id="id32">
-<h2>Parameters<a class="headerlink" href="#id32" title="Link to this heading">#</a></h2>
+<section id="id38">
+<h2>Parameters<a class="headerlink" href="#id38" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>x: ndarray(N,)</dt><dd><p>One dimensional array in <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id33">
-<h2>Returns<a class="headerlink" href="#id33" title="Link to this heading">#</a></h2>
+<section id="id39">
+<h2>Returns<a class="headerlink" href="#id39" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>ndarray(N,)</dt><dd><p>One dimensional array in <span class="math notranslate nohighlight">\([r_{min},r_{max}]\)</span>.</p>
 </dd>
@@ -1119,15 +1194,15 @@ The Journal of chemical physics 88.4 (1988): 2547-2553.</p>
 <dd><p>Compute the first derivative of Handy transformation.</p>
 <div class="math notranslate nohighlight">
 \[\frac{dr}{dx} = 2mR \frac{(1+x)^{m-1}}{(1-x)^{m+1}}\]</div>
-<section id="id34">
-<h2>Parameters<a class="headerlink" href="#id34" title="Link to this heading">#</a></h2>
+<section id="id40">
+<h2>Parameters<a class="headerlink" href="#id40" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>x: ndarray(N,)</dt><dd><p>One dimensional array with values between <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id35">
-<h2>Returns<a class="headerlink" href="#id35" title="Link to this heading">#</a></h2>
+<section id="id41">
+<h2>Returns<a class="headerlink" href="#id41" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>ndarray(N,)</dt><dd><p>The first derivative of Handy transformation at each point.</p>
 </dd>
@@ -1141,15 +1216,15 @@ The Journal of chemical physics 88.4 (1988): 2547-2553.</p>
 <dd><p>Compute the second derivative of Handy transformation.</p>
 <div class="math notranslate nohighlight">
 \[\frac{d^2r}{dx^2} = 4mR (m + x) \frac{(1+x)^{m-2}}{(1-x)^{m+2}}\]</div>
-<section id="id36">
-<h2>Parameters<a class="headerlink" href="#id36" title="Link to this heading">#</a></h2>
+<section id="id42">
+<h2>Parameters<a class="headerlink" href="#id42" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>x<span class="classifier">ndarray(N,)</span></dt><dd><p>One dimensional array in <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id37">
-<h2>Returns<a class="headerlink" href="#id37" title="Link to this heading">#</a></h2>
+<section id="id43">
+<h2>Returns<a class="headerlink" href="#id43" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>ndarray(N,)</dt><dd><p>The second derivative of Handy transformation at each point.</p>
 </dd>
@@ -1164,15 +1239,15 @@ The Journal of chemical physics 88.4 (1988): 2547-2553.</p>
 <div class="math notranslate nohighlight">
 \[\frac{d^3r}{dx^3} = 4mR ( 1 + 6 m x + 2 m^2 + 3 x^2)
 \frac{(1+x)^{m-3}}{(1-x)^{m+3}}\]</div>
-<section id="id38">
-<h2>Parameters<a class="headerlink" href="#id38" title="Link to this heading">#</a></h2>
+<section id="id44">
+<h2>Parameters<a class="headerlink" href="#id44" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>array: np.ndarray(N,)</dt><dd><p>One dimensional array in <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id39">
-<h2>Returns<a class="headerlink" href="#id39" title="Link to this heading">#</a></h2>
+<section id="id45">
+<h2>Returns<a class="headerlink" href="#id45" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>np.ndarray(N,)</dt><dd><p>The third derivative of Handy transformation at each point.</p>
 </dd>
@@ -1187,15 +1262,15 @@ The Journal of chemical physics 88.4 (1988): 2547-2553.</p>
 <div class="math notranslate nohighlight">
 \[x_i = \frac{\sqrt[m]{r_i-r_{min}} - \sqrt[m]{R}}
            {\sqrt[m]{r_i-r_{min}} + \sqrt[m]{R}}\]</div>
-<section id="id40">
-<h2>Parameters<a class="headerlink" href="#id40" title="Link to this heading">#</a></h2>
+<section id="id46">
+<h2>Parameters<a class="headerlink" href="#id46" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>r<span class="classifier">np.ndarray(N,)</span></dt><dd><p>One dimensional array in <span class="math notranslate nohighlight">\([r_{min},\infty)\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id41">
-<h2>Returns<a class="headerlink" href="#id41" title="Link to this heading">#</a></h2>
+<section id="id47">
+<h2>Returns<a class="headerlink" href="#id47" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>np.ndarray(N,)</dt><dd><p>One-dimensional array in <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
 </dd>
@@ -1221,15 +1296,15 @@ The Journal of chemical physics 88.4 (1988): 2547-2553.</p>
 <dd><p>Transform from <span class="math notranslate nohighlight">\([-1,1]\)</span> to <span class="math notranslate nohighlight">\([r_{min},\infty)\)</span>.</p>
 <div class="math notranslate nohighlight">
 \[r_i = R \left( \frac{1+x_i}{1-x_i} \right)^m + r_{min}\]</div>
-<section id="id42">
-<h2>Parameters<a class="headerlink" href="#id42" title="Link to this heading">#</a></h2>
+<section id="id48">
+<h2>Parameters<a class="headerlink" href="#id48" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>x: np.ndarray(N,)</dt><dd><p>One dimensional array in <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id43">
-<h2>Returns<a class="headerlink" href="#id43" title="Link to this heading">#</a></h2>
+<section id="id49">
+<h2>Returns<a class="headerlink" href="#id49" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>np.ndarray(N,)</dt><dd><p>One dimensional array in <span class="math notranslate nohighlight">\([r_{min},\infty)\)</span>.</p>
 </dd>
@@ -1267,15 +1342,15 @@ The Journal of chemical physics 88.4 (1988): 2547-2553.</p>
 <dt class="sig sig-object py" id="grid.rtransform.HyperbolicRTransform.deriv">
 <span class="sig-name descname"><span class="pre">deriv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.deriv" title="Link to this definition">#</a></dt>
 <dd><p>Compute the first derivative of hyperbolic transformation.</p>
-<section id="id44">
-<h2>Parameters<a class="headerlink" href="#id44" title="Link to this heading">#</a></h2>
+<section id="id50">
+<h2>Parameters<a class="headerlink" href="#id50" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>x<span class="classifier">ndarray(N,)</span></dt><dd><p>One-dimensional array in the domain of the transformation <span class="math notranslate nohighlight">\([0,\infty)\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id45">
-<h2>Return<a class="headerlink" href="#id45" title="Link to this heading">#</a></h2>
+<section id="id51">
+<h2>Return<a class="headerlink" href="#id51" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>ndarray(N,)</dt><dd><p>First derivative of transformation at x.</p>
 </dd>
@@ -1287,15 +1362,15 @@ The Journal of chemical physics 88.4 (1988): 2547-2553.</p>
 <dt class="sig sig-object py" id="grid.rtransform.HyperbolicRTransform.deriv2">
 <span class="sig-name descname"><span class="pre">deriv2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.deriv2" title="Link to this definition">#</a></dt>
 <dd><p>Compute the second derivative of hyperbolic transformation.</p>
-<section id="id46">
-<h2>Parameters<a class="headerlink" href="#id46" title="Link to this heading">#</a></h2>
+<section id="id52">
+<h2>Parameters<a class="headerlink" href="#id52" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>x<span class="classifier">ndarray(N,)</span></dt><dd><p>One-dimensional array in the domain of the transformation <span class="math notranslate nohighlight">\([0,\infty)\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id47">
-<h2>Return<a class="headerlink" href="#id47" title="Link to this heading">#</a></h2>
+<section id="id53">
+<h2>Return<a class="headerlink" href="#id53" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>ndarray(N,)</dt><dd><p>Second derivative of transformation at x.</p>
 </dd>
@@ -1307,15 +1382,15 @@ The Journal of chemical physics 88.4 (1988): 2547-2553.</p>
 <dt class="sig sig-object py" id="grid.rtransform.HyperbolicRTransform.deriv3">
 <span class="sig-name descname"><span class="pre">deriv3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.HyperbolicRTransform.deriv3" title="Link to this definition">#</a></dt>
 <dd><p>Compute the third derivative of hyperbolic transformation.</p>
-<section id="id48">
-<h2>Parameters<a class="headerlink" href="#id48" title="Link to this heading">#</a></h2>
+<section id="id54">
+<h2>Parameters<a class="headerlink" href="#id54" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>x<span class="classifier">ndarray(N,)</span></dt><dd><p>One-dimensional array in the domain of the transformation <span class="math notranslate nohighlight">\([0,\infty)\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id49">
-<h2>Return<a class="headerlink" href="#id49" title="Link to this heading">#</a></h2>
+<section id="id55">
+<h2>Return<a class="headerlink" href="#id55" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>ndarray(N,)</dt><dd><p>Third derivative of transformation at x.</p>
 </dd>
@@ -1329,15 +1404,15 @@ The Journal of chemical physics 88.4 (1988): 2547-2553.</p>
 <dd><p>Compute the inverse of hyperbolic transformation.</p>
 <div class="math notranslate nohighlight">
 \[x(r) = \frac{r}{a + br}\]</div>
-<section id="id50">
-<h2>Parameters<a class="headerlink" href="#id50" title="Link to this heading">#</a></h2>
+<section id="id56">
+<h2>Parameters<a class="headerlink" href="#id56" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>r<span class="classifier">ndarray(N,)</span></dt><dd><p>One-dimensional array in the domain of the transformation <span class="math notranslate nohighlight">\([0,\infty)\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id51">
-<h2>Return<a class="headerlink" href="#id51" title="Link to this heading">#</a></h2>
+<section id="id57">
+<h2>Return<a class="headerlink" href="#id57" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>ndarray(N,)</dt><dd><p>Inverse transformation at r.</p>
 </dd>
@@ -1352,15 +1427,15 @@ The Journal of chemical physics 88.4 (1988): 2547-2553.</p>
 <div class="math notranslate nohighlight">
 \[r_i = \frac{a x_i}{(1 - bx_i)},\]</div>
 <p>where <span class="math notranslate nohighlight">\(b ( N - 1) \geq 1\)</span>, and <span class="math notranslate nohighlight">\(N\)</span> is the number of points in x.</p>
-<section id="id52">
-<h2>Parameters<a class="headerlink" href="#id52" title="Link to this heading">#</a></h2>
+<section id="id58">
+<h2>Parameters<a class="headerlink" href="#id58" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>x<span class="classifier">ndarray(N,)</span></dt><dd><p>One-dimensional array in the domain of the transformation <span class="math notranslate nohighlight">\([0,\infty)\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id53">
-<h2>Return<a class="headerlink" href="#id53" title="Link to this heading">#</a></h2>
+<section id="id59">
+<h2>Return<a class="headerlink" href="#id59" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>ndarray(N,)</dt><dd><p>The transformation of x to the co-domain of the transformation.</p>
 </dd>
@@ -1386,15 +1461,15 @@ The Journal of chemical physics 88.4 (1988): 2547-2553.</p>
 <dt class="sig sig-object py" id="grid.rtransform.IdentityRTransform.deriv">
 <span class="sig-name descname"><span class="pre">deriv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.IdentityRTransform.deriv" title="Link to this definition">#</a></dt>
 <dd><p>Compute the first derivative of identity transform.</p>
-<section id="id54">
-<h2>Parameters<a class="headerlink" href="#id54" title="Link to this heading">#</a></h2>
+<section id="id60">
+<h2>Parameters<a class="headerlink" href="#id60" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>x<span class="classifier">ndarray(N,)</span></dt><dd><p>One dimension numpy array located in <span class="math notranslate nohighlight">\([0, \infty)\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id55">
-<h2>Returns<a class="headerlink" href="#id55" title="Link to this heading">#</a></h2>
+<section id="id61">
+<h2>Returns<a class="headerlink" href="#id61" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>ndarray(N,)</dt><dd><p>First derivative of identity transformation at x.</p>
 </dd>
@@ -1406,15 +1481,15 @@ The Journal of chemical physics 88.4 (1988): 2547-2553.</p>
 <dt class="sig sig-object py" id="grid.rtransform.IdentityRTransform.deriv2">
 <span class="sig-name descname"><span class="pre">deriv2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.IdentityRTransform.deriv2" title="Link to this definition">#</a></dt>
 <dd><p>Compute the second derivative of identity transform.</p>
-<section id="id56">
-<h2>Parameters<a class="headerlink" href="#id56" title="Link to this heading">#</a></h2>
+<section id="id62">
+<h2>Parameters<a class="headerlink" href="#id62" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>x<span class="classifier">ndarray(N,)</span></dt><dd><p>One dimension numpy array located in <span class="math notranslate nohighlight">\([0, \infty)\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id57">
-<h2>Returns<a class="headerlink" href="#id57" title="Link to this heading">#</a></h2>
+<section id="id63">
+<h2>Returns<a class="headerlink" href="#id63" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>ndarray(N,)</dt><dd><p>Second derivative of identity transformation at x.</p>
 </dd>
@@ -1426,15 +1501,15 @@ The Journal of chemical physics 88.4 (1988): 2547-2553.</p>
 <dt class="sig sig-object py" id="grid.rtransform.IdentityRTransform.deriv3">
 <span class="sig-name descname"><span class="pre">deriv3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.IdentityRTransform.deriv3" title="Link to this definition">#</a></dt>
 <dd><p>Compute the third derivative of identity transform.</p>
-<section id="id58">
-<h2>Parameters<a class="headerlink" href="#id58" title="Link to this heading">#</a></h2>
+<section id="id64">
+<h2>Parameters<a class="headerlink" href="#id64" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>x<span class="classifier">ndarray(N,)</span></dt><dd><p>One dimension numpy array located in <span class="math notranslate nohighlight">\([0, \infty)\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id59">
-<h2>Returns<a class="headerlink" href="#id59" title="Link to this heading">#</a></h2>
+<section id="id65">
+<h2>Returns<a class="headerlink" href="#id65" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>np.ndarray(N,)</dt><dd><p>Third derivative of identity transformation at x.</p>
 </dd>
@@ -1446,15 +1521,15 @@ The Journal of chemical physics 88.4 (1988): 2547-2553.</p>
 <dt class="sig sig-object py" id="grid.rtransform.IdentityRTransform.inverse">
 <span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.IdentityRTransform.inverse" title="Link to this definition">#</a></dt>
 <dd><p>Compute the inverse of identity transform.</p>
-<section id="id60">
-<h2>Parameters<a class="headerlink" href="#id60" title="Link to this heading">#</a></h2>
+<section id="id66">
+<h2>Parameters<a class="headerlink" href="#id66" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>r<span class="classifier">ndarray(N,)</span></dt><dd><p>One dimension numpy array located in <span class="math notranslate nohighlight">\([0, \infty)\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id61">
-<h2>Returns<a class="headerlink" href="#id61" title="Link to this heading">#</a></h2>
+<section id="id67">
+<h2>Returns<a class="headerlink" href="#id67" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>np.ndarray(N,)</dt><dd><p>Inverse transformation of the identity transformation at x.</p>
 </dd>
@@ -1468,15 +1543,15 @@ The Journal of chemical physics 88.4 (1988): 2547-2553.</p>
 <dd><p>Perform given array into itself.</p>
 <div class="math notranslate nohighlight">
 \[r_i = x_i\]</div>
-<section id="id62">
-<h2>Parameters<a class="headerlink" href="#id62" title="Link to this heading">#</a></h2>
+<section id="id68">
+<h2>Parameters<a class="headerlink" href="#id68" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>x<span class="classifier">ndarray(N,)</span></dt><dd><p>One dimension numpy array located in <span class="math notranslate nohighlight">\([0, \infty)\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id63">
-<h2>Returns<a class="headerlink" href="#id63" title="Link to this heading">#</a></h2>
+<section id="id69">
+<h2>Returns<a class="headerlink" href="#id69" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>ndarray(N,)</dt><dd><p>Identity transformation at each point x.</p>
 </dd>
@@ -1497,15 +1572,15 @@ The Journal of chemical physics 88.4 (1988): 2547-2553.</p>
 <dd><p>Compute the first derivative of inverse transformation.</p>
 <div class="math notranslate nohighlight">
 \[\frac{dx}{dr} = (\frac{dr}{dx})^{-1}\]</div>
-<section id="id64">
-<h2>Parameters<a class="headerlink" href="#id64" title="Link to this heading">#</a></h2>
+<section id="id70">
+<h2>Parameters<a class="headerlink" href="#id70" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>r<span class="classifier">np.array(N,)</span></dt><dd><p>One-dimensional array in the co-domain r of the original transformation.</p>
 </dd>
 </dl>
 </section>
-<section id="id65">
-<h2>Returns<a class="headerlink" href="#id65" title="Link to this heading">#</a></h2>
+<section id="id71">
+<h2>Returns<a class="headerlink" href="#id71" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>np.ndarray(N,)</dt><dd><p>First derivative of the inverse transformation at each point r.</p>
 </dd>
@@ -1519,15 +1594,15 @@ The Journal of chemical physics 88.4 (1988): 2547-2553.</p>
 <dd><p>Compute the second derivative of inverse transformation.</p>
 <div class="math notranslate nohighlight">
 \[\frac{d^2 x}{dr^2} = - \frac{d^2 r}{dx^2} (\frac{dx}{dr})^3\]</div>
-<section id="id66">
-<h2>Parameters<a class="headerlink" href="#id66" title="Link to this heading">#</a></h2>
+<section id="id72">
+<h2>Parameters<a class="headerlink" href="#id72" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>r<span class="classifier">np.array(N,)</span></dt><dd><p>One-dimensional array in the co-domain r of the original transformation.</p>
 </dd>
 </dl>
 </section>
-<section id="id67">
-<h2>Returns<a class="headerlink" href="#id67" title="Link to this heading">#</a></h2>
+<section id="id73">
+<h2>Returns<a class="headerlink" href="#id73" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>np.ndarray(N,)</dt><dd><p>Second derivative of the inverse transformation at each point r.</p>
 </dd>
@@ -1542,15 +1617,15 @@ The Journal of chemical physics 88.4 (1988): 2547-2553.</p>
 <div class="math notranslate nohighlight">
 \[\frac{d^3 x}{dr^3} = -\frac{d^3 r}{dx^3} (\frac{dx}{dr})^4
                    + 3 (\frac{d^2 r}{dx^2})^2 (\frac{dx}{dr})^5\]</div>
-<section id="id68">
-<h2>Parameters<a class="headerlink" href="#id68" title="Link to this heading">#</a></h2>
+<section id="id74">
+<h2>Parameters<a class="headerlink" href="#id74" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>r<span class="classifier">np.array(N,)</span></dt><dd><p>One-dimensional array in the co-domain r of the original transformation.</p>
 </dd>
 </dl>
 </section>
-<section id="id69">
-<h2>Returns<a class="headerlink" href="#id69" title="Link to this heading">#</a></h2>
+<section id="id75">
+<h2>Returns<a class="headerlink" href="#id75" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>np.ndarray(N,)</dt><dd><p>Third derivative of inverse transformation at each point r.</p>
 </dd>
@@ -1564,15 +1639,15 @@ The Journal of chemical physics 88.4 (1988): 2547-2553.</p>
 <dd><p>Transform array to the co-domain of the provided transformation.</p>
 <p>This transformation is equivalent to the transformation function of the original
 transformation (i.e. OriginTF.transform).</p>
-<section id="id70">
-<h2>Parameters<a class="headerlink" href="#id70" title="Link to this heading">#</a></h2>
+<section id="id76">
+<h2>Parameters<a class="headerlink" href="#id76" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>x<span class="classifier">np.ndarray</span></dt><dd><p>One-dimension array in the domain x of the original transformation.</p>
 </dd>
 </dl>
 </section>
-<section id="id71">
-<h2>Returns<a class="headerlink" href="#id71" title="Link to this heading">#</a></h2>
+<section id="id77">
+<h2>Returns<a class="headerlink" href="#id77" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>np.ndarray</dt><dd><p>One-dimensional array in the co-domain r of the original transformation.</p>
 </dd>
@@ -1586,15 +1661,15 @@ transformation (i.e. OriginTF.transform).</p>
 <dd><p>Transform array back to the original, domain of the provided transformation.</p>
 <p>This transformation is equivalent to the inverse function of the original
 transformation (i.e. OriginTF.inverse).</p>
-<section id="id72">
-<h2>Parameters<a class="headerlink" href="#id72" title="Link to this heading">#</a></h2>
+<section id="id78">
+<h2>Parameters<a class="headerlink" href="#id78" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>r<span class="classifier">np.ndarray(N,)</span></dt><dd><p>One-dimensional array in the co-domain r of the original transformation.</p>
 </dd>
 </dl>
 </section>
-<section id="id73">
-<h2>Returns<a class="headerlink" href="#id73" title="Link to this heading">#</a></h2>
+<section id="id79">
+<h2>Returns<a class="headerlink" href="#id79" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>np.ndarray(N,)</dt><dd><p>Original one-dimensional array in the domain x of the original transformation.</p>
 </dd>
@@ -1628,15 +1703,15 @@ transformation (i.e. OriginTF.inverse).</p>
 <dd><p>Compute the first derivative of Knowles transformation.</p>
 <div class="math notranslate nohighlight">
 \[\frac{dr}{dx} = kR \frac{(1+x_i)^{k-1}}{2^k-(1+x_i)^k}\]</div>
-<section id="id74">
-<h2>Parameters<a class="headerlink" href="#id74" title="Link to this heading">#</a></h2>
+<section id="id80">
+<h2>Parameters<a class="headerlink" href="#id80" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>x: ndarray(N,)</dt><dd><p>One dimensional  array with values between <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id75">
-<h2>Returns<a class="headerlink" href="#id75" title="Link to this heading">#</a></h2>
+<section id="id81">
+<h2>Returns<a class="headerlink" href="#id81" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>ndarray(N,)</dt><dd><p>The first derivative of Knowles transformation at each point.</p>
 </dd>
@@ -1651,15 +1726,15 @@ transformation (i.e. OriginTF.inverse).</p>
 <div class="math notranslate nohighlight">
 \[\frac{d^2r}{dx^2} = kR \frac{(1+x_i)^{k-2}
 \left(2^k(k-1) + (1+x_i)^k \right)}{\left( 2^k-(1+x_i)^k\right)^2}\]</div>
-<section id="id76">
-<h2>Parameters<a class="headerlink" href="#id76" title="Link to this heading">#</a></h2>
+<section id="id82">
+<h2>Parameters<a class="headerlink" href="#id82" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>x<span class="classifier">ndarray(N,)</span></dt><dd><p>One dimensional array in <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id77">
-<h2>Returns<a class="headerlink" href="#id77" title="Link to this heading">#</a></h2>
+<section id="id83">
+<h2>Returns<a class="headerlink" href="#id83" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>ndarray(N,)</dt><dd><p>The second derivative of Knowles transformation at each point.</p>
 </dd>
@@ -1676,15 +1751,15 @@ transformation (i.e. OriginTF.inverse).</p>
 \left( 4^k (k-1) (k-2) + 2^k (k-1)(k+4)(1+x_i)^k
        +2(1+x_i)^k
 \right)}{\left( 2^k - (1+x_i)^k \right)^3}\]</div>
-<section id="id78">
-<h2>Parameters<a class="headerlink" href="#id78" title="Link to this heading">#</a></h2>
+<section id="id84">
+<h2>Parameters<a class="headerlink" href="#id84" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>x: ndarray(N,)</dt><dd><p>One dimensional array with values between <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id79">
-<h2>Returns<a class="headerlink" href="#id79" title="Link to this heading">#</a></h2>
+<section id="id85">
+<h2>Returns<a class="headerlink" href="#id85" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>ndarray(N,)</dt><dd><p>The third derivative of Knowles transformation at each point.</p>
 </dd>
@@ -1698,15 +1773,15 @@ transformation (i.e. OriginTF.inverse).</p>
 <dd><p>Inverse of transformation from <span class="math notranslate nohighlight">\([r_{min},\infty)\)</span> to <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
 <div class="math notranslate nohighlight">
 \[x_i = 2 \sqrt[k]{1-\exp \left( -\frac{r_i-r_{min}}{R}\right)}-1\]</div>
-<section id="id80">
-<h2>Parameters<a class="headerlink" href="#id80" title="Link to this heading">#</a></h2>
+<section id="id86">
+<h2>Parameters<a class="headerlink" href="#id86" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>r: ndarray(N,)</dt><dd><p>One-dimensional array in <span class="math notranslate nohighlight">\([r_{min},\infty)\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id81">
-<h2>Returns<a class="headerlink" href="#id81" title="Link to this heading">#</a></h2>
+<section id="id87">
+<h2>Returns<a class="headerlink" href="#id87" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>ndarray(N,)</dt><dd><p>The inverse transformation in <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
 </dd>
@@ -1732,15 +1807,15 @@ transformation (i.e. OriginTF.inverse).</p>
 <dd><p>Transform from <span class="math notranslate nohighlight">\([-1,1]\)</span> to <span class="math notranslate nohighlight">\([r_{min},\infty)\)</span>.</p>
 <div class="math notranslate nohighlight">
 \[r_i = r_{min} - R \log \left( 1 - 2^{-k} (x_i + 1)^k \right)\]</div>
-<section id="id82">
-<h2>Parameters<a class="headerlink" href="#id82" title="Link to this heading">#</a></h2>
+<section id="id88">
+<h2>Parameters<a class="headerlink" href="#id88" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>x: np.ndarray(N,)</dt><dd><p>One dimensional array in <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id83">
-<h2>Returns<a class="headerlink" href="#id83" title="Link to this heading">#</a></h2>
+<section id="id89">
+<h2>Returns<a class="headerlink" href="#id89" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>np.ndarray(N,)</dt><dd><p>One dimensional array in <span class="math notranslate nohighlight">\([r_{min},\infty)\)</span>.</p>
 </dd>
@@ -1768,15 +1843,15 @@ transformation (i.e. OriginTF.inverse).</p>
 <dd><p>Compute the 1st order derivative.</p>
 <div class="math notranslate nohighlight">
 \[\frac{dr}{dx} = \frac{r_{max} - r_{min}}{2}\]</div>
-<section id="id84">
-<h2>Parameters<a class="headerlink" href="#id84" title="Link to this heading">#</a></h2>
+<section id="id90">
+<h2>Parameters<a class="headerlink" href="#id90" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>x<span class="classifier">ndarray</span></dt><dd><p>One-dimensional array in the domain <span class="math notranslate nohighlight">\([-1, 1]\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id85">
-<h2>Returns<a class="headerlink" href="#id85" title="Link to this heading">#</a></h2>
+<section id="id91">
+<h2>Returns<a class="headerlink" href="#id91" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>float or np.ndarray</dt><dd><p>First order derivative at given points.</p>
 </dd>
@@ -1790,15 +1865,15 @@ transformation (i.e. OriginTF.inverse).</p>
 <dd><p>Compute the second order derivative.</p>
 <div class="math notranslate nohighlight">
 \[\frac{d^2 r}{dx^2} = 0\]</div>
-<section id="id86">
-<h2>Parameters<a class="headerlink" href="#id86" title="Link to this heading">#</a></h2>
+<section id="id92">
+<h2>Parameters<a class="headerlink" href="#id92" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>x<span class="classifier">ndarray</span></dt><dd><p>One-dimensional array in the domain <span class="math notranslate nohighlight">\([-1, 1]\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id87">
-<h2>Returns<a class="headerlink" href="#id87" title="Link to this heading">#</a></h2>
+<section id="id93">
+<h2>Returns<a class="headerlink" href="#id93" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>float or np.ndarray</dt><dd><p>Second order derivative at given points.</p>
 </dd>
@@ -1812,15 +1887,15 @@ transformation (i.e. OriginTF.inverse).</p>
 <dd><p>Compute the third order derivative.</p>
 <div class="math notranslate nohighlight">
 \[\frac{d^2 r}{dx^2} = 0\]</div>
-<section id="id88">
-<h2>Parameters<a class="headerlink" href="#id88" title="Link to this heading">#</a></h2>
+<section id="id94">
+<h2>Parameters<a class="headerlink" href="#id94" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>x<span class="classifier">ndarray</span></dt><dd><p>One-dimensional array in the domain <span class="math notranslate nohighlight">\([-1, 1]\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id89">
-<h2>Returns<a class="headerlink" href="#id89" title="Link to this heading">#</a></h2>
+<section id="id95">
+<h2>Returns<a class="headerlink" href="#id95" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>ndarray</dt><dd><p>Third order derivative at given points.</p>
 </dd>
@@ -1834,15 +1909,15 @@ transformation (i.e. OriginTF.inverse).</p>
 <dd><p>Compute the inverse of the transformation.</p>
 <div class="math notranslate nohighlight">
 \[x_i = \frac{2 r_i - (r_{max} + r_{min})}{r_{max} - r_{min}}\]</div>
-<section id="id90">
-<h2>Parameters<a class="headerlink" href="#id90" title="Link to this heading">#</a></h2>
+<section id="id96">
+<h2>Parameters<a class="headerlink" href="#id96" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>r<span class="classifier">ndarray</span></dt><dd><p>One-dimensional array in the co-domain <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id91">
-<h2>Returns<a class="headerlink" href="#id91" title="Link to this heading">#</a></h2>
+<section id="id97">
+<h2>Returns<a class="headerlink" href="#id97" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>ndarray</dt><dd><p>One-dimensional array in the domain <span class="math notranslate nohighlight">\([-1, 1]\)</span>.</p>
 </dd>
@@ -1857,15 +1932,15 @@ transformation (i.e. OriginTF.inverse).</p>
 <div class="math notranslate nohighlight">
 \[r_i = \frac{r_{max} - r_{min}}{2} (1 + x_i) + r_{min}.\]</div>
 <p>This transformation maps <span class="math notranslate nohighlight">\(r_i(-1) = r_{min}\)</span> and <span class="math notranslate nohighlight">\(r_i(1) = r_{max}\)</span>.</p>
-<section id="id92">
-<h2>Parameters<a class="headerlink" href="#id92" title="Link to this heading">#</a></h2>
+<section id="id98">
+<h2>Parameters<a class="headerlink" href="#id98" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>x<span class="classifier">ndarray</span></dt><dd><p>One-dimensional array in the domain <span class="math notranslate nohighlight">\([-1, 1]\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id93">
-<h2>Returns<a class="headerlink" href="#id93" title="Link to this heading">#</a></h2>
+<section id="id99">
+<h2>Returns<a class="headerlink" href="#id99" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>float or np.ndarray</dt><dd><p>Transformed points between <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span></p>
 </dd>
@@ -1902,15 +1977,15 @@ to <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span>.</p>
 <dt class="sig sig-object py" id="grid.rtransform.LinearInfiniteRTransform.deriv">
 <span class="sig-name descname"><span class="pre">deriv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearInfiniteRTransform.deriv" title="Link to this definition">#</a></dt>
 <dd><p>Compute the first derivative of linear transformation.</p>
-<section id="id94">
-<h2>Parameters<a class="headerlink" href="#id94" title="Link to this heading">#</a></h2>
+<section id="id100">
+<h2>Parameters<a class="headerlink" href="#id100" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>x<span class="classifier">ndarray(N,)</span></dt><dd><p>One-dimensional array in the domain <span class="math notranslate nohighlight">\([0, \infty)\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id95">
-<h2>Returns<a class="headerlink" href="#id95" title="Link to this heading">#</a></h2>
+<section id="id101">
+<h2>Returns<a class="headerlink" href="#id101" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>ndarray(N,)</dt><dd><p>First derivative of transformation at x.</p>
 </dd>
@@ -1922,15 +1997,15 @@ to <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span>.</p>
 <dt class="sig sig-object py" id="grid.rtransform.LinearInfiniteRTransform.deriv2">
 <span class="sig-name descname"><span class="pre">deriv2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearInfiniteRTransform.deriv2" title="Link to this definition">#</a></dt>
 <dd><p>Compute the second derivative of linear transformation.</p>
-<section id="id96">
-<h2>Parameters<a class="headerlink" href="#id96" title="Link to this heading">#</a></h2>
+<section id="id102">
+<h2>Parameters<a class="headerlink" href="#id102" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>x<span class="classifier">ndarray(N,)</span></dt><dd><p>One-dimensional array in the domain <span class="math notranslate nohighlight">\([0, \infty)\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id97">
-<h2>Returns<a class="headerlink" href="#id97" title="Link to this heading">#</a></h2>
+<section id="id103">
+<h2>Returns<a class="headerlink" href="#id103" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>ndarray(N,)</dt><dd><p>Second derivative of transformation at x.</p>
 </dd>
@@ -1942,15 +2017,15 @@ to <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span>.</p>
 <dt class="sig sig-object py" id="grid.rtransform.LinearInfiniteRTransform.deriv3">
 <span class="sig-name descname"><span class="pre">deriv3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.LinearInfiniteRTransform.deriv3" title="Link to this definition">#</a></dt>
 <dd><p>Compute the third derivative of linear transformation.</p>
-<section id="id98">
-<h2>Parameters<a class="headerlink" href="#id98" title="Link to this heading">#</a></h2>
+<section id="id104">
+<h2>Parameters<a class="headerlink" href="#id104" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>x<span class="classifier">ndarray(N,)</span></dt><dd><p>One-dimensional array in the domain <span class="math notranslate nohighlight">\([0, \infty)\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id99">
-<h2>Returns<a class="headerlink" href="#id99" title="Link to this heading">#</a></h2>
+<section id="id105">
+<h2>Returns<a class="headerlink" href="#id105" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>ndarray(N,)</dt><dd><p>Third derivative of transformation at x.</p>
 </dd>
@@ -1964,15 +2039,15 @@ to <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span>.</p>
 <dd><p>Compute the inverse of linear transformation.</p>
 <div class="math notranslate nohighlight">
 \[x_i = (r - r_{min}) / frac{b}{r_{max} - r_{min}}\]</div>
-<section id="id100">
-<h2>Parameters<a class="headerlink" href="#id100" title="Link to this heading">#</a></h2>
+<section id="id106">
+<h2>Parameters<a class="headerlink" href="#id106" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>r<span class="classifier">ndarray(N,)</span></dt><dd><p>One-dimensional array in the domain <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id101">
-<h2>Returns<a class="headerlink" href="#id101" title="Link to this heading">#</a></h2>
+<section id="id107">
+<h2>Returns<a class="headerlink" href="#id107" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>ndarray(N,)</dt><dd><p>Inverse of transformation from coordinate <span class="math notranslate nohighlight">\(r\)</span> to <span class="math notranslate nohighlight">\(x\)</span>.</p>
 </dd>
@@ -2006,15 +2081,15 @@ to <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span>.</p>
 \[r_i = \frac{(r_{max} - r_{min})}{\max_i x_i} x_i + r_{min},\]</div>
 <p>where <span class="math notranslate nohighlight">\(N\)</span> is the number of points. The goal is to transform
 equally-spaced integers from 0 to N-1, to <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span>.</p>
-<section id="id102">
-<h2>Parameters<a class="headerlink" href="#id102" title="Link to this heading">#</a></h2>
+<section id="id108">
+<h2>Parameters<a class="headerlink" href="#id108" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>x<span class="classifier">ndarray(N,)</span></dt><dd><p>One-dimensional array in the domain <span class="math notranslate nohighlight">\([0, \infty)\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id103">
-<h2>Returns<a class="headerlink" href="#id103" title="Link to this heading">#</a></h2>
+<section id="id109">
+<h2>Returns<a class="headerlink" href="#id109" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>ndarray(N,)</dt><dd><p>Transformed points between <span class="math notranslate nohighlight">\([r_{min}, r_{max}]\)</span>.</p>
 </dd>
@@ -2028,18 +2103,18 @@ equally-spaced integers from 0 to N-1, to <span class="math notranslate nohighli
 <dt class="sig sig-object py" id="grid.rtransform.MultiExpRTransform">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grid.rtransform.</span></span><span class="sig-name descname"><span class="pre">MultiExpRTransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rmin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trim_inf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.MultiExpRTransform" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTransform</span></code></a></p>
-<p>MultiExp Transformation class from <span class="math notranslate nohighlight">\([-1,1]\)</span> to <span class="math notranslate nohighlight">\([r_{min}, \infty)\)</span>. <a class="footnote-reference brackets" href="#id106" id="id104" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a></p>
+<p>MultiExp Transformation class from <span class="math notranslate nohighlight">\([-1,1]\)</span> to <span class="math notranslate nohighlight">\([r_{min}, \infty)\)</span>. <a class="footnote-reference brackets" href="#id112" id="id110" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a></p>
 <p>The transformation is given by</p>
 <div class="math notranslate nohighlight">
 \[r(x) = -R \log \left( \frac{x + 1}{2} \right) + r_{min}\]</div>
 <p>The inverse of this transformation is given by</p>
 <div class="math notranslate nohighlight">
 \[x(r) = 2 \exp \left( \frac{-(r - r_{min})}{R} \right) - 1\]</div>
-<section id="id105">
-<h2>References<a class="headerlink" href="#id105" title="Link to this heading">#</a></h2>
+<section id="id111">
+<h2>References<a class="headerlink" href="#id111" title="Link to this heading">#</a></h2>
 <aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id106" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id104">2</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id112" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id110">2</a><span class="fn-bracket">]</span></span>
 <p>Gill, Peter MW, and Siu-Hung Chien. “Radial quadrature for multiexponential integrands.”
 Journal of computational chemistry 24.6 (2003): 732-740.</p>
 </aside>
@@ -2056,15 +2131,15 @@ Journal of computational chemistry 24.6 (2003): 732-740.</p>
 <dd><p>Compute the first derivative of MultiExp transformation.</p>
 <div class="math notranslate nohighlight">
 \[\frac{dr}{dx} = -\frac{R}{1+x}\]</div>
-<section id="id107">
-<h3>Parameters<a class="headerlink" href="#id107" title="Link to this heading">#</a></h3>
+<section id="id113">
+<h3>Parameters<a class="headerlink" href="#id113" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>x<span class="classifier">ndarray(N,)</span></dt><dd><p>One dimensional in <span class="math notranslate nohighlight">\([-1, 1]\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id108">
-<h3>Returns<a class="headerlink" href="#id108" title="Link to this heading">#</a></h3>
+<section id="id114">
+<h3>Returns<a class="headerlink" href="#id114" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>ndarray(N,)</dt><dd><p>The first derivative of MultiExp transformation at each point.</p>
 </dd>
@@ -2078,15 +2153,15 @@ Journal of computational chemistry 24.6 (2003): 732-740.</p>
 <dd><p>Compute the second derivative of MultiExp transformation.</p>
 <div class="math notranslate nohighlight">
 \[\frac{d^2r}{dx^2} = \frac{R}{(1 + x)^2}\]</div>
-<section id="id109">
-<h3>Parameters<a class="headerlink" href="#id109" title="Link to this heading">#</a></h3>
+<section id="id115">
+<h3>Parameters<a class="headerlink" href="#id115" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>x<span class="classifier">ndarray(N,)</span></dt><dd><p>One dimensional in <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id110">
-<h3>Returns<a class="headerlink" href="#id110" title="Link to this heading">#</a></h3>
+<section id="id116">
+<h3>Returns<a class="headerlink" href="#id116" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>ndarray(N,)</dt><dd><p>The second derivative of MultiExp transformation at each point.</p>
 </dd>
@@ -2100,15 +2175,15 @@ Journal of computational chemistry 24.6 (2003): 732-740.</p>
 <dd><p>Compute the third derivative of MultiExp transformation.</p>
 <div class="math notranslate nohighlight">
 \[\frac{d^3r}{dx^3} = -\frac{2R}{(1 + x)^3}\]</div>
-<section id="id111">
-<h3>Parameters<a class="headerlink" href="#id111" title="Link to this heading">#</a></h3>
+<section id="id117">
+<h3>Parameters<a class="headerlink" href="#id117" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>x<span class="classifier">ndarray(N,)</span></dt><dd><p>One dimensional array in <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id112">
-<h3>Returns<a class="headerlink" href="#id112" title="Link to this heading">#</a></h3>
+<section id="id118">
+<h3>Returns<a class="headerlink" href="#id118" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>ndarray(N,)</dt><dd><p>The third derivative of MultiExp transformation at each point.</p>
 </dd>
@@ -2122,15 +2197,15 @@ Journal of computational chemistry 24.6 (2003): 732-740.</p>
 <dd><p>Inverse of transform from <span class="math notranslate nohighlight">\([r_{min},\infty)\)</span> to <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
 <div class="math notranslate nohighlight">
 \[x_i = 2 \exp \left( \frac{-(r_i - r_{min})}{R} \right) - 1\]</div>
-<section id="id113">
-<h3>Parameters<a class="headerlink" href="#id113" title="Link to this heading">#</a></h3>
+<section id="id119">
+<h3>Parameters<a class="headerlink" href="#id119" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>r<span class="classifier">np.ndarray(N,)</span></dt><dd><p>One-dimensional array in <span class="math notranslate nohighlight">\([r_{min}, \infty)\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id114">
-<h3>Returns<a class="headerlink" href="#id114" title="Link to this heading">#</a></h3>
+<section id="id120">
+<h3>Returns<a class="headerlink" href="#id120" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>np.ndarray(N,)</dt><dd><p>The inverse of transformation in <span class="math notranslate nohighlight">\([-1, 1]\)</span>.</p>
 </dd>
@@ -2150,15 +2225,15 @@ Journal of computational chemistry 24.6 (2003): 732-740.</p>
 <dd><p>Transform from [-1,1] to  <span class="math notranslate nohighlight">\([r_{min},\infty)\)</span>.</p>
 <div class="math notranslate nohighlight">
 \[r_i = -R \log \left( \frac{x_i + 1}{2} \right) + r_{min}\]</div>
-<section id="id115">
-<h3>Parameters<a class="headerlink" href="#id115" title="Link to this heading">#</a></h3>
+<section id="id121">
+<h3>Parameters<a class="headerlink" href="#id121" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>x<span class="classifier">ndarray(N,)</span></dt><dd><p>One dimensional array with values between <span class="math notranslate nohighlight">\([-1,1]\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id116">
-<h3>Returns<a class="headerlink" href="#id116" title="Link to this heading">#</a></h3>
+<section id="id122">
+<h3>Returns<a class="headerlink" href="#id122" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>ndarray(N,)</dt><dd><p>Transformed array located between <span class="math notranslate nohighlight">\([r_{min},\infty)\)</span>.</p>
 </dd>
@@ -2191,15 +2266,15 @@ Journal of computational chemistry 24.6 (2003): 732-740.</p>
 <dt class="sig sig-object py" id="grid.rtransform.PowerRTransform.deriv">
 <span class="sig-name descname"><span class="pre">deriv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.PowerRTransform.deriv" title="Link to this definition">#</a></dt>
 <dd><p>Compute first derivative of power transform.</p>
-<section id="id117">
-<h2>Parameters<a class="headerlink" href="#id117" title="Link to this heading">#</a></h2>
+<section id="id123">
+<h2>Parameters<a class="headerlink" href="#id123" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>x<span class="classifier">ndarray(N,)</span></dt><dd><p>One-dimensional array in the domain of the transformation <span class="math notranslate nohighlight">\([0,\infty)\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id118">
-<h2>Return<a class="headerlink" href="#id118" title="Link to this heading">#</a></h2>
+<section id="id124">
+<h2>Return<a class="headerlink" href="#id124" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>ndarray(N,)</dt><dd><p>First derivative of transformation at x.</p>
 </dd>
@@ -2211,15 +2286,15 @@ Journal of computational chemistry 24.6 (2003): 732-740.</p>
 <dt class="sig sig-object py" id="grid.rtransform.PowerRTransform.deriv2">
 <span class="sig-name descname"><span class="pre">deriv2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.PowerRTransform.deriv2" title="Link to this definition">#</a></dt>
 <dd><p>Compute second derivative of power transform.</p>
-<section id="id119">
-<h2>Parameters<a class="headerlink" href="#id119" title="Link to this heading">#</a></h2>
+<section id="id125">
+<h2>Parameters<a class="headerlink" href="#id125" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>x<span class="classifier">ndarray(N,)</span></dt><dd><p>One-dimensional array in the domain of the transformation <span class="math notranslate nohighlight">\([0,\infty)\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id120">
-<h2>Return<a class="headerlink" href="#id120" title="Link to this heading">#</a></h2>
+<section id="id126">
+<h2>Return<a class="headerlink" href="#id126" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>ndarray(N,)</dt><dd><p>Second derivative of transformation at x.</p>
 </dd>
@@ -2231,15 +2306,15 @@ Journal of computational chemistry 24.6 (2003): 732-740.</p>
 <dt class="sig sig-object py" id="grid.rtransform.PowerRTransform.deriv3">
 <span class="sig-name descname"><span class="pre">deriv3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.PowerRTransform.deriv3" title="Link to this definition">#</a></dt>
 <dd><p>Compute third derivative of power transform.</p>
-<section id="id121">
-<h2>Parameters<a class="headerlink" href="#id121" title="Link to this heading">#</a></h2>
+<section id="id127">
+<h2>Parameters<a class="headerlink" href="#id127" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>x<span class="classifier">ndarray(N,)</span></dt><dd><p>One-dimensional array in the domain of the transformation <span class="math notranslate nohighlight">\([0,\infty)\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id122">
-<h2>Return<a class="headerlink" href="#id122" title="Link to this heading">#</a></h2>
+<section id="id128">
+<h2>Return<a class="headerlink" href="#id128" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>ndarray(N,)</dt><dd><p>Third derivative of transformation at x.</p>
 </dd>
@@ -2254,15 +2329,15 @@ Journal of computational chemistry 24.6 (2003): 732-740.</p>
 <div class="math notranslate nohighlight">
 \[x(r) = \frac{r}{r_{min}}^{\frac{\log(b + 1)}{\log(r_{max}) - \log(r_{min})}} - 1\]</div>
 <p>such that <span class="math notranslate nohighlight">\(r(b) = r_{max}\)</span>.</p>
-<section id="id123">
-<h2>Parameters<a class="headerlink" href="#id123" title="Link to this heading">#</a></h2>
+<section id="id129">
+<h2>Parameters<a class="headerlink" href="#id129" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>r<span class="classifier">ndarray(N,)</span></dt><dd><p>One-dimensional array in the co-domain of the transformation.</p>
 </dd>
 </dl>
 </section>
-<section id="id124">
-<h2>Return<a class="headerlink" href="#id124" title="Link to this heading">#</a></h2>
+<section id="id130">
+<h2>Return<a class="headerlink" href="#id130" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>ndarray(N,)</dt><dd><p>Inverse of transformation at r.</p>
 </dd>
@@ -2295,15 +2370,15 @@ Journal of computational chemistry 24.6 (2003): 732-740.</p>
 <div class="math notranslate nohighlight">
 \[r = r_{min}  (x + 1)^{\frac{\log(r_{max} - \log(r_{min}}{b + 1}},\]</div>
 <p>such that <span class="math notranslate nohighlight">\(r(b) = r_{max}\)</span>.</p>
-<section id="id125">
-<h2>Parameters<a class="headerlink" href="#id125" title="Link to this heading">#</a></h2>
+<section id="id131">
+<h2>Parameters<a class="headerlink" href="#id131" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>x<span class="classifier">ndarray(N,)</span></dt><dd><p>One-dimensional array in the domain of the transformation <span class="math notranslate nohighlight">\([0,\infty)\)</span>.</p>
 </dd>
 </dl>
 </section>
-<section id="id126">
-<h2>Return<a class="headerlink" href="#id126" title="Link to this heading">#</a></h2>
+<section id="id132">
+<h2>Return<a class="headerlink" href="#id132" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>ndarray(N,)</dt><dd><p>The transformation of x to the co-domain of the transformation.</p>
 </dd>
@@ -2385,7 +2460,10 @@ Journal of computational chemistry 24.6 (2003): 732-740.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.rtransform.BaseTransform.codomain"><code class="docutils literal notranslate"><span class="pre">BaseTransform.codomain</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.rtransform.BaseTransform.deriv"><code class="docutils literal notranslate"><span class="pre">BaseTransform.deriv()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.rtransform.BaseTransform.deriv2"><code class="docutils literal notranslate"><span class="pre">BaseTransform.deriv2()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.rtransform.BaseTransform.deriv2_inverse"><code class="docutils literal notranslate"><span class="pre">BaseTransform.deriv2_inverse()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.rtransform.BaseTransform.deriv3"><code class="docutils literal notranslate"><span class="pre">BaseTransform.deriv3()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.rtransform.BaseTransform.deriv3_inverse"><code class="docutils literal notranslate"><span class="pre">BaseTransform.deriv3_inverse()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.rtransform.BaseTransform.deriv_inverse"><code class="docutils literal notranslate"><span class="pre">BaseTransform.deriv_inverse()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.rtransform.BaseTransform.domain"><code class="docutils literal notranslate"><span class="pre">BaseTransform.domain</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.rtransform.BaseTransform.inverse"><code class="docutils literal notranslate"><span class="pre">BaseTransform.inverse()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.rtransform.BaseTransform.transform"><code class="docutils literal notranslate"><span class="pre">BaseTransform.transform()</span></code></a></li>
