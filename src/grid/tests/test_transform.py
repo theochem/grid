@@ -86,12 +86,30 @@ INVALID_INITIALIZE_CASES = [
     transformation_case(HandyModRTransform, dict(rmin=10.0, rmax=0.1, m=2)),
 ]
 
+BOUNDED_DOMAIN_CASES = [
+    transformation_case(BeckeRTransform, dict(rmin=0.1, R=1.2)),
+    transformation_case(KnowlesRTransform, dict(rmin=0.1, R=1.2, k=2)),
+    transformation_case(MultiExpRTransform, dict(rmin=0.1, R=1.2)),
+    transformation_case(HandyModRTransform, dict(rmin=0.1, rmax=10.0, m=2)),
+    transformation_case(LinearFiniteRTransform, dict(rmin=0.1, rmax=10)),
+]
+
 
 @pytest.mark.parametrize("transform_class, kwargs", INVALID_INITIALIZE_CASES)
 def test_init_raises(transform_class, kwargs):
     """Test that transform classes raise ValueError on invalid initialization parameters."""
     with pytest.raises(ValueError):
         transform_class(**kwargs)
+
+
+@pytest.mark.parametrize("transform_class, kwargs", BOUNDED_DOMAIN_CASES)
+def test_bounded_domain_raises(transform_class, kwargs):
+    """Test that transforming grid points outside the valid transform domain raises an error."""
+    rad = UniformInteger(10)
+    tf = transform_class(**kwargs)
+
+    with pytest.raises(ValueError):
+        tf.transform_1d_grid(rad)
 
 
 def test_becke_r_transform_init():
