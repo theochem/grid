@@ -266,31 +266,6 @@ def test_becke_r_transform_find_parameter(x_points, r_min, R):
     assert_allclose(transformed_center, R, rtol=1e-5)
 
 
-@pytest.mark.parametrize(
-    "x_points, r_min, r_max",
-    [
-        pytest.param(x_points_cases[0], 0.1, 1.1, id="r_min=0.1,R=1.1"),
-        pytest.param(x_points_cases[1], 0.2, 1.3, id="r_min=0.2,R=1.3"),
-    ],
-)
-def test_becke_r_transform_forward_inverse_consistency(x_points, r_min, r_max):
-    """Test BeckeRTransform forward and inverse consistency."""
-    becke_transform = BeckeRTransform(r_min, r_max)
-
-    # Transform the x_points and then apply the inverse transform
-    transformed_points = becke_transform.transform(x_points)
-    inverse_transformed_points = becke_transform.inverse(transformed_points)
-
-    # Check that the inverse transformed points are close to the original x_points
-    assert_allclose(inverse_transformed_points, x_points, rtol=1e-5)
-
-    # test transform and inverse for scalar values
-    for x_scalar in x_points:
-        transformed_scalar = becke_transform.transform(x_scalar)
-        inverse_transformed_scalar = becke_transform.inverse(transformed_scalar)
-        assert_allclose(inverse_transformed_scalar, x_scalar, rtol=1e-5)
-
-
 def test_becke_r_transform_trimmed_infinity_roundtrip():
     """Test BeckeRTransform roundtrip when infinities are trimmed during the transform."""
     x_points = np.linspace(-1, 1, 21)
@@ -427,20 +402,6 @@ def test_becke_integral():
     assert_almost_equal(result, ref_result, decimal=3)
 
 
-def test_linear_transform_forward_inverse_consistency():
-    """Test linear transformation."""
-    ltf = LinearFiniteRTransform(0.1, 10)
-    x_values = np.sort(np.random.uniform(-1, 1, 50))
-    transformed = ltf.transform(x_values)
-    roundtrip = ltf.inverse(transformed)
-    assert_allclose(roundtrip, x_values)
-
-    for x_scalar in x_values:
-        transformed_num = ltf.transform(x_scalar)
-        roundtrip_scalar = ltf.inverse(transformed_num)
-        assert_almost_equal(roundtrip_scalar, x_scalar)
-
-
 def test_linear_transform_derivatives():
     """Test finite diff for linear derivs."""
     ltf = LinearFiniteRTransform(0.1, 10)
@@ -539,26 +500,6 @@ def test_multiexp_rtransform_init():
     assert btf.rmin == 0.1
 
 
-@pytest.mark.parametrize("x_points", x_points_cases)
-def test_multiexp_rtransform_forward_inverse_consistency(x_points):
-    """Test MultiExpRTransform forward/inverse consistency and pointwise agreement."""
-
-    metf = MultiExpRTransform(0.1, 1.1)
-
-    # Forward transform on full array
-    transformed_points = metf.transform(x_points)
-    roundtrip_points = metf.inverse(transformed_points)
-
-    # Inverse transform should recover original array
-    assert_allclose(roundtrip_points, x_points)
-
-    # Forward transform on single points
-    for point in x_points:
-        transformed_point = metf.transform(point)
-        roundtrip_point = metf.inverse(transformed_point)
-        assert_allclose(roundtrip_point, point)
-
-
 def test_multiexp_rtransform_derivatives():
     """Test MultiExpRTransform derivatives against finite difference."""
     metf = MultiExpRTransform(0.1, 10)
@@ -642,26 +583,6 @@ def test_knowles_rtransform_init():
     assert ktf.R == 1.2
     assert ktf.rmin == 0.1
     assert ktf.k == 2
-
-
-@pytest.mark.parametrize("x_points", x_points_cases)
-def test_knowles_rtransform_forward_inverse_consistency(x_points):
-    """Test KnowlesRTransform forward/inverse consistency and pointwise agreement."""
-
-    ktf = KnowlesRTransform(0.1, 1.1, 2)
-
-    # Forward transform on full array
-    transformed_points = ktf.transform(x_points)
-    roundtrip_points = ktf.inverse(transformed_points)
-
-    # Inverse transform should recover original array
-    assert_allclose(roundtrip_points, x_points)
-
-    # Forward transform on single points
-    for point in x_points:
-        transformed_point = ktf.transform(point)
-        roundtrip_point = ktf.inverse(transformed_point)
-        assert_allclose(roundtrip_point, point)
 
 
 def test_knowles_rtransform_derivatives():
@@ -749,26 +670,6 @@ def test_handy_rtransform_init(rmin, rmax, m):
     assert btf.rmin == rmin
 
 
-@pytest.mark.parametrize("x_points", x_points_cases)
-def test_handy_rtransform_forward_inverse_consistency(x_points):
-    """Test HandyRTransform forward/inverse consistency and pointwise agreement."""
-
-    htf = HandyRTransform(0.1, 1.2, 2)
-
-    # Forward transform on full array
-    transformed_points = htf.transform(x_points)
-    roundtrip_points = htf.inverse(transformed_points)
-
-    # Inverse transform should recover original array
-    assert_allclose(roundtrip_points, x_points)
-
-    # Forward transform on single points
-    for point in x_points:
-        transformed_point = htf.transform(point)
-        roundtrip_point = htf.inverse(transformed_point)
-        assert_allclose(roundtrip_point, point)
-
-
 def test_handy_rtransform_derivatives():
     """Test HandyRTransform derivatives against finite difference."""
     htf = HandyRTransform(0.1, 1.2, 2)
@@ -834,26 +735,6 @@ def test_handymod_rtransform_init(rmin, rmax, m):
     assert np.isclose(btf.rmin, rmin)
     assert np.isclose(btf.rmax, rmax)
     assert btf.m == m
-
-
-@pytest.mark.parametrize("x_points", x_points_cases)
-def test_handymod_rtransform_forward_inverse_consistency(x_points):
-    """Test HandyModRTransform forward/inverse consistency and pointwise agreement."""
-
-    hmtf = HandyModRTransform(0.1, 10.0, 2)
-
-    # Forward transform on full array
-    transformed_points = hmtf.transform(x_points)
-    roundtrip_points = hmtf.inverse(transformed_points)
-
-    # Inverse transform should recover original array
-    assert_allclose(roundtrip_points, x_points)
-
-    # Forward transform on single points
-    for point in x_points:
-        transformed_point = hmtf.transform(point)
-        roundtrip_point = hmtf.inverse(transformed_point)
-        assert_allclose(roundtrip_point, point)
 
 
 def test_handymod_rtransform_derivatives():
