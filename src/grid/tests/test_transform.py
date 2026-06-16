@@ -187,6 +187,29 @@ def test_deriv_method(x_points, transform_class, kwargs):
         assert_allclose(first_derivative_scalar, first_derivative_fd_scalar, rtol=1e-5, atol=1e-8)
 
 
+@pytest.mark.parametrize("x_points", x_points_cases)
+@pytest.mark.parametrize("transform_class, kwargs", VALID_TRANSFORM_CASES)
+def test_deriv2_method(x_points, transform_class, kwargs):
+    """Test second derivative against finite-difference approximation."""
+
+    transformation = transform_class(**kwargs)
+
+    second_derivative = transformation.deriv2(x_points)
+    second_derivative_fd = compute_fd_deriv(transformation.transform, x_points, eps=1e-4, order=2)
+
+    assert_allclose(second_derivative, second_derivative_fd, rtol=1e-4, atol=1e-6)
+
+    for x_scalar in x_points:
+        x_scalar = np.float64(x_scalar)
+
+        second_derivative_scalar = transformation.deriv2(x_scalar)
+        second_derivative_fd_scalar = compute_fd_deriv(
+            transformation.transform, x_scalar, eps=1e-4, order=2
+        )
+
+        assert_allclose(second_derivative_scalar, second_derivative_fd_scalar, rtol=1e-4, atol=1e-6)
+
+
 def test_becke_r_transform_init():
     """Test BeckeRTransform initialization."""
     btf = BeckeRTransform(0.1, 1.2)
