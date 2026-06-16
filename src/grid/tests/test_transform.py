@@ -643,6 +643,25 @@ def test_handy_rtransform_derivatives():
         assert_allclose(third_derivative, third_derivative_fd, rtol=1e-3, atol=2e-3)
 
 
+@pytest.mark.parametrize("x_points", x_points_cases)
+def test_handy_r_transform_inverse_derivatives(x_points):
+    """Test HandyRTransform  inverse derivatives against finite difference."""
+    transform = HandyRTransform(0.1, 1.2, 2)
+    r_points = transform.transform(x_points)
+
+    first_derivative = transform.deriv_inverse(r_points)
+    first_derivative_fd = compute_fd_deriv(transform.inverse, r_points, eps=1e-4, order=1)
+    assert_allclose(first_derivative, first_derivative_fd, rtol=1e-5, atol=1e-8)
+
+    second_derivative = transform.deriv2_inverse(r_points)
+    second_derivative_fd = compute_fd_deriv(transform.inverse, r_points, eps=1e-4, order=2)
+    assert_allclose(second_derivative, second_derivative_fd, rtol=1e-4, atol=1e-6)
+
+    third_derivative = transform.deriv3_inverse(r_points)
+    third_derivative_fd = compute_fd_deriv(transform.inverse, r_points, eps=1e-4, order=3)
+    assert_allclose(third_derivative, third_derivative_fd, rtol=5e-3, atol=1e-4)
+
+
 class TestTransform(TestCase):
     """Transform testcase class."""
 
