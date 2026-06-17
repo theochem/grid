@@ -34,9 +34,6 @@ from grid.rtransform import (
     MultiExpRTransform,
 )
 
-x_points_cases = [np.linspace(-0.9, 0.9, 19), np.linspace(-0.9, 0.9, 10)]
-r_val_cases = [-0.9, 0.9]
-
 
 def compute_fd_deriv(fcn, x, eps, order):
     """
@@ -81,6 +78,9 @@ def transformation_case(transform_class, kwargs):
         id=f"{transform_class.__name__}[{param_str}]",
     )
 
+
+# odd and even point distribution cases in [-1, 1]
+x_points_cases = [np.linspace(-0.9, 0.9, 19), np.linspace(-0.9, 0.9, 10)]
 
 # cases for testing init raises on invalid initialization parameters
 INVALID_INITIALIZE_CASES = [
