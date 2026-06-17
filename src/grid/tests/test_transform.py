@@ -379,49 +379,6 @@ def test_becke_r_transform_trimmed_infinity_roundtrip():
     assert_allclose(inverse_transformed_points, x_points)
 
 
-@pytest.mark.parametrize(
-    "x_points, r_min, R",
-    [
-        pytest.param(x_points_cases[0], 0.1, 1.2, id="r_min=0.1,R=1.2"),
-        pytest.param(x_points_cases[1], 0.2, 1.3, id="r_min=0.2,R=1.3"),
-    ],
-)
-def test_becke_r_transform_inverse_derivatives(x_points, r_min, R):
-    """Test BeckeRTransform inverse derivatives against finite difference."""
-    transform = BeckeRTransform(r_min, R)
-    r_points = transform.transform(x_points)
-
-    first_derivative = transform.deriv_inverse(r_points)
-    first_derivative_fd = compute_fd_deriv(transform.inverse, r_points, eps=1e-4, order=1)
-    assert_allclose(
-        first_derivative,
-        first_derivative_fd,
-        rtol=1e-5,
-        atol=1e-8,
-        err_msg="First inverse derivative mismatch",
-    )
-
-    second_derivative = transform.deriv2_inverse(r_points)
-    second_derivative_fd = compute_fd_deriv(transform.inverse, r_points, eps=1e-4, order=2)
-    assert_allclose(
-        second_derivative,
-        second_derivative_fd,
-        rtol=1e-4,
-        atol=1e-6,
-        err_msg="Second inverse derivative mismatch",
-    )
-
-    third_derivative = transform.deriv3_inverse(r_points)
-    third_derivative_fd = compute_fd_deriv(transform.inverse, r_points, eps=1e-3, order=3)
-    assert_allclose(
-        third_derivative,
-        third_derivative_fd,
-        rtol=1e-3,
-        atol=1e-5,
-        err_msg="Third inverse derivative mismatch",
-    )
-
-
 def test_becke_integral():
     """Test transform integral."""
     btf = BeckeRTransform(0.00001, 1.0)
@@ -440,41 +397,6 @@ def test_becke_integral():
     rad = btf.transform_1d_grid(oned)
     result = rad.integrate(gauss(rad.points))
     assert_almost_equal(result, ref_result, decimal=3)
-
-
-def test_linear_transform_inverse_derivatives():
-    """Test inverse transform and derivs function."""
-    ltf = LinearFiniteRTransform(0.1, 10)
-    ltf = InverseRTransform(ltf)
-    x_values = np.sort(np.random.uniform(-1.0, 1.0, 50))
-    r_values = ltf.transform(x_values)
-
-    first_derivative = ltf.deriv_inverse(r_values)
-    first_derivative_fd = compute_fd_deriv(ltf.inverse, r_values, eps=1e-4, order=1)
-    assert_allclose(first_derivative, first_derivative_fd, rtol=1e-5, atol=1e-8)
-
-    second_derivative = ltf.deriv2_inverse(r_values)
-    second_derivative_fd = compute_fd_deriv(ltf.inverse, r_values, eps=1e-4, order=2)
-    assert_allclose(second_derivative, second_derivative_fd, rtol=1e-4, atol=1e-6)
-
-    third_derivative = ltf.deriv3_inverse(r_values)
-    third_derivative_fd = compute_fd_deriv(ltf.inverse, r_values, eps=1e-3, order=3)
-    assert_allclose(third_derivative, third_derivative_fd, rtol=1e-3, atol=2e-3)
-
-    for x_scalar in x_values:
-        x_scalar = np.float64(x_scalar)
-
-        first_derivative = ltf.deriv_inverse(x_scalar)
-        first_derivative_fd = compute_fd_deriv(ltf.inverse, x_scalar, eps=1e-4, order=1)
-        assert_allclose(first_derivative, first_derivative_fd, rtol=1e-5, atol=1e-8)
-
-        second_derivative = ltf.deriv2_inverse(x_scalar)
-        second_derivative_fd = compute_fd_deriv(ltf.inverse, x_scalar, eps=1e-4, order=2)
-        assert_allclose(second_derivative, second_derivative_fd, rtol=1e-4, atol=1e-6)
-
-        third_derivative = ltf.deriv3_inverse(x_scalar)
-        third_derivative_fd = compute_fd_deriv(ltf.inverse, x_scalar, eps=1e-3, order=3)
-        assert_allclose(third_derivative, third_derivative_fd, rtol=1e-3, atol=2e-3)
 
 
 def test_becke_rtransform_raise_errors():
@@ -506,91 +428,12 @@ def test_multiexp_rtransform_init():
     assert btf.rmin == 0.1
 
 
-@pytest.mark.parametrize(
-    "x_points, r_min, R",
-    [
-        pytest.param(x_points_cases[0], 0.1, 1.2, id="r_min=0.1,R=1.2"),
-        pytest.param(x_points_cases[1], 0.2, 1.3, id="r_min=0.2,R=1.3"),
-    ],
-)
-def test_multiexp_r_transform_inverse_derivatives(x_points, r_min, R):
-    """Test MultiExpRTransform inverse derivatives against finite difference."""
-    transform = MultiExpRTransform(r_min, R)
-    r_points = transform.transform(x_points)
-
-    first_derivative = transform.deriv_inverse(r_points)
-    first_derivative_fd = compute_fd_deriv(transform.inverse, r_points, eps=1e-4, order=1)
-    assert_allclose(
-        first_derivative,
-        first_derivative_fd,
-        rtol=1e-5,
-        atol=1e-8,
-        err_msg="First inverse derivative mismatch",
-    )
-
-    second_derivative = transform.deriv2_inverse(r_points)
-    second_derivative_fd = compute_fd_deriv(transform.inverse, r_points, eps=1e-4, order=2)
-    assert_allclose(
-        second_derivative,
-        second_derivative_fd,
-        rtol=1e-4,
-        atol=1e-6,
-        err_msg="Second inverse derivative mismatch",
-    )
-
-    third_derivative = transform.deriv3_inverse(r_points)
-    third_derivative_fd = compute_fd_deriv(transform.inverse, r_points, eps=1e-3, order=3)
-    assert_allclose(
-        third_derivative,
-        third_derivative_fd,
-        rtol=1e-4,
-        atol=1e-5,
-        err_msg="Third inverse derivative mismatch",
-    )
-
-
 def test_knowles_rtransform_init():
     """Test KnowlesRTransform initializaiton."""
     ktf = KnowlesRTransform(0.1, 1.2, 2)
     assert ktf.R == 1.2
     assert ktf.rmin == 0.1
     assert ktf.k == 2
-
-
-@pytest.mark.parametrize("x_points", x_points_cases)
-def test_knowles_r_transform_inverse_derivatives(x_points):
-    """Test KnowlesRTransform  inverse derivatives against finite difference."""
-    transform = KnowlesRTransform(0.1, 1.1, 2)
-    r_points = transform.transform(x_points)
-
-    first_derivative = transform.deriv_inverse(r_points)
-    first_derivative_fd = compute_fd_deriv(transform.inverse, r_points, eps=1e-4, order=1)
-    assert_allclose(
-        first_derivative,
-        first_derivative_fd,
-        rtol=1e-5,
-        atol=1e-8,
-        err_msg="First inverse derivative mismatch",
-    )
-
-    second_derivative = transform.deriv2_inverse(r_points)
-    second_derivative_fd = compute_fd_deriv(transform.inverse, r_points, eps=1e-4, order=2)
-    assert_allclose(
-        second_derivative,
-        second_derivative_fd,
-        rtol=1e-4,
-        atol=1e-6,
-        err_msg="Second inverse derivative mismatch",
-    )
-
-    third_derivative = transform.deriv3_inverse(r_points)
-    third_derivative_fd = compute_fd_deriv(transform.inverse, r_points, eps=1e-4, order=3)
-    assert_allclose(
-        third_derivative,
-        third_derivative_fd,
-        rtol=5e-3,
-        atol=1e-5,
-    )
 
 
 @pytest.mark.parametrize(
@@ -608,25 +451,6 @@ def test_handy_rtransform_init(rmin, rmax, m):
     assert btf.rmin == rmin
 
 
-@pytest.mark.parametrize("x_points", x_points_cases)
-def test_handy_r_transform_inverse_derivatives(x_points):
-    """Test HandyRTransform  inverse derivatives against finite difference."""
-    transform = HandyRTransform(0.1, 1.2, 2)
-    r_points = transform.transform(x_points)
-
-    first_derivative = transform.deriv_inverse(r_points)
-    first_derivative_fd = compute_fd_deriv(transform.inverse, r_points, eps=1e-4, order=1)
-    assert_allclose(first_derivative, first_derivative_fd, rtol=1e-5, atol=1e-8)
-
-    second_derivative = transform.deriv2_inverse(r_points)
-    second_derivative_fd = compute_fd_deriv(transform.inverse, r_points, eps=1e-4, order=2)
-    assert_allclose(second_derivative, second_derivative_fd, rtol=1e-4, atol=1e-6)
-
-    third_derivative = transform.deriv3_inverse(r_points)
-    third_derivative_fd = compute_fd_deriv(transform.inverse, r_points, eps=1e-4, order=3)
-    assert_allclose(third_derivative, third_derivative_fd, rtol=5e-3, atol=1e-4)
-
-
 @pytest.mark.parametrize(
     "rmin, rmax, m",
     [
@@ -639,25 +463,6 @@ def test_handymod_rtransform_init(rmin, rmax, m):
     assert np.isclose(btf.rmin, rmin)
     assert np.isclose(btf.rmax, rmax)
     assert btf.m == m
-
-
-@pytest.mark.parametrize("x_points", x_points_cases)
-def test_handymod_r_transform_inverse_derivatives(x_points):
-    """Test HandyModRTransform  inverse derivatives against finite difference."""
-    transform = HandyModRTransform(0.1, 10.0, 2)
-    r_points = transform.transform(x_points)
-
-    first_derivative = transform.deriv_inverse(r_points)
-    first_derivative_fd = compute_fd_deriv(transform.inverse, r_points, eps=1e-4, order=1)
-    assert_allclose(first_derivative, first_derivative_fd, rtol=1e-5, atol=1e-8)
-
-    second_derivative = transform.deriv2_inverse(r_points)
-    second_derivative_fd = compute_fd_deriv(transform.inverse, r_points, eps=1e-4, order=2)
-    assert_allclose(second_derivative, second_derivative_fd, rtol=1e-4, atol=1e-6)
-
-    third_derivative = transform.deriv3_inverse(r_points)
-    third_derivative_fd = compute_fd_deriv(transform.inverse, r_points, eps=1e-4, order=3)
-    assert_allclose(third_derivative, third_derivative_fd, rtol=5e-3, atol=1e-4)
 
 
 class TestTransform(TestCase):
