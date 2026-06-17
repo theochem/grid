@@ -380,24 +380,25 @@ def test_becke_r_transform_trimmed_infinity_roundtrip():
     assert_allclose(inverse_transformed_points, x_points)
 
 
-def test_becke_integral():
-    """Test transform integral."""
-    btf = BeckeRTransform(0.00001, 1.0)
+@pytest.mark.parametrize("transform_class, kwargs", VALID_TRANSFORM_CASES)
+def test_transform_integral_consistency(transform_class, kwargs):
+    """Test change-of-variables consistency between reference and transformed quadrature grids."""
+    N = 50
+    transform = transform_class(**kwargs)
 
-    def gauss(x):
-        return np.exp(-(x**2))
+    onedgrid = GaussLegendre(N)
+    rgrid = transform.transform_1d_grid(onedgrid)
 
-    ref_result = np.sqrt(np.pi) / 2
+    def f(r):
+        return np.exp(-(r**2))
 
-    oned = GaussLegendre(20)
-    rad = btf.transform_1d_grid(oned)
-    result = rad.integrate(gauss(rad.points))
-    assert_almost_equal(result, ref_result, decimal=5)
+    # integral in reference-space quadrature applying change-of-variables: f(r(x)) * dr/dx
+    ref_int = onedgrid.integrate(f(rgrid.points) * transform.deriv(onedgrid.points))
 
-    oned = GaussChebyshev(20)
-    rad = btf.transform_1d_grid(oned)
-    result = rad.integrate(gauss(rad.points))
-    assert_almost_equal(result, ref_result, decimal=3)
+    # integral in physical space (Jacobian already absorbed into grid weights)
+    rgrid_int = rgrid.integrate(f(rgrid.points))
+
+    assert_allclose(ref_int, rgrid_int, atol=1e-10, rtol=1e-6)
 
 
 def test_becke_rtransform_raise_errors():
