@@ -113,7 +113,6 @@ VALID_TRANSFORM_CASES = [
     transformation_case(HandyModRTransform, dict(rmin=0.1, rmax=10.0, m=2, trim_inf=True)),
     transformation_case(HandyModRTransform, dict(rmin=0.1, rmax=10.0, m=2, trim_inf=False)),
     transformation_case(LinearFiniteRTransform, dict(rmin=0.1, rmax=10)),
-    transformation_case(LinearFiniteRTransform, dict(rmin=0.1, rmax=10)),
 ]
 
 
@@ -168,6 +167,15 @@ def test_bounded_domain_raises(transform_class, kwargs):
 
     with pytest.raises(ValueError):
         tf.transform_1d_grid(rad)
+
+
+@pytest.mark.parametrize("transform_class, kwargs", VALID_TRANSFORM_CASES)
+def test_transform_init(transform_class, kwargs):
+    "Test transform class initialization stores constructor parameters as attributes."
+    t = transform_class(**kwargs)
+
+    for k, v in kwargs.items():
+        assert getattr(t, k) == v
 
 
 @pytest.mark.parametrize("x_points", x_points_cases)
