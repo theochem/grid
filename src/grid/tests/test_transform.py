@@ -42,34 +42,37 @@ r_val_cases = [-0.9, 0.9]
 
 
 def compute_fd_deriv(fcn, x, eps, order):
-    """Calculate finite difference derivatives of a function at a point x."""
+    """
+    6th-order accurate centered finite-difference derivatives Fornberg-type stencils.
+    """
+    h = eps
+    x = np.asarray(x)
+    scalar_input = x.ndim == 0
+    x = np.atleast_1d(x)
 
+    # define stencil points and weights
     if order == 1:
-        # 4th-order centered stencil for the first derivative of inverse(r)
-        # f'(r) ~= [f(r-2h) - 8f(r-h) + 8f(r+h) - f(r+2h)] / (12h)
-        return (fcn(x - 2 * eps) - 8 * fcn(x - eps) + 8 * fcn(x + eps) - fcn(x + 2 * eps)) / (
-            12 * eps
-        )
-
-    if order == 2:
-        # 4th-order centered stencil for the second derivative of inverse(r)
-        # f''(r) ~= [-f(r+2h) + 16f(r+h) - 30f(r) + 16f(r-h) - f(r-2h)] / (12h^2)
-        return (
-            -fcn(x + 2 * eps)
-            + 16 * fcn(x + eps)
-            - 30 * fcn(x)
-            + 16 * fcn(x - eps)
-            - fcn(x - 2 * eps)
-        ) / (12 * eps**2)
-
+        offsets = np.arange(7) - 3
+        w = np.array([-1 / 60, 3 / 20, -3 / 4, 0, 3 / 4, -3 / 20, 1 / 60]) / h
+    elif order == 2:
+        offsets = np.arange(7) - 3
+        w = np.array([1 / 90, -3 / 20, 3 / 2, -49 / 18, 3 / 2, -3 / 20, 1 / 90]) / h**2
     elif order == 3:
-        # 4-point centered stencil for the third derivative of inverse(r)
-        # f'''(r) ~= [f(r+2h) - 2f(r+h) + 2f(r-h) - f(r-2h)] / (2h^3)
-        return (fcn(x + 2 * eps) - 2 * fcn(x + eps) + 2 * fcn(x - eps) - fcn(x - 2 * eps)) / (
-            2 * eps**3
+        offsets = np.arange(9) - 4
+        w = (
+            np.array(
+                [-7 / 240, 3 / 10, -169 / 120, 61 / 30, 0, -61 / 30, 169 / 120, -3 / 10, 7 / 240]
+            )
+            / h**3
         )
     else:
-        raise ValueError("Only first, second, and third derivatives are supported.")
+        raise ValueError("order must be 1, 2, or 3")
+
+    # find f(x) at the (N) points x + (K) offsets * h (N, K)
+    pts = x[:, None] + offsets[None, :] * h
+    vals = fcn(pts)
+    output = np.sum(vals * w[None, :], axis=1)
+    return output[0] if scalar_input else output
 
 
 def transformation_case(transform_class, kwargs):
