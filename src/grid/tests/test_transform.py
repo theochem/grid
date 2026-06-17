@@ -235,38 +235,18 @@ def test_deriv3_method(x_points, transform_class, kwargs):
 
     transformation = transform_class(**kwargs)
 
-    third_derivative = transformation.deriv3(x_points)
-    third_derivative_fd = compute_fd_deriv(
-        transformation.transform,
-        x_points,
-        eps=1e-4,
-        order=3,
-    )
+    d3 = transformation.deriv3(x_points)
+    d3_fd = compute_fd_deriv(transformation.transform, x_points, eps=1e-3, order=3)
 
-    assert_allclose(
-        third_derivative,
-        third_derivative_fd,
-        rtol=1e-3,
-        atol=1e-3,
-    )
+    assert_allclose(d3, d3_fd, rtol=1e-3, atol=1e-5)
 
     for x_scalar in x_points:
         x_scalar = np.float64(x_scalar)
 
-        third_derivative_scalar = transformation.deriv3(x_scalar)
-        third_derivative_fd_scalar = compute_fd_deriv(
-            transformation.transform,
-            x_scalar,
-            eps=1e-4,
-            order=3,
-        )
+        d3_scalar = transformation.deriv3(x_scalar)
+        d3_fd_scalar = compute_fd_deriv(transformation.transform, x_scalar, eps=1e-3, order=3)
 
-        assert_allclose(
-            third_derivative_scalar,
-            third_derivative_fd_scalar,
-            rtol=1e-3,
-            atol=1e-3,
-        )
+        assert_allclose(d3_scalar, d3_fd_scalar, rtol=1e-3, atol=1e-5)
 
 
 def test_becke_r_transform_init():
