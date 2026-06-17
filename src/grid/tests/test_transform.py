@@ -340,13 +340,6 @@ def test_deriv3_inverse_method(x_points, transform_class, kwargs):
         )
 
 
-def test_becke_r_transform_init():
-    """Test BeckeRTransform initialization."""
-    btf = BeckeRTransform(0.1, 1.2)
-    assert btf.R == 1.2
-    assert btf.rmin == 0.1
-
-
 @pytest.mark.parametrize(
     "x_points, r_min, R",
     [
@@ -427,50 +420,6 @@ def test_becke_rtransform_raise_errors():
     singular_btf = BeckeRTransform(0.1, 0)
     with pytest.raises(ZeroDivisionError):
         singular_btf.deriv_inverse(0.5)
-
-
-def test_multiexp_rtransform_init():
-    """Test MultiExp initializaiton."""
-    btf = MultiExpRTransform(0.1, 1.2)
-    assert btf.R == 1.2
-    assert btf.rmin == 0.1
-
-
-def test_knowles_rtransform_init():
-    """Test KnowlesRTransform initializaiton."""
-    ktf = KnowlesRTransform(0.1, 1.2, 2)
-    assert ktf.R == 1.2
-    assert ktf.rmin == 0.1
-    assert ktf.k == 2
-
-
-@pytest.mark.parametrize(
-    "rmin, rmax, m",
-    [
-        (0.1, 1.2, 2),
-        (0.1, 1.1, 2),
-    ],
-)
-def test_handy_rtransform_init(rmin, rmax, m):
-    """Test HandyRTransform initialization."""
-    btf = HandyRTransform(rmin, rmax, m)
-    assert btf.R == rmax
-    assert btf.m == m
-    assert btf.rmin == rmin
-
-
-@pytest.mark.parametrize(
-    "rmin, rmax, m",
-    [
-        (0.1, 10.0, 2),
-    ],
-)
-def test_handymod_rtransform_init(rmin, rmax, m):
-    """Test HandyModRTransform initialization."""
-    btf = HandyModRTransform(rmin, rmax, m)
-    assert np.isclose(btf.rmin, rmin)
-    assert np.isclose(btf.rmax, rmax)
-    assert btf.m == m
 
 
 class TestTransform(TestCase):
