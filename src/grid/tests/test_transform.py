@@ -271,9 +271,10 @@ def test_deriv_inverse_method(x_points, transform_class, kwargs):
     for x_scalar in x_points:
         x_scalar = np.float64(x_scalar)
 
-        dx_dr_scalar = transformation.deriv_inverse(r)
-        reference_scalar = 1.0 / transformation.deriv(x_points)
-        assert_allclose(dx_dr_scalar, reference_scalar, rtol=1e-6, atol=1e-8)
+        r_scalar = transformation.transform(x_scalar)
+        dx_dr_scalar = transformation.deriv_inverse(r_scalar)
+        reference_scalar = 1.0 / transformation.deriv(x_scalar)
+        assert_almost_equal(dx_dr_scalar, reference_scalar)
 
 
 @pytest.mark.parametrize("x_points", x_points_cases)
