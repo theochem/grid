@@ -196,19 +196,15 @@ def test_forward_inverse_consistency(x_points, transform_class, kwargs):
 def test_deriv_method(x_points, transform_class, kwargs):
     """Test that derivative method works correctly for different transform classes."""
     transformation = transform_class(**kwargs)
-    first_derivative = transformation.deriv(x_points)
-    first_derivative_fd = compute_fd_deriv(transformation.transform, x_points, eps=1e-4, order=1)
-    assert np.allclose(first_derivative, first_derivative_fd, atol=1e-6)
+    d1 = transformation.deriv(x_points)
+    d1_fd = compute_fd_deriv(transformation.transform, x_points, eps=1e-4, order=1)
+    assert np.allclose(d1, d1_fd, atol=1e-6)
 
     for x_scalar in x_points:
         x_scalar = np.float64(x_scalar)
-
-        first_derivative_scalar = transformation.deriv(x_scalar)
-        first_derivative_fd_scalar = compute_fd_deriv(
-            transformation.transform, x_scalar, eps=1e-4, order=1
-        )
-
-        assert_allclose(first_derivative_scalar, first_derivative_fd_scalar, rtol=1e-5, atol=1e-8)
+        d1_scalar = transformation.deriv(x_scalar)
+        d1_fd_scalar = compute_fd_deriv(transformation.transform, x_scalar, eps=1e-4, order=1)
+        assert_allclose(d1_scalar, d1_fd_scalar, rtol=1e-5, atol=1e-8)
 
 
 @pytest.mark.parametrize("x_points", x_points_cases)
@@ -218,20 +214,18 @@ def test_deriv2_method(x_points, transform_class, kwargs):
 
     transformation = transform_class(**kwargs)
 
-    second_derivative = transformation.deriv2(x_points)
-    second_derivative_fd = compute_fd_deriv(transformation.transform, x_points, eps=1e-4, order=2)
+    d2 = transformation.deriv2(x_points)
+    d2_fd = compute_fd_deriv(transformation.transform, x_points, eps=1e-4, order=2)
 
-    assert_allclose(second_derivative, second_derivative_fd, rtol=1e-4, atol=1e-6)
+    assert_allclose(d2, d2_fd, rtol=1e-4, atol=1e-6)
 
     for x_scalar in x_points:
         x_scalar = np.float64(x_scalar)
 
-        second_derivative_scalar = transformation.deriv2(x_scalar)
-        second_derivative_fd_scalar = compute_fd_deriv(
-            transformation.transform, x_scalar, eps=1e-4, order=2
-        )
+        d2_scalar = transformation.deriv2(x_scalar)
+        d2_fd_scalar = compute_fd_deriv(transformation.transform, x_scalar, eps=1e-4, order=2)
 
-        assert_allclose(second_derivative_scalar, second_derivative_fd_scalar, rtol=1e-4, atol=1e-6)
+        assert_allclose(d2_scalar, d2_fd_scalar, rtol=1e-4, atol=1e-6)
 
 
 @pytest.mark.parametrize("x_points", x_points_cases)
