@@ -249,6 +249,27 @@ def test_deriv3_method(x_points, transform_class, kwargs):
         assert_allclose(d3_scalar, d3_fd_scalar, rtol=1e-3, atol=1e-5)
 
 
+@pytest.mark.parametrize("x_points", x_points_cases)
+@pytest.mark.parametrize("transform_class, kwargs", VALID_TRANSFORM_CASES)
+def test_deriv_inverse_method(x_points, transform_class, kwargs):
+    """Test third derivative against finite-difference approximation."""
+
+    transformation = transform_class(**kwargs)
+
+    r = transformation.transform(x_points)
+    dx_dr = transformation.deriv_inverse(r)
+    reference = 1.0 / transformation.deriv(x_points)
+
+    assert_allclose(dx_dr, reference, rtol=1e-6, atol=1e-8)
+
+    for x_scalar in x_points:
+        x_scalar = np.float64(x_scalar)
+
+        dx_dr_scalar = transformation.deriv_inverse(r)
+        reference_scalar = 1.0 / transformation.deriv(x_points)
+        assert_allclose(dx_dr_scalar, reference_scalar, rtol=1e-6, atol=1e-8)
+
+
 def test_becke_r_transform_init():
     """Test BeckeRTransform initialization."""
     btf = BeckeRTransform(0.1, 1.2)
