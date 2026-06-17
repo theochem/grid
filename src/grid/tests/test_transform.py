@@ -252,7 +252,7 @@ def test_deriv3_method(x_points, transform_class, kwargs):
 @pytest.mark.parametrize("x_points", x_points_cases)
 @pytest.mark.parametrize("transform_class, kwargs", VALID_TRANSFORM_CASES)
 def test_deriv_inverse_method(x_points, transform_class, kwargs):
-    """Test third derivative against finite-difference approximation."""
+    """Test deriv_inverse method."""
 
     transformation = transform_class(**kwargs)
 
@@ -268,6 +268,33 @@ def test_deriv_inverse_method(x_points, transform_class, kwargs):
         dx_dr_scalar = transformation.deriv_inverse(r)
         reference_scalar = 1.0 / transformation.deriv(x_points)
         assert_allclose(dx_dr_scalar, reference_scalar, rtol=1e-6, atol=1e-8)
+
+
+@pytest.mark.parametrize("x_points", x_points_cases)
+@pytest.mark.parametrize("transform_class, kwargs", VALID_TRANSFORM_CASES)
+def test_deriv2_inverse_method(x_points, transform_class, kwargs):
+    """Test deriv2_inverse method"""
+
+    transformation = transform_class(**kwargs)
+
+    x = np.asarray(x_points)
+    r = transformation.transform(x_points)
+    dx2_dr2 = transformation.deriv2_inverse(r)
+    d1 = transformation.deriv(x_points)
+    d2 = transformation.deriv2(x_points)
+    reference = -d2 / (d1**3)
+
+    assert_allclose(dx2_dr2, reference, rtol=1e-6, atol=1e-8)
+
+    for x_scalar in x_points:
+        x_scalar = np.float64(x_scalar)
+        r_scalar = transformation.transform(x_scalar)
+        dx2_dr2 = transformation.deriv2_inverse(r_scalar)
+        d1_scalar = transformation.deriv(x_scalar)
+        d2_scalar = transformation.deriv2(x_scalar)
+        reference = -d2_scalar / (d1_scalar**3)
+
+        assert_allclose(dx2_dr2, reference, rtol=1e-6, atol=1e-8)
 
 
 def test_becke_r_transform_init():
