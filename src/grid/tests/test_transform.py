@@ -67,7 +67,8 @@ def compute_fd_deriv(fcn, x, eps, order):
 
     # find f(x) at the (N) points x + (K) offsets * h (N, K)
     pts = x[:, None] + offsets[None, :] * h
-    vals = fcn(pts)
+    # Evaluate on a flattened array to match the 1D input contract of radial transforms.
+    vals = fcn(pts.reshape(-1)).reshape(pts.shape)
     output = np.sum(vals * w[None, :], axis=1)
     return output[0] if scalar_input else output
 
