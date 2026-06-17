@@ -135,19 +135,13 @@ def test_base_transform_convert_inf():
 
     tf = DummyTransform()
 
-    # Array case
     input_vals = np.array([-np.inf, -1.0, 0.0, 1.0, np.inf])
-    results = tf._convert_inf(input_vals)
     expected = np.array([-1e16, -1.0, 0.0, 1.0, 1e16])
-    assert_allclose(expected, results)
 
-    # Scalar cases
-    assert tf._convert_inf(np.inf) == 1e16
-    assert tf._convert_inf(-np.inf) == -1e16
+    assert_allclose(tf._convert_inf(input_vals), expected)
 
-    # Finite scalar passthrough
-    assert tf._convert_inf(2.5) == 2.5
-    assert tf._convert_inf(-3.2) == -3.2
+    for value, expected_output in zip(input_vals, expected):
+        assert_almost_equal(tf._convert_inf(value), expected_output)
 
 
 @pytest.mark.parametrize("transform_class, kwargs", INVALID_INITIALIZE_CASES)
@@ -301,7 +295,7 @@ def test_deriv2_inverse_method(x_points, transform_class, kwargs):
         d2_scalar = transformation.deriv2(x_scalar)
         reference = -d2_scalar / (d1_scalar**3)
 
-        assert_allclose(dx2_dr2, reference, rtol=1e-6, atol=1e-8)
+        assert_almost_equal(dx2_dr2, reference)
 
 
 @pytest.mark.parametrize("x_points", x_points_cases)
@@ -331,12 +325,7 @@ def test_deriv3_inverse_method(x_points, transform_class, kwargs):
 
         reference_scalar = (3 * d2_scalar**2 - d1_scalar * d3_scalar) / (d1_scalar**5)
 
-        assert_allclose(
-            dx3_dr3_scalar,
-            reference_scalar,
-            rtol=1e-5,
-            atol=1e-7,
-        )
+        assert_almost_equal(dx3_dr3_scalar, reference_scalar)
 
 
 @pytest.mark.parametrize(
