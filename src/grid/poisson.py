@@ -171,6 +171,12 @@ def solve_poisson_ivp(
     r_interval: tuple = (1000, 1e-5),
     ode_params: dict | type(None) = None,
 ):
+    from grid.rtransform import InverseRTransform
+
+    if isinstance(transform, InverseRTransform):
+        transform = transform._tfm
+
+
     r"""
     Return interpolation of the solution to the Poisson equation solved as an initial value problem.
 
@@ -325,6 +331,11 @@ def solve_poisson_bvp(
     remove_large_pts: float = 1e6,
     ode_params: dict | type(None) = None,
 ):
+    from grid.rtransform import InverseRTransform
+
+    if isinstance(transform, InverseRTransform):
+        transform = transform._tfm
+
     r"""
     Return interpolation of the solution to the Poisson equation solved as a boundary value problem.
 
