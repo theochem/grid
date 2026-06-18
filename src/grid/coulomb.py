@@ -309,7 +309,12 @@ def load_atomic_gaussian_params(element: str | int) -> tuple[np.ndarray, np.ndar
                 f"Could not load pre-fitted Gaussian parameters from data: {e}"
             ) from e
 
-    data = _ATOMIC_GAUSS_PARAMS_CACHE[json_symbol]
+    try:
+        data = _ATOMIC_GAUSS_PARAMS_CACHE[json_symbol]
+    except KeyError as e:
+        raise ValueError(
+            f"Pre-fitted Gaussian parameters are not available for element: {json_symbol}"
+        ) from e
     coeffs_s = np.asarray(data["coeffs_s"], dtype=float)
     alphas_s = np.asarray(data["alphas_s"], dtype=float)
 
