@@ -20,6 +20,7 @@
 """Tests for analytical Coulomb potentials of Gaussians."""
 
 import numpy as np
+import pytest
 from numpy.testing import assert_allclose
 from scipy.special import erf
 
@@ -129,4 +130,15 @@ def test_load_atomic_gaussian_params():
     c2, a2 = load_atomic_gaussian_params(17)
     assert_allclose(c1, c2)
     assert_allclose(a1, a2)
+
+    # Error cases
+    with pytest.raises(ValueError, match="Pre-fitted Gaussian parameters are not available"):
+        load_atomic_gaussian_params("Xe")
+    
+    with pytest.raises(ValueError, match="Pre-fitted Gaussian parameters are not available"):
+        load_atomic_gaussian_params(2)
+        
+    with pytest.raises(TypeError, match="element must be a string or integer"):
+        load_atomic_gaussian_params(1.0)
+
 
