@@ -109,9 +109,8 @@ def solve_ode_ivp(
         # x has shape (1,) and y has shape (K+1,1), output has shape (K+1,1)
         x = np.array([x])
         if transform:
-            # Transform the points back to the original domain.
-            orig_dom = transform.inverse(x)
-            dy_dx = _transform_and_rearrange_to_explicit_ode(orig_dom, y, coeffs, transform, fx)
+            # x here is in the finite domain; pass it directly.
+            dy_dx = _transform_and_rearrange_to_explicit_ode(x, y, coeffs, transform, fx)
         else:
             coeffs_mt = _evaluate_coeffs_on_points(x, coeffs)
             dy_dx = _rearrange_to_explicit_ode(y, coeffs_mt, fx(x))
@@ -120,21 +119,21 @@ def solve_ode_ivp(
         return np.vstack((*y[1:, :], dy_dx))
 
     if transform:
-        # first check if the bounds are in the domain
-        if min(x_span) < transform.domain[0] or max(x_span) > transform.domain[1]:
+        # first check if the bounds are in the codomain (infinite domain r ∈ [0,∞))
+        if min(x_span) < transform.codomain[0] or max(x_span) > transform.codomain[1]:
             raise ValueError(
                 f"The x_span {min(x_span), max(x_span)} is not within the transform "
                 f"domain {transform.domain}."
             )
         # Convert the initial value problem to the new derivative space, only transform up to K-1
-        # e.g. the first derivative dV/dx = dV/dr * dr/dx = dV/dr / (dx/dr)
+        # e.g. the first derivative dV/dx = dV/dr * dr/dx = dV/dr * deriv_inverse
         deriv = _derivative_transformation_matrix(
-            [transform.deriv, transform.deriv2, transform.deriv3],
+            [transform.deriv_inverse, transform.deriv2_inverse, transform.deriv3_inverse],
             x_span[0],
             order - 1,  # Only need derivatives up to K-1.
         )
-        # If transform is used, then transform (x_0, x_1) that it integrates up to.
-        x_span = transform.transform(np.array(list(x_span)))
+        # If transform is used, map (r0, r1) to finite domain (x0, x1) via inverse.
+        x_span = transform.inverse(np.array(list(x_span)))
         # Solve for derivatives in original domain by solving A(original derivs) = new derivs
         y_derivs = solve(deriv, np.array(y0[1:]))
         if np.any(np.isinf(y_derivs)):
@@ -236,9 +235,8 @@ def solve_ode_bvp(
     def func(x, y):
         # x has shape (N,) and y has shape (K+1, N), output has shape (K+1, N)
         if transform:
-            # Transform the points back to the original domain.
-            orig_dom = transform.inverse(x)
-            dy_dx = _transform_and_rearrange_to_explicit_ode(orig_dom, y, coeffs, transform, fx)
+            # x here is in the finite domain; pass it directly.
+            dy_dx = _transform_and_rearrange_to_explicit_ode(x, y, coeffs, transform, fx)
         else:
             coeffs_mt = _evaluate_coeffs_on_points(x, coeffs)
             dy_dx = _rearrange_to_explicit_ode(y, coeffs_mt, fx(x))
@@ -262,7 +260,8 @@ def solve_ode_bvp(
 
     # Solve the ODE
     if transform:
-        pts_tf = transform.transform(x)
+        # Map the radial points r to finite domain x via the forward transform's inverse.
+        pts_tf = transform.inverse(x)
         res = solve_bvp(func, bc, pts_tf, y=initial_guess_y, tol=tol, max_nodes=max_nodes)
     else:
         res = solve_bvp(func, bc, x, y=initial_guess_y, tol=tol, max_nodes=max_nodes)
@@ -284,7 +283,8 @@ def _transform_solution_to_original_domain(result, tf, no_derivs, order):
 
     # Note this is it's own function becuase it is used twice for solve_ode_ivp and bv.
     def interpolate_wrt_original_var(pt):
-        transf_pts = tf.transform(pt)
+        # Map radial points r to finite domain x via the forward transform's inverse.
+        transf_pts = tf.inverse(pt)
         # Row is which func/deriv and Col is points.
         interpolated = result.sol(transf_pts)
         # If derivatives are not wanted then only return y(x).
@@ -292,11 +292,14 @@ def _transform_solution_to_original_domain(result, tf, no_derivs, order):
             if interpolated.ndim == 1:
                 return interpolated
             return interpolated[0, :]
-        deriv_funcs = [tf.deriv, tf.deriv2, tf.deriv3]
+        # Use inverse derivative methods from BaseTransform (added in #307).
+        # The ODE is solved in the transformed domain x; converting back to r requires
+        # dx/dr derivatives, i.e. the derivatives of the inverse transformation.
+        deriv_funcs = [tf.deriv_inverse, tf.deriv2_inverse, tf.deriv3_inverse]
         new_interpolate = np.zeros(interpolated.shape)
         new_interpolate[0, :] = interpolated[0, :]
         for i in range(interpolated.shape[1]):
-            # Calculate the jacobian dr/dx of the original domain.
+            # Calculate the jacobian dx/dr of the original domain.
             deriv = _derivative_transformation_matrix(deriv_funcs, pt[i], order - 1)
             new_interpolate[1:, i] = deriv.dot(interpolated[1:, i])
         return new_interpolate
@@ -407,8 +410,12 @@ def _transform_ode_from_rtransform(coeff_a: list | np.ndarray, tf: BaseTransform
         Coefficients :math:`b_j(r)` of the new ODE with respect to transformed variable :math:`r`.
 
     """
-    deriv_func = [tf.deriv, tf.deriv2, tf.deriv3]
-    return _transform_ode_from_derivs(coeff_a, deriv_func, x)
+    # x here is the finite domain points of tf.
+    # We want to transform the ODE from the infinite domain r = tf(x) to the finite domain x.
+    r = tf.transform(x)
+    # The derivatives we need are the derivatives of the inverse transform (dr -> dx), i.e. tf.deriv_inverse
+    deriv_func = [tf.deriv_inverse, tf.deriv2_inverse, tf.deriv3_inverse]
+    return _transform_ode_from_derivs(coeff_a, deriv_func, r)
 
 
 def _transform_and_rearrange_to_explicit_ode(
@@ -442,8 +449,9 @@ def _transform_and_rearrange_to_explicit_ode(
         to explicit form evaluated on all N points.
 
     """
+    orig_dom = tf.transform(x)
     coeff_b = _transform_ode_from_rtransform(coeff_a, tf, x)
-    result = _rearrange_to_explicit_ode(y, coeff_b, fx_func(x))
+    result = _rearrange_to_explicit_ode(y, coeff_b, fx_func(orig_dom))
     return result
 
 

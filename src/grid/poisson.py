@@ -194,9 +194,11 @@ def solve_poisson_ivp(
         spherical harmonic basis.
     func_vals : ndarray(N,)
         The function values evaluated on all :math:`N` points on the molecular grid.
-    transform : BaseTransform, optional
-        Transformation from infinite domain :math:`r \in [0, \infty)` to another
-        domain that is a finite.
+    transform : BaseTransform
+        Forward transformation from the finite domain :math:`x` to the infinite radial
+        domain :math:`r \in [0, \infty)`, i.e. the same transform used to construct the
+        atomic grid. Inverse-related quantities are computed internally via
+        ``BaseTransform.deriv_inverse`` and related methods.
     r_interval : tuple, optional
         The interval :math:`(b, a)` of :math:`r` for which the ODE solver will start from and end,
         where :math:`b>a`\. The value :math:`b` should be large as it determines the asymptotic
@@ -244,10 +246,10 @@ def _solve_poisson_bvp_atomgrid(
         sph_o_l = generate_real_spherical_harmonics(0, np.array([0.1]), np.array([0.1]))
         boundary = atomgrid.integrate(func_vals) / sph_o_l[0, 0]
 
-    # Check if the domain of transform is in [0, \infty)
-    domain = transform.domain
-    if domain[0] < 0.0:
-        raise ValueError(f"The domain of the transform {domain} should be in [0, infinity).")
+    # Check if the codomain of transform is in [0, \infty)
+    codomain = transform.codomain
+    if codomain[0] < 0.0:
+        raise ValueError(f"The codomain of the transform {codomain} should be in [0, infinity).")
 
     # Get the radial components from expanding func into real spherical harmonics.
     radial_components = atomgrid.radial_component_splines(func_vals)
@@ -346,9 +348,11 @@ def solve_poisson_bvp(
         harmonic basis.
     func_vals : ndarray(N,)
         The function values evaluated on all :math:`N` points on the molecular grid.
-    transform : BaseTransform, optional
-        Transformation from infinite domain :math:`r \in [0, \infty)` to another
-        domain that is a finite.
+    transform : BaseTransform
+        Forward transformation from the finite domain :math:`x` to the infinite radial
+        domain :math:`r \in [0, \infty)`, i.e. the same transform used to construct the
+        atomic grid. Inverse-related quantities are computed internally via
+        ``BaseTransform.deriv_inverse`` and related methods.
     boundary : float, optional
         The boundary value of :math:`g` in the limit of r to infinity.
     include_origin : bool, optional

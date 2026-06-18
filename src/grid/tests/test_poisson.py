@@ -31,7 +31,6 @@ from grid.poisson import interpolate_laplacian, solve_poisson_bvp, solve_poisson
 from grid.rtransform import (
     BeckeRTransform,
     IdentityRTransform,
-    InverseRTransform,
     LinearFiniteRTransform,
 )
 from grid.utils import convert_cart_to_sph, generate_real_spherical_harmonics
@@ -221,7 +220,7 @@ def test_poisson_bvp_on_unit_charge_distribution(oned, tf, remove_large_pts, cen
     potential = solve_poisson_bvp(
         molgrids,
         charge_distribution(molgrids.points, centers=centers),
-        InverseRTransform(tf),
+        tf,
         remove_large_pts=remove_large_pts,
         include_origin=True,
     )
@@ -265,7 +264,7 @@ def test_poisson_bvp_gives_the_correct_laplacian(func, centers):
     potential = solve_poisson_bvp(
         molgrids,
         func(molgrids.points, centers),
-        InverseRTransform(btf),
+        btf,
         include_origin=True,
         remove_large_pts=10.0,
     )
@@ -320,7 +319,7 @@ def test_poisson_ivp_gives_the_correct_laplacian(func, centers):
     potential = solve_poisson_ivp(
         molgrids,
         func(molgrids.points, centers),
-        InverseRTransform(btf),
+        btf,
         r_interval=(np.max(radial.points), np.min(radial.points)),
     )
 
@@ -377,7 +376,7 @@ def test_poisson_ivp_on_unit_charge_distribution(centers):
     potential = solve_poisson_ivp(
         molgrids,
         charge_distribution(molgrids.points, centers=centers),
-        InverseRTransform(btf),
+        btf,
         r_interval=(1000.0, 1e-3),
     )
 

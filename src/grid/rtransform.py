@@ -515,7 +515,14 @@ class LinearFiniteRTransform(BaseTransform):
 
 
 class InverseRTransform(BaseTransform):
-    """Inverse transformation class for any general transformation."""
+    """Inverse transformation class for any general transformation.
+
+    .. deprecated::
+        ``InverseRTransform`` is deprecated and will be removed in a future release.
+        The inverse transformation derivatives (``deriv_inverse``, ``deriv2_inverse``,
+        ``deriv3_inverse``) are now available directly on every ``BaseTransform`` subclass.
+        Pass the forward transform and call those methods instead.
+    """
 
     def __init__(self, transform: BaseTransform):
         """Construct InverseRTransform instance.
@@ -526,6 +533,13 @@ class InverseRTransform(BaseTransform):
             One-dimension transformation instance.
 
         """
+        warnings.warn(
+            "InverseRTransform is deprecated and will be removed in a future release. "
+            "Use the forward transform directly and call deriv_inverse(), deriv2_inverse(), "
+            "or deriv3_inverse() on it instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         if not isinstance(transform, BaseTransform):
             raise TypeError(f"Input need to be a transform instance, got {type(transform)}.")
         self._tfm = transform

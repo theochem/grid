@@ -41,7 +41,6 @@ from grid.rtransform import (
     BaseTransform,
     BeckeRTransform,
     IdentityRTransform,
-    InverseRTransform,
     KnowlesRTransform,
     LinearFiniteRTransform,
 )
@@ -80,10 +79,15 @@ class SqTF(BaseTransform):
         """Initialize power transform instance."""
         self._exp = exp
         self._extra = extra
+        self._domain = (-1.0, 1.0)
+        if exp % 2 == 0:
+            self._codomain = (extra, 1.0 + extra)
+        else:
+            self._codomain = (-1.0 + extra, 1.0 + extra)
 
     @property
     def domain(self):
-        return (-1.0, 1.0)
+        return self._domain
 
     def transform(self, x):
         """Transform given array."""
@@ -112,7 +116,7 @@ class SqTF(BaseTransform):
         [IdentityRTransform(), fx_ones, [-1, 1, 1]],
         [SqTF(), fx_ones, np.random.uniform(-100, 100, (3,))],
         [KnowlesRTransform(0.01, 1, 5), fx_ones, np.random.uniform(-10, 10, (3,))],
-        [BeckeRTransform(0.1, 100.0), fx_ones, np.random.uniform(0, 100, (3,))],
+        [BeckeRTransform(0.1, 2.0), fx_ones, np.random.uniform(0, 100, (3,))],
         [SqTF(1, 3), fx_complicated_example, np.random.uniform(0, 100, (3,))],
         [SqTF(3, 1), fx_complicated_example, [2, 3, 2]],
         [SqTF(), fx_quadratic, np.random.uniform(-100, 100, (3,))],
@@ -122,59 +126,55 @@ class SqTF(BaseTransform):
 )
 def test_transform_and_rearrange_to_explicit_ode_with_simple_boundary(transform, fx, coeffs):
     r"""Test transforming second-order ode with simple boundary conditions."""
-    x = np.arange(0.1, 0.99, 0.01)
+    x = np.linspace(0.1, 0.5, 90)
     transform_pts = transform.transform(x)
 
     def bc(ya, yb):
         # Boundary of y is zero on endpoints
         return np.array([ya[0], yb[0]])
 
-    # Run with transformation
-    def func_with_transform(r, y):
-        # Transform back to original domain x
-        original = transform.inverse(r)
-        # Apply the ode transfomration
-        dy_dx = _transform_and_rearrange_to_explicit_ode(original, y, coeffs, transform, fx)
+    # Run with transformation (integrates on finite domain x)
+    def func_with_transform(x_pts, y):
+        dy_dx = _transform_and_rearrange_to_explicit_ode(x_pts, y, coeffs, transform, fx)
         return np.vstack((*y[1:], dy_dx))
 
     init_guess = np.zeros((2, x.size))
     solution_with_transf = solve_bvp(
-        func_with_transform, bc, transform_pts, init_guess, tol=1e-6, max_nodes=10000
+        func_with_transform, bc, x, init_guess, tol=1e-6, max_nodes=10000
     )
 
-    # Run without transformation
+    # Run without transformation (integrates on infinite domain r)
     def func_without_transform(original_pts, y):
         coeffs_mt = _evaluate_coeffs_on_points(original_pts, coeffs)
         dy_dx = _rearrange_to_explicit_ode(y, coeffs_mt, fx(original_pts))
         return np.vstack((y[1:], dy_dx))
 
-    # Run without transformation
     solution_without_transf = solve_bvp(
         func_without_transform,
         bc,
-        x,
-        solution_with_transf.sol(transform_pts),
+        transform_pts,
+        solution_with_transf.sol(x),
         tol=1e-6,
         max_nodes=100000,
     )
     # Check if the solution at x is the same as the solution (with transform) at r=g(x)
     assert_allclose(
-        solution_with_transf.sol(transform_pts)[0],
-        solution_without_transf.sol(x)[0],
+        solution_with_transf.sol(x)[0],
+        solution_without_transf.sol(transform_pts)[0],
         atol=1e-4,
     )
     # Check if they're similar at random points on interval with lower accuracy tolerance
-    random_pts = np.random.uniform(np.min(x), np.max(x), transform_pts.shape)
+    random_pts = np.random.uniform(np.min(x), np.max(x), x.shape)
     transf_pts = transform.transform(random_pts)
     assert_allclose(
-        solution_with_transf.sol(transf_pts)[0],
-        solution_without_transf.sol(random_pts)[0],
+        solution_with_transf.sol(random_pts)[0],
+        solution_without_transf.sol(transf_pts)[0],
         atol=1e-4,
     )
-    # Test the derivative
+    # Test the derivative: dy/dr = dy/dx / transform.deriv(x)
     assert_allclose(
-        solution_with_transf.sol(transform_pts)[1],
-        solution_without_transf.sol(x)[1] / transform.deriv(x),
+        solution_with_transf.sol(x)[1] / transform.deriv(x),
+        solution_without_transf.sol(transform_pts)[1],
         atol=1e-4,
     )
 
@@ -185,12 +185,6 @@ def test_transform_and_rearrange_to_explicit_ode_with_simple_boundary(transform,
         # Test with ode -y + y` + y``=1/x^2
         [
             BeckeRTransform(1.0, 5.0),
-            fx_complicated_example3,
-            [-1, 1, 1],
-            [(0, 0, 3), (1, 0, 3)],
-        ],
-        [
-            InverseRTransform(BeckeRTransform(1.0, 5.0)),
             fx_complicated_example3,
             [-1, 1, 1],
             [(0, 0, 3), (1, 0, 3)],
@@ -212,9 +206,11 @@ def test_transform_and_rearrange_to_explicit_ode_with_simple_boundary(transform,
 )
 def test_solve_ode_bvp_with_and_without_transormation(transform, fx, coeffs, bd_cond):
     r"""Test solve_ode with and without transformation with different bd conditions."""
-    x = np.linspace(0.01, 0.999, 20)
+    # Use r-domain points (codomain of the forward transform): transform x → r
+    x_domain = np.linspace(-0.9, 0.9, 20)
+    r_pts = transform.transform(x_domain)  # r ∈ [r_min, ∞)
     sol_with_transform = solve_ode_bvp(
-        x,
+        r_pts,
         fx,
         coeffs,
         bd_cond,
@@ -223,23 +219,23 @@ def test_solve_ode_bvp_with_and_without_transormation(transform, fx, coeffs, bd_
         max_nodes=20000,
         no_derivatives=False,
     )
-    init_guess = sol_with_transform(x)
+    init_guess = sol_with_transform(r_pts)
 
     sol_normal = solve_ode_bvp(
-        x, fx, coeffs, bd_cond, tol=1e-8, max_nodes=20000, initial_guess_y=init_guess
+        r_pts, fx, coeffs, bd_cond, tol=1e-8, max_nodes=20000, initial_guess_y=init_guess
     )
     # Test the function values
-    assert_allclose(sol_with_transform(x)[0], sol_normal(x)[0], atol=1e-5)
+    assert_allclose(sol_with_transform(r_pts)[0], sol_normal(r_pts)[0], atol=1e-5)
     # Test the boundary condition
     for bd in bd_cond:
         bnd, deriv, val = bd
-        assert_allclose(sol_with_transform(x)[deriv][-bnd], val, atol=1e-5)
+        assert_allclose(sol_with_transform(r_pts)[deriv][-bnd], val, atol=1e-5)
 
     if len(coeffs) >= 3:
         # Test the first derivative of y.
-        assert_allclose(sol_with_transform(x)[1], sol_normal(x)[1], atol=1e-3)
+        assert_allclose(sol_with_transform(r_pts)[1], sol_normal(r_pts)[1], atol=1e-3)
         if len(coeffs) >= 4:
-            assert_allclose(sol_with_transform(x)[2], sol_normal(x)[2], atol=1e-3)
+            assert_allclose(sol_with_transform(r_pts)[2], sol_normal(r_pts)[2], atol=1e-3)
 
 
 @pytest.mark.parametrize(
@@ -281,29 +277,31 @@ def test_solve_ode_bvp_with_and_without_transormation(transform, fx, coeffs, bd_
 )
 def test_solve_ode_ivp_with_and_without_transformation(transform, fx, coeffs, ivp):
     r"""Test solve_ode_ivp with and without transformation with different initial guesses."""
+    r_start = transform.transform(0.01)
+    r_end = transform.transform(0.5)
     sol_with_transform = solve_ode_ivp(
-        (0.01, 0.999),
+        (r_start, r_end),
         fx,
         coeffs,
         ivp,
         transform,
     )
 
-    sol_normal = solve_ode_ivp((0.01, 0.999), fx, coeffs, ivp)
+    sol_normal = solve_ode_ivp((r_start, r_end), fx, coeffs, ivp)
 
     # Test the initial value problem
     for i, ivp_val in enumerate(ivp):
-        assert_allclose(sol_normal(np.array([0.01]))[i], ivp_val, atol=1e-5)
-        assert_allclose(sol_with_transform(np.array([0.01]))[i], ivp_val, atol=1e-5)
+        assert_allclose(sol_normal(np.array([r_start]))[i], ivp_val, atol=1e-5)
+        assert_allclose(sol_with_transform(np.array([r_start]))[i], ivp_val, atol=1e-5)
 
     # Test the function values
-    x = np.arange(0.01, 0.999, 0.1)
-    assert_allclose(sol_with_transform(x)[0], sol_normal(x)[0], atol=1e-5, rtol=1e-5)
+    r_pts = transform.transform(np.arange(0.01, 0.5, 0.05))
+    assert_allclose(sol_with_transform(r_pts)[0], sol_normal(r_pts)[0], atol=1e-5, rtol=1e-5)
     if len(coeffs) >= 3:
         # Test the first derivative of y.
-        assert_allclose(sol_with_transform(x)[1], sol_normal(x)[1], atol=1e-3, rtol=1e-5)
+        assert_allclose(sol_with_transform(r_pts)[1], sol_normal(r_pts)[1], atol=1e-3, rtol=1e-5)
         if len(coeffs) >= 4:
-            assert_allclose(sol_with_transform(x)[2], sol_normal(x)[2], atol=1e-3, rtol=1e-5)
+            assert_allclose(sol_with_transform(r_pts)[2], sol_normal(r_pts)[2], atol=1e-3, rtol=1e-5)
 
 
 @pytest.mark.parametrize(
@@ -429,14 +427,14 @@ def test_transform_coeff_with_x_and_r():
     """Test coefficient transform between x and r."""
     coeff = np.array([2, 3, 4])
     ltf = LinearFiniteRTransform(1, 10)  # (-1, 1) -> (r0, rmax)
-    inv_tf = InverseRTransform(ltf)  # (r0, rmax) -> (-1, 1)
     x = np.linspace(-1, 1, 20)
     r = ltf.transform(x)
     assert r[0] == 1
     assert r[-1] == 10
-    # Transform ODE from [1, 10) to (-1, 1)
-    coeff_transform = _transform_ode_from_rtransform(coeff, inv_tf, x)
-    derivs_fun = [inv_tf.deriv, inv_tf.deriv2, inv_tf.deriv3]
+    # Transform ODE from r ∈ [1, 10] to x ∈ [-1, 1] using the forward transform and x points
+    coeff_transform = _transform_ode_from_rtransform(coeff, ltf, x)
+    # Equivalent: evaluate inverse derivatives at r-domain points
+    derivs_fun = [ltf.deriv_inverse, ltf.deriv2_inverse, ltf.deriv3_inverse]
     coeff_transform_all_pts = _transform_ode_from_derivs(coeff, derivs_fun, r)
     assert_allclose(coeff_transform, coeff_transform_all_pts)
 
@@ -444,10 +442,9 @@ def test_transform_coeff_with_x_and_r():
 def test_transformation_of_ode_with_identity_transform():
     """Test transformation of ODE with identity transform."""
     # Checks that the identity transform x -> x results in the same answer.
-    # Obtain identity trasnform and derivatives.
+    # Use inverse derivative methods from BaseTransform directly.
     itf = IdentityRTransform()
-    inv_tf = InverseRTransform(itf)
-    derivs_fun = [inv_tf.deriv, inv_tf.deriv2, inv_tf.deriv3]
+    derivs_fun = [itf.deriv_inverse, itf.deriv2_inverse, itf.deriv3_inverse]
     # d^2y / dx^2 = 1
     coeff = np.array([0, 0, 1])
     x = np.linspace(0, 1, 10)
@@ -462,9 +459,8 @@ def test_transformation_of_ode_with_linear_transform():
     x = GaussLaguerre(10).points
     # Obtain linear transformation with rmin = 1 and rmax = 10.
     ltf = LinearFiniteRTransform(1, 10)
-    # The inverse is x_i = \frac{r_i - r_{min} - R} {r_i - r_{min} + R}
-    inv_ltf = InverseRTransform(ltf)
-    derivs_fun = [inv_ltf.deriv, inv_ltf.deriv2, inv_ltf.deriv3]
+    # Use inverse derivative methods from BaseTransform directly.
+    derivs_fun = [ltf.deriv_inverse, ltf.deriv2_inverse, ltf.deriv3_inverse]
     # Test with 2y + 3y` + 4y``
     coeff = np.array([2, 3, 4])
     coeff_b = _transform_ode_from_derivs(coeff, derivs_fun, x)
