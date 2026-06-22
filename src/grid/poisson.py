@@ -171,12 +171,6 @@ def solve_poisson_ivp(
     r_interval: tuple = (1000, 1e-5),
     ode_params: dict | type(None) = None,
 ):
-    from grid.rtransform import InverseRTransform
-
-    if isinstance(transform, InverseRTransform):
-        transform = transform._tfm
-
-
     r"""
     Return interpolation of the solution to the Poisson equation solved as an initial value problem.
 
@@ -219,6 +213,11 @@ def solve_poisson_ivp(
         The solution to Poisson equaiton/potential :math:`g : \mathbb{R}^3 \rightarrow \mathbb{R}`\.
 
     """
+    from grid.rtransform import InverseRTransform
+
+    if isinstance(transform, InverseRTransform):
+        transform = transform._tfm
+
     return _interpolate_molgrid_helper(
         molgrid,
         func_vals,
@@ -331,11 +330,6 @@ def solve_poisson_bvp(
     remove_large_pts: float = 1e6,
     ode_params: dict | type(None) = None,
 ):
-    from grid.rtransform import InverseRTransform
-
-    if isinstance(transform, InverseRTransform):
-        transform = transform._tfm
-
     r"""
     Return interpolation of the solution to the Poisson equation solved as a boundary value problem.
 
@@ -386,6 +380,11 @@ def solve_poisson_bvp(
            polyatomic molecules. The Journal of chemical physics, 89(5), 2993-2997.
 
     """
+    from grid.rtransform import InverseRTransform
+
+    if isinstance(transform, InverseRTransform):
+        transform = transform._tfm
+
     return _interpolate_molgrid_helper(
         molgrid,
         func_vals,
