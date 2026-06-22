@@ -123,7 +123,7 @@ def solve_ode_ivp(
         if min(x_span) < transform.codomain[0] or max(x_span) > transform.codomain[1]:
             raise ValueError(
                 f"The x_span {min(x_span), max(x_span)} is not within the transform "
-                f"domain {transform.domain}."
+                f"codomain {transform.codomain}."
             )
         # Convert the initial value problem to the new derivative space, only transform up to K-1
         # e.g. the first derivative dV/dx = dV/dr * dr/dx = dV/dr * deriv_inverse
