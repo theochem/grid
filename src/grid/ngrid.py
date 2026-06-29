@@ -176,7 +176,7 @@ class MultiDomainGrid(Grid):
 
         Parameters
         ----------
-        integrand : callable
+        integrand_function : callable
             Integrand function to integrate. It must take a list of arguments (one for each domain)
             with the same dimension as the grid points used for the corresponding domain and return
             a float (e.g. a function of the form f([x1,y1,z1], [x2,y2,z2]) -> float).
