@@ -28,10 +28,16 @@ from numpy.testing import (
     assert_equal,
     assert_raises,
 )
-from scipy.spatial.transform import Rotation as R
 from scipy.integrate import trapezoid
+from scipy.spatial.transform import Rotation as R
 
-from grid.angular import LEBEDEV_DEGREES, SPHERICAL_DEGREES, MAX_DET_DEGREES, AHRENS_BEYLKIN_DEGREES, AngularGrid
+from grid.angular import (
+    AHRENS_BEYLKIN_DEGREES,
+    LEBEDEV_DEGREES,
+    MAX_DET_DEGREES,
+    SPHERICAL_DEGREES,
+    AngularGrid,
+)
 from grid.atomgrid import AtomGrid, _get_rgrid_size
 from grid.basegrid import Grid, OneDGrid
 from grid.onedgrid import GaussLaguerre, GaussLegendre, UniformInteger
@@ -216,7 +222,7 @@ class TestAtomGrid:
         rad_wts = np.array([0.3, 0.4, 0.3])
         rad_grid = OneDGrid(rad_pts, rad_wts)
         degs = np.array([2, 5, 7])
-        pts, wts, ind, degrees = AtomGrid._generate_atomic_grid(rad_grid, degs)
+        pts, wts, ind, _degrees = AtomGrid._generate_atomic_grid(rad_grid, degs)
         assert len(pts) == 50
         assert_equal(ind, [0, 6, 24, 50])
         # set tests for slicing grid from atomic grid
@@ -239,8 +245,8 @@ class TestAtomGrid:
         degs = np.array([2, 5, 7])
         # origin center
         # randome center
-        pts, wts, ind, _ = AtomGrid._generate_atomic_grid(rad_grid, degs)
-        ref_pts, ref_wts, ref_ind, _ = AtomGrid._generate_atomic_grid(rad_grid, degs)
+        pts, wts, _ind, _ = AtomGrid._generate_atomic_grid(rad_grid, degs)
+        ref_pts, ref_wts, _ref_ind, _ = AtomGrid._generate_atomic_grid(rad_grid, degs)
         # diff grid points diff by center and same weights
         assert_allclose(pts, ref_pts)
         assert_allclose(wts, ref_wts)
@@ -341,7 +347,7 @@ class TestAtomGrid:
             "lebedev": LEBEDEV_DEGREES,
             "spherical": SPHERICAL_DEGREES,
             "maxdet": MAX_DET_DEGREES,
-            "ahrens_beylkin": AHRENS_BEYLKIN_DEGREES
+            "ahrens_beylkin": AHRENS_BEYLKIN_DEGREES,
         }
         degree_map = degree_maps[method]
         num_shells = len(degree_map)
@@ -541,7 +547,7 @@ class TestAtomGrid:
 
         def func(sph_points):
             # Spherical harmonic of degree 6 and order 0
-            r, phi, theta = sph_points.T
+            _r, _phi, theta = sph_points.T
             return (
                 np.sqrt(2.0)
                 * np.sqrt(13)
@@ -706,7 +712,7 @@ class TestAtomGrid:
         # construct helper function
         def func(sph_points):
             # Spherical harmonic of order 6 and magnetic 0
-            r, phi, theta = sph_points.T
+            _r, _phi, theta = sph_points.T
             return (
                 np.sqrt(13)
                 / (np.sqrt(np.pi) * 32)
