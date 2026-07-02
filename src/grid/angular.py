@@ -424,7 +424,7 @@ class AngularGrid(Grid):
             cache_dict = AHRENS_BEYLKIN_CACHE
         else:
             raise ValueError(
-                f"Method {method} is not supported, choose 'lebedev', 'spherical', 'maxdet' or 'ahrens_beylkin'"
+                f"Method {method} is not supported, choose 'lebedev', 'spherical', 'maxdet', or 'ahrens_beylkin'"
             )
 
         # allow only one of degree or size to be given
