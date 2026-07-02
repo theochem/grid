@@ -488,8 +488,9 @@ class AngularGrid(Grid):
         sizes : ndarray[int]
             Sequence of angular grid sizes (e.g., number of points for each atomic shell).
         method: str
-            Method for constructing the angular grid. Options are "lebedev" (for Lebedev-Laikov)
-            and "spherical" (for symmetric spherical t-design).
+            Method for constructing the angular grid. Options are "lebedev" (for Lebedev-Laikov),
+            "spherical" (for symmetric spherical t-design), maxdet (for maximum determinant grids),
+            and "ahrens_beylkin" (for Ahrens-Beylkin grids).
 
         Returns
         -------
@@ -546,7 +547,7 @@ class AngularGrid(Grid):
             dict_degrees, dict_npoints = AHRENS_BEYLKIN_DEGREES, AHRENS_BEYLKIN_NPOINTS
         else:
             raise ValueError(
-                f"Method {method} is not supported, choose 'lebedev', 'spherical' or 'maxdet'"
+                f"Method {method} is not supported, choose 'lebedev', 'spherical', or 'maxdet' or 'ahrens_beylkin'"
             )
 
         # check whether degree and size are valid
@@ -625,7 +626,7 @@ class AngularGrid(Grid):
             file_path = "grid.data.ahrens_beylkin"
         else:
             raise ValueError(
-                f"Method {method} is not supported, choose 'lebedev', 'spherical', or 'maxdet'"
+                f"Method {method} is not supported, choose 'lebedev', 'spherical', 'maxdet', or 'ahrens_beylkin'"
             )
 
         # check whether degree and size are valid
