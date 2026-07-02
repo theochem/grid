@@ -1,4 +1,4 @@
 include README.md
 include LICENSE
-recursive-include grid/data *.npz
+recursive-include grid/src/data *.npz
 global-exclude *.pyc __pycache__ .DS_Store
