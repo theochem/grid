@@ -1957,7 +1957,7 @@ class HandyRTransform(BaseTransform):
 
         Parameters
         ----------
-        array: np.ndarray(N,)
+        x: np.ndarray(N,)
             One dimensional array in :math:`[-1,1]`\.
 
         Returns

@@ -512,7 +512,7 @@ def _evaluate_coeffs_on_points(x: np.ndarray, coeff: list | np.ndarray):
     ----------
     x : ndarray(N,)
         Points of the independent variable/domain.
-    coeffs : list[callable or float] or ndarray(K + 1,)
+    coeff : list[callable or float] or ndarray(K + 1,)
         Coefficients :math:`a_k` of each term :math:`\frac{d^k y(x)}{d x^k}`
         ordered from 0 to K.  Each coefficient can either be a callable function
         :math:`a_k(x)` or a constant number :math:`a_k`.
