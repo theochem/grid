@@ -68,9 +68,9 @@ from __future__ import annotations
 
 import warnings
 from bisect import bisect_left
+from importlib.resources import files
 
 import numpy as np
-from importlib.resources import files
 
 from grid.basegrid import Grid
 
@@ -424,7 +424,8 @@ class AngularGrid(Grid):
             cache_dict = AHRENS_BEYLKIN_CACHE
         else:
             raise ValueError(
-                f"Method {method} is not supported, choose 'lebedev', 'spherical', 'maxdet', or 'ahrens_beylkin'"
+                f"Method {method} is not supported, choose "
+                "'lebedev', 'spherical', 'maxdet' or 'ahrens_beylkin'"
             )
 
         # allow only one of degree or size to be given
@@ -547,13 +548,14 @@ class AngularGrid(Grid):
             dict_degrees, dict_npoints = AHRENS_BEYLKIN_DEGREES, AHRENS_BEYLKIN_NPOINTS
         else:
             raise ValueError(
-                f"Method {method} is not supported, choose 'lebedev', 'spherical', or 'maxdet' or 'ahrens_beylkin'"
+                f"Method {method} is not supported, choose "
+                "'lebedev', 'spherical', 'maxdet' or 'ahrens_beylkin'"
             )
 
         # check whether degree and size are valid
-        if not (degree is None or (isinstance(degree, (int, np.integer)) and degree >= 0)):
+        if not (degree is None or (isinstance(degree, int | np.integer) and degree >= 0)):
             raise ValueError(f"Argument degree should be a positive integer or None, got {degree}!")
-        if not (size is None or (isinstance(size, (int, np.integer)) and size >= 0)):
+        if not (size is None or (isinstance(size, int | np.integer) and size >= 0)):
             raise ValueError(f"Argument size should be a positive integer or None, got {size}!")
 
         if degree and size:
@@ -626,13 +628,14 @@ class AngularGrid(Grid):
             file_path = "grid.data.ahrens_beylkin"
         else:
             raise ValueError(
-                f"Method {method} is not supported, choose 'lebedev', 'spherical', 'maxdet', or 'ahrens_beylkin'"
+                f"Method {method} is not supported, choose "
+                "'lebedev', 'spherical', 'maxdet' or 'ahrens_beylkin'"
             )
 
         # check whether degree and size are valid
-        if not (degree is None or (isinstance(degree, (int, np.integer)) and degree >= 0)):
+        if not (degree is None or (isinstance(degree, int | np.integer) and degree >= 0)):
             raise ValueError(f"Argument degree should be a positive integer or None, got {degree}!")
-        if not (size is None or (isinstance(size, (int, np.integer)) and size >= 0)):
+        if not (size is None or (isinstance(size, int | np.integer) and size >= 0)):
             raise ValueError(f"Argument size should be a positive integer or None, got {size}!")
 
         # check whether degree & size are supported
