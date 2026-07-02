@@ -67,9 +67,8 @@ def test_coulomb_gaussian_p():
     # Test nonzero r (normalized)
     r = np.array([0.5, 2.0])
     result = coulomb_gaussian_p(r, beta, normalized=True)
-    expected_normalized = (
-        erf(np.sqrt(beta) * r) / r
-        + (4.0 / 3.0) * np.sqrt(beta / np.pi) * np.exp(-beta * r**2)
+    expected_normalized = erf(np.sqrt(beta) * r) / r + (4.0 / 3.0) * np.sqrt(beta / np.pi) * np.exp(
+        -beta * r**2
     )
     assert_allclose(result, expected_normalized)
 
@@ -91,7 +90,7 @@ def test_coulomb_potential():
 
     # Check explicitly
     v_expected = np.zeros(len(points))
-    for c, alpha, center in zip(coeffs_s, alphas_s, centers_s):
+    for c, alpha, center in zip(coeffs_s, alphas_s, centers_s, strict=False):
         r = np.linalg.norm(points - center, axis=1)
         with np.errstate(divide="ignore", invalid="ignore"):
             val = erf(np.sqrt(alpha) * r) / r
