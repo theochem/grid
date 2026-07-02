@@ -141,7 +141,7 @@ def test_integration_of_constant(degree, method):
 def test_integration_of_spherical_harmonic_up_to_degree(degree, method):
     r"""Test integration of spherical harmonic is accurate."""
     grid = AngularGrid(degree=degree, method=method)
-    # Concert to spherical coordinates from Cartesian.
+    # Convert to spherical coordinates from Cartesian.
     r = np.linalg.norm(grid.points, axis=1)
     phi = np.arccos(grid.points[:, 2] / r)
     theta = np.arctan2(grid.points[:, 1], grid.points[:, 0])
@@ -178,7 +178,7 @@ def test_orthogonality_of_spherical_harmonic_up_to_degree_three(method):
     r"""Test orthogonality of spherical harmonic up to degree 3 is accurate."""
     degree = 3
     grid = AngularGrid(degree=10, method=method)
-    # Concert to spherical coordinates from Cartesian.
+    # Convert to spherical coordinates from Cartesian.
     r = np.linalg.norm(grid.points, axis=1)
     phi = np.arccos(grid.points[:, 2] / r)
     theta = np.arctan2(grid.points[:, 1], grid.points[:, 0])
@@ -203,7 +203,7 @@ def test_orthogonality_of_spherical_harmonic_at_high_degrees(method):
     r"""Test orthogonality of spherical harmonic is accurate at very high degrees."""
     degree = 88 * 2
     grid = AngularGrid(degree=degree, method=method)
-    # Concert to spherical coordinates from Cartesian.
+    # Convert to spherical coordinates from Cartesian.
     r = np.linalg.norm(grid.points, axis=1)
     phi = np.arccos(grid.points[:, 2] / r)
     theta = np.arctan2(grid.points[:, 1], grid.points[:, 0])

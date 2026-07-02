@@ -489,9 +489,9 @@ class AngularGrid(Grid):
         sizes : ndarray[int]
             Sequence of angular grid sizes (e.g., number of points for each atomic shell).
         method: str
-            Method for constructing the angular grid. Options are "lebedev" (for Lebedev-Laikov),
-            "spherical" (for symmetric spherical t-design), maxdet (for maximum determinant grids),
-            and "ahrens_beylkin" (for Ahrens-Beylkin grids).
+            Method for constructing the angular grid. Options are "lebedev" (Lebedev-Laikov),
+            "spherical" (symmetric spherical t-design), "maxdet" (maximum determinant grids),
+            or "ahrens_beylkin" (for Ahrens-Beylkin grids).
 
         Returns
         -------
