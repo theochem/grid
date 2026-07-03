@@ -31,6 +31,8 @@ from importlib.resources import files
 import numpy as np
 from scipy.special import erf
 
+from grid.utils import num2sym, sym2num
+
 
 __all__ = [
     "coulomb_gaussian_p",
@@ -248,13 +250,6 @@ def coulomb_potential(
     return V
 
 
-_ATNUM_TO_JSON_KEY = {
-    1: "H",
-    6: "C",
-    7: "N",
-    8: "O",
-    17: "Cl"
-}
 _ATOMIC_GAUSS_PARAMS_CACHE: dict | None = None
 
 
@@ -281,19 +276,20 @@ def load_atomic_gaussian_params(element: str | int) -> tuple[np.ndarray, np.ndar
         If the element parameter has an invalid type.
     """
     if isinstance(element, str):
-        # title() maps e.g. "cl" -> "Cl", "H" -> "H" — matching JSON key casing exactly
         json_symbol = element.strip().title()
-        if json_symbol not in _ATNUM_TO_JSON_KEY.values():
+        if json_symbol not in sym2num:
             raise ValueError(
-                f"Pre-fitted Gaussian parameters are not available for element symbol: '{element}'"
+                f"Unknown element symbol: '{element}'. "
+                f"Use a valid symbol such as 'H', 'C', 'N', 'O', 'Cl'."
             )
 
     elif isinstance(element, (int, np.integer)):
         atnum = int(element)
-        json_symbol = _ATNUM_TO_JSON_KEY.get(atnum)
+        json_symbol = num2sym.get(atnum)
         if json_symbol is None:
             raise ValueError(
-                f"Pre-fitted Gaussian parameters are not available for atomic number: {atnum}"
+                f"Unknown atomic number: {atnum}. "
+                f"Must be between 1 and 118."
             )
     else:
         raise TypeError(f"element must be a string or integer; got {type(element)}")
