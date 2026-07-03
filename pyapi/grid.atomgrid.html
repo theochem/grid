@@ -530,8 +530,10 @@ If None, a default radial grid (PowerRTransform of UniformInteger grid) for the 
 <dt>rotate<span class="classifier">int, optional</span></dt><dd><p>Integer used as a seed for generating random rotation matrices to rotate the angular
 spherical grids at each radial grid point. If 0, then no rotate is made.</p>
 </dd>
-<dt>method: str, optional</dt><dd><p>Method for constructing the angular grid. Options are “lebedev” (for Lebedev-Laikov)
-and “spherical” (for symmetric spherical t-design).</p>
+<dt>method: str, optional</dt><dd><p>Method for constructing the angular grid. Options are “lebedev” (for Lebedev-Laikov),
+“spherical” (for symmetric spherical t-design), “maxdet” (for maximum determinant grids),
+and “ahrens_beylkin” (for Ahrens-Beylkin grids).
+Default is “lebedev”.</p>
 </dd>
 </dl>
 </section>
@@ -603,8 +605,10 @@ If None, the origin is used.</p>
 spherical grids at each radial grid point. If the integer is zero, then no rotate
 is used.</p>
 </dd>
-<dt>method: str, optional</dt><dd><p>Method for constructing the angular grid. Options are “lebedev” (for Lebedev-Laikov)
-and “spherical” (for symmetric spherical t-design).</p>
+<dt>method: str, optional</dt><dd><p>Method for constructing the angular grid. Options are “lebedev” (for Lebedev-Laikov),
+“spherical” (for symmetric spherical t-design), “maxdet” (for maximum determinant grids),
+and “ahrens_beylkin” (for Ahrens-Beylkin grids).
+Default is “lebedev”.</p>
 </dd>
 </dl>
 </section>

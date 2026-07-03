@@ -514,8 +514,9 @@ The weights are chosen so that the spherical harmonics are normalized.</p>
 <dl class="simple">
 <dt>sizes<span class="classifier">ndarray[int]</span></dt><dd><p>Sequence of angular grid sizes (e.g., number of points for each atomic shell).</p>
 </dd>
-<dt>method: str</dt><dd><p>Method for constructing the angular grid. Options are “lebedev” (for Lebedev-Laikov)
-and “spherical” (for symmetric spherical t-design).</p>
+<dt>method: str</dt><dd><p>Method for constructing the angular grid. Options are “lebedev” (Lebedev-Laikov),
+“spherical” (symmetric spherical t-design), “maxdet” (maximum determinant grids),
+or “ahrens_beylkin” (for Ahrens-Beylkin grids).</p>
 </dd>
 </dl>
 </section>
