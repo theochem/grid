@@ -126,11 +126,22 @@ class TestLebedev(TestCase):
 
 
 @pytest.mark.parametrize("degree", [5, 10, 100])
-@pytest.mark.parametrize("method", ["lebedev", "spherical", "maxdet"])
+@pytest.mark.parametrize("method", ["lebedev", "spherical", "maxdet", "ahrens_beylkin"])
+def test_integration_of_constant(degree, method):
+    r"""Test integration of spherical harmonic is accurate."""
+    grid = AngularGrid(degree=degree, method=method)
+    for val in [1.0, 2.0, 3.0]:
+        values = np.ones(grid.weights.size) * val
+        actual = 4.0 * np.pi * val
+        assert_almost_equal(actual, grid.integrate(values))
+
+
+@pytest.mark.parametrize("degree", [5, 10, 100])
+@pytest.mark.parametrize("method", ["lebedev", "spherical", "maxdet", "ahrens_beylkin"])
 def test_integration_of_spherical_harmonic_up_to_degree(degree, method):
     r"""Test integration of spherical harmonic is accurate."""
     grid = AngularGrid(degree=degree, method=method)
-    # Concert to spherical coordinates from Cartesian.
+    # Convert to spherical coordinates from Cartesian.
     r = np.linalg.norm(grid.points, axis=1)
     phi = np.arccos(grid.points[:, 2] / r)
     theta = np.arctan2(grid.points[:, 1], grid.points[:, 0])
@@ -162,12 +173,12 @@ def test_integration_of_spherical_harmonic_not_accurate_beyond_degree(method):
     assert np.abs(grid.integrate(sph_harm[(6) ** 2, :])) > 1e-8
 
 
-@pytest.mark.parametrize("method", ["lebedev", "spherical", "maxdet"])
+@pytest.mark.parametrize("method", ["lebedev", "spherical", "maxdet", "ahrens_beylkin"])
 def test_orthogonality_of_spherical_harmonic_up_to_degree_three(method):
     r"""Test orthogonality of spherical harmonic up to degree 3 is accurate."""
     degree = 3
     grid = AngularGrid(degree=10, method=method)
-    # Concert to spherical coordinates from Cartesian.
+    # Convert to spherical coordinates from Cartesian.
     r = np.linalg.norm(grid.points, axis=1)
     phi = np.arccos(grid.points[:, 2] / r)
     theta = np.arctan2(grid.points[:, 1], grid.points[:, 0])
@@ -187,11 +198,12 @@ def test_orthogonality_of_spherical_harmonic_up_to_degree_three(method):
                         assert np.abs(integral - 1.0) < 1e-8
 
 
-def test_orthogonality_of_spherical_harmonic_at_high_degrees():
+@pytest.mark.parametrize("method", ["spherical", "maxdet", "ahrens_beylkin"])
+def test_orthogonality_of_spherical_harmonic_at_high_degrees(method):
     r"""Test orthogonality of spherical harmonic is accurate at very high degrees."""
     degree = 88 * 2
-    grid = AngularGrid(degree=degree, method="spherical")
-    # Concert to spherical coordinates from Cartesian.
+    grid = AngularGrid(degree=degree, method=method)
+    # Convert to spherical coordinates from Cartesian.
     r = np.linalg.norm(grid.points, axis=1)
     phi = np.arccos(grid.points[:, 2] / r)
     theta = np.arctan2(grid.points[:, 1], grid.points[:, 0])

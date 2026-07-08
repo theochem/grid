@@ -418,6 +418,16 @@ class LinearFiniteRTransform(BaseTransform):
         self._domain = (-1, 1)
         self._codomain = (rmin, rmax)
 
+    @property
+    def rmin(self):
+        r"""float: rmin value of the tf."""
+        return self._rmin
+
+    @property
+    def rmax(self):
+        r"""float: rmax value of the tf."""
+        return self._rmax
+
     def transform(self, x: np.ndarray):
         r"""Transform from interval :math:`[-1, 1]` to :math:`[r_{min}, r_{max}]`\.
 
@@ -1947,7 +1957,7 @@ class HandyRTransform(BaseTransform):
 
         Parameters
         ----------
-        array: np.ndarray(N,)
+        x: np.ndarray(N,)
             One dimensional array in :math:`[-1,1]`\.
 
         Returns

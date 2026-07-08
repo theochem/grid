@@ -264,31 +264,30 @@ class _HyperRectangleGrid(Grid):
         return interpolated
 
     def coordinates_to_index(self, indices):
-        r"""Convert (i, j) or (i, j, k) integer coordinates to the grid point index.
+        r"""Convert integer coordinates (i, j, k, ...) to a grid point index.
 
-        Assumes the grid is ordered moving in the last-coordinate (with other coordinates fixed,
-        e.g. k) followed by the next coordinate to the left (e.g. j), continuing to the first
-        coordinate (e.g. i) (i.e., lexicographical ordering).
+        Assumes the grid is stored in row-major (lexicographical) order, where the
+        last coordinate varies fastest (k), followed by the previous ones (j, i, ...).
 
         Parameters
         ----------
-        indices : (int, int) or (int, int, int)
-            The :math:`i-th`\, :math:`j-th`\, (or :math:`k-th`) positions of the grid point.
+        indices : tuple of int
+            The grid position given as (i, j, k, ...) for each dimension.
 
         Returns
         -------
         index : int
-            Index of the grid point.
+            Flat index of the corresponding grid point.
 
         """
-        if self.ndim == 3:
-            n_1d, n_2d = self.shape[2], self.shape[1] * self.shape[2]
-            # TODO Change this so that indices can be multi-dimensional
-            index = n_2d * indices[0] + n_1d * indices[1] + indices[2]
-            return index
-        # Case of two-dimensions
-        index = self.shape[1] * indices[0] + indices[1]
-        return index
+        indices = np.asarray(indices)
+        # Strides are the number of points between adjacent grid points along each index.
+        strides = np.empty(self.ndim, dtype=int)
+        strides[-1] = 1
+        # Row-major, right to left: each stride equals the next stride times the next dimension size.
+        for i in range(self.ndim - 2, -1, -1):
+            strides[i] = strides[i + 1] * self.shape[i + 1]
+        return np.dot(indices, strides)
 
     def index_to_coordinates(self, index):
         r"""Convert grid point index to its (i, j) or (i, j, k) integer coordinates in the grid.
