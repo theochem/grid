@@ -1058,7 +1058,7 @@ def dipole_moment_of_molecule(grid, density: np.ndarray, coords: np.ndarray, cha
     return result
 
 
-# Periodic table lookups 
+# Periodic table lookups
 num2sym: dict[int, str] = {
     1: "H",
     2: "He",
