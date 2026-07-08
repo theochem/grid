@@ -115,7 +115,7 @@ def test_load_atomic_gaussian_params():
         assert len(coeffs) == len(alphas) > 0
         assert np.all(coeffs >= 0)
         assert np.all(alphas > 0)
-        
+
     # Test valid elements using symbols (case-insensitive and with spaces)
     for symbol in ("H", " C ", "cl", "N", "O"):
         _check_params(*load_atomic_gaussian_params(symbol))
@@ -133,11 +133,9 @@ def test_load_atomic_gaussian_params():
     # Error cases
     with pytest.raises(ValueError, match="Pre-fitted Gaussian parameters are not available"):
         load_atomic_gaussian_params("Xe")
-    
+
     with pytest.raises(ValueError, match="Pre-fitted Gaussian parameters are not available"):
         load_atomic_gaussian_params(2)
-        
+
     with pytest.raises(TypeError, match="element must be a string or integer"):
         load_atomic_gaussian_params(1.0)
-
-
