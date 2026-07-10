@@ -56,6 +56,7 @@ def solve_ode_ivp(
     y0: list | np.ndarray,
     transform: BaseTransform = None,
     method: str = "DOP853",
+    fallback: bool = True,
     no_derivatives: bool = False,
     rtol: float = 1e-8,
     atol: float = 1e-6,
@@ -81,6 +82,10 @@ def solve_ode_ivp(
     method : str
         The method used to solve the ode by scipy.
         See `scipy.integrate.solve_ivp` function for more info.
+    fallback : bool, optional
+        If True (default), upon failure of the chosen method, a sequence of
+        alternative solvers (RK45, DOP853, BDF, Radau, LSODA) is tried automatically.
+        If False, an exception is raised immediately.
     no_derivatives : bool, optional
         If true, when transform is used then it only returns the solution :math:`y(x)` rather
         than its derivative. If false, it includes the derivatives up to :math:`P-1`.
@@ -144,20 +149,48 @@ def solve_ode_ivp(
             )
         y0 = np.hstack(([y0[0]], y_derivs))
 
-    res = solve_ivp(
-        func,
-        x_span,
-        y0=y0,
-        dense_output=True,
-        vectorized=True,
-        rtol=rtol,
-        atol=atol,
-        method=method,
-    )
+    if not fallback:
+        res = solve_ivp(
+            func,
+            x_span,
+            y0=y0,
+            dense_output=True,
+            vectorized=True,
+            rtol=rtol,
+            atol=atol,
+            method=method,
+        )
+        if res.status != 0:
+            raise ValueError(f"The ode solver didn't converge, got status: {res.status}")
+    else:
+        methods_chain = ["RK45", "DOP853", "BDF", "Radau", "LSODA"]
+        if method in methods_chain:
+            methods_chain.remove(method)
+        methods_chain.insert(0, method)
 
-    # raise error if didn't converge
-    if res.status != 0:
-        raise ValueError(f"The ode solver didn't converge, got status: {res.status}")
+        res = None
+        last_status = None
+        for idx, m in enumerate(methods_chain):
+            res = solve_ivp(
+                func,
+                x_span,
+                y0=y0,
+                dense_output=True,
+                vectorized=True,
+                rtol=rtol,
+                atol=atol,
+                method=m,
+            )
+            if res.status == 0:
+                break
+            last_status = res.status
+            if idx < len(methods_chain) - 1:
+                warnings.warn(
+                    f"ODE solver method {m} failed with status {res.status}. Trying next method.",
+                    stacklevel=2,
+                )
+        else:
+            raise RuntimeError(f"All ODE solver methods failed. Last status: {last_status}")
 
     if transform is not None:
         # Transform the function so that it's input is the original variable and

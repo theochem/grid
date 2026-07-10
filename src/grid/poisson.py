@@ -102,6 +102,26 @@ def _solve_poisson_ivp_atomgrid(
     # Following takes the integral of f(x), to generate the bounds at very large r.
     # The calculation of the bounds is explained below.
     sph_o_l = generate_real_spherical_harmonics(0, np.array([0.1]), np.array([0.1]))
+    
+    # Adaptive r_interval[0] based on density decay
+    r_pts = atomgrid.rgrid.points
+    radial_weights = atomgrid.rgrid.weights
+    
+    # Use the 0th radial component (spherically averaged density) with integration weights
+    radial_density_abs = np.abs(radial_components[0](r_pts))
+    integrand = radial_density_abs * (r_pts**2) * radial_weights
+        
+    cumsum = np.cumsum(integrand)
+    if cumsum[-1] > 0:
+        idx = np.searchsorted(cumsum, 0.99 * cumsum[-1])
+        r_99 = r_pts[min(idx, len(r_pts) - 1)]
+        r_max = r_99 * 10
+        if r_max > r_interval[0]:
+            r_max = r_interval[0]
+        if transform is not None and r_max > transform.domain[1]:
+            r_max = transform.domain[1]
+        r_interval = (r_max, r_interval[1])
+
     r_max = r_interval[0]
     boundary = atomgrid.integrate(func_vals) / sph_o_l[0, 0]
 
@@ -140,6 +160,13 @@ def _solve_poisson_ivp_atomgrid(
             else:
                 ivp = [0.0, 0.0]
 
+            # If the source term is effectively zero for l>0, skip integration to avoid 
+            # numerical noise amplification in the IVP solver.
+            max_val = np.max(np.abs(radial_components[i_spline](atomgrid.rgrid.points)))
+            if l_deg > 0 and max_val < 1e-12:
+                splines.append(lambda r_pts: np.zeros_like(r_pts))
+                i_spline += 1
+                continue
             # Solve ode
             u_lm = solve_ode_ivp(
                 r_interval,
@@ -151,8 +178,25 @@ def _solve_poisson_ivp_atomgrid(
                 **ode_params,
             )
 
+            def make_safe_spline(spline_orig, is_monopole, boundary_val, r_max_val, r_min_val):
+                def safe_spline(r_pts):
+                    r_pts_clipped = np.clip(r_pts, r_min_val, r_max_val)
+                    vals = spline_orig(r_pts_clipped)
+                    # For r > r_max, return analytic continuation to avoid extrapolation blowup
+                    mask = r_pts > r_max_val
+                    if np.any(mask):
+                        # Ensure we don't modify the array in-place if it's read-only
+                        vals = np.array(vals)
+                        if is_monopole:
+                            vals[mask] = boundary_val / r_pts[mask]
+                        else:
+                            vals[mask] = 0.0
+                    return vals
+                return safe_spline
+
             i_spline += 1
-            splines.append(u_lm)
+            splines.append(make_safe_spline(u_lm, (l_deg == 0 and m_ord == 0), boundary, r_max, r_interval[1]))
+
 
     def interpolate(points):
         # Need atomgrid to center the points to the atomic grid, then convert to spherical.
