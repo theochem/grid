@@ -112,13 +112,21 @@ def solve_poisson_robust(
     ------
     ValueError
         If pre-fitted Gaussian parameters are not available for a given atomic number.
+    ValueError
+        If ``density_vals`` is not a 1-D array of length N matching the number
+        of grid points in ``molgrid``.
 
     Notes
     -----
     Pre-fitted parameters are currently available for H (1), C (6), N (7),
     O (8), and Cl (17).
     """
-    residual = density_vals.copy()
+    residual = np.array(density_vals, dtype=float)
+    if residual.ndim != 1 or residual.shape[0] != molgrid.points.shape[0]:
+        raise ValueError(
+            f"density_vals must be 1-D with length matching molgrid.points "
+            f"({molgrid.points.shape[0]}); got shape {residual.shape}"
+        )
 
     # Pre-cache Gaussian parameters for all atoms once (avoids repeated JSON lookups
     # inside the returned closure, which may be called many times).

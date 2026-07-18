@@ -188,3 +188,17 @@ def test_robust_poisson_transition_density():
 
     V = pot_func(atgrid.points)
     assert np.all(np.isfinite(V)), "Potential must be finite for transition-like density"
+
+
+def test_robust_poisson_wrong_density_shape_raises():
+    """solve_poisson_robust must raise ValueError when density_vals shape mismatches grid."""
+    atgrid, tf = _make_single_center_grid(n_radial=80)
+
+    with pytest.raises(ValueError, match="density_vals must be 1-D"):
+        solve_poisson_robust(
+            atgrid,
+            np.ones(10),  # wrong length
+            tf,
+            atnums=np.array([1]),
+            atcoords=np.zeros((1, 3)),
+        )
