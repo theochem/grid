@@ -202,3 +202,20 @@ def test_robust_poisson_wrong_density_shape_raises():
             atnums=np.array([1]),
             atcoords=np.zeros((1, 3)),
         )
+
+
+def test_robust_poisson_wrong_points_shape_raises():
+    """The returned callable must raise ValueError for wrong-shaped points."""
+    atgrid, tf = _make_single_center_grid(n_radial=80)
+    density = _gaussian_density(atgrid.points, alpha=1.0)
+
+    pot_func = solve_poisson_robust(
+        atgrid,
+        density,
+        tf,
+        atnums=np.array([1]),
+        atcoords=np.zeros((1, 3)),
+    )
+
+    with pytest.raises(ValueError, match="points must have shape"):
+        pot_func(np.array([1.0, 2.0, 3.0]))  # (3,) instead of (1, 3)

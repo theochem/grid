@@ -146,9 +146,11 @@ def solve_poisson_robust(
     def total_potential(points: np.ndarray) -> np.ndarray:
         """Evaluate total electrostatic potential at Cartesian points."""
         points = np.asarray(points, dtype=float)
+        if points.ndim != 2 or points.shape[1] != 3:
+            raise ValueError(f"points must have shape (N, 3); got {points.shape}")
 
         # Analytical core contribution — uses pre-cached params
-        v_core = np.zeros(len(points))
+        v_core = np.zeros(points.shape[0])
         for (coeffs_s, alphas_s), center in atom_params:
             centers_rep = np.tile(center, (len(coeffs_s), 1))
             v_core += coulomb_potential(
