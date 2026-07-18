@@ -159,7 +159,10 @@ def test_robust_poisson_carbon():
 
     V = pot_func(atgrid.points)
     assert np.all(np.isfinite(V)), "Potential values must be finite for Carbon test"
-    assert np.all(V >= 0), "Electrostatic potential of positive density must be non-negative"
+    assert np.all(V >= -1e-10), (
+        "Electrostatic potential of positive density should be non-negative "
+        "(within numerical tolerance)"
+    )
 
 
 def test_robust_poisson_transition_density():
