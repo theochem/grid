@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
-"""Tests for the robust Poisson solver (Split 1 + BVP)."""
+"""Tests for the robust Poisson solver (Split 1, Split 2, and BVP)."""
 
 import numpy as np
 import pytest
@@ -222,3 +222,23 @@ def test_robust_poisson_wrong_points_shape_raises():
 
     with pytest.raises(ValueError, match="points must have shape"):
         pot_func(np.array([1.0, 2.0, 3.0]))  # (3,) instead of (1, 3)
+
+
+def test_robust_poisson_split2():
+    """Verify that split2=True executes NNLS fitting and returns a valid potential."""
+    center = np.zeros(3)
+    atgrid, tf = _make_single_center_grid(n_radial=100, center=center)
+    # Use alpha != any pre-fitted Carbon Gaussian so the residual is non-trivial.
+    density = _gaussian_density(atgrid.points, alpha=1.5, center=center)
+
+    pot_func = solve_poisson_robust(
+        atgrid,
+        density,
+        tf,
+        atnums=np.array([6]),
+        atcoords=center.reshape(1, 3),
+        split2=True,
+    )
+
+    V = pot_func(atgrid.points)
+    assert np.all(np.isfinite(V)), "Potential values must be finite when using split2=True"
