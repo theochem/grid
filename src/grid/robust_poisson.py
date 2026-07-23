@@ -96,10 +96,8 @@ def _fit_residual_gaussians(
 
     for center in atcoords:
         r_sq = np.sum((grid_pts - center) ** 2, axis=1)
-        A = np.zeros((len(grid_pts), len(alphas_basis)))
-        for i, alpha in enumerate(alphas_basis):
-            prefactor = (alpha / np.pi) ** 1.5
-            A[:, i] = prefactor * np.exp(-alpha * r_sq)
+        prefactors = (alphas_basis / np.pi) ** 1.5
+        A = prefactors[None, :] * np.exp(-r_sq[:, None] * alphas_basis[None, :])
 
         coeffs, _ = nnls(A, residual)
 
