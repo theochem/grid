@@ -82,13 +82,9 @@ def _build_core_density(
 def _fit_residual_gaussians(
     grid_pts: np.ndarray, residual: np.ndarray, atcoords: np.ndarray, alphas_basis: np.ndarray
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-    """Fit the residual density with s-type Gaussians at each center using NNLS.
+    """Fit residual density with s-type Gaussians at each atomic center using NNLS.
 
-    Sequential greedy strategy: each atom's NNLS fit is solved against the
-    current residual and immediately subtracted in-place, so later atoms see
-    a partially reduced residual (order-dependent for multi-atom systems).
-
-    Returns (coeffs, alphas, centers) for all retained non-zero Gaussians.
+    Mutates ``residual`` in-place by subtracting the fitted density per atom.
     """
     all_coeffs = []
     all_alphas = []
@@ -219,7 +215,6 @@ def solve_poisson_robust(
 
     # SUM: closure returns v_core + v_bonding + v_residual at evaluation time
     def total_potential(points: np.ndarray) -> np.ndarray:
-        """Evaluate total electrostatic potential at Cartesian points."""
         points = np.asarray(points, dtype=float)
         if points.ndim != 2 or points.shape[1] != 3:
             raise ValueError(f"points must have shape (N, 3); got {points.shape}")
