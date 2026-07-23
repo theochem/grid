@@ -198,11 +198,20 @@ def solve_poisson_robust(
         residual -= _build_core_density(molgrid.points, center, coeffs_s, alphas_s)
 
     # SPLIT 2: Bonding/Residual Fitting (Optional)
-    # Always initialized so the closure safely references all three variables.
     fit_coeffs, fit_alphas, fit_centers = np.array([]), np.array([]), np.empty((0, 3))
     if split2:
         if alphas_basis is None:
             alphas_basis = _DEFAULT_ALPHAS_BASIS
+        alphas_basis = np.asarray(alphas_basis, dtype=float)
+        if alphas_basis.ndim != 1 or alphas_basis.size == 0:
+            raise ValueError(
+                f"alphas_basis must be a non-empty 1-D sequence; got shape {alphas_basis.shape}"
+            )
+        if np.any(alphas_basis <= 0):
+            raise ValueError(
+                "alphas_basis must contain only strictly positive Gaussian exponents; "
+                f"got min value {alphas_basis.min():.3g}"
+            )
         fit_coeffs, fit_alphas, fit_centers = _fit_residual_gaussians(
             molgrid.points, residual, atcoords, alphas_basis
         )
