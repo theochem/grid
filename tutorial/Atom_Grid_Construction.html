@@ -27,8 +27,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
@@ -39,10 +39,10 @@
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
   
   <!-- So that users can add custom icons -->
-  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <script defer src="../_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
     <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
@@ -63,6 +63,7 @@
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'tutorial/Atom_Grid_Construction';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="icon" href="../_static/grid_logo_website.svg"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -71,20 +72,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
   </head>
-  
-  
-  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
-
+  <body data-default-mode="">
   
   
   <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
   
   <div id="pst-scroll-pixel-helper"></div>
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
-
+  
+  
+  
   
   <dialog id="pst-search-dialog">
     
@@ -110,7 +117,51 @@
 </div>
 
   
-    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
     </header>
   
 
@@ -451,7 +502,7 @@
                 <h2> Contents </h2>
             </div>
             <nav aria-label="Page">
-                <ul class="visible nav section-nav flex-column">
+                <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#atomic-grid-atomgrid">Atomic Grid <code class="docutils literal notranslate"><span class="pre">AtomGrid</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plot-atomgrid-points">Plot <code class="docutils literal notranslate"><span class="pre">AtomGrid</span></code> Points</a></li>
 </ul>
@@ -473,7 +524,7 @@
   <p><a class="reference external" href="https://colab.research.google.com/github/theochem/grid/blob/master/examples/Atom_Grid_Construction.ipynb"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
 <section class="tex2jax_ignore mathjax_ignore" id="construct-atomic-grid">
 <h1>Construct Atomic Grid<a class="headerlink" href="#construct-atomic-grid" title="Link to this heading">#</a></h1>
-<p>Atomic gris are useful for evaluation, integration, interpolation, and differentiation in three-dimensional (3D) atomic domains. The are constructed by combining a radial and angular grid. The radial grid <span class="math notranslate nohighlight">\(\{(r_i, w_i)\}_{i=1}^{N}\)</span> covers the radius coordinate of spherical coordinates, and associted with each radius, there is an angular (Lebedev or Symmetric spherical t-design) grid <span class="math notranslate nohighlight">\(\{(\theta^i_j, \phi^i_j, w_j^i)\}_{j=1}^{M_i}\)</span> covering the angle coordinate of spherical coordinates.</p>
+<p>Atomic grids are useful for evaluation, integration, interpolation, and differentiation in three-dimensional (3D) atomic domains. They are constructed by combining a radial and angular grid. The radial grid <span class="math notranslate nohighlight">\(\{(r_i, w_i)\}_{i=1}^{N}\)</span> covers the radius coordinate of spherical coordinates, and associated with each radius, there is an angular (Lebedev or Symmetric spherical t-design) grid <span class="math notranslate nohighlight">\(\{(\theta^i_j, \phi^i_j, w_j^i)\}_{j=1}^{M_i}\)</span> covering the angle coordinate of spherical coordinates.</p>
 <p>This notebook will go over different ways of constructing an <a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid">AtomGrid</a>, which provides flexibility in the choice of radial and angular components.</p>
 <section id="atomic-grid-atomgrid">
 <h2>Atomic Grid <code class="docutils literal notranslate"><span class="pre">AtomGrid</span></code><a class="headerlink" href="#atomic-grid-atomgrid" title="Link to this heading">#</a></h2>
@@ -503,7 +554,7 @@ Radial grid r_max: 3.00000
 </div>
 <p>Having a radial grid, the angular grid can be specified by the angular grid <code class="docutils literal notranslate"><span class="pre">degrees</span></code> (or <code class="docutils literal notranslate"><span class="pre">sizes</span></code>). If only one value is provided (i.e., list/array of length one), the same angular grid is used for all radial grid points. Otherwise, the <code class="docutils literal notranslate"><span class="pre">degrees</span></code> (or <code class="docutils literal notranslate"><span class="pre">sizes</span></code>) list/array should have the same length as the number of radial grid points. Additionally (A, B, C, and D refer to the atomic grids constructed in the following code block):</p>
 <ul class="simple">
-<li><p>By default the Levedev-Laikov angular grids are used (A, C, and D), unless <code class="docutils literal notranslate"><span class="pre">method=&quot;spherical&quot;</span></code> which employs the Symmetric spherical t-design angular grids (B).</p></li>
+<li><p>By default the Lebedev-Laikov angular grids are used (A, C, and D), unless <code class="docutils literal notranslate"><span class="pre">method=&quot;spherical&quot;</span></code> which employs the Symmetric spherical t-design angular grids (B).</p></li>
 <li><p>If the provided <code class="docutils literal notranslate"><span class="pre">degrees</span></code> are not available, the closest available <code class="docutils literal notranslate"><span class="pre">degrees</span></code> are used (B).</p></li>
 <li><p>To randomly rotate the angular grids at each radial grid point, the <code class="docutils literal notranslate"><span class="pre">rotate</span></code> argument can be used to provide a seed for random rotation matrix (C).</p></li>
 </ul>
@@ -511,12 +562,12 @@ Radial grid r_max: 3.00000
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">grid</span><span class="w"> </span><span class="kn">import</span> <span class="n">AtomGrid</span>
 
-<span class="c1"># (A) AtomGrid from a radial grid and an angular degree (Levedev-Laikov)</span>
+<span class="c1"># (A) AtomGrid from a radial grid and an angular degree (Lebedev-Laikov)</span>
 <span class="n">atgrid_ll</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="p">(</span><span class="n">rgrid</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="p">[</span><span class="mi">11</span><span class="p">])</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid A size          : </span><span class="si">{</span><span class="n">atgrid_ll</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid A radial size   : </span><span class="si">{</span><span class="n">atgrid_ll</span><span class="o">.</span><span class="n">rgrid</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid A angular degree: </span><span class="si">{</span><span class="n">atgrid_ll</span><span class="o">.</span><span class="n">degrees</span><span class="si">}</span><span class="s2"> (Levedev-Laikov)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid A angular degree: </span><span class="si">{</span><span class="n">atgrid_ll</span><span class="o">.</span><span class="n">degrees</span><span class="si">}</span><span class="s2"> (Lebedev-Laikov)&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid A center        : </span><span class="si">{</span><span class="n">atgrid_ll</span><span class="o">.</span><span class="n">center</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="c1"># (B) AtomGrid from a radial grid and an angular degree (symmetric spherical t-design)</span>
@@ -527,21 +578,21 @@ Radial grid r_max: 3.00000
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid B angular degree: </span><span class="si">{</span><span class="n">atgrid_ss</span><span class="o">.</span><span class="n">degrees</span><span class="si">}</span><span class="s2"> (symmetric spherical t-design)&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid B center        : </span><span class="si">{</span><span class="n">atgrid_ss</span><span class="o">.</span><span class="n">center</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
-<span class="c1"># (C) AtomGrid from a radial grid and an angular degree (Levedev-Laikov)</span>
+<span class="c1"># (C) AtomGrid from a radial grid and an angular degree (Lebedev-Laikov)</span>
 <span class="n">degrees</span> <span class="o">=</span> <span class="p">[</span><span class="mi">30</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rgrid</span><span class="o">.</span><span class="n">size</span><span class="p">)]</span>
 <span class="n">atgrid_ll_degrees</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="p">(</span><span class="n">rgrid</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="n">degrees</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid C size          : </span><span class="si">{</span><span class="n">atgrid_ll_degrees</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid C radial size   : </span><span class="si">{</span><span class="n">atgrid_ll_degrees</span><span class="o">.</span><span class="n">rgrid</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid C angular degree: </span><span class="si">{</span><span class="n">atgrid_ll_degrees</span><span class="o">.</span><span class="n">degrees</span><span class="si">}</span><span class="s2"> (Levedev-Laikov, multiple degrees)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid C angular degree: </span><span class="si">{</span><span class="n">atgrid_ll_degrees</span><span class="o">.</span><span class="n">degrees</span><span class="si">}</span><span class="s2"> (Lebedev-Laikov, multiple degrees)&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid C center        : </span><span class="si">{</span><span class="n">atgrid_ll_degrees</span><span class="o">.</span><span class="n">center</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
-<span class="c1"># (D) AtomGrid  from a radial grid and an angular size (Levedev-Laikov)</span>
+<span class="c1"># (D) AtomGrid  from a radial grid and an angular size (Lebedev-Laikov)</span>
 <span class="n">atgrid_ll_size</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="p">(</span><span class="n">rgrid</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sizes</span><span class="o">=</span><span class="p">[</span><span class="mi">60</span><span class="p">],</span> <span class="n">rotate</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid D size          : </span><span class="si">{</span><span class="n">atgrid_ll_size</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid D radial size   : </span><span class="si">{</span><span class="n">atgrid_ll_size</span><span class="o">.</span><span class="n">rgrid</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid D angular degree: </span><span class="si">{</span><span class="n">atgrid_ll_size</span><span class="o">.</span><span class="n">degrees</span><span class="si">}</span><span class="s2"> (Levedev-Laikov)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid D angular degree: </span><span class="si">{</span><span class="n">atgrid_ll_size</span><span class="o">.</span><span class="n">degrees</span><span class="si">}</span><span class="s2"> (Lebedev-Laikov)&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid D center        : </span><span class="si">{</span><span class="n">atgrid_ll_size</span><span class="o">.</span><span class="n">center</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -549,7 +600,7 @@ Radial grid r_max: 3.00000
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>AtomGrid A size          : 500
 AtomGrid A radial size   : 10
-AtomGrid A angular degree: [11, 11, 11, 11, 11, 11, 11, 11, 11, 11] (Levedev-Laikov)
+AtomGrid A angular degree: [11, 11, 11, 11, 11, 11, 11, 11, 11, 11] (Lebedev-Laikov)
 AtomGrid A center        : [0. 0. 0.]
 
 AtomGrid B size          : 700
@@ -559,12 +610,12 @@ AtomGrid B center        : [0. 0. 0.]
 
 AtomGrid C size          : 1928
 AtomGrid C radial size   : 10
-AtomGrid C angular degree: [31, 29, 27, 25, 23, 21, 19, 17, 15, 13] (Levedev-Laikov, multiple degrees)
+AtomGrid C angular degree: [31, 29, 27, 25, 23, 21, 19, 17, 15, 13] (Lebedev-Laikov, multiple degrees)
 AtomGrid C center        : [0. 0. 0.]
 
 AtomGrid D size          : 740
 AtomGrid D radial size   : 10
-AtomGrid D angular degree: [13, 13, 13, 13, 13, 13, 13, 13, 13, 13] (Levedev-Laikov)
+AtomGrid D angular degree: [13, 13, 13, 13, 13, 13, 13, 13, 13, 13] (Lebedev-Laikov)
 AtomGrid D center        : [0. 0. 0.]
 </pre></div>
 </div>
@@ -591,7 +642,7 @@ AtomGrid D center        : [0. 0. 0.]
 
 <span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">141</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s2">&quot;3d&quot;</span><span class="p">)</span>
 <span class="n">ax1</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">z1</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">)</span>
-<span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;(A) Levedev-Laikov (d=11)&quot;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;(A) Lebedev-Laikov (d=11)&quot;</span><span class="p">)</span>
 
 <span class="n">ax2</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">142</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s2">&quot;3d&quot;</span><span class="p">)</span>
 <span class="n">ax2</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">z2</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">)</span>
@@ -599,11 +650,11 @@ AtomGrid D center        : [0. 0. 0.]
 
 <span class="n">ax3</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">143</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s2">&quot;3d&quot;</span><span class="p">)</span>
 <span class="n">ax3</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x3</span><span class="p">,</span> <span class="n">y3</span><span class="p">,</span> <span class="n">z3</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;g&quot;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">)</span>
-<span class="n">ax3</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;(C) Levedev-Laikov (multiple d)&quot;</span><span class="p">)</span>
+<span class="n">ax3</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;(C) Lebedev-Laikov (multiple d)&quot;</span><span class="p">)</span>
 
 <span class="n">ax4</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">144</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s2">&quot;3d&quot;</span><span class="p">)</span>
 <span class="n">ax4</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x4</span><span class="p">,</span> <span class="n">y4</span><span class="p">,</span> <span class="n">z4</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">)</span>
-<span class="n">ax4</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;(C) Levedev-Laikov (s=60, rotated)&quot;</span><span class="p">)</span>
+<span class="n">ax4</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;(C) Lebedev-Laikov (s=60, rotated)&quot;</span><span class="p">)</span>
 
 <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">&quot;Various AtomGrids&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
@@ -619,7 +670,7 @@ AtomGrid D center        : [0. 0. 0.]
 </section>
 <section id="pruned-grids-atomgrid-from-pruned">
 <h2>Pruned Grids <code class="docutils literal notranslate"><span class="pre">AtomGrid.from_pruned</span></code><a class="headerlink" href="#pruned-grids-atomgrid-from-pruned" title="Link to this heading">#</a></h2>
-<p><strong><a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.from_pruned">AtomGrid.from_pruned</a></strong> construct an atomic grid given a radial grid, an atom radius, a set of radial sectors <code class="docutils literal notranslate"><span class="pre">r_sectors</span></code> and the degrees (or sizes) of angular grids <code class="docutils literal notranslate"><span class="pre">d_sectors</span></code> for each of the sectors. The <code class="docutils literal notranslate"><span class="pre">r_sectors</span></code> and <code class="docutils literal notranslate"><span class="pre">d_sectors</span></code> should have the same number of elements. This method is useful for constructing atomic grids with different angular grid resolutions for different radial sectors.</p>
+<p><strong><a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.from_pruned">AtomGrid.from_pruned</a></strong> constructs an atomic grid given a radial grid, an atom radius, a set of radial sectors <code class="docutils literal notranslate"><span class="pre">r_sectors</span></code> and the degrees (or sizes) of angular grids <code class="docutils literal notranslate"><span class="pre">d_sectors</span></code> for each of the sectors. The <code class="docutils literal notranslate"><span class="pre">r_sectors</span></code> and <code class="docutils literal notranslate"><span class="pre">d_sectors</span></code> should have the same number of elements. This method is useful for constructing atomic grids with different angular grid resolutions for different radial sectors.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create an atom grid using AtomGrid.from_pruned</span>
@@ -635,7 +686,7 @@ AtomGrid D center        : [0. 0. 0.]
 
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid size          : </span><span class="si">{</span><span class="n">atgrid</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid radial size   : </span><span class="si">{</span><span class="n">atgrid</span><span class="o">.</span><span class="n">rgrid</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid angular degree: </span><span class="si">{</span><span class="n">atgrid</span><span class="o">.</span><span class="n">degrees</span><span class="si">}</span><span class="s2"> (Levedev-Laikov, multiple degrees)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid angular degree: </span><span class="si">{</span><span class="n">atgrid</span><span class="o">.</span><span class="n">degrees</span><span class="si">}</span><span class="s2"> (Lebedev-Laikov, multiple degrees)&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid center        : </span><span class="si">{</span><span class="n">atgrid</span><span class="o">.</span><span class="n">center</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="c1"># plot grid points</span>
@@ -651,7 +702,7 @@ AtomGrid D center        : [0. 0. 0.]
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>AtomGrid size          : 132
 AtomGrid radial size   : 10
-AtomGrid angular degree: [3, 3, 3, 3, 5, 5, 5, 5, 5, 5] (Levedev-Laikov, multiple degrees)
+AtomGrid angular degree: [3, 3, 3, 3, 5, 5, 5, 5, 5, 5] (Lebedev-Laikov, multiple degrees)
 AtomGrid center        : [0. 0. 0.]
 </pre></div>
 </div>
@@ -661,7 +712,7 @@ AtomGrid center        : [0. 0. 0.]
 </section>
 <section id="preset-grids-atomgrid-from-preset">
 <h2>Preset Grids <code class="docutils literal notranslate"><span class="pre">AtomGrid.from_preset</span></code><a class="headerlink" href="#preset-grids-atomgrid-from-preset" title="Link to this heading">#</a></h2>
-<p><strong><a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.from_preset">AtomGrid.from_preset</a></strong> builds an atomic grid given a radial grid and a preset angular grid name like <code class="docutils literal notranslate"><span class="pre">coarse</span></code>, <code class="docutils literal notranslate"><span class="pre">medium</span></code>, <code class="docutils literal notranslate"><span class="pre">fine</span></code>, <code class="docutils literal notranslate"><span class="pre">veryfine</span></code>, <code class="docutils literal notranslate"><span class="pre">ultrafine</span></code>, and <code class="docutils literal notranslate"><span class="pre">insane</span></code> (the names denote the increasing order of angular grid size) which uses a preset angular degrees for every element denoted by <code class="docutils literal notranslate"><span class="pre">atnum</span></code> (atomic number). In other words, every element has a predefined set of radial sector <code class="docutils literal notranslate"><span class="pre">r_sectors</span></code> and corresponding degrees <code class="docutils literal notranslate"><span class="pre">d_sectors</span></code> which is invoked by the <code class="docutils literal notranslate"><span class="pre">preset</span></code> argument.</p>
+<p><strong><a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.from_preset">AtomGrid.from_preset</a></strong> builds an atomic grid given a radial grid and a preset angular grid name like <code class="docutils literal notranslate"><span class="pre">coarse</span></code>, <code class="docutils literal notranslate"><span class="pre">medium</span></code>, <code class="docutils literal notranslate"><span class="pre">fine</span></code>, <code class="docutils literal notranslate"><span class="pre">veryfine</span></code>, <code class="docutils literal notranslate"><span class="pre">ultrafine</span></code>, and <code class="docutils literal notranslate"><span class="pre">insane</span></code> (the names denote the increasing order of angular grid size) which uses preset angular degrees for every element denoted by <code class="docutils literal notranslate"><span class="pre">atnum</span></code> (atomic number). In other words, every element has a predefined set of radial sector <code class="docutils literal notranslate"><span class="pre">r_sectors</span></code> and corresponding degrees <code class="docutils literal notranslate"><span class="pre">d_sectors</span></code> which is invoked by the <code class="docutils literal notranslate"><span class="pre">preset</span></code> argument.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># (A) Construct coarse atomic grid for Li atom</span>
@@ -669,7 +720,7 @@ AtomGrid center        : [0. 0. 0.]
 
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid A size          : </span><span class="si">{</span><span class="n">atgrid_coarse</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid A radial size   : </span><span class="si">{</span><span class="n">atgrid_coarse</span><span class="o">.</span><span class="n">rgrid</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid A angular degree: </span><span class="si">{</span><span class="n">atgrid_coarse</span><span class="o">.</span><span class="n">degrees</span><span class="si">}</span><span class="s2"> (Levedev-Laikov, coarse Li)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid A angular degree: </span><span class="si">{</span><span class="n">atgrid_coarse</span><span class="o">.</span><span class="n">degrees</span><span class="si">}</span><span class="s2"> (Lebedev-Laikov, coarse Li)&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid A center        : </span><span class="si">{</span><span class="n">atgrid_coarse</span><span class="o">.</span><span class="n">center</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="c1"># (B) Construct medium atomic grid for Li atom</span>
@@ -677,7 +728,7 @@ AtomGrid center        : [0. 0. 0.]
 
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid B size          : </span><span class="si">{</span><span class="n">atgrid_medium</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid B radial size   : </span><span class="si">{</span><span class="n">atgrid_medium</span><span class="o">.</span><span class="n">rgrid</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid B angular degree: </span><span class="si">{</span><span class="n">atgrid_medium</span><span class="o">.</span><span class="n">degrees</span><span class="si">}</span><span class="s2"> (Levedev-Laikov, medium Li)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid B angular degree: </span><span class="si">{</span><span class="n">atgrid_medium</span><span class="o">.</span><span class="n">degrees</span><span class="si">}</span><span class="s2"> (Lebedev-Laikov, medium Li)&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid B center        : </span><span class="si">{</span><span class="n">atgrid_medium</span><span class="o">.</span><span class="n">center</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="c1"># (C) Construct medium atomic grid for H atom</span>
@@ -685,7 +736,7 @@ AtomGrid center        : [0. 0. 0.]
 
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid B size          : </span><span class="si">{</span><span class="n">atgrid_medium_h</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid B radial size   : </span><span class="si">{</span><span class="n">atgrid_medium_h</span><span class="o">.</span><span class="n">rgrid</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid B angular degree: </span><span class="si">{</span><span class="n">atgrid_medium_h</span><span class="o">.</span><span class="n">degrees</span><span class="si">}</span><span class="s2"> (Levedev-Laikov, medium H)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid B angular degree: </span><span class="si">{</span><span class="n">atgrid_medium_h</span><span class="o">.</span><span class="n">degrees</span><span class="si">}</span><span class="s2"> (Lebedev-Laikov, medium H)&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGrid B center        : </span><span class="si">{</span><span class="n">atgrid_medium_h</span><span class="o">.</span><span class="n">center</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="c1"># Plot AtomicGrid Points</span>
@@ -698,15 +749,15 @@ AtomGrid center        : [0. 0. 0.]
 
 <span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">131</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s2">&quot;3d&quot;</span><span class="p">)</span>
 <span class="n">ax1</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">z1</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">)</span>
-<span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;(A) Coarse Levedev-Laikov (Z=3)&quot;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;(A) Coarse Lebedev-Laikov (Z=3)&quot;</span><span class="p">)</span>
 
 <span class="n">ax2</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">132</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s2">&quot;3d&quot;</span><span class="p">)</span>
 <span class="n">ax2</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">z2</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">)</span>
-<span class="n">ax2</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;(B) Medium Levedev-Laikov (Z=3)&quot;</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;(B) Medium Lebedev-Laikov (Z=3)&quot;</span><span class="p">)</span>
 
 <span class="n">ax3</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">133</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s2">&quot;3d&quot;</span><span class="p">)</span>
 <span class="n">ax3</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x3</span><span class="p">,</span> <span class="n">y3</span><span class="p">,</span> <span class="n">z3</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;g&quot;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">)</span>
-<span class="n">ax3</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;(C) Medium Levedev-Laikov (Z=1)&quot;</span><span class="p">)</span>
+<span class="n">ax3</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;(C) Medium Lebedev-Laikov (Z=1)&quot;</span><span class="p">)</span>
 
 <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">&quot;Various AtomGrids.from_preset&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
@@ -717,17 +768,17 @@ AtomGrid center        : [0. 0. 0.]
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>AtomGrid A size          : 728
 AtomGrid A radial size   : 10
-AtomGrid A angular degree: [3, 3, 5, 7, 9, 11, 11, 21, 21, 23] (Levedev-Laikov, coarse Li)
+AtomGrid A angular degree: [3, 3, 5, 7, 9, 11, 11, 21, 21, 23] (Lebedev-Laikov, coarse Li)
 AtomGrid A center        : [0. 0. 0.]
 
 AtomGrid B size          : 1240
 AtomGrid B radial size   : 10
-AtomGrid B angular degree: [3, 5, 7, 9, 11, 15, 17, 21, 29, 35] (Levedev-Laikov, medium Li)
+AtomGrid B angular degree: [3, 5, 7, 9, 11, 15, 17, 21, 29, 35] (Lebedev-Laikov, medium Li)
 AtomGrid B center        : [0. 0. 0.]
 
 AtomGrid B size          : 724
 AtomGrid B radial size   : 10
-AtomGrid B angular degree: [3, 5, 9, 11, 15, 15, 17, 17, 17, 17] (Levedev-Laikov, medium H)
+AtomGrid B angular degree: [3, 5, 9, 11, 15, 15, 17, 17, 17, 17] (Lebedev-Laikov, medium H)
 AtomGrid B center        : [0. 0. 0.]
 </pre></div>
 </div>
@@ -749,8 +800,8 @@ AtomGrid B center        : [0. 0. 0.]
 <span class="n">atgrid_disp_1</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="o">.</span><span class="n">from_preset</span><span class="p">(</span><span class="n">atnum</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="s2">&quot;coarse&quot;</span><span class="p">,</span> <span class="n">center</span><span class="o">=-</span><span class="n">center</span><span class="p">,</span> <span class="n">rgrid</span><span class="o">=</span><span class="n">rgrid</span><span class="p">)</span>
 <span class="n">atgrid_disp_2</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="o">.</span><span class="n">from_preset</span><span class="p">(</span><span class="n">atnum</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="s2">&quot;medium&quot;</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="n">center</span><span class="p">,</span> <span class="n">rgrid</span><span class="o">=</span><span class="n">rgrid</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;H AtomGrid size : </span><span class="si">{</span><span class="n">atgrid_disp_1</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2"> (Levedev-Laikov, coarse)&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;F AtomGrid size : </span><span class="si">{</span><span class="n">atgrid_disp_2</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2"> (Levedev-Laikov, medium)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;H AtomGrid size : </span><span class="si">{</span><span class="n">atgrid_disp_1</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2"> (Lebedev-Laikov, coarse)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;F AtomGrid size : </span><span class="si">{</span><span class="n">atgrid_disp_2</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2"> (Lebedev-Laikov, medium)&quot;</span><span class="p">)</span>
 
 <span class="c1"># Plot grid points</span>
 <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">z1</span> <span class="o">=</span> <span class="n">atgrid_disp_1</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">T</span>
@@ -766,8 +817,8 @@ AtomGrid B center        : [0. 0. 0.]
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>H AtomGrid size : 568 (Levedev-Laikov, coarse)
-F AtomGrid size : 1632 (Levedev-Laikov, medium)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>H AtomGrid size : 568 (Lebedev-Laikov, coarse)
+F AtomGrid size : 1632 (Lebedev-Laikov, medium)
 </pre></div>
 </div>
 <img alt="../_images/c921fe98e4e6caa74d8ecfb1408d51372b40fc67f88605e0604e0b3558203aeb.png" src="../_images/c921fe98e4e6caa74d8ecfb1408d51372b40fc67f88605e0604e0b3558203aeb.png" />
@@ -841,7 +892,7 @@ F AtomGrid size : 1632 (Levedev-Laikov, medium)
     <i class="fa-solid fa-list"></i> Contents
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
-    <ul class="visible nav section-nav flex-column">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#atomic-grid-atomgrid">Atomic Grid <code class="docutils literal notranslate"><span class="pre">AtomGrid</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plot-atomgrid-points">Plot <code class="docutils literal notranslate"><span class="pre">AtomGrid</span></code> Points</a></li>
 </ul>
@@ -897,8 +948,8 @@ By The QC-Devs Community
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
-<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+  <script defer src="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
 
   <footer class="bd-footer">
   </footer>

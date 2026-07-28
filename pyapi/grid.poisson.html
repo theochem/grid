@@ -27,8 +27,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
@@ -39,10 +39,10 @@
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
   
   <!-- So that users can add custom icons -->
-  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <script defer src="../_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
     <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
@@ -63,6 +63,7 @@
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'pyapi/grid.poisson';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="icon" href="../_static/grid_logo_website.svg"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -71,20 +72,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
   </head>
-  
-  
-  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
-
+  <body data-default-mode="">
   
   
   <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
   
   <div id="pst-scroll-pixel-helper"></div>
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
-
+  
+  
+  
   
   <dialog id="pst-search-dialog">
     
@@ -110,7 +117,51 @@
 </div>
 
   
-    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
     </header>
   
 
@@ -402,7 +453,7 @@
                 <h2> Contents </h2>
             </div>
             <nav aria-label="Page">
-                <ul class="visible nav section-nav flex-column">
+                <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.poisson.solve_poisson_bvp"><code class="docutils literal notranslate"><span class="pre">solve_poisson_bvp()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.poisson.solve_poisson_ivp"><code class="docutils literal notranslate"><span class="pre">solve_poisson_ivp()</span></code></a></li>
 </ul>
@@ -424,7 +475,7 @@
 \[\nabla^2 V(r) = -4\pi \rho(r),\]</div>
 <p>for some Coulomb potential <span class="math notranslate nohighlight">\(V(r)\)</span> and charge density <span class="math notranslate nohighlight">\(\rho(r)\)</span>
 over a centered atomic grid. It is recommended to use the boundary value problem
-for handing singularities near the origin of the atomic grid.</p>
+for handling singularities near the origin of the atomic grid.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="grid.poisson.solve_poisson_bvp">
 <span class="sig-prename descclassname"><span class="pre">grid.poisson.</span></span><span class="sig-name descname"><span class="pre">solve_poisson_bvp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">molgrid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="grid.molgrid.html#grid.molgrid.MolGrid" title="grid.molgrid.MolGrid"><span class="pre">MolGrid</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="grid.atomgrid.html#grid.atomgrid.AtomGrid" title="grid.atomgrid.AtomGrid"><span class="pre">AtomGrid</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_vals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="grid.rtransform.html#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><span class="pre">BaseTransform</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_origin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_large_pts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000000.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ode_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.poisson.solve_poisson_bvp" title="Link to this definition">#</a></dt>
@@ -433,7 +484,7 @@ for handing singularities near the origin of the atomic grid.</p>
 <div class="math notranslate nohighlight">
 \[\nabla^2 g = (-4\pi) f,\]</div>
 <p>for a fixed function <span class="math notranslate nohighlight">\(f\)</span>, where <span class="math notranslate nohighlight">\(\nabla^2\)</span> is the Laplacian.  This
-is transformed to an set of ODE problems as a boundary value problem. <a class="footnote-reference brackets" href="#id2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a></p>
+is transformed to a set of ODE problems as a boundary value problem. <a class="footnote-reference brackets" href="#id2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a></p>
 <p>If boundary is not provided, then the boundary of <span class="math notranslate nohighlight">\(g\)</span> for large r is set to
 <span class="math notranslate nohighlight">\(\int \int \int f(r, \theta, \phi) / r\)</span>.  The solution <span class="math notranslate nohighlight">\(g\)</span> is assumed to be
 zero at the origin <span class="math notranslate nohighlight">\(g(0, \theta, \phi) = 0\)</span>.  Use <cite>solve_poisson_ivp</cite> if this assumption
@@ -447,7 +498,7 @@ harmonic basis.</p>
 <dt>func_vals<span class="classifier">ndarray(N,)</span></dt><dd><p>The function values evaluated on all <span class="math notranslate nohighlight">\(N\)</span> points on the molecular grid.</p>
 </dd>
 <dt>transform<span class="classifier">BaseTransform, optional</span></dt><dd><p>Transformation from infinite domain <span class="math notranslate nohighlight">\(r \in [0, \infty)\)</span> to another
-domain that is a finite.</p>
+domain that is finite.</p>
 </dd>
 <dt>boundary<span class="classifier">float, optional</span></dt><dd><p>The boundary value of <span class="math notranslate nohighlight">\(g\)</span> in the limit of r to infinity.</p>
 </dd>
@@ -464,7 +515,7 @@ only.</p>
 <section id="returns">
 <h2>Returns<a class="headerlink" href="#returns" title="Link to this heading">#</a></h2>
 <dl class="simple">
-<dt>callable(ndarray(N, 3) -&gt; float) :</dt><dd><p>The solution to Poisson equaiton/potential <span class="math notranslate nohighlight">\(g : \mathbb{R}^3 \rightarrow \mathbb{R}\)</span>.</p>
+<dt>callable(ndarray(N, 3) -&gt; float) :</dt><dd><p>The solution to Poisson equation/potential <span class="math notranslate nohighlight">\(g : \mathbb{R}^3 \rightarrow \mathbb{R}\)</span>.</p>
 </dd>
 </dl>
 </section>
@@ -502,7 +553,7 @@ spherical harmonic basis.</p>
 <dt>func_vals<span class="classifier">ndarray(N,)</span></dt><dd><p>The function values evaluated on all <span class="math notranslate nohighlight">\(N\)</span> points on the molecular grid.</p>
 </dd>
 <dt>transform<span class="classifier">BaseTransform, optional</span></dt><dd><p>Transformation from infinite domain <span class="math notranslate nohighlight">\(r \in [0, \infty)\)</span> to another
-domain that is a finite.</p>
+domain that is finite.</p>
 </dd>
 <dt>r_interval<span class="classifier">tuple, optional</span></dt><dd><p>The interval <span class="math notranslate nohighlight">\((b, a)\)</span> of <span class="math notranslate nohighlight">\(r\)</span> for which the ODE solver will start from and end,
 where <span class="math notranslate nohighlight">\(b&gt;a\)</span>. The value <span class="math notranslate nohighlight">\(b\)</span> should be large as it determines the asymptotic
@@ -516,7 +567,7 @@ on <span class="math notranslate nohighlight">\(f\)</span>.</p>
 <section id="id4">
 <h2>Returns<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
 <dl class="simple">
-<dt>callable(ndarray(N, 3) -&gt; float) :</dt><dd><p>The solution to Poisson equaiton/potential <span class="math notranslate nohighlight">\(g : \mathbb{R}^3 \rightarrow \mathbb{R}\)</span>.</p>
+<dt>callable(ndarray(N, 3) -&gt; float) :</dt><dd><p>The solution to Poisson equation/potential <span class="math notranslate nohighlight">\(g : \mathbb{R}^3 \rightarrow \mathbb{R}\)</span>.</p>
 </dd>
 </dl>
 </section>
@@ -589,7 +640,7 @@ on <span class="math notranslate nohighlight">\(f\)</span>.</p>
     <i class="fa-solid fa-list"></i> Contents
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
-    <ul class="visible nav section-nav flex-column">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.poisson.solve_poisson_bvp"><code class="docutils literal notranslate"><span class="pre">solve_poisson_bvp()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.poisson.solve_poisson_ivp"><code class="docutils literal notranslate"><span class="pre">solve_poisson_ivp()</span></code></a></li>
 </ul>
@@ -640,8 +691,8 @@ By The QC-Devs Community
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
-<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+  <script defer src="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
 
   <footer class="bd-footer">
   </footer>

@@ -27,8 +27,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
@@ -39,10 +39,10 @@
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
   
   <!-- So that users can add custom icons -->
-  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <script defer src="../_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
     <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
@@ -63,6 +63,7 @@
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'tutorial/Molecular_Grid_Construction';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="icon" href="../_static/grid_logo_website.svg"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -71,20 +72,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
   </head>
-  
-  
-  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
-
+  <body data-default-mode="">
   
   
   <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
   
   <div id="pst-scroll-pixel-helper"></div>
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
-
+  
+  
+  
   
   <dialog id="pst-search-dialog">
     
@@ -110,7 +117,51 @@
 </div>
 
   
-    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
     </header>
   
 
@@ -451,7 +502,7 @@
                 <h2> Contents </h2>
             </div>
             <nav aria-label="Page">
-                <ul class="visible nav section-nav flex-column">
+                <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#molecular-grid-details">Molecular Grid Details</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#construction-of-molecular-grid">Construction of Molecular Grid</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#constructor">Constructor</a></li>
@@ -474,7 +525,7 @@
   <p><a class="reference external" href="https://colab.research.google.com/github/theochem/grid/blob/master/examples/Molecular_Grid_Construction.ipynb"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
 <section class="tex2jax_ignore mathjax_ignore" id="constructing-molecular-grids">
 <h1>Constructing Molecular Grids<a class="headerlink" href="#constructing-molecular-grids" title="Link to this heading">#</a></h1>
-<p>Molecular grids are particularly useful in quantum chemistry for integrating functions that concentrate and are “spike” around finite set of points, usually the atomic nuclei. This is particularly needed for DFT computation or atom-in-molecule analysis.</p>
+<p>Molecular grids are particularly useful in quantum chemistry for integrating functions that concentrate and are “spiky” around a finite set of points, usually the atomic nuclei. This is particularly needed for DFT computation or atom-in-molecule analysis.</p>
 <section id="molecular-grid-details">
 <h2>Molecular Grid Details<a class="headerlink" href="#molecular-grid-details" title="Link to this heading">#</a></h2>
 <p>It starts by first decomposing a function into atomic contributions and
@@ -484,7 +535,7 @@ writing out each atomic integral in spherical coordinates. As proposed by Becke,
     \int_{\mathbb{R}^3} f(\vec{\textbf{r}}) d\vec{\textbf{r}} = \sum_{A} \int_{\mathbb{R}^3}
     w_A(\vec{\textbf{r}}) f(\vec{\textbf{r}}) d\vec{\textbf{r}},
 \]</div>
-<p>where <span class="math notranslate nohighlight">\(w_A\)</span> is known as the nuclear weight function (or atom in molecule weights) such that it has value one close to  the center and decay’s continuous over other centers with the condition that <span class="math notranslate nohighlight">\(\sum_{A} w_A(\vec{\textbf{r}}) = 1\)</span> for all <span class="math notranslate nohighlight">\(\vec{\textbf{r}}\)</span>.  The module <a class="reference internal" href="../pyapi/grid.molgrid.html"><span class="std std-doc">Molecular Grids</span></a> is responsible for computing integrals in this fashion with either <a class="reference internal" href="../pyapi/grid.becke.html"><span class="std std-doc">Becke</span></a> or <a class="reference internal" href="../pyapi/grid.hirshfeld.html"><span class="std std-doc">Hirshfeld</span></a> atom in molecule weights. The process to integrate each individual integral is done by first converting to spherical coordinates <span class="math notranslate nohighlight">\((r, \theta, \phi)\)</span>:</p>
+<p>where <span class="math notranslate nohighlight">\(w_A\)</span> is known as the nuclear weight function (or atom in molecule weights) such that it has value one close to  the center and decays continuously over other centers with the condition that <span class="math notranslate nohighlight">\(\sum_{A} w_A(\vec{\textbf{r}}) = 1\)</span> for all <span class="math notranslate nohighlight">\(\vec{\textbf{r}}\)</span>.  The module <a class="reference internal" href="../pyapi/grid.molgrid.html"><span class="std std-doc">Molecular Grids</span></a> is responsible for computing integrals in this fashion with either <a class="reference internal" href="../pyapi/grid.becke.html"><span class="std std-doc">Becke</span></a> or <a class="reference internal" href="../pyapi/grid.hirshfeld.html"><span class="std std-doc">Hirshfeld</span></a> atom in molecule weights. The process to integrate each individual integral is done by first converting to spherical coordinates <span class="math notranslate nohighlight">\((r, \theta, \phi)\)</span>:</p>
 <div class="math notranslate nohighlight">
 \[
     \int_{\mathbb{R}^3} w_A(\vec{\textbf{r}}) f(\vec{\textbf{r}}) d\vec{\textbf{r}} =
@@ -553,14 +604,14 @@ Atomic numbers of the atom
 </section>
 <section id="construction-of-molecular-grid">
 <h2>Construction of Molecular Grid<a class="headerlink" href="#construction-of-molecular-grid" title="Link to this heading">#</a></h2>
-<p>Molecular grid offers various methods to construct MolGrid object.  Each method requires the atom in molecule weights <span class="math notranslate nohighlight">\(w_A\)</span> to be provided.</p>
+<p>Molecular grids offer various methods to construct a MolGrid object.  Each method requires the atom in molecule weights <span class="math notranslate nohighlight">\(w_A\)</span> to be provided.</p>
 <ol class="arabic simple">
 <li><p><a class="reference internal" href="../pyapi/grid.molgrid.html#grid.molgrid.MolGrid"><span class="std std-ref">MolGrid.__init__</span></a>: Provide list of atomic grids for each center, and the atomic numbers for each center. This is useful to explicitly place atomic grids at each center.</p></li>
 <li><p><a class="reference internal" href="../pyapi/grid.molgrid.html#grid.molgrid.MolGrid.from_preset"><span class="std std-ref">MolGrid.from_preset()</span></a>: Generates atomic grid for each center based on the atomic numbers, atomic coordinates, a radial grid to integrate over <span class="math notranslate nohighlight">\([0, \infty)\)</span>, and a preset parameter from the list [“coarse”, “medium”, “fine”, “veryfine”, “ultrafine”, “insane”] that controls the degree of the angular grid.</p></li>
 <li><p><a class="reference internal" href="../pyapi/grid.molgrid.html#grid.molgrid.MolGrid.from_size"><span class="std std-ref">MolGrid.from_size()</span></a>: Similar to from_preset method but instead of string preset parameter, it has an integer size which controls the size of the angular grid inside the atomic grid class.</p></li>
 <li><p><a class="reference internal" href="../pyapi/grid.molgrid.html#grid.molgrid.MolGrid.from_pruned"><span class="std std-ref">MolGrid.from_pruned()</span></a>: Gives more control to the size of the angular grid based on the radius.  This is done by providing <code class="docutils literal notranslate"><span class="pre">r_sectors</span></code> list and <code class="docutils literal notranslate"><span class="pre">sector_degs</span></code> that controls what kind of angular grid to place at each radius point. This is useful for placing lower degree angular grids close to the nucleus and larger degree angular grids further away.</p></li>
 </ol>
-<p>See the function documentation for more information.  The first step here is to generate an one-dimensional grid to integrate over the radial coordinate <span class="math notranslate nohighlight">\(r \in [0, \infty)\)</span>.  This is done by constructing a Trapezoidal grid over <span class="math notranslate nohighlight">\([-1, 1]\)</span> and using the Becke Transformation to transform it to <span class="math notranslate nohighlight">\([0, \infty)\)</span>.</p>
+<p>See the function documentation for more information.  The first step here is to generate a one-dimensional grid to integrate over the radial coordinate <span class="math notranslate nohighlight">\(r \in [0, \infty)\)</span>.  This is done by constructing a Trapezoidal grid over <span class="math notranslate nohighlight">\([-1, 1]\)</span> and using the Becke Transformation to transform it to <span class="math notranslate nohighlight">\([0, \infty)\)</span>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">grid.onedgrid</span><span class="w"> </span><span class="kn">import</span> <span class="n">Trapezoidal</span>
@@ -586,7 +637,7 @@ Atomic numbers of the atom
 </div>
 <section id="constructor">
 <h3>Constructor<a class="headerlink" href="#constructor" title="Link to this heading">#</a></h3>
-<p>The first method of constructing (point 1 above) is using the initializor.  This is done by explicitly constructing an atomic grid over each center.
+<p>The first method of constructing (point 1 above) is using the initializer.  This is done by explicitly constructing an atomic grid over each center.
 The degree of the angular component of the atomic grid should depend on the charge of the atom.  It is recommended that the larger the atom, the larger
 the degree of the angular component. Similarly for the radial grid, the larger the atom, the larger the radial grid component should be.</p>
 <div class="cell docutils container">
@@ -667,7 +718,7 @@ The <code class="docutils literal notranslate"><span class="pre">from_preset</sp
 </section>
 <section id="from-pruned-method">
 <h3>from_pruned method<a class="headerlink" href="#from-pruned-method" title="Link to this heading">#</a></h3>
-<p>This method allows explicit control to the angular degree <span class="math notranslate nohighlight">\(L_i\)</span> by breaking up the radial grid <span class="math notranslate nohighlight">\([0, \infty)\)</span> into sectors <span class="math notranslate nohighlight">\([0, R a_1) \cup [R a_1, R a_2) \cup \cdots \cup [R a_Q, \infty)\)</span> where <span class="math notranslate nohighlight">\(R\)</span> is the radius parameter, <span class="math notranslate nohighlight">\(\{a_i\}\)</span> is the <code class="docutils literal notranslate"><span class="pre">r_sectors</span></code> and each segment is associated to a angular degree <span class="math notranslate nohighlight">\(L_i\)</span>, i.e.</p>
+<p>This method allows explicit control to the angular degree <span class="math notranslate nohighlight">\(L_i\)</span> by breaking up the radial grid <span class="math notranslate nohighlight">\([0, \infty)\)</span> into sectors <span class="math notranslate nohighlight">\([0, R a_1) \cup [R a_1, R a_2) \cup \cdots \cup [R a_Q, \infty)\)</span> where <span class="math notranslate nohighlight">\(R\)</span> is the radius parameter, <span class="math notranslate nohighlight">\(\{a_i\}\)</span> is the <code class="docutils literal notranslate"><span class="pre">r_sectors</span></code> and each segment is associated with an angular degree <span class="math notranslate nohighlight">\(L_i\)</span>, i.e.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{align*}
@@ -779,7 +830,7 @@ The <code class="docutils literal notranslate"><span class="pre">from_preset</sp
     <i class="fa-solid fa-list"></i> Contents
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
-    <ul class="visible nav section-nav flex-column">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#molecular-grid-details">Molecular Grid Details</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#construction-of-molecular-grid">Construction of Molecular Grid</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#constructor">Constructor</a></li>
@@ -836,8 +887,8 @@ By The QC-Devs Community
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
-<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+  <script defer src="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
 
   <footer class="bd-footer">
   </footer>
