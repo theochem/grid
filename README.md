@@ -48,7 +48,7 @@ Installation via pip can be done by the following command:
 pip install qc-grid
 ```
 
-The development version from [github](https://github.com/theochem/grid) can also be installed via pip by:
+The development version from [GitHub](https://github.com/theochem/grid) can also be installed via pip by:
 ```bash
 pip install git+https://github.com/theochem/grid.git
 ```

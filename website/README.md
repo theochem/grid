@@ -1,16 +1,16 @@
 # Instructions On Documentation
 
-In-order to build the documentation locally, the following commands need to
-be runned. The html files are created in an folder called "_build".
+In order to build the documentation locally, the following commands need to
+be run. The HTML files are created in a folder called "_build".
 
 ```bash
-# # Generates API html for grid while ignoring the test and data folders.
+# # Generates API HTML for grid while ignoring the test and data folders.
 # Stores it in pyapi/
 sphinx-apidoc --separate -o website/pyapi grid -M -f
-# Build the html files
+# Build the HTML files
 jupyter-book build ./website/
 ```
-Here inside the "./website/_build/html/ folder, there are the html files to run the website locally.
+Here inside the "./website/_build/html/" folder, there are the HTML files to run the website locally.
 
 
 ## Pushing To Website
@@ -19,11 +19,11 @@ After running the commands above, you'll need to go inside the  "./website/_buil
 
 ```bash
 git branch -a
-# Should be something like origin/gh-pages/ where origin is the remote to the theochem/grid Github
+# Should be something like origin/gh-pages/ where origin is the remote to the theochem/grid GitHub
 git checkout gh-pages
 cd ..  # Get out of gh-pages and go back to grid folder
 ```
-Now, paste and overwrite all of the files in gh-pages with the html. Then commit and push to the `gh-pages` branch of the theochem/grid
+Now, paste and overwrite all of the files in gh-pages with the HTML. Then commit and push to the `gh-pages` branch of the theochem/grid
 ```bash
 git add ./*
 git commit -m "Update website"

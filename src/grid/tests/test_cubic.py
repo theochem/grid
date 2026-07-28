@@ -189,7 +189,7 @@ class TestTensor1DGrids(TestCase):
                     assert_allclose(actual_weight, cubic.weights[index])
                     index += 1
 
-    def test_interpolation_of_gaussian_vertorized(self):
+    def test_interpolation_of_gaussian_vectorized(self):
         r"""Test interpolation of a Gaussian function with vectorization."""
         oned = MidPoint(50)
         cubic = Tensor1DGrids(oned, oned, oned)
@@ -236,7 +236,7 @@ class TestTensor1DGrids(TestCase):
             assert_allclose(interpolated, linear_func(np.array([pt]))[0], rtol=1e-6)
 
     def test_interpolation_of_various_derivative_gaussian_using_logarithm(self):
-        r"""Test interpolation of the thederivatives of a Gaussian function."""
+        r"""Test interpolation of the derivatives of a Gaussian function."""
         oned = MidPoint(100)
         cubic = Tensor1DGrids(oned, oned, oned)
 
@@ -545,15 +545,15 @@ class TestUniformGrid(TestCase):
                     index += 1
 
     def test_calculating_rectangle_weights_with_orthogonal_axes(self):
-        r"""Test calcualting rectangle weights with orthogonal axes."""
+        r"""Test calculating rectangle weights with orthogonal axes."""
         # Set up the grid with easy examples but axes that form a cube.
         origin = np.array([0.0, 0.0, 0.0])
         axes = np.array([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]])
         shape = np.array([3, 3, 3], dtype=int)
         uniform = UniformGrid(origin, axes, shape, weight="Rectangle")
         volume = 3 * 3 * 3  # Volume of cube.
-        desired_wghts = np.ones(uniform.size) * volume / np.prod(shape)
-        assert_allclose(uniform.weights, desired_wghts)
+        desired_weights = np.ones(uniform.size) * volume / np.prod(shape)
+        assert_allclose(uniform.weights, desired_weights)
 
     def test_calculating_trapezoid_weights_with_orthogonal_axes(self):
         r"""Test calculating trapezoid weights with orthogonal axes."""
@@ -563,8 +563,8 @@ class TestUniformGrid(TestCase):
         shape = np.array([3, 3, 3], dtype=int)
         uniform = UniformGrid(origin, axes, shape, weight="Trapezoid")
         volume = 3 * 3 * 3  # Volume of cube.
-        desired_wghts = np.ones(uniform.size) * volume / np.prod(shape + 1)
-        assert_allclose(uniform.weights, desired_wghts)
+        desired_weights = np.ones(uniform.size) * volume / np.prod(shape + 1)
+        assert_allclose(uniform.weights, desired_weights)
 
     def test_calculating_alternative_weights_with_orthogonal_axes(self):
         r"""Test calculating alternative weights with orthogonal axes."""
@@ -574,8 +574,8 @@ class TestUniformGrid(TestCase):
         shape = np.array([3, 3, 3], dtype=int)
         uniform = UniformGrid(origin, axes, shape, weight="Alternative")
         volume = 3 * 3 * 3  # Volume of cube.
-        desired_wghts = np.ones(uniform.size) * volume * np.prod(shape - 1) / np.prod(shape) ** 2.0
-        assert_allclose(uniform.weights, desired_wghts)
+        desired_weights = np.ones(uniform.size) * volume * np.prod(shape - 1) / np.prod(shape) ** 2.0
+        assert_allclose(uniform.weights, desired_weights)
 
     def test_integration_with_gaussian_with_cubic_grid(self):
         r"""Test integration against a Gaussian with a cubic grid."""

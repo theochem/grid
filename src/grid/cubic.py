@@ -139,7 +139,7 @@ class _HyperRectangleGrid(Grid):
         Returns
         -------
         float :
-            The interpolation of a function (or of it's derivatives) at a :math:`M` point.
+            The interpolation of a function (or of its derivatives) at a :math:`M` point.
 
         """
         if method not in ["cubic", "linear", "nearest"]:

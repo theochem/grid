@@ -166,7 +166,7 @@ class AtomGrid(Grid):
             greater accuracy but denser grid. See `Notes` for more information.
         rgrid : OneDGrid, optional
             The 1D radial grid representing the radius of spherical grids.
-            If None, a default radial grid (PowerRTransform of UniformInteger grid) for the give
+            If None, a default radial grid (PowerRTransform of UniformInteger grid) for the given
             `atnum` is constructed.
         center : ndarray(3,), optional
             Cartesian coordinates of the grid center. If `None`\, the origin is used.
@@ -506,8 +506,8 @@ class AtomGrid(Grid):
         """
         # Integrate f(r, \theta, \phi) sin(\phi) d\theta d\phi by multiplying against its weights
         prod_value = func_vals * self.weights  # Multiply weights to the last axis.
-        # [..., indices] means only take the last axis, this is due func_vals being
-        #  multi-dimensional, take a sum over the last axis only and swap axes so that it
+        # [..., indices] means only take the last axis, because func_vals is
+        #  multi-dimensional. Take a sum over the last axis only and swap axes so that it
         #  has shape (..., M) where ... is the number of functions and M is the number of
         #  radial points.
         radial_coefficients = np.array(
@@ -666,7 +666,7 @@ class AtomGrid(Grid):
                 ndarray(M,...):
                     The interpolated function values or its derivatives with respect to Cartesian
                     :math:`(x,y,z)` or if `deriv_spherical` then :math:`(r, \theta, \phi)` or
-                    if `only_radial_derivs` then derivative wrt to :math:`r` is only returned.
+                    if `only_radial_deriv` then derivative wrt to :math:`r` is only returned.
 
         """
         # compute splines for given value_array on grid points
@@ -695,12 +695,12 @@ class AtomGrid(Grid):
             ndarray(M,...) :
                 The interpolated function values or its derivatives with respect to Cartesian
                 :math:`(x,y,z)` or if `deriv_spherical` then :math:`(r, \theta, \phi)` or
-                if `only_radial_derivs` then derivative wrt to :math:`r` is only returned.
+                if `only_radial_deriv` then derivative wrt to :math:`r` is only returned.
 
             """
             if deriv_spherical and only_radial_deriv:
                 warnings.warn(
-                    "Since `only_radial_derivs` is true, then only the derivative wrt to"
+                    "Since `only_radial_deriv` is true, then only the derivative wrt to"
                     "radius is returned and `deriv_spherical` value is ignored.",
                     stacklevel=2,
                 )

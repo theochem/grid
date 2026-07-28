@@ -210,7 +210,7 @@ def test_transform_and_rearrange_to_explicit_ode_with_simple_boundary(transform,
         # ],
     ],
 )
-def test_solve_ode_bvp_with_and_without_transormation(transform, fx, coeffs, bd_cond):
+def test_solve_ode_bvp_with_and_without_transformation(transform, fx, coeffs, bd_cond):
     r"""Test solve_ode with and without transformation with different bd conditions."""
     x = np.linspace(0.01, 0.999, 20)
     sol_with_transform = solve_ode_bvp(
@@ -505,12 +505,12 @@ def test_high_order_transformations_gives_itself():
         coeffs_original = _transform_ode_from_derivs(
             np.ravel(coeffs_transf[:, i]), derivs_invs, x_transformed[i : i + 1]
         )
-        # Check that it is the same as hte original transformation.
+        # Check that it is the same as the original transformation.
         assert_almost_equal(coeffs, np.ravel(coeffs_original))
 
 
-def test_rearange_ode_coeff():
-    """Test rearange ode coeff and solver result."""
+def test_rearrange_ode_coeff():
+    """Test rearrange ode coeff and solver result."""
     coeff_b = [0, 0, 1]
     x = np.linspace(0, 2, 20)
     y = np.zeros((2, x.size))  # Initial Guess
