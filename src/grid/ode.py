@@ -160,7 +160,7 @@ def solve_ode_ivp(
         raise ValueError(f"The ode solver didn't converge, got status: {res.status}")
 
     if transform is not None:
-        # Transform the function so that it's input is the original variable and
+        # Transform the function so that its input is the original variable and
         #   derivative is with respect to the original variable as well.
         return _transform_solution_to_original_domain(res, transform, no_derivatives, order)
 
@@ -272,7 +272,7 @@ def solve_ode_bvp(
         raise ValueError(f"The ode solver didn't converge, got status: {res.status}")
 
     if transform is not None:
-        # Transform the function so that it's input is the original variable and
+        # Transform the function so that its input is the original variable and
         #   derivative is with respect to the original variable as well.
         return _transform_solution_to_original_domain(res, transform, no_derivatives, order)
 
@@ -282,7 +282,7 @@ def solve_ode_bvp(
 def _transform_solution_to_original_domain(result, tf, no_derivs, order):
     r"""Transform interpolate solution to the original domains and its derivatives."""
 
-    # Note this is it's own function becuase it is used twice for solve_ode_ivp and bv.
+    # Note this is its own function because it is used twice for solve_ode_ivp and bv.
     def interpolate_wrt_original_var(pt):
         transf_pts = tf.transform(pt)
         # Row is which func/deriv and Col is points.

@@ -1091,7 +1091,7 @@ class ExpSinh(OneDGrid):
 
     Warnings
     --------
-    - Using this quadrature requires heavy parameter-tuning in-order to work.
+    - Using this quadrature requires heavy parameter-tuning in order to work.
 
     """
 
@@ -1105,7 +1105,7 @@ class ExpSinh(OneDGrid):
         npoints : int
             Number of grid points.
         h : float
-            Value of parameter :math: `h` wich control the quadrature.
+            Value of parameter :math:`h` which controls the quadrature.
 
         Returns
         -------
@@ -1114,7 +1114,7 @@ class ExpSinh(OneDGrid):
 
         """
         warnings.warn(
-            "Using this quadrature requires heavy parameter-tuning in-order to be applicable.",
+            "Using this quadrature requires heavy parameter-tuning in order to be applicable.",
             stacklevel=2,
         )
         if h <= 0:
@@ -1144,7 +1144,7 @@ class LogExpSinh(OneDGrid):
 
     Warnings
     --------
-    - Using this quadrature requires heavy parameter-tuning in-order to work.
+    - Using this quadrature requires heavy parameter-tuning in order to work.
 
     """
 
@@ -1158,7 +1158,7 @@ class LogExpSinh(OneDGrid):
         npoints : int
             Number of grid points.
         h : float
-            Value of parameter :math: `h` wich control the quadrature.
+            Value of parameter :math:`h` which controls the quadrature.
 
         Returns
         -------
@@ -1167,7 +1167,7 @@ class LogExpSinh(OneDGrid):
 
         """
         warnings.warn(
-            "Using this quadrature requires heavy parameter-tuning in-order to be applicable.",
+            "Using this quadrature requires heavy parameter-tuning in order to be applicable.",
             stacklevel=2,
         )
         if h <= 0:
@@ -1197,7 +1197,7 @@ class ExpExp(OneDGrid):
 
     Warnings
     --------
-    - Using this quadrature requires heavy parameter-tuning in-order to work.
+    - Using this quadrature requires heavy parameter-tuning in order to work.
 
     """
 
@@ -1220,7 +1220,7 @@ class ExpExp(OneDGrid):
 
         """
         warnings.warn(
-            "Using this quadrature requires heavy parameter-tuning in-order to be applicable.",
+            "Using this quadrature requires heavy parameter-tuning in order to be applicable.",
             stacklevel=2,
         )
         if h <= 0:
@@ -1293,7 +1293,7 @@ class SingleExp(OneDGrid):
 
     Warnings
     --------
-    - Using this quadrature requires heavy parameter-tuning in-order to work.
+    - Using this quadrature requires heavy parameter-tuning in order to work.
 
     """
 
@@ -1316,7 +1316,7 @@ class SingleExp(OneDGrid):
 
         """
         warnings.warn(
-            "Using this quadrature requires heavy parameter-tuning in-order to be applicable.",
+            "Using this quadrature requires heavy parameter-tuning in order to be applicable.",
             stacklevel=2,
         )
         if h <= 0:
@@ -1345,7 +1345,7 @@ class SingleArcSinhExp(OneDGrid):
 
     Warnings
     --------
-    - Using this quadrature requires heavy parameter-tuning in-order to work.
+    - Using this quadrature requires heavy parameter-tuning in order to work.
 
     """
 
@@ -1368,7 +1368,7 @@ class SingleArcSinhExp(OneDGrid):
 
         """
         warnings.warn(
-            "Using this quadrature requires heavy parameter-tuning in-order to be applicable.",
+            "Using this quadrature requires heavy parameter-tuning in order to be applicable.",
             stacklevel=2,
         )
         if h <= 0:

@@ -76,7 +76,7 @@ class TestBecke(TestCase):
         weights = becke.generate_weights(centers, centers, nums, select=2)
         assert_allclose(weights, [0, 0, 1])
 
-        # each point in seperate sectors.
+        # each point in separate sectors.
         weights = becke.generate_weights(centers, centers, nums, pt_ind=[0, 1, 2, 3])
         assert_allclose(weights, [1, 1, 1])
 
