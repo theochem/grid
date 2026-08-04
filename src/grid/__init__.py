@@ -29,6 +29,7 @@ from grid.becke import *
 from grid.cubic import *
 from grid.hirshfeld import *
 from grid.angular import *
+from grid.lattice import *
 from grid.molgrid import *
 from grid.ode import *
 from grid.onedgrid import *
