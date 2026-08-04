@@ -59,8 +59,28 @@ def _build_core_density(
 ) -> np.ndarray:
     """Evaluate a sum of normalized s-type Gaussians at the given points.
 
-    Returns ndarray(N,) of the core density:
-    ``sum_k c_k * (alpha_k/pi)^1.5 * exp(-alpha_k * |r - center|^2)``.
+    Computes the core electron density contributed by a single atomic center:
+
+    .. math::
+        \\rho_{\\text{core}}(\\mathbf{r}) =
+        \\sum_k c_k \\left(\\frac{\\alpha_k}{\\pi}\\right)^{3/2}
+        \\exp\\!\\left(-\\alpha_k \\,|\\mathbf{r} - \\mathbf{r}_0|^2\\right)
+
+    Parameters
+    ----------
+    points : ndarray, shape (N, 3)
+        Cartesian evaluation points in atomic units (Bohr).
+    center : ndarray, shape (3,)
+        Cartesian coordinates of the single atomic center :math:`\\mathbf{r}_0`.
+    coeffs_s : ndarray, shape (K,)
+        Contraction coefficients :math:`c_k` for each s-type Gaussian.
+    alphas_s : ndarray, shape (K,)
+        Gaussian exponents :math:`\\alpha_k` (strictly positive).
+
+    Returns
+    -------
+    ndarray, shape (N,)
+        Core electron density evaluated at each point in ``points``.
     """
     r_sq = np.sum((points - center) ** 2, axis=1)
     rho = np.zeros(len(points))
