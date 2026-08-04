@@ -18,10 +18,10 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
 """
-Robust Poisson Solver --- Split-1-Plus-Solve Architecture.
+Robust Poisson Solver --- Double-Split Architecture.
 
-Architecture
-------------
+Split 1 only (default)
+-----------------------
 ::
 
     Total Density rho(r)
@@ -29,21 +29,32 @@ Architecture
     [SPLIT 1]  Analytical core subtraction using pre-fitted Gaussian parameters
           |     (load_atomic_gaussian_params -> coulomb_potential)
           |
-    residual(r) = rho - rho_core   <-- smooth, nuclear-cusp-free
+    residual_1(r) = rho - rho_core   <- smooth, nuclear-cusp-free
           |
-    [SOLVE]  solve_poisson_bvp on residual  --> phi_numerical
+    [SOLVE]  solve_poisson_bvp on residual_1  --> phi_numerical
           |
     Total Potential = phi_core (analytical) + phi_numerical
 
-Notes
------
-Split 2 (bonding/polarization residual fitting) and the full Double-Split
-pipeline will be added in a subsequent PR.
+Double-Split (split2=True)
+---------------------------
+::
+
+    Total Density rho(r)
+          |
+    [SPLIT 1]  Analytical core subtraction  --> residual_1
+          |
+    [SPLIT 2]  Per-atom NNLS Gaussian fit of residual_1  --> residual_2
+          |     (scipy.optimize.nnls, exponents from _DEFAULT_ALPHAS_BASIS)
+          |
+    [SOLVE]  solve_poisson_bvp on residual_2  --> phi_numerical
+          |
+    Total Potential = phi_core + phi_bonding (analytical) + phi_numerical
 """
 
 from __future__ import annotations
 
 import numpy as np
+from scipy.optimize import nnls
 
 from grid.atomgrid import AtomGrid
 from grid.coulomb import coulomb_potential, load_atomic_gaussian_params
@@ -52,6 +63,8 @@ from grid.poisson import solve_poisson_bvp
 from grid.rtransform import BaseTransform
 
 __all__ = ["solve_poisson_robust"]
+
+_DEFAULT_ALPHAS_BASIS = np.geomspace(0.05, 5000.0, 20)
 
 
 def _build_core_density(
@@ -90,15 +103,82 @@ def _build_core_density(
     return rho
 
 
+def _fit_residual_gaussians(
+    grid_pts: np.ndarray, residual: np.ndarray, atcoords: np.ndarray, alphas_basis: np.ndarray
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    """Fit the residual density with s-type Gaussians at each atomic center using NNLS.
+
+    Uses a sequential greedy strategy: for each atom, an NNLS problem is solved
+    using a basis of s-type Gaussians placed at that center, and the fitted density
+    is immediately subtracted before moving to the next atom, so later atoms see
+    a partially reduced residual.
+
+    Parameters
+    ----------
+    grid_pts : ndarray, shape (N, 3)
+        Cartesian coordinates of the grid evaluation points in atomic units (Bohr).
+    residual : ndarray, shape (N,)
+        Residual electron density to fit. This array is **not** modified; the
+        function works on an internal copy.
+    atcoords : ndarray, shape (M, 3)
+        Cartesian coordinates of the M atomic centers in atomic units (Bohr).
+    alphas_basis : ndarray, shape (K,)
+        Gaussian exponents defining the s-type basis functions used in the NNLS fit.
+        Must be strictly positive.
+
+    Returns
+    -------
+    coeffs : ndarray, shape (P,)
+        Non-negative NNLS coefficients for the retained Gaussians (P <= M*K).
+    alphas : ndarray, shape (P,)
+        Gaussian exponents corresponding to each retained coefficient.
+    centers : ndarray, shape (P, 3)
+        Cartesian center coordinates corresponding to each retained coefficient.
+    residual_out : ndarray, shape (N,)
+        A copy of the input residual with the fitted Gaussian density subtracted.
+    """
+    residual = residual.copy()
+    all_coeffs = []
+    all_alphas = []
+    all_centers = []
+
+    for center in atcoords:
+        r_sq = np.sum((grid_pts - center) ** 2, axis=1)
+        prefactors = (alphas_basis / np.pi) ** 1.5
+        A = prefactors[None, :] * np.exp(-r_sq[:, None] * alphas_basis[None, :])
+
+        coeffs, _ = nnls(A, residual)
+
+        mask = coeffs > 0
+        if np.any(mask):
+            c_pos = coeffs[mask]
+            a_pos = alphas_basis[mask]
+            all_coeffs.extend(c_pos)
+            all_alphas.extend(a_pos)
+            all_centers.extend([center] * len(c_pos))
+
+            residual -= A[:, mask] @ c_pos
+
+    if not all_coeffs:
+        return np.array([]), np.array([]), np.empty((0, 3)), residual
+    return np.array(all_coeffs), np.array(all_alphas), np.array(all_centers), residual
+
+
 def solve_poisson_robust(
     molgrid: MolGrid | AtomGrid,
     density_vals: np.ndarray,
     transform: BaseTransform,
     atnums: np.ndarray,
     atcoords: np.ndarray,
+    split2: bool = False,
+    alphas_basis: np.ndarray | None = None,
     **bvp_kwargs,
 ) -> callable:
     r"""Solve the Poisson equation robustly using analytical core subtraction (Split 1).
+
+    If ``split2=True``, an additional Non-Negative Least Squares (NNLS) fitting
+    step is performed on the residual (Split 2) to analytically subtract bonding
+    and polarization density features before the BVP solve.
 
     For each atomic center, pre-fitted Gaussian parameters are loaded via
     :func:`~grid.coulomb.load_atomic_gaussian_params` and the exact analytical
@@ -119,6 +199,11 @@ def solve_poisson_robust(
         Atomic numbers for each of the M atomic centers.
     atcoords : ndarray(M, 3)
         Cartesian coordinates of the M atomic centers in atomic units (Bohr).
+    split2 : bool, default=False
+        If True, perform a second split (NNLS fitting of the residual) before solving.
+    alphas_basis : ndarray, optional
+        Array of s-type Gaussian exponents to use for the Split 2 fit.
+        If None, a default geometric sequence of 20 exponents is used.
     **bvp_kwargs
         Additional keyword arguments forwarded to :func:`~grid.poisson.solve_poisson_bvp`.
 
@@ -148,8 +233,7 @@ def solve_poisson_robust(
             f"({molgrid.points.shape[0]}); got shape {residual.shape}"
         )
 
-    # Pre-cache Gaussian parameters for all atoms once (avoids repeated JSON lookups
-    # inside the returned closure, which may be called many times).
+    # Cache params once; the closure may be called many times.
     atom_params = [
         (load_atomic_gaussian_params(int(atnum)), center)
         for atnum, center in zip(atnums, atcoords, strict=True)
@@ -159,12 +243,30 @@ def solve_poisson_robust(
     for (coeffs_s, alphas_s), center in atom_params:
         residual -= _build_core_density(molgrid.points, center, coeffs_s, alphas_s)
 
+    # SPLIT 2: Bonding/Residual Fitting (Optional)
+    fit_coeffs, fit_alphas, fit_centers = np.array([]), np.array([]), np.empty((0, 3))
+    if split2:
+        if alphas_basis is None:
+            alphas_basis = _DEFAULT_ALPHAS_BASIS
+        alphas_basis = np.asarray(alphas_basis, dtype=float)
+        if alphas_basis.ndim != 1 or alphas_basis.size == 0:
+            raise ValueError(
+                f"alphas_basis must be a non-empty 1-D sequence; got shape {alphas_basis.shape}"
+            )
+        if np.any(alphas_basis <= 0):
+            raise ValueError(
+                "alphas_basis must contain only strictly positive Gaussian exponents; "
+                f"got min value {alphas_basis.min():.3g}"
+            )
+        fit_coeffs, fit_alphas, fit_centers, residual = _fit_residual_gaussians(
+            molgrid.points, residual, atcoords, alphas_basis
+        )
+
     # SOLVE: BVP solver on the smooth, nuclear-cusp-free residual
     phi_residual_interp = solve_poisson_bvp(molgrid, residual, transform, **bvp_kwargs)
 
-    # SUM: Total potential = analytical core + numerical residual
+    # SUM: closure returns v_core + v_bonding + v_residual at evaluation time
     def total_potential(points: np.ndarray) -> np.ndarray:
-        """Evaluate total electrostatic potential at Cartesian points."""
         points = np.asarray(points, dtype=float)
         if points.ndim != 2 or points.shape[1] != 3:
             raise ValueError(f"points must have shape (N, 3); got {points.shape}")
@@ -181,9 +283,20 @@ def solve_poisson_robust(
                 normalized=True,
             )
 
+        # Analytical bonding fit contribution (Split 2)
+        v_bonding = np.zeros(points.shape[0])
+        if len(fit_coeffs) > 0:
+            v_bonding = coulomb_potential(
+                points,
+                centers_s=fit_centers,
+                coeffs_s=fit_coeffs,
+                alphas_s=fit_alphas,
+                normalized=True,
+            )
+
         # Numerical residual contribution
         v_residual = phi_residual_interp(points)
 
-        return v_core + v_residual
+        return v_core + v_bonding + v_residual
 
     return total_potential
