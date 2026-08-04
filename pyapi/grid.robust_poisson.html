@@ -453,8 +453,8 @@
             </div>
             <nav aria-label="Page">
                 <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#architecture">Architecture</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#notes">Notes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#split-1-only-default">Split 1 only (default)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#double-split-split2-true">Double-Split (split2=True)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.robust_poisson.solve_poisson_robust"><code class="docutils literal notranslate"><span class="pre">solve_poisson_robust()</span></code></a></li>
 </ul>
             </nav>
@@ -469,31 +469,44 @@
                   
   <section id="module-grid.robust_poisson">
 <span id="grid-robust-poisson-module"></span><h1>grid.robust_poisson module<a class="headerlink" href="#module-grid.robust_poisson" title="Link to this heading">#</a></h1>
-<p>Robust Poisson Solver — Split-1-Plus-Solve Architecture.</p>
-<section id="architecture">
-<h2>Architecture<a class="headerlink" href="#architecture" title="Link to this heading">#</a></h2>
+<p>Robust Poisson Solver — Double-Split Architecture.</p>
+<section id="split-1-only-default">
+<h2>Split 1 only (default)<a class="headerlink" href="#split-1-only-default" title="Link to this heading">#</a></h2>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Total</span> <span class="n">Density</span> <span class="n">rho</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
       <span class="o">|</span>
 <span class="p">[</span><span class="n">SPLIT</span> <span class="mi">1</span><span class="p">]</span>  <span class="n">Analytical</span> <span class="n">core</span> <span class="n">subtraction</span> <span class="n">using</span> <span class="n">pre</span><span class="o">-</span><span class="n">fitted</span> <span class="n">Gaussian</span> <span class="n">parameters</span>
       <span class="o">|</span>     <span class="p">(</span><span class="n">load_atomic_gaussian_params</span> <span class="o">-&gt;</span> <span class="n">coulomb_potential</span><span class="p">)</span>
       <span class="o">|</span>
-<span class="n">residual</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">=</span> <span class="n">rho</span> <span class="o">-</span> <span class="n">rho_core</span>   <span class="o">&lt;--</span> <span class="n">smooth</span><span class="p">,</span> <span class="n">nuclear</span><span class="o">-</span><span class="n">cusp</span><span class="o">-</span><span class="n">free</span>
+<span class="n">residual_1</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">=</span> <span class="n">rho</span> <span class="o">-</span> <span class="n">rho_core</span>   <span class="o">&lt;-</span> <span class="n">smooth</span><span class="p">,</span> <span class="n">nuclear</span><span class="o">-</span><span class="n">cusp</span><span class="o">-</span><span class="n">free</span>
       <span class="o">|</span>
-<span class="p">[</span><span class="n">SOLVE</span><span class="p">]</span>  <span class="n">solve_poisson_bvp</span> <span class="n">on</span> <span class="n">residual</span>  <span class="o">--&gt;</span> <span class="n">phi_numerical</span>
+<span class="p">[</span><span class="n">SOLVE</span><span class="p">]</span>  <span class="n">solve_poisson_bvp</span> <span class="n">on</span> <span class="n">residual_1</span>  <span class="o">--&gt;</span> <span class="n">phi_numerical</span>
       <span class="o">|</span>
 <span class="n">Total</span> <span class="n">Potential</span> <span class="o">=</span> <span class="n">phi_core</span> <span class="p">(</span><span class="n">analytical</span><span class="p">)</span> <span class="o">+</span> <span class="n">phi_numerical</span>
 </pre></div>
 </div>
 </section>
-<section id="notes">
-<h2>Notes<a class="headerlink" href="#notes" title="Link to this heading">#</a></h2>
-<p>Split 2 (bonding/polarization residual fitting) and the full Double-Split
-pipeline will be added in a subsequent PR.</p>
+<section id="double-split-split2-true">
+<h2>Double-Split (split2=True)<a class="headerlink" href="#double-split-split2-true" title="Link to this heading">#</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Total</span> <span class="n">Density</span> <span class="n">rho</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+      <span class="o">|</span>
+<span class="p">[</span><span class="n">SPLIT</span> <span class="mi">1</span><span class="p">]</span>  <span class="n">Analytical</span> <span class="n">core</span> <span class="n">subtraction</span>  <span class="o">--&gt;</span> <span class="n">residual_1</span>
+      <span class="o">|</span>
+<span class="p">[</span><span class="n">SPLIT</span> <span class="mi">2</span><span class="p">]</span>  <span class="n">Per</span><span class="o">-</span><span class="n">atom</span> <span class="n">NNLS</span> <span class="n">Gaussian</span> <span class="n">fit</span> <span class="n">of</span> <span class="n">residual_1</span>  <span class="o">--&gt;</span> <span class="n">residual_2</span>
+      <span class="o">|</span>     <span class="p">(</span><span class="n">scipy</span><span class="o">.</span><span class="n">optimize</span><span class="o">.</span><span class="n">nnls</span><span class="p">,</span> <span class="n">exponents</span> <span class="kn">from</span><span class="w"> </span><span class="nn">_DEFAULT_ALPHAS_BASIS</span><span class="p">)</span>
+      <span class="o">|</span>
+<span class="p">[</span><span class="n">SOLVE</span><span class="p">]</span>  <span class="n">solve_poisson_bvp</span> <span class="n">on</span> <span class="n">residual_2</span>  <span class="o">--&gt;</span> <span class="n">phi_numerical</span>
+      <span class="o">|</span>
+<span class="n">Total</span> <span class="n">Potential</span> <span class="o">=</span> <span class="n">phi_core</span> <span class="o">+</span> <span class="n">phi_bonding</span> <span class="p">(</span><span class="n">analytical</span><span class="p">)</span> <span class="o">+</span> <span class="n">phi_numerical</span>
+</pre></div>
+</div>
 </section>
 <dl class="py function">
 <dt class="sig sig-object py" id="grid.robust_poisson.solve_poisson_robust">
-<span class="sig-prename descclassname"><span class="pre">grid.robust_poisson.</span></span><span class="sig-name descname"><span class="pre">solve_poisson_robust</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">molgrid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="grid.molgrid.html#grid.molgrid.MolGrid" title="grid.molgrid.MolGrid"><span class="pre">MolGrid</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="grid.atomgrid.html#grid.atomgrid.AtomGrid" title="grid.atomgrid.AtomGrid"><span class="pre">AtomGrid</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">density_vals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="grid.rtransform.html#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><span class="pre">BaseTransform</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">atnums</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atcoords</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">bvp_kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">callable</span></span></span><a class="headerlink" href="#grid.robust_poisson.solve_poisson_robust" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">grid.robust_poisson.</span></span><span class="sig-name descname"><span class="pre">solve_poisson_robust</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">molgrid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="grid.molgrid.html#grid.molgrid.MolGrid" title="grid.molgrid.MolGrid"><span class="pre">MolGrid</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="grid.atomgrid.html#grid.atomgrid.AtomGrid" title="grid.atomgrid.AtomGrid"><span class="pre">AtomGrid</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">density_vals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="grid.rtransform.html#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><span class="pre">BaseTransform</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">atnums</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atcoords</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">split2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alphas_basis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">bvp_kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">callable</span></span></span><a class="headerlink" href="#grid.robust_poisson.solve_poisson_robust" title="Link to this definition">#</a></dt>
 <dd><p>Solve the Poisson equation robustly using analytical core subtraction (Split 1).</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">split2=True</span></code>, an additional Non-Negative Least Squares (NNLS) fitting
+step is performed on the residual (Split 2) to analytically subtract bonding
+and polarization density features before the BVP solve.</p>
 <p>For each atomic center, pre-fitted Gaussian parameters are loaded via
 <a class="reference internal" href="grid.coulomb.html#grid.coulomb.load_atomic_gaussian_params" title="grid.coulomb.load_atomic_gaussian_params"><code class="xref py py-func docutils literal notranslate"><span class="pre">load_atomic_gaussian_params()</span></code></a> and the exact analytical
 core potential is computed with <a class="reference internal" href="grid.coulomb.html#grid.coulomb.coulomb_potential" title="grid.coulomb.coulomb_potential"><code class="xref py py-func docutils literal notranslate"><span class="pre">coulomb_potential()</span></code></a>.
@@ -512,6 +525,11 @@ residual, which is then solved numerically with
 <dt>atnums<span class="classifier">ndarray(M,) of int</span></dt><dd><p>Atomic numbers for each of the M atomic centers.</p>
 </dd>
 <dt>atcoords<span class="classifier">ndarray(M, 3)</span></dt><dd><p>Cartesian coordinates of the M atomic centers in atomic units (Bohr).</p>
+</dd>
+<dt>split2<span class="classifier">bool, default=False</span></dt><dd><p>If True, perform a second split (NNLS fitting of the residual) before solving.</p>
+</dd>
+<dt>alphas_basis<span class="classifier">ndarray, optional</span></dt><dd><p>Array of s-type Gaussian exponents to use for the Split 2 fit.
+If None, a default geometric sequence of 20 exponents is used.</p>
 </dd>
 <dt><a href="#id1"><span class="problematic" id="id2">**</span></a>bvp_kwargs</dt><dd><p>Additional keyword arguments forwarded to <a class="reference internal" href="grid.poisson.html#grid.poisson.solve_poisson_bvp" title="grid.poisson.solve_poisson_bvp"><code class="xref py py-func docutils literal notranslate"><span class="pre">solve_poisson_bvp()</span></code></a>.</p>
 </dd>
@@ -535,8 +553,8 @@ of grid points in <code class="docutils literal notranslate"><span class="pre">m
 </dd>
 </dl>
 </section>
-<section id="id3">
-<h2>Notes<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<section id="notes">
+<h2>Notes<a class="headerlink" href="#notes" title="Link to this heading">#</a></h2>
 <p>Pre-fitted parameters are currently available for H (1), C (6), N (7),
 O (8), and Cl (17).</p>
 </section>
@@ -610,8 +628,8 @@ O (8), and Cl (17).</p>
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#architecture">Architecture</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#notes">Notes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#split-1-only-default">Split 1 only (default)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#double-split-split2-true">Double-Split (split2=True)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.robust_poisson.solve_poisson_robust"><code class="docutils literal notranslate"><span class="pre">solve_poisson_robust()</span></code></a></li>
 </ul>
   </nav></div>
