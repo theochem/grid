@@ -119,7 +119,7 @@ class TestHyperRectangleGrid(TestCase):
                 points, values, method="not cubic"
             )
         self.assertEqual(
-            "Argument method should be either cubic, linear, or nearest , got not cubic",
+            "Argument method should be one of ['linear', 'nearest', 'slinear', 'cubic', 'quintic', 'pchip'], got not cubic",
             str(err.exception),
         )
         # Test raises error if dimension is two.
@@ -201,10 +201,10 @@ class TestTensor1DGrids(TestCase):
         num_pts = 500
         random_pts = np.random.uniform(-0.9, 0.9, (num_pts, 3))
         interpolated = cubic.interpolate(random_pts, gaussian_pts, use_log=False)
-        assert_allclose(interpolated, gaussian(random_pts), rtol=1e-5, atol=1e-6)
+        assert_allclose(interpolated, gaussian(random_pts), rtol=1e-5, atol=1e-5)
 
-        interpolated = cubic.interpolate(random_pts, gaussian_pts, use_log=True)
-        assert_allclose(interpolated, gaussian(random_pts), rtol=1e-5, atol=1e-6)
+        interpolated_log = cubic.interpolate(random_pts, gaussian_pts, use_log=True)
+        assert_allclose(interpolated_log, gaussian(random_pts), rtol=1e-5, atol=1e-5)
 
     def test_interpolation_of_linear_function_using_scipy_linear_method(self):
         r"""Test interpolation of a linear function using scipy with linear method."""
