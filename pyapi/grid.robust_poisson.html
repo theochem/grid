@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>grid.hirshfeld module &#8212; Welcome to Grid Documentation</title>
+    <title>grid.robust_poisson module &#8212; Welcome to Grid Documentation</title>
   
   
   
@@ -60,15 +60,13 @@
     <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
-    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'pyapi/grid.hirshfeld';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'pyapi/grid.robust_poisson';</script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="icon" href="../_static/grid_logo_website.svg"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="grid.molgrid module" href="grid.molgrid.html" />
-    <link rel="prev" title="grid.cubic module" href="grid.cubic.html" />
+    <link rel="next" title="grid.rtransform module" href="grid.rtransform.html" />
+    <link rel="prev" title="grid.poisson module" href="grid.poisson.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -251,14 +249,14 @@
 <li class="toctree-l2"><a class="reference internal" href="grid.becke.html">grid.becke module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="grid.coulomb.html">grid.coulomb module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="grid.cubic.html">grid.cubic module</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">grid.hirshfeld module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="grid.hirshfeld.html">grid.hirshfeld module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="grid.molgrid.html">grid.molgrid module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="grid.ngrid.html">grid.ngrid module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="grid.ode.html">grid.ode module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="grid.onedgrid.html">grid.onedgrid module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="grid.periodicgrid.html">grid.periodicgrid module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="grid.poisson.html">grid.poisson module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="grid.robust_poisson.html">grid.robust_poisson module</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">grid.robust_poisson module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="grid.rtransform.html">grid.rtransform module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="grid.utils.html">grid.utils module</a></li>
 </ul>
@@ -339,7 +337,7 @@
       
       
       
-      <li><a href="https://github.com/theochem/grid/issues/new?title=Issue%20on%20page%20%2Fpyapi/grid.hirshfeld.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/theochem/grid/issues/new?title=Issue%20on%20page%20%2Fpyapi/grid.robust_poisson.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -369,7 +367,7 @@
       
       
       
-      <li><a href="../_sources/pyapi/grid.hirshfeld.rst" target="_blank"
+      <li><a href="../_sources/pyapi/grid.robust_poisson.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -445,7 +443,7 @@
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>grid.hirshfeld module</h1>
+    <h1>grid.robust_poisson module</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -455,10 +453,9 @@
             </div>
             <nav aria-label="Page">
                 <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.hirshfeld.HirshfeldWeights"><code class="docutils literal notranslate"><span class="pre">HirshfeldWeights</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.hirshfeld.HirshfeldWeights.generate_proatom"><code class="docutils literal notranslate"><span class="pre">HirshfeldWeights.generate_proatom()</span></code></a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#architecture">Architecture</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#notes">Notes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.robust_poisson.solve_poisson_robust"><code class="docutils literal notranslate"><span class="pre">solve_poisson_robust()</span></code></a></li>
 </ul>
             </nav>
         </div>
@@ -470,38 +467,79 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="module-grid.hirshfeld">
-<span id="grid-hirshfeld-module"></span><h1>grid.hirshfeld module<a class="headerlink" href="#module-grid.hirshfeld" title="Link to this heading">#</a></h1>
-<p>Hirshfeld Weights Module.</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="grid.hirshfeld.HirshfeldWeights">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grid.hirshfeld.</span></span><span class="sig-name descname"><span class="pre">HirshfeldWeights</span></span><a class="headerlink" href="#grid.hirshfeld.HirshfeldWeights" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Hirshfeld weights functions holder class.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="grid.hirshfeld.HirshfeldWeights.generate_proatom">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">generate_proatom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.hirshfeld.HirshfeldWeights.generate_proatom" title="Link to this definition">#</a></dt>
-<dd><p>Evaluate pro-atom densities on the given grid points.</p>
+  <section id="module-grid.robust_poisson">
+<span id="grid-robust-poisson-module"></span><h1>grid.robust_poisson module<a class="headerlink" href="#module-grid.robust_poisson" title="Link to this heading">#</a></h1>
+<p>Robust Poisson Solver — Split-1-Plus-Solve Architecture.</p>
+<section id="architecture">
+<h2>Architecture<a class="headerlink" href="#architecture" title="Link to this heading">#</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Total</span> <span class="n">Density</span> <span class="n">rho</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+      <span class="o">|</span>
+<span class="p">[</span><span class="n">SPLIT</span> <span class="mi">1</span><span class="p">]</span>  <span class="n">Analytical</span> <span class="n">core</span> <span class="n">subtraction</span> <span class="n">using</span> <span class="n">pre</span><span class="o">-</span><span class="n">fitted</span> <span class="n">Gaussian</span> <span class="n">parameters</span>
+      <span class="o">|</span>     <span class="p">(</span><span class="n">load_atomic_gaussian_params</span> <span class="o">-&gt;</span> <span class="n">coulomb_potential</span><span class="p">)</span>
+      <span class="o">|</span>
+<span class="n">residual</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">=</span> <span class="n">rho</span> <span class="o">-</span> <span class="n">rho_core</span>   <span class="o">&lt;--</span> <span class="n">smooth</span><span class="p">,</span> <span class="n">nuclear</span><span class="o">-</span><span class="n">cusp</span><span class="o">-</span><span class="n">free</span>
+      <span class="o">|</span>
+<span class="p">[</span><span class="n">SOLVE</span><span class="p">]</span>  <span class="n">solve_poisson_bvp</span> <span class="n">on</span> <span class="n">residual</span>  <span class="o">--&gt;</span> <span class="n">phi_numerical</span>
+      <span class="o">|</span>
+<span class="n">Total</span> <span class="n">Potential</span> <span class="o">=</span> <span class="n">phi_core</span> <span class="p">(</span><span class="n">analytical</span><span class="p">)</span> <span class="o">+</span> <span class="n">phi_numerical</span>
+</pre></div>
+</div>
+</section>
+<section id="notes">
+<h2>Notes<a class="headerlink" href="#notes" title="Link to this heading">#</a></h2>
+<p>Split 2 (bonding/polarization residual fitting) and the full Double-Split
+pipeline will be added in a subsequent PR.</p>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="grid.robust_poisson.solve_poisson_robust">
+<span class="sig-prename descclassname"><span class="pre">grid.robust_poisson.</span></span><span class="sig-name descname"><span class="pre">solve_poisson_robust</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">molgrid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="grid.molgrid.html#grid.molgrid.MolGrid" title="grid.molgrid.MolGrid"><span class="pre">MolGrid</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="grid.atomgrid.html#grid.atomgrid.AtomGrid" title="grid.atomgrid.AtomGrid"><span class="pre">AtomGrid</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">density_vals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="grid.rtransform.html#grid.rtransform.BaseTransform" title="grid.rtransform.BaseTransform"><span class="pre">BaseTransform</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">atnums</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atcoords</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">bvp_kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">callable</span></span></span><a class="headerlink" href="#grid.robust_poisson.solve_poisson_robust" title="Link to this definition">#</a></dt>
+<dd><p>Solve the Poisson equation robustly using analytical core subtraction (Split 1).</p>
+<p>For each atomic center, pre-fitted Gaussian parameters are loaded via
+<a class="reference internal" href="grid.coulomb.html#grid.coulomb.load_atomic_gaussian_params" title="grid.coulomb.load_atomic_gaussian_params"><code class="xref py py-func docutils literal notranslate"><span class="pre">load_atomic_gaussian_params()</span></code></a> and the exact analytical
+core potential is computed with <a class="reference internal" href="grid.coulomb.html#grid.coulomb.coulomb_potential" title="grid.coulomb.coulomb_potential"><code class="xref py py-func docutils literal notranslate"><span class="pre">coulomb_potential()</span></code></a>.
+The corresponding core density is subtracted from the input to form a smooth
+residual, which is then solved numerically with
+<a class="reference internal" href="grid.poisson.html#grid.poisson.solve_poisson_bvp" title="grid.poisson.solve_poisson_bvp"><code class="xref py py-func docutils literal notranslate"><span class="pre">solve_poisson_bvp()</span></code></a>.</p>
 <section id="parameters">
 <h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading">#</a></h2>
 <dl class="simple">
-<dt>points: np.ndarray(N, 3)</dt><dd><p>Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> grid points.</p>
+<dt>molgrid<span class="classifier">MolGrid or AtomGrid</span></dt><dd><p>Molecular or atomic grid used for integration and ODE solving.</p>
 </dd>
-<dt>coord: np.ndarray(3,)</dt><dd><p>Cartesian coordinates of the atom.</p>
+<dt>density_vals<span class="classifier">ndarray(N,)</span></dt><dd><p>Total electron density evaluated at all grid points.</p>
 </dd>
-<dt>num: int</dt><dd><p>Atomic number of the atom.</p>
+<dt>transform<span class="classifier">BaseTransform</span></dt><dd><p>Radial coordinate transform passed to <code class="docutils literal notranslate"><span class="pre">solve_poisson_bvp</span></code>.</p>
+</dd>
+<dt>atnums<span class="classifier">ndarray(M,) of int</span></dt><dd><p>Atomic numbers for each of the M atomic centers.</p>
+</dd>
+<dt>atcoords<span class="classifier">ndarray(M, 3)</span></dt><dd><p>Cartesian coordinates of the M atomic centers in atomic units (Bohr).</p>
+</dd>
+<dt><a href="#id1"><span class="problematic" id="id2">**</span></a>bvp_kwargs</dt><dd><p>Additional keyword arguments forwarded to <a class="reference internal" href="grid.poisson.html#grid.poisson.solve_poisson_bvp" title="grid.poisson.solve_poisson_bvp"><code class="xref py py-func docutils literal notranslate"><span class="pre">solve_poisson_bvp()</span></code></a>.</p>
 </dd>
 </dl>
 </section>
 <section id="returns">
 <h2>Returns<a class="headerlink" href="#returns" title="Link to this heading">#</a></h2>
 <dl class="simple">
-<dt>np.ndarray(N,)</dt><dd><p>Pro-atom densities evaluated on <span class="math notranslate nohighlight">\(N\)</span> grid points.</p>
+<dt>callable</dt><dd><p>Function <code class="docutils literal notranslate"><span class="pre">V(points)</span></code> returning the total electrostatic potential at
+an array of Cartesian evaluation points, shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">3)</span> <span class="pre">-&gt;</span> <span class="pre">(N,)</span></code>.</p>
 </dd>
 </dl>
 </section>
-</dd></dl>
-
+<section id="raises">
+<h2>Raises<a class="headerlink" href="#raises" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>ValueError</dt><dd><p>If pre-fitted Gaussian parameters are not available for a given atomic number.</p>
+</dd>
+<dt>ValueError</dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">density_vals</span></code> is not a 1-D array of length N matching the number
+of grid points in <code class="docutils literal notranslate"><span class="pre">molgrid</span></code>.</p>
+</dd>
+</dl>
+</section>
+<section id="id3">
+<h2>Notes<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<p>Pre-fitted parameters are currently available for H (1), C (6), N (7),
+O (8), and Cl (17).</p>
+</section>
 </dd></dl>
 
 </section>
@@ -537,20 +575,20 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="grid.cubic.html"
+       href="grid.poisson.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">grid.cubic module</p>
+        <p class="prev-next-title">grid.poisson module</p>
       </div>
     </a>
     <a class="right-next"
-       href="grid.molgrid.html"
+       href="grid.rtransform.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">grid.molgrid module</p>
+        <p class="prev-next-title">grid.rtransform module</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -572,10 +610,9 @@
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.hirshfeld.HirshfeldWeights"><code class="docutils literal notranslate"><span class="pre">HirshfeldWeights</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.hirshfeld.HirshfeldWeights.generate_proatom"><code class="docutils literal notranslate"><span class="pre">HirshfeldWeights.generate_proatom()</span></code></a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#architecture">Architecture</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#notes">Notes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grid.robust_poisson.solve_poisson_robust"><code class="docutils literal notranslate"><span class="pre">solve_poisson_robust()</span></code></a></li>
 </ul>
   </nav></div>
 
