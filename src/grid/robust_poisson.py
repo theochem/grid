@@ -106,9 +106,34 @@ def _build_core_density(
 def _fit_residual_gaussians(
     grid_pts: np.ndarray, residual: np.ndarray, atcoords: np.ndarray, alphas_basis: np.ndarray
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-    """Fit residual density with s-type Gaussians at each atomic center using NNLS.
+    """Fit the residual density with s-type Gaussians at each atomic center using NNLS.
 
-    Mutates ``residual`` in-place by subtracting the fitted density per atom.
+    Uses a sequential greedy strategy: for each atom, an NNLS problem is solved
+    using a basis of s-type Gaussians placed at that center, and the fitted density
+    is immediately subtracted from ``residual`` in-place before moving to the next
+    atom. This means later atoms see a partially reduced residual.
+
+    Parameters
+    ----------
+    grid_pts : ndarray, shape (N, 3)
+        Cartesian coordinates of the grid evaluation points in atomic units (Bohr).
+    residual : ndarray, shape (N,)
+        Residual electron density to fit. **Mutated in-place** by subtracting
+        the fitted Gaussian density at each atomic center.
+    atcoords : ndarray, shape (M, 3)
+        Cartesian coordinates of the M atomic centers in atomic units (Bohr).
+    alphas_basis : ndarray, shape (K,)
+        Gaussian exponents defining the s-type basis functions used in the NNLS fit.
+        Must be strictly positive.
+
+    Returns
+    -------
+    coeffs : ndarray, shape (P,)
+        Non-negative NNLS coefficients for the retained Gaussians (P ≤ M*K).
+    alphas : ndarray, shape (P,)
+        Gaussian exponents corresponding to each retained coefficient.
+    centers : ndarray, shape (P, 3)
+        Cartesian center coordinates corresponding to each retained coefficient.
     """
     all_coeffs = []
     all_alphas = []
