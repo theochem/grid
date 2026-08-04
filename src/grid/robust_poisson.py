@@ -105,21 +105,21 @@ def _build_core_density(
 
 def _fit_residual_gaussians(
     grid_pts: np.ndarray, residual: np.ndarray, atcoords: np.ndarray, alphas_basis: np.ndarray
-) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Fit the residual density with s-type Gaussians at each atomic center using NNLS.
 
     Uses a sequential greedy strategy: for each atom, an NNLS problem is solved
     using a basis of s-type Gaussians placed at that center, and the fitted density
-    is immediately subtracted from ``residual`` in-place before moving to the next
-    atom. This means later atoms see a partially reduced residual.
+    is immediately subtracted before moving to the next atom, so later atoms see
+    a partially reduced residual.
 
     Parameters
     ----------
     grid_pts : ndarray, shape (N, 3)
         Cartesian coordinates of the grid evaluation points in atomic units (Bohr).
     residual : ndarray, shape (N,)
-        Residual electron density to fit. **Mutated in-place** by subtracting
-        the fitted Gaussian density at each atomic center.
+        Residual electron density to fit. This array is **not** modified; the
+        function works on an internal copy.
     atcoords : ndarray, shape (M, 3)
         Cartesian coordinates of the M atomic centers in atomic units (Bohr).
     alphas_basis : ndarray, shape (K,)
@@ -129,12 +129,15 @@ def _fit_residual_gaussians(
     Returns
     -------
     coeffs : ndarray, shape (P,)
-        Non-negative NNLS coefficients for the retained Gaussians (P ≤ M*K).
+        Non-negative NNLS coefficients for the retained Gaussians (P <= M*K).
     alphas : ndarray, shape (P,)
         Gaussian exponents corresponding to each retained coefficient.
     centers : ndarray, shape (P, 3)
         Cartesian center coordinates corresponding to each retained coefficient.
+    residual_out : ndarray, shape (N,)
+        A copy of the input residual with the fitted Gaussian density subtracted.
     """
+    residual = residual.copy()
     all_coeffs = []
     all_alphas = []
     all_centers = []
@@ -157,8 +160,8 @@ def _fit_residual_gaussians(
             residual -= A[:, mask] @ c_pos
 
     if not all_coeffs:
-        return np.array([]), np.array([]), np.empty((0, 3))
-    return np.array(all_coeffs), np.array(all_alphas), np.array(all_centers)
+        return np.array([]), np.array([]), np.empty((0, 3)), residual
+    return np.array(all_coeffs), np.array(all_alphas), np.array(all_centers), residual
 
 
 def solve_poisson_robust(
@@ -255,7 +258,7 @@ def solve_poisson_robust(
                 "alphas_basis must contain only strictly positive Gaussian exponents; "
                 f"got min value {alphas_basis.min():.3g}"
             )
-        fit_coeffs, fit_alphas, fit_centers = _fit_residual_gaussians(
+        fit_coeffs, fit_alphas, fit_centers, residual = _fit_residual_gaussians(
             molgrid.points, residual, atcoords, alphas_basis
         )
 
