@@ -100,7 +100,7 @@ def test_tutorial_periodic_repetition(delta_p, delta_c):
 def setup_equidistant_grid(origin, realvecs, npts):
     """Define a periodic grid with equally spaced grid points.
 
-    The relative vectors between neigbouring grid points are constant and equal
+    The relative vectors between neighboring grid points are constant and equal
     to the real-space lattice vectors divided by the number of grid points along
     one lattice vector.
 
