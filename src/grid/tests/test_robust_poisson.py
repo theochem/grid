@@ -58,7 +58,8 @@ def _gaussian_potential(points, alpha, center=None):
     return V
 
 
-def test_robust_poisson_moderate_gaussian():
+@pytest.mark.parametrize("split2", [False, True])
+def test_robust_poisson_moderate_gaussian(split2):
     """solve_poisson_robust should match exact Gaussian potential for alpha=0.5."""
     alpha = 0.5
     atgrid, tf = _make_single_center_grid(n_radial=100)
@@ -72,6 +73,7 @@ def test_robust_poisson_moderate_gaussian():
         tf,
         atnums=np.array([1]),
         atcoords=np.zeros((1, 3)),
+        split2=split2,
     )
     V_computed = pot_func(atgrid.points)
 
@@ -80,7 +82,8 @@ def test_robust_poisson_moderate_gaussian():
     assert rel_error < 0.01, f"Moderate Gaussian: relative L2 error = {rel_error:.4e}"
 
 
-def test_robust_poisson_sharp_gaussian():
+@pytest.mark.parametrize("split2", [False, True])
+def test_robust_poisson_sharp_gaussian(split2):
     """solve_poisson_robust should stay stable for a sharp cusp-like density (alpha=50)."""
     alpha = 50.0
     atgrid, tf = _make_single_center_grid(n_radial=150)
@@ -94,6 +97,7 @@ def test_robust_poisson_sharp_gaussian():
         tf,
         atnums=np.array([1]),
         atcoords=np.zeros((1, 3)),
+        split2=split2,
     )
     V_computed = pot_func(atgrid.points)
 
@@ -102,7 +106,8 @@ def test_robust_poisson_sharp_gaussian():
     assert rel_error < 0.05, f"Sharp Gaussian: relative L2 error = {rel_error:.4e}"
 
 
-def test_robust_poisson_returns_callable():
+@pytest.mark.parametrize("split2", [False, True])
+def test_robust_poisson_returns_callable(split2):
     """solve_poisson_robust must return a callable that accepts (M, 3) point arrays."""
     alpha = 1.0
     atgrid, tf = _make_single_center_grid(n_radial=80)
@@ -114,6 +119,7 @@ def test_robust_poisson_returns_callable():
         tf,
         atnums=np.array([1]),
         atcoords=np.zeros((1, 3)),
+        split2=split2,
     )
 
     assert callable(result)
@@ -142,7 +148,8 @@ def test_robust_poisson_unsupported_element_raises():
         )
 
 
-def test_robust_poisson_carbon():
+@pytest.mark.parametrize("split2", [False, True])
+def test_robust_poisson_carbon(split2):
     """solve_poisson_robust should run without error for a Carbon center (Z=6)."""
     alpha = 5.0
     center = np.zeros(3)
@@ -155,6 +162,7 @@ def test_robust_poisson_carbon():
         tf,
         atnums=np.array([6]),
         atcoords=center.reshape(1, 3),
+        split2=split2,
     )
 
     V = pot_func(atgrid.points)
@@ -165,7 +173,8 @@ def test_robust_poisson_carbon():
     )
 
 
-def test_robust_poisson_transition_density():
+@pytest.mark.parametrize("split2", [False, True])
+def test_robust_poisson_transition_density(split2):
     """solve_poisson_robust must remain stable when density can be negative.
 
     A transition density (off-diagonal element of the density matrix) changes
@@ -187,6 +196,7 @@ def test_robust_poisson_transition_density():
         tf,
         atnums=np.array([1]),
         atcoords=center.reshape(1, 3),
+        split2=split2,
     )
 
     V = pot_func(atgrid.points)
