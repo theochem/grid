@@ -37,3 +37,6 @@ from grid.rtransform import *
 from grid.ngrid import *
 from grid.coulomb import *
 from grid.robust_poisson import *
+from grid.halton import *
+
+from grid.halton import *
