@@ -21,12 +21,13 @@ import numpy as np
 import pytest
 from numpy.testing import assert_allclose
 from scipy.optimize import approx_fprime
-from scipy.special import erf
+from scipy.special import erf, erfinv
 
 from grid.basegrid import OneDGrid
 from grid.onedgrid import GaussChebyshevLobatto
 from grid.protransform import (
     CubicProTransform,
+    _get_inverse_bracket,
     _pad_coeffs_exps_with_zeros,
     _PromolParams,
     _transform_coordinate,
@@ -746,3 +747,45 @@ def test_padding_arrays():
         [[4.0, 5.0, 0.0, 0.0], [5.0, 6.0, 7.0, 8.0], [9.0, 0.0, 0.0, 0.0]], dtype=object
     )
     np.testing.assert_array_equal(exp_desired, exps_pad)
+
+
+class TestGetInverseBracket:
+    def test_single_gaussian_brackets_exact_inverse(self):
+        """The bracket encloses the analytical inverse of one Gaussian."""
+        gauss_centers = np.array([[-1.0, 3.0, 5.0]])
+        promol = _PromolParams(
+            c_m=np.array([[2.0]]),
+            e_m=np.array([[4.0]]),
+            gauss_centers=gauss_centers,
+        )
+        theta_pt = 0.6
+
+        for i_var in range(3):
+            center = gauss_centers[0]
+            lower, upper = _get_inverse_bracket(theta_pt, i_var, promol)
+            # expect the analytical inverse to be between the two bracket endpoints.
+            expected = center[i_var] + erfinv(theta_pt) / np.sqrt(4.0)
+            assert lower < expected < upper
+
+    def test_mixture_bracket_contains_conditional_inverse(self):
+        """Test that the bracket endpoints transform to values on either side of ``theta_pt``."""
+        promol = _PromolParams(
+            c_m=np.array([[1.0], [2.0]]),
+            e_m=np.array([[1.0], [4.0]]),
+            gauss_centers=np.array(
+                [
+                    [-2.0, 0.0, 1.0],
+                    [3.0, 2.0, -1.0],
+                ]
+            ),
+        )
+        theta_pt = 0.5
+        i_var = 2
+        previous_coords = [0.25, -0.5]
+
+        lower, upper = _get_inverse_bracket(theta_pt, i_var, promol)
+
+        theta_at_lower = _transform_coordinate([*previous_coords, lower], i_var, promol)
+        theta_at_upper = _transform_coordinate([*previous_coords, upper], i_var, promol)
+
+        assert theta_at_lower <= theta_pt <= theta_at_upper
