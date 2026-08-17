@@ -19,7 +19,7 @@
 # --
 r"""Promolecular Grid Transformation."""
 
-from dataclasses import astuple, dataclass, field
+from dataclasses import dataclass, field
 
 import numpy as np
 from scipy.linalg import solve_triangular
@@ -49,9 +49,9 @@ class CubicProTransform(_HyperRectangleGrid):
     promol : namedTuple
         Data about the Promolecular density.
     points : np.ndarray(N, 3)
-        The transformed points in real space.
+        Grid points transformed to real space.
     weights : np.ndarray(N,)
-        The weights multiplied by `prointegral`.
+        The integration weights, multiplied by `prointegral`.
 
     Methods
     -------
@@ -84,7 +84,7 @@ class CubicProTransform(_HyperRectangleGrid):
     This is a grid in :math:`[-1, 1]`.
     >> oned = GaussChebyshev(numb_x)
     One dimensional grid is the same in all x, y, z directions.
-    >> promol = CubicProTransform([oned, oned, oned], params.c_m, params.e_m, params.coords)
+    >> promol = CubicProTransform([oned, oned, oned], params.c_m, params.e_m, params.gauss_centers)
 
     To integrate some function f.
     >> def f(pt):
@@ -127,7 +127,7 @@ class CubicProTransform(_HyperRectangleGrid):
 
     .. math::
         \int \int \int f(x, y, z)dxdy dz \approx
-        \frac{1}{8} N \int_{-1}^1 \int_{-1}^1 \int_{-1}^1 \frac{f(\theta_x, \theta_y, \theta_z)}
+        \frac{N}{8} \int_{-1}^1 \int_{-1}^1 \int_{-1}^1 \frac{f(\theta_x, \theta_y, \theta_z)}
         {\rho^o(\theta_x, \theta_y, \theta_z)} d\theta_x d\theta_y d\theta_z,
 
         \text{where }  N = \int \int \int \rho^o(x, y, z) dx dy dz.
@@ -471,14 +471,15 @@ class CubicProTransform(_HyperRectangleGrid):
         """
         jacobian = np.zeros((3, 3), dtype=np.float64)
 
-        c_m, e_m, coords, pi_over_exps, dim = astuple(self.promol)
+        e_m = self.promol.e_m
+        coords = self.promol.gauss_centers
+        pi_over_exps = self.promol.pi_over_exponents
 
         # Distance to centers/nuclei`s and Prefactors.
         diff_coords = real_pt - coords
         diff_squared = diff_coords**2.0
         # If i_var is zero, then distance is just all zeros.
         for i_var in range(0, self.promol.dim):
-
             # Basic-Level arrays for integration and derivatives.
             (
                 distance,
@@ -529,8 +530,9 @@ class CubicProTransform(_HyperRectangleGrid):
 
         """
         hessian = np.zeros((self.ndim, self.ndim, self.ndim), dtype=np.float64)
-
-        c_m, e_m, coords, pi_over_exps, dim = astuple(self.promol)
+        e_m = self.promol.e_m
+        coords = self.promol.gauss_centers
+        pi_over_exps = self.promol.pi_over_exponents
 
         # Distance to centers/nuclei`s and Prefactors.
         diff_coords = real_pt - coords
@@ -637,7 +639,18 @@ class CubicProTransform(_HyperRectangleGrid):
         return hessian
 
     def _transform(self, oned_grids, cut_off=1e-8):
-        # Transform the entire grid.
+        """Transform the entire grid from theta-space to real-space.
+
+        Parameters
+        ----------
+        oned_grids : list(OneDGrid)
+            List of three one-dimensional grids in theta-space, representing x, y, z directions.
+        cut_off : float
+            Cutoff value for considering a point to be on the boundary. If the distance between a
+            point and the boundary is less than cut_off, the point is considered to be on the
+            boundary.
+        """
+
         # Indices (i, j, k) start from bottom, left-most corner of the [-1, 1]^3 cube.
         def _is_boundary_pt(theta_pt):
             if np.abs(theta_pt - self.l_bnd) < cut_off or np.abs(theta_pt - self.u_bnd) < cut_off:
@@ -650,6 +663,7 @@ class CubicProTransform(_HyperRectangleGrid):
             cart_pt = [None, None, None]
             theta_x = oned_grids[0].points[ix]
             is_boundary = _is_boundary_pt(theta_x)
+            # Get the bracket for the root-finder on coordinate x
             brack_x = self._get_bracket(0, is_boundary)
             cart_pt[0] = _inverse_coordinate(theta_x, 0, cart_pt, self.promol, brack_x)
 
@@ -689,8 +703,8 @@ class CubicProTransform(_HyperRectangleGrid):
         if is_boundary:
             return np.inf, np.inf
         # If it is a new point, with no nearby point, get a large initial guess.
-        min = np.min(self.promol.coords[:, i_var]) - 20.0
-        max = np.max(self.promol.coords[:, i_var]) + 20.0
+        min = np.min(self.promol.gauss_centers[:, i_var]) - 20.0
+        max = np.max(self.promol.gauss_centers[:, i_var]) + 20.0
         return min, max
 
 
@@ -708,7 +722,7 @@ class _PromolParams:
 
     c_m: np.ndarray  # Coefficients of Promolecular.
     e_m: np.ndarray  # Exponents of Promolecular.
-    coords: np.ndarray  # Centers/Coordinates of Each Gaussian.
+    gauss_centers: np.ndarray  # Centers/Coordinates of Each Gaussian.
     pi_over_exponents: np.ndarray = field(init=False)
     dim: int = 3
 
@@ -737,9 +751,22 @@ class _PromolParams:
             return integration * self.pi_over_exponents
         return integration
 
-    def single_gaussians(self, distance):
-        r"""Return matrix with entries a single gaussian evaluated at the float distance."""
-        return self.c_m * np.exp(-self.e_m * distance)
+    def evaluate_gaussians(self, square_distance):
+        r"""Return matrix with the value of each Gaussian component at the given squared distances.
+
+        Parameters
+        ----------
+        square_distance : ndarray, shape (M, 1)
+            Squared distance for each of the ``M`` centers.
+
+        Returns
+        -------
+        gaussian_values : ndarray, shape (M, D)
+            Gaussian values ``G_ij = c_ij * exp(-alpha_ij * squared_distances_i)``.
+            Rows correspond to centers and columns to the ``D`` Gaussian components associated with
+            each center.
+        """
+        return self.c_m * np.exp(-self.e_m * square_distance)
 
     def promolecular(self, points):
         r"""
@@ -759,7 +786,7 @@ class _PromolParams:
         # M is the number of centers/atoms.
         # D is the number of dimensions, usually 3.
         # K is maximum number of gaussian functions over all M atoms.
-        cm, em, coords = self.c_m, self.e_m, self.coords
+        cm, em, coords = self.c_m, self.e_m, self.gauss_centers
         # Shape (N, M, D), then Summing gives (N, M, 1)
         distance = np.sum((points - coords[:, np.newaxis]) ** 2.0, axis=2, keepdims=True)
         # At each center, multiply Each Distance of a Coordinate, with its exponents.
@@ -801,7 +828,7 @@ class _PromolParams:
         distance = np.sum(diff_squared[:, :i_var], axis=1)[:, np.newaxis]
 
         # Gaussian Integrals Over Entire Space For Numerator and Denomator.
-        single_gauss = self.single_gaussians(distance)
+        single_gauss = self.evaluate_gaussians(distance)
         single_gauss *= self.pi_over_exponents ** (self.dim - i_var - 1)
 
         # Get integral of Gaussian till a point.
@@ -823,7 +850,7 @@ def _transform_coordinate(real_pt, i_var, promol):
     real_pt : np.ndarray(D,)
         Real point being transformed.
     i_var : int
-        Index that is being tranformed. Less than D.
+        Index of the variable being transformed (0 for x, 1 for y, 2 for z).
     promol : _PromolParams
         Promolecular Data Class.
 
@@ -833,28 +860,30 @@ def _transform_coordinate(real_pt, i_var, promol):
         The transformed point in :math:`[-1, 1]`.
 
     """
-    _, _, coords, pi_over_exps, dim = astuple(promol)
+    coords = promol.gauss_centers
+    pi_over_exps = promol.pi_over_exponents
+    num_integrated_dims = promol.dim - i_var
 
-    # Distance to centers/nuclei`s and Prefactors.
-    diff_coords = real_pt[: i_var + 1] - coords[:, : i_var + 1]
-    diff_squared = diff_coords**2.0
-    distance = np.sum(diff_squared[:, :i_var], axis=1)[:, np.newaxis]
-    # If i_var is zero, then distance is just all zeros.
+    # Coordinate offsets through `i_var`; for `i_var=2`,
+    # offsets[A] = [x - X_A, y - Y_A, z - Z_A] where A index corresponds to a center.
+    offsets = real_pt[: i_var + 1] - coords[:, : i_var + 1]
+
+    # Shape (n_centers, 1): squared distance to each center in preceding
+    # dimensions. For `i_var=2`, result[A, 0] = (x - X_A)**2 + (y - Y_A)**2.
+    partial_squared_distances = np.sum(np.square(offsets[:, :i_var]), axis=1, keepdims=True)
 
     # Single Gaussians Including Integration of Exponential over `(dim - i_var)` variables.
-    single_gauss = promol.single_gaussians(distance) * pi_over_exps ** (dim - i_var)
+    single_gauss = (
+        promol.evaluate_gaussians(partial_squared_distances) * pi_over_exps**num_integrated_dims
+    )
 
     # Get the integral of Gaussian till a point excluding a prefactor.
     # prefactor (pi / exponents) is included in `gaussian_integrals`.
-    cdf_gauss = promol.integration_gaussian_till_point(diff_coords, i_var, with_factor=False)
-
-    # Final Result.
-    transf_num = np.sum(single_gauss * cdf_gauss)
-    transf_den = np.sum(single_gauss)
-    transform_value = transf_num / transf_den
+    cdf_gauss = promol.integration_gaussian_till_point(offsets, i_var, with_factor=False)
+    conditional_cdf = np.sum(single_gauss * cdf_gauss) / np.sum(single_gauss)
 
     # -1. + 2. is needed to transform to [-1, 1], rather than [0, 1].
-    return -1.0 + 2.0 * transform_value
+    return 2.0 * conditional_cdf - 1.0
 
 
 def _root_equation(init_guess, prev_trans_pts, theta_pt, i_var, promol):
