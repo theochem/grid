@@ -21,15 +21,13 @@ r"""Promolecular Grid Transformation."""
 
 from dataclasses import astuple, dataclass, field
 
-from grid.basegrid import Grid, OneDGrid
-from grid.cubic import _HyperRectangleGrid
-
 import numpy as np
-
-from scipy.interpolate import CubicSpline
 from scipy.linalg import solve_triangular
 from scipy.optimize import root_scalar
 from scipy.special import erf
+
+from grid.basegrid import OneDGrid
+from grid.cubic import _HyperRectangleGrid
 
 __all__ = ["CubicProTransform"]
 
@@ -542,7 +540,6 @@ class CubicProTransform(_HyperRectangleGrid):
         # j_deriv is the first partial derivative wrt x, y, z.
         # k_deriv is the second partial derivative wrt x, y, z.
         for i_var in range(0, 3):
-
             # Basic-Level arrays for integration and derivatives.
             (
                 distance,
@@ -1015,17 +1012,30 @@ def _inverse_coordinate(theta_pt, i_var, transformed, promol, bracket=(-10, 10))
 
 
 def _pad_coeffs_exps_with_zeros(coeffs, exps):
-    r"""Pad Promolecular coefficients and exponents with zero. Results in same size array."""
+    r"""Pad Promolecular coefficients and exponents with zero
+
+    Pads the coefficients and exponents of the promolecular density with zeros to make them
+    rectangular arrays.
+
+    Parameters
+    ----------
+    coeffs : list of np.ndarray
+        List of arrays containing the coefficients of the promolecular density.
+    exps : list of np.ndarray
+        List of arrays containing the exponents of the promolecular density.
+
+    Returns
+    -------
+    padded_coeffs : np.ndarray
+        Array containing the padded coefficients of the promolecular density.
+    padded_exps : np.ndarray
+        Array containing the padded exponents of the promolecular density.
+    """
     max_numb_of_gauss = max(len(c) for c in coeffs)
-    coeffs = np.array(
-        [
-            np.pad(a, (0, max_numb_of_gauss - len(a)), "constant", constant_values=0.0)
-            for a in coeffs
-        ],
-        dtype=np.float64,
-    )
-    exps = np.array(
-        [np.pad(a, (0, max_numb_of_gauss - len(a)), "constant", constant_values=0.0) for a in exps],
-        dtype=np.float64,
-    )
-    return coeffs, exps
+    padded_coeffs = np.zeros((len(coeffs), max_numb_of_gauss), dtype=np.float64)
+    padded_exps = np.zeros((len(exps), max_numb_of_gauss), dtype=np.float64)
+    for i, c_row in enumerate(coeffs):
+        padded_coeffs[i, : len(c_row)] = c_row
+    for i, e_row in enumerate(exps):
+        padded_exps[i, : len(e_row)] = e_row
+    return padded_coeffs, padded_exps
