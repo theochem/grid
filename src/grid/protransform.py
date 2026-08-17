@@ -650,39 +650,32 @@ class CubicProTransform(_HyperRectangleGrid):
             cart_pt = [None, None, None]
             theta_x = oned_grids[0].points[ix]
             is_boundary = _is_boundary_pt(theta_x)
-            brack_x = self._get_bracket((ix,), 0, points, is_boundary)
+            brack_x = self._get_bracket(0, is_boundary)
             cart_pt[0] = _inverse_coordinate(theta_x, 0, cart_pt, self.promol, brack_x)
 
             for iy in range(self.shape[1]):
                 theta_y = oned_grids[1].points[iy]
                 is_boundary = _is_boundary_pt(theta_y)
-                brack_y = self._get_bracket((ix, iy), 1, points, is_boundary)
+                brack_y = self._get_bracket(1, is_boundary)
                 cart_pt[1] = _inverse_coordinate(theta_y, 1, cart_pt, self.promol, brack_y)
 
                 for iz in range(self.shape[2]):
                     theta_z = oned_grids[2].points[iz]
                     is_boundary = _is_boundary_pt(theta_z)
-                    brack_z = self._get_bracket((ix, iy, iz), 2, points, is_boundary)
+                    brack_z = self._get_bracket(2, is_boundary)
                     cart_pt[2] = _inverse_coordinate(theta_z, 2, cart_pt, self.promol, brack_z)
                     points[counter] = cart_pt.copy()
                     counter += 1
         return points
 
-    def _get_bracket(self, indices, i_var, prev_points, is_boundary):
+    def _get_bracket(self, i_var, is_boundary):
         r"""
         Obtain brackets for root-finder based on the coordinate of the point.
 
         Parameters
         ----------
-        indices : tuple(int, int, int)
-            The indices of a point, where (0, 0, 0) is the bottom, left-most, down point
-            of the cube.
         i_var : int
             Index of point being transformed.
-        prev_points: ndarray(M, 3)
-            Points that are transformed and empty points that haven't been transformed yet.
-            The points that are transformed is used to obtain brackets for this current
-            point that hasn't been transformed yet.
         is_boundary: bool
             If the current indices is a boundary point, then returns inf, as it maps to infinity.
 
@@ -692,33 +685,13 @@ class CubicProTransform(_HyperRectangleGrid):
             The bracket for the root-finder solver.
 
         """
-        # If it is a boundary point, then return nan. Done by indices.
+        # If it is a boundary point, then return nan.
         if is_boundary:
             return np.inf, np.inf
         # If it is a new point, with no nearby point, get a large initial guess.
-        else:
-            min = np.min(self.promol.coords[:, i_var]) - 20.0
-            max = np.max(self.promol.coords[:, i_var]) + 20.0
-            return min, max
-        # If the previous point has been converted, use that as a initial guess.
-        # if i_var == 0:
-        #     print(" shape = %s" % str(self.shape))
-        #     index = (indices[0] - 1) * self.shape[1] * self.shape[2]
-        #     print(" index = %d" % index)
-        # elif i_var == 1:
-        #     index = indices[0] * self.shape[1] * self.shape[2] + self.shape[2] * (indices[1] - 1)
-        # elif i_var == 2:
-        #     index = (
-        #         indices[0] * self.shape[1] * self.shape[2]
-        #         + self.shape[2] * indices[1]
-        #         + indices[2]
-        #         - 1
-        #     )
-        # print("  prev_points = %s" % str(prev_points))
-        # print("  shape prev_points = %s" % str(prev_points.shape))
-        # print(f"  returned {prev_points[index, i_var]}")
-
-        # return prev_points[index, i_var], prev_points[index, i_var] + 10.0
+        min = np.min(self.promol.coords[:, i_var]) - 20.0
+        max = np.max(self.promol.coords[:, i_var]) + 20.0
+        return min, max
 
 
 @dataclass
