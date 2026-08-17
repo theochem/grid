@@ -17,22 +17,20 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
+import numpy as np
+import pytest
+from numpy.testing import assert_allclose
+from scipy.optimize import approx_fprime
+from scipy.special import erf
+
 from grid.basegrid import OneDGrid
 from grid.onedgrid import GaussChebyshevLobatto
 from grid.protransform import (
     CubicProTransform,
-    _PromolParams,
     _pad_coeffs_exps_with_zeros,
+    _PromolParams,
     _transform_coordinate,
 )
-
-import numpy as np
-from numpy.testing import assert_allclose
-
-import pytest
-
-from scipy.optimize import approx_fprime
-from scipy.special import erf
 
 
 class TestTwoGaussianDiffCenters:
@@ -63,7 +61,7 @@ class TestTwoGaussianDiffCenters:
                 [oned, oned, oned],
                 params.c_m,
                 params.e_m,
-                params.coords,
+                params.gauss_centers,
             )
             return params, obj
         return params
@@ -72,7 +70,7 @@ class TestTwoGaussianDiffCenters:
         r"""Hard-Code the promolecular density."""
         # Promolecular in UniformProTransform class uses einsum, this tests it against that.
         # Also could be used for integration tests.
-        cm, em, coords = params.c_m, params.e_m, params.coords
+        cm, em, coords = params.c_m, params.e_m, params.gauss_centers
         promol = 0.0
         for i, coeffs in enumerate(cm):
             xc, yc, zc = coords[i]
@@ -187,7 +185,7 @@ class TestTwoGaussianDiffCenters:
     def test_transforming_simple_grid(self):
         r"""Test transforming a grid that only contains one non-boundary point."""
         ss = 1.0
-        params, obj = self.setUp(ss, return_obj=True)
+        _, obj = self.setUp(ss, return_obj=True)
         num_pt = int(2.0 / ss) + 1  # number of points in one-direction.
         assert obj.points.shape == (num_pt**3, 3)
         non_boundary_pt_index = num_pt**2 + num_pt + 1
@@ -208,7 +206,7 @@ class TestTwoGaussianDiffCenters:
         r"""Test transforming with inverse transformation is identity."""
         # Note that for points far away from the promolecular gets mapped to nan.
         # So this isn't really the inverse, in the mathematical sense.
-        param, obj = self.setUp(0.5, return_obj=True)
+        _, obj = self.setUp(0.5, return_obj=True)
 
         pt = np.array([1, 2, 3], dtype=np.float64)
         transf = obj.transform(pt)
@@ -251,13 +249,13 @@ class TestTwoGaussianDiffCenters:
         for x, y in pts_xy:
             actual = obj.jacobian(np.array([x, y, 3.0]))
 
-            def tranformation_y(pt):
+            def tranformation_y(pt, x=x):
                 return _transform_coordinate([x, pt[0]], 1, params)
 
             grad = approx_fprime([y], tranformation_y, 1e-8)
             assert np.abs(grad - actual[1, 1]) < 1e-5
 
-            def transformation_y_wrt_x(pt):
+            def transformation_y_wrt_x(pt, y=y):
                 return _transform_coordinate([pt[0], y], 1, params)
 
             h = 1e-8
@@ -271,19 +269,19 @@ class TestTwoGaussianDiffCenters:
         for x, y, z in pts:
             actual = obj.jacobian(np.array([x, y, z]))
 
-            def tranformation_z(pt):
+            def tranformation_z(pt, x=x, y=y):
                 return _transform_coordinate([x, y, pt[0]], 2, params)
 
             grad = approx_fprime([z], tranformation_z, 1e-8)
             assert np.abs(grad - actual[2, 2]) < 1e-5
 
-            def transformation_z_wrt_y(pt):
+            def transformation_z_wrt_y(pt, x=x, z=z):
                 return _transform_coordinate([x, pt[0], z], 2, params)
 
             deriv = approx_fprime([y], transformation_z_wrt_y, 1e-8)
             assert np.abs(deriv - actual[2, 1]) < 1e-4
 
-            def transformation_z_wrt_x(pt):
+            def transformation_z_wrt_x(pt, y=y, z=z):
                 a = _transform_coordinate([pt[0], y, z], 2, params)
                 return a
 
@@ -298,7 +296,7 @@ class TestTwoGaussianDiffCenters:
 
         The function to test is x^2 + y^2 + z^2.
         """
-        params, obj = self.setUp(ss=0.2, return_obj=True)
+        _, obj = self.setUp(ss=0.2, return_obj=True)
 
         def grad(pt):
             # Gradient of x^2 + y^2 + z^2.
@@ -322,12 +320,12 @@ class TestTwoGaussianDiffCenters:
 
     def test_second_derivative_of_theta_x_dx(self):
         r"""Test the second derivative of d(theta_x)/d(x) ."""
-        params, obj = self.setUp(ss=0.2, return_obj=True)
+        _, obj = self.setUp(ss=0.2, return_obj=True)
         x, y, z = 0.0, 0.0, 0.0
         actual = obj.hessian(np.array([x, y, z]))
 
         # test second derivative of theta_x wrt to dx dx.
-        def tranformation_x(pt):
+        def tranformation_x(pt, y=y, z=z):
             return obj.jacobian([pt[0], y, z])[0, 0]
 
         dthetax_dx_dx = approx_fprime([x], tranformation_x, 1e-8)
@@ -342,33 +340,33 @@ class TestTwoGaussianDiffCenters:
     @pytest.mark.parametrize("pts", [np.random.uniform(-3.0, 3.0, size=(100, 3))])
     def test_second_derivative_of_theta_y(self, pts):
         r"""Test the second derivative of d(theta_y)."""
-        params, obj = self.setUp(ss=0.2, return_obj=True)
+        _, obj = self.setUp(ss=0.2, return_obj=True)
         for x, y, z in pts:
             actual = obj.hessian(np.array([x, y, z]))
 
             # test second derivative of theta_y wrt to dy dy.
-            def dtheta_y_dy(pt):
+            def dtheta_y_dy(pt, x=x, z=z):
                 return obj.jacobian([x, pt[0], z])[1, 1]
 
             dthetay_dy_dy = approx_fprime([y], dtheta_y_dy, 1e-8)
             assert np.abs(dthetay_dy_dy - actual[1, 1, 1]) < 1e-5
 
             # test second derivative of d(theta_y)/d(y) wrt dx.
-            def dtheta_y_dy(pt):
+            def dtheta_y_dy(pt, y=y, z=z):
                 return obj.jacobian([pt[0], y, z])[1, 1]
 
             dthetay_dy_dx = approx_fprime([x], dtheta_y_dy, 1e-8)
             assert np.abs(dthetay_dy_dx - actual[1, 1, 0]) < 1e-5
 
             # test second derivative of d(theta_y)/(dx) wrt dy
-            def dtheta_y_dx(pt):
+            def dtheta_y_dx(pt, x=x, z=z):
                 return obj.jacobian([x, pt[0], z])[1, 0]
 
             dtheta_y_dx_dy = approx_fprime([y], dtheta_y_dx, 1e-8)
             assert np.abs(dtheta_y_dx_dy - actual[1, 0, 1]) < 1e-4
 
             # test second derivative of d(theta_y)/(dx) wrt dx
-            def dtheta_y_dx(pt):
+            def dtheta_y_dx(pt, y=y, z=z):
                 return obj.jacobian([pt[0], y, z])[1, 0]
 
             dtheta_y_dx_dx = approx_fprime([x], dtheta_y_dx, 1e-8)
@@ -383,68 +381,68 @@ class TestTwoGaussianDiffCenters:
     @pytest.mark.parametrize("pts", [np.random.uniform(-3.0, 3.0, size=(100, 3))])
     def test_second_derivative_of_theta_z(self, pts):
         r"""Test the second derivative of d(theta_z)."""
-        params, obj = self.setUp(ss=0.2, return_obj=True)
+        _, obj = self.setUp(ss=0.2, return_obj=True)
         for x, y, z in pts:
             actual = obj.hessian(np.array([x, y, z]))
 
             # test second derivative of theta_z wrt to dz dz.
-            def dtheta_z_dz(pt):
+            def dtheta_z_dz(pt, x=x, y=y):
                 return obj.jacobian([x, y, pt[0]])[2, 2]
 
             dthetaz_dz_dz = approx_fprime([z], dtheta_z_dz, 1e-8)
             assert np.abs(dthetaz_dz_dz - actual[2, 2, 2]) < 1e-5
 
             # test second derivative of theta_z wrt to dz dy.
-            def dtheta_z_dz(pt):
+            def dtheta_z_dz(pt, x=x, z=z):
                 return obj.jacobian([x, pt[0], z])[2, 2]
 
             dthetaz_dz_dy = approx_fprime([y], dtheta_z_dz, 1e-8)
             assert np.abs(dthetaz_dz_dy - actual[2, 2, 1]) < 1e-5
 
             # test second derivative of theta_z wrt to dz dx.
-            def dtheta_z_dz(pt):
+            def dtheta_z_dz(pt, y=y, z=z):
                 return obj.jacobian([pt[0], y, z])[2, 2]
 
             dthetaz_dz_dx = approx_fprime([x], dtheta_z_dz, 1e-8)
             assert np.abs(dthetaz_dz_dx - actual[2, 2, 0]) < 1e-5
 
             # test second derivative of theta_z wrt to dy dz.
-            def dtheta_z_dy(pt):
+            def dtheta_z_dy(pt, x=x, y=y):
                 return obj.jacobian([x, y, pt[0]])[2, 1]
 
             dthetaz_dy_dz = approx_fprime([z], dtheta_z_dy, 1e-8)
             assert np.abs(dthetaz_dy_dz - actual[2, 1, 2]) < 1e-5
 
             # test second derivative of theta_z wrt to dy dy.
-            def dtheta_z_dy(pt):
+            def dtheta_z_dy(pt, x=x, z=z):
                 return obj.jacobian([x, pt[0], z])[2, 1]
 
             dthetaz_dy_dy = approx_fprime([y], dtheta_z_dy, 1e-8)
             assert np.abs(dthetaz_dy_dy - actual[2, 1, 1]) < 1e-5
 
             # test second derivative of theta_z wrt to dy dx.
-            def dtheta_z_dy(pt):
+            def dtheta_z_dy(pt, y=y, z=z):
                 return obj.jacobian([pt[0], y, z])[2, 1]
 
             dthetaz_dy_dx = approx_fprime([x], dtheta_z_dy, 1e-8)
             assert np.abs(dthetaz_dy_dx - actual[2, 1, 0]) < 1e-5
 
             # test second derivative of theta_z wrt to dx dz.
-            def dtheta_z_dx(pt):
+            def dtheta_z_dx(pt, x=x, y=y):
                 return obj.jacobian([x, y, pt[0]])[2, 0]
 
             dthetaz_dx_dz = approx_fprime([z], dtheta_z_dx, 1e-8)
             assert np.abs(dthetaz_dx_dz - actual[2, 0, 2]) < 1e-5
 
             # test second derivative of theta_z wrt to dx dy.
-            def dtheta_z_dx(pt):
+            def dtheta_z_dx(pt, x=x, z=z):
                 return obj.jacobian([x, pt[0], z])[2, 0]
 
             dthetaz_dx_dy = approx_fprime([y], dtheta_z_dx, 1e-8)
             assert np.abs(dthetaz_dx_dy - actual[2, 0, 1]) < 1e-5
 
             # test second derivative of theta_z wrt to dx dx.
-            def dtheta_z_dx(pt):
+            def dtheta_z_dx(pt, y=y, z=z):
                 return obj.jacobian([pt[0], y, z])[2, 0]
 
             dthetaz_dx_dx = approx_fprime([x], dtheta_z_dx, 1e-8)
@@ -467,7 +465,9 @@ class TestOneGaussianAgainstNumerics:
                 np.linspace(-1, 1, num=num_pts, endpoint=True), weights, domain=(-1, 1)
             )
 
-            obj = CubicProTransform([oned_x, oned_x, oned_x], params.c_m, params.e_m, params.coords)
+            obj = CubicProTransform(
+                [oned_x, oned_x, oned_x], params.c_m, params.e_m, params.gauss_centers
+            )
             return params, obj
         return params
 
@@ -546,21 +546,21 @@ class TestOneGaussianAgainstNumerics:
             assert np.abs(actual[2, 1]) < 1e-5
 
             # test derivative wrt to x
-            def tranformation_x(pt):
+            def tranformation_x(pt, y=y, z=z):
                 return _transform_coordinate([pt[0], y, z], 0, params)
 
             grad = approx_fprime([x], tranformation_x, 1e-8)
             assert np.abs(grad - actual[0, 0]) < 1e-5
 
             # test derivative wrt to y
-            def tranformation_y(pt):
+            def tranformation_y(pt, x=x):
                 return _transform_coordinate([x, pt[0]], 1, params)
 
             grad = approx_fprime([y], tranformation_y, 1e-8)
             assert np.abs(grad - actual[1, 1]) < 1e-5
 
             # Test derivative wrt to z
-            def tranformation_z(pt):
+            def tranformation_z(pt, x=x, y=y):
                 return _transform_coordinate([x, y, pt[0]], 2, params)
 
             grad = approx_fprime([z], tranformation_z, 1e-8)
@@ -583,12 +583,14 @@ class TestInterpolation:
             np.linspace(-1.0, 1.0, num=num_pts, endpoint=True), weights, domain=(-1, 1)
         )
 
-        obj = CubicProTransform([oned_x, oned_x, oned_x], params.c_m, params.e_m, params.coords)
+        obj = CubicProTransform(
+            [oned_x, oned_x, oned_x], params.c_m, params.e_m, params.gauss_centers
+        )
         return params, obj, [oned_x, oned_x, oned_x]
 
     def test_interpolate_cubic_function(self):
         r"""Interpolate a cubic function."""
-        param, obj, oned_grids = self.setUp(ss=0.08)
+        _, obj, oned_grids = self.setUp(ss=0.08)
 
         # Function to interpolate.
         def func(pts):
@@ -612,7 +614,7 @@ class TestInterpolation:
 
         # Function to interpolate.
         def func(pts, alpha=2.0):
-            return np.exp(-alpha * np.linalg.norm(pts - param.coords[0], axis=1) ** 2.0)
+            return np.exp(-alpha * np.linalg.norm(pts - param.gauss_centers[0], axis=1) ** 2.0)
 
         # Test over a grid. Pytest isn't used for effiency reasons.
         # TODO: the grid points need to be close to center to achieve good accuracy.
@@ -629,7 +631,7 @@ class TestInterpolation:
 
     def test_interpolate_derivative_cubic_function(self):
         r"""Interpolate the derivative of some simple function."""
-        param, obj, oned_grids = self.setUp(ss=0.08)
+        _, obj, oned_grids = self.setUp(ss=0.08)
 
         # Function to interpolate.
         def func(pts):
@@ -658,7 +660,7 @@ class TestInterpolation:
 
     def test_interpolate_derivative_cubic_function2(self):
         r"""Interpolate the derivative of some simple function."""
-        param, obj, oned_grids = self.setUp(ss=0.08)
+        _, obj, oned_grids = self.setUp(ss=0.08)
 
         # Function to interpolate.
         def func(pts):
@@ -706,7 +708,9 @@ class TestIntegration:
         params = _PromolParams(c, e, coord, dim=3)
         num_pts = int(1 / ss) + 1
         oned_x = GaussChebyshevLobatto(num_pts)
-        obj = CubicProTransform([oned_x, oned_x, oned_x], params.c_m, params.e_m, params.coords)
+        obj = CubicProTransform(
+            [oned_x, oned_x, oned_x], params.c_m, params.e_m, params.gauss_centers
+        )
         return params, obj
 
     def test_integration_perturbed_gaussian_with_promolecular_trick(self):
