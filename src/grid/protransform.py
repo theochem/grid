@@ -845,6 +845,27 @@ def _transform_coordinate(real_pt, i_var, promol):
     r"""
     Transform the `i_var` coordinate of a real point to [-1, 1] using promolecular density.
 
+    For :math:`\mathbf{r}=(r_0,\ldots,r_{D-1})`, coordinate :math:`i` is transformed using
+
+    .. math::
+
+        \theta_i(\mathbf{r}_{\leq i})
+        = -1 + 2
+        \frac{
+            \int_{-\infty}^{r_i}
+            \int_{\mathbb{R}^{D-i-1}}
+            \rho^o(\mathbf{r}_{<i},s_i,\mathbf{s}_{>i})
+            \,d\mathbf{s}_{>i}\,ds_i
+        }{
+            \int_{-\infty}^{\infty}
+            \int_{\mathbb{R}^{D-i-1}}
+            \rho^o(\mathbf{r}_{<i},s_i,\mathbf{s}_{>i})
+            \,d\mathbf{s}_{>i}\,ds_i
+        }.
+
+    The preceding coordinates :math:`\mathbf{r}_{<i}` are fixed, while the
+    subsequent coordinates :math:`\mathbf{s}_{>i}` are integrated out.
+
     Parameters
     ----------
     real_pt : np.ndarray(D,)
@@ -856,8 +877,8 @@ def _transform_coordinate(real_pt, i_var, promol):
 
     Returns
     -------
-    theta_pt : float
-        The transformed point in :math:`[-1, 1]`.
+    float
+        Transformed coordinate :math:`\theta_i\in[-1,1]`.
 
     """
     coords = promol.gauss_centers
