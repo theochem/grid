@@ -789,3 +789,66 @@ class TestGetInverseBracket:
         theta_at_upper = _transform_coordinate([*previous_coords, upper], i_var, promol)
 
         assert theta_at_lower <= theta_pt <= theta_at_upper
+
+    def test_ignores_zero_coefficient_padding(self):
+        """Inactive padded Gaussians do not affect the bracket."""
+        promol = _PromolParams(
+            c_m=np.array(
+                [
+                    [1.0, 0.0],
+                    [2.0, 3.0],
+                ]
+            ),
+            e_m=np.array(
+                [
+                    [2.0, 0.0],
+                    [4.0, 8.0],
+                ]
+            ),
+            gauss_centers=np.array(
+                [
+                    [0.0, 0.0, 1.0],
+                    [0.0, 0.0, -2.0],
+                ]
+            ),
+        )
+        theta_pt = -0.2
+
+        # verify that zero coefficients or exponents are not evaluated in the bracket calculation.
+        # they would cause a divide-by-zero or invalid value error if so
+        with np.errstate(divide="raise", invalid="raise"):
+            lower, upper = _get_inverse_bracket(theta_pt, 2, promol)
+
+        # only active gaussians are evaluated in the bracket calculation
+        active_inverse_coords = np.array(
+            [
+                1.0 + erfinv(theta_pt) / np.sqrt(2.0),
+                -2.0 + erfinv(theta_pt) / np.sqrt(4.0),
+                -2.0 + erfinv(theta_pt) / np.sqrt(8.0),
+            ]
+        )
+
+        assert lower < np.min(active_inverse_coords)
+        assert upper > np.max(active_inverse_coords)
+
+    def test_requires_at_least_one_active_gaussian(self):
+        """A bracket cannot be constructed without an active Gaussian."""
+        promol = _PromolParams(
+            c_m=np.array([[0.0]]),
+            e_m=np.array([[0.0]]),
+            gauss_centers=np.zeros((1, 3)),
+        )
+
+        with pytest.raises(ValueError, match="positive"):
+            _get_inverse_bracket(0.5, 0, promol)
+
+    def test_rejects_nonpositive_active_exponent(self):
+        """Every Gaussian included in the bracket must have positive exponent."""
+        promol = _PromolParams(
+            c_m=np.array([[1.0]]),
+            e_m=np.array([[0.0]]),
+            gauss_centers=np.zeros((1, 3)),
+        )
+
+        with pytest.raises(ValueError, match="exponents must be positive"):
+            _get_inverse_bracket(0.5, 0, promol)
