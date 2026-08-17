@@ -24,7 +24,7 @@ from dataclasses import dataclass, field
 import numpy as np
 from scipy.linalg import solve_triangular
 from scipy.optimize import root_scalar
-from scipy.special import erf
+from scipy.special import erf, erfinv
 
 from grid.basegrid import OneDGrid
 from grid.cubic import _HyperRectangleGrid
@@ -1075,3 +1075,28 @@ def _pad_coeffs_exps_with_zeros(coeffs, exps):
     for i, e_row in enumerate(exps):
         padded_exps[i, : len(e_row)] = e_row
     return padded_coeffs, padded_exps
+
+
+def _get_inverse_bracket(theta_pt, i_var, promol):
+    r"""Return a root bracket from the gaussian components."""
+
+    if np.any(promol.c_m < 0.0):
+        raise ValueError("Gaussian coefficients must be nonnegative.")
+
+    active = promol.c_m > 0.0
+    if not np.any(active):
+        raise ValueError("At least one Gaussian coefficient must be positive.")
+    if np.any(promol.e_m[active] <= 0.0):
+        raise ValueError("Active Gaussian exponents must be positive.")
+
+    # Coordinate `i_var` of each center, broadcast over its Gaussian components.
+    centers = np.broadcast_to(promol.gauss_centers[:, i_var, np.newaxis], promol.c_m.shape)
+
+    # Real-space coordinates with shape (n_active_gaussians,). The inverse coordinate of `theta_pt`
+    # for each active Gaussian component.
+    component_inverse_coords = centers[active] + erfinv(theta_pt) / np.sqrt(promol.e_m[active])
+
+    lower = np.min(component_inverse_coords)
+    upper = np.max(component_inverse_coords)
+
+    return (np.nextafter(lower, -np.inf), np.nextafter(upper, np.inf))
