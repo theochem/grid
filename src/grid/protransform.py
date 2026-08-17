@@ -909,18 +909,31 @@ def _transform_coordinate(real_pt, i_var, promol):
 
 def _root_equation(init_guess, prev_trans_pts, theta_pt, i_var, promol):
     r"""
-    Equation to solve for the root to find inverse coordinate from theta space to Real space.
+    Return the residual used to invert one theta coordinate.
+
+    The root finder varies the real-space coordinate :math:`r_i` until
+
+    .. math::
+
+        g(r_i) = \theta_i^{\mathrm{target}} - \theta_i(\mathbf{r}_{<i},r_i) = 0,
+
+    while the preceding real-space coordinates :math:`\mathbf{r}_{<i}` remain fixed. Here,
+    :math:`\theta_i^{\mathrm{target}}` is ``theta_pt`` and :math:`\theta_i(\mathbf{r}_{<i},r_i)` is
+    the transformed value obtained from ``init_guess``.
+
+    For example, if ``i_var=2``, ``previous_coords`` is ``[x, y]`` and ``trial_coord`` is the
+    candidate value of ``z``.
 
     Parameters
     ----------
     init_guess : float
-        Initial guess of Real point that transforms to `theta_pt`.
+        Current real-space coordinate proposed by the root finder.
     prev_trans_pts : list[`i_var` - 1]
-        The previous points in real-space that were already transformed.
+        Previously inverted real-space coordinates (e.g. x, y for i_var=2).
     theta_pt : float
-        The point in [-1, 1] being transformed to the Real space.
+        The target theta-space  point in [-1, 1] being transformed to the Real space.
     i_var : int
-        Index of variable being transformed.
+        Index of the coordinate being inverted.
     promol : _PromolParams
         Promolecular Data Class.
 
