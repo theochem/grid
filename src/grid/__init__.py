@@ -39,4 +39,3 @@ from grid.coulomb import *
 from grid.robust_poisson import *
 from grid.halton import *
 
-from grid.halton import *
