@@ -223,7 +223,7 @@ class CubicProTransform(_HyperRectangleGrid):
             [_transform_coordinate(real_pt, i, self.promol) for i in range(0, self.promol.dim)]
         )
 
-    def inverse(self, theta_pt, bracket=(-10, 10)):
+    def inverse(self, theta_pt, bracket=None):
         r"""
         Transform a theta space point to three-dimensional Real space.
 
@@ -232,8 +232,8 @@ class CubicProTransform(_HyperRectangleGrid):
         theta_pt : np.ndarray(3)
             Point in :math:`[-1, 1]^3`
         bracket : (float, float), optional
-            Interval where root is suspected to be in Reals.
-            Used for "brentq" root-finding method. Default is (-10, 10).
+            Interval where root is suspected to be in Reals. If not given, then it is automatically
+            computed based on the promolecular density.
 
         Returns
         -------
@@ -1086,17 +1086,27 @@ def _get_inverse_bracket(theta_pt, i_var, promol):
     active = promol.c_m > 0.0
     if not np.any(active):
         raise ValueError("At least one Gaussian coefficient must be positive.")
-    if np.any(promol.e_m[active] <= 0.0):
+
+    active_exponents = promol.e_m[active]
+    if np.any(active_exponents <= 0.0):
         raise ValueError("Active Gaussian exponents must be positive.")
 
-    # Coordinate `i_var` of each center, broadcast over its Gaussian components.
+    # Coordinate `i_var` of each gaussiancenter (n_centers, 1), broadcast to the shape of `c_m`
+    # (n_centers, n_gaussians) for indexing.
     centers = np.broadcast_to(promol.gauss_centers[:, i_var, np.newaxis], promol.c_m.shape)
+    # pick out the active Gaussian components.
+    centers = centers[active]
+
+    # Characteristic real-space width 1/sqrt(alpha) of each component.
+    component_length_scales = 1.0 / np.sqrt(active_exponents)
 
     # Real-space coordinates with shape (n_active_gaussians,). The inverse coordinate of `theta_pt`
     # for each active Gaussian component.
-    component_inverse_coords = centers[active] + erfinv(theta_pt) / np.sqrt(promol.e_m[active])
+    component_inverse_coords = centers + erfinv(theta_pt) * component_length_scales
 
-    lower = np.min(component_inverse_coords)
-    upper = np.max(component_inverse_coords)
+    # widen the bracket by the characteristic length scale of each component to ensure that the root
+    # is contained within the bracket when rounding errors are present.
+    lower = np.min(component_inverse_coords - component_length_scales)
+    upper = np.max(component_inverse_coords + component_length_scales)
 
-    return (np.nextafter(lower, -np.inf), np.nextafter(upper, np.inf))
+    return lower, upper
