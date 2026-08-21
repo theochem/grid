@@ -863,7 +863,7 @@ class _PromolParams:
         return distance, single_gauss, integrate_till_pt_x, transf_num, transf_den
 
 
-def _transform_coordinate(real_pt, i_var, promol):
+def _transform_coordinate(real_pt, i_var, promol, boundary_epsilon=1e-12):
     r"""
     Transform the `i_var` coordinate of a real point to [-1, 1] using promolecular density.
 
@@ -897,6 +897,9 @@ def _transform_coordinate(real_pt, i_var, promol):
         Index of the variable being transformed (0 for x, 1 for y, 2 for z).
     promol : _PromolParams
         Promolecular Data Class.
+    boundary_epsilon : float, optional
+        Distance from the boundary of the theta-space cube :math:`[-1, 1]^D` below which a point is
+        considered to be on the boundary. Default is 1e-12.
 
     Returns
     -------
@@ -909,13 +912,35 @@ def _transform_coordinate(real_pt, i_var, promol):
     ValueError
         If any preceding coordinate is nonfinite.
     """
+    if not 0.0 < boundary_epsilon < 1.0:
+        raise ValueError("boundary_epsilon must lie in (0, 1).")
+
+    real_pt = np.asarray(real_pt)
+
+    # An infinite current coordinate maps directly to theta_i = +/-1.
+    if np.isinf(real_pt[i_var]):
+        return np.sign(np.real(real_pt[i_var]))
+
+    # regularize real_pt at the boundaries
+    reg_real_pt = real_pt.copy()
+    for prev_var in range(i_var):
+        if np.isinf(reg_real_pt[prev_var]):
+            # find corresponding near boundary theta value
+            sign = np.sign(np.real(reg_real_pt[prev_var]))
+            regularized_theta = sign * (1.0 - boundary_epsilon)
+
+            # convert back to real space the regularized theta value
+            reg_real_pt[prev_var] = _inverse_coordinate(
+                regularized_theta, prev_var, reg_real_pt, promol
+            )
+
     coords = promol.gauss_centers
     pi_over_exps = promol.pi_over_exponents
     num_integrated_dims = promol.dim - i_var
 
     # Coordinate offsets through `i_var`; for `i_var=2`,
     # offsets[A] = [x - X_A, y - Y_A, z - Z_A] where A index corresponds to a center.
-    offsets = real_pt[: i_var + 1] - coords[:, : i_var + 1]
+    offsets = reg_real_pt[: i_var + 1] - coords[:, : i_var + 1]
 
     # Shape (n_centers, 1): squared distance to each center in preceding
     # dimensions. For `i_var=2`, result[A, 0] = (x - X_A)**2 + (y - Y_A)**2.
