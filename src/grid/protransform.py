@@ -204,23 +204,37 @@ class CubicProTransform(_HyperRectangleGrid):
         r"""Return `PromolParams` data class."""
         return self._promol
 
-    def transform(self, real_pt):
-        r"""
-        Transform a real point in three-dimensional Reals to theta space.
+    def transform(self, real_pt, boundary_epsilon=1e-12):
+        r"""Transform a real-space point to theta space.
 
         Parameters
         ----------
-        real_pt : np.ndarray(3)
-            Point in :math:`\mathbb{R}^3`
+        real_pt : array-like, shape (D,)
+            Real-space point in :math:`\mathbb{R}^D`.
+        boundary_epsilon : float, optional
+            Distance from the theta-space endpoints used to construct regularized finite working
+            coordinates for infinite preceding coordinates. The regularized endpoint is
+            :math:`\pm(1-\varepsilon)`. Default is ``1e-12``.
 
         Returns
         -------
-        theta_pt : np.ndarray(3)
-            Point in :math:`[-1, 1]^3`.
+        theta_pt : ndarray, shape (D,)
+            Transformed point in :math:`[-1,1]^D`.
+
+        Raises
+        ------
+        ValueError
+            If ``real_pt`` does not have shape ``(D,)`` or
+            ``boundary_epsilon`` does not lie in ``(0,1)``.
 
         """
+        real_pt = np.asarray(real_pt)
+
         return np.array(
-            [_transform_coordinate(real_pt, i, self.promol) for i in range(0, self.promol.dim)]
+            [
+                _transform_coordinate(real_pt, i_var, self.promol, boundary_epsilon)
+                for i_var in range(self.promol.dim)
+            ]
         )
 
     def inverse(self, theta_pt):
