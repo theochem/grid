@@ -1011,101 +1011,60 @@ def _root_equation(init_guess, prev_trans_pts, theta_pt, i_var, promol):
     return theta_pt - transf_pt
 
 
-def _inverse_coordinate(theta_pt, i_var, transformed, promol, bracket=(-10, 10)):
-    r"""
-    Transform a point in [-1, 1] to the real space corresponding to `i_var` variable.
+def _inverse_coordinate(theta_pt, i_var, transformed, promol):
+    r"""Invert coordinate ``i_var`` from theta space to real space.
+
+    Find :math:`r_i` satisfying
+
+    .. math::
+
+        \Theta_i(r_i\mid\mathbf{r}_{<i}) = \theta_i^{\mathrm{target}},
+
+    while keeping the preceding real-space coordinates :math:`\mathbf{r}_{<i}` fixed.
 
     Parameters
     ----------
     theta_pt : float
-        Point in [-1, 1].
+        Target coordinate in :math:`[-1, 1]`.
     i_var : int
-        Index that is being tranformed. Less than D.
-    transformed : list[`i_var` - 1]
-        The set of previous points before index `i_var` that were transformed to real space.
+        Index of the coordinate being inverted.
+    transformed : array-like, shape (i_var,)
+        Previously inverted real-space coordinates.
     promol : _PromolParams
-        Promolecular Data Class.
-    bracket : (float, float)
-        Interval where root is suspected to be in Reals. Used for "brentq" root-finding method.
-        Default is (-10, 10).
+        Promolecular density parameters.
 
     Returns
     -------
-    real_pt : float
-        Return the transformed real point.
+    float
+        Inverted real-space coordinate. Targets ``-1`` and ``1`` map to :math:`-\infty` and
+        :math:`+\infty`, respectively.
 
     Raises
     ------
-    AssertionError :  If the root did not converge, or brackets did not have opposite sign.
-    RuntimeError :  If dynamic bracketing reached maximum iteration.
-
-    Notes
-    -----
-    - If the theta point is on the boundary or it is itself a nan, then it get's mapped to nan.
-        Further, if nan is in `transformed[:i_var]` then this function will return nan.
-    - If Brackets do not have the opposite sign, will change the brackets by adding/subtracting
-        the value 10 to the lower or upper bound that is closest to zero.
+    ValueError
+        If ``theta_pt`` lies outside ``[-1, 1]`` or the analytical bracket does not enclose a root.
+    RuntimeError
+        If the root finder does not converge.
 
     """
-    # Check's if this is a boundary points which is mapped to np.nan
-    # These two conditions are added for individual point transformation.
-    if np.abs(theta_pt - -1.0) < 1e-10:
-        return np.inf
-    if np.abs(theta_pt - 1.0) < 1e-10:
-        return np.inf
-    # This condition is added for transformation of the entire grid.
-    # The [:i_var] is needed because of the way I've set-up transforming points in _transform.
-    # Likewise for the bracket, see the function `get_bracket`.
-    if np.inf in bracket or np.inf in transformed[:i_var]:
+    if not -1.0 <= theta_pt <= 1.0:
+        raise ValueError("theta_pt must lie in [-1, 1].")
+
+    if theta_pt == -1.0:
+        return -np.inf
+    if theta_pt == 1.0:
         return np.inf
 
-    def _dynamic_bracketing(l_bnd, u_bnd, maxiter=5000):
-        r"""Dynamically changes the lower (or upper bound) to have different sign values."""
-        bounds = [l_bnd, u_bnd]
+    bracket = _get_inverse_bracket(theta_pt, i_var, promol)
 
-        def is_same_sign(x, y):
-            return (x >= 0 and y >= 0) or (x < 0 and y < 0)
-
-        f_l_bnd = _root_equation(l_bnd, *args)
-        f_u_bnd = _root_equation(u_bnd, *args)
-
-        # Get Index of the one that is closest to zero, the one that needs to change.
-        f_bnds = np.abs([f_l_bnd, f_u_bnd])
-        idx = f_bnds.argmin()
-        # Check if they have the same sign.
-        same_sign = is_same_sign(*bounds)
-        counter = 0
-        while same_sign and counter < maxiter:
-            # Add 10 to the upper bound or subtract 10 to the lower bound to the one that
-            # is closest to zero. This is done based on the sign.
-            bounds[idx] = np.sign(idx - 0.5) * 10 + bracket[idx]
-            # Update info for next iteration.
-            if idx == 0:
-                f_l_bnd = _root_equation(bracket[0], *args)
-            else:
-                f_u_bnd = _root_equation(bracket[1], *args)
-            same_sign = is_same_sign(f_l_bnd, f_u_bnd)
-            counter += 1
-
-        if counter == maxiter:
-            raise RuntimeError(
-                f"Couldn't find correct bounds {bracket} for the root-solver "
-                f"to solve for the inverse."
-            )
-        return tuple(bounds)
-
-    # Set up Arguments for root_equation with dynamic bracketing.
     args = (transformed[:i_var], theta_pt, i_var, promol)
-    bracket = _dynamic_bracketing(bracket[0], bracket[1])
     root_result = root_scalar(
-        _root_equation,
-        args=args,
-        method="brentq",
-        bracket=[bracket[0], bracket[1]],
-        maxiter=50,
-        xtol=2e-15,
+        _root_equation, args=args, method="brentq", bracket=bracket, maxiter=50, xtol=2e-15
     )
-    assert root_result.converged
+
+    if not root_result.converged:
+        raise RuntimeError(f"Inverse transformation did not converge for coordinate {i_var}.")
+
     return root_result.root
 
 
