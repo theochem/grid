@@ -223,17 +223,13 @@ class CubicProTransform(_HyperRectangleGrid):
             [_transform_coordinate(real_pt, i, self.promol) for i in range(0, self.promol.dim)]
         )
 
-    def inverse(self, theta_pt, bracket=None):
-        r"""
-        Transform a theta space point to three-dimensional Real space.
+    def inverse(self, theta_pt):
+        r"""Transform a theta space point to three-dimensional Real space.
 
         Parameters
         ----------
         theta_pt : np.ndarray(3)
             Point in :math:`[-1, 1]^3`
-        bracket : (float, float), optional
-            Interval where root is suspected to be in Reals. If not given, then it is automatically
-            computed based on the promolecular density.
 
         Returns
         -------
@@ -248,7 +244,7 @@ class CubicProTransform(_HyperRectangleGrid):
         """
         real_pt = []
         for i in range(0, self.promol.dim):
-            scalar = _inverse_coordinate(theta_pt[i], i, real_pt[:i], self.promol, bracket)
+            scalar = _inverse_coordinate(theta_pt[i], i, real_pt[:i], self.promol)
             real_pt.append(scalar)
         return np.array(real_pt)
 
@@ -651,33 +647,20 @@ class CubicProTransform(_HyperRectangleGrid):
             boundary.
         """
 
-        # Indices (i, j, k) start from bottom, left-most corner of the [-1, 1]^3 cube.
-        def _is_boundary_pt(theta_pt):
-            if np.abs(theta_pt - self.l_bnd) < cut_off or np.abs(theta_pt - self.u_bnd) < cut_off:
-                return True
-            return False
-
         counter = 0
         points = np.empty((np.prod(self.shape), len(oned_grids)), dtype=np.float64)
         for ix in range(self.shape[0]):
             cart_pt = [None, None, None]
             theta_x = oned_grids[0].points[ix]
-            is_boundary = _is_boundary_pt(theta_x)
-            # Get the bracket for the root-finder on coordinate x
-            brack_x = self._get_bracket(0, is_boundary)
-            cart_pt[0] = _inverse_coordinate(theta_x, 0, cart_pt, self.promol, brack_x)
+            cart_pt[0] = _inverse_coordinate(theta_x, 0, cart_pt, self.promol)
 
             for iy in range(self.shape[1]):
                 theta_y = oned_grids[1].points[iy]
-                is_boundary = _is_boundary_pt(theta_y)
-                brack_y = self._get_bracket(1, is_boundary)
-                cart_pt[1] = _inverse_coordinate(theta_y, 1, cart_pt, self.promol, brack_y)
+                cart_pt[1] = _inverse_coordinate(theta_y, 1, cart_pt, self.promol)
 
                 for iz in range(self.shape[2]):
                     theta_z = oned_grids[2].points[iz]
-                    is_boundary = _is_boundary_pt(theta_z)
-                    brack_z = self._get_bracket(2, is_boundary)
-                    cart_pt[2] = _inverse_coordinate(theta_z, 2, cart_pt, self.promol, brack_z)
+                    cart_pt[2] = _inverse_coordinate(theta_z, 2, cart_pt, self.promol)
                     points[counter] = cart_pt.copy()
                     counter += 1
         return points
