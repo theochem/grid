@@ -24,7 +24,7 @@ from dataclasses import dataclass, field
 import numpy as np
 from scipy.linalg import solve_triangular
 from scipy.optimize import root_scalar
-from scipy.special import erf, erfinv
+from scipy.special import erf, erfinv, logsumexp
 
 from grid.basegrid import OneDGrid
 from grid.cubic import _HyperRectangleGrid
@@ -768,6 +768,28 @@ class _PromolParams:
         """
         return self.c_m * np.exp(-self.e_m * square_distance)
 
+    def evaluate_log_gaussians(self, square_distance):
+        r"""Return matrix of logarithms of Gaussian components at the given squared distances.
+
+        Parameters
+        ----------
+        square_distance : ndarray, shape (M, 1)
+            Squared distance for each of the ``M`` centers.
+
+        Returns
+        -------
+        gaussian_values : ndarray, shape (M, D)
+            Gaussian values ``G_ij = c_ij * exp(-alpha_ij * squared_distances_i)``.
+            Rows correspond to centers and columns to the ``D`` Gaussian components associated with
+            each center.
+        """
+        log_coeffs = np.full_like(self.c_m, -np.inf, dtype=float)
+
+        # Components with c_k = 0 retain log(c_k) = -inf
+        np.log(self.c_m, out=log_coeffs, where=self.c_m > 0.0)
+
+        return log_coeffs - self.e_m * square_distance
+
     def promolecular(self, points):
         r"""
         Evaluate the promolecular density over a grid.
@@ -863,8 +885,9 @@ def _transform_coordinate(real_pt, i_var, promol):
             \,d\mathbf{s}_{>i}\,ds_i
         }.
 
-    The preceding coordinates :math:`\mathbf{r}_{<i}` are fixed, while the
-    subsequent coordinates :math:`\mathbf{s}_{>i}` are integrated out.
+    The preceding coordinates :math:`\mathbf{r}_{<i}` are held fixed, the current coordinate
+    :math:`s_i` is integrated from :math:`-\infty` to :math:`r_i`, and the subsequent coordinates
+    :math:`\mathbf{s}_{>i}` are integrated over their complete domains.
 
     Parameters
     ----------
@@ -877,9 +900,14 @@ def _transform_coordinate(real_pt, i_var, promol):
 
     Returns
     -------
-    float
-        Transformed coordinate :math:`\theta_i\in[-1,1]`.
+    float or complex
+        Transformed coordinate. For finite real input, the result lies in ``[-1, 1]``. A complex
+        input preserves the imaginary perturbation required for complex-step differentiation.
 
+    Raises
+    ------
+    ValueError
+        If any preceding coordinate is nonfinite.
     """
     coords = promol.gauss_centers
     pi_over_exps = promol.pi_over_exponents
@@ -893,18 +921,27 @@ def _transform_coordinate(real_pt, i_var, promol):
     # dimensions. For `i_var=2`, result[A, 0] = (x - X_A)**2 + (y - Y_A)**2.
     partial_squared_distances = np.sum(np.square(offsets[:, :i_var]), axis=1, keepdims=True)
 
-    # Single Gaussians Including Integration of Exponential over `(dim - i_var)` variables.
-    single_gauss = (
-        promol.evaluate_gaussians(partial_squared_distances) * pi_over_exps**num_integrated_dims
-    )
+    # Logarithm of W_{k,i} = c_k exp(-alpha_k d_{k,<i}^2) [sqrt(pi / alpha_k)]**(D - i)
+    log_weights = promol.evaluate_log_gaussians(partial_squared_distances)
+    log_weights += num_integrated_dims * np.log(pi_over_exps)
 
-    # Get the integral of Gaussian till a point excluding a prefactor.
-    # prefactor (pi / exponents) is included in `gaussian_integrals`.
-    cdf_gauss = promol.integration_gaussian_till_point(offsets, i_var, with_factor=False)
-    conditional_cdf = np.sum(single_gauss * cdf_gauss) / np.sum(single_gauss)
+    # log(sum_k W_{k,i}), evaluated without forming W_{k,i}.
+    log_normalization = logsumexp(log_weights)
 
-    # -1. + 2. is needed to transform to [-1, 1], rather than [0, 1].
-    return 2.0 * conditional_cdf - 1.0
+    # For pre-evaluated coordinates at boundaries, the log_weights are all -inf.
+    if not np.isfinite(log_normalization):
+        raise ValueError(
+            "Cannot transform a point with previously evaluated coordinates at the boundary. "
+        )
+
+    # omega_{k,i} = W_{k,i} / sum_j W_{j,i}.
+    normalized_weights = np.exp(log_weights - log_normalization)
+
+    # Individual Gaussian component integrals F_{k,i}(r_i), without their prefactors.
+    component_cdfs = promol.integration_gaussian_till_point(offsets, i_var, with_factor=False)
+
+    # theta_i = sum_k omega_{k,i} [2 F_{k,i}(r_i) - 1].
+    return np.sum(normalized_weights * (2.0 * component_cdfs - 1.0))
 
 
 def _root_equation(init_guess, prev_trans_pts, theta_pt, i_var, promol):
