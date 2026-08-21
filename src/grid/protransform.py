@@ -731,8 +731,13 @@ class _PromolParams:
             self.pi_over_exponents[self.e_m == 0.0] = 0.0
 
     def integrate_all(self):
-        r"""Integration of Gaussian over Entire Real space ie :math:`\mathbb{R}^D`."""
-        return np.sum(self.c_m * self.pi_over_exponents**self.dim)
+        r"""Integrate the Gaussian expansion over :math:`\mathbb{R}^D`."""
+        active = self.c_m > 0.0
+
+        # express integral in log space to avoid overflow/underflow issues for large/small exponents
+        # and coefficients
+        log_terms = np.log(self.c_m[active]) + self.dim * np.log(self.pi_over_exponents[active])
+        return np.exp(logsumexp(log_terms))
 
     def derivative_gaussian(self, diff_coords, j_deriv):
         r"""Return derivative of single Gaussian but without exponential."""
