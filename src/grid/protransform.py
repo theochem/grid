@@ -740,8 +740,38 @@ class _PromolParams:
         return np.exp(logsumexp(log_terms))
 
     def derivative_gaussian(self, diff_coords, j_deriv):
-        r"""Return derivative of single Gaussian but without exponential."""
-        return -self.e_m * 2.0 * diff_coords[:, j_deriv][:, np.newaxis]
+        r"""Return the derivative factor for each Gaussian component.
+
+        For
+
+        .. math::
+
+            G_{k}(\mathbf r) =
+            c_k\exp\left[ -\alpha_k\lVert\mathbf r-\boldsymbol\mu_k\rVert^2 \right]
+
+        the derivative with respect to coordinate :math:`r_j` is
+
+        .. math::
+
+            \frac{\partial G_k}{\partial r_j} = -2\alpha_k(r_j-\mu_{k,j})G_k(\mathbf r).
+
+        This method returns only the factor :math:`-2\alpha_k(r_j-\mu_{k,j})`, without :math:`G_k`.
+
+        Parameters
+        ----------
+        diff_coords : ndarray, shape (M, D)
+            Coordinate differences between the point and each of the ``M``
+            Gaussian centers.
+        j_deriv : int
+            Coordinate index with respect to which the derivative is taken.
+
+        Returns
+        -------
+        derivative_factors : ndarray, shape (M, N)
+            Multiplicative derivative factor for each of the ``N`` Gaussian components associated
+            with each of the ``M`` centers.
+        """
+        return -2.0 * self.e_m * diff_coords[:, j_deriv, np.newaxis]
 
     def integration_gaussian_till_point(self, diff_coords, i_var, with_factor=False):
         r"""Integration of Gaussian wrt to `i_var` variable till a point (inside diff_coords)."""
