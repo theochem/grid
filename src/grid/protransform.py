@@ -859,32 +859,50 @@ class _PromolParams:
         return log_coeffs - self.e_m * square_distance
 
     def promolecular(self, points):
-        r"""
-        Evaluate the promolecular density over a grid.
+        r"""Evaluate the promolecular density at a collection of points.
+
+        For point :math:`\mathbf r_n`, the density is
+
+        .. math::
+
+            \rho^o(\mathbf r_n) = \sum_{m=0}^{M-1} \sum_{k=0}^{K-1} c_{m,k}
+            \exp\left[ -\alpha_{m,k} \lVert\mathbf r_n-\boldsymbol\mu_m\rVert^2 \right]
+
+        where :math:`M` is the number of centers and :math:`K` is the number of Gaussian
+        components stored for each center.
 
         Parameters
         ----------
-        points : np.ndarray(N, D)
-            Points in :math:`\mathbb{R}^D`.
+        points : ndarray, shape (N, D)
+            Coordinates of the ``N`` points in :math:`\mathbb{R}^D`.
 
         Returns
         -------
-        np.ndarray(N,) :
-            Promolecular density evaluated at the points.
+        density : ndarray, shape (N,)
+            Promolecular density evaluated at each input point.
 
         """
-        # M is the number of centers/atoms.
-        # D is the number of dimensions, usually 3.
-        # K is maximum number of gaussian functions over all M atoms.
-        cm, em, coords = self.c_m, self.e_m, self.gauss_centers
-        # Shape (N, M, D), then Summing gives (N, M, 1)
-        distance = np.sum((points - coords[:, np.newaxis]) ** 2.0, axis=2, keepdims=True)
-        # At each center, multiply Each Distance of a Coordinate, with its exponents.
-        exponen = np.exp(-np.einsum("MND, MK-> MNK", distance, em))
-        # At each center, multiply the exponential with its coefficients.
-        gaussian = np.einsum("MNK, MK -> MNK", exponen, cm)
-        # At each point, sum for each center, then sum all centers together.
-        return np.einsum("MNK -> N", gaussian, dtype=np.float64)
+        points = np.asarray(points)
+
+        # Broadcast points (1, N, D) vs centers (M, 1, D) summing over D
+        # the size-1 axis of the points expands to M, while the size-1 axis of the centers expands
+        # to N. The common D axis remains unchanged, giving coordinate differences with shape
+        # (M, N, D). Squaring and summing over D gives shape (M, N, 1).
+        squared_distances = np.sum(
+            (points[np.newaxis, :, :] - self.gauss_centers[:, np.newaxis, :]) ** 2,
+            axis=2,
+            keepdims=True,
+        )
+
+        # Broadcast Gaussians coefficients and exponents (M, 1, K) vs squared distances (M, N, 1).
+        # The size-1 point axis expands to N, while the size-1 component axis expands to K.
+        # The common M axis remains unchanged, giving Gaussian contributions with shape(M, N, K).
+        gaussian_values = self.c_m[:, np.newaxis, :] * np.exp(
+            -self.e_m[:, np.newaxis, :] * squared_distances
+        )
+
+        # Sum over the M centers and K Gaussian components, retaining the N point dimension.
+        return np.sum(gaussian_values, axis=(0, 2), dtype=np.float64)
 
     def helper_for_derivatives(self, diff_squared, diff_coords, i_var):
         r"""
