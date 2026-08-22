@@ -24,7 +24,7 @@ from dataclasses import dataclass, field
 import numpy as np
 from scipy.linalg import solve_triangular
 from scipy.optimize import root_scalar
-from scipy.special import erf, erfinv, logsumexp
+from scipy.special import erfc, erfinv, logsumexp
 
 from grid.basegrid import OneDGrid
 from grid.cubic import _HyperRectangleGrid
@@ -415,7 +415,7 @@ class CubicProTransform(_HyperRectangleGrid):
 
         """
         if nu not in (0, 1):
-            raise ValueError("The parameter nu %d is either zero or one " % nu)
+            raise ValueError(f"The parameter nu {nu} must be either zero or one.")
 
         grid_pts = (
             np.vstack(
@@ -492,7 +492,7 @@ class CubicProTransform(_HyperRectangleGrid):
         for i_var in range(0, self.promol.dim):
             # Basic-Level arrays for integration and derivatives.
             (
-                distance,
+                _,
                 single_gauss,
                 integrate_till_pt_x,
                 transf_num,
@@ -554,7 +554,7 @@ class CubicProTransform(_HyperRectangleGrid):
         for i_var in range(0, 3):
             # Basic-Level arrays for integration and derivatives.
             (
-                distance,
+                _,
                 single_gauss,
                 integrate_till_pt_x,
                 transf_num,
@@ -774,13 +774,49 @@ class _PromolParams:
         return -2.0 * self.e_m * diff_coords[:, j_deriv, np.newaxis]
 
     def integration_gaussian_till_point(self, diff_coords, i_var, with_factor=False):
-        r"""Integration of Gaussian wrt to `i_var` variable till a point (inside diff_coords)."""
-        coord_ivar = diff_coords[:, i_var][:, np.newaxis]
-        integration = (erf(np.sqrt(self.e_m) * coord_ivar) + 1.0) / 2.0
+        r"""Integrate each Gaussian component along coordinate ``i_var`` up to a point.
+
+        For Gaussian component :math:`k`, the one-dimensional integral is
+
+        .. math::
+
+            I_{k,i}(r_i) = \int_{-\infty}^{r_i} \exp\left[-\alpha_k(s_i-\mu_{k,i})^2\right]ds_i
+
+        By default, the method returns the normalized integral
+
+        .. math::
+
+            F_{k,i}(r_i) = \frac{I_{k,i}(r_i)}{\sqrt{\pi/\alpha_k}}.
+
+        If ``with_factor`` is ``True``, the normalization factor :math:`\sqrt{\pi/\alpha_k}` is
+        included, and the method returns :math:`I_{k,i}(r_i)`. The Gaussian coefficient :math:`c_k`
+        is not included.
+
+        Parameters
+        ----------
+        diff_coords : ndarray, shape (M, D)
+            Coordinate differences between the point and the ``M`` Gaussian centers.
+        i_var : int
+            Coordinate with respect to which the integration is performed.
+        with_factor : bool, optional
+            Whether to return the unnormalized integral. Default is ``False``.
+
+        Returns
+        -------
+        integrals : ndarray, shape (M, N)
+            Normalized or unnormalized one-dimensional Gaussian integrals.
+
+        """
+        coord_ivar = diff_coords[:, i_var, np.newaxis]
+        scaled_coord = np.sqrt(self.e_m) * coord_ivar
+
+        # This equals 0.5 * (1 + erf(z)) but avoids subtractive cancellation z is large and negative
+        integration = 0.5 * erfc(-scaled_coord)
+
         if with_factor:
-            # Included the (pi / exponents), this becomes the actual integral.
-            # Not including the (pi / exponents) increasing computation slightly faster.
+            # Multiply by sqrt(pi / alpha_k) to recover the full integral
             return integration * self.pi_over_exponents
+
         return integration
 
     def evaluate_gaussians(self, square_distance):
