@@ -760,8 +760,8 @@ class _PromolParams:
         Parameters
         ----------
         diff_coords : ndarray, shape (M, D)
-            Coordinate differences between the point and each of the ``M``
-            Gaussian centers.
+            Coordinate differences between the point and each of the ``M`` Gaussian centers, defined
+            by ``diff_coords[m, j] = r_j - mu[m, j]``.
         j_deriv : int
             Coordinate index with respect to which the derivative is taken.
 
@@ -906,27 +906,33 @@ class _PromolParams:
 
     def helper_for_derivatives(self, diff_squared, diff_coords, i_var):
         r"""
-        Return Arrays for computing the derivative of transformation functions wrt x, y, z.
+        Return terms used to differentiate the transformation functions wrt x, y, z.
 
         Parameters
         ----------
-        diff_squared : np.ndarray
-            The squared of difference of position to the center of the Promoleculars.
-        diff_coords : np.ndarray
-            The difference of position to the center of the Promoleculars. This is the square
-            root of `diff_squared`.
+        diff_squared : ndarray, shape (M, D)
+            Elementwise squared coordinate differences, equal to ``diff_coords**2``.
+        diff_coords : ndarray, shape (M, D)
+            Signed coordinate differences from each Gaussian center, defined by
+            ``diff_coords[m, j] = r_j - mu[m, j]``.
         i_var : int
-            Index of one of x, y, z.
+            Index of the coordinate being transformed, e.g., ``0`` for x, ``1`` for y, and ``2``
+            for z.
 
         Returns
         -------
-        distance : np.ndarray
-            The squared distance from the position to the center of the Promoleculars.
+        preceding_squared_distances : ndarray, shape (M, 1)
+            Squared distances from each center in the preceding coordinates.
         single_gauss : np.ndarray
             Array with entries of a single Gaussian e^(-a distance) with factor (pi / a).
-        integrate_till_pt_x  : np.ndarray
-            Integration of a Gaussian from -inf to x, ie
-                (pi / a)^0.5 * (erf(a^0.5 (x - center of Gaussian) + 1) / 2
+        integrate_till_pt : ndarray, shape (M, N)
+            Unnormalized Gaussian integrals along the current coordinate from :math:`-\infty` to its
+            current value:
+
+            .. math::
+
+                I_{k,i}(r_i) = \int_{-\infty}^{r_i} \exp\left[-\alpha_k(s_i-\mu_{k,i})^2\right] ds_i
+
         transf_num : float
             The numerator of the transformation. Mostly used for quotient rule.
         transf_den : float
@@ -935,14 +941,17 @@ class _PromolParams:
         """
         distance = np.sum(diff_squared[:, :i_var], axis=1)[:, np.newaxis]
 
-        # Gaussian Integrals Over Entire Space For Numerator and Denomator.
+        # Evaluate each Gaussian using the preceding-coordinate distances
         single_gauss = self.evaluate_gaussians(distance)
+
+        # Integrate over the D - i_var - 1 subsequent coordinates
         single_gauss *= self.pi_over_exponents ** (self.dim - i_var - 1)
 
-        # Get integral of Gaussian till a point.
+        # Integrate each Gaussian along the current coordinate up to the point
         integrate_till_pt_x = self.integration_gaussian_till_point(
             diff_coords, i_var, with_factor=True
         )
+
         # Numerator and Denominator of Original Transformation.
         transf_num = np.sum(single_gauss * integrate_till_pt_x)
         transf_den = np.sum(single_gauss * self.pi_over_exponents)
