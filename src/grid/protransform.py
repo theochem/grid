@@ -263,8 +263,21 @@ class CubicProTransform(_HyperRectangleGrid):
         return np.array(real_pt)
 
     def integrate(self, *value_arrays, trick=False, tol=1e-10):
-        r"""
-        Integrate any real-valued function on Euclidean space.
+        r"""Integrate any real-valued function on Euclidean space.
+
+        For an integrable function:
+
+        .. math::
+            f : \mathbb{R}^3 \rightarrow \mathbb{R}
+
+        The integral is approximated as follows:
+
+        .. math::
+            \int \int \int f(x, y, z)dxdy dz \approx
+            \frac{1}{8} N \int_{-1}^1 \int_{-1}^1 \int_{-1}^1 \frac{f(\theta_x, \theta_y, \theta_z)}
+            {\rho^o(\theta_x, \theta_y, \theta_z)} d\theta_x d\theta_y d\theta_z,
+
+            \text{where }  N = \int \int \int \rho^o(x, y, z) dx dy dz.
 
         Assumes the function decays faster than the promolecular density.
 
@@ -290,44 +303,51 @@ class CubicProTransform(_HyperRectangleGrid):
         ValueError
             Input integrand array is given or not of proper shape.
 
-        Notes
-        -----
-        - Formula for the integration of a integrable function
-          :math:`f : \mathbb{R}^3 \rightarrow \mathbb{R}` is done as follows:
-
-        .. math::
-            \int \int \int f(x, y, z)dxdy dz \approx
-            \frac{1}{8} N \int_{-1}^1 \int_{-1}^1 \int_{-1}^1 \frac{f(\theta_x, \theta_y, \theta_z)}
-            {\rho^o(\theta_x, \theta_y, \theta_z)} d\theta_x d\theta_y d\theta_z,
-
-            \text{where }  N = \int \int \int \rho^o(x, y, z) dx dy dz.
-
-        - This method assumes function f decays faster than the promolecular density.
-
         """
-        promolecular = self.promol.promolecular(self.points)
-        # Integrand is set to zero when promolecular is less than certain value and,
-        # When on the boundary (hence when promolecular is nan).
-        cond = (promolecular <= tol) | (np.isinf(promolecular))
-        promolecular = np.ma.masked_where(cond, promolecular, copy=False)
+        if not value_arrays:
+            raise ValueError("At least one value array must be provided.")
 
-        integrands = []
+        if not np.isfinite(tol) or tol < 0:
+            raise ValueError("tol must be a finite, non-negative number.")
+
+        promol_vals = self.promol.promolecular(self.points)
+
         for arr in value_arrays:
-            # This is needed as it gives incorrect results when arr.dtype isn't object.
-            assert arr.dtype != object, "Array dtype should not be object."
-            # This may be refactored to fit in the general promolecular trick in `grid`.
-            # Masked array is needed since division by promolecular contains nan.
-            if trick:
-                integrand = np.ma.divide(arr - promolecular, promolecular)
-            else:
-                integrand = np.ma.divide(arr, promolecular)
-            # Function/Integrand evaluated at points on the boundary is set to zero.
-            np.ma.fix_invalid(integrand, copy=False, fill_value=0)
-            integrands.append(integrand)
+            if not isinstance(arr, np.ndarray):
+                raise TypeError("Each integrand must be a NumPy array.")
+            if arr.shape != promol_vals.shape:
+                raise ValueError("Each integrand must have the same shape as the grid.")
+            if not np.issubdtype(arr.dtype, np.number):
+                raise TypeError("Each integrand must be a numerical array.")
 
+        # Select points where division by the promolecular density is safe
+        active = np.isfinite(promol_vals) & (promol_vals > tol)
+        dtype = np.result_type(np.float64, promol_vals.dtype, *(arr.dtype for arr in value_arrays))
+
+        # Compute 1 / rho0, but only where rho0 is finite and above the tolerance
+        inv_promol_vals = np.zeros(promol_vals.shape, dtype=dtype)
+        np.divide(1.0, promol_vals, out=inv_promol_vals, where=active)
+
+        # Compute the product of all value arrays
+        values = np.ones(promol_vals.shape, dtype=dtype)
+        for arr in value_arrays:
+            # Inactive entries are never read; values remains 1 there.
+            np.multiply(values, arr, out=values, where=active)
+
+        # In trick mode, integrate f - rho0 instead of f.
         if trick:
-            return self.prointegral + super().integrate(*integrands)
-        return super().integrate(*integrands)
+            np.subtract(values, promol_vals, out=values, where=active)
+
+        if not np.all(np.isfinite(values)):
+            raise ValueError("Integrand contains non-finite values at active points.")
+
+        integral = super().integrate(values, inv_promol_vals)
+
+        # If trick is True, add back the analytic integral of the promolecular density
+        if trick:
+            integral += self.prointegral
+
+        return integral
 
     def derivative(self, real_pt, real_derivative):
         r"""
