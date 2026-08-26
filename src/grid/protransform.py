@@ -349,25 +349,40 @@ class CubicProTransform(_HyperRectangleGrid):
 
         return integral
 
-    def derivative(self, real_pt, real_derivative):
-        r"""
-        Directional derivative in theta space.
+    def gradient_to_theta(self, real_pt, real_gradient):
+        r"""Transform real-space gradient components to theta coordinates.
+
+        It returns the gradient of g in theta-space, given the gradient of f in real-space.
+
+        Given the inverse promolecular transformation from theta-space to real-space:
+
+        .. math::
+            g(\boldsymbol{\theta}) = f(\mathbf{r}(\boldsymbol{\theta}))
+
+        then:
+
+        .. math::
+            \nabla_{\boldsymbol{\theta}} g = J^{-T}\nabla_{\mathbf r} f
+
+        where :math:`J` is the Jacobian matrix of the forward transformation from real space to
+        theta space.
 
         Parameters
         ----------
-        real_pt : np.ndarray(3)
+        real_pt : np.ndarray, shape (3,)
             Point in :math:`\mathbb{R}^3`.
-        real_derivative : np.ndarray(3)
-            Derivative of a function in real space with respect to x, y, z coordinates.
+        real_gradient : np.ndarray, shape (3,)
+            Gradient of a function in real space with respect to x, y, z coordinates.
 
         Returns
         -------
-        theta_derivative : np.ndarray(3)
-            Derivative of a function in theta space with respect to theta coordinates.
+        theta_gradient : np.ndarray, shape (3,)
+            Gradient of a function in theta space with respect to theta coordinates.
 
         Notes
         -----
-        This does not preserve the direction of steepest-ascent/gradient.
+        This transforms gradient components and does not map the real-space steepest-ascent
+        direction.
 
         See Also
         --------
@@ -375,7 +390,7 @@ class CubicProTransform(_HyperRectangleGrid):
 
         """
         jacobian = self.jacobian(real_pt)
-        return solve_triangular(jacobian.T, real_derivative)
+        return solve_triangular(jacobian.T, real_gradient)
 
     def steepest_ascent_theta(self, real_pt, real_grad):
         r"""
