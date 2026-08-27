@@ -416,78 +416,60 @@ class CubicProTransform(_HyperRectangleGrid):
         jacobian = self.jacobian(real_pt)
         return jacobian.dot(real_grad)
 
-    def interpolate(
-        self,
-        points,
-        values,
-        oned_grids,
-        use_log=False,
-        nu=0,
-    ):
-        r"""
-        Interpolate function at a point.
+    def interpolate(self, points, values, oned_grids, use_log=False, nu=0):
+        r"""Interpolate a function or its gradient at real-space points.
 
         Parameters
         ----------
-        real_pt : np.ndarray(3,)
-            Point in :math:`\mathbb{R}^3` that needs to be interpolated.
+        points : np.ndarray(M, 3)
+            Points in :math:`\mathbb{R}^3` at which to interpolate.
         values : np.ndarray(N,)
-            Function values at each point of the grid `points`.
-        oned_grids = list(OneDGrids)
-            List containing three one-dimensional grid corresponding to x, y, z direction
-        use_log : bool
-            If true, then logarithm is applied before interpolating to the function values,
-            including  `func_values`.
-        nu : int
-            If zero, then the function is interpolated.
-            If one, then the derivative is interpolated.
+            Function values at the tensor-product grid defined by `oned_grids`.
+        oned_grids : list[OneDGrid]
+            Three one-dimensional grids corresponding to the x, y, and z directions.
+        use_log : bool, optional
+            If True, interpolate the logarithm of the function values.
+        nu : {0, 1}, optional
+            Derivative order. If zero, interpolate the function values.
+            If one, interpolate the real-space gradient.
 
         Returns
         -------
-        float :
-            If nu is 0: Returns the interpolated of a function at a real point.
-            If nu is 1: Returns the interpolated derivative of a function at a real point.
+        np.ndarray
+            If ``nu == 0``, interpolated function values with shape ``(M,)``.
+            If ``nu == 1``, interpolated real-space gradients with shape ``(M, 3)``.
 
         """
         if nu not in (0, 1):
             raise ValueError(f"The parameter nu {nu} must be either zero or one.")
 
-        grid_pts = (
-            np.vstack(
-                np.meshgrid(
-                    oned_grids[0].points,
-                    oned_grids[1].points,
-                    oned_grids[2].points,
-                    indexing="ij",
-                )
-            )
-            .reshape(3, -1)
-            .T
-        )
+        # Create a meshgrid of the points in theta-space corresponding to the one-dimensional grids
+        grids_mesh = np.meshgrid(*(grid.points for grid in oned_grids), indexing="ij")
+        grid_pts = np.stack(grids_mesh, axis=-1).reshape(-1, 3)
+
+        # Transform points to interpolate to theta-space
         theta_points = np.array([self.transform(x) for x in points], dtype=float)
 
+        # If nu is 0, interpolate the function values directly
         if nu == 0:
-            interpolation = super()._interpolate(
-                theta_points, values, use_log, 0, 0, 0, grid_pts=grid_pts
-            )
-        if nu == 1:
-            # Interpolate in the theta-space and take the derivatives
-            interpolate_x = super()._interpolate(
-                theta_points, values, use_log, 1, 0, 0, grid_pts=grid_pts
-            )
-            interpolate_y = super()._interpolate(
-                theta_points, values, use_log, 0, 1, 0, grid_pts=grid_pts
-            )
-            interpolate_z = super()._interpolate(
-                theta_points, values, use_log, 0, 0, 1, grid_pts=grid_pts
-            )
-            interpolation = np.vstack((interpolate_x.T, interpolate_y.T, interpolate_z.T)).T
-            # Transform the derivatives back to real-space.
-            interpolation = np.array(
-                [self.jacobian(points[i]).dot(interpolation[i]) for i in range(len(interpolation))]
-            )
+            return super()._interpolate(theta_points, values, use_log, 0, 0, 0, grid_pts=grid_pts)
 
-        return interpolation
+        # compute the gradient in theta-space by interpolating each component separately
+        interpolate_x = super()._interpolate(
+            theta_points, values, use_log, 1, 0, 0, grid_pts=grid_pts
+        )
+        interpolate_y = super()._interpolate(
+            theta_points, values, use_log, 0, 1, 0, grid_pts=grid_pts
+        )
+        interpolate_z = super()._interpolate(
+            theta_points, values, use_log, 0, 0, 1, grid_pts=grid_pts
+        )
+        grad_theta = np.stack((interpolate_x, interpolate_y, interpolate_z), axis=-1)
+        # Convert the theta-space gradient to the real-space gradient
+        # grad_r(f) = J(theta <- r).T @ grad_theta(f).
+        return np.array(
+            [self.jacobian(point).T @ gradient for point, gradient in zip(points, grad_theta)]
+        )
 
     def jacobian(self, real_pt):
         r"""
