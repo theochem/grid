@@ -644,11 +644,7 @@ class CubicProTransform(_HyperRectangleGrid):
             for j_deriv in range(i_var + 1):
                 # exploit symmetry of Hessian: H[i, j, k] = H[i, k, j]
                 for k_deriv in range(j_deriv + 1):
-                    # num is the numerator of transformation function.
-                    # den is the denominator of transformation function.
-                    # dnum_dk is the derivative of numerator wrt to k_deriv.
-                    # dnum_dkdj is the derivative of num wrt to j_deriv then k_deriv.
-                    # The derivative will store the result and pass it to the Hessian.
+                    # compute H[i, j, k] and apply factor of 2 from Theta_i = 2 N_i / D_i - 1
                     derivative = 0.0
 
                     if i_var == j_deriv:
@@ -661,9 +657,9 @@ class CubicProTransform(_HyperRectangleGrid):
                             derivative = np.sum(gauss_extra) / transf_den
                         else:
                             # Partial derivative of diagonal derivative e.g. d^2(theta_y)(dy dx).
-                            deriv_inside = self.promol.derivative_gaussian(diff_coords, k_deriv)
-                            dnum_dkdj = np.sum(gauss_extra * deriv_inside)
-                            dden_dk = np.sum(single_gauss * deriv_inside * pi_over_exps)
+                            g_dk_factor = self.promol.derivative_gaussian(diff_coords, k_deriv)
+                            dnum_dkdj = np.sum(gauss_extra * g_dk_factor)
+                            dden_dk = np.sum(single_gauss * g_dk_factor * pi_over_exps)
                             # Numerator is different from `transf_num` since Gaussian is added.
                             dnum_dj = np.sum(gauss_extra)
                             # Quotient Rule
@@ -675,11 +671,11 @@ class CubicProTransform(_HyperRectangleGrid):
                         if k_deriv == j_deriv:
                             # Double Quotient Rule.
                             # See wikipedia "Quotient Rules Higher order formulas".
-                            deriv_inside = self.promol.derivative_gaussian(diff_coords, k_deriv)
-                            dnum_dj = np.sum(single_gauss * integrate_till_pt_x * deriv_inside)
-                            dden_dj = np.sum(single_gauss * pi_over_exps * deriv_inside)
+                            g_dk_factor = self.promol.derivative_gaussian(diff_coords, k_deriv)
+                            dnum_dj = np.sum(single_gauss * integrate_till_pt_x * g_dk_factor)
+                            dden_dj = np.sum(single_gauss * pi_over_exps * g_dk_factor)
 
-                            prod_rule = deriv_inside**2.0 - 2.0 * e_m
+                            prod_rule = g_dk_factor**2.0 - 2.0 * e_m
                             sec_deriv_num = np.sum(single_gauss * integrate_till_pt_x * prod_rule)
                             sec_deriv_den = np.sum(single_gauss * pi_over_exps * prod_rule)
 
@@ -689,30 +685,29 @@ class CubicProTransform(_HyperRectangleGrid):
                             quot -= 2.0 * transf_num * dden_dj * dden_dj
                             derivative = output - quot / transf_den**3.0
 
-                        elif k_deriv != j_deriv:
+                        else:
                             # K is i_Sec_diff and i is i_diff
-                            deriv_inside = self.promol.derivative_gaussian(diff_coords, j_deriv)
-                            deriv_inside_sec = self.promol.derivative_gaussian(diff_coords, k_deriv)
+                            g_dj_factor = self.promol.derivative_gaussian(diff_coords, j_deriv)
+                            g_dk_factor = self.promol.derivative_gaussian(diff_coords, k_deriv)
                             gauss_and_inte_x = single_gauss * integrate_till_pt_x
                             gauss_and_inte = single_gauss * pi_over_exps
 
-                            dnum_di = np.sum(gauss_and_inte_x * deriv_inside)
-                            dden_di = np.sum(gauss_and_inte * deriv_inside)
+                            dnum_dj = np.sum(gauss_and_inte_x * g_dj_factor)
+                            dden_dj = np.sum(gauss_and_inte * g_dj_factor)
 
-                            dnum_dk = np.sum(gauss_and_inte_x * deriv_inside_sec)
-                            dden_dk = np.sum(gauss_and_inte * deriv_inside_sec)
+                            dnum_dk = np.sum(gauss_and_inte_x * g_dk_factor)
+                            dden_dk = np.sum(gauss_and_inte * g_dk_factor)
 
-                            ddnum_dkdk = np.sum(gauss_and_inte_x * deriv_inside * deriv_inside_sec)
-                            ddden_dkdk = np.sum(gauss_and_inte * deriv_inside * deriv_inside_sec)
+                            d2num_djdk = np.sum(gauss_and_inte_x * g_dj_factor * g_dk_factor)
+                            ddden_djdk = np.sum(gauss_and_inte * g_dj_factor * g_dk_factor)
 
-                            output = ddnum_dkdk / transf_den
-                            output -= dnum_di * dden_dk / transf_den**2.0
-                            product = dnum_dk * dden_di + transf_num * ddden_dkdk
+                            output = d2num_djdk / transf_den
+                            output -= dnum_dj * dden_dk / transf_den**2.0
+                            product = dnum_dk * dden_dj + transf_num * ddden_djdk
                             derivative = output
                             derivative -= product / transf_den**2.0
-                            derivative += 2.0 * transf_num * dden_di * dden_dk / transf_den**3.0
-
-                    # The 2.0 is needed because we're in [-1, 1] rather than [0, 1].
+                            derivative += 2.0 * transf_num * dden_dj * dden_dk / transf_den**3.0
+                    # H[i, j, k] = H[i, k, j] by symmetry of mixed partial derivatives.
                     hessian[i_var, j_deriv, k_deriv] = 2.0 * derivative
                     hessian[i_var, k_deriv, j_deriv] = 2.0 * derivative
 
