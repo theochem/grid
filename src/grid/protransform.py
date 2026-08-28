@@ -593,53 +593,57 @@ class CubicProTransform(_HyperRectangleGrid):
         return jacobian
 
     def hessian(self, real_pt):
-        r"""
-        Hessian of the transformation.
+        r"""Return the Hessian of the transformation from real space to theta space.
 
-        The Hessian :math:`H` is a three-dimensional array with (i, j, k)th entry:
+        The Hessian elements are defined as
 
         .. math::
-            H_{i, j, k} = \frac{\partial^2 \theta_i(x_0, \cdots, x_{i-1}}{\partial x_i \partial x_j}
 
-            \text{where } (x_0, x_1, x_2) := (x, y, z).
+            H_{ijk} = \frac{\partial^2 \Theta_i} {\partial r_j \partial r_k}.
+
+        Since :math:`\Theta_i` depends only on :math:`r_0, \ldots, r_i`, :math:`H_{ijk}=0`
+        if :math:`j>i` or :math:`k>i`.
+
+        For the smooth Gaussian transformation, mixed partial derivatives commute,
+
+        .. math::
+
+            H_{ijk} = H_{ikj}.
+
 
         Parameters
         ----------
-        real_pt : np.ndarray(3,)
-            Real point in :math:`\mathbb{R}^3`.
+        real_pt : np.ndarray(N,)
+            Real point in :math:`\mathbb{R}^N`.
 
         Returns
         -------
-        hessian : np.ndarray(3, 3, 3)
-            The (i, j, k)th entry is the partial derivative of the ith transformation function
-            with respect to the jth, kth coordinate.  e.g. when i = 0, then hessian entry at
-            (i, j, k) is zero unless j = k = 0.
+        hessian : np.ndarray(N, N, N)
+            The Hessian matrix of the transformation at the real point. The :math:`\mathbf{H}_{ijk}`
+            entry is the second partial derivative of the :math:`i`th transformation function with
+            respect to the :math:`j`th and :math:`k`th coordinates.  e.g. when :math:`i = 0`, then
+            the Hessian entry at :math:`(i, j, k)` is zero unless :math:`j = k = 0`.
 
         """
         hessian = np.zeros((self.ndim, self.ndim, self.ndim), dtype=np.float64)
         e_m = self.promol.e_m
-        coords = self.promol.gauss_centers
+        centers = self.promol.gauss_centers
         pi_over_exps = self.promol.pi_over_exponents
 
         # Distance to centers/nuclei`s and Prefactors.
-        diff_coords = real_pt - coords
+        diff_coords = real_pt - centers
         diff_squared = diff_coords**2.0
 
-        # i_var is the transformation to theta-space.
-        # j_deriv is the first partial derivative wrt x, y, z.
-        # k_deriv is the second partial derivative wrt x, y, z.
-        for i_var in range(0, 3):
+        # H[i, j, k] = \partial^2 \Theta_i / (\partial r_j \partial r_k)
+        for i_var in range(0, self.ndim):
             # Basic-Level arrays for integration and derivatives.
-            (
-                _,
-                single_gauss,
-                integrate_till_pt_x,
-                transf_num,
-                transf_den,
-            ) = self.promol.helper_for_derivatives(diff_squared, diff_coords, i_var)
+            _, single_gauss, integrate_till_pt_x, transf_num, transf_den = (
+                self.promol.helper_for_derivatives(diff_squared, diff_coords, i_var)
+            )
 
-            for j_deriv in range(0, i_var + 1):
-                for k_deriv in range(0, i_var + 1):
+            for j_deriv in range(i_var + 1):
+                # exploit symmetry of Hessian: H[i, j, k] = H[i, k, j]
+                for k_deriv in range(j_deriv + 1):
                     # num is the numerator of transformation function.
                     # den is the denominator of transformation function.
                     # dnum_dk is the derivative of numerator wrt to k_deriv.
@@ -668,19 +672,7 @@ class CubicProTransform(_HyperRectangleGrid):
 
                     # Here, quotient rule all the way down.
                     elif j_deriv < i_var:
-                        if k_deriv == i_var:
-                            gauss_extra = single_gauss * np.exp(
-                                -e_m * diff_squared[:, k_deriv][:, np.newaxis]
-                            )
-                            deriv_inside = self.promol.derivative_gaussian(diff_coords, j_deriv)
-                            ddnum_djdi = np.sum(gauss_extra * deriv_inside)
-                            dden_dj = np.sum(single_gauss * deriv_inside * pi_over_exps)
-                            # Quotient Rule
-                            dnum_dj = np.sum(gauss_extra)
-                            derivative = ddnum_djdi * transf_den - dnum_dj * dden_dj
-                            derivative /= transf_den**2.0
-
-                        elif k_deriv == j_deriv:
+                        if k_deriv == j_deriv:
                             # Double Quotient Rule.
                             # See wikipedia "Quotient Rules Higher order formulas".
                             deriv_inside = self.promol.derivative_gaussian(diff_coords, k_deriv)
@@ -722,6 +714,7 @@ class CubicProTransform(_HyperRectangleGrid):
 
                     # The 2.0 is needed because we're in [-1, 1] rather than [0, 1].
                     hessian[i_var, j_deriv, k_deriv] = 2.0 * derivative
+                    hessian[i_var, k_deriv, j_deriv] = 2.0 * derivative
 
         return hessian
 
