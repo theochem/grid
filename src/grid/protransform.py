@@ -472,65 +472,125 @@ class CubicProTransform(_HyperRectangleGrid):
         )
 
     def jacobian(self, real_pt):
-        r"""
-        Jacobian of the transformation from real space to theta space.
+        r"""Return the Jacobian of the transformation from real space to theta space.
 
-        Precisely, it is the lower-triangular matrix
+        The Jacobian elements are defined as
 
         .. math::
+
+            J_{ij} = \frac{\partial \Theta_i}{\partial r_j}.
+
+        The transformation maps :math:`\mathbf{r} \in \mathbb{R}^D` to
+        :math:`\boldsymbol{\theta} \in [-1, 1]^D` sequentially as
+
+        .. math::
+
+            \Theta_i(r_i \mid \mathbf{r}_{<i})
+            =
+            2\frac{N_i(r_i, \mathbf{r}_{<i})}{D_i(\mathbf{r}_{<i})} - 1,
+
+        where
+
+        .. math::
+
+            N_i(r_i, \mathbf{r}_{<i})
+            =
+            \int_{-\infty}^{r_i}
+            \int_{\mathbb{R}^{D-i-1}}
+            \rho^o(\mathbf{r}_{<i}, s_i, \mathbf{s}_{>i})
+            \,d\mathbf{s}_{>i}\,ds_i,
+
+        and
+
+        .. math::
+
+            D_i(\mathbf{r}_{<i})
+            =
+            \int_{-\infty}^{\infty}
+            \int_{\mathbb{R}^{D-i-1}}
+            \rho^o(\mathbf{r}_{<i}, s_i, \mathbf{s}_{>i})
+            \,d\mathbf{s}_{>i}\,ds_i.
+
+        Since :math:`\Theta_i` depends only on :math:`r_0, \ldots, r_i`, :math:`J_{ij}=0` for
+        :math:`j>i`. Therefore, the Jacobian is lower triangular:
+
+        .. math::
+
+            \mathbf{J}
+            =
             \begin{bmatrix}
-                \frac{\partial \theta_x}{\partial X} & 0 & 0 \\
-                \frac{\partial \theta_y}{\partial X} & \frac{\partial \theta_y}{\partial Y} & 0 \\
-                \frac{\partial \theta_z}{\partial X} & \frac{\partial \theta_z}{\partial Y} &
-                \frac{\partial \theta_z}{\partial Z}
+                J_{00} & 0 & \cdots & 0 \\
+                J_{10} & J_{11} & \cdots & 0 \\
+                \vdots & \vdots & \ddots & \vdots \\
+                J_{D-1,0} & J_{D-1,1} & \cdots & J_{D-1,D-1}
             \end{bmatrix}.
+
+        For the diagonal terms, :math:`D_i` is independent of :math:`r_i`, so
+
+        .. math::
+
+            J_{ii} = 2\frac{\partial_{r_i}N_i}{D_i}
+
+        For the off-diagonal terms, :math:`j<i`, both :math:`N_i` and :math:`D_i` depend on
+        :math:`r_j`, giving
+
+        .. math::
+
+            J_{ij} = 2 \frac{(\partial_{r_j}N_i)D_i - N_i(\partial_{r_j}D_i)}{D_i^2}.
 
         Parameters
         ----------
-        real_pt : np.ndarray(3,)
-            Point in :math:`\mathbb{R}^3`.
+        real_pt : np.ndarray(D,)
+            Point in :math:`\mathbb{R}^D` at which the Jacobian is evaluated.
 
         Returns
         -------
-        np.ndarray(3, 3) :
-            Jacobian of transformation.
+        np.ndarray(D, D)
+            Jacobian :math:`\partial\boldsymbol{\theta}/\partial\mathbf{r}` evaluated at `real_pt`.
 
         """
-        jacobian = np.zeros((3, 3), dtype=np.float64)
+        ndim = self.promol.dim
+        jacobian = np.zeros((ndim, ndim), dtype=np.float64)
 
-        e_m = self.promol.e_m
-        coords = self.promol.gauss_centers
-        pi_over_exps = self.promol.pi_over_exponents
+        e_m = self.promol.e_m  # shape (ncenters, ndims)
+        pi_over_exps = self.promol.pi_over_exponents  # shape (ncenters, ndim)
+        centers = self.promol.gauss_centers  # shape (ncenters, ndim)
+        pi_over_exps = self.promol.pi_over_exponents  # shape (ncenters, ndim)
 
-        # Distance to centers/nuclei`s and Prefactors.
-        diff_coords = real_pt - coords
-        diff_squared = diff_coords**2.0
-        # If i_var is zero, then distance is just all zeros.
-        for i_var in range(0, self.promol.dim):
-            # Basic-Level arrays for integration and derivatives.
-            (
-                _,
-                single_gauss,
-                integrate_till_pt_x,
-                transf_num,
-                transf_den,
-            ) = self.promol.helper_for_derivatives(diff_squared, diff_coords, i_var)
+        # Coordinate differences from each Gaussian center.
+        diff_coords = real_pt - centers
+        diff_squared = diff_coords**2
 
-            for j_deriv in range(0, i_var + 1):
-                if i_var == j_deriv:
-                    # Derivative eliminates `integrate_till_pt_x`, and adds a Gaussian.
-                    inner_term = single_gauss * np.exp(-e_m * diff_squared[:, i_var][:, np.newaxis])
-                    jacobian[i_var, i_var] = np.sum(inner_term) / transf_den
-                elif j_deriv < i_var:
-                    # Derivative of inside of Gaussian.
-                    deriv_inside = self.promol.derivative_gaussian(diff_coords, j_deriv)
-                    deriv_num = np.sum(single_gauss * integrate_till_pt_x * deriv_inside)
-                    deriv_den = np.sum(single_gauss * deriv_inside * pi_over_exps)
-                    # Quotient Rule
-                    jacobian[i_var, j_deriv] = deriv_num * transf_den - transf_num * deriv_den
-                    jacobian[i_var, j_deriv] /= transf_den**2.0
+        for i_var in range(ndim):
+            _, single_gauss, integrate_till_pt_x, transf_num, transf_den = (
+                self.promol.helper_for_derivatives(diff_squared, diff_coords, i_var)
+            )
 
-        return 2.0 * jacobian
+            # transformation is: Theta_i = 2 N_i / D_i - 1
+            # only lower-triangular part of the Jacobian is non-zero, so we only compute for j <= i
+            for j_deriv in range(i_var + 1):
+                if j_deriv == i_var:
+                    # Diagonal case J_{ii} = 2 * dN_i / D_i
+                    # dN_i / dr_i = sum_k [single_gauss[k] * exp(-alpha_k * (r_i - mu_ki)^2)]
+
+                    # Shape (ncenters, 1) to broadcast each center's distance over its exponents.
+                    diff_squared_i = diff_squared[:, i_var][:, np.newaxis]
+                    deriv_num = np.sum(single_gauss * np.exp(-e_m * diff_squared_i))
+                    jacobian[i_var, i_var] = 2.0 * deriv_num / transf_den
+
+                else:
+                    # Off-diagonal case (j < i):
+                    # r_j appears in the Gaussian factors of both N_i and D_i.
+                    gauss_deriv_factor = self.promol.derivative_gaussian(diff_coords, j_deriv)
+                    # dN_i / dr_j
+                    deriv_num = np.sum(single_gauss * integrate_till_pt_x * gauss_deriv_factor)
+                    # dD_i / dr_j
+                    deriv_den = np.sum(single_gauss * gauss_deriv_factor * pi_over_exps)
+                    jacobian[i_var, j_deriv] = (
+                        2.0 * (deriv_num * transf_den - transf_num * deriv_den) / transf_den**2
+                    )
+
+        return jacobian
 
     def hessian(self, real_pt):
         r"""
