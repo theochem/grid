@@ -696,31 +696,6 @@ class CubicProTransform(_HyperRectangleGrid):
                     counter += 1
         return points
 
-    def _get_bracket(self, i_var, is_boundary):
-        r"""
-        Obtain brackets for root-finder based on the coordinate of the point.
-
-        Parameters
-        ----------
-        i_var : int
-            Index of point being transformed.
-        is_boundary: bool
-            If the current indices is a boundary point, then returns inf, as it maps to infinity.
-
-        Returns
-        -------
-        (float, float) :
-            The bracket for the root-finder solver.
-
-        """
-        # If it is a boundary point, then return nan.
-        if is_boundary:
-            return np.inf, np.inf
-        # If it is a new point, with no nearby point, get a large initial guess.
-        min = np.min(self.promol.gauss_centers[:, i_var]) - 20.0
-        max = np.max(self.promol.gauss_centers[:, i_var]) + 20.0
-        return min, max
-
 
 @dataclass
 class _PromolParams:
