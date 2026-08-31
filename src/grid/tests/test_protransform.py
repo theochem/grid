@@ -571,23 +571,42 @@ class TestOneGaussianAgainstNumerics:
 class TestInterpolation:
     r"""Test Interpolation Methods and Cubic Grid Utility Functions."""
 
-    def setUp(self, ss=0.1):
-        r"""Set up a simple one Gaussian function with uniform cubic grid."""
-        c = np.array([[5.0]])
-        e = np.array([[2.0]])
-        coord = np.array([[1.0, 2.0, 3.0]])
+    def setUp(self, ss=0.1, two_gaussians=False):
+        r"""Set up a uniform cubic grid with one or two Gaussians."""
+        if two_gaussians:
+            c = np.array([[5.0], [10.0]])
+            e = np.array([[2.0], [3.0]])
+            coord = np.array(
+                [
+                    [1.0, 2.0, 3.0],
+                    [2.0, 2.0, 2.0],
+                ]
+            )
+        else:
+            c = np.array([[5.0]])
+            e = np.array([[2.0]])
+            coord = np.array([[1.0, 2.0, 3.0]])
+
         params = _PromolParams(c, e, coord, dim=3)
 
         num_pts = int(2 / ss) + 1
         weights = np.array([2.0 / (num_pts - 2)] * num_pts)
-        oned_x = OneDGrid(
-            np.linspace(-1.0, 1.0, num=num_pts, endpoint=True), weights, domain=(-1, 1)
+        oned = OneDGrid(
+            np.linspace(-1.0, 1.0, num=num_pts, endpoint=True),
+            weights,
+            domain=(-1, 1),
         )
 
+        oned_grids = [oned, oned, oned]
+
         obj = CubicProTransform(
-            [oned_x, oned_x, oned_x], params.c_m, params.e_m, params.gauss_centers
+            oned_grids,
+            params.c_m,
+            params.e_m,
+            params.gauss_centers,
         )
-        return params, obj, [oned_x, oned_x, oned_x]
+
+        return params, obj, oned_grids
 
     def test_interpolate_cubic_function(self):
         r"""Interpolate a cubic function."""
@@ -630,11 +649,16 @@ class TestInterpolation:
         desired = func(real_grid)
         assert_allclose(desired, actuals, atol=1e-1)
 
-    def test_interpolate_derivative_cubic_function(self):
-        r"""Interpolate the derivative of some simple function."""
-        _, obj, oned_grids = self.setUp(ss=0.08)
+    @pytest.mark.parametrize("two_gaussians", [True, False], ids=["two_gaussians", "one_gaussian"])
+    def test_interpolate_derivative_cubic_function(self, two_gaussians):
+        r"""Interpolate the derivative of a simple function.
 
-        # Function to interpolate.
+        The one-Gaussian case has a diagonal Jacobian, while two Gaussians at different centers
+        produce a non-diagonal Jacobian and therefore test the full gradient transformation.
+
+        """
+        _, obj, oned_grids = self.setUp(ss=0.08, two_gaussians=two_gaussians)
+
         def func(pts):
             return (pts[:, 0] - 1.0) * (pts[:, 1] - 2.0) * (pts[:, 2] - 3.0)
 
@@ -647,16 +671,17 @@ class TestInterpolation:
                 ]
             ).T
 
-        # Test over a grid. Pytest isn't used for effiency reasons.
         grid = np.vstack(
             (
-                np.random.uniform(1.0, 1.5, (100,)).T,
-                np.random.uniform(1.5, 2.5, (100,)).T,
-                np.random.uniform(2.5, 3.5, (100,)).T,
+                np.random.uniform(1.0, 1.5, (100,)),
+                np.random.uniform(1.5, 2.5, (100,)),
+                np.random.uniform(2.5, 3.5, (100,)),
             )
         ).T
+
         actual = obj.interpolate(grid, func(obj.points), oned_grids, nu=1)
         desired = derivative(grid)
+
         assert_allclose(actual, desired, atol=1e-2)
 
     def test_interpolate_derivative_cubic_function2(self):
