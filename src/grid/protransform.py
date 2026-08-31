@@ -619,10 +619,11 @@ class CubicProTransform(_HyperRectangleGrid):
         Returns
         -------
         hessian : np.ndarray(N, N, N)
-            The Hessian matrix of the transformation at the real point. The :math:`\mathbf{H}_{ijk}`
+            Hessian tensor of the transformation at the real point. The :math:`H_{ijk}`
             entry is the second partial derivative of the :math:`i`th transformation function with
-            respect to the :math:`j`th and :math:`k`th coordinates.  e.g. when :math:`i = 0`, then
-            the Hessian entry at :math:`(i, j, k)` is zero unless :math:`j = k = 0`.
+            respect to the :math:`j`th and :math:`k`th coordinates. Nonzero entries satisfy
+            :math:`j \leq i` and :math:`k \leq i`; for example, when :math:`i = 0`, only
+            :math:`H_{000}` can be nonzero.
 
         """
         hessian = np.zeros((self.ndim, self.ndim, self.ndim), dtype=np.float64)
@@ -630,86 +631,100 @@ class CubicProTransform(_HyperRectangleGrid):
         centers = self.promol.gauss_centers
         pi_over_exps = self.promol.pi_over_exponents
 
-        # Distance to centers/nuclei`s and Prefactors.
+        # Coordinate differences to each Gaussian center and their squares
         diff_coords = real_pt - centers
         diff_squared = diff_coords**2.0
 
         # H[i, j, k] = \partial^2 \Theta_i / (\partial r_j \partial r_k)
-        for i_var in range(0, self.ndim):
-            # Basic-Level arrays for integration and derivatives.
-            _, single_gauss, integrate_till_pt_x, transf_num, transf_den = (
-                self.promol.helper_for_derivatives(diff_squared, diff_coords, i_var)
+        # factor 2 from Theta_i = 2 N_i / D_i - 1 is applied at the end for each entry
+        for i_var in range(self.ndim):
+            # Theta_i = 2 N_i / D_i - 1, with num_i = N_i and den_i = D_i.
+            _, gauss_terms, integrate_till_pt_i, num_i, den_i = self.promol.helper_for_derivatives(
+                diff_squared, diff_coords, i_var
             )
-
+            # Per-Gaussian contributions to the numerator N_i and denominator D_i
+            # num_i = sum(num_terms) and den_i = sum(den_terms)
+            num_terms = gauss_terms * integrate_till_pt_i
+            den_terms = gauss_terms * pi_over_exps
             for j_deriv in range(i_var + 1):
-                # exploit symmetry of Hessian: H[i, j, k] = H[i, k, j]
+                # exploit symmetry of Hessian H[i, j, k] = H[i, k, j], so only compute for k <= j
                 for k_deriv in range(j_deriv + 1):
-                    # compute H[i, j, k] and apply factor of 2 from Theta_i = 2 N_i / D_i - 1
-                    derivative = 0.0
-
                     if i_var == j_deriv:
-                        gauss_extra = single_gauss * np.exp(
-                            -e_m * diff_squared[:, j_deriv][:, np.newaxis]
+                        # Contribution of each Gaussian component to dN_i / dr_i
+                        dnum_di_terms = gauss_terms * np.exp(
+                            -e_m * diff_squared[:, i_var][:, np.newaxis]
                         )
-                        if j_deriv == k_deriv:
-                            # Diagonal derivative e.g. d(theta_X)(dx dx)
-                            gauss_extra *= self.promol.derivative_gaussian(diff_coords, j_deriv)
-                            derivative = np.sum(gauss_extra) / transf_den
+                        # H[i,i,i] = 2 * d^2(N_i)/dr_i^2 / D_i
+                        if i_var == k_deriv:
+                            # Gaussian derivative factor for d/dr_i
+                            factor_g_di = self.promol.derivative_gaussian(diff_coords, i_var)
+                            # Contributions to d^2N_i / dr_i^2
+                            d2num_di2_terms = dnum_di_terms * factor_g_di
+                            ratio_d2 = np.sum(d2num_di2_terms) / den_i
                         else:
-                            # Partial derivative of diagonal derivative e.g. d^2(theta_y)(dy dx).
-                            g_dk_factor = self.promol.derivative_gaussian(diff_coords, k_deriv)
-                            dnum_dkdj = np.sum(gauss_extra * g_dk_factor)
-                            dden_dk = np.sum(single_gauss * g_dk_factor * pi_over_exps)
-                            # Numerator is different from `transf_num` since Gaussian is added.
-                            dnum_dj = np.sum(gauss_extra)
-                            # Quotient Rule
-                            derivative = dnum_dkdj * transf_den - dnum_dj * dden_dk
-                            derivative /= transf_den**2.0
+                            # Gaussian derivative factor for d/dr_k
+                            factor_g_dk = self.promol.derivative_gaussian(diff_coords, k_deriv)
+                            # Differentiate each dN_i/dr_i Gaussian contribution with respect to r_k
+                            d2num_dkdi = np.sum(dnum_di_terms * factor_g_dk)
+                            # dD/d r_k and dN/d r_i as sum of Gaussian contributions
+                            dden_dk = np.sum(den_terms * factor_g_dk)
+                            dnum_di = np.sum(dnum_di_terms)
+                            # Quotient rule for d[(dN_i/dr_i) / D_i] / dr_k:
+                            # [(d2N_i/dr_k dr_i) D_i - (dN_i/dr_i)(dD_i/dr_k)] / D_i^2
+                            ratio_d2 = d2num_dkdi * den_i - dnum_di * dden_dk
+                            ratio_d2 /= den_i**2.0
 
-                    # Here, quotient rule all the way down.
                     elif j_deriv < i_var:
                         if k_deriv == j_deriv:
-                            # Double Quotient Rule.
-                            # See wikipedia "Quotient Rules Higher order formulas".
-                            g_dk_factor = self.promol.derivative_gaussian(diff_coords, k_deriv)
-                            dnum_dj = np.sum(single_gauss * integrate_till_pt_x * g_dk_factor)
-                            dden_dj = np.sum(single_gauss * pi_over_exps * g_dk_factor)
+                            # gaussian derivative factor for d/dr_j and d/dr_k (j == k)
+                            factor_g_dj = self.promol.derivative_gaussian(diff_coords, j_deriv)
+                            # dN/dr_j and dD/dr_j as sum of Gaussian contributions
+                            dnum_dj = np.sum(num_terms * factor_g_dj)
+                            dden_dj = np.sum(den_terms * factor_g_dj)
 
-                            prod_rule = g_dk_factor**2.0 - 2.0 * e_m
-                            sec_deriv_num = np.sum(single_gauss * integrate_till_pt_x * prod_rule)
-                            sec_deriv_den = np.sum(single_gauss * pi_over_exps * prod_rule)
-
-                            output = sec_deriv_num * transf_den - dnum_dj * dden_dj
-                            output /= transf_den**2.0
-                            quot = transf_den * (dnum_dj * dden_dj + transf_num * sec_deriv_den)
-                            quot -= 2.0 * transf_num * dden_dj * dden_dj
-                            derivative = output - quot / transf_den**3.0
+                            # gaussian second-derivative (1/G) d^2G/dr_j^2 = factor_g_dj^2 - 2 alpha
+                            factor_g_d2j = factor_g_dj**2.0 - 2.0 * e_m
+                            # sum of gaussian contributions to d^2N_i / dr_j^2 and d^2D_i / dr_j^2
+                            d2num_dj2 = np.sum(num_terms * factor_g_d2j)
+                            d2den_dj2 = np.sum(den_terms * factor_g_d2j)
+                            # Second derivative d^2(N_i / D_i) / dr_j^2
+                            # (d^2N_i/dr_j^2) / D_i
+                            # - [2 (dN_i/dr_j)(dD_i/dr_j) + N_i (d^2D_i/dr_j^2)] / D_i^2
+                            # + 2 N_i (dD_i/dr_j)^2 / D_i^3
+                            ratio_d2 = d2num_dj2 / den_i
+                            ratio_d2 -= (2.0 * dnum_dj * dden_dj + num_i * d2den_dj2) / den_i**2.0
+                            ratio_d2 += (2.0 * num_i * dden_dj**2.0) / den_i**3.0
 
                         else:
-                            # K is i_Sec_diff and i is i_diff
-                            g_dj_factor = self.promol.derivative_gaussian(diff_coords, j_deriv)
-                            g_dk_factor = self.promol.derivative_gaussian(diff_coords, k_deriv)
-                            gauss_and_inte_x = single_gauss * integrate_till_pt_x
-                            gauss_and_inte = single_gauss * pi_over_exps
+                            # Gaussian derivative factors for d/dr_j and d/dr_k.
+                            factor_g_dj = self.promol.derivative_gaussian(diff_coords, j_deriv)
+                            factor_g_dk = self.promol.derivative_gaussian(diff_coords, k_deriv)
 
-                            dnum_dj = np.sum(gauss_and_inte_x * g_dj_factor)
-                            dden_dj = np.sum(gauss_and_inte * g_dj_factor)
+                            # Sum Gaussian contributions to dN_i/dr_j and dD_i/dr_j.
+                            dnum_dj = np.sum(num_terms * factor_g_dj)
+                            dden_dj = np.sum(den_terms * factor_g_dj)
 
-                            dnum_dk = np.sum(gauss_and_inte_x * g_dk_factor)
-                            dden_dk = np.sum(gauss_and_inte * g_dk_factor)
+                            # dN_i / dr_k and dD_i / dr_k.
+                            dnum_dk = np.sum(num_terms * factor_g_dk)
+                            dden_dk = np.sum(den_terms * factor_g_dk)
 
-                            d2num_djdk = np.sum(gauss_and_inte_x * g_dj_factor * g_dk_factor)
-                            ddden_djdk = np.sum(gauss_and_inte * g_dj_factor * g_dk_factor)
+                            # d^2N_i /(dr_k dr_j) and d^2D_i /(dr_k dr_j)
+                            d2num_djdk = np.sum(num_terms * factor_g_dj * factor_g_dk)
+                            d2den_djdk = np.sum(den_terms * factor_g_dj * factor_g_dk)
 
-                            output = d2num_djdk / transf_den
-                            output -= dnum_dj * dden_dk / transf_den**2.0
-                            product = dnum_dk * dden_dj + transf_num * ddden_djdk
-                            derivative = output
-                            derivative -= product / transf_den**2.0
-                            derivative += 2.0 * transf_num * dden_dj * dden_dk / transf_den**3.0
-                    # H[i, j, k] = H[i, k, j] by symmetry of mixed partial derivatives.
-                    hessian[i_var, j_deriv, k_deriv] = 2.0 * derivative
-                    hessian[i_var, k_deriv, j_deriv] = 2.0 * derivative
+                            # d^2(N_i / D_i) / (dr_j dr_k) = (d^2N_i/dr_j dr_k) / D_i
+                            # - [(dN_i/dr_j)(dD_i/dr_k) + (dN_i/dr_k)(dD_i/dr_j)
+                            # + N_i(d^2D_i/dr_j dr_k)] / D_i^2 + 2 N_i(dD_i/dr_j)(dD_i/dr_k) / D_i^3
+                            ratio_d2 = d2num_djdk / den_i
+                            ratio_d2 -= (
+                                dnum_dj * dden_dk + dnum_dk * dden_dj + num_i * d2den_djdk
+                            ) / den_i**2.0
+                            ratio_d2 += (2.0 * num_i * dden_dj * dden_dk) / den_i**3.0
+                    # Theta_i = 2 N_i / D_i - 1, so H_ijk = 2 d^2(N_i/D_i)/(dr_j dr_k) and
+                    # H[i, j, k] = H[i, k, j] by symmetry
+                    hessian_entry = 2.0 * ratio_d2
+                    hessian[i_var, j_deriv, k_deriv] = hessian_entry
+                    hessian[i_var, k_deriv, j_deriv] = hessian_entry
 
         return hessian
 
