@@ -18,6 +18,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
 """Utils function test file."""
+
 from unittest import TestCase
 
 import numpy as np
@@ -274,6 +275,24 @@ def test_spherical_harmonic_recursion_against_scipy(numb_pts, max_degree):
     pytho_sol = generate_real_spherical_harmonics(max_degree, theta, phi)
     scipy_sol = generate_real_spherical_harmonics_scipy(max_degree, theta, phi)
     assert_allclose(pytho_sol, scipy_sol, atol=1e-10)
+
+
+def test_generate_real_spherical_harmonics_scipy_raises_for_non_1d_angles():
+    """Test scipy spherical harmonics helper rejects non-1D angle arrays."""
+    theta = np.random.uniform(0.0, 2.0 * np.pi, size=(8, 1))
+    phi = np.random.uniform(0.0, np.pi, size=(8, 1))
+
+    with pytest.raises(ValueError, match="1D"):
+        generate_real_spherical_harmonics_scipy(3, theta, phi)
+
+
+def test_generate_real_spherical_harmonics_scipy_raises_for_mismatched_angle_shapes():
+    """Test scipy spherical harmonics helper rejects mismatched angle array shapes."""
+    theta = np.random.uniform(0.0, 2.0 * np.pi, size=(8,))
+    phi = np.random.uniform(0.0, np.pi, size=(10,))
+
+    with pytest.raises(ValueError, match="same shape"):
+        generate_real_spherical_harmonics_scipy(3, theta, phi)
 
 
 @pytest.mark.parametrize("numb_pts, max_degree", [[1000, 4], [5000, 2], [100, 15], [10, 100]])

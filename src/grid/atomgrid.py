@@ -25,7 +25,7 @@ import warnings
 
 import numpy as np
 import scipy.constants
-from importlib_resources import files
+from importlib.resources import files
 from scipy.interpolate import CubicSpline
 from scipy.spatial.transform import Rotation as R
 
@@ -89,8 +89,10 @@ class AtomGrid(Grid):
             spherical grids at each radial grid point. If the integer is zero, then no rotate
             is used.
         method: str, optional, keyword-only
-            Method for constructing the angular grid. Options are "lebedev" (for Lebedev-Laikov)
-            and "spherical" (for symmetric spherical t-design).
+            Method for constructing the angular grid. Options are "lebedev" (for Lebedev-Laikov),
+            "spherical" (for symmetric spherical t-design), "maxdet" (for maximum determinant grids),
+            and "ahrens_beylkin" (for Ahrens-Beylkin grids).
+            Default is "lebedev".
 
         """
         # check stage, if center is None, set to (0., 0., 0.)
@@ -164,7 +166,7 @@ class AtomGrid(Grid):
             greater accuracy but denser grid. See `Notes` for more information.
         rgrid : OneDGrid, optional
             The 1D radial grid representing the radius of spherical grids.
-            If None, a default radial grid (PowerRTransform of UniformInteger grid) for the give
+            If None, a default radial grid (PowerRTransform of UniformInteger grid) for the given
             `atnum` is constructed.
         center : ndarray(3,), optional
             Cartesian coordinates of the grid center. If `None`\, the origin is used.
@@ -172,8 +174,10 @@ class AtomGrid(Grid):
             Integer used as a seed for generating random rotation matrices to rotate the angular
             spherical grids at each radial grid point. If 0, then no rotate is made.
         method: str, optional
-            Method for constructing the angular grid. Options are "lebedev" (for Lebedev-Laikov)
-            and "spherical" (for symmetric spherical t-design).
+            Method for constructing the angular grid. Options are "lebedev" (for Lebedev-Laikov),
+            "spherical" (for symmetric spherical t-design), "maxdet" (for maximum determinant grids),
+            and "ahrens_beylkin" (for Ahrens-Beylkin grids).
+            Default is "lebedev".
 
         Notes
         -----
@@ -279,8 +283,10 @@ class AtomGrid(Grid):
             spherical grids at each radial grid point. If the integer is zero, then no rotate
             is used.
         method: str, optional
-            Method for constructing the angular grid. Options are "lebedev" (for Lebedev-Laikov)
-            and "spherical" (for symmetric spherical t-design).
+            Method for constructing the angular grid. Options are "lebedev" (for Lebedev-Laikov),
+            "spherical" (for symmetric spherical t-design), "maxdet" (for maximum determinant grids),
+            and "ahrens_beylkin" (for Ahrens-Beylkin grids).
+            Default is "lebedev".
 
         Returns
         -------
@@ -500,8 +506,8 @@ class AtomGrid(Grid):
         """
         # Integrate f(r, \theta, \phi) sin(\phi) d\theta d\phi by multiplying against its weights
         prod_value = func_vals * self.weights  # Multiply weights to the last axis.
-        # [..., indices] means only take the last axis, this is due func_vals being
-        #  multi-dimensional, take a sum over the last axis only and swap axes so that it
+        # [..., indices] means only take the last axis, because func_vals is
+        #  multi-dimensional. Take a sum over the last axis only and swap axes so that it
         #  has shape (..., M) where ... is the number of functions and M is the number of
         #  radial points.
         radial_coefficients = np.array(
@@ -660,7 +666,7 @@ class AtomGrid(Grid):
                 ndarray(M,...):
                     The interpolated function values or its derivatives with respect to Cartesian
                     :math:`(x,y,z)` or if `deriv_spherical` then :math:`(r, \theta, \phi)` or
-                    if `only_radial_derivs` then derivative wrt to :math:`r` is only returned.
+                    if `only_radial_deriv` then derivative wrt to :math:`r` is only returned.
 
         """
         # compute splines for given value_array on grid points
@@ -689,12 +695,12 @@ class AtomGrid(Grid):
             ndarray(M,...) :
                 The interpolated function values or its derivatives with respect to Cartesian
                 :math:`(x,y,z)` or if `deriv_spherical` then :math:`(r, \theta, \phi)` or
-                if `only_radial_derivs` then derivative wrt to :math:`r` is only returned.
+                if `only_radial_deriv` then derivative wrt to :math:`r` is only returned.
 
             """
             if deriv_spherical and only_radial_deriv:
                 warnings.warn(
-                    "Since `only_radial_derivs` is true, then only the derivative wrt to"
+                    "Since `only_radial_deriv` is true, then only the derivative wrt to"
                     "radius is returned and `deriv_spherical` value is ignored.",
                     stacklevel=2,
                 )
@@ -788,8 +794,10 @@ class AtomGrid(Grid):
         d_sectors : list or ndarray(S + 1, dtype=int)
             Sequence of angular degrees for each radial sector of `r_sectors` in the pruned grid.
         method: str, optional
-            Method for constructing the angular grid. Options are "lebedev" (for Lebedev-Laikov)
-            and "spherical" (for symmetric spherical t-design).
+            Method for constructing the angular grid. Options are "lebedev" (for Lebedev-Laikov),
+            "spherical" (for symmetric spherical t-design), "maxdet" (for maximum determinant grids),
+            and "ahrens_beylkin" (for Ahrens-Beylkin grids).
+            Default is "lebedev".
 
         Returns
         -------
@@ -867,8 +875,10 @@ class AtomGrid(Grid):
             spherical grids at each radial grid point. If the integer is zero, then no rotate
             is used.
         method: str, optional
-            Method for constructing the angular grid. Options are "lebedev" (for Lebedev-Laikov)
-            and "spherical" (for symmetric spherical t-design).
+            Method for constructing the angular grid. Options are "lebedev" (for Lebedev-Laikov),
+            "spherical" (for symmetric spherical t-design), "maxdet" (for maximum determinant grids),
+            and "ahrens_beylkin" (for Ahrens-Beylkin grids).
+            Default is "lebedev".
 
         Returns
         -------

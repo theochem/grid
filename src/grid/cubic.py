@@ -26,6 +26,8 @@ from sympy.functions.combinatorial.numbers import bell
 
 from grid.basegrid import Grid, OneDGrid
 
+from .utils import ANGSTROM_TO_BOHR
+
 
 class _HyperRectangleGrid(Grid):
     def __init__(self, points, weights, shape):
@@ -144,15 +146,13 @@ class _HyperRectangleGrid(Grid):
         Returns
         -------
         float :
-            The interpolation of a function (or of it's derivatives) at a :math:`M` point.
+            The interpolation of a function (or of its derivatives) at a :math:`M` point.
 
         """
         # Needed because CubicProTransform is a subclass of this method and has its own
         #  interpolate function.  Since interpolate references itself, it chooses
         #  CubicProTransform rather than _HyperRectangleGrid class.
-        return self._interpolate(
-            points, values, use_log, nu_x, nu_y, nu_z, method, grid_pts
-        )
+        return self._interpolate(points, values, use_log, nu_x, nu_y, nu_z, method, grid_pts)
 
     def _interpolate(
         self, points, values, use_log=False, nu_x=0, nu_y=0, nu_z=0, method="cubic", grid_pts=None
@@ -298,41 +298,40 @@ class _HyperRectangleGrid(Grid):
         return interpolated
 
     def coordinates_to_index(self, indices):
-        r"""Convert (i, j) or (i, j, k) integer coordinates to the grid point index.
+        r"""Convert integer coordinates (i, j, k, ...) to a grid point index.
 
-        Assumes the grid is ordered moving in the last-coordinate (with other coordinates fixed,
-        e.g. k) followed by the next coordinate to the left (e.g. j), continuing to the first
-        coordinate (e.g. i) (i.e., lexicographical ordering).
+        Assumes the grid is stored in row-major (lexicographical) order, where the
+        last coordinate varies fastest (k), followed by the previous ones (j, i, ...).
 
         Parameters
         ----------
-        indices : (int, int) or (int, int, int)
-            The :math:`i-th`\, :math:`j-th`\, (or :math:`k-th`) positions of the grid point.
+        indices : tuple of int
+            The grid position given as (i, j, k, ...) for each dimension.
 
         Returns
         -------
         index : int
-            Index of the grid point.
+            Flat index of the corresponding grid point.
 
         """
-        if self.ndim == 3:
-            n_1d, n_2d = self.shape[2], self.shape[1] * self.shape[2]
-            # TODO Change this so that indices can be multi-dimensional
-            index = n_2d * indices[0] + n_1d * indices[1] + indices[2]
-            return index
-        # Case of two-dimensions
-        index = self.shape[1] * indices[0] + indices[1]
-        return index
+        indices = np.asarray(indices)
+        # Strides are the number of points between adjacent grid points along each index.
+        strides = np.empty(self.ndim, dtype=int)
+        strides[-1] = 1
+        # Row-major, right to left: each stride equals the next stride times the next dimension size
+        for i in range(self.ndim - 2, -1, -1):
+            strides[i] = strides[i + 1] * self.shape[i + 1]
+        return np.dot(indices, strides)
 
     def index_to_coordinates(self, index):
         r"""Convert grid point index to its (i, j) or (i, j, k) integer coordinates in the grid.
 
         For 3D grid it has a shape of :math:`(N_x, N_y, N_z)` denoting the number of points in
-        :math:`x`\, :math:`y`\, and :math:`z` directions. So, each grid point has a :math:`(i, j, k)`
-        integer coordinate where :math:`0 <= i <= N_x - 1`\, :math:`0 <= j <= N_y - 1`\,
-        and :math:`0 <= k <= N_z - 1`\.  Two-dimensional case similarly follows. Assumes
-        the grid enumerates in the last coordinate first (with others fixed), following the
-        next coordinate to the left (i.e., lexicographical ordering).
+        :math:`x`\, :math:`y`\, and :math:`z` directions. So, each grid point has a
+        :math:`(i, j, k)` integer coordinate where :math:`0 <= i <= N_x - 1`\,
+        :math:`0 <= j <= N_y - 1`\, and :math:`0 <= k <= N_z - 1`\.  Two-dimensional case similarly
+        follows. Assumes the grid enumerates in the last coordinate first (with others fixed),
+        following the next coordinate to the left (i.e., lexicographical ordering).
 
         Parameters
         ----------
@@ -383,7 +382,7 @@ class Tensor1DGrids(_HyperRectangleGrid):
             raise TypeError(
                 f"Argument oned_y should be an instance of `OneDGrid`, got {type(oned_y)}"
             )
-        if not isinstance(oned_z, (OneDGrid, type(None))):
+        if not isinstance(oned_z, OneDGrid | type(None)):
             raise TypeError(
                 f"Argument oned_z should be an instance of `OneDGrid`, got {type(oned_z)}"
             )
@@ -735,6 +734,7 @@ class UniformGrid(_HyperRectangleGrid):
             - ``atnums``\: atomic numbers of the atoms in the molecule.
             - ``atcorenums``\: Pseudo-number of :math:`M` atoms in the molecule.
             - ``atcoords``\: Cartesian coordinates of :math:`M` atoms in the molecule.
+            - ``data``\: the grid data stored in a flattened one-dimensional array.
 
         """
         fname = str(fname)
@@ -748,12 +748,8 @@ class UniformGrid(_HyperRectangleGrid):
 
             def read_grid_line(line):
                 """Read a number and (x, y, z) coordinate from the cube file line."""
-                words = line.split()
-                return (
-                    int(words[0]),
-                    np.array([float(words[1]), float(words[2]), float(words[3])], float),
-                    # all coordinates in a cube file are in atomic units
-                )
+                npts, *vec = line.split()
+                return int(npts), np.asarray(vec, dtype=float)
 
             # number of atoms and origin of the grid
             natom, origin = read_grid_line(f.readline())
@@ -761,8 +757,18 @@ class UniformGrid(_HyperRectangleGrid):
             shape0, axis0 = read_grid_line(f.readline())
             shape1, axis1 = read_grid_line(f.readline())
             shape2, axis2 = read_grid_line(f.readline())
-            shape = np.array([shape0, shape1, shape2], int)
-            axes = np.array([axis0, axis1, axis2])
+            axes = np.asarray([axis0, axis1, axis2], dtype=float)
+            # if shape0 is negative the units are in angstroms otherwise atomic units.
+            # this was verified with cube files generated from Gaussian on february 2026.
+            # https://gaussian.com/cubegen/
+            coordinates_in_angstrom = shape0 < 0
+
+            # Convert negative shape values to positive
+            shape = np.abs(np.asarray([shape0, shape1, shape2], dtype=int))
+            if coordinates_in_angstrom:
+                print("Cube file units detected: angstrom, converting to atomic units grid.")
+                axes *= ANGSTROM_TO_BOHR
+                origin *= ANGSTROM_TO_BOHR
 
             # if return_data=False, only grid is returned
             if not return_data:
@@ -770,14 +776,9 @@ class UniformGrid(_HyperRectangleGrid):
 
             # otherwise, return the atomic numbers, coordinates, and the grid data as well
             def read_coordinate_line(line):
-                """Read atomic number and (x, y, z) coordinate from the cube file line."""
-                words = line.split()
-                return (
-                    int(words[0]),
-                    float(words[1]),
-                    np.array([float(words[2]), float(words[3]), float(words[4])], float),
-                    # all coordinates in a cube file are in atomic units
-                )
+                """Read atomic number, charge, and (x, y, z) coordinates from cube file line."""
+                atnum, charge, *coords = line.split()
+                return int(atnum), float(charge), np.asarray(coords, dtype=float)
 
             numbers = np.zeros(natom, int)
             # get the core charges
@@ -789,6 +790,9 @@ class UniformGrid(_HyperRectangleGrid):
                 # potentials were used.
                 if pseudo_numbers[i] == 0.0:
                     pseudo_numbers[i] = numbers[i]
+
+            if coordinates_in_angstrom:
+                coordinates *= ANGSTROM_TO_BOHR
 
             # load data stored in the cube file
             data = np.zeros(tuple(shape), float).ravel()
@@ -1038,9 +1042,9 @@ class UniformGrid(_HyperRectangleGrid):
             x, y, z = self._origin
             f.write(f"{natom:5d} {x:11.6f} {y:11.6f} {z:11.6f}\n")
             rvecs = self._axes
-            for i, (x, y, z) in zip(self._shape, rvecs):
+            for i, (x, y, z) in zip(self._shape, rvecs, strict=True):
                 f.write(f"{i:5d} {x:11.6f} {y:11.6f} {z:11.6f}\n")
-            for i, q, (x, y, z) in zip(atnums, pseudo_numbers, atcoords):
+            for i, q, (x, y, z) in zip(atnums, pseudo_numbers, atcoords, strict=True):
                 f.write(f"{i:5d} {q:11.6f} {x:11.6f} {y:11.6f} {z:11.6f}\n")
             # writing the cube data:
             num_chunks = 6

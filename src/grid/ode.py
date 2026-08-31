@@ -160,7 +160,7 @@ def solve_ode_ivp(
         raise ValueError(f"The ode solver didn't converge, got status: {res.status}")
 
     if transform is not None:
-        # Transform the function so that it's input is the original variable and
+        # Transform the function so that its input is the original variable and
         #   derivative is with respect to the original variable as well.
         return _transform_solution_to_original_domain(res, transform, no_derivatives, order)
 
@@ -272,7 +272,7 @@ def solve_ode_bvp(
         raise ValueError(f"The ode solver didn't converge, got status: {res.status}")
 
     if transform is not None:
-        # Transform the function so that it's input is the original variable and
+        # Transform the function so that its input is the original variable and
         #   derivative is with respect to the original variable as well.
         return _transform_solution_to_original_domain(res, transform, no_derivatives, order)
 
@@ -282,7 +282,7 @@ def solve_ode_bvp(
 def _transform_solution_to_original_domain(result, tf, no_derivs, order):
     r"""Transform interpolate solution to the original domains and its derivatives."""
 
-    # Note this is it's own function becuase it is used twice for solve_ode_ivp and bv.
+    # Note this is its own function because it is used twice for solve_ode_ivp and bv.
     def interpolate_wrt_original_var(pt):
         transf_pts = tf.transform(pt)
         # Row is which func/deriv and Col is points.
@@ -512,7 +512,7 @@ def _evaluate_coeffs_on_points(x: np.ndarray, coeff: list | np.ndarray):
     ----------
     x : ndarray(N,)
         Points of the independent variable/domain.
-    coeffs : list[callable or float] or ndarray(K + 1,)
+    coeff : list[callable or float] or ndarray(K + 1,)
         Coefficients :math:`a_k` of each term :math:`\frac{d^k y(x)}{d x^k}`
         ordered from 0 to K.  Each coefficient can either be a callable function
         :math:`a_k(x)` or a constant number :math:`a_k`.

@@ -45,7 +45,7 @@ class Grid:
         """
         if len(points) != len(weights):
             raise ValueError(
-                "Number of points and weights does not match. \n"
+                "Number of points and weights do not match. \n"
                 f"Number of points: {len(points)}, Number of weights: {len(weights)}."
             )
         if weights.ndim != 1:
@@ -99,7 +99,7 @@ class Grid:
         Parameters
         ----------
         index : int or slice
-            index of slice object for selecting certain part of grid
+            index of slice object for selecting certain part of the grid
 
         Returns
         -------
@@ -114,7 +114,7 @@ class Grid:
     def integrate(self, *value_arrays):
         r"""Integrate over the whole grid for given multiple value arrays.
 
-        Product of all value_arrays will be computed element-wise then integrated on the grid
+        Product of all input arrays will be computed element-wise then integrated on the grid
         with its weights:
 
         .. math::
@@ -122,8 +122,8 @@ class Grid:
 
         Parameters
         ----------
-        *value_arrays : np.ndarray(N, )
-            One or multiple value array to integrate.
+        *value_arrays : np.ndarray of shape (N,)
+            One or more value arrays to integrate.
 
         Returns
         -------
@@ -135,7 +135,7 @@ class Grid:
             raise ValueError("No array is given to integrate.")
         for i, array in enumerate(value_arrays):
             if not isinstance(array, np.ndarray):
-                raise TypeError(f"Arg {i} is {type(i)}, Need Numpy Array.")
+                raise TypeError(f"Arg {i} is {type(array)}, needs to be a  Numpy Array.")
             if array.shape != (self.size,):
                 raise ValueError(f"Arg {i} need to be of shape ({self.size},).")
         # return np.einsum("i, ..., i", a, ..., z)
@@ -231,7 +231,7 @@ class Grid:
         centers : ndarray(M,  3)
             The centers :math:`\textbf{R}_c` of the moments to compute from.
         func_vals : ndarray(N,)
-            The function :math:`f` values evaluated on all :math:`N` points on the integration
+            The function :math:`f` is evaluated at all :math:`N` points on the integration
             grid.
         type_mom : str
             The type of multipole moments: "cartesian", "pure", "radial" and "pure-radial".
@@ -242,7 +242,7 @@ class Grid:
         Returns
         -------
         ndarray(L, M), or (ndarray(L, M), list)
-            Computes the moment integral of the function on the `m`\th center for all orders.
+            Computes the moment integral of the function at the `m`\th center for all orders.
             If `return_orders` is true, then this also returns a list that describes what
             each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,...].
 
