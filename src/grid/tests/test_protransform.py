@@ -733,6 +733,20 @@ class TestIntegration:
 
         assert np.abs(actual - desired) < 1e-3
 
+    def test_integrate_multiple_arrays_matches_precomputed_product(self):
+        _, obj = self.setUp_one_gaussian(ss=0.05)
+
+        def gaussian(grid):
+            return np.exp(-np.sum((grid - np.array([1.0, 2.0, 3.0])) ** 2, axis=1))
+
+        values1 = gaussian(obj.points)
+        values2 = gaussian(obj.points)
+
+        actual = obj.integrate(values1, values2)
+        desired = obj.integrate(values1 * values2)
+
+        assert_allclose(actual, desired)
+
 
 def test_padding_arrays():
     r"""Test different array sizes are correctly padded."""
