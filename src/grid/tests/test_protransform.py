@@ -489,7 +489,9 @@ class TestOneGaussianAgainstNumerics:
             promol_x, promol_x_all = promolecular_in_x(grid, every_grid)
 
             # Integration over y and z cancel out from numerator and denominator.
-            actual = -1.0 + 2.0 * np.trapz(promol_x, grid) / np.trapz(promol_x_all, every_grid)
+            actual = -1.0 + 2.0 * np.trapezoid(promol_x, grid) / np.trapezoid(
+                promol_x_all, every_grid
+            )
             assert np.abs(true_ans - actual) < 1e-5
 
     @pytest.mark.parametrize("pts_xy", [np.random.uniform(-10.0, 10.0, size=(100, 2))])
@@ -511,7 +513,9 @@ class TestOneGaussianAgainstNumerics:
 
             # Integration over z cancel out from numerator and denominator.
             # Further, gaussian at a point does too.
-            actual = -1.0 + 2.0 * np.trapz(promol_y, grid) / np.trapz(promol_y_all, every_grid)
+            actual = -1.0 + 2.0 * np.trapezoid(promol_y, grid) / np.trapezoid(
+                promol_y_all, every_grid
+            )
             assert np.abs(true_ans - actual) < 1e-5
 
     @pytest.mark.parametrize("pts", [np.random.uniform(-10.0, 10.0, size=(100, 3))])
@@ -530,7 +534,9 @@ class TestOneGaussianAgainstNumerics:
             every_grid = np.arange(-5.0, 10.0, 0.00001)  # Full Integration
             promol_z_all, promol_z = promolecular_in_z(grid, every_grid)
 
-            actual = -1.0 + 2.0 * np.trapz(promol_z, grid) / np.trapz(promol_z_all, every_grid)
+            actual = -1.0 + 2.0 * np.trapezoid(promol_z, grid) / np.trapezoid(
+                promol_z_all, every_grid
+            )
             true_ans = _transform_coordinate([x, y, z], 2, self.setUp())
             assert np.abs(true_ans - actual) < 1e-4
 
