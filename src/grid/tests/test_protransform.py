@@ -540,47 +540,54 @@ class TestOneGaussianAgainstNumerics:
             actual = -1.0 + 2.0 * trapezoid(promol_x, grid) / trapezoid(promol_x_all, every_grid)
             assert np.abs(true_ans - actual) < 1e-5
 
-    @pytest.mark.parametrize("pts_xy", [np.random.uniform(-10.0, 10.0, size=(100, 2))])
-    def test_transforming_y_against_numerics(self, pts_xy):
-        r"""Test transformation y against numerical algorithms."""
+        @pytest.mark.parametrize("pts_xy", [np.random.uniform(-10.0, 10.0, size=(100, 2))])
+        def test_transforming_y_against_numerics(self, pts_xy):
+            r"""Test transformation y against numerical algorithms."""
 
-        def promolecular_in_y(grid, every_grid):
-            r"""Construct the formula of promolecular for integration."""
-            promol_y = 5.0 * np.exp(-2.0 * (grid - 2.0) ** 2.0)
-            promol_y_all = 5.0 * np.exp(-2.0 * (every_grid - 2.0) ** 2.0)
-            return promol_y_all, promol_y
+            full_grid = np.arange(-5.0, 10.0, 1e-4)
 
-        for x, y in pts_xy:
-            true_ans = _transform_coordinate([x, y], 1, self.setUp())
+            # Approximate the denominator \int_{-inf}^{inf} exp[-2 (y - 2)^2] dy
+            full_promol_y = 5.0 * np.exp(-2.0 * (full_grid - 2.0) ** 2.0)
+            denominator = trapezoid(full_promol_y, full_grid)
 
-            grid = np.arange(-5.0, y, 0.000001)  # Integration up to the y point
-            every_grid = np.arange(-5.0, 10.0, 0.00001)  # Full Integration
-            promol_y_all, promol_y = promolecular_in_y(grid, every_grid)
+            for x, y in pts_xy:
+                transformed_y = _transform_coordinate([x, y], 1, self.setUp())
 
-            # Integration over z cancel out from numerator and denominator.
-            # Further, gaussian at a point does too.
-            actual = -1.0 + 2.0 * trapezoid(promol_y, grid) / trapezoid(promol_y_all, every_grid)
-            assert np.abs(true_ans - actual) < 1e-5
+                # Approximate the numerator: \int_{-inf}^{y} exp[-2 (s - 2)^2] ds
+                partial_grid = np.arange(-5.0, y, 1e-4)
+                partial_promol_y = 5.0 * np.exp(-2.0 * (partial_grid - 2.0) ** 2.0)
+                numerator = trapezoid(partial_promol_y, partial_grid)
 
-    @pytest.mark.parametrize("pts", [np.random.uniform(-10.0, 10.0, size=(100, 3))])
-    def test_transforming_z_against_numerics(self, pts):
-        r"""Test transforming Z against numerical algorithms."""
+                # For a single separable Gaussian, the x- and z-dependent factors
+                # cancel between numerator and denominator.
+                numerical_y = -1.0 + 2.0 * numerator / denominator
 
-        def promolecular_in_z(grid, every_grid):
-            r"""Construct the formula of promolecular for integration."""
-            promol_z = 5.0 * np.exp(-2.0 * (grid - 3.0) ** 2.0)
-            promol_z_all = 5.0 * np.exp(-2.0 * (every_grid - 3.0) ** 2.0)
-            return promol_z_all, promol_z
+                assert np.abs(transformed_y - numerical_y) < 1e-5
 
-        for x, y, z in pts:
-            grid = np.arange(-5.0, z, 0.00001)  # Integration till a z point
+        @pytest.mark.parametrize("pts", [np.random.uniform(-10.0, 10.0, size=(100, 3))])
+        def test_transforming_z_against_numerics(self, pts):
+            r"""Test transforming Z against numerical integration."""
+            params = self.setUp()
 
-            every_grid = np.arange(-5.0, 10.0, 0.00001)  # Full Integration
-            promol_z_all, promol_z = promolecular_in_z(grid, every_grid)
+            full_grid = np.arange(-5.0, 10.0, 1e-4)
 
-            actual = -1.0 + 2.0 * trapezoid(promol_z, grid) / trapezoid(promol_z_all, every_grid)
-            true_ans = _transform_coordinate([x, y, z], 2, self.setUp())
-            assert np.abs(true_ans - actual) < 1e-4
+            # Approximate the denominator: integral_{-inf}^{inf} exp[-2 (z - 3)^2] dz.
+            full_promol_z = 5.0 * np.exp(-2.0 * (full_grid - 3.0) ** 2.0)
+            denominator = trapezoid(full_promol_z, full_grid)
+
+            for x, y, z in pts:
+                transformed_z = _transform_coordinate([x, y, z], 2, params)
+
+                # Approximate the numerator: integral_{-inf}^{z} exp[-2 (s - 3)^2] ds.
+                partial_grid = np.arange(-5.0, z, 1e-4)
+                partial_promol_z = 5.0 * np.exp(-2.0 * (partial_grid - 3.0) ** 2.0)
+                numerator = trapezoid(partial_promol_z, partial_grid)
+
+                # For a single separable Gaussian, the x- and y-dependent factors
+                # cancel between numerator and denominator.
+                numerical_z = -1.0 + 2.0 * numerator / denominator
+
+                assert np.abs(transformed_z - numerical_z) < 1e-4
 
     @pytest.mark.parametrize("pts", [np.random.uniform(-3.0, 3.0, size=(100, 3))])
     def test_jacobian(self, pts):
