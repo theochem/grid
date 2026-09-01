@@ -268,6 +268,9 @@ class CubicProTransform(_HyperRectangleGrid):
             to `np.nan`.
 
         """
+        theta_pt = np.asarray(theta_pt)
+        if theta_pt.shape != (self.promol.dim,):
+            raise ValueError(f"theta_pt must have shape ({self.promol.dim},).")
         real_pt = []
         for i in range(0, self.promol.dim):
             scalar = _inverse_coordinate(theta_pt[i], i, real_pt[:i], self.promol)
@@ -405,8 +408,7 @@ class CubicProTransform(_HyperRectangleGrid):
         return solve_triangular(jacobian.T, real_gradient)
 
     def steepest_ascent_theta(self, real_pt, real_grad):
-        r"""
-        Steepest ascent direction of a function in theta space.
+        r"""Steepest ascent direction of a function in theta space.
 
         Steepest ascent is the gradient ie direction of maximum change of a function.
         This guarantees moving in direction of steepest ascent in real-space
@@ -422,7 +424,7 @@ class CubicProTransform(_HyperRectangleGrid):
         Returns
         -------
         theta_grad : np.ndarray(3)
-            Gradient of a function in theta space.
+            Theta-space image of the real-space steepest-ascent direction.
 
         """
         jacobian = self.jacobian(real_pt)
