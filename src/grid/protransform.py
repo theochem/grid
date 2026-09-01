@@ -1052,7 +1052,7 @@ class _PromolParams:
         return distance, single_gauss, integrate_till_pt_x, transf_num, transf_den
 
 
-def _transform_coordinate(real_pt, i_var, promol, boundary_epsilon=1e-12):
+def _transform_coordinate(real_pt, i_var, promol):
     r"""
     Transform the `i_var` coordinate of a real point to [-1, 1] using promolecular density.
 
@@ -1086,11 +1086,6 @@ def _transform_coordinate(real_pt, i_var, promol, boundary_epsilon=1e-12):
         Index of the variable being transformed (0 for x, 1 for y, 2 for z).
     promol : _PromolParams
         Promolecular Data Class.
-    boundary_epsilon : float, optional
-        Small offset used to regularize preceding infinite real-space coordinates. A preceding
-        coordinate at :math:`\pm\infty`, corresponding to :math:`\theta=\pm1`, is replaced by the
-        finite real-space coordinate obtained from :math:`\theta=\pm(1-\varepsilon)`.
-        Default is ``1e-12``.
 
     Returns
     -------
@@ -1101,32 +1096,19 @@ def _transform_coordinate(real_pt, i_var, promol, boundary_epsilon=1e-12):
     Raises
     ------
     ValueError
-        If ``boundary_epsilon`` is not in ``(0, 1)`` or ``real_pt`` contains NaN values.
+        If ``real_pt`` contains NaN values or a preceding coordinate is infinite.
     """
-    if not 0.0 < boundary_epsilon < 1.0:
-        raise ValueError("boundary_epsilon must lie in (0, 1).")
 
     real_pt = np.asarray(real_pt)
 
     if np.any(np.isnan(real_pt)):
         raise ValueError("`real_pt` cannot contain NaN values.")
+    if np.any(np.isinf(real_pt[:i_var])):
+        raise ValueError("Preceding coordinates must be finite.")
 
     # An infinite current coordinate maps directly to theta_i = +/-1.
     if np.isinf(real_pt[i_var]):
         return np.sign(np.real(real_pt[i_var]))
-
-    # Replace preceding infinite coordinates with finite working values.
-    reg_real_pt = real_pt.copy()
-    for prev_var in range(i_var):
-        if np.isinf(reg_real_pt[prev_var]):
-            # Find the corresponding near-boundary theta value.
-            sign = np.sign(np.real(reg_real_pt[prev_var]))
-            regularized_theta = sign * (1.0 - boundary_epsilon)
-
-            # Convert back to real space the regularized theta value
-            reg_real_pt[prev_var] = _inverse_coordinate(
-                regularized_theta, prev_var, reg_real_pt, promol
-            )
 
     coords = promol.gauss_centers
     pi_over_exps = promol.pi_over_exponents
@@ -1134,7 +1116,7 @@ def _transform_coordinate(real_pt, i_var, promol, boundary_epsilon=1e-12):
 
     # Coordinate offsets through `i_var`; for `i_var=2`,
     # offsets[A] = [x - X_A, y - Y_A, z - Z_A] where A index corresponds to a center.
-    offsets = reg_real_pt[: i_var + 1] - coords[:, : i_var + 1]
+    offsets = real_pt[: i_var + 1] - coords[:, : i_var + 1]
 
     # Shape (n_centers, 1): squared distance to each center in preceding
     # dimensions. For `i_var=2`, result[A, 0] = (x - X_A)**2 + (y - Y_A)**2.
@@ -1186,7 +1168,6 @@ def _root_equation(init_guess, prev_trans_pts, theta_pt, i_var, promol):
         Index of the coordinate being inverted.
     promol : _PromolParams
         Promolecular Data Class.
-
     Returns
     -------
     float :
@@ -1230,7 +1211,8 @@ def _inverse_coordinate(theta_pt, i_var, transformed, promol):
     Raises
     ------
     ValueError
-        If ``theta_pt`` lies outside ``[-1, 1]`` or the analytical bracket does not enclose a root.
+        If ``theta_pt`` lies outside ``[-1, 1]``, a preceding real-space coordinate is nonfinite
+        for an interior target, or the analytical bracket does not enclose a root.
     RuntimeError
         If the root finder does not converge.
 
@@ -1243,9 +1225,16 @@ def _inverse_coordinate(theta_pt, i_var, transformed, promol):
     if theta_pt == 1.0:
         return np.inf
 
+    prev_coords = np.asarray(transformed[:i_var])
+    if not np.all(np.isfinite(prev_coords)):
+        raise ValueError(
+            "Preceding real-space coordinates must be finite when inverting "
+            "an interior theta coordinate."
+        )
+
     bracket = _get_inverse_bracket(theta_pt, i_var, promol)
 
-    args = (transformed[:i_var], theta_pt, i_var, promol)
+    args = (prev_coords, theta_pt, i_var, promol)
     root_result = root_scalar(
         _root_equation, args=args, method="brentq", bracket=bracket, maxiter=50, xtol=2e-15
     )
