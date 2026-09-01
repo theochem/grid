@@ -46,8 +46,8 @@ class CubicProTransform(_HyperRectangleGrid):
         The number of points, including both of the end/boundary points, in x, y, and z direction.
     prointegral : float
         The integration value of the promolecular density over Euclidean space.
-    promol : namedTuple
-        Data about the Promolecular density.
+    promol : _PromolParams
+        Data about the promolecular density.
     points : np.ndarray(N, 3)
         Grid points transformed to real space.
     weights : np.ndarray(N,)
@@ -62,10 +62,10 @@ class CubicProTransform(_HyperRectangleGrid):
     hessian()
         Hessian of the transformation from Real space to Theta space :math:`[-1, 1]^3`.
     steepest_ascent_theta()
-        Direction of steepest-ascent of a function in theta space from gradient in real space.
+        Map the real-space steepest-ascent direction to theta space.
     transform():
         Transform Real point to Theta space :math:`[-1, 1]^3`.
-    inverse(bracket=(-10, 10))
+    inverse()
         Transform Theta point to Real space :math:`\mathbb{R}^3`.
     interpolate(use_log=False, nu=0)
         Interpolate a function (or its logarithm) at a real point. Can interpolate its derivative.
@@ -148,8 +148,8 @@ class CubicProTransform(_HyperRectangleGrid):
 
         Parameters
         ----------
-        oned_grids: List[OneDGrid]
-            List of three one-dimensional grid representing the grids along x-axis.
+        oned_grids : List[OneDGrid]
+            List of three one-dimensional grids representing the x, y, and z directions.
         coeffs: List[List[float]]
             Coefficients of the promolecular transformation over :math:`M` centers.
         exps: List[List[float]]
@@ -162,7 +162,7 @@ class CubicProTransform(_HyperRectangleGrid):
             :math:`\theta=-1` and :math:`\theta=+1`, respectively, the boundary value is
             replaced by :math:`\pm(1-\varepsilon)` and transformed back to a finite real-space
             coordinate. The finite coordinate is then used when evaluating subsequent
-            transformations. Default is `1e-12`.
+            transformations. Default is ``1e-12``.
 
         """
         if not isinstance(oned_grids, list):
@@ -198,14 +198,12 @@ class CubicProTransform(_HyperRectangleGrid):
 
     @property
     def l_bnd(self):
-        r"""float: Lower bound in theta-space. Any point in theta-space that contains this point
-        gets mapped to infinity."""
+        r"""float: Lower bound in theta space, corresponding to :math:`-\infty` in real space."""
         return self._l_bnd
 
     @property
     def u_bnd(self):
-        r"""float: Upper bound in theta-space. Any point in theta-space that contains this point
-        gets mapped to infinity."""
+        r"""float: Upper bound in theta space, corresponding to :math:`+\infty` in real space."""
         return self._u_bnd
 
     @property
@@ -273,6 +271,11 @@ class CubicProTransform(_HyperRectangleGrid):
         -------
         real_pt : np.ndarray(3)
             Point in :math:`\mathbb{R}^3`.
+
+        Raises
+        ------
+        ValueError
+            If ``theta_pt`` does not have shape ``(D,)``.
 
         Notes
         -----
@@ -433,11 +436,10 @@ class CubicProTransform(_HyperRectangleGrid):
         return solve_triangular(jacobian.T, real_gradient)
 
     def steepest_ascent_theta(self, real_pt, real_grad):
-        r"""Steepest ascent direction of a function in theta space.
+        r"""Map the real-space steepest-ascent direction to theta space.
 
-        Steepest ascent is the gradient ie direction of maximum change of a function.
-        This guarantees moving in direction of steepest ascent in real-space
-        corresponds to moving in the direction of the gradient in theta-space.
+        The real-space gradient defines the steepest-ascent direction in real space. This direction
+        is mapped to theta space using the Jacobian of the forward transformation.
 
         Parameters
         ----------
@@ -597,7 +599,6 @@ class CubicProTransform(_HyperRectangleGrid):
         e_m = self.promol.e_m  # shape (ncenters, ndims)
         pi_over_exps = self.promol.pi_over_exponents  # shape (ncenters, ndim)
         centers = self.promol.gauss_centers  # shape (ncenters, ndim)
-        pi_over_exps = self.promol.pi_over_exponents  # shape (ncenters, ndim)
 
         # Coordinate differences from each Gaussian center.
         diff_coords = real_pt - centers
