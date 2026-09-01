@@ -1086,7 +1086,10 @@ def _transform_coordinate(real_pt, i_var, promol, boundary_epsilon=1e-12):
     promol : _PromolParams
         Promolecular Data Class.
     boundary_epsilon : float, optional
-        Small positive value used to regularize coordinates at the boundaries. Default is 1e-12.
+        Small offset used to regularize preceding infinite real-space coordinates. A preceding
+        coordinate at :math:`\pm\infty`, corresponding to :math:`\theta=\pm1`, is replaced by the
+        finite real-space coordinate obtained from :math:`\theta=\pm(1-\varepsilon)`.
+        Default is ``1e-12``.
 
     Returns
     -------
@@ -1097,26 +1100,29 @@ def _transform_coordinate(real_pt, i_var, promol, boundary_epsilon=1e-12):
     Raises
     ------
     ValueError
-        If any preceding coordinate is nonfinite.
+        If ``boundary_epsilon`` is not in ``(0, 1)`` or ``real_pt`` contains NaN values.
     """
     if not 0.0 < boundary_epsilon < 1.0:
         raise ValueError("boundary_epsilon must lie in (0, 1).")
 
     real_pt = np.asarray(real_pt)
 
+    if np.any(np.isnan(real_pt)):
+        raise ValueError("`real_pt` cannot contain NaN values.")
+
     # An infinite current coordinate maps directly to theta_i = +/-1.
     if np.isinf(real_pt[i_var]):
         return np.sign(np.real(real_pt[i_var]))
 
-    # regularize real_pt at the boundaries
+    # Replace preceding infinite coordinates with finite working values.
     reg_real_pt = real_pt.copy()
     for prev_var in range(i_var):
         if np.isinf(reg_real_pt[prev_var]):
-            # find corresponding near boundary theta value
+            # Find the corresponding near-boundary theta value.
             sign = np.sign(np.real(reg_real_pt[prev_var]))
             regularized_theta = sign * (1.0 - boundary_epsilon)
 
-            # convert back to real space the regularized theta value
+            # Convert back to real space the regularized theta value
             reg_real_pt[prev_var] = _inverse_coordinate(
                 regularized_theta, prev_var, reg_real_pt, promol
             )
@@ -1139,12 +1145,6 @@ def _transform_coordinate(real_pt, i_var, promol, boundary_epsilon=1e-12):
 
     # log(sum_k W_{k,i}), evaluated without forming W_{k,i}.
     log_normalization = logsumexp(log_weights)
-
-    # For pre-evaluated coordinates at boundaries, the log_weights are all -inf.
-    if not np.isfinite(log_normalization):
-        raise ValueError(
-            "Cannot transform a point with previously evaluated coordinates at the boundary. "
-        )
 
     # omega_{k,i} = W_{k,i} / sum_j W_{j,i}.
     normalized_weights = np.exp(log_weights - log_normalization)
