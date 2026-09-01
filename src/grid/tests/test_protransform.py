@@ -206,6 +206,34 @@ class TestTwoGaussianDiffCenters:
         boundary_points = np.delete(obj.points, non_boundary_pt_index, axis=0)
         assert np.all(np.any(np.isinf(boundary_points), axis=1))
 
+    @pytest.mark.parametrize(
+        "theta_pt",
+        [
+            np.array([1.0, 1.0, 0.6]),
+            np.array([-1.0, 1.0, 0.6]),
+            np.array([1.0, -1.0, 0.6]),
+            np.array([-1.0, -1.0, 0.6]),
+        ],
+        ids=[
+            "theta_x=+1_theta_y=+1",
+            "theta_x=-1_theta_y=+1",
+            "theta_x=+1_theta_y=-1",
+            "theta_x=-1_theta_y=-1",
+        ],
+    )
+    def test_inverse_mixed_boundary_point(self, theta_pt):
+        r"""Test consistent forward and inverse mappings for mixed boundary coordinates."""
+        _, obj = self.setUp(ss=0.2, return_obj=True)
+
+        real_pt = obj.inverse(theta_pt)
+
+        assert np.isinf(real_pt[0])
+        assert np.isinf(real_pt[1])
+        assert np.isfinite(real_pt[2])
+
+        theta_back = obj.transform(real_pt)
+        assert_allclose(theta_back, theta_pt, atol=1e-10)
+
     def test_transforming_with_inverse_transformation_is_identity(self):
         r"""Test transforming with inverse transformation is identity."""
         # Note that for points far away from the promolecular gets mapped to nan.
