@@ -1011,11 +1011,16 @@ class _PromolParams:
             keepdims=True,
         )
 
+        # Avoid NaNs from 0 * inf for inactive components when alpha = 0 and squared_distance = inf.
+        # Use exponent 1.0 so their zero coefficient still gives a zero contribution.
+        active = self.c_m != 0.0
+        safe_exponents = np.where(active, self.e_m, 1.0)
+
         # Broadcast Gaussians coefficients and exponents (M, 1, K) vs squared distances (M, N, 1).
         # The size-1 point axis expands to N, while the size-1 component axis expands to K.
         # The common M axis remains unchanged, giving Gaussian contributions with shape(M, N, K).
         gaussian_values = self.c_m[:, np.newaxis, :] * np.exp(
-            -self.e_m[:, np.newaxis, :] * squared_distances
+            -safe_exponents[:, np.newaxis, :] * squared_distances
         )
 
         # Sum over the M centers and K Gaussian components, retaining the N point dimension.
