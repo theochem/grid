@@ -242,43 +242,65 @@ class CubicProTransform(_HyperRectangleGrid):
             raise ValueError(
                 f"`real_pt` must have shape ({self.promol.dim},), got {real_pt.shape}."
             )
+        if np.any(np.isnan(real_pt)):
+            raise ValueError("`real_pt` cannot contain NaN values.")
 
-        return np.array(
-            [
-                _transform_coordinate(real_pt, i_var, self.promol, self._boundary_epsilon)
-                for i_var in range(self.promol.dim)
-            ]
-        )
+        work_pt = real_pt.astype(np.result_type(real_pt.dtype, np.float64), copy=True)
+        theta_pt = []
+
+        for i_var in range(self.promol.dim):
+            theta = _transform_coordinate(work_pt, i_var, self.promol)
+            theta_pt.append(theta)
+
+            # Use a finite coordinate to condition subsequent transformations.
+            if np.isinf(real_pt[i_var]) and i_var < self.promol.dim - 1:
+                regularized_theta = np.sign(np.real(real_pt[i_var])) * (
+                    1.0 - self._boundary_epsilon
+                )
+                work_pt[i_var] = _inverse_coordinate(regularized_theta, i_var, work_pt, self.promol)
+
+        return np.asarray(theta_pt)
 
     def inverse(self, theta_pt):
-        r"""Transform a theta space point to three-dimensional Real space.
+        r"""Transform a theta-space point to three-dimensional real space.
 
-         Parameters
-         ----------
-         theta_pt : np.ndarray(3)
-             Point in :math:`[-1, 1]^3`
+        Parameters
+        ----------
+        theta_pt : np.ndarray(3)
+            Point in :math:`[-1, 1]^3`.
 
-         Returns
-         -------
-         real_pt : np.ndarray(3)
-             Point in :math:`\mathbb{R}^3`
+        Returns
+        -------
+        real_pt : np.ndarray(3)
+            Point in :math:`\mathbb{R}^3`.
 
         Notes
-         -----
-         Theta-space boundary values :math:`-1` and :math:`1` map to
-         :math:`-\infty` and :math:`+\infty`, respectively.
-
+        -----
+        Theta-space boundary values :math:`-1` and :math:`1` map to :math:`-\infty` and
+        :math:`+\infty`, respectively.
         """
         theta_pt = np.asarray(theta_pt)
         if theta_pt.shape != (self.promol.dim,):
             raise ValueError(
                 f"`theta_pt` must have shape ({self.promol.dim},), got {theta_pt.shape}."
             )
-        real_pt = []
-        for i in range(0, self.promol.dim):
-            scalar = _inverse_coordinate(theta_pt[i], i, real_pt[:i], self.promol)
-            real_pt.append(scalar)
-        return np.array(real_pt)
+
+        real_pt = [None] * self.promol.dim
+        work_pt = [None] * self.promol.dim
+
+        for i_var in range(self.promol.dim):
+            theta = theta_pt[i_var]
+
+            real_pt[i_var] = _inverse_coordinate(theta, i_var, work_pt, self.promol)
+
+            # Use a finite coordinate to condition subsequent transformations.
+            if np.abs(theta) == 1.0 and i_var < self.promol.dim - 1:
+                regularized_theta = np.sign(theta) * (1.0 - self._boundary_epsilon)
+                work_pt[i_var] = _inverse_coordinate(regularized_theta, i_var, work_pt, self.promol)
+            else:
+                work_pt[i_var] = real_pt[i_var]
+
+        return np.asarray(real_pt)
 
     def integrate(self, *value_arrays, trick=False, tol=1e-10):
         r"""Integrate any real-valued function on Euclidean space.
