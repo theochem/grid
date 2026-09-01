@@ -746,7 +746,7 @@ class CubicProTransform(_HyperRectangleGrid):
         return hessian
 
     def _inverse_transform_grid(self, oned_grids):
-        """Maps the entire grid from theta-space to real-space.
+        """Map the entire grid from theta-space to real-space.
 
         Parameters
         ----------
@@ -767,9 +767,9 @@ class CubicProTransform(_HyperRectangleGrid):
             work_pt = [None, None, None]
 
             theta_x = oned_grids[0].points[ix]
-            cart_pt[0] = _inverse_coordinate(theta_x, 0, cart_pt, self.promol)
+            cart_pt[0] = _inverse_coordinate(theta_x, 0, work_pt, self.promol)
 
-            # Finite x coordinate used to condition subsequent transformations
+            # Use a finite x coordinate to condition subsequent transformations.
             if np.abs(theta_x) == 1.0:
                 theta_x_reg = np.sign(theta_x) * (1.0 - self._boundary_epsilon)
                 work_pt[0] = _inverse_coordinate(theta_x_reg, 0, work_pt, self.promol)
@@ -778,9 +778,9 @@ class CubicProTransform(_HyperRectangleGrid):
 
             for iy in range(self.shape[1]):
                 theta_y = oned_grids[1].points[iy]
-                cart_pt[1] = _inverse_coordinate(theta_y, 1, cart_pt, self.promol)
+                cart_pt[1] = _inverse_coordinate(theta_y, 1, work_pt, self.promol)
 
-                # Finite y coordinate used to condition z.
+                # Use a finite y coordinate to condition subsequent transformations.
                 if np.abs(theta_y) == 1.0:
                     theta_y_reg = np.sign(theta_y) * (1.0 - self._boundary_epsilon)
                     work_pt[1] = _inverse_coordinate(theta_y_reg, 1, work_pt, self.promol)
@@ -789,7 +789,8 @@ class CubicProTransform(_HyperRectangleGrid):
 
                 for iz in range(self.shape[2]):
                     theta_z = oned_grids[2].points[iz]
-                    cart_pt[2] = _inverse_coordinate(theta_z, 2, cart_pt, self.promol)
+                    cart_pt[2] = _inverse_coordinate(theta_z, 2, work_pt, self.promol)
+
                     points[counter] = cart_pt.copy()
                     counter += 1
         return points
