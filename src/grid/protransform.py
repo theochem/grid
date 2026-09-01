@@ -252,25 +252,27 @@ class CubicProTransform(_HyperRectangleGrid):
     def inverse(self, theta_pt):
         r"""Transform a theta space point to three-dimensional Real space.
 
-        Parameters
-        ----------
-        theta_pt : np.ndarray(3)
-            Point in :math:`[-1, 1]^3`
+         Parameters
+         ----------
+         theta_pt : np.ndarray(3)
+             Point in :math:`[-1, 1]^3`
 
-        Returns
-        -------
-        real_pt : np.ndarray(3)
-            Point in :math:`\mathbb{R}^3`
+         Returns
+         -------
+         real_pt : np.ndarray(3)
+             Point in :math:`\mathbb{R}^3`
 
         Notes
-        -----
-        - If a point is far away from the promolecular density, then it will be mapped
-            to `np.nan`.
+         -----
+         Theta-space boundary values :math:`-1` and :math:`1` map to
+         :math:`-\infty` and :math:`+\infty`, respectively.
 
         """
         theta_pt = np.asarray(theta_pt)
         if theta_pt.shape != (self.promol.dim,):
-            raise ValueError(f"theta_pt must have shape ({self.promol.dim},).")
+            raise ValueError(
+                f"`theta_pt` must have shape ({self.promol.dim},), got {theta_pt.shape}."
+            )
         real_pt = []
         for i in range(0, self.promol.dim):
             scalar = _inverse_coordinate(theta_pt[i], i, real_pt[:i], self.promol)
