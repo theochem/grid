@@ -506,7 +506,7 @@ class TestOneGaussianAgainstNumerics:
         for x, y in pts_xy:
             true_ans = _transform_coordinate([x, y], 1, self.setUp())
 
-            grid = np.arange(-5.0, y, 0.000001)  # Integration till a x point
+            grid = np.arange(-5.0, y, 0.000001)  # Integration up to the y point
             every_grid = np.arange(-5.0, 10.0, 0.00001)  # Full Integration
             promol_y_all, promol_y = promolecular_in_y(grid, every_grid)
 
@@ -526,7 +526,7 @@ class TestOneGaussianAgainstNumerics:
             return promol_z_all, promol_z
 
         for x, y, z in pts:
-            grid = np.arange(-5.0, z, 0.00001)  # Integration till a x point
+            grid = np.arange(-5.0, z, 0.00001)  # Integration till a z point
 
             every_grid = np.arange(-5.0, 10.0, 0.00001)  # Full Integration
             promol_z_all, promol_z = promolecular_in_z(grid, every_grid)
@@ -542,10 +542,8 @@ class TestOneGaussianAgainstNumerics:
         for x, y, z in pts:
             actual = obj.jacobian(np.array([x, y, z]))
 
-            # assert lower-triangular component is zero.
-            assert np.abs(actual[1, 0]) < 1e-5
-            assert np.abs(actual[2, 0]) < 1e-5
-            assert np.abs(actual[2, 1]) < 1e-5
+            # assert the jacobian is lower triangular
+            assert np.allclose(actual, np.tril(actual), atol=1e-5)
 
             # test derivative wrt to x
             def tranformation_x(pt, y=y, z=z):
