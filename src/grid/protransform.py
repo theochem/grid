@@ -136,7 +136,7 @@ class CubicProTransform(_HyperRectangleGrid):
 
     """
 
-    def __init__(self, oned_grids, coeffs, exps, coords, cut_off=1e-8):
+    def __init__(self, oned_grids, coeffs, exps, coords, boundary_epsilon=1e-12):
         r"""
         Construct CubicProTransform object.
 
@@ -150,9 +150,13 @@ class CubicProTransform(_HyperRectangleGrid):
             Exponents of the promolecular transformation over :math:`M` centers.
         coords: ndarray(M, 3)
             The coordinates of the promolecular expansion.
-        cut_off: float
-            If the distance between a point in theta-space to the boundary is less than the
-            cut_off, then the point is considered to be part of the boundary.
+        boundary_epsilon : float
+            Small offset used to obtain finite working coordinates when a preceding real-space
+            coordinate is infinite. Since :math:`-\infty` and :math:`+\infty` correspond to
+            :math:`\theta=-1` and :math:`\theta=+1`, respectively, the boundary value is
+            replaced by :math:`\pm(1-\varepsilon)` and transformed back to a finite real-space
+            coordinate. The finite coordinate is then used when evaluating subsequent
+            transformations. Default is `1e-12`.
 
         """
         if not isinstance(oned_grids, list):
@@ -163,9 +167,13 @@ class CubicProTransform(_HyperRectangleGrid):
             raise ValueError("One Dimensional grid domain should be (-1, 1).")
         if not len(oned_grids) == 3:
             raise ValueError("There should be three One-Dimensional grids in `oned_grids`.")
+        if not 0.0 < boundary_epsilon < 1.0:
+            raise ValueError("boundary_epsilon must lie in (0, 1).")
+
         self._l_bnd = -1.0
         self._u_bnd = 1.0
         self._shape = tuple([grid.size for grid in oned_grids])
+        self._boundary_epsilon = boundary_epsilon
         dimension = len(oned_grids)
 
         # pad coefficients and exponents with zeros to have the same size, easier to use numpy.
@@ -177,7 +185,7 @@ class CubicProTransform(_HyperRectangleGrid):
             np.kron(oned_grids[0].weights, oned_grids[1].weights), oned_grids[2].weights
         )
         # Transform Cubic Grid in Theta-Space to Real-space.
-        points = self._transform(oned_grids, cut_off)
+        points = self._inverse_transform_grid(oned_grids)
         # The prointegral is needed because of promolecular integration.
         # Divide by 8 needed because the grid is in [-1, 1] rather than [0, 1].
         super().__init__(points, weights * self._prointegral / 2.0**dimension, self._shape)
@@ -229,6 +237,10 @@ class CubicProTransform(_HyperRectangleGrid):
 
         """
         real_pt = np.asarray(real_pt)
+        if real_pt.shape != (self.promol.dim,):
+            raise ValueError(
+                f"`real_pt` must have shape ({self.promol.dim},), got {real_pt.shape}."
+            )
 
         return np.array(
             [
@@ -468,7 +480,10 @@ class CubicProTransform(_HyperRectangleGrid):
         # Convert the theta-space gradient to the real-space gradient
         # grad_r(f) = J(theta <- r).T @ grad_theta(f).
         return np.array(
-            [self.jacobian(point).T @ gradient for point, gradient in zip(points, grad_theta)]
+            [
+                self.jacobian(point).T @ gradient
+                for point, gradient in zip(points, grad_theta, strict=True)
+            ]
         )
 
     def jacobian(self, real_pt):
@@ -728,29 +743,47 @@ class CubicProTransform(_HyperRectangleGrid):
 
         return hessian
 
-    def _transform(self, oned_grids, cut_off=1e-8):
-        """Transform the entire grid from theta-space to real-space.
+    def _inverse_transform_grid(self, oned_grids):
+        """Maps the entire grid from theta-space to real-space.
 
         Parameters
         ----------
         oned_grids : list(OneDGrid)
             List of three one-dimensional grids in theta-space, representing x, y, z directions.
-        cut_off : float
-            Cutoff value for considering a point to be on the boundary. If the distance between a
-            point and the boundary is less than cut_off, the point is considered to be on the
-            boundary.
-        """
 
+        Returns
+        -------
+        points : np.ndarray(N, 3)
+            Points in :math:`\mathbb{R}^3` corresponding to the tensor-product grid defined by
+            `oned_grids`.
+        """
         counter = 0
         points = np.empty((np.prod(self.shape), len(oned_grids)), dtype=np.float64)
+
         for ix in range(self.shape[0]):
             cart_pt = [None, None, None]
+            work_pt = [None, None, None]
+
             theta_x = oned_grids[0].points[ix]
             cart_pt[0] = _inverse_coordinate(theta_x, 0, cart_pt, self.promol)
+
+            # Finite x coordinate used to condition subsequent transformations
+            if np.abs(theta_x) == 1.0:
+                theta_x_reg = np.sign(theta_x) * (1.0 - self._boundary_epsilon)
+                work_pt[0] = _inverse_coordinate(theta_x_reg, 0, work_pt, self.promol)
+            else:
+                work_pt[0] = cart_pt[0]
 
             for iy in range(self.shape[1]):
                 theta_y = oned_grids[1].points[iy]
                 cart_pt[1] = _inverse_coordinate(theta_y, 1, cart_pt, self.promol)
+
+                # Finite y coordinate used to condition z.
+                if np.abs(theta_y) == 1.0:
+                    theta_y_reg = np.sign(theta_y) * (1.0 - self._boundary_epsilon)
+                    work_pt[1] = _inverse_coordinate(theta_y_reg, 1, work_pt, self.promol)
+                else:
+                    work_pt[1] = cart_pt[1]
 
                 for iz in range(self.shape[2]):
                     theta_z = oned_grids[2].points[iz]
@@ -1048,8 +1081,7 @@ def _transform_coordinate(real_pt, i_var, promol, boundary_epsilon=1e-12):
     promol : _PromolParams
         Promolecular Data Class.
     boundary_epsilon : float, optional
-        Distance from the boundary of the theta-space cube :math:`[-1, 1]^D` below which a point is
-        considered to be on the boundary. Default is 1e-12.
+        Small positive value used to regularize coordinates at the boundaries. Default is 1e-12.
 
     Returns
     -------
