@@ -73,24 +73,30 @@ class CubicProTransform(_HyperRectangleGrid):
     Examples
     --------
     Define information of the Promolecular Density.
-    >> c = np.array([[5.], [10.]])
-    >> e = np.array([[2.], [3.]])
-    >> coord = np.array([[0., 0., 0.], [2., 2., 2.]])
+
+    >>> c = np.array([[5.], [10.]])
+    >>> e = np.array([[2.], [3.]])
+    >>> coord = np.array([[0., 0., 0.], [2., 2., 2.]])
 
     Define information of the grid and its weights.
-    >> from grid.onedgrid import GaussChebyshev
 
-    >> numb_x = 50
+    >>> from grid.onedgrid import GaussChebyshev
+    >>> numb_x = 50
+
     This is a grid in :math:`[-1, 1]`.
-    >> oned = GaussChebyshev(numb_x)
+
+    >>> oned = GaussChebyshev(numb_x)
+
     One dimensional grid is the same in all x, y, z directions.
-    >> promol = CubicProTransform([oned, oned, oned], params.c_m, params.e_m, params.gauss_centers)
+
+    >>> promol = CubicProTransform([oned, oned, oned], c, e, coord)
 
     To integrate some function f.
-    >> def f(pt):
-    >>    return np.exp(-0.1 * np.linalg.norm(pt, axis=1)**2.)
-    >> func_values = f(promol.points)
-    >> print("The integral is %.4f" % promol.integrate(func_values, trick=False)
+
+    >>> def f(pt):
+    ...     return np.exp(-0.1 * np.linalg.norm(pt, axis=1) ** 2.)
+    >>> func_values = f(promol.points)
+    >>> print("The integral is %.4f" % promol.integrate(func_values, trick=False))
 
     References
     ----------
