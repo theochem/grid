@@ -480,6 +480,23 @@ class TestTwoGaussianDiffCenters:
             dthetaz_dx_dx = approx_fprime([x], dtheta_z_dx, 1e-8)
             assert np.abs(dthetaz_dx_dx - actual[2, 0, 0]) < 1e-5
 
+    def test_gradient_to_theta(self):
+        r"""Test gradient conversion for a non-diagonal transformation Jacobian."""
+        _, obj = self.setUp(ss=0.2, return_obj=True)
+
+        real_pt = np.array([0.3, -0.4, 0.7])
+        real_gradient = np.array([1.2, -0.8, 0.5])
+
+        jacobian = obj.jacobian(real_pt)
+
+        # Ensure the test exercises a non-diagonal Jacobian.
+        assert not np.allclose(np.tril(jacobian, k=-1), 0.0)
+
+        theta_gradient = obj.gradient_to_theta(real_pt, real_gradient)
+
+        # grad_r(f) = J.T @ grad_theta(f)
+        assert_allclose(jacobian.T @ theta_gradient, real_gradient)
+
 
 class TestOneGaussianAgainstNumerics:
     r"""Tests With Numerical Integration of a One Gaussian function."""

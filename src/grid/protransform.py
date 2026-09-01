@@ -450,7 +450,7 @@ class CubicProTransform(_HyperRectangleGrid):
 
         Returns
         -------
-        theta_grad : np.ndarray(3)
+        theta_direction : np.ndarray(3)
             Theta-space image of the real-space steepest-ascent direction.
 
         """
