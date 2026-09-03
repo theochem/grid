@@ -210,7 +210,9 @@ def solve_ode_bvp(
         See `scipy.integrate.solve_bvp` function for more info.
     initial_guess_y : ndarray(K, N), optional
         Initial guess for :math:`y(x), \cdots, \frac{d^{K} y}{d x^{K}}` at the points `x`.
-        If not provided, then random set of points from 0 to 1.
+        If not provided, an all-zeros guess is used. Since this routine only solves
+        linear ODEs, the initial guess does not change the converged solution; it only
+        affects mesh refinement. A deterministic default makes the solver reproducible.
     no_derivatives : bool, optional
         If true, when transform is used then it only returns the solution :math:`y(x)` rather
         than its derivative. If false, it includes the derivatives up to :math:`P-1`.
@@ -256,9 +258,12 @@ def solve_ode_bvp(
             conds.append(bonds[i][deriv] - value)
         return np.array(conds)
 
-    # Generate random initial guess if not provided.
+    # Use a deterministic (all-zeros) initial guess if not provided. The ODE solved
+    # here is linear, so the guess cannot affect the converged solution, only the mesh
+    # adaptation; a fixed default keeps repeated solves (e.g. the Poisson solvers)
+    # reproducible instead of randomly converging or hitting ``max_nodes``.
     if initial_guess_y is None:
-        initial_guess_y = np.random.rand(order, x.size)
+        initial_guess_y = np.zeros((order, x.size))
 
     # Solve the ODE
     if transform:

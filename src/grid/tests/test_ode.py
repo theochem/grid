@@ -344,6 +344,34 @@ def test_solve_ode_bvp_against_analytic_example(fx, coeffs, bvp, solutions):
     assert_allclose(res(rand_pts), solutions(rand_pts), atol=1e-5)
 
 
+def test_solve_ode_bvp_default_initial_guess_is_deterministic():
+    r"""The default (unspecified) initial guess must not depend on global RNG state.
+
+    ``solve_ode_bvp`` previously seeded ``initial_guess_y`` with ``np.random.rand``,
+    which made repeated solves (and every Poisson solve, which never passes a guess)
+    non-reproducible. Solving the same linear BVP twice under different global RNG
+    states should now give bit-identical results.
+    """
+    # y'' = 1 with y(0) = 0, y'(0) = -1  ->  y(x) = x**2 / 2 - x
+    x = np.arange(0.0, 2.0, 0.1)
+
+    def fx(x):
+        return np.ones(x.size)
+
+    coeffs = [0, 0, 1]
+    bd_cond = [[0, 0, 0.0], [0, 1, -1.0]]
+    probe = np.arange(0.0, 2.0, 0.25)
+
+    np.random.seed(0)
+    first = solve_ode_bvp(x, fx, coeffs, bd_cond)(probe)[0]
+    np.random.seed(12345)
+    _ = np.random.rand(50)  # perturb global RNG state
+    second = solve_ode_bvp(x, fx, coeffs, bd_cond)(probe)[0]
+
+    assert_allclose(first, second, atol=0.0, rtol=0.0)
+    assert_allclose(first, probe**2.0 / 2.0 - probe, atol=1e-6)
+
+
 @pytest.mark.parametrize(
     "fx, coeffs, ivp, solutions",
     [
