@@ -258,6 +258,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.onedgrid.html">grid.onedgrid module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.periodicgrid.html">grid.periodicgrid module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.poisson.html">grid.poisson module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.protransform.html">grid.protransform module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.robust_poisson.html">grid.robust_poisson module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.rtransform.html">grid.rtransform module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.utils.html">grid.utils module</a></li>
@@ -561,7 +562,7 @@ This example computes the integral of the electron density of Formaldehyde obtai
 
 <span class="c1"># # Download the example files</span>
 <span class="c1"># from urllib.request import urlretrieve</span>
-<span class="c1"># urlretrieve(&quot;https://raw.githubusercontent.com/theochem/grid/refs/heads/master/examples/ch2o_q%2B0.fchk&quot;,&quot;ch2o_q+0.fchk&quot;)</span>
+<span class="c1"># urlretrieve("https://raw.githubusercontent.com/theochem/grid/refs/heads/master/examples/ch2o_q%2B0.fchk","ch2o_q+0.fchk")</span>
 </pre></div>
 </div>
 </div>
@@ -573,10 +574,10 @@ This example computes the integral of the electron density of Formaldehyde obtai
 <span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.wrappers</span><span class="w"> </span><span class="kn">import</span> <span class="n">from_iodata</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.evals.density</span><span class="w"> </span><span class="kn">import</span> <span class="n">evaluate_density</span>
 
-<span class="n">mol</span> <span class="o">=</span> <span class="n">load_one</span><span class="p">(</span><span class="s2">&quot;ch2o_q+0.fchk&quot;</span><span class="p">)</span>
+<span class="n">mol</span> <span class="o">=</span> <span class="n">load_one</span><span class="p">(</span><span class="s2">"ch2o_q+0.fchk"</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Coordinates of the atoms </span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">mol</span><span class="o">.</span><span class="n">atcoords</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Atomic numbers of the atom </span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">mol</span><span class="o">.</span><span class="n">atnums</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Coordinates of the atoms </span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">mol</span><span class="o">.</span><span class="n">atcoords</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Atomic numbers of the atom </span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">mol</span><span class="o">.</span><span class="n">atnums</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="n">atnums</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">atnums</span>
 <span class="n">atcoords</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">atcoords</span>
@@ -585,7 +586,7 @@ This example computes the integral of the electron density of Formaldehyde obtai
 <span class="n">basis</span> <span class="o">=</span> <span class="n">from_iodata</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
 
 <span class="c1"># Get the RDM to compute electron density</span>
-<span class="n">rdm</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">one_rdms</span><span class="p">[</span><span class="s2">&quot;scf&quot;</span><span class="p">]</span>
+<span class="n">rdm</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">one_rdms</span><span class="p">[</span><span class="s2">"scf"</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -657,7 +658,7 @@ the degree of the angular component. Similarly for the radial grid, the larger t
 <span class="n">density</span> <span class="o">=</span> <span class="n">evaluate_density</span><span class="p">(</span><span class="n">rdm</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">molgrid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
 
 <span class="n">integral</span> <span class="o">=</span> <span class="n">molgrid</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">density</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The integral of electron density of Formaldehyde is </span><span class="si">{</span><span class="n">integral</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"The integral of electron density of Formaldehyde is </span><span class="si">{</span><span class="n">integral</span><span class="si">}</span><span class="s2">."</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -680,11 +681,11 @@ The <code class="docutils literal notranslate"><span class="pre">from_preset</sp
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">grid.molgrid</span><span class="w"> </span><span class="kn">import</span> <span class="n">MolGrid</span>
 
-<span class="n">molgrid</span> <span class="o">=</span> <span class="n">MolGrid</span><span class="o">.</span><span class="n">from_preset</span><span class="p">(</span><span class="n">atnums</span><span class="p">,</span> <span class="n">atcoords</span><span class="p">,</span> <span class="n">rgrid</span><span class="o">=</span><span class="n">rgrid</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="s2">&quot;fine&quot;</span><span class="p">,</span> <span class="n">aim_weights</span><span class="o">=</span><span class="n">aim_weights</span><span class="p">,</span> <span class="n">store</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">molgrid</span> <span class="o">=</span> <span class="n">MolGrid</span><span class="o">.</span><span class="n">from_preset</span><span class="p">(</span><span class="n">atnums</span><span class="p">,</span> <span class="n">atcoords</span><span class="p">,</span> <span class="n">rgrid</span><span class="o">=</span><span class="n">rgrid</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="s2">"fine"</span><span class="p">,</span> <span class="n">aim_weights</span><span class="o">=</span><span class="n">aim_weights</span><span class="p">,</span> <span class="n">store</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="n">density</span> <span class="o">=</span> <span class="n">evaluate_density</span><span class="p">(</span><span class="n">rdm</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">molgrid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
 <span class="n">integral</span> <span class="o">=</span> <span class="n">molgrid</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">density</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The integral of electron density of Formaldehyde is </span><span class="si">{</span><span class="n">integral</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"The integral of electron density of Formaldehyde is </span><span class="si">{</span><span class="n">integral</span><span class="si">}</span><span class="s2">."</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -706,7 +707,7 @@ The <code class="docutils literal notranslate"><span class="pre">from_preset</sp
 
 <span class="n">density</span> <span class="o">=</span> <span class="n">evaluate_density</span><span class="p">(</span><span class="n">rdm</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">molgrid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
 <span class="n">integral</span> <span class="o">=</span> <span class="n">molgrid</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">density</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The integral of electron density of Formaldehyde is </span><span class="si">{</span><span class="n">integral</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"The integral of electron density of Formaldehyde is </span><span class="si">{</span><span class="n">integral</span><span class="si">}</span><span class="s2">."</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -748,7 +749,7 @@ The <code class="docutils literal notranslate"><span class="pre">from_preset</sp
 
 <span class="n">density</span> <span class="o">=</span> <span class="n">evaluate_density</span><span class="p">(</span><span class="n">rdm</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">molgrid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
 <span class="n">integral</span> <span class="o">=</span> <span class="n">molgrid</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">density</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The integral of electron density of Formaldehyde is </span><span class="si">{</span><span class="n">integral</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"The integral of electron density of Formaldehyde is </span><span class="si">{</span><span class="n">integral</span><span class="si">}</span><span class="s2">."</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

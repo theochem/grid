@@ -258,6 +258,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.onedgrid.html">grid.onedgrid module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.periodicgrid.html">grid.periodicgrid module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.poisson.html">grid.poisson module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.protransform.html">grid.protransform module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.robust_poisson.html">grid.robust_poisson module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.rtransform.html">grid.rtransform module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.utils.html">grid.utils module</a></li>
@@ -583,7 +584,7 @@
 <span class="n">interpolate</span> <span class="o">=</span> <span class="n">interpolate_func</span><span class="p">(</span><span class="n">random_pts</span><span class="p">)</span>
 <span class="n">true</span> <span class="o">=</span> <span class="n">charge_distribution</span><span class="p">(</span><span class="n">random_pts</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error difference between interpolation and true:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Error difference between interpolation and true:"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">interpolate</span> <span class="o">-</span> <span class="n">true</span><span class="p">))</span>
 <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">interpolate</span> <span class="o">-</span> <span class="n">true</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-6</span><span class="p">)</span>
 
@@ -641,9 +642,9 @@ It is well-known that the solution to this is given by <span class="math notrans
 
 
 <span class="n">err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">actual_potential</span><span class="p">(</span><span class="n">atgrid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span> <span class="o">-</span> <span class="n">potential_values</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The maximum error: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The mean error: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The standard dev: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"The maximum error: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"The mean error: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"The standard dev: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

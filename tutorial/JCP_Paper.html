@@ -258,6 +258,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.onedgrid.html">grid.onedgrid module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.periodicgrid.html">grid.periodicgrid module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.poisson.html">grid.poisson module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.protransform.html">grid.protransform module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.robust_poisson.html">grid.robust_poisson module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.rtransform.html">grid.rtransform module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.utils.html">grid.utils module</a></li>
@@ -563,9 +564,9 @@
 <span class="c1"># from urllib.request import urlretrieve</span>
 
 <span class="c1"># # download the required data files</span>
-<span class="c1"># file_path = &quot;ch2o_q+0.fchk&quot;</span>
+<span class="c1"># file_path = "ch2o_q+0.fchk"</span>
 <span class="c1"># if not os.path.isfile(file_path):</span>
-<span class="c1">#     url = &quot;https://github.com/theochem/grid/blob/master/examples/ch2o_q%2B0.fchk?raw=true&quot;</span>
+<span class="c1">#     url = "https://github.com/theochem/grid/blob/master/examples/ch2o_q%2B0.fchk?raw=true"</span>
 <span class="c1">#     urlretrieve(url, file_path)</span>
 </pre></div>
 </div>
@@ -585,15 +586,15 @@
 
 <span class="c1"># Generate 1D grid on [-1, 1] interval</span>
 <span class="n">oned</span> <span class="o">=</span> <span class="n">GaussChebyshevType2</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of 1D grid points: &quot;</span><span class="p">,</span> <span class="n">oned</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>   <span class="c1"># outputs 30</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Domain of 1D grid: &quot;</span><span class="p">,</span> <span class="n">oned</span><span class="o">.</span><span class="n">domain</span><span class="p">)</span>        <span class="c1"># outputs (-1, 1)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Number of 1D grid points: "</span><span class="p">,</span> <span class="n">oned</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>   <span class="c1"># outputs 30</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Domain of 1D grid: "</span><span class="p">,</span> <span class="n">oned</span><span class="o">.</span><span class="n">domain</span><span class="p">)</span>        <span class="c1"># outputs (-1, 1)</span>
 
 <span class="c1"># Transform 1D grid using Becke transformation</span>
 <span class="n">rgrid</span> <span class="o">=</span> <span class="n">BeckeRTransform</span><span class="p">(</span><span class="mf">1.e-4</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">)</span><span class="o">.</span><span class="n">transform_1d_grid</span><span class="p">(</span><span class="n">oned</span><span class="p">)</span>
 
 <span class="c1"># Integrate Gaussian s-function from 0 to infinity</span>
 <span class="n">integral</span> <span class="o">=</span> <span class="n">rgrid</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">rgrid</span><span class="o">.</span><span class="n">points</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Integral of Gaussian s-function: &quot;</span><span class="p">,</span> <span class="n">integral</span><span class="p">)</span>   <span class="c1"># outputs sqrt(pi/2)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Integral of Gaussian s-function: "</span><span class="p">,</span> <span class="n">integral</span><span class="p">)</span>   <span class="c1"># outputs sqrt(pi/2)</span>
 </pre></div>
 </div>
 </div>
@@ -615,19 +616,19 @@ Integral of Gaussian s-function:  1.2525724696180882
 <span class="kn">from</span><span class="w"> </span><span class="nn">grid</span><span class="w"> </span><span class="kn">import</span> <span class="n">AngularGrid</span>
 
 <span class="c1"># Make an instance of AngularGrid given a Lebedev-Laikov grid size</span>
-<span class="n">g</span> <span class="o">=</span> <span class="n">AngularGrid</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">140</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;spherical&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of angular grid points: &quot;</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>   <span class="c1"># outputs 146</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Shape of angular grid points: &quot;</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>   <span class="c1"># outputs (146, 3)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Shape of angular grid weights: &quot;</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="c1"># outputs (146,)</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">AngularGrid</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">140</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">'spherical'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Number of angular grid points: "</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>   <span class="c1"># outputs 146</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Shape of angular grid points: "</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>   <span class="c1"># outputs (146, 3)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Shape of angular grid weights: "</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="c1"># outputs (146,)</span>
 
 <span class="c1"># Confirm that angular grid points are on the unit sphere</span>
 <span class="n">norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Norm of the grid points is all one:&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">norm</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-8</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Norm of the grid points is all one:"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">norm</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-8</span><span class="p">))</span>
 
 <span class="c1"># Evaluate surface area of the unit sphere,</span>
 <span class="c1"># i.e., integrate constant function 1</span>
 <span class="n">integral</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">size</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Integral of constant function 1 over the sphere: &quot;</span><span class="p">,</span> <span class="n">integral</span><span class="p">)</span>   <span class="c1"># 4*pi</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Integral of constant function 1 over the sphere: "</span><span class="p">,</span> <span class="n">integral</span><span class="p">)</span>   <span class="c1"># 4*pi</span>
 </pre></div>
 </div>
 </div>
@@ -649,17 +650,17 @@ Number of atomic grid points:  1036
 
 <span class="c1"># Option 1: using radial grid and degrees of Lebedev-Laikov angular grid</span>
 <span class="n">atgrid</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="p">(</span><span class="n">rgrid</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="p">[</span><span class="mi">11</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of atomic grid points: &quot;</span><span class="p">,</span> <span class="n">atgrid</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="c1"># outputs 1500</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Number of atomic grid points: "</span><span class="p">,</span> <span class="n">atgrid</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="c1"># outputs 1500</span>
 
 <span class="c1"># Option 2: using radial grid and  atomic radius &amp; sectors</span>
 <span class="n">atgrid</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="o">.</span><span class="n">from_pruned</span><span class="p">(</span>
     <span class="n">rgrid</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">r_sectors</span><span class="o">=</span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">],</span> <span class="n">d_sectors</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 <span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of atomic grid points: &quot;</span><span class="p">,</span> <span class="n">atgrid</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="c1"># outputs 264</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Number of atomic grid points: "</span><span class="p">,</span> <span class="n">atgrid</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="c1"># outputs 264</span>
 
 <span class="c1"># Option 3: using radial grid, atomic number, and preset</span>
-<span class="n">atgrid</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="o">.</span><span class="n">from_preset</span><span class="p">(</span><span class="n">atnum</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="s2">&quot;coarse&quot;</span><span class="p">,</span> <span class="n">rgrid</span><span class="o">=</span><span class="n">rgrid</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of atomic grid points: &quot;</span><span class="p">,</span> <span class="n">atgrid</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="c1"># outputs 1036</span>
+<span class="n">atgrid</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="o">.</span><span class="n">from_preset</span><span class="p">(</span><span class="n">atnum</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="s2">"coarse"</span><span class="p">,</span> <span class="n">rgrid</span><span class="o">=</span><span class="n">rgrid</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Number of atomic grid points: "</span><span class="p">,</span> <span class="n">atgrid</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="c1"># outputs 1036</span>
 </pre></div>
 </div>
 </div>
@@ -699,14 +700,14 @@ Number of atomic grid points:  1036
 
 <span class="c1"># Load formatted-checkpoint file of formaldehyde molecule.</span>
 <span class="c1"># Source: https://github.com/theochem/grid/blob/master/examples/ch2o_q%2B0.fchk</span>
-<span class="n">mol</span> <span class="o">=</span> <span class="n">load_one</span><span class="p">(</span><span class="s2">&quot;ch2o_q+0.fchk&quot;</span><span class="p">)</span>
+<span class="n">mol</span> <span class="o">=</span> <span class="n">load_one</span><span class="p">(</span><span class="s2">"ch2o_q+0.fchk"</span><span class="p">)</span>
 
 <span class="c1"># Get atomic numbers, core numbers, and Cartesian coordinates</span>
 <span class="n">atnums</span><span class="p">,</span> <span class="n">atcharges</span><span class="p">,</span> <span class="n">atcoords</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">atnums</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">atcorenums</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">atcoords</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Atomic Numbers: &quot;</span><span class="p">,</span> <span class="n">atnums</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Atomic Core Charges: &quot;</span><span class="p">,</span> <span class="n">atcharges</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Atomic Coordinates: &quot;</span><span class="p">,</span> <span class="n">atcoords</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Atomic Numbers: "</span><span class="p">,</span> <span class="n">atnums</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Atomic Core Charges: "</span><span class="p">,</span> <span class="n">atcharges</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Atomic Coordinates: "</span><span class="p">,</span> <span class="n">atcoords</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -741,7 +742,7 @@ Atomic Coordinates:  [[ 2.27823914e+00  4.13899085e-07  3.12033662e-07]
 <span class="p">]</span>
 <span class="n">molgrid</span> <span class="o">=</span> <span class="n">MolGrid</span><span class="p">(</span><span class="n">atnums</span><span class="p">,</span> <span class="n">atgrids</span><span class="p">,</span> <span class="n">aim_weights</span><span class="p">,</span> <span class="n">store</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number molecular grid points: &quot;</span><span class="p">,</span> <span class="n">molgrid</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>   <span class="c1"># outputs 39120</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Number molecular grid points: "</span><span class="p">,</span> <span class="n">molgrid</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>   <span class="c1"># outputs 39120</span>
 </pre></div>
 </div>
 </div>
@@ -762,11 +763,11 @@ Atomic Coordinates:  [[ 2.27823914e+00  4.13899085e-07  3.12033662e-07]
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Option 2: Construct a molecular grid from predefined pruned angular grids</span>
 <span class="n">molgrid</span> <span class="o">=</span> <span class="n">MolGrid</span><span class="o">.</span><span class="n">from_preset</span><span class="p">(</span>
-    <span class="n">atnums</span><span class="p">,</span> <span class="n">atcoords</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="s2">&quot;fine&quot;</span><span class="p">,</span> <span class="n">rgrid</span><span class="o">=</span><span class="n">rgrid</span><span class="p">,</span> 
+    <span class="n">atnums</span><span class="p">,</span> <span class="n">atcoords</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="s2">"fine"</span><span class="p">,</span> <span class="n">rgrid</span><span class="o">=</span><span class="n">rgrid</span><span class="p">,</span> 
     <span class="n">aim_weights</span><span class="o">=</span><span class="n">aim_weights</span><span class="p">,</span> <span class="n">store</span><span class="o">=</span><span class="kc">True</span>
 <span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number molecular grid points: &quot;</span><span class="p">,</span> <span class="n">molgrid</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>   <span class="c1"># outputs 10200</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Number molecular grid points: "</span><span class="p">,</span> <span class="n">molgrid</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>   <span class="c1"># outputs 10200</span>
 </pre></div>
 </div>
 </div>
@@ -786,7 +787,7 @@ Atomic Coordinates:  [[ 2.27823914e+00  4.13899085e-07  3.12033662e-07]
     <span class="n">atnums</span><span class="p">,</span> <span class="n">atcoords</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="n">rgrid</span><span class="p">,</span> <span class="n">aim_weights</span><span class="p">,</span> <span class="n">store</span><span class="o">=</span><span class="kc">True</span>
 <span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number molecular grid points: &quot;</span><span class="p">,</span> <span class="n">molgrid</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>   <span class="c1"># outputs 6000</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Number molecular grid points: "</span><span class="p">,</span> <span class="n">molgrid</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>   <span class="c1"># outputs 6000</span>
 </pre></div>
 </div>
 </div>
@@ -819,7 +820,7 @@ Atomic Coordinates:  [[ 2.27823914e+00  4.13899085e-07  3.12033662e-07]
     <span class="n">atnums</span><span class="p">,</span> <span class="n">atcoords</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">sectors_r</span><span class="p">,</span> <span class="n">sectors_deg</span><span class="p">,</span> <span class="n">rgrid</span><span class="o">=</span><span class="n">rgrid</span><span class="p">,</span> <span class="n">aim_weights</span><span class="o">=</span><span class="n">aim_weights</span><span class="p">,</span> <span class="n">store</span><span class="o">=</span><span class="kc">True</span>
 <span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number molecular grid points: &quot;</span><span class="p">,</span> <span class="n">molgrid</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>   <span class="c1"># outputs 5664</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Number molecular grid points: "</span><span class="p">,</span> <span class="n">molgrid</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>   <span class="c1"># outputs 5664</span>
 </pre></div>
 </div>
 </div>
@@ -843,10 +844,10 @@ Atomic Coordinates:  [[ 2.27823914e+00  4.13899085e-07  3.12033662e-07]
 
 <span class="c1"># Evaluate the electron density in the grid points</span>
 <span class="n">basis</span> <span class="o">=</span> <span class="n">from_iodata</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
-<span class="n">rdm</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">one_rdms</span><span class="p">[</span><span class="s2">&quot;scf&quot;</span><span class="p">]</span>
+<span class="n">rdm</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">one_rdms</span><span class="p">[</span><span class="s2">"scf"</span><span class="p">]</span>
 <span class="n">rho</span> <span class="o">=</span> <span class="n">evaluate_density</span><span class="p">(</span><span class="n">rdm</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">molgrid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Integral of electron density: &quot;</span><span class="p">,</span> <span class="n">molgrid</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">rho</span><span class="p">))</span> <span class="c1"># outputs 16.00</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Integral of electron density: "</span><span class="p">,</span> <span class="n">molgrid</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">rho</span><span class="p">))</span> <span class="c1"># outputs 16.00</span>
 </pre></div>
 </div>
 </div>
@@ -871,9 +872,9 @@ Atomic Coordinates:  [[ 2.27823914e+00  4.13899085e-07  3.12033662e-07]
 <span class="n">origin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>
 <span class="n">axes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">]])</span>
 <span class="n">shape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">])</span>
-<span class="n">g</span> <span class="o">=</span> <span class="n">UniformGrid</span><span class="p">(</span><span class="n">origin</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="s2">&quot;Trapezoid&quot;</span><span class="p">)</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">UniformGrid</span><span class="p">(</span><span class="n">origin</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="s2">"Trapezoid"</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of cubic grid points: &quot;</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>   <span class="c1"># outputs 125000</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Number of cubic grid points: "</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>   <span class="c1"># outputs 125000</span>
 </pre></div>
 </div>
 </div>
@@ -894,7 +895,7 @@ Atomic Coordinates:  [[ 2.27823914e+00  4.13899085e-07  3.12033662e-07]
     <span class="n">atnums</span><span class="p">,</span> <span class="n">atcoords</span><span class="p">,</span> <span class="n">spacing</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">extension</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span> <span class="n">rotate</span><span class="o">=</span><span class="kc">True</span>
 <span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of cubic grid points: &quot;</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="c1"># outputs 232356</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Number of cubic grid points: "</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="c1"># outputs 232356</span>
 </pre></div>
 </div>
 </div>
@@ -919,7 +920,7 @@ Atomic Coordinates:  [[ 2.27823914e+00  4.13899085e-07  3.12033662e-07]
 <span class="c1"># Make Tensor1DGrids grid by combining 1D grids</span>
 <span class="n">g</span> <span class="o">=</span> <span class="n">Tensor1DGrids</span><span class="p">(</span><span class="n">oned1</span><span class="p">,</span> <span class="n">oned2</span><span class="p">,</span> <span class="n">oned3</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;cubic grid # of points: &quot;</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>      <span class="c1"># outputs 18000</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"cubic grid # of points: "</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>      <span class="c1"># outputs 18000</span>
 </pre></div>
 </div>
 </div>
@@ -958,7 +959,7 @@ Atomic Coordinates:  [[ 2.27823914e+00  4.13899085e-07  3.12033662e-07]
 
 <span class="c1"># Compare interpolated and expected electron density</span>
 <span class="n">max_error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">rho_inter</span> <span class="o">-</span> <span class="n">rho_expected</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Maximum interpolation error: &quot;</span><span class="p">,</span> <span class="n">max_error</span><span class="p">)</span> <span class="c1"># outputs 0.219</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Maximum interpolation error: "</span><span class="p">,</span> <span class="n">max_error</span><span class="p">)</span> <span class="c1"># outputs 0.219</span>
 </pre></div>
 </div>
 </div>
@@ -986,26 +987,26 @@ Atomic Coordinates:  [[ 2.27823914e+00  4.13899085e-07  3.12033662e-07]
 <span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
 
 <span class="c1"># Plot the interpolated electron density as a 2D heatmap with specified color scale limits</span>
-<span class="n">heatmap</span> <span class="o">=</span> <span class="n">ax1</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">rho_inter</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">),</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;viridis&quot;</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
-<span class="n">cbar</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">heatmap</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Electron Density&quot;</span><span class="p">)</span>
+<span class="n">heatmap</span> <span class="o">=</span> <span class="n">ax1</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">rho_inter</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">),</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"viridis"</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s2">"none"</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+<span class="n">cbar</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">heatmap</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Electron Density"</span><span class="p">)</span>
 <span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
-<span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Electron Density&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span> 
+<span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"Electron Density"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span> 
 
 <span class="c1"># Add symbols to the corresponding coordinates</span>
 <span class="n">xy_coords</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">atcoords</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span>
 
-<span class="n">symbols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;O&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">]</span>
+<span class="n">symbols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'O'</span><span class="p">,</span> <span class="s1">'C'</span><span class="p">,</span> <span class="s1">'H'</span><span class="p">,</span> <span class="s1">'H'</span><span class="p">]</span>
 
 <span class="k">for</span> <span class="n">coord</span><span class="p">,</span> <span class="n">symbol</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">xy_coords</span><span class="p">,</span> <span class="n">symbols</span><span class="p">):</span>
-    <span class="n">ax1</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">coord</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">coord</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">symbol</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span><span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">)</span>
+    <span class="n">ax1</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">coord</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">coord</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">symbol</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">'red'</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">'center'</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">'center'</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span><span class="n">fontweight</span><span class="o">=</span><span class="s1">'bold'</span><span class="p">)</span>
 
-<span class="n">ax1</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">'both'</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">'both'</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
 <span class="c1"># Adjust the limits to fit your data and set labels and title</span>
 <span class="n">ax1</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">((</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
 <span class="n">ax1</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">((</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
-<span class="n">ax1</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
-<span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
-<span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Interpolated Electron density for formaldehyde on the molecule plane&quot;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"X"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"Y"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Interpolated Electron density for formaldehyde on the molecule plane"</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -1047,7 +1048,7 @@ where <span class="math notranslate nohighlight">\(\alpha = 0.25\)</span> and <s
 
 <span class="c1"># define atomic grid at the center of the potential</span>
 <span class="n">btf</span> <span class="o">=</span> <span class="n">BeckeRTransform</span><span class="p">(</span><span class="mf">1.e-4</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">)</span>
-<span class="n">atgrid</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="o">.</span><span class="n">from_preset</span><span class="p">(</span><span class="n">atnum</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="s2">&quot;fine&quot;</span><span class="p">,</span> <span class="n">rgrid</span><span class="o">=</span><span class="n">rgrid</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="n">center</span><span class="p">)</span>
+<span class="n">atgrid</span> <span class="o">=</span> <span class="n">AtomGrid</span><span class="o">.</span><span class="n">from_preset</span><span class="p">(</span><span class="n">atnum</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="s2">"fine"</span><span class="p">,</span> <span class="n">rgrid</span><span class="o">=</span><span class="n">rgrid</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="n">center</span><span class="p">)</span>
 
 <span class="c1"># Evaluate unit-charge density on atomic grid points</span>
 <span class="n">func_vals</span> <span class="o">=</span> <span class="n">charge_distribution</span><span class="p">(</span><span class="n">atgrid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
@@ -1064,7 +1065,7 @@ where <span class="math notranslate nohighlight">\(\alpha = 0.25\)</span> and <s
 
 <span class="c1"># Calculate the error between actual and solved potential</span>
 <span class="n">err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">actual_potential</span><span class="p">(</span><span class="n">atgrid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span> <span class="o">-</span> <span class="n">potential_values</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">}</span><span class="s2">, Mean: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">}</span><span class="s2">, Std: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Max: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">}</span><span class="s2">, Mean: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">}</span><span class="s2">, Std: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="c1"># outputs Max: 1.932e-04, Mean: 5.998e-05, Std: 2.809e-05</span>
 </pre></div>
 </div>
@@ -1090,20 +1091,20 @@ where <span class="math notranslate nohighlight">\(\alpha = 0.25\)</span> and <s
 
 <span class="c1"># Calculate the Cartesian moments of the electron density</span>
 <span class="n">integrals</span><span class="p">,</span> <span class="n">orders</span> <span class="o">=</span> <span class="n">molgrid</span><span class="o">.</span><span class="n">moments</span><span class="p">(</span>
-    <span class="mi">1</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">type_mom</span><span class="o">=</span><span class="s2">&quot;cartesian&quot;</span><span class="p">,</span> <span class="n">return_orders</span><span class="o">=</span><span class="kc">True</span>
+    <span class="mi">1</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">type_mom</span><span class="o">=</span><span class="s2">"cartesian"</span><span class="p">,</span> <span class="n">return_orders</span><span class="o">=</span><span class="kc">True</span>
 <span class="p">)</span>
 <span class="c1"># calculate (X_a - X_c)**{n_x} (Y_a - Y_c)**{n_y} (Z_a - Z_c)**{n_z}</span>
 <span class="n">cent_pts_with_order</span> <span class="o">=</span> <span class="p">(</span><span class="n">atcoords_cent</span> <span class="o">**</span> <span class="n">orders</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">])</span>
 <span class="c1"># multiply over each corresponding moment axis (row)</span>
 <span class="n">cent_pts_with_order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">cent_pts_with_order</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="c1"># calculate Z_a (X_a - X_c)**{n_x} (Y_a - Y_c)**{n_y} (Z_a - Z_c)**{n_z}</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,j-&gt;i&quot;</span><span class="p">,</span> <span class="n">cent_pts_with_order</span><span class="p">,</span> <span class="n">atcharges</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">"ij,j-&gt;i"</span><span class="p">,</span> <span class="n">cent_pts_with_order</span><span class="p">,</span> <span class="n">atcharges</span><span class="p">)</span>
 
 <span class="c1"># sum electric dipole moment and remove [0,0,0] moment value</span>
 <span class="n">result</span> <span class="o">=</span> <span class="p">(</span><span class="n">result</span> <span class="o">-</span> <span class="n">integrals</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()[</span><span class="mi">1</span><span class="p">:]</span>
 
 <span class="c1"># Print dipole moment vector (should be the same as the dipole in FCHK file)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Dipole moment: &quot;</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Dipole moment: "</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
 <span class="c1"># ouputs -9.398e-01 -4.076e-04 -6.545e-06</span>
 </pre></div>
 </div>

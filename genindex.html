@@ -251,6 +251,7 @@
 <li class="toctree-l2"><a class="reference internal" href="pyapi/grid.onedgrid.html">grid.onedgrid module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyapi/grid.periodicgrid.html">grid.periodicgrid module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyapi/grid.poisson.html">grid.poisson module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyapi/grid.protransform.html">grid.protransform module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyapi/grid.robust_poisson.html">grid.robust_poisson module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyapi/grid.rtransform.html">grid.rtransform module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyapi/grid.utils.html">grid.utils module</a></li>
@@ -415,6 +416,7 @@
  | <a href="#G"><strong>G</strong></a>
  | <a href="#H"><strong>H</strong></a>
  | <a href="#I"><strong>I</strong></a>
+ | <a href="#J"><strong>J</strong></a>
  | <a href="#K"><strong>K</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
@@ -512,6 +514,8 @@
       <li><a href="pyapi/grid.coulomb.html#grid.coulomb.coulomb_gaussian_s">coulomb_gaussian_s() (in module grid.coulomb)</a>
 </li>
       <li><a href="pyapi/grid.coulomb.html#grid.coulomb.coulomb_potential">coulomb_potential() (in module grid.coulomb)</a>
+</li>
+      <li><a href="pyapi/grid.protransform.html#grid.protransform.CubicProTransform">CubicProTransform (class in grid.protransform)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -715,6 +719,8 @@
       </ul></li>
       <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.get_shell_grid">get_shell_grid() (grid.atomgrid.AtomGrid method)</a>
 </li>
+      <li><a href="pyapi/grid.protransform.html#grid.protransform.CubicProTransform.gradient_to_theta">gradient_to_theta() (grid.protransform.CubicProTransform method)</a>
+</li>
       <li>
     grid
 
@@ -818,6 +824,13 @@
 </li>
       </ul></li>
       <li>
+    grid.protransform
+
+      <ul>
+        <li><a href="pyapi/grid.protransform.html#module-grid.protransform">module</a>
+</li>
+      </ul></li>
+      <li>
     grid.robust_poisson
 
       <ul>
@@ -850,6 +863,8 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.protransform.html#grid.protransform.CubicProTransform.hessian">hessian() (grid.protransform.CubicProTransform method)</a>
+</li>
       <li><a href="pyapi/grid.hirshfeld.html#grid.hirshfeld.HirshfeldWeights">HirshfeldWeights (class in grid.hirshfeld)</a>
 </li>
       <li><a href="pyapi/grid.rtransform.html#grid.rtransform.HyperbolicRTransform">HyperbolicRTransform (class in grid.rtransform)</a>
@@ -875,6 +890,8 @@
       <ul>
         <li><a href="pyapi/grid.ngrid.html#grid.ngrid.MultiDomainGrid.integrate">(grid.ngrid.MultiDomainGrid method)</a>
 </li>
+        <li><a href="pyapi/grid.protransform.html#grid.protransform.CubicProTransform.integrate">(grid.protransform.CubicProTransform method)</a>
+</li>
       </ul></li>
       <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.integrate_angular_coordinates">integrate_angular_coordinates() (grid.atomgrid.AtomGrid method)</a>
 </li>
@@ -883,10 +900,14 @@
       <ul>
         <li><a href="pyapi/grid.molgrid.html#grid.molgrid.MolGrid.interpolate">(grid.molgrid.MolGrid method)</a>
 </li>
+        <li><a href="pyapi/grid.protransform.html#grid.protransform.CubicProTransform.interpolate">(grid.protransform.CubicProTransform method)</a>
+</li>
       </ul></li>
-      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BaseTransform.inverse">inverse() (grid.rtransform.BaseTransform method)</a>
+      <li><a href="pyapi/grid.protransform.html#grid.protransform.CubicProTransform.inverse">inverse() (grid.protransform.CubicProTransform method)</a>
 
       <ul>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BaseTransform.inverse">(grid.rtransform.BaseTransform method)</a>
+</li>
         <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BeckeRTransform.inverse">(grid.rtransform.BeckeRTransform method)</a>
 </li>
         <li><a href="pyapi/grid.rtransform.html#grid.rtransform.ExpRTransform.inverse">(grid.rtransform.ExpRTransform method)</a>
@@ -921,6 +942,14 @@
   </ul></td>
 </tr></table>
 
+<h2 id="J">J</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.protransform.html#grid.protransform.CubicProTransform.jacobian">jacobian() (grid.protransform.CubicProTransform method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="K">K</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -936,14 +965,16 @@
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.protransform.html#grid.protransform.CubicProTransform.l_bnd">l_bnd (grid.protransform.CubicProTransform property)</a>
+</li>
       <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.l_max">l_max (grid.atomgrid.AtomGrid property)</a>
 </li>
       <li><a href="pyapi/grid.rtransform.html#grid.rtransform.LinearFiniteRTransform">LinearFiniteRTransform (class in grid.rtransform)</a>
 </li>
-      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.LinearInfiniteRTransform">LinearInfiniteRTransform (class in grid.rtransform)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.LinearInfiniteRTransform">LinearInfiniteRTransform (class in grid.rtransform)</a>
+</li>
       <li><a href="pyapi/grid.coulomb.html#grid.coulomb.load_atomic_gaussian_params">load_atomic_gaussian_params() (in module grid.coulomb)</a>
 </li>
       <li><a href="pyapi/grid.basegrid.html#grid.basegrid.LocalGrid">LocalGrid (class in grid.basegrid)</a>
@@ -1001,6 +1032,8 @@
         <li><a href="pyapi/grid.periodicgrid.html#module-grid.periodicgrid">grid.periodicgrid</a>
 </li>
         <li><a href="pyapi/grid.poisson.html#module-grid.poisson">grid.poisson</a>
+</li>
+        <li><a href="pyapi/grid.protransform.html#module-grid.protransform">grid.protransform</a>
 </li>
         <li><a href="pyapi/grid.robust_poisson.html#module-grid.robust_poisson">grid.robust_poisson</a>
 </li>
@@ -1127,6 +1160,10 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="pyapi/grid.rtransform.html#grid.rtransform.PowerRTransform">PowerRTransform (class in grid.rtransform)</a>
 </li>
+      <li><a href="pyapi/grid.protransform.html#grid.protransform.CubicProTransform.prointegral">prointegral (grid.protransform.CubicProTransform property)</a>
+</li>
+      <li><a href="pyapi/grid.protransform.html#grid.protransform.CubicProTransform.promol">promol (grid.protransform.CubicProTransform property)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -1221,10 +1258,10 @@
 </li>
       <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.SingleArcSinhExp">SingleArcSinhExp (class in grid.onedgrid)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.SingleExp">SingleExp (class in grid.onedgrid)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.SingleTanh">SingleTanh (class in grid.onedgrid)</a>
 </li>
       <li><a href="pyapi/grid.basegrid.html#grid.basegrid.Grid.size">size (grid.basegrid.Grid property)</a>
@@ -1249,6 +1286,8 @@
 </li>
       <li><a href="pyapi/grid.atomgrid.html#grid.atomgrid.AtomGrid.spherical_average">spherical_average() (grid.atomgrid.AtomGrid method)</a>
 </li>
+      <li><a href="pyapi/grid.protransform.html#grid.protransform.CubicProTransform.steepest_ascent_theta">steepest_ascent_theta() (grid.protransform.CubicProTransform method)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -1259,9 +1298,11 @@
 </li>
       <li><a href="pyapi/grid.cubic.html#grid.cubic.Tensor1DGrids">Tensor1DGrids (class in grid.cubic)</a>
 </li>
-      <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BaseTransform.transform">transform() (grid.rtransform.BaseTransform method)</a>
+      <li><a href="pyapi/grid.protransform.html#grid.protransform.CubicProTransform.transform">transform() (grid.protransform.CubicProTransform method)</a>
 
       <ul>
+        <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BaseTransform.transform">(grid.rtransform.BaseTransform method)</a>
+</li>
         <li><a href="pyapi/grid.rtransform.html#grid.rtransform.BeckeRTransform.transform">(grid.rtransform.BeckeRTransform method)</a>
 </li>
         <li><a href="pyapi/grid.rtransform.html#grid.rtransform.ExpRTransform.transform">(grid.rtransform.ExpRTransform method)</a>
@@ -1311,10 +1352,12 @@
 <h2 id="U">U</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="pyapi/grid.cubic.html#grid.cubic.UniformGrid">UniformGrid (class in grid.cubic)</a>
+      <li><a href="pyapi/grid.protransform.html#grid.protransform.CubicProTransform.u_bnd">u_bnd (grid.protransform.CubicProTransform property)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyapi/grid.cubic.html#grid.cubic.UniformGrid">UniformGrid (class in grid.cubic)</a>
+</li>
       <li><a href="pyapi/grid.onedgrid.html#grid.onedgrid.UniformInteger">UniformInteger (class in grid.onedgrid)</a>
 </li>
   </ul></td>

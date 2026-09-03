@@ -258,6 +258,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.onedgrid.html">grid.onedgrid module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.periodicgrid.html">grid.periodicgrid module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.poisson.html">grid.poisson module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.protransform.html">grid.protransform module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.robust_poisson.html">grid.robust_poisson module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.rtransform.html">grid.rtransform module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.utils.html">grid.utils module</a></li>
@@ -551,7 +552,7 @@ read using the <a class="reference external" href="https://github.com/theochem/i
 
 <span class="c1"># # Download the example files</span>
 <span class="c1"># from urllib.request import urlretrieve</span>
-<span class="c1"># urlretrieve(&quot;https://raw.githubusercontent.com/theochem/grid/refs/heads/master/examples/ch2o_q%2B0.fchk&quot;,&quot;ch2o_q+0.fchk&quot;)</span>
+<span class="c1"># urlretrieve("https://raw.githubusercontent.com/theochem/grid/refs/heads/master/examples/ch2o_q%2B0.fchk","ch2o_q+0.fchk")</span>
 </pre></div>
 </div>
 </div>
@@ -566,10 +567,10 @@ read using the <a class="reference external" href="https://github.com/theochem/i
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">iodata</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_one</span>
 
-<span class="n">mol</span> <span class="o">=</span> <span class="n">load_one</span><span class="p">(</span><span class="s2">&quot;ch2o_q+0.fchk&quot;</span><span class="p">)</span>
+<span class="n">mol</span> <span class="o">=</span> <span class="n">load_one</span><span class="p">(</span><span class="s2">"ch2o_q+0.fchk"</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Coordinates of the atoms </span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">mol</span><span class="o">.</span><span class="n">atcoords</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Atomic numbers of the atom </span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">mol</span><span class="o">.</span><span class="n">atnums</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Coordinates of the atoms </span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">mol</span><span class="o">.</span><span class="n">atcoords</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Atomic numbers of the atom </span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">mol</span><span class="o">.</span><span class="n">atnums</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -593,10 +594,10 @@ Atomic numbers of the atom
 <span class="kn">from</span><span class="w"> </span><span class="nn">grid.rtransform</span><span class="w"> </span><span class="kn">import</span> <span class="n">BeckeRTransform</span>
 
 <span class="n">oned_grid</span> <span class="o">=</span> <span class="n">GaussLegendre</span><span class="p">(</span><span class="n">npoints</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;One-dimesional points </span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">oned_grid</span><span class="o">.</span><span class="n">points</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"One-dimesional points </span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">oned_grid</span><span class="o">.</span><span class="n">points</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="n">radial_grid</span> <span class="o">=</span> <span class="n">BeckeRTransform</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span><span class="o">.</span><span class="n">transform_1d_grid</span><span class="p">(</span><span class="n">oned_grid</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Transformed points </span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">radial_grid</span><span class="o">.</span><span class="n">points</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Transformed points </span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">radial_grid</span><span class="o">.</span><span class="n">points</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -640,7 +641,7 @@ Transformed points
     <span class="n">atnums</span><span class="o">=</span><span class="n">mol</span><span class="o">.</span><span class="n">atnums</span><span class="p">,</span>          <span class="c1"># The atomic numbers of Formaldehyde</span>
     <span class="n">atcoords</span><span class="o">=</span><span class="n">mol</span><span class="o">.</span><span class="n">atcoords</span><span class="p">,</span>      <span class="c1"># The atomic coordinates of Formaldehyde</span>
     <span class="n">rgrid</span><span class="o">=</span><span class="n">radial_grid</span><span class="p">,</span>          <span class="c1"># Radial grid used to construct atomic grids over each carbon, and hydrogen.</span>
-    <span class="n">preset</span><span class="o">=</span><span class="s2">&quot;fine&quot;</span><span class="p">,</span>              <span class="c1"># Controls the angular degree. Can be &quot;coarse&quot;, &quot;medium&quot;, &quot;fine&quot;, &quot;veryfine&quot;, &quot;ultrafine&quot;, &quot;insane&quot;.</span>
+    <span class="n">preset</span><span class="o">=</span><span class="s2">"fine"</span><span class="p">,</span>              <span class="c1"># Controls the angular degree. Can be "coarse", "medium", "fine", "veryfine", "ultrafine", "insane".</span>
     <span class="n">aim_weights</span><span class="o">=</span><span class="n">BeckeWeights</span><span class="p">(),</span> <span class="c1"># Atom-in molecular weights: Becke weights</span>
     <span class="n">store</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>                 <span class="c1"># Stores the individual atomic grids, used for interpolation.</span>
 <span class="p">)</span>
@@ -671,11 +672,11 @@ Transformed points
 <span class="n">basis</span> <span class="o">=</span> <span class="n">from_iodata</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
 
 <span class="c1"># Compute the electron density</span>
-<span class="n">rdm</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">one_rdms</span><span class="p">[</span><span class="s2">&quot;scf&quot;</span><span class="p">]</span>
+<span class="n">rdm</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">one_rdms</span><span class="p">[</span><span class="s2">"scf"</span><span class="p">]</span>
 <span class="n">dens</span> <span class="o">=</span> <span class="n">evaluate_density</span><span class="p">(</span><span class="n">rdm</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">mol_grid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
 
 <span class="c1"># Integrate using the molecular grid</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Integration of the electron density: </span><span class="si">{</span><span class="n">mol_grid</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">dens</span><span class="p">)</span><span class="si">:</span><span class="s2"> .6f</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Integration of the electron density: </span><span class="si">{</span><span class="n">mol_grid</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">dens</span><span class="p">)</span><span class="si">:</span><span class="s2"> .6f</span><span class="si">}</span><span class="s2">."</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -697,8 +698,8 @@ Transformed points
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Extract the atomic grid of the Oxygen atom</span>
 <span class="n">atom_index</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="n">o_grid</span> <span class="o">=</span> <span class="n">mol_grid</span><span class="o">.</span><span class="n">get_atomic_grid</span><span class="p">(</span><span class="n">atom_index</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">mol_grid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span><span class="si">}</span><span class="s2"> points in molecular grid&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">o_grid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span><span class="si">}</span><span class="s2"> points in atomic grid of atom </span><span class="si">{</span><span class="n">atom_index</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">mol_grid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span><span class="si">}</span><span class="s2"> points in molecular grid"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">o_grid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span><span class="si">}</span><span class="s2"> points in atomic grid of atom </span><span class="si">{</span><span class="n">atom_index</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># partition electron density into atomic electron densities (each point is assigned to an atom)</span>
 <span class="c1"># 1. Compute weighted electron density by Becke integration weights</span>
@@ -706,14 +707,14 @@ Transformed points
 <span class="c1"># 2. Get weighted electron density of points assigned to Oxygen atom</span>
 <span class="n">o_idcs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">mol_grid</span><span class="o">.</span><span class="n">indices</span><span class="p">[</span><span class="n">atom_index</span><span class="p">],</span> <span class="n">mol_grid</span><span class="o">.</span><span class="n">indices</span><span class="p">[</span><span class="n">atom_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
 <span class="n">o_dens</span> <span class="o">=</span> <span class="n">w_dens</span><span class="p">[</span><span class="n">o_idcs</span><span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shape of molecular electron density : </span><span class="si">{</span><span class="n">dens</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shape of atomic density of Oxygen   : </span><span class="si">{</span><span class="n">o_dens</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Shape of molecular electron density : </span><span class="si">{</span><span class="n">dens</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Shape of atomic density of Oxygen   : </span><span class="si">{</span><span class="n">o_dens</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># Integrate using the atomic grid</span>
 <span class="n">o_charge</span> <span class="o">=</span> <span class="n">o_grid</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">o_dens</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Integration of the Oxygen atom electron density on the Oxygen grid: </span><span class="si">{</span><span class="n">o_charge</span><span class="si">:</span><span class="s2"> .6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Atomic charge of the Oxygen atom (q = Z - N): </span><span class="si">{</span><span class="n">mol</span><span class="o">.</span><span class="n">atnums</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">o_charge</span><span class="si">:</span><span class="s2"> .6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Integration of the Oxygen atom electron density on the Oxygen grid: </span><span class="si">{</span><span class="n">o_charge</span><span class="si">:</span><span class="s2"> .6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Atomic charge of the Oxygen atom (q = Z - N): </span><span class="si">{</span><span class="n">mol</span><span class="o">.</span><span class="n">atnums</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">o_charge</span><span class="si">:</span><span class="s2"> .6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -752,7 +753,7 @@ Atomic charge of the Oxygen atom (q = Z - N): -0.213951
 <span class="c1"># Compute the interpolation error</span>
 <span class="n">err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">inter_vals</span> <span class="o">-</span> <span class="n">actual_vals</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span>
-    <span class="sa">f</span><span class="s2">&quot;Max Error=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">:</span><span class="s2"> .6f</span><span class="si">}</span><span class="s2">; Mean Error=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">:</span><span class="s2"> .6f</span><span class="si">}</span><span class="s2">; Std Dev Error=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">:</span><span class="s2"> .6f</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="sa">f</span><span class="s2">"Max Error=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">:</span><span class="s2"> .6f</span><span class="si">}</span><span class="s2">; Mean Error=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">:</span><span class="s2"> .6f</span><span class="si">}</span><span class="s2">; Std Dev Error=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">:</span><span class="s2"> .6f</span><span class="si">}</span><span class="s2">"</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -791,7 +792,7 @@ $<span class="math notranslate nohighlight">\(\tau_W (\textbf{r}) = \frac{1}{8} 
 <span class="c1"># Compute the interpolation error</span>
 <span class="n">err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">kinetic_dens</span> <span class="o">-</span> <span class="n">kinetic_interp</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span>
-    <span class="sa">f</span><span class="s2">&quot;Max Error=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">:</span><span class="s2"> .6f</span><span class="si">}</span><span class="s2">; Mean Error=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">:</span><span class="s2"> .6f</span><span class="si">}</span><span class="s2">; Std Dev Error=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">:</span><span class="s2"> .6f</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="sa">f</span><span class="s2">"Max Error=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">:</span><span class="s2"> .6f</span><span class="si">}</span><span class="s2">; Mean Error=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">:</span><span class="s2"> .6f</span><span class="si">}</span><span class="s2">; Std Dev Error=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">:</span><span class="s2"> .6f</span><span class="si">}</span><span class="s2">"</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -830,7 +831,7 @@ $<span class="math notranslate nohighlight">\(\Phi(\textbf{r}_1) = -\int \frac{\
     <span class="n">molgrid</span><span class="o">=</span><span class="n">mol_grid</span><span class="p">,</span>                      <span class="c1"># Provide the molecular density</span>
     <span class="n">func_vals</span><span class="o">=</span><span class="n">dens</span><span class="p">,</span>                        <span class="c1"># The charge distribution</span>
     <span class="n">transform</span><span class="o">=</span><span class="n">inverse_transf</span><span class="p">,</span>              <span class="c1"># Transformation to finite-interval</span>
-    <span class="n">include_origin</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>                  <span class="c1"># Don&#39;t include the origin r=0</span>
+    <span class="n">include_origin</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>                  <span class="c1"># Don't include the origin r=0</span>
     <span class="n">remove_large_pts</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span>                 <span class="c1"># Remove points with radius larger than 10</span>
 <span class="p">)</span>
 
@@ -847,7 +848,7 @@ $<span class="math notranslate nohighlight">\(\Phi(\textbf{r}_1) = -\int \frac{\
 <span class="c1"># Compute the interpolation error</span>
 <span class="n">err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">desired_potential</span> <span class="o">-</span> <span class="n">actual_potential</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span>
-    <span class="sa">f</span><span class="s2">&quot;Max Error=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">:</span><span class="s2"> .6f</span><span class="si">}</span><span class="s2">; Mean Error=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">:</span><span class="s2"> .6f</span><span class="si">}</span><span class="s2">; Std Dev Error=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">:</span><span class="s2"> .6f</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="sa">f</span><span class="s2">"Max Error=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">:</span><span class="s2"> .6f</span><span class="si">}</span><span class="s2">; Mean Error=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">:</span><span class="s2"> .6f</span><span class="si">}</span><span class="s2">; Std Dev Error=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">:</span><span class="s2"> .6f</span><span class="si">}</span><span class="s2">"</span>
 <span class="p">)</span>
 </pre></div>
 </div>

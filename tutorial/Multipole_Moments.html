@@ -254,6 +254,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.onedgrid.html">grid.onedgrid module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.periodicgrid.html">grid.periodicgrid module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.poisson.html">grid.poisson module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.protransform.html">grid.protransform module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.robust_poisson.html">grid.robust_poisson module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.rtransform.html">grid.rtransform module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.utils.html">grid.utils module</a></li>
@@ -532,7 +533,7 @@ for some function \)</span>f : \mathbb{R}^3\rightarrow \mathbb{R}<span class="ma
 
 <span class="c1"># # Download the example files</span>
 <span class="c1"># from urllib.request import urlretrieve</span>
-<span class="c1"># urlretrieve(&quot;https://raw.githubusercontent.com/theochem/grid/refs/heads/master/examples/ch2o_q%2B0.fchk&quot;,&quot;ch2o_q+0.fchk&quot;)</span>
+<span class="c1"># urlretrieve("https://raw.githubusercontent.com/theochem/grid/refs/heads/master/examples/ch2o_q%2B0.fchk","ch2o_q+0.fchk")</span>
 </pre></div>
 </div>
 </div>
@@ -542,14 +543,14 @@ for some function \)</span>f : \mathbb{R}^3\rightarrow \mathbb{R}<span class="ma
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">iodata</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_one</span>
 
-<span class="n">mol</span> <span class="o">=</span> <span class="n">load_one</span><span class="p">(</span><span class="s2">&quot;./ch2o_q+0.fchk&quot;</span><span class="p">)</span>
+<span class="n">mol</span> <span class="o">=</span> <span class="n">load_one</span><span class="p">(</span><span class="s2">"./ch2o_q+0.fchk"</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Dipole Moments &quot;</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">moments</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Dipole Moments "</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">moments</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Dipole Moments  {(1, &#39;c&#39;): array([-9.39793529e-01,  2.44832724e-08, -2.02253053e-07])}
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Dipole Moments  {(1, 'c'): array([-9.39793529e-01,  2.44832724e-08, -2.02253053e-07])}
 </pre></div>
 </div>
 </div>
@@ -591,16 +592,16 @@ for some function \)</span>f : \mathbb{R}^3\rightarrow \mathbb{R}<span class="ma
 <span class="n">basis</span> <span class="o">=</span> <span class="n">from_iodata</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
 
 <span class="c1"># Compute the electron density</span>
-<span class="n">rdm</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">one_rdms</span><span class="p">[</span><span class="s2">&quot;scf&quot;</span><span class="p">]</span>
+<span class="n">rdm</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">one_rdms</span><span class="p">[</span><span class="s2">"scf"</span><span class="p">]</span>
 <span class="n">electron_density</span> <span class="o">=</span> <span class="n">evaluate_density</span><span class="p">(</span><span class="n">rdm</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">mol_grid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
 
 <span class="n">true</span> <span class="o">=</span> <span class="n">dipole_moment_of_molecule</span><span class="p">(</span><span class="n">mol_grid</span><span class="p">,</span> <span class="n">electron_density</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">atcoords</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">atnums</span><span class="p">)</span>
-<span class="n">desired</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">moments</span><span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">)]</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Dipole moment calculated </span><span class="si">{</span><span class="n">true</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Dipole moment true </span><span class="si">{</span><span class="n">desired</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">desired</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">moments</span><span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">"c"</span><span class="p">)]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Dipole moment calculated </span><span class="si">{</span><span class="n">true</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Dipole moment true </span><span class="si">{</span><span class="n">desired</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="n">err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">true</span> <span class="o">-</span> <span class="n">desired</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mean error </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">}</span><span class="s2"> with maximum error </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Mean error </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">}</span><span class="s2"> with maximum error </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

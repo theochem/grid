@@ -258,6 +258,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.onedgrid.html">grid.onedgrid module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.periodicgrid.html">grid.periodicgrid module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.poisson.html">grid.poisson module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.protransform.html">grid.protransform module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.robust_poisson.html">grid.robust_poisson module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.rtransform.html">grid.rtransform module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pyapi/grid.utils.html">grid.utils module</a></li>
@@ -559,8 +560,8 @@ This example illustrates how to use these grid classes for both visualization, i
 
 # # Download the example files
 # from urllib.request import urlretrieve
-# urlretrieve(&quot;https://raw.githubusercontent.com/theochem/grid/refs/heads/master/examples/ch2o_q%2B1.fchk&quot;,&quot;ch2o_q+1.fchk&quot;)
-# urlretrieve(&quot;https://raw.githubusercontent.com/theochem/grid/refs/heads/master/examples/ch2o_q-1.fchk&quot;,&quot;ch2o_q-1.fchk&quot;)
+# urlretrieve("https://raw.githubusercontent.com/theochem/grid/refs/heads/master/examples/ch2o_q%2B1.fchk","ch2o_q+1.fchk")
+# urlretrieve("https://raw.githubusercontent.com/theochem/grid/refs/heads/master/examples/ch2o_q-1.fchk","ch2o_q-1.fchk")
 </pre></div>
 </div>
 </div>
@@ -605,13 +606,13 @@ tensor_grid = Tensor1DGrids(oned_gridx, oned_gridy, oned_gridz)
 from mpl_toolkits import mplot3d
 
 fig = plt.figure()
-ax = plt.axes(projection=&#39;3d&#39;)
-ax.scatter(oned_gridx.points, [0] *  len(oned_gridx.points), [0] *  len(oned_gridx.points), color=&quot;k&quot;, label=&quot;Points on x-axis&quot;)
-ax.scatter( [0] *  len(oned_gridy.points), oned_gridy.points, [0] *  len(oned_gridy.points), color=&quot;m&quot;, label=&quot;Points on y-axis&quot;)
-ax.scatter( [0] *  len(oned_gridz.points), [0] *  len(oned_gridz.points), oned_gridz.points , color=&quot;b&quot;, label=&quot;Points on z-axis&quot;)
-ax.set_xlabel(&quot;X-axis&quot;)
-ax.set_ylabel(&quot;Y-axis&quot;)
-ax.set_zlabel(&quot;Z-axis&quot;)
+ax = plt.axes(projection='3d')
+ax.scatter(oned_gridx.points, [0] *  len(oned_gridx.points), [0] *  len(oned_gridx.points), color="k", label="Points on x-axis")
+ax.scatter( [0] *  len(oned_gridy.points), oned_gridy.points, [0] *  len(oned_gridy.points), color="m", label="Points on y-axis")
+ax.scatter( [0] *  len(oned_gridz.points), [0] *  len(oned_gridz.points), oned_gridz.points , color="b", label="Points on z-axis")
+ax.set_xlabel("X-axis")
+ax.set_ylabel("Y-axis")
+ax.set_zlabel("Z-axis")
 plt.legend()
 plt.show()
 </pre></div>
@@ -625,26 +626,26 @@ plt.show()
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>fig = plt.figure()
-ax = plt.axes(projection=&#39;3d&#39;)
-ax.scatter(tensor_grid.points[:, 0], tensor_grid.points[:, 1], tensor_grid.points[:, 2], color=&quot;m&quot;, alpha=0.01)
-ax.set_xlabel(&quot;X-axis&quot;)
-ax.set_ylabel(&quot;Y-axis&quot;)
-ax.set_zlabel(&quot;Z-axis&quot;)
-plt.title(&quot;Tensor Product of Three One-Dimensional Grids&quot;)
+ax = plt.axes(projection='3d')
+ax.scatter(tensor_grid.points[:, 0], tensor_grid.points[:, 1], tensor_grid.points[:, 2], color="m", alpha=0.01)
+ax.set_xlabel("X-axis")
+ax.set_ylabel("Y-axis")
+ax.set_zlabel("Z-axis")
+plt.title("Tensor Product of Three One-Dimensional Grids")
 plt.show()
 
-print(f&quot;Points of the grid: {tensor_grid.points}&quot;)
-print(f&quot;Weights of the grid: {tensor_grid.weights}.&quot;)
-print(f&quot;The number of points: {tensor_grid.size}&quot;)
-print(f&quot;The number of dimensions: {tensor_grid.ndim}.&quot;)
-print(f&quot;The origin of the grid: {tensor_grid.origin}.&quot;)
-print(f&quot;The shape of the grid: {tensor_grid.shape}.&quot;)
+print(f"Points of the grid: {tensor_grid.points}")
+print(f"Weights of the grid: {tensor_grid.weights}.")
+print(f"The number of points: {tensor_grid.size}")
+print(f"The number of dimensions: {tensor_grid.ndim}.")
+print(f"The origin of the grid: {tensor_grid.origin}.")
+print(f"The shape of the grid: {tensor_grid.shape}.")
 
 # Conversion from indices i to coordinates (i, j, k) to points
 coordinate = tensor_grid.index_to_coordinates(5)
-print(f&quot;Coordinate of the fifth point: {coordinate}.&quot;)
+print(f"Coordinate of the fifth point: {coordinate}.")
 index = tensor_grid.coordinates_to_index((0, 0, 5))
-print(f&quot;Index of the (0, 0, 5) coordinate: {index}.&quot;)
+print(f"Index of the (0, 0, 5) coordinate: {index}.")
 </pre></div>
 </div>
 </div>
@@ -681,25 +682,25 @@ gaus_vals = gaussian(tensor_grid.points)
 subset = tensor_grid.points[np.random.choice(range(tensor_grid.size), 10)]
 true_vals = gaussian(subset)
 
-print(&quot;Interpolate using linear method.&quot;)
-interpol = tensor_grid.interpolate(subset, gaus_vals, use_log=False, method=&quot;linear&quot;)
-print(&quot;The errors are: &quot;, np.abs(interpol - true_vals))
-print(f&quot;Maximum error is {np.max(np.abs(interpol - true_vals))} \n&quot;)
+print("Interpolate using linear method.")
+interpol = tensor_grid.interpolate(subset, gaus_vals, use_log=False, method="linear")
+print("The errors are: ", np.abs(interpol - true_vals))
+print(f"Maximum error is {np.max(np.abs(interpol - true_vals))} \n")
 
-print(&quot;Interpolate using linear method applying the logarithm.&quot;)
-interpol = tensor_grid.interpolate(subset, gaus_vals, use_log=True, method=&quot;linear&quot;)
-print(&quot;The errors are: &quot;, np.abs(interpol - true_vals))
-print(f&quot;Maximum error is {np.max(np.abs(interpol - true_vals))} \n&quot;)
+print("Interpolate using linear method applying the logarithm.")
+interpol = tensor_grid.interpolate(subset, gaus_vals, use_log=True, method="linear")
+print("The errors are: ", np.abs(interpol - true_vals))
+print(f"Maximum error is {np.max(np.abs(interpol - true_vals))} \n")
 
-print(&quot;Interpolate using cubic splines&quot;)
-interpol = tensor_grid.interpolate(subset, gaus_vals, use_log=False, method=&quot;cubic&quot;)
-print(&quot;The errors are: &quot;, np.abs(interpol - true_vals))
-print(f&quot;Maximum error is {np.max(np.abs(interpol - true_vals))} \n&quot;)
+print("Interpolate using cubic splines")
+interpol = tensor_grid.interpolate(subset, gaus_vals, use_log=False, method="cubic")
+print("The errors are: ", np.abs(interpol - true_vals))
+print(f"Maximum error is {np.max(np.abs(interpol - true_vals))} \n")
 
-print(&quot;Inteprolate using cubic splines appling the logarithm&quot;)
-interpol = tensor_grid.interpolate(subset, gaus_vals, use_log=True, method=&quot;cubic&quot;)
-print(&quot;The errors are: &quot;, np.abs(interpol - true_vals))
-print(f&quot;Maximum error is {np.max(np.abs(interpol - true_vals))} \n&quot;)
+print("Inteprolate using cubic splines appling the logarithm")
+interpol = tensor_grid.interpolate(subset, gaus_vals, use_log=True, method="cubic")
+print("The errors are: ", np.abs(interpol - true_vals))
+print(f"Maximum error is {np.max(np.abs(interpol - true_vals))} \n")
 </pre></div>
 </div>
 </div>
@@ -730,25 +731,25 @@ Maximum error is 0.0
 random_pts = np.random.uniform(-1, 1, (25, 3))
 true_vals = gaussian(random_pts)
 
-print(&quot;Interpolate using linear method.&quot;)
-interpol = tensor_grid.interpolate(random_pts, gaus_vals, use_log=False, method=&quot;linear&quot;)
-print(&quot;The errors are: &quot;, np.abs(interpol - true_vals))
-print(f&quot;Maximum error is {np.max(np.abs(interpol - true_vals))} \n&quot;)
+print("Interpolate using linear method.")
+interpol = tensor_grid.interpolate(random_pts, gaus_vals, use_log=False, method="linear")
+print("The errors are: ", np.abs(interpol - true_vals))
+print(f"Maximum error is {np.max(np.abs(interpol - true_vals))} \n")
 # The logarithm is first applied to the Gaussian functions to be easier to interpolate at.
-print(&quot;Interpolate using linear method applying the logarithm.&quot;)
-interpol = tensor_grid.interpolate(random_pts, gaus_vals, use_log=True, method=&quot;linear&quot;)
-print(&quot;The errors are: &quot;, np.abs(interpol - true_vals))
-print(f&quot;Maximum error is {np.max(np.abs(interpol - true_vals))} \n&quot;)
+print("Interpolate using linear method applying the logarithm.")
+interpol = tensor_grid.interpolate(random_pts, gaus_vals, use_log=True, method="linear")
+print("The errors are: ", np.abs(interpol - true_vals))
+print(f"Maximum error is {np.max(np.abs(interpol - true_vals))} \n")
 # Rather then interpolate using linearly, this used the cubic
-print(&quot;Interpolate using cubic splines&quot;)
-interpol = tensor_grid.interpolate(random_pts, gaus_vals, use_log=False, method=&quot;cubic&quot;)
-print(&quot;The errors are: &quot;, np.abs(interpol - true_vals))
-print(f&quot;Maximum error is {np.max(np.abs(interpol - true_vals))} \n&quot;)
+print("Interpolate using cubic splines")
+interpol = tensor_grid.interpolate(random_pts, gaus_vals, use_log=False, method="cubic")
+print("The errors are: ", np.abs(interpol - true_vals))
+print(f"Maximum error is {np.max(np.abs(interpol - true_vals))} \n")
 # Same as above but the logarithm is applied.
-print(&quot;Inteprolate using cubic splines appling the logarithm&quot;)
-interpol = tensor_grid.interpolate(random_pts, gaus_vals, use_log=True, method=&quot;cubic&quot;)
-print(&quot;The errors are: &quot;, np.abs(interpol - true_vals))
-print(f&quot;Maximum error is {np.max(np.abs(interpol - true_vals))} \n&quot;)
+print("Inteprolate using cubic splines appling the logarithm")
+interpol = tensor_grid.interpolate(random_pts, gaus_vals, use_log=True, method="cubic")
+print("The errors are: ", np.abs(interpol - true_vals))
+print(f"Maximum error is {np.max(np.abs(interpol - true_vals))} \n")
 </pre></div>
 </div>
 </div>
@@ -796,20 +797,20 @@ Maximum error is 1.6653345369377348e-16
 <div class="cell_input docutils container">
 <div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span># Derivative can be interpolated
 # X-derivative
-deriv_x = tensor_grid.interpolate(random_pts, gaus_vals, use_log=False, nu_x=1, nu_y=0, nu_z=0, method=&quot;cubic&quot;)
-print(f&quot;Derivative in x-direction {deriv_x}.&quot;)
+deriv_x = tensor_grid.interpolate(random_pts, gaus_vals, use_log=False, nu_x=1, nu_y=0, nu_z=0, method="cubic")
+print(f"Derivative in x-direction {deriv_x}.")
 # Y-derivative
-deriv_y = tensor_grid.interpolate(random_pts, gaus_vals, use_log=False, nu_x=0, nu_y=1, nu_z=0, method=&quot;cubic&quot;)
+deriv_y = tensor_grid.interpolate(random_pts, gaus_vals, use_log=False, nu_x=0, nu_y=1, nu_z=0, method="cubic")
 # Z-derivative
-deriv_z = tensor_grid.interpolate(random_pts, gaus_vals, use_log=False, nu_x=0, nu_y=0, nu_z=1, method=&quot;cubic&quot;)
+deriv_z = tensor_grid.interpolate(random_pts, gaus_vals, use_log=False, nu_x=0, nu_y=0, nu_z=1, method="cubic")
 # XY- derivative
-deriv_xy = tensor_grid.interpolate(random_pts, gaus_vals, use_log=False, nu_x=1, nu_y=1, nu_z=0, method=&quot;cubic&quot;)
+deriv_xy = tensor_grid.interpolate(random_pts, gaus_vals, use_log=False, nu_x=1, nu_y=1, nu_z=0, method="cubic")
 # The logarithm can be used to interpolate derivatives on single points only (mixed derivative are not supported)
 derivs = []
 for pt in random_pts:
-    deriv_x = tensor_grid.interpolate(np.array([pt]), gaus_vals, use_log=True, nu_x=1, nu_y=0, nu_z=0, method=&quot;cubic&quot;)
+    deriv_x = tensor_grid.interpolate(np.array([pt]), gaus_vals, use_log=True, nu_x=1, nu_y=0, nu_z=0, method="cubic")
     derivs.append(deriv_x[0])
-print(f&quot;Derivative (using logarithm) in x-direction {np.array(derivs)}.&quot;)
+print(f"Derivative (using logarithm) in x-direction {np.array(derivs)}.")
 </pre></div>
 </div>
 </div>
@@ -840,7 +841,7 @@ Derivative (using logarithm) in x-direction [ 0.30673882  0.24715189 -0.1054587 
 def plot_isosurface(
     grid, vals, isovalue, *, both_signs=True, at_data=None, noticks=False, title=None
 ):
-    &quot;&quot;&quot;Plot grid points with values bigger than isovalue.
+    """Plot grid points with values bigger than isovalue.
 
     The function plots the grid points with absolute values bigger than isovalue.
 
@@ -861,7 +862,7 @@ def plot_isosurface(
         bohr and atlabels is a list of length natoms containing the atomic labels.
     title : str, optional
         Title of the plot. The default is None.
-    &quot;&quot;&quot;
+    """
     # indices of points with values close to isovalue
     idx_p_vals = np.where(vals &gt; isovalue)
     idx_n_vals = np.where(vals &lt; -isovalue)
@@ -875,7 +876,7 @@ def plot_isosurface(
     zmin, zmax = np.min(grid.points[:, 2]), np.max(grid.points[:, 2])
 
     fig = plt.figure()
-    ax = plt.axes(projection=&quot;3d&quot;)
+    ax = plt.axes(projection="3d")
     if noticks:
         ax.set_xticks([])
         ax.set_yticks([])
@@ -883,11 +884,11 @@ def plot_isosurface(
 
     if at_data is not None:
         if len(at_data) != 2:
-            raise ValueError(&quot;at_data should be a tuple containing (atcoords, atlabels)&quot;)
+            raise ValueError("at_data should be a tuple containing (atcoords, atlabels)")
 
         atcoords, atlabels = at_data
         if atcoords.shape[0] != len(atlabels):
-            raise ValueError(&quot;atcoords and atlabels should have the same length&quot;)
+            raise ValueError("atcoords and atlabels should have the same length")
 
         # if there are more than 2 atoms set the view point perpendicular to the molecular plane
         if len(atlabels) &gt; 2:
@@ -912,10 +913,10 @@ def plot_isosurface(
                 atcoords[i, 1],
                 atcoords[i, 2],
                 atlabels[i],
-                color=&quot;k&quot;,
+                color="k",
                 fontsize=12,
-                horizontalalignment=&quot;center&quot;,
-                verticalalignment=&quot;center&quot;,
+                horizontalalignment="center",
+                verticalalignment="center",
             )
     # set axis limits
     ax.set_xlim((xmin, xmax))
@@ -924,13 +925,13 @@ def plot_isosurface(
     
     # plot points with values bigger than isovalue
     ax.scatter(
-        p_pts[:, 0], p_pts[:, 1], p_pts[:, 2], alpha=0.01, color=&quot;r&quot;, label=f&quot;Positive values&quot;
+        p_pts[:, 0], p_pts[:, 1], p_pts[:, 2], alpha=0.01, color="r", label=f"Positive values"
     )
     if both_signs:
         ax.scatter(
-            n_pts[:, 0], n_pts[:, 1], n_pts[:, 2], alpha=0.01, color=&quot;b&quot;, label=f&quot;Negative values&quot;
+            n_pts[:, 0], n_pts[:, 1], n_pts[:, 2], alpha=0.01, color="b", label=f"Negative values"
         )
-    legend = plt.legend(loc=&quot;upper right&quot;)
+    legend = plt.legend(loc="upper right")
     for lh in legend.get_lines():
         lh.set_alpha(1)
     if title is not None:
@@ -960,7 +961,7 @@ psi_vals = psi_2pz(*tensor_grid.points.T, a_0=1.0)
 point_idx = target_x = 0.15
 tolerance = 1e-2
 
-plot_isosurface(tensor_grid, psi_vals, target_x, title=&quot;$2p_{z}$ Isosurface (0.15 a.u.)&quot;)
+plot_isosurface(tensor_grid, psi_vals, target_x, title="$2p_{z}$ Isosurface (0.15 a.u.)")
 </pre></div>
 </div>
 </div>
@@ -983,21 +984,21 @@ The easiest method to do so is the “from_molecule” method.  This example wil
 <div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>from iodata import load_one
 
 # Load the wavefunction information about ch2o
-mol_anion = load_one(&quot;ch2o_q-1.fchk&quot;)
+mol_anion = load_one("ch2o_q-1.fchk")
 
 # Get the atomic coordinates and numbers
 atcoords = mol_anion.atcoords
 atnums = mol_anion.atnums
-print(f&quot;Atomic Coordinates \n {atcoords}&quot;)
-print(f&quot;Atomic Numbers: \n {atnums}&quot;)
+print(f"Atomic Coordinates \n {atcoords}")
+print(f"Atomic Numbers: \n {atnums}")
 
 fig = plt.figure()
-ax = plt.axes(projection=&#39;3d&#39;)
-ax.scatter(atcoords[:, 0], atcoords[:, 1], atcoords[:, 2], color=&quot;k&quot;, s=50)
-ax.set_xlabel(&quot;X-axis&quot;)
-ax.set_ylabel(&quot;Y-axis&quot;)
-ax.set_zlabel(&quot;Z-axis&quot;)
-plt.title(&quot;Atomic coordinates of Formaldehyde.&quot;)
+ax = plt.axes(projection='3d')
+ax.scatter(atcoords[:, 0], atcoords[:, 1], atcoords[:, 2], color="k", s=50)
+ax.set_xlabel("X-axis")
+ax.set_ylabel("Y-axis")
+ax.set_zlabel("Z-axis")
+plt.title("Atomic coordinates of Formaldehyde.")
 plt.show()
 </pre></div>
 </div>
@@ -1023,21 +1024,21 @@ Atomic Numbers:
 uniform_grid = UniformGrid.from_molecule(atnums, atcoords, spacing=0.1, extension=2.0, rotate=True)
 
 
-print(f&quot;The number of points: {uniform_grid.size}&quot;)
-print(f&quot;The number of dimensions: {uniform_grid.ndim}.&quot;)
-print(f&quot;The shape of the grid: {uniform_grid.shape}.&quot;)
-print(f&quot;The origin of the grid: {uniform_grid.origin}.&quot;)
-print(f&quot;The axes of the grid: {uniform_grid.axes}.&quot;)
+print(f"The number of points: {uniform_grid.size}")
+print(f"The number of dimensions: {uniform_grid.ndim}.")
+print(f"The shape of the grid: {uniform_grid.shape}.")
+print(f"The origin of the grid: {uniform_grid.origin}.")
+print(f"The axes of the grid: {uniform_grid.axes}.")
 
 
 fig = plt.figure()
-ax = plt.axes(projection=&#39;3d&#39;)
-ax.scatter(atcoords[:, 0], atcoords[:, 1], atcoords[:, 2], color=&quot;k&quot;, s=50)
-ax.scatter(uniform_grid.points[:, 0], uniform_grid.points[:, 1], uniform_grid.points[:, 2], color=&quot;m&quot;, alpha=0.01)
-ax.set_xlabel(&quot;X-axis&quot;)
-ax.set_ylabel(&quot;Y-axis&quot;)
-ax.set_zlabel(&quot;Z-axis&quot;)
-plt.title(&quot;Atomic coordinates of Formaldehyde.&quot;)
+ax = plt.axes(projection='3d')
+ax.scatter(atcoords[:, 0], atcoords[:, 1], atcoords[:, 2], color="k", s=50)
+ax.scatter(uniform_grid.points[:, 0], uniform_grid.points[:, 1], uniform_grid.points[:, 2], color="m", alpha=0.01)
+ax.set_xlabel("X-axis")
+ax.set_ylabel("Y-axis")
+ax.set_zlabel("Z-axis")
+plt.title("Atomic coordinates of Formaldehyde.")
 plt.show()
 </pre></div>
 </div>
@@ -1078,7 +1079,7 @@ The axes of the grid: [[ 0.00000000e+00  0.00000000e+00  1.00000000e-01]
 
 # define function to compute dual descriptor on a grid
 def compute_dual_descriptor(grid, rdm_an, rdm_cat, basis_an, basis_cat):
-    &quot;&quot;&quot;Compute dual descriptor on a grid.
+    """Compute dual descriptor on a grid.
 
     Parameters
     ----------
@@ -1092,7 +1093,7 @@ def compute_dual_descriptor(grid, rdm_an, rdm_cat, basis_an, basis_cat):
         Basis set of the anion.
     basis_cat : list
         Basis set of the cation.
-    &quot;&quot;&quot;
+    """
     # evaluate electron density of cation and anion on the grid
     dens_vals_cat = evaluate_density(rdm_cat, basis_cat, grid.points)
     dens_vals_an = evaluate_density(rdm_an, basis_an, grid.points)
@@ -1112,27 +1113,27 @@ def compute_dual_descriptor(grid, rdm_an, rdm_cat, basis_an, basis_cat):
 from gbasis.wrappers import from_iodata
 
 # load formaldehyde cation and anion fchk files
-mol_cation = load_one(&quot;ch2o_q+1.fchk&quot;)
+mol_cation = load_one("ch2o_q+1.fchk")
 
 # Construct molecular basis from wave-function information read by IOData
 basis_cat = from_iodata(mol_cation)
 basis_an = from_iodata(mol_anion)
 
 # get rdms for cation and anion
-rdm_cat = mol_cation.one_rdms[&quot;scf&quot;]
-rdm_an = mol_anion.one_rdms[&quot;scf&quot;]
+rdm_cat = mol_cation.one_rdms["scf"]
+rdm_an = mol_anion.one_rdms["scf"]
 
 # compute dual descriptor on the grid
 dd = compute_dual_descriptor(uniform_grid, rdm_an, rdm_cat, basis_an, basis_cat)
 
 # plot dual descriptor isosurface
-mol_data = (atcoords, [&quot;O&quot;, &quot;C&quot;, &quot;H&quot;, &quot;H&quot;])
+mol_data = (atcoords, ["O", "C", "H", "H"])
 plot_isosurface(
-    uniform_grid, dd, 0.03, at_data=mol_data, title=&quot;Dual Descriptor Isosurface&quot;, noticks=True
+    uniform_grid, dd, 0.03, at_data=mol_data, title="Dual Descriptor Isosurface", noticks=True
 )
 
-print(f&quot;Positive values (red) correspond to nucleophilic regions&quot;)
-print(f&quot;Negative values (blue) correspond to electrophilic regions&quot;)
+print(f"Positive values (red) correspond to nucleophilic regions")
+print(f"Negative values (blue) correspond to electrophilic regions")
 </pre></div>
 </div>
 </div>
@@ -1161,7 +1162,7 @@ from scipy.sparse.csgraph import connected_components
 # function to get grid points indices for same sign connected points with absolute
 # value  greater than a threshold (select domain defined by isovalue)
 def get_domains(grid, vals, isovalue):
-    &quot;&quot;&quot;Get grid points indices for domains with same sign connected points.
+    """Get grid points indices for domains with same sign connected points.
 
     The function returns the indices of the grid points that belong to the same domain. A domain
     is defined by a set of connected points with the same sign and absolute value greater than
@@ -1182,7 +1183,7 @@ def get_domains(grid, vals, isovalue):
         Tuple containing two lists. The first list contains domains with positive values and the
         second list contains domains with negative values. Each domain is a np.array with the
         indexes of the grid points that belong to the same domain.
-    &quot;&quot;&quot;
+    """
     # indices of points with value modulus greater than isovalue
     idx_p_vals = np.where(vals &gt; isovalue)[0]  # positive values
     idx_n_vals = np.where(vals &lt; -isovalue)[0]  # negative values
@@ -1253,7 +1254,7 @@ p_domains, n_domains = get_domains(uniform_grid, dd, 0.03)
         domain_vals,
         0.001,
         at_data=mol_data,
-        title=f&quot;Domain   Integral: {uniform_grid.integrate(domain_vals):.3f}&quot;,
+        title=f"Domain   Integral: {uniform_grid.integrate(domain_vals):.3f}",
         noticks=True,
     )
 </pre></div>
@@ -1283,7 +1284,7 @@ p_domains, n_domains = get_domains(uniform_grid, dd, 0.03)
         domain_vals,
         0.001,
         at_data=mol_data,
-        title=f&quot;Domain Integral: {uniform_grid.integrate(domain_vals):.3f}&quot;,
+        title=f"Domain Integral: {uniform_grid.integrate(domain_vals):.3f}",
         noticks=True,
     )
 </pre></div>
