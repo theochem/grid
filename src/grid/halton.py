@@ -101,7 +101,9 @@ class Halton(Grid):
         # Map unit-cube points onto the parallelepiped.
         points = origin + points @ axes.T
 
-        weights = np.full(self._n_points, 1.0 / self._n_points)
+        weights = np.full(
+            self._n_points, abs(np.linalg.det(axes)) / self._n_points
+        )
 
         super().__init__(points, weights)
 
