@@ -579,6 +579,14 @@ class TestOneDGrid(TestCase):
         assert_allclose(grid.points, new.points)
         assert_allclose(grid.weights, new.weights)
 
+    def test_TrefethenGeneral_quadrature_params(self):
+        """Test for Trefethen - new quadrature params variable."""
+        grid = TrefethenGeneral(11, TanhSinh, 1)
+        new =  TrefethenGeneral(11, TanhSinh, 1, **{"delta":0.1})
+
+        assert_allclose(grid.points, new.points)
+        assert_allclose(grid.weights, new.weights)
+        
     def test_AuxiliarTrefethenStrip(self):
         """Test for Auxiliary functions using in Trefethen Strip."""
         xref = np.array([-1.0, 0.0, 1.0])
