@@ -700,9 +700,9 @@ class FejerFirst(OneDGrid):
         points = np.cos(theta)
 
         nsum = npoints // 2
-        j = np.arange(nsum - 1) + 1
+        j = np.arange(nsum) + 1
 
-        bj = 2.0 * np.ones(nsum - 1) / (4 * j**2 - 1)
+        bj = 2.0 * np.ones(nsum) / (4 * j**2 - 1)
         cij = np.cos(np.outer(2 * j, theta))
         di = bj @ cij
         weights = 1 - di
@@ -754,9 +754,9 @@ class FejerSecond(OneDGrid):
         points = np.cos(theta)
 
         nsum = (npoints + 1) // 2
-        j = np.arange(nsum - 1) + 1
+        j = np.arange(nsum) + 1
 
-        bj = np.ones(nsum - 1) / (2 * j - 1)
+        bj = np.ones(nsum) / (2 * j - 1)
         sij = np.sin(np.outer(2 * j - 1, theta))
         wi = bj @ sij
         weights = 4 * np.sin(theta) * wi
