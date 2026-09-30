@@ -972,7 +972,7 @@ def generate_orders_horton_order(order: int, type_ord: str, dim: int = 3):
             for m_x in range(order, -1, -1):
                 orders.append([m_x, order - m_x])
         elif dim == 1:
-            return np.arange(0, order + 1, dtype=np.int)
+            return np.array([[order]])
         else:
             raise ValueError(f"dim {dim} parameter should be either 1, 2, 3.")
     elif type_ord == "radial":

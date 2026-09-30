@@ -103,6 +103,21 @@ class TestGrid(TestCase):
         assert_allclose(localgrid.weights, self.grid.weights)
         assert_allclose(localgrid.indices, np.arange(self.grid.size))
 
+    def test_moments_cartesian(self):
+        """Test Grid.moments with cartesian orders works regardless of dimension."""
+        if self._ref_points.ndim != 2:
+            # `moments` currently requires points to be stored as a 2D array (N, M).
+            return
+        dim = self._ref_points.shape[1]
+        center = np.zeros((1, dim))
+        func_vals = np.ones(self.grid.size)
+        result, orders = self.grid.moments(2, center, func_vals, "cartesian", return_orders=True)
+        assert result.shape[0] == orders.shape[0]
+        assert orders.shape[1] == dim
+        # the zeroth order moment should equal the integral of func_vals
+        zeroth_order_index = np.argwhere(np.all(orders == 0, axis=1))[0, 0]
+        assert_allclose(result[zeroth_order_index], self.grid.integrate(func_vals))
+
     def test_errors_raise(self):
         """Test errors raise."""
         # grid init

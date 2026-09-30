@@ -29,6 +29,7 @@ from grid.angular import AngularGrid
 from grid.utils import (
     convert_cart_to_sph,
     generate_derivative_real_spherical_harmonics,
+    generate_orders_horton_order,
     generate_real_spherical_harmonics,
     generate_real_spherical_harmonics_scipy,
     get_cov_radii,
@@ -342,3 +343,21 @@ def test_regular_solid_spherical_harmonics():
     assert_allclose(result[9], z * (5 * z**2 - 3 * r**2) / 2)
     # l=4, m=4
     assert_allclose(result[13], np.sqrt(15) * x * y * z)
+
+
+def test_generate_orders_horton_order_cartesian_dim_1():
+    r"""Test generate_orders_horton_order for Cartesian orders with dim=1."""
+    for order in range(0, 5):
+        result = generate_orders_horton_order(order, "cartesian", dim=1)
+        assert_equal(result, np.array([[order]]))
+
+
+@pytest.mark.parametrize("dim, expected", [(2, [[2, 0], [1, 1], [0, 2]]), (3, None)])
+def test_generate_orders_horton_order_cartesian_dim_2_3(dim, expected):
+    r"""Test generate_orders_horton_order for Cartesian orders with dim=2 and dim=3."""
+    result = generate_orders_horton_order(2, "cartesian", dim=dim)
+    if expected is not None:
+        assert_equal(result, np.array(expected))
+    else:
+        assert_equal(np.sum(result, axis=1), np.full(len(result), 2))
+        assert result.shape[1] == 3
