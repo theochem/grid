@@ -463,7 +463,7 @@ class TestOneDGrid(TestCase):
         for k in range(0, 10):
             serie = 0
 
-            for m in range(1, nsum):
+            for m in range(1, nsum + 1):
                 serie += np.sin((2 * m - 1) * theta[k]) / (2 * m - 1)
 
             weights[k] = (4 * np.sin(theta[k]) / 11) * serie
