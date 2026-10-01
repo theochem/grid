@@ -474,6 +474,23 @@ class TestOneDGrid(TestCase):
         assert_allclose(grid.points, points)
         assert_allclose(grid.weights, weights)
 
+    def test_fejer_polynomial_exactness(self):
+        """Test polynomial exactness of Fejer quadrature rules."""
+        for grid_class in (FejerFirst, FejerSecond):
+            for npoints in range(2, 16):
+                grid = grid_class(npoints)
+
+                for degree in range(npoints):
+                    result = grid.integrate(grid.points**degree)
+                    # even polynomials: integral of x^n over [-1, 1] is 2/(n+1)
+                    if degree % 2 == 0:
+                        expected = 2.0 / (degree + 1)
+                    # odd polynomials: integral of x^n over [-1, 1] is 0 (asymmetric function)
+                    else:
+                        expected = 0.0
+
+                    assert_allclose(result, expected, rtol=1e-12, atol=1e-12)
+
     def test_AuxiliarTrefethenSausage(self):
         """Test for Auxiliary functions using in Trefethen Sausage."""
         xref = np.array([-1.0, 0.0, 1.0])

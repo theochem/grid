@@ -669,7 +669,7 @@ class FejerFirst(OneDGrid):
         \theta_i &= \frac{(2i - 1)\pi}{2n}, \\
         x_i &= \cos(\theta_i), \\
         w_i &= \frac{2}{n}\bigg(1 - 2 \sum_{j=1}^{\lfloor n/2 \rfloor}
-            \frac{\cos(2j \theta_j)}{4 j^2 - 1} \bigg),
+            \frac{\cos(2j \theta_i)}{4 j^2 - 1} \bigg),
 
     where :math:`i=1,\cdots, n` and :math:`n` is the number of quadrature points. It uses the zeros
     of the Chebyshev polynomial. If discontinuous, it is recommended to break the intervals at the
@@ -724,7 +724,7 @@ class FejerSecond(OneDGrid):
         \theta_i &= \frac{i\pi}{n + 1} \\
         x_i &= \cos(\theta_i) \\
         w_i &= \frac{4 \sin(\theta_i)}{n + 1} \sum_{j=1}^{\lfloor (n + 1)/2 \rfloor}
-            \frac{\sin(2j - 1)\theta_i}{2j - 1}\\
+            \frac{\sin((2j - 1)\theta_i)}{2j - 1}\\
 
     where :math:`i = 1, \ldots, n` and :math:`n` is the number of quadrature
     points. This method is considered more practical than the first method.  If discontinuous, it is
