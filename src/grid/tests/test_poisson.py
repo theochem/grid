@@ -236,11 +236,7 @@ def test_poisson_bvp_on_unit_charge_distribution(oned, tf, remove_large_pts, cen
         [zero_func, np.array([[0.0, 0.0, 0.0]])],
         [gauss, np.array([[0.0, 0.0, 0.0]])],
         [gauss, np.array([[1.0, 0.0, 0.0]])],
-        # TODO: Couldn't get the following test to pass.
-        # [
-        #     lambda pts, centers: gauss(pts, centers),
-        #     np.array([[0.0, 0.0, 0.0], [1.0, 1.0, 1.0]])
-        # ]
+        [gauss, np.array([[0.0, 0.0, 0.0], [1.0, 1.0, 1.0]])],
     ],
 )
 def test_poisson_bvp_gives_the_correct_laplacian(func, centers):
