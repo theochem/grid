@@ -108,7 +108,7 @@ def coulomb_gaussian_p(r: np.ndarray, alpha: float, normalized: bool = True) -> 
     and the potential is:
     .. math::
         V(r) = \frac{\text{erf}(\sqrt{\alpha} r)}{r}
-        + \frac{4}{3} \sqrt{\frac{\alpha}{\pi}} e^{-\alpha r^2}
+        - \frac{2}{3} \sqrt{\frac{\alpha}{\pi}} e^{-\alpha r^2}
 
     If ``normalized`` is False, the charge density is:
     .. math::
@@ -117,7 +117,7 @@ def coulomb_gaussian_p(r: np.ndarray, alpha: float, normalized: bool = True) -> 
     and the potential is:
     .. math::
         V(r) = \frac{3 \pi^{3/2}}{2 \alpha^{5/2}} \frac{\text{erf}(\sqrt{\alpha} r)}{r}
-        + \frac{2\pi}{\alpha^2} e^{-\alpha r^2}
+        - \frac{\pi}{\alpha^2} e^{-\alpha r^2}
 
     Parameters
     ----------
