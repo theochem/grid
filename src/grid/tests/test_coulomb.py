@@ -140,3 +140,30 @@ def test_load_atomic_gaussian_params():
     with pytest.raises(TypeError, match="element must be a string or integer"):
         load_atomic_gaussian_params(1.0)
 
+
+@pytest.mark.parametrize("alpha", [0.8, 1.5, 3.2])
+@pytest.mark.parametrize("normalized", [True, False])
+def test_coulomb_gaussian_p_poisson_equation(alpha, normalized):
+    """Verify that coulomb_gaussian_p satisfies Poisson's equation \\nabla^2 V = -4\\pi \\rho."""
+    r = np.linspace(0.02, 4.0, 800)
+    dr = r[1] - r[0]
+
+    # Evaluate electrostatic potential
+    v = coulomb_gaussian_p(r, alpha, normalized=normalized)
+
+    # Compute spherical Laplacian: d2V/dr2 + (2/r)*dV/dr
+    dv_dr = np.gradient(v, dr)
+    d2v_dr2 = np.gradient(dv_dr, dr)
+    laplacian = d2v_dr2 + (2.0 / r) * dv_dr
+
+    # Compute target -4*pi*rho
+    if normalized:
+        rho = (2.0 / 3.0) * (alpha**2.5 / np.pi**1.5) * (r**2) * np.exp(-alpha * r**2)
+    else:
+        rho = (r**2) * np.exp(-alpha * r**2)
+
+    target = -4.0 * np.pi * rho
+
+    # Interior slice away from boundaries to avoid edge finite-difference artifacts
+    assert_allclose(laplacian[15:-15], target[15:-15], rtol=1e-3, atol=1e-3)
+
