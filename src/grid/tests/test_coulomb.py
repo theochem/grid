@@ -106,6 +106,42 @@ def test_coulomb_potential():
     assert_allclose(v_s, v_expected)
 
 
+def test_coulomb_potential_with_p_gaussians():
+    points = np.array([[0.0, 0.0, 0.0], [0.1, 0.2, 0.3], [1.0, 1.0, 1.0]])
+    centers_s = np.array([[0.0, 0.0, 0.0], [1.0, 1.0, 1.0]])
+    coeffs_s = np.array([0.5, 2.0])
+    alphas_s = np.array([1.5, 0.8])
+
+    centers_p = np.array([[0.0, 0.0, 0.0], [0.5, 0.5, 0.5]])
+    coeffs_p = np.array([1.2, 0.7])
+    alphas_p = np.array([2.0, 1.1])
+
+    for normalized in (True, False):
+        v_tot = coulomb_potential(
+            points,
+            centers_s=centers_s,
+            coeffs_s=coeffs_s,
+            alphas_s=alphas_s,
+            centers_p=centers_p,
+            coeffs_p=coeffs_p,
+            alphas_p=alphas_p,
+            normalized=normalized,
+        )
+
+        # Explicit expected calculation via single-Gaussian components
+        v_expected = np.zeros(len(points))
+        for c, alpha, center in zip(coeffs_s, alphas_s, centers_s, strict=False):
+            r = np.linalg.norm(points - center, axis=1)
+            v_expected += c * coulomb_gaussian_s(r, alpha, normalized=normalized)
+
+        for c, alpha, center in zip(coeffs_p, alphas_p, centers_p, strict=False):
+            r = np.linalg.norm(points - center, axis=1)
+            v_expected += c * coulomb_gaussian_p(r, alpha, normalized=normalized)
+
+        assert_allclose(v_tot, v_expected)
+        assert np.all(np.isfinite(v_tot))
+
+
 def test_load_atomic_gaussian_params():
 
     # Helper func to check array shapes and non-negativity
