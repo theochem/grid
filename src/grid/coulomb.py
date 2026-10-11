@@ -143,11 +143,13 @@ def coulomb_gaussian_p(r: np.ndarray, alpha: float, normalized: bool = True) -> 
     sqrt_alpha = np.sqrt(alpha)
     term1 = np.zeros_like(r)
     np.divide(erf(sqrt_alpha * r), r, out=term1, where=r >= _R_ZERO_THRESHOLD)
-    # safe at r=0
-    term2 = (4.0 / 3.0) * (sqrt_alpha / np.sqrt(np.pi)) * np.exp(-alpha * r**2)
+    # safe at r=0: exact Coulomb potential is
+    # erf(sqrt(alpha)*r)/r - (2/3)*sqrt(alpha/pi)*exp(-alpha*r^2)
+    term2 = -(2.0 / 3.0) * (sqrt_alpha / np.sqrt(np.pi)) * np.exp(-alpha * r**2)
     out = term1 + term2
-    # r->0 limit combines the erf(sqrt(alpha) r)/r series limit and Gaussian tail.
-    out[r < _R_ZERO_THRESHOLD] = (10.0 / 3.0) * (sqrt_alpha / np.sqrt(np.pi))
+    # r->0 limit combines erf series limit (2*sqrt(alpha/pi))
+    # and Gaussian tail (-2/3*sqrt(alpha/pi))
+    out[r < _R_ZERO_THRESHOLD] = (4.0 / 3.0) * (sqrt_alpha / np.sqrt(np.pi))
 
     if normalized:
         return out
