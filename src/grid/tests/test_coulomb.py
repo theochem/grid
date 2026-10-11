@@ -62,18 +62,18 @@ def test_coulomb_gaussian_p():
 
     # Test r=0 limit (normalized)
     result = coulomb_gaussian_p(0.0, beta, normalized=True)
-    expected = 10.0 / 3.0 * np.sqrt(beta) / np.sqrt(np.pi)
+    expected = 4.0 / 3.0 * np.sqrt(beta) / np.sqrt(np.pi)
     assert_allclose(result, expected)
 
     # Test r=0 limit (unnormalized)
     result = coulomb_gaussian_p(0.0, beta, normalized=False)
-    expected = 5.0 * np.pi / beta**2
+    expected = 2.0 * np.pi / beta**2
     assert_allclose(result, expected)
 
     # Test nonzero r (normalized)
     r = np.array([0.5, 2.0])
     result = coulomb_gaussian_p(r, beta, normalized=True)
-    expected_normalized = erf(np.sqrt(beta) * r) / r + (4.0 / 3.0) * np.sqrt(beta / np.pi) * np.exp(
+    expected_normalized = erf(np.sqrt(beta) * r) / r - (2.0 / 3.0) * np.sqrt(beta / np.pi) * np.exp(
         -beta * r**2
     )
     assert_allclose(result, expected_normalized)
@@ -139,3 +139,4 @@ def test_load_atomic_gaussian_params():
 
     with pytest.raises(TypeError, match="element must be a string or integer"):
         load_atomic_gaussian_params(1.0)
+
