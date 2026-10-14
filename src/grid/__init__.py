@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # GRID is a numerical integration module for quantum chemistry.
 #
 # Copyright (C) 2011-2019 The GRID Development Team
@@ -19,21 +18,21 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
 """Grid Module."""
-# ruff: noqa: F401,F403
+# ruff: noqa: F403
 
 
 from grid.angular import *
 from grid.atomgrid import *
 from grid.basegrid import *
 from grid.becke import *
+from grid.coulomb import *
 from grid.cubic import *
 from grid.hirshfeld import *
-from grid.angular import *
 from grid.molgrid import *
+from grid.ngrid import *
 from grid.ode import *
 from grid.onedgrid import *
 from grid.periodicgrid import *
-from grid.rtransform import *
-from grid.ngrid import *
-from grid.coulomb import *
 from grid.robust_poisson import *
+from grid.rtransform import *
+from grid.sobol import *
