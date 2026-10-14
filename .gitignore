@@ -126,3 +126,5 @@ nosetests.xml
 coverage.xml
 *,cover
 .pytest_cache/
+
+src/grid/_version.py
