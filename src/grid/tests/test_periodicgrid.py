@@ -436,6 +436,20 @@ class PeriodicGridTester:
             else:
                 assert (abs(localgrid.points - center) <= radius).all()
 
+    def test_get_localgrid_empty(self):
+        """Test the get_localgrid method when no point is within the radius."""
+        # A tiny sphere halfway between two grid points contains no point, nor
+        # any periodic image of a point.
+        center = 0.5 * (self.grid.points[3] + self.grid.points[4])
+        radius = 1e-8
+        for grid in self.grid, self.wrapped_grid:
+            localgrid = grid.get_localgrid(center, radius)
+            assert localgrid.size == 0
+            assert localgrid.indices.dtype.kind == "i"
+            assert localgrid.points.shape == (0, *self.grid.points.shape[1:])
+            assert localgrid.weights.shape == (0,)
+            assert_allclose(localgrid.center, center)
+
     def test_get_localgrid_large_radius(self):
         """Basic checks for the get_localgrid method.
 

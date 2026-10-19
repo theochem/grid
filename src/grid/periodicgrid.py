@@ -456,6 +456,11 @@ class PeriodicGrid(Grid):
             # Store points with the opposite displacement!!
             local_points.append(self._points[indices] - delta)
 
+        # No point lies within the radius of any image of the center.
+        if len(local_indices) == 0:
+            indices = np.zeros(0, dtype=int)
+            return LocalGrid(self._points[indices], self._weights[indices], center, indices)
+
         return LocalGrid(
             np.concatenate(local_points),
             np.concatenate(local_weights),
