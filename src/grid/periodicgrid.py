@@ -423,7 +423,8 @@ class PeriodicGrid(Grid):
         ilc_max = np.floor(self._frac_intvls[:, 1] - frac_center + radius / self._spacings).astype(
             int
         )
-        assert (ilc_min <= ilc_max).all()
+        # When ilc_min > ilc_max for some direction, no translation is
+        # relevant and the loop below does nothing.
 
         # C) Loop over all possible translations of the center
         # ----------------------------------------------------

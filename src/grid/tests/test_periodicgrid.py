@@ -268,6 +268,17 @@ def assert_equal_localgrids(localgrid1, localgrid2):
         assert_allclose(weights1, weights2)
 
 
+def test_get_localgrid_no_translation():
+    """Center outside the fractional interval of the points and tiny radius."""
+    # Here ilc_min > ilc_max, so no periodic image needs to be checked.
+    grid = PeriodicGrid(np.array([[0.0], [0.1]]), np.ones(2), np.array([[1.0]]))
+    localgrid = grid.get_localgrid(np.array([0.5]), 0.01)
+    assert localgrid.size == 0
+    assert localgrid.points.shape == (0, 1)
+    assert localgrid.weights.shape == (0,)
+    assert localgrid.indices.shape == (0,)
+
+
 class PeriodicGridTester:
     """Base class for PeriodicGrid test cases.
 
