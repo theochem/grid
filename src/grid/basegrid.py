@@ -182,7 +182,7 @@ class Grid:
             _center = np.array([center]) if center.ndim == 0 else center
             if self._kdtree is None:
                 self._kdtree = cKDTree(_points)
-            indices = np.array(self._kdtree.query_ball_point(_center, radius, p=2.0))
+            indices = np.array(self._kdtree.query_ball_point(_center, radius, p=2.0), dtype=int)
             return LocalGrid(self._points[indices], self._weights[indices], center, indices)
 
     def moments(
