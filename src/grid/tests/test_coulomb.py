@@ -62,18 +62,18 @@ def test_coulomb_gaussian_p():
 
     # Test r=0 limit (normalized)
     result = coulomb_gaussian_p(0.0, beta, normalized=True)
-    expected = 10.0 / 3.0 * np.sqrt(beta) / np.sqrt(np.pi)
+    expected = 4.0 / 3.0 * np.sqrt(beta) / np.sqrt(np.pi)
     assert_allclose(result, expected)
 
     # Test r=0 limit (unnormalized)
     result = coulomb_gaussian_p(0.0, beta, normalized=False)
-    expected = 5.0 * np.pi / beta**2
+    expected = 2.0 * np.pi / beta**2
     assert_allclose(result, expected)
 
     # Test nonzero r (normalized)
     r = np.array([0.5, 2.0])
     result = coulomb_gaussian_p(r, beta, normalized=True)
-    expected_normalized = erf(np.sqrt(beta) * r) / r + (4.0 / 3.0) * np.sqrt(beta / np.pi) * np.exp(
+    expected_normalized = erf(np.sqrt(beta) * r) / r - (2.0 / 3.0) * np.sqrt(beta / np.pi) * np.exp(
         -beta * r**2
     )
     assert_allclose(result, expected_normalized)
@@ -104,6 +104,42 @@ def test_coulomb_potential():
         v_expected += c * val
 
     assert_allclose(v_s, v_expected)
+
+
+def test_coulomb_potential_with_p_gaussians():
+    points = np.array([[0.0, 0.0, 0.0], [0.1, 0.2, 0.3], [1.0, 1.0, 1.0]])
+    centers_s = np.array([[0.0, 0.0, 0.0], [1.0, 1.0, 1.0]])
+    coeffs_s = np.array([0.5, 2.0])
+    alphas_s = np.array([1.5, 0.8])
+
+    centers_p = np.array([[0.0, 0.0, 0.0], [0.5, 0.5, 0.5]])
+    coeffs_p = np.array([1.2, 0.7])
+    alphas_p = np.array([2.0, 1.1])
+
+    for normalized in (True, False):
+        v_tot = coulomb_potential(
+            points,
+            centers_s=centers_s,
+            coeffs_s=coeffs_s,
+            alphas_s=alphas_s,
+            centers_p=centers_p,
+            coeffs_p=coeffs_p,
+            alphas_p=alphas_p,
+            normalized=normalized,
+        )
+
+        # Explicit expected calculation via single-Gaussian components
+        v_expected = np.zeros(len(points))
+        for c, alpha, center in zip(coeffs_s, alphas_s, centers_s, strict=False):
+            r = np.linalg.norm(points - center, axis=1)
+            v_expected += c * coulomb_gaussian_s(r, alpha, normalized=normalized)
+
+        for c, alpha, center in zip(coeffs_p, alphas_p, centers_p, strict=False):
+            r = np.linalg.norm(points - center, axis=1)
+            v_expected += c * coulomb_gaussian_p(r, alpha, normalized=normalized)
+
+        assert_allclose(v_tot, v_expected)
+        assert np.all(np.isfinite(v_tot))
 
 
 def test_load_atomic_gaussian_params():
@@ -139,3 +175,31 @@ def test_load_atomic_gaussian_params():
 
     with pytest.raises(TypeError, match="element must be a string or integer"):
         load_atomic_gaussian_params(1.0)
+
+
+@pytest.mark.parametrize("alpha", [0.8, 1.5, 3.2])
+@pytest.mark.parametrize("normalized", [True, False])
+def test_coulomb_gaussian_p_poisson_equation(alpha, normalized):
+    """Verify that coulomb_gaussian_p satisfies Poisson's equation \\nabla^2 V = -4\\pi \\rho."""
+    r = np.linspace(0.02, 4.0, 800)
+    dr = r[1] - r[0]
+
+    # Evaluate electrostatic potential
+    v = coulomb_gaussian_p(r, alpha, normalized=normalized)
+
+    # Compute spherical Laplacian: d2V/dr2 + (2/r)*dV/dr
+    dv_dr = np.gradient(v, dr)
+    d2v_dr2 = np.gradient(dv_dr, dr)
+    laplacian = d2v_dr2 + (2.0 / r) * dv_dr
+
+    # Compute target -4*pi*rho
+    if normalized:
+        rho = (2.0 / 3.0) * (alpha**2.5 / np.pi**1.5) * (r**2) * np.exp(-alpha * r**2)
+    else:
+        rho = (r**2) * np.exp(-alpha * r**2)
+
+    target = -4.0 * np.pi * rho
+
+    # Interior slice away from boundaries to avoid edge finite-difference artifacts
+    assert_allclose(laplacian[15:-15], target[15:-15], rtol=1e-3, atol=1e-3)
+
