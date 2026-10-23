@@ -140,10 +140,10 @@ class BaseTransform(ABC):
 
         .. math::
             \int^{\inf}_0 g(r) d r &= \int^{r(\infty)}_{r(0)} g(r(x)) \frac{dr}{dx} dx \\
-                                   &= \int^{r(\infty)}_{r(0)} g(r(x)) \frac{dr}{dx} dx \\
-                                   &\approx \sum_{i=1}^N g(r(x_i)) \frac{dr}{dx}(x_i) w_i  \\
-                                   &\approx \sum_{i=1}^N g(r(x_i)) \frac{dr}{dx}(x_i) w^r_n \\
-            w^r_n &= w^x_n \cdot \frac{dr}{dx}
+                                   &= \int^{r(\infty)}_{r(0)} g(r(x)) |r'(x)| dx \\
+                                   &\approx \sum_{i=1}^N g(r(x_i)) |r'(x_i)| w_i  \\
+                                   &\approx \sum_{i=1}^N g(r(x_i)) |r'(x_i)| w^r_n \\
+            w^r_n &= w^x_n \cdot |r'(x_n)|
 
         Parameters
         ----------
@@ -165,7 +165,10 @@ class BaseTransform(ABC):
                 f"grid domain: {oned_grid.domain}, tf domain: {self.domain}"
             )
         new_points = self.transform(oned_grid.points)
-        new_weights = self.deriv(oned_grid.points) * oned_grid.weights
+        # Transformations that reverse the orientation (e.g. MultiExp maps [-1, 1] to
+        #    [infinity, rmin]) have a negative dr/dx; the integral over r still runs from low to
+        #    high r, so the weights must use |dr/dx|.
+        new_weights = np.abs(self.deriv(oned_grid.points)) * oned_grid.weights
         new_domain = oned_grid.domain
         if new_domain is not None:
             # Some transformation (Issue #125) reverses the order of points i.e.

@@ -380,13 +380,26 @@ def test_transform_integral_consistency(transform_class, kwargs):
     def f(r):
         return np.exp(-(r**2))
 
-    # integral in reference-space quadrature applying change-of-variables: f(r(x)) * dr/dx
-    ref_int = onedgrid.integrate(f(rgrid.points) * transform.deriv(onedgrid.points))
+    # integral in reference-space quadrature applying change-of-variables: f(r(x)) * |dr/dx|
+    ref_int = onedgrid.integrate(f(rgrid.points) * np.abs(transform.deriv(onedgrid.points)))
 
     # integral in physical space (Jacobian already absorbed into grid weights)
     rgrid_int = rgrid.integrate(f(rgrid.points))
 
     assert_allclose(ref_int, rgrid_int, atol=1e-10, rtol=1e-6)
+
+
+@pytest.mark.parametrize("transform_class, kwargs", VALID_TRANSFORM_CASES)
+def test_transform_1d_grid_positive_weights_and_exact_integral(transform_class, kwargs):
+    """Test transformed weights are positive and reproduce the analytic integral of exp(-r)."""
+    transform = transform_class(**kwargs)
+    rgrid = transform.transform_1d_grid(GaussLegendre(100))
+    assert np.all(rgrid.weights > 0)
+
+    # transforms such as MultiExp map [-1, 1] to [infinity, rmin], reversing the orientation
+    r_low, r_high = np.sort(transform.codomain)
+    exact = np.exp(-r_low) - (np.exp(-r_high) if np.isfinite(r_high) else 0.0)
+    assert_allclose(rgrid.integrate(np.exp(-rgrid.points)), exact, rtol=1e-4)
 
 
 def test_becke_rtransform_raise_errors():
