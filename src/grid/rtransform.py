@@ -1532,7 +1532,9 @@ class MultiExpRTransform(BaseTransform):
             Transformed array located between :math:`[r_{min},\infty)`\.
 
         """
-        rf_array = -self._R * np.log((x + 1) / 2) + self._rmin
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=RuntimeWarning)
+            rf_array = -self._R * np.log((x + 1) / 2) + self._rmin
         if self.trim_inf:
             rf_array = self._convert_inf(rf_array)
         return rf_array
@@ -1574,7 +1576,12 @@ class MultiExpRTransform(BaseTransform):
             The first derivative of MultiExp transformation at each point.
 
         """
-        return -self._R / (1 + x)
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=RuntimeWarning)
+            deriv = -self._R / (1 + x)
+        if self.trim_inf:
+            deriv = self._convert_inf(deriv)
+        return deriv
 
     def deriv2(self, x: np.ndarray):
         r"""Compute the second derivative of MultiExp transformation.
@@ -1593,7 +1600,12 @@ class MultiExpRTransform(BaseTransform):
             The second derivative of MultiExp transformation at each point.
 
         """
-        return self._R / (1 + x) ** 2
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=RuntimeWarning)
+            deriv2 = self._R / (1 + x) ** 2
+        if self.trim_inf:
+            deriv2 = self._convert_inf(deriv2)
+        return deriv2
 
     def deriv3(self, x: np.ndarray):
         r"""Compute the third derivative of MultiExp transformation.
@@ -1612,7 +1624,12 @@ class MultiExpRTransform(BaseTransform):
             The third derivative of MultiExp transformation at each point.
 
         """
-        return -2 * self._R / (1 + x) ** 3
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=RuntimeWarning)
+            deriv3 = -2 * self._R / (1 + x) ** 3
+        if self.trim_inf:
+            deriv3 = self._convert_inf(deriv3)
+        return deriv3
 
 
 class KnowlesRTransform(BaseTransform):
