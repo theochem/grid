@@ -140,10 +140,10 @@ class BaseTransform(ABC):
 
         .. math::
             \int^{\inf}_0 g(r) d r &= \int^{r(\infty)}_{r(0)} g(r(x)) \frac{dr}{dx} dx \\
-                                   &= \int^{r(\infty)}_{r(0)} g(r(x)) \frac{dr}{dx} dx \\
-                                   &\approx \sum_{i=1}^N g(r(x_i)) \frac{dr}{dx}(x_i) w_i  \\
-                                   &\approx \sum_{i=1}^N g(r(x_i)) \frac{dr}{dx}(x_i) w^r_n \\
-            w^r_n &= w^x_n \cdot \frac{dr}{dx}
+                                   &= \int^{r(\infty)}_{r(0)} g(r(x)) |r'(x)| dx \\
+                                   &\approx \sum_{i=1}^N g(r(x_i)) |r'(x_i)| w_i  \\
+                                   &\approx \sum_{i=1}^N g(r(x_i)) |r'(x_i)| w^r_n \\
+            w^r_n &= w^x_n \cdot |r'(x_n)|
 
         Parameters
         ----------
@@ -165,7 +165,10 @@ class BaseTransform(ABC):
                 f"grid domain: {oned_grid.domain}, tf domain: {self.domain}"
             )
         new_points = self.transform(oned_grid.points)
-        new_weights = self.deriv(oned_grid.points) * oned_grid.weights
+        # Transformations that reverse the orientation (e.g. MultiExp maps [-1, 1] to
+        #    [infinity, rmin]) have a negative dr/dx; the integral over r still runs from low to
+        #    high r, so the weights must use |dr/dx|.
+        new_weights = np.abs(self.deriv(oned_grid.points)) * oned_grid.weights
         new_domain = oned_grid.domain
         if new_domain is not None:
             # Some transformation (Issue #125) reverses the order of points i.e.
@@ -1529,7 +1532,9 @@ class MultiExpRTransform(BaseTransform):
             Transformed array located between :math:`[r_{min},\infty)`\.
 
         """
-        rf_array = -self._R * np.log((x + 1) / 2) + self._rmin
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=RuntimeWarning)
+            rf_array = -self._R * np.log((x + 1) / 2) + self._rmin
         if self.trim_inf:
             rf_array = self._convert_inf(rf_array)
         return rf_array
@@ -1571,7 +1576,12 @@ class MultiExpRTransform(BaseTransform):
             The first derivative of MultiExp transformation at each point.
 
         """
-        return -self._R / (1 + x)
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=RuntimeWarning)
+            deriv = -self._R / (1 + x)
+        if self.trim_inf:
+            deriv = self._convert_inf(deriv)
+        return deriv
 
     def deriv2(self, x: np.ndarray):
         r"""Compute the second derivative of MultiExp transformation.
@@ -1590,7 +1600,12 @@ class MultiExpRTransform(BaseTransform):
             The second derivative of MultiExp transformation at each point.
 
         """
-        return self._R / (1 + x) ** 2
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=RuntimeWarning)
+            deriv2 = self._R / (1 + x) ** 2
+        if self.trim_inf:
+            deriv2 = self._convert_inf(deriv2)
+        return deriv2
 
     def deriv3(self, x: np.ndarray):
         r"""Compute the third derivative of MultiExp transformation.
@@ -1609,7 +1624,12 @@ class MultiExpRTransform(BaseTransform):
             The third derivative of MultiExp transformation at each point.
 
         """
-        return -2 * self._R / (1 + x) ** 3
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=RuntimeWarning)
+            deriv3 = -2 * self._R / (1 + x) ** 3
+        if self.trim_inf:
+            deriv3 = self._convert_inf(deriv3)
+        return deriv3
 
 
 class KnowlesRTransform(BaseTransform):
