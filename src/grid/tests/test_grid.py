@@ -144,6 +144,18 @@ class TestGrid1D(TestGrid):
         self._ref_weights = np.ones(21) * 0.1
         self.grid = Grid(self._ref_points, self._ref_weights)
 
+    def test_cartesian_moments(self):
+        """Test Cartesian moments of a 1D grid against the moments computed directly."""
+        points = self._ref_points[:, 0]
+        func_vals = np.exp(-(points**2))
+        center = np.array([[0.5]])
+        integrals, orders = self.grid.moments(
+            3, center, func_vals, type_mom="cartesian", return_orders=True
+        )
+        assert_allclose(orders, [[0], [1], [2], [3]])
+        expected = [np.sum((points - 0.5) ** n * func_vals * self._ref_weights) for n in range(4)]
+        assert_allclose(integrals[:, 0], expected)
+
 
 class TestGrid2D(TestGrid):
     """Grid testcase class for 2D point arrays."""
