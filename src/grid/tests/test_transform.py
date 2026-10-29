@@ -23,7 +23,20 @@ import numpy as np
 import pytest
 from numpy.testing import assert_allclose, assert_almost_equal
 
-from grid.onedgrid import GaussLegendre, UniformInteger
+from grid.onedgrid import (
+    ClenshawCurtis,
+    FejerFirst,
+    FejerSecond,
+    GaussChebyshevLobatto,
+    GaussChebyshevType2,
+    GaussLegendre,
+    MidPoint,
+    RectangleRuleSineEndPoints,
+    Simpson,
+    TanhSinh,
+    Trapezoidal,
+    UniformInteger,
+)
 from grid.rtransform import (
     BaseTransform,
     BeckeRTransform,
@@ -380,13 +393,86 @@ def test_transform_integral_consistency(transform_class, kwargs):
     def f(r):
         return np.exp(-(r**2))
 
-    # integral in reference-space quadrature applying change-of-variables: f(r(x)) * dr/dx
-    ref_int = onedgrid.integrate(f(rgrid.points) * transform.deriv(onedgrid.points))
+    # integral in reference-space quadrature applying change-of-variables: f(r(x)) * |dr/dx|
+    ref_int = onedgrid.integrate(f(rgrid.points) * np.abs(transform.deriv(onedgrid.points)))
 
     # integral in physical space (Jacobian already absorbed into grid weights)
     rgrid_int = rgrid.integrate(f(rgrid.points))
 
     assert_allclose(ref_int, rgrid_int, atol=1e-10, rtol=1e-6)
+
+
+@pytest.mark.parametrize("transform_class, kwargs", VALID_TRANSFORM_CASES)
+def test_transform_1d_grid_positive_weights_and_exact_integral(transform_class, kwargs):
+    """Test transformed weights are positive and reproduce the analytic integral of exp(-r)."""
+    transform = transform_class(**kwargs)
+    rgrid = transform.transform_1d_grid(GaussLegendre(100))
+    assert np.all(rgrid.weights > 0)
+
+    # transforms such as MultiExp map [-1, 1] to [infinity, rmin], reversing the orientation
+    r_low, r_high = np.sort(transform.codomain)
+    exact = np.exp(-r_low) - (np.exp(-r_high) if np.isfinite(r_high) else 0.0)
+    assert_allclose(rgrid.integrate(np.exp(-rgrid.points)), exact, rtol=1e-4)
+
+
+ONED_GRID_CLASSES = [
+    GaussLegendre,
+    GaussChebyshevType2,
+    GaussChebyshevLobatto,
+    RectangleRuleSineEndPoints,
+    TanhSinh,
+    Simpson,
+    MidPoint,
+    ClenshawCurtis,
+    FejerFirst,
+    FejerSecond,
+    Trapezoidal,
+]
+
+# one transform of each kind; the finite ones use a large rmax so truncation is negligible
+RADIAL_TRANSFORMS = [
+    BeckeRTransform(1e-3, 1.5),
+    LinearFiniteRTransform(1e-3, 40.0),
+    MultiExpRTransform(1e-3, 1.5),
+    KnowlesRTransform(1e-3, 1.5, 1),
+    HandyRTransform(1e-3, 1.5, 1),
+    HandyModRTransform(1e-3, 40.0, 1),
+]
+
+
+@pytest.mark.parametrize("oned_class", ONED_GRID_CLASSES)
+@pytest.mark.parametrize("transform", RADIAL_TRANSFORMS, ids=lambda t: type(t).__name__)
+def test_transform_1d_grid_all_grid_transform_combinations(oned_class, transform):
+    """Test every 1D grid / radial transform pair gives finite, non-negative weights.
+
+    This includes grids with end points (x = +/-1), which map to r = infinity, and transforms
+    that reverse the orientation (MultiExp). See issue #265.
+    """
+    rgrid = transform.transform_1d_grid(oned_class(151))
+    assert np.all(np.isfinite(rgrid.points))
+    assert np.all(np.isfinite(rgrid.weights))
+    assert np.all(rgrid.weights >= 0)
+
+    # int_0^infinity r^2 exp(-r) dr = 2
+    integral = rgrid.integrate(rgrid.points**2 * np.exp(-rgrid.points))
+    assert_allclose(integral, 2.0, atol=5e-2)
+
+
+def test_multiexp_trim_inf_at_endpoint():
+    """Test MultiExp derivatives are finite at x = -1 (r = infinity) when trim_inf is True."""
+    x = np.array([-1.0, 0.0, 1.0])
+    trimmed = MultiExpRTransform(0.1, 1.2, trim_inf=True)
+    assert np.all(np.isfinite(trimmed.transform(x)))
+    for deriv in (trimmed.deriv, trimmed.deriv2, trimmed.deriv3):
+        assert np.all(np.isfinite(deriv(x)))
+    # signs: dr/dx < 0 and d3r/dx3 < 0 while d2r/dx2 > 0, also at the trimmed end point
+    assert trimmed.deriv(x)[0] < 0
+    assert trimmed.deriv2(x)[0] > 0
+    assert trimmed.deriv3(x)[0] < 0
+
+    untrimmed = MultiExpRTransform(0.1, 1.2, trim_inf=False)
+    assert np.isinf(untrimmed.transform(x)[0])
+    assert np.isinf(untrimmed.deriv(x)[0])
 
 
 def test_becke_rtransform_raise_errors():
