@@ -136,14 +136,25 @@ class BaseTransform(ABC):
         return self._codomain
 
     def transform_1d_grid(self, oned_grid):
-        r"""Generate a new integral grid by transforming the provided grid.
+        r"""Generate a new integration grid by transforming the provided grid.
+
+        For a monotonic transformation :math:`r: [x_{\min}, x_{\max}] \to [r_{\min}, r_{\max}]`,
+        the integral over the transformed domain is
 
         .. math::
-            \int^{\inf}_0 g(r) d r &= \int^{r(\infty)}_{r(0)} g(r(x)) \frac{dr}{dx} dx \\
-                                   &= \int^{r(\infty)}_{r(0)} g(r(x)) |r'(x)| dx \\
-                                   &\approx \sum_{i=1}^N g(r(x_i)) |r'(x_i)| w_i  \\
-                                   &\approx \sum_{i=1}^N g(r(x_i)) |r'(x_i)| w^r_n \\
-            w^r_n &= w^x_n \cdot |r'(x_n)|
+
+            \int_{r_{\min}}^{r_{\max}} g(r)\,dr &= \int_{x_{\min}}^{x_{\max}} g(r(x)) |r'(x)|\,dx \\
+            &\approx \sum_{i=1}^N g(r(x_i)) |r'(x_i)| w_i^x \\
+            &= \sum_{i=1}^N g(r_i) w_i^r
+
+        where the transformed points and weights are given by
+
+        .. math::
+
+            r_i = r(x_i), \qquad w_i^r = |r'(x_i)| w_i^x.
+
+        The absolute value of the derivative accounts for decreasing transformations
+        (:math:`r'(x) < 0`), which reverse the orientation of the integration limits.
 
         Parameters
         ----------
@@ -165,9 +176,8 @@ class BaseTransform(ABC):
                 f"grid domain: {oned_grid.domain}, tf domain: {self.domain}"
             )
         new_points = self.transform(oned_grid.points)
-        # Transformations that reverse the orientation (e.g. MultiExp maps [-1, 1] to
-        #    [infinity, rmin]) have a negative dr/dx; the integral over r still runs from low to
-        #    high r, so the weights must use |dr/dx|.
+        # Transformations that reverse the orientation of integration limits have a negative dr/dx;
+        # the integral over r still runs from low to high r, so the weights must use |dr/dx|
         new_weights = np.abs(self.deriv(oned_grid.points)) * oned_grid.weights
         new_domain = oned_grid.domain
         if new_domain is not None:
@@ -1532,8 +1542,7 @@ class MultiExpRTransform(BaseTransform):
             Transformed array located between :math:`[r_{min},\infty)`\.
 
         """
-        with warnings.catch_warnings():
-            warnings.filterwarnings("ignore", category=RuntimeWarning)
+        with np.errstate(divide="ignore"):
             rf_array = -self._R * np.log((x + 1) / 2) + self._rmin
         if self.trim_inf:
             rf_array = self._convert_inf(rf_array)
@@ -1576,8 +1585,7 @@ class MultiExpRTransform(BaseTransform):
             The first derivative of MultiExp transformation at each point.
 
         """
-        with warnings.catch_warnings():
-            warnings.filterwarnings("ignore", category=RuntimeWarning)
+        with np.errstate(divide="ignore"):
             deriv = -self._R / (1 + x)
         if self.trim_inf:
             deriv = self._convert_inf(deriv)
@@ -1600,8 +1608,7 @@ class MultiExpRTransform(BaseTransform):
             The second derivative of MultiExp transformation at each point.
 
         """
-        with warnings.catch_warnings():
-            warnings.filterwarnings("ignore", category=RuntimeWarning)
+        with np.errstate(divide="ignore"):
             deriv2 = self._R / (1 + x) ** 2
         if self.trim_inf:
             deriv2 = self._convert_inf(deriv2)
@@ -1624,8 +1631,7 @@ class MultiExpRTransform(BaseTransform):
             The third derivative of MultiExp transformation at each point.
 
         """
-        with warnings.catch_warnings():
-            warnings.filterwarnings("ignore", category=RuntimeWarning)
+        with np.errstate(divide="ignore"):
             deriv3 = -2 * self._R / (1 + x) ** 3
         if self.trim_inf:
             deriv3 = self._convert_inf(deriv3)
@@ -2022,7 +2028,7 @@ class HandyModRTransform(BaseTransform):
     """
 
     def __init__(self, rmin: float, rmax: float, m: int, trim_inf=True):
-        r"""Construct a modified Handy transform from :math:`[-1, 1]` to :math:`[r_{min}, r_{max}]`\.
+        r"""Construct a modified Handy transform from :math:`[-1, 1]` to :math:`[r_{min}, r_{max}]`.
 
         Parameters
         ----------
