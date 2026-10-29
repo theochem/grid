@@ -732,13 +732,18 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="grid.rtransform.BaseTransform.transform_1d_grid">
 <span class="sig-name descname"><span class="pre">transform_1d_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oned_grid</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#grid.rtransform.BaseTransform.transform_1d_grid" title="Link to this definition">#</a></dt>
-<dd><p>Generate a new integral grid by transforming the provided grid.</p>
+<dd><p>Generate a new integration grid by transforming the provided grid.</p>
+<p>For a monotonic transformation <span class="math notranslate nohighlight">\(r: [x_{\min}, x_{\max}] \to [r_{\min}, r_{\max}]\)</span>,
+the integral over the transformed domain is</p>
 <div class="math notranslate nohighlight">
-\[\begin{split}\int^{\inf}_0 g(r) d r &amp;= \int^{r(\infty)}_{r(0)} g(r(x)) \frac{dr}{dx} dx \\
-                       &amp;= \int^{r(\infty)}_{r(0)} g(r(x)) \frac{dr}{dx} dx \\
-                       &amp;\approx \sum_{i=1}^N g(r(x_i)) \frac{dr}{dx}(x_i) w_i  \\
-                       &amp;\approx \sum_{i=1}^N g(r(x_i)) \frac{dr}{dx}(x_i) w^r_n \\
-w^r_n &amp;= w^x_n \cdot \frac{dr}{dx}\end{split}\]</div>
+\[\begin{split}\int_{r_{\min}}^{r_{\max}} g(r)\,dr &amp;= \int_{x_{\min}}^{x_{\max}} g(r(x)) |r'(x)|\,dx \\
+&amp;\approx \sum_{i=1}^N g(r(x_i)) |r'(x_i)| w_i^x \\
+&amp;= \sum_{i=1}^N g(r_i) w_i^r\end{split}\]</div>
+<p>where the transformed points and weights are given by</p>
+<div class="math notranslate nohighlight">
+\[r_i = r(x_i), \qquad w_i^r = |r'(x_i)| w_i^x.\]</div>
+<p>The absolute value of the derivative accounts for decreasing transformations
+(<span class="math notranslate nohighlight">\(r'(x) &lt; 0\)</span>), which reverse the orientation of the integration limits.</p>
 <section id="id5">
 <h2>Parameters<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
 <dl class="simple">
