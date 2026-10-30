@@ -94,6 +94,16 @@ class TestGrid(TestCase):
         else:
             assert (abs(localgrid.points - center) <= radius).all()
 
+    def test_get_localgrid_empty(self):
+        """Test the creation of a local grid that contains no points."""
+        center = self.grid.points.max(axis=0) + 10.0
+        localgrid = self.grid.get_localgrid(center, 0.5)
+        assert localgrid.size == 0
+        assert localgrid.indices.dtype.kind == "i"
+        assert localgrid.points.shape == (0, *self.grid.points.shape[1:])
+        assert localgrid.weights.shape == (0,)
+        assert_allclose(localgrid.center, center)
+
     def test_get_localgrid_radius_inf(self):
         """Test the creation of the local grid with an infinite radius."""
         localgrid = self.grid.get_localgrid(self.grid.points[3], np.inf)

@@ -423,7 +423,8 @@ class PeriodicGrid(Grid):
         ilc_max = np.floor(self._frac_intvls[:, 1] - frac_center + radius / self._spacings).astype(
             int
         )
-        assert (ilc_min <= ilc_max).all()
+        # When ilc_min > ilc_max for some direction, no translation is
+        # relevant and the loop below does nothing.
 
         # C) Loop over all possible translations of the center
         # ----------------------------------------------------
@@ -455,6 +456,11 @@ class PeriodicGrid(Grid):
             local_weights.append(self._weights[indices])
             # Store points with the opposite displacement!!
             local_points.append(self._points[indices] - delta)
+
+        # No point lies within the radius of any image of the center.
+        if len(local_indices) == 0:
+            indices = np.zeros(0, dtype=int)
+            return LocalGrid(self._points[indices], self._weights[indices], center, indices)
 
         return LocalGrid(
             np.concatenate(local_points),
