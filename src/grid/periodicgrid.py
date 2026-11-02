@@ -158,6 +158,7 @@ adjacent crystal planes along the :math:`k`\th lattice vector.
 """
 import itertools
 import warnings
+from numbers import Integral
 
 import numpy as np
 from scipy.spatial import cKDTree
@@ -357,7 +358,7 @@ class PeriodicGrid(Grid):
         PeriodicGrid
             A new PeriodicGrid object with selected points.
         """
-        if isinstance(index, (int, np.integer)):
+        if isinstance(index, Integral):
             return self.__class__(
                 np.array([self.points[index]]),
                 np.array([self.weights[index]]),
