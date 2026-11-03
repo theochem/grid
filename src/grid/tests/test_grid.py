@@ -153,6 +153,7 @@ class TestGrid1D(TestGrid):
             3, center, func_vals, type_mom="cartesian", return_orders=True
         )
         assert_allclose(orders, [[0], [1], [2], [3]])
+        # Compute moments M_n = sum_i w_i (x_i - center)^n f(x_i) directly for n = 0, ..., order
         expected = [np.sum((points - 0.5) ** n * func_vals * self._ref_weights) for n in range(4)]
         assert_allclose(integrals[:, 0], expected)
 

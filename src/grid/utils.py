@@ -20,8 +20,8 @@
 """Utility Module."""
 
 import numpy as np
+from scipy.constants import angstrom, physical_constants
 from scipy.special import sph_harm_y, sph_harm_y_all
-from scipy.constants import physical_constants, angstrom
 
 _BOHR_RADIUS_M = physical_constants["Bohr radius"][0]
 BOHR_TO_ANGSTROM = _BOHR_RADIUS_M / angstrom
@@ -504,7 +504,7 @@ def get_cov_radii(atnums, cov_type="bragg"):
         Covalent radii of the desired atom(s) in atomic units.
 
     """
-    if isinstance(atnums, (int, np.integer)):
+    if isinstance(atnums, int | np.integer):
         atnums = np.array([atnums])
     if np.any(np.array(atnums) == 0):
         raise ValueError(f"0 is not a valid atomic number, got {atnums}")
@@ -834,8 +834,7 @@ def solid_harmonics(l_max: int, sph_pts: np.ndarray):
     r, theta, phi = sph_pts.T
     spherical_harm = generate_real_spherical_harmonics(l_max, theta, phi)
     degrees = np.array(
-        sum([[float(l_deg)] * (2 * l_deg + 1) for l_deg in np.arange(l_max + 1, dtype=int)], []),
-        dtype=np.longdouble,
+        [l_deg for l_deg in range(l_max + 1) for _ in range(2 * l_deg + 1)], dtype=np.longdouble
     )
     return (
         spherical_harm * r ** degrees[:, None] * np.sqrt(4.0 * np.pi / (2 * degrees[:, None] + 1))
@@ -951,10 +950,13 @@ def generate_orders_horton_order(order: int, type_ord: str, dim: int = 3):
 
     Returns
     -------
-    ndarray(3 * `order` , D)
-        Each row is a list of `D` integers (e.g. :math:`(n_x, n_y, n_z)` or :math:`(l, m)`).
-        The output is in Horton 2 order. e.g. order=2 it's
-        [[2, 0, 0], [1, 1, 0], [1, 0, 1], [0, 2, 0], ....]
+    ndarray
+        Moment orders in Horton 2 ordering. For Cartesian moments, the shape is :math:`(N, D)`,
+        where :math:`N = comb(order + D - 1, D - 1)` and :math:`D` is the dimension.
+        Each row contains Cartesian exponents (e.g., (n_x, n_y, n_z)). For radial, pure, and
+        pure-radial moments, the orders are (n), (l, m), and (n, l, m), respectively. For example,
+        Cartesian order=2 in 3D gives [[2, 0, 0], [1, 1, 0], [1, 0, 1], [0, 2, 0], [0, 1, 1],
+        [0, 0, 2]].
 
     """
     if not isinstance(order, int):
