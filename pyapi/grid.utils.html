@@ -637,9 +637,12 @@ respectively, such that they sum to <cite>order</cite>.</p>
 <section id="id8">
 <h2>Returns<a class="headerlink" href="#id8" title="Link to this heading">#</a></h2>
 <dl class="simple">
-<dt>ndarray(3 * <cite>order</cite> , D)</dt><dd><p>Each row is a list of <cite>D</cite> integers (e.g. <span class="math notranslate nohighlight">\((n_x, n_y, n_z)\)</span> or <span class="math notranslate nohighlight">\((l, m)\)</span>).
-The output is in Horton 2 order. e.g. order=2 it’s
-[[2, 0, 0], [1, 1, 0], [1, 0, 1], [0, 2, 0], ….]</p>
+<dt>ndarray</dt><dd><p>Moment orders in Horton 2 ordering. For Cartesian moments, the shape is <span class="math notranslate nohighlight">\((N, D)\)</span>,
+where <span class="math notranslate nohighlight">\(N = comb(order + D - 1, D - 1)\)</span> and <span class="math notranslate nohighlight">\(D\)</span> is the dimension.
+Each row contains Cartesian exponents (e.g., (n_x, n_y, n_z)). For radial, pure, and
+pure-radial moments, the orders are (n), (l, m), and (n, l, m), respectively. For example,
+Cartesian order=2 in 3D gives [[2, 0, 0], [1, 1, 0], [1, 0, 1], [0, 2, 0], [0, 1, 1],
+[0, 0, 2]].</p>
 </dd>
 </dl>
 </section>
