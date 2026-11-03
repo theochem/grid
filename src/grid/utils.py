@@ -525,7 +525,7 @@ def generate_real_spherical_harmonics_scipy(l_max: int, theta: np.ndarray, phi: 
 
     .. math::
         Y_{lm} = \begin{cases}
-            \frac{i}{\sqrt{2}} (Y^m_l - (-1)^m Y_l^{-m} & \text{if } < m < 0 \\
+            \frac{i}{\sqrt{2}} (Y^m_l - (-1)^m Y_l^{-m}) & \text{if } m < 0 \\
             Y_l^0 & \text{if } m = 0 \\
             \frac{1}{\sqrt{2}} (Y^{-|m|}_{l} + (-1)^m Y_l^m) & \text{if } m > 0
         \end{cases},
