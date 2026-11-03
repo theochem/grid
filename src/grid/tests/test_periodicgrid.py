@@ -357,6 +357,11 @@ class PeriodicGridTester:
         assert_allclose(grid_index.spacings, self.grid.spacings)
         assert_allclose(grid_index.frac_intvls, ref_grid_index.frac_intvls)
         assert isinstance(grid_index, PeriodicGrid)
+        # test NumPy integer index
+        grid_np_index = self.grid[np.int64(10)]
+        assert_allclose(grid_np_index.points, ref_grid_index.points)
+        assert_allclose(grid_np_index.weights, ref_grid_index.weights)
+        assert isinstance(grid_np_index, PeriodicGrid)
         # test slice
         with warnings.catch_warnings(record=True) as w:
             ref_grid_slice = PeriodicGrid(

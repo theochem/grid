@@ -74,6 +74,11 @@ class TestGrid(TestCase):
         ref_smt_index = self.grid[a]
         assert_allclose(ref_smt_index.points, self._ref_points[a])
         assert_allclose(ref_smt_index.weights, self._ref_weights[a])
+        # test NumPy integer index, e.g. from np.argmax
+        grid_np_index = self.grid[np.int64(10)]
+        assert_allclose(grid_np_index.points, ref_grid.points)
+        assert_allclose(grid_np_index.weights, ref_grid.weights)
+        assert grid_np_index.size == 1
 
     def test_get_localgrid(self):
         """Test the creation of the local grid with a normal radius."""
@@ -237,6 +242,10 @@ class TestOneDGrid(TestCase):
         assert np.allclose(subgrid.points, points[0])
         assert np.allclose(subgrid.weights, weights[0])
         assert subgrid.domain is None
+        subgrid = grid[np.int64(5)]
+        assert subgrid.size == 1
+        assert np.allclose(subgrid.points, points[5])
+        assert np.allclose(subgrid.weights, weights[5])
         subgrid = grid[3:7]
         assert subgrid.size == 4
         assert np.allclose(subgrid.points, points[3:7])

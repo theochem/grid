@@ -19,6 +19,8 @@
 # --
 """Construct basic grid data structure."""
 
+from numbers import Integral
+
 import numpy as np
 from scipy.spatial import cKDTree
 
@@ -98,7 +100,7 @@ class Grid:
 
         Parameters
         ----------
-        index : int or slice
+        index : int (any Integral, e.g. np.int64) or slice
             index of slice object for selecting certain part of the grid
 
         Returns
@@ -106,7 +108,7 @@ class Grid:
         Grid
             Return a new Grid object with selected points
         """
-        if isinstance(index, int):
+        if isinstance(index, Integral):
             return self.__class__(np.array([self.points[index]]), np.array([self.weights[index]]))
         else:
             return self.__class__(np.array(self.points[index]), np.array(self.weights[index]))
@@ -456,7 +458,7 @@ class OneDGrid(Grid):
 
         Parameters
         ----------
-        index : int or slice
+        index : int (any Integral, e.g. np.int64) or slice
             index of slice object for selecting certain part of grid
 
         Returns
@@ -464,7 +466,7 @@ class OneDGrid(Grid):
         OneDGrid
             Return a new grid instance with a subset of points.
         """
-        if isinstance(index, int):
+        if isinstance(index, Integral):
             return OneDGrid(
                 np.array([self.points[index]]),
                 np.array([self.weights[index]]),
