@@ -458,6 +458,15 @@ def test_transform_1d_grid_all_grid_transform_combinations(oned_class, transform
     assert_allclose(integral, 2.0, atol=5e-2)
 
 
+@pytest.mark.parametrize("m", [1, 2, 3, 4, 5])
+def test_handymod_deriv3_matches_finite_differences(m):
+    """Test HandyModRTransform third derivative against finite differences for several m."""
+    transformation = HandyModRTransform(0.1, 10.0, m)
+    x = np.linspace(-0.9, 0.9, 19)
+    d3_fd = compute_fd_deriv(transformation.transform, x, eps=1e-3, order=3)
+    assert_allclose(transformation.deriv3(x), d3_fd, rtol=1e-3, atol=1e-5)
+
+
 def test_multiexp_trim_inf_at_endpoint():
     """Test MultiExp derivatives are finite at x = -1 (r = infinity) when trim_inf is True."""
     x = np.array([-1.0, 0.0, 1.0])
