@@ -153,7 +153,7 @@ def test_base_transform_convert_inf():
 
     assert_allclose(tf._convert_inf(input_vals), expected)
 
-    for value, expected_output in zip(input_vals, expected):
+    for value, expected_output in zip(input_vals, expected, strict=True):
         assert_almost_equal(tf._convert_inf(value), expected_output)
 
 
@@ -291,7 +291,7 @@ def test_deriv2_inverse_method(x_points, transform_class, kwargs):
 
     transformation = transform_class(**kwargs)
 
-    x = np.asarray(x_points)
+    x_points = np.asarray(x_points)
     r = transformation.transform(x_points)
     dx2_dr2 = transformation.deriv2_inverse(r)
     d1 = transformation.deriv(x_points)
