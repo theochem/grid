@@ -2212,7 +2212,7 @@ class HandyModRTransform(BaseTransform):
                 * (two_m - size_r - 1)
                 * (1 + x) ** (self._m - 3)
                 * (
-                    2 * two_m * (self._m - 2) * (self._m - 1) * (1 - two_m + size_r) ** 2
+                    two_m**2 * (self._m - 2) * (self._m - 1) * (1 - two_m + size_r) ** 2
                     + 2 ** (self._m + 2)
                     * (self._m - 1)
                     * (self._m + 1)
