@@ -461,10 +461,28 @@ def test_transform_1d_grid_all_grid_transform_combinations(oned_class, transform
 @pytest.mark.parametrize("m", [1, 2, 3, 4, 5])
 def test_handymod_deriv3_matches_finite_differences(m):
     """Test HandyModRTransform third derivative against finite differences for several m."""
-    transformation = HandyModRTransform(0.1, 10.0, m)
+    # to ensure the transformation is monotonic and nonsingular for m <= 5,  rmax - rmin > 2**m - 1
+    transformation = HandyModRTransform(0.1, 40.0, m)
     x = np.linspace(-0.9, 0.9, 19)
     d3_fd = compute_fd_deriv(transformation.transform, x, eps=1e-3, order=3)
     assert_allclose(transformation.deriv3(x), d3_fd, rtol=1e-3, atol=1e-5)
+
+
+@pytest.mark.parametrize("m", [3, 4, 5])
+def test_handymod_deriv3_analytical(m):
+    """Test the third derivative against an exact analytical result."""
+    rmin = 0.1
+    # rmax - rmin = 2**m, so that the transformation is r = rmin + (1+x)**m
+    rmax = rmin + 2**m
+
+    transformation = HandyModRTransform(rmin, rmax, m)
+
+    x = np.linspace(-0.9, 0.9, 19)
+
+    # analytical third derivative of r = rmin + (1+x)**
+    expected = m * (m - 1) * (m - 2) * (1 + x) ** (m - 3)
+
+    assert_allclose(transformation.deriv3(x), expected, rtol=1e-12, atol=1e-12)
 
 
 def test_multiexp_trim_inf_at_endpoint():
