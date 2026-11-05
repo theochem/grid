@@ -35,6 +35,8 @@ parts:
         title: Cubic Grids
       - file: tutorial/Interpolation_and_Poisson
         title: Interpolation and Poisson
+      - file: tutorial/Poisson_on_a_Molecular_Grid
+        title: Poisson on a Molecular Grid
       - file: tutorial/Multipole_Moments
         title: Multipole Moments
 
