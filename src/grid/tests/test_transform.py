@@ -153,7 +153,7 @@ def test_base_transform_convert_inf():
 
     assert_allclose(tf._convert_inf(input_vals), expected)
 
-    for value, expected_output in zip(input_vals, expected):
+    for value, expected_output in zip(input_vals, expected, strict=True):
         assert_almost_equal(tf._convert_inf(value), expected_output)
 
 
@@ -291,7 +291,7 @@ def test_deriv2_inverse_method(x_points, transform_class, kwargs):
 
     transformation = transform_class(**kwargs)
 
-    x = np.asarray(x_points)
+    x_points = np.asarray(x_points)
     r = transformation.transform(x_points)
     dx2_dr2 = transformation.deriv2_inverse(r)
     d1 = transformation.deriv(x_points)
@@ -456,6 +456,33 @@ def test_transform_1d_grid_all_grid_transform_combinations(oned_class, transform
     # int_0^infinity r^2 exp(-r) dr = 2
     integral = rgrid.integrate(rgrid.points**2 * np.exp(-rgrid.points))
     assert_allclose(integral, 2.0, atol=5e-2)
+
+
+@pytest.mark.parametrize("m", [1, 2, 3, 4, 5])
+def test_handymod_deriv3_matches_finite_differences(m):
+    """Test HandyModRTransform third derivative against finite differences for several m."""
+    # to ensure the transformation is monotonic and nonsingular for m <= 5,  rmax - rmin > 2**m - 1
+    transformation = HandyModRTransform(0.1, 40.0, m)
+    x = np.linspace(-0.9, 0.9, 19)
+    d3_fd = compute_fd_deriv(transformation.transform, x, eps=1e-3, order=3)
+    assert_allclose(transformation.deriv3(x), d3_fd, rtol=1e-3, atol=1e-5)
+
+
+@pytest.mark.parametrize("m", [3, 4, 5])
+def test_handymod_deriv3_analytical(m):
+    """Test the third derivative against an exact analytical result."""
+    rmin = 0.1
+    # rmax - rmin = 2**m, so that the transformation is r = rmin + (1+x)**m
+    rmax = rmin + 2**m
+
+    transformation = HandyModRTransform(rmin, rmax, m)
+
+    x = np.linspace(-0.9, 0.9, 19)
+
+    # analytical third derivative of r = rmin + (1+x)**
+    expected = m * (m - 1) * (m - 2) * (1 + x) ** (m - 3)
+
+    assert_allclose(transformation.deriv3(x), expected, rtol=1e-12, atol=1e-12)
 
 
 def test_multiexp_trim_inf_at_endpoint():
