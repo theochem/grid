@@ -541,10 +541,10 @@ class UniformGrid(_HyperRectangleGrid):
 
                 .. math::
                     \begin{align*}
-                        w_{ijk} =& V^\prime \cdot w_i w_j w_k, \\
-                        w_i =& \bigg(\frac{2\sin((j - 0.5)\pi) \sin^2(M_x\pi/2)}{M_x^2 \pi} + \\
+                        w_{ijk} =& V \cdot w_i w_j w_k, \\
+                        w_i =& \bigg(\frac{2\sin((i - 0.5)\pi) \sin^2(M_x\pi/2)}{M_x^2 \pi} + \\
                         & \frac{4}{M_x \pi} \sum_{p=1}^{M_x - 1}
-                        \frac{\sin((2j-1)p\pi /n_x) sin^2(p \pi)}{\pi} \bigg)
+                        \frac{\sin((2i-1)p\pi /(2M_x)) \sin^2(p \pi / 2)}{p} \bigg)
                     \end{align*}
 
             Alternative :
@@ -917,14 +917,14 @@ class UniformGrid(_HyperRectangleGrid):
             alt_volume = self._calculate_alternative_volume(shape)
             return np.ones(np.prod(shape)) * alt_volume / np.prod(shape)
         elif weight == "Fourier2":
-            alt_volume = self._calculate_alternative_volume(shape)
+            volume = self._calculate_volume(shape)
 
             def _fourier2(shape, index):
                 # Calculate the Fourier2 weights in each of the directions.
                 # Shape of the grid,  index is either 0 (x-direction), 1 (y-dir), 2 (z-dir)
                 grid_dir = np.arange(1, shape[index] + 1)
                 grid_p = np.arange(1, shape[index])
-                grid_2d = np.outer((2.0 * grid_dir - 1) / shape[index], grid_p)
+                grid_2d = np.outer((2.0 * grid_dir - 1) / (2.0 * shape[index]), grid_p)
                 weight = (
                     4.0
                     * np.einsum(
@@ -947,7 +947,7 @@ class UniformGrid(_HyperRectangleGrid):
             weight_x = _fourier2(shape, 0)
             weight_y = _fourier2(shape, 1)
             weight_z = _fourier2(shape, 2)
-            weight = np.einsum("ijk,i,j,k->ijk", weight, weight_x, weight_y, weight_z) * alt_volume
+            weight = np.einsum("ijk,i,j,k->ijk", weight, weight_x, weight_y, weight_z) * volume
             return np.ravel(weight)
         else:
             raise ValueError(f"The weight type parameter is not known, got {weight}")
