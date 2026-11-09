@@ -115,7 +115,7 @@ class MolGrid(Grid):
         Returns
         -------
         ndarray(M + 1,) :
-            List of indices :math:`[i_0, i_1, \cdots]` that whose indices range [i_k, i_{k+1}]
+            List of indices :math:`[i_0, i_1, \cdots]` whose ranges [i_k, i_{k+1}]
             specify which points in `points` correspond to kth atomic grid.
 
         """
@@ -240,15 +240,15 @@ class MolGrid(Grid):
         # Multiply f by the nuclear weight function w_n(r) for each atom grid segment.
         func_vals_atom = func_vals * self.aim_weights
         # Go through each atomic grid and construct interpolation of f*w_n.
-        intepolate_funcs = []
+        interpolate_funcs = []
         for i in range(len(self.atcoords)):
             start_index = self.indices[i]
             final_index = self.indices[i + 1]
             atom_grid = self[i]
-            intepolate_funcs.append(atom_grid.interpolate(func_vals_atom[start_index:final_index]))
+            interpolate_funcs.append(atom_grid.interpolate(func_vals_atom[start_index:final_index]))
 
         def interpolate_low(points, deriv=0, deriv_spherical=False, only_radial_derivs=False):
-            r"""Construct a spline like callable for intepolation.
+            r"""Construct a spline like callable for interpolation.
 
             Parameters
             ----------
@@ -273,8 +273,8 @@ class MolGrid(Grid):
                 if `only_radial_derivs` then derivative wrt to :math:`r` is only returned.
 
             """
-            output = intepolate_funcs[0](points, deriv, deriv_spherical, only_radial_derivs)
-            for interpolate in intepolate_funcs[1:]:
+            output = interpolate_funcs[0](points, deriv, deriv_spherical, only_radial_derivs)
+            for interpolate in interpolate_funcs[1:]:
                 output += interpolate(points, deriv, deriv_spherical, only_radial_derivs)
             return output
 

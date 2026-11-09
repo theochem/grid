@@ -124,8 +124,8 @@ class MultiDomainGrid(Grid):
         For a MultiDomainGrid formed from two grids, [(x11, y11), (x12, y12) ... (x1n, y1n)] and
         [(x21, y21), (x22, y22) ... (x2m, y2m)], the combined weights are calculated as follows:
         For each combination of points (x1, y1) from the first grid and (x2, y2) from the second
-        2D grid, the combined weight `w` is:
-            w = w1 * w2
+        2D grid, the combined weight ``w`` is ``w1 * w2``.
+
         where `w1` and `w2` are the weights from the individual grids corresponding to
         (x1, y1) and (x2, y2), respectively.
 
@@ -176,13 +176,10 @@ class MultiDomainGrid(Grid):
 
         Parameters
         ----------
-        integrand : callable
+        integrand_function : callable
             Integrand function to integrate. It must take a list of arguments (one for each domain)
             with the same dimension as the grid points used for the corresponding domain and return
             a float (e.g. a function of the form f([x1,y1,z1], [x2,y2,z2]) -> float).
-        integration_chunk_size : int, optional
-            Number of points to integrate at once. This parameter can be used to control the
-            memory usage of the integration. Default is 1000.
         non_vectorized : bool, optional
             Set to True if the integrand is not vectorized. Default is False. If True, the integrand
             will be called for each point of the grid separately without vectorization. This implies

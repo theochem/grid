@@ -25,6 +25,7 @@ from sympy import symbols
 from sympy.functions.combinatorial.numbers import bell
 
 from grid.basegrid import Grid, OneDGrid
+
 from .utils import ANGSTROM_TO_BOHR
 
 
@@ -102,8 +103,10 @@ class _HyperRectangleGrid(Grid):
         x = self.points[coords_x, 0]
         return x, y
 
-    def interpolate(self, points, values, use_log=False, nu_x=0, nu_y=0, nu_z=0, method="cubic"):
-        r"""Interpolate function and its derivatives on cubic grid.
+    def interpolate(
+        self, points, values, use_log=False, nu_x=0, nu_y=0, nu_z=0, method="cubic", grid_pts=None
+    ):
+        r"""Interpolate function value at a given point.
 
         Only implemented in three-dimensions.
 
@@ -136,20 +139,36 @@ class _HyperRectangleGrid(Grid):
             "nearest", "slinear", "quintic", and "pchip". Methods other than "cubic" are
             evaluated using SciPy's RegularGridInterpolator and only support function value
             interpolation (no derivatives).
+        grid_pts: list[OneDGrids], optional
+            If provided, then uses `grid_pts` rather than the points of the HyperRectangle class
+            `self.points` to construct interpolation. Useful when doing a promolecular
+            transformation.
 
         Returns
         -------
         float :
-            The interpolation of a function (or of it's derivatives) at a :math:`M` point.
+            The interpolation of a function (or of its derivatives) at a :math:`M` point.
 
         """
+        
+        # Needed because CubicProTransform is a subclass of this method and has its own
+        # interpolate function. Since interpolate references itself, it chooses
+        # CubicProTransform rather than _HyperRectangleGrid class.
+        return self._interpolate(points, values, use_log, nu_x, nu_y, nu_z, method, grid_pts)
+      
+    def _interpolate(
+        self, points, values, use_log=False, nu_x=0, nu_y=0, nu_z=0, method="cubic", grid_pts=None
+    ):
+        r"""Core of the Interpolate Algorithm."""
+      
         # SciPy-routed methods: all except cubic can only do function values (no derivatives).
         # cubic is kept on the internal separable CubicSpline so that values and derivatives
         # are always from the same interpolant and mathematically consistent.
         scipy_methods = ["linear", "nearest", "slinear", "quintic", "pchip"]
         supported_methods = scipy_methods + ["cubic"]
-
+        
         if method not in supported_methods:
+
             raise ValueError(
                 f"Argument method should be one of {supported_methods}, got {method}"
             )
@@ -161,6 +180,10 @@ class _HyperRectangleGrid(Grid):
             raise ValueError(
                 f"Number of function values {values.shape[0]} does not match number of "
                 f"grid points {np.prod(self.shape)}."
+            )
+        if grid_pts is not None and not isinstance(grid_pts, np.ndarray):
+            raise TypeError(
+                f"The grid points {type(grid_pts)} should have type None or numpy array."
             )
 
         if use_log:
@@ -186,6 +209,10 @@ class _HyperRectangleGrid(Grid):
                 return np.exp(interpolated)
             return interpolated
 
+        # If grid_pts isn't specified, then use the grid stored as the class attribute.
+        if grid_pts is None:
+            grid_pts = self.points
+
         # Interpolate the Z-Axis.
         def z_spline(z, x_index, y_index, nu_z=nu_z):
             # x_index, y_index is assumed to be in the grid while z is not assumed.
@@ -194,7 +221,7 @@ class _HyperRectangleGrid(Grid):
             small_index = self.coordinates_to_index((x_index, y_index, 1))
             large_index = self.coordinates_to_index((x_index, y_index, self.shape[2] - 2))
             val = CubicSpline(
-                self.points[small_index:large_index, 2],
+                grid_pts[small_index:large_index, 2],
                 values[small_index:large_index],
             )(z, nu_z)
             return val
@@ -204,7 +231,7 @@ class _HyperRectangleGrid(Grid):
             # The `1` and `self.num_puts[1] - 2` is needed because I don't want the boundary.
             # Assumes x_index is in the grid while y, z may not be.
             val = CubicSpline(
-                self.points[np.arange(1, self.shape[1] - 2) * self.shape[2], 1],
+                grid_pts[np.arange(1, self.shape[1] - 2) * self.shape[2], 1],
                 [z_spline(z, x_index, y_index, nu_z) for y_index in range(1, self.shape[1] - 2)],
             )(y, nu_y)
             # Trying to vectorize over z-axis and y-axis, this computes the interpolation for every
@@ -216,7 +243,7 @@ class _HyperRectangleGrid(Grid):
         # Interpolate the point (x, y, z) from a list of interpolated points on x,y-axis.
         def x_spline(x, y, z, nu_x):
             val = CubicSpline(
-                self.points[np.arange(1, self.shape[0] - 2) * self.shape[1] * self.shape[2], 0],
+                grid_pts[np.arange(1, self.shape[0] - 2) * self.shape[1] * self.shape[2], 0],
                 [y_splines(y, x_index, z, nu_y) for x_index in range(1, self.shape[0] - 2)],
             )(x, nu_x)
             # Trying to vectorize over x-axis, this computes the interpolation for every
@@ -228,7 +255,9 @@ class _HyperRectangleGrid(Grid):
         if use_log:
             # All derivatives require the interpolation of f at (x,y,z)
             interpolated = np.exp(
-                self.interpolate(points, values, use_log=False, nu_x=0, nu_y=0, nu_z=0)
+                self._interpolate(
+                    points, values, use_log=False, nu_x=0, nu_y=0, nu_z=0, grid_pts=grid_pts
+                )
             )
             # Only consider taking the derivative in only one direction
             one_var_deriv = sum([nu_x == 0, nu_y == 0, nu_z == 0]) == 2
@@ -239,21 +268,28 @@ class _HyperRectangleGrid(Grid):
             elif one_var_deriv:
                 # Taking the k-th derivative wrt to only one variable (x, y, z)
                 # Interpolate d^k ln(f) d"deriv_var" for all k from 1 to "deriv_var"
+                #  Each entry of `derivs` is the interpolation of the derivative eval on points.
                 if nu_x > 0:
                     derivs = [
-                        self.interpolate(points, values, use_log=False, nu_x=i, nu_y=0, nu_z=0)
+                        self._interpolate(
+                            points, values, use_log=False, nu_x=i, nu_y=0, nu_z=0, grid_pts=grid_pts
+                        )
                         for i in range(1, nu_x + 1)
                     ]
                     deriv_var = nu_x
                 elif nu_y > 0:
                     derivs = [
-                        self.interpolate(points, values, use_log=False, nu_x=0, nu_y=i, nu_z=0)
+                        self._interpolate(
+                            points, values, use_log=False, nu_x=0, nu_y=i, nu_z=0, grid_pts=grid_pts
+                        )
                         for i in range(1, nu_y + 1)
                     ]
                     deriv_var = nu_y
                 else:
                     derivs = [
-                        self.interpolate(points, values, use_log=False, nu_x=0, nu_y=0, nu_z=i)
+                        self._interpolate(
+                            points, values, use_log=False, nu_x=0, nu_y=0, nu_z=i, grid_pts=grid_pts
+                        )
                         for i in range(1, nu_z + 1)
                     ]
                     deriv_var = nu_z
@@ -284,41 +320,40 @@ class _HyperRectangleGrid(Grid):
         return interpolated
 
     def coordinates_to_index(self, indices):
-        r"""Convert (i, j) or (i, j, k) integer coordinates to the grid point index.
+        r"""Convert integer coordinates (i, j, k, ...) to a grid point index.
 
-        Assumes the grid is ordered moving in the last-coordinate (with other coordinates fixed,
-        e.g. k) followed by the next coordinate to the left (e.g. j), continuing to the first
-        coordinate (e.g. i) (i.e., lexicographical ordering).
+        Assumes the grid is stored in row-major (lexicographical) order, where the
+        last coordinate varies fastest (k), followed by the previous ones (j, i, ...).
 
         Parameters
         ----------
-        indices : (int, int) or (int, int, int)
-            The :math:`i-th`\, :math:`j-th`\, (or :math:`k-th`) positions of the grid point.
+        indices : tuple of int
+            The grid position given as (i, j, k, ...) for each dimension.
 
         Returns
         -------
         index : int
-            Index of the grid point.
+            Flat index of the corresponding grid point.
 
         """
-        if self.ndim == 3:
-            n_1d, n_2d = self.shape[2], self.shape[1] * self.shape[2]
-            # TODO Change this so that indices can be multi-dimensional
-            index = n_2d * indices[0] + n_1d * indices[1] + indices[2]
-            return index
-        # Case of two-dimensions
-        index = self.shape[1] * indices[0] + indices[1]
-        return index
+        indices = np.asarray(indices)
+        # Strides are the number of points between adjacent grid points along each index.
+        strides = np.empty(self.ndim, dtype=int)
+        strides[-1] = 1
+        # Row-major, right to left: each stride equals the next stride times the next dimension size
+        for i in range(self.ndim - 2, -1, -1):
+            strides[i] = strides[i + 1] * self.shape[i + 1]
+        return np.dot(indices, strides)
 
     def index_to_coordinates(self, index):
         r"""Convert grid point index to its (i, j) or (i, j, k) integer coordinates in the grid.
 
         For 3D grid it has a shape of :math:`(N_x, N_y, N_z)` denoting the number of points in
-        :math:`x`\, :math:`y`\, and :math:`z` directions. So, each grid point has a :math:`(i, j, k)`
-        integer coordinate where :math:`0 <= i <= N_x - 1`\, :math:`0 <= j <= N_y - 1`\,
-        and :math:`0 <= k <= N_z - 1`\.  Two-dimensional case similarly follows. Assumes
-        the grid enumerates in the last coordinate first (with others fixed), following the
-        next coordinate to the left (i.e., lexicographical ordering).
+        :math:`x`\, :math:`y`\, and :math:`z` directions. So, each grid point has a
+        :math:`(i, j, k)` integer coordinate where :math:`0 <= i <= N_x - 1`\,
+        :math:`0 <= j <= N_y - 1`\, and :math:`0 <= k <= N_z - 1`\.  Two-dimensional case similarly
+        follows. Assumes the grid enumerates in the last coordinate first (with others fixed),
+        following the next coordinate to the left (i.e., lexicographical ordering).
 
         Parameters
         ----------
@@ -369,7 +404,7 @@ class Tensor1DGrids(_HyperRectangleGrid):
             raise TypeError(
                 f"Argument oned_y should be an instance of `OneDGrid`, got {type(oned_y)}"
             )
-        if not isinstance(oned_z, (OneDGrid, type(None))):
+        if not isinstance(oned_z, OneDGrid | type(None)):
             raise TypeError(
                 f"Argument oned_z should be an instance of `OneDGrid`, got {type(oned_z)}"
             )
@@ -728,7 +763,7 @@ class UniformGrid(_HyperRectangleGrid):
         if not fname.endswith(".cube"):
             raise ValueError("Argument fname should be a cube file with *.cube extension!")
 
-        with open(fname, "rt") as f:
+        with open(fname) as f:
             # skip the title and second line
             f.readline()
             f.readline()
@@ -753,7 +788,7 @@ class UniformGrid(_HyperRectangleGrid):
             # Convert negative shape values to positive
             shape = np.abs(np.asarray([shape0, shape1, shape2], dtype=int))
             if coordinates_in_angstrom:
-                print(f"Cube file units detected: angstrom, converting to atomic units grid.")
+                print("Cube file units detected: angstrom, converting to atomic units grid.")
                 axes *= ANGSTROM_TO_BOHR
                 origin *= ANGSTROM_TO_BOHR
 
@@ -1029,9 +1064,9 @@ class UniformGrid(_HyperRectangleGrid):
             x, y, z = self._origin
             f.write(f"{natom:5d} {x:11.6f} {y:11.6f} {z:11.6f}\n")
             rvecs = self._axes
-            for i, (x, y, z) in zip(self._shape, rvecs):
+            for i, (x, y, z) in zip(self._shape, rvecs, strict=True):
                 f.write(f"{i:5d} {x:11.6f} {y:11.6f} {z:11.6f}\n")
-            for i, q, (x, y, z) in zip(atnums, pseudo_numbers, atcoords):
+            for i, q, (x, y, z) in zip(atnums, pseudo_numbers, atcoords, strict=True):
                 f.write(f"{i:5d} {q:11.6f} {x:11.6f} {y:11.6f} {z:11.6f}\n")
             # writing the cube data:
             num_chunks = 6

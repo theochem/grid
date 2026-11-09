@@ -100,7 +100,7 @@ def test_tutorial_periodic_repetition(delta_p, delta_c):
 def setup_equidistant_grid(origin, realvecs, npts):
     """Define a periodic grid with equally spaced grid points.
 
-    The relative vectors between neigbouring grid points are constant and equal
+    The relative vectors between neighboring grid points are constant and equal
     to the real-space lattice vectors divided by the number of grid points along
     one lattice vector.
 
@@ -268,6 +268,17 @@ def assert_equal_localgrids(localgrid1, localgrid2):
         assert_allclose(weights1, weights2)
 
 
+def test_get_localgrid_no_translation():
+    """Center outside the fractional interval of the points and tiny radius."""
+    # Here ilc_min > ilc_max, so no periodic image needs to be checked.
+    grid = PeriodicGrid(np.array([[0.0], [0.1]]), np.ones(2), np.array([[1.0]]))
+    localgrid = grid.get_localgrid(np.array([0.5]), 0.01)
+    assert localgrid.size == 0
+    assert localgrid.points.shape == (0, 1)
+    assert localgrid.weights.shape == (0,)
+    assert localgrid.indices.shape == (0,)
+
+
 class PeriodicGridTester:
     """Base class for PeriodicGrid test cases.
 
@@ -346,6 +357,11 @@ class PeriodicGridTester:
         assert_allclose(grid_index.spacings, self.grid.spacings)
         assert_allclose(grid_index.frac_intvls, ref_grid_index.frac_intvls)
         assert isinstance(grid_index, PeriodicGrid)
+        # test NumPy integer index
+        grid_np_index = self.grid[np.int64(10)]
+        assert_allclose(grid_np_index.points, ref_grid_index.points)
+        assert_allclose(grid_np_index.weights, ref_grid_index.weights)
+        assert isinstance(grid_np_index, PeriodicGrid)
         # test slice
         with warnings.catch_warnings(record=True) as w:
             ref_grid_slice = PeriodicGrid(
@@ -435,6 +451,20 @@ class PeriodicGridTester:
                 assert (np.linalg.norm(localgrid.points - center, axis=1) <= radius).all()
             else:
                 assert (abs(localgrid.points - center) <= radius).all()
+
+    def test_get_localgrid_empty(self):
+        """Test the get_localgrid method when no point is within the radius."""
+        # A tiny sphere halfway between two grid points contains no point, nor
+        # any periodic image of a point.
+        center = 0.5 * (self.grid.points[3] + self.grid.points[4])
+        radius = 1e-8
+        for grid in self.grid, self.wrapped_grid:
+            localgrid = grid.get_localgrid(center, radius)
+            assert localgrid.size == 0
+            assert localgrid.indices.dtype.kind == "i"
+            assert localgrid.points.shape == (0, *self.grid.points.shape[1:])
+            assert localgrid.weights.shape == (0,)
+            assert_allclose(localgrid.center, center)
 
     def test_get_localgrid_large_radius(self):
         """Basic checks for the get_localgrid method.

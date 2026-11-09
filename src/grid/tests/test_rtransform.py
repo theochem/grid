@@ -294,7 +294,7 @@ def test_exception_string():
         RTransform.from_string("Fubar A 5")
 
 
-def test_identiy_string():
+def test_identity_string():
     rtf1 = IdentityRTransform(45)
     s = rtf1.to_string()
     rtf2 = RTransform.from_string(s)

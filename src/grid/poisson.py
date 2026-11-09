@@ -27,7 +27,7 @@ This module solves the following Poisson equation:
 
 for some Coulomb potential :math:`V(r)` and charge density :math:`\rho(r)`
 over a centered atomic grid. It is recommended to use the boundary value problem
-for handing singularities near the origin of the atomic grid.
+for handling singularities near the origin of the atomic grid.
 
 """
 
@@ -62,7 +62,7 @@ def _interpolate_molgrid_helper(molgrid, func_vals, interpolate_callable):
     # Multiply f by the nuclear weight function w_n(r) for each atom grid segment.
     func_vals_atom = func_vals * molgrid.aim_weights
     # Go through each atomic grid and construct interpolation of f*w_n.
-    intepolate_funcs = []
+    interpolate_funcs = []
     for i in range(len(molgrid.atcoords)):
         # Get the atomic grid
         start_index = molgrid.indices[i]
@@ -70,13 +70,13 @@ def _interpolate_molgrid_helper(molgrid, func_vals, interpolate_callable):
         atom_grid = molgrid[i]
 
         # Add the interpolation for that atom in a list
-        intepolate_funcs.append(
+        interpolate_funcs.append(
             interpolate_callable(atom_grid, func_vals_atom[start_index:final_index])
         )
 
     def sum_of_interpolation_functions(points):
-        output = intepolate_funcs[0](points)
-        for interpolate in intepolate_funcs[1:]:
+        output = interpolate_funcs[0](points)
+        for interpolate in interpolate_funcs[1:]:
             output += interpolate(points)
         return output
 
@@ -196,7 +196,7 @@ def solve_poisson_ivp(
         The function values evaluated on all :math:`N` points on the molecular grid.
     transform : BaseTransform, optional
         Transformation from infinite domain :math:`r \in [0, \infty)` to another
-        domain that is a finite.
+        domain that is finite.
     r_interval : tuple, optional
         The interval :math:`(b, a)` of :math:`r` for which the ODE solver will start from and end,
         where :math:`b>a`\. The value :math:`b` should be large as it determines the asymptotic
@@ -208,7 +208,7 @@ def solve_poisson_ivp(
     Returns
     -------
     callable(ndarray(N, 3) -> float) :
-        The solution to Poisson equaiton/potential :math:`g : \mathbb{R}^3 \rightarrow \mathbb{R}`\.
+        The solution to Poisson equation/potential :math:`g : \mathbb{R}^3 \rightarrow \mathbb{R}`\.
 
     """
     return _interpolate_molgrid_helper(
@@ -332,7 +332,7 @@ def solve_poisson_bvp(
         \nabla^2 g = (-4\pi) f,
 
     for a fixed function :math:`f`\, where :math:`\nabla^2` is the Laplacian.  This
-    is transformed to an set of ODE problems as a boundary value problem. [1]_
+    is transformed to a set of ODE problems as a boundary value problem. [1]_
 
     If boundary is not provided, then the boundary of :math:`g` for large r is set to
     :math:`\int \int \int f(r, \theta, \phi) / r`\.  The solution :math:`g` is assumed to be
@@ -348,7 +348,7 @@ def solve_poisson_bvp(
         The function values evaluated on all :math:`N` points on the molecular grid.
     transform : BaseTransform, optional
         Transformation from infinite domain :math:`r \in [0, \infty)` to another
-        domain that is a finite.
+        domain that is finite.
     boundary : float, optional
         The boundary value of :math:`g` in the limit of r to infinity.
     include_origin : bool, optional
@@ -363,7 +363,7 @@ def solve_poisson_bvp(
     Returns
     -------
     callable(ndarray(N, 3) -> float) :
-        The solution to Poisson equaiton/potential :math:`g : \mathbb{R}^3 \rightarrow \mathbb{R}`\.
+        The solution to Poisson equation/potential :math:`g : \mathbb{R}^3 \rightarrow \mathbb{R}`\.
 
     References
     ----------
@@ -464,7 +464,7 @@ def interpolate_laplacian(molgrid: MolGrid | AtomGrid, func_vals: np.ndarray):
 
             # Take the sum of each component with the spherical harmonics
             # l means the angular (l,m) variables and n represents points.
-            # Note this was computed on seperate due to the difficulty in handing 0/inf, 0/0, 0*inf.
+            # Note this was computed separately due to the difficulty in handling 0/inf, 0/0, 0*inf.
             first_component = np.einsum("ln, ln -> n", d2r_values, r_sph_harm)
             second_component = np.einsum("ln, ln -> n", dr_values, r_sph_harm)
 

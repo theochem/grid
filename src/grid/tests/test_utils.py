@@ -18,6 +18,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
 """Utils function test file."""
+
 from unittest import TestCase
 
 import numpy as np
@@ -28,6 +29,7 @@ from grid.angular import AngularGrid
 from grid.utils import (
     convert_cart_to_sph,
     generate_derivative_real_spherical_harmonics,
+    generate_orders_horton_order,
     generate_real_spherical_harmonics,
     generate_real_spherical_harmonics_scipy,
     get_cov_radii,
@@ -276,6 +278,24 @@ def test_spherical_harmonic_recursion_against_scipy(numb_pts, max_degree):
     assert_allclose(pytho_sol, scipy_sol, atol=1e-10)
 
 
+def test_generate_real_spherical_harmonics_scipy_raises_for_non_1d_angles():
+    """Test scipy spherical harmonics helper rejects non-1D angle arrays."""
+    theta = np.random.uniform(0.0, 2.0 * np.pi, size=(8, 1))
+    phi = np.random.uniform(0.0, np.pi, size=(8, 1))
+
+    with pytest.raises(ValueError, match="1D"):
+        generate_real_spherical_harmonics_scipy(3, theta, phi)
+
+
+def test_generate_real_spherical_harmonics_scipy_raises_for_mismatched_angle_shapes():
+    """Test scipy spherical harmonics helper rejects mismatched angle array shapes."""
+    theta = np.random.uniform(0.0, 2.0 * np.pi, size=(8,))
+    phi = np.random.uniform(0.0, np.pi, size=(10,))
+
+    with pytest.raises(ValueError, match="same shape"):
+        generate_real_spherical_harmonics_scipy(3, theta, phi)
+
+
 @pytest.mark.parametrize("numb_pts, max_degree", [[1000, 4], [5000, 2], [100, 15], [10, 100]])
 def test_solid_harmonics_for_few_degrees(numb_pts, max_degree):
     r"""Test solid harmonic for a few degrees against spherical harmonic implementation."""
@@ -323,3 +343,10 @@ def test_regular_solid_spherical_harmonics():
     assert_allclose(result[9], z * (5 * z**2 - 3 * r**2) / 2)
     # l=4, m=4
     assert_allclose(result[13], np.sqrt(15) * x * y * z)
+
+
+@pytest.mark.parametrize("order", [0, 1, 2, 5])
+def test_generate_orders_horton_order_cartesian_one_dimension(order):
+    r"""Test 1D Cartesian orders have one row holding the order, like the 2D and 3D rows."""
+    orders = generate_orders_horton_order(order, "cartesian", dim=1)
+    assert_equal(orders, np.array([[order]]))

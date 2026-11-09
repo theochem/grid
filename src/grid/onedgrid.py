@@ -133,7 +133,7 @@ class GaussChebyshev(OneDGrid):
         x_i =& \cos\left( \frac{2i-1}{2n}\pi \right) \\
         w_i =& \frac{\pi}{n}
 
-    However, to integrate a given function :math:`g(x)` over :math:`[-1, 1]`\, this is re-written as:
+    To integrate a given function :math:`g(x)` over :math:`[-1, 1]`\, this is re-written as:
 
     .. math::
         \int_{-1}^{1}g(x)dx \approx \sum_{i=1}^n \left(w_i\sqrt{1-x_i^2}\right)g(x_i) =
@@ -212,7 +212,7 @@ class GaussChebyshevType2(OneDGrid):
         x_i =& \cos\left( \frac{i}{n+1} \pi \right) \\
         w_i =& \frac{\pi}{n+1} \sin^2 \left( \frac{i}{n+1} \pi \right)
 
-    However, to integrate a given function :math:`g(x)` over :math:`[-1, 1]`\, this is re-written as:
+    To integrate a given function :math:`g(x)` over :math:`[-1, 1]`\, this is re-written as:
 
     .. math::
         \int_{-1}^{1} g(x) dx \approx \sum_{i=1}^n \left(\frac{w_i}{\sqrt{1-x_i^2}}\right) g(x_i) =
@@ -256,7 +256,7 @@ class GaussChebyshevLobatto(OneDGrid):
         w_{1} = w_{n} =& \frac{\pi}{2(n-1)} \\
         w_{i\neq 1,n} =& \frac{\pi}{n-1}
 
-    However, to integrate a given function :math:`g(x)` over :math:`[-1, 1]`\, this is re-written as:
+    To integrate a given function :math:`g(x)` over :math:`[-1, 1]`\, this is re-written as:
 
     .. math::
         \int_{-1}^{1}g(x) dx \approx \sum_{i=1}^n \left(w_i \sqrt{1-x_i^2}\right) g(x_i) =
@@ -669,11 +669,11 @@ class FejerFirst(OneDGrid):
         \theta_i &= \frac{(2i - 1)\pi}{2n}, \\
         x_i &= \cos(\theta_i), \\
         w_i &= \frac{2}{n}\bigg(1 - 2 \sum_{j=1}^{\lfloor n/2 \rfloor}
-            \frac{\cos(2j \theta_j)}{4 j^2 - 1} \bigg),
+            \frac{\cos(2j \theta_i)}{4 j^2 - 1} \bigg),
 
-    where :math:`k=1,\cdots, n`\. It uses the zeros of the Chebyshev polynomial.
-    If discontinuous, it is recommended to break the intervals at the discontinuities
-    and handled separately.
+    where :math:`i=1,\cdots, n` and :math:`n` is the number of quadrature points. It uses the zeros
+    of the Chebyshev polynomial. If discontinuous, it is recommended to break the intervals at the
+    discontinuities and handled separately.
 
     """
 
@@ -700,15 +700,16 @@ class FejerFirst(OneDGrid):
         points = np.cos(theta)
 
         nsum = npoints // 2
-        j = np.arange(nsum - 1) + 1
+        j = np.arange(nsum) + 1
 
-        bj = 2.0 * np.ones(nsum - 1) / (4 * j**2 - 1)
+        bj = 2.0 / (4 * j**2 - 1)
         cij = np.cos(np.outer(2 * j, theta))
         di = bj @ cij
-        weights = 1 - di
+        weights = (1 - di) * (2 / npoints)
 
+        # reverse the order of points and weights to have them in ascending order
         points = points[::-1]
-        weights = weights[::-1] * (2 / npoints)
+        weights = weights[::-1]
 
         super().__init__(points, weights, (-1, 1))
 
@@ -720,15 +721,14 @@ class FejerSecond(OneDGrid):
     The definition of this quadrature is:
 
     .. math::
-        \theta_i &= k \pi / n \\
+        \theta_i &= \frac{i\pi}{n + 1} \\
         x_i &= \cos(\theta_i) \\
-        w_i &= \frac{4 \sin(\theta_i)}{n} \sum_{j=1}^{\lfloor n/2 \rfloor}
-            \frac{\sin(2j - 1)\theta_i}{2j - 1}\\
+        w_i &= \frac{4 \sin(\theta_i)}{n + 1} \sum_{j=1}^{\lfloor (n + 1)/2 \rfloor}
+            \frac{\sin((2j - 1)\theta_i)}{2j - 1}\\
 
-    where :math:`k=1, \cdots n - 1` and :math:`n` is the number of points. This
-    method is considered more practical than the first method.  If discontinuous, it is
+    where :math:`i = 1, \ldots, n` and :math:`n` is the number of quadrature
+    points. This method is considered more practical than the first method.  If discontinuous, it is
     recommended to break the intervals at the discontinuities and handled separately.
-
     """
 
     name = "Fejer-Second"
@@ -747,22 +747,23 @@ class FejerSecond(OneDGrid):
             One-dimensional grid instance.
         """
         if npoints <= 1:
-            raise ValueError("npoints must be greater that one, given {npoints}")
+            raise ValueError(f"npoints must be greater than one, given {npoints}")
 
         theta = np.pi * (np.arange(npoints) + 1) / (npoints + 1)
-
         points = np.cos(theta)
 
         nsum = (npoints + 1) // 2
-        j = np.arange(nsum - 1) + 1
+        j = np.arange(nsum) + 1
 
-        bj = np.ones(nsum - 1) / (2 * j - 1)
-        sij = np.sin(np.outer(2 * j - 1, theta))
-        wi = bj @ sij
-        weights = 4 * np.sin(theta) * wi
+        odd_indices = 2 * j - 1
+        sin_coeffs = 1.0 / odd_indices
+        sin_terms_ij = np.sin(np.outer(odd_indices, theta))
+        weighted_sum = sin_coeffs @ sin_terms_ij
+        weights = 4 * np.sin(theta) / (npoints + 1) * weighted_sum
 
+        # sort the points and weights in ascending order
         points = points[::-1]
-        weights = weights[::-1] / (npoints + 1)
+        weights = weights[::-1]
 
         super().__init__(points, weights, (-1, 1))
 
@@ -1091,7 +1092,7 @@ class ExpSinh(OneDGrid):
 
     Warnings
     --------
-    - Using this quadrature requires heavy parameter-tuning in-order to work.
+    - Using this quadrature requires heavy parameter-tuning in order to work.
 
     """
 
@@ -1105,7 +1106,7 @@ class ExpSinh(OneDGrid):
         npoints : int
             Number of grid points.
         h : float
-            Value of parameter :math: `h` wich control the quadrature.
+            Value of parameter :math:`h` which controls the quadrature.
 
         Returns
         -------
@@ -1114,7 +1115,7 @@ class ExpSinh(OneDGrid):
 
         """
         warnings.warn(
-            "Using this quadrature requires heavy parameter-tuning in-order to be applicable.",
+            "Using this quadrature requires heavy parameter-tuning in order to be applicable.",
             stacklevel=2,
         )
         if h <= 0:
@@ -1144,7 +1145,7 @@ class LogExpSinh(OneDGrid):
 
     Warnings
     --------
-    - Using this quadrature requires heavy parameter-tuning in-order to work.
+    - Using this quadrature requires heavy parameter-tuning in order to work.
 
     """
 
@@ -1158,7 +1159,7 @@ class LogExpSinh(OneDGrid):
         npoints : int
             Number of grid points.
         h : float
-            Value of parameter :math: `h` wich control the quadrature.
+            Value of parameter :math:`h` which controls the quadrature.
 
         Returns
         -------
@@ -1167,7 +1168,7 @@ class LogExpSinh(OneDGrid):
 
         """
         warnings.warn(
-            "Using this quadrature requires heavy parameter-tuning in-order to be applicable.",
+            "Using this quadrature requires heavy parameter-tuning in order to be applicable.",
             stacklevel=2,
         )
         if h <= 0:
@@ -1197,7 +1198,7 @@ class ExpExp(OneDGrid):
 
     Warnings
     --------
-    - Using this quadrature requires heavy parameter-tuning in-order to work.
+    - Using this quadrature requires heavy parameter-tuning in order to work.
 
     """
 
@@ -1220,7 +1221,7 @@ class ExpExp(OneDGrid):
 
         """
         warnings.warn(
-            "Using this quadrature requires heavy parameter-tuning in-order to be applicable.",
+            "Using this quadrature requires heavy parameter-tuning in order to be applicable.",
             stacklevel=2,
         )
         if h <= 0:
@@ -1293,7 +1294,7 @@ class SingleExp(OneDGrid):
 
     Warnings
     --------
-    - Using this quadrature requires heavy parameter-tuning in-order to work.
+    - Using this quadrature requires heavy parameter-tuning in order to work.
 
     """
 
@@ -1316,7 +1317,7 @@ class SingleExp(OneDGrid):
 
         """
         warnings.warn(
-            "Using this quadrature requires heavy parameter-tuning in-order to be applicable.",
+            "Using this quadrature requires heavy parameter-tuning in order to be applicable.",
             stacklevel=2,
         )
         if h <= 0:
@@ -1345,7 +1346,7 @@ class SingleArcSinhExp(OneDGrid):
 
     Warnings
     --------
-    - Using this quadrature requires heavy parameter-tuning in-order to work.
+    - Using this quadrature requires heavy parameter-tuning in order to work.
 
     """
 
@@ -1368,7 +1369,7 @@ class SingleArcSinhExp(OneDGrid):
 
         """
         warnings.warn(
-            "Using this quadrature requires heavy parameter-tuning in-order to be applicable.",
+            "Using this quadrature requires heavy parameter-tuning in order to be applicable.",
             stacklevel=2,
         )
         if h <= 0:

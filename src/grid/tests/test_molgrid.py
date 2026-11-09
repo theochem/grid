@@ -18,10 +18,12 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
 """MolGrid test file."""
+
 from unittest import TestCase
 
 import numpy as np
 import pytest
+import scipy.special
 from numpy.testing import assert_allclose, assert_almost_equal
 
 from grid.atomgrid import AtomGrid, _get_rgrid_size
@@ -34,6 +36,24 @@ from grid.rtransform import ExpRTransform, LinearFiniteRTransform
 
 # Ignore angular/Lebedev grid warnings where the weights are negative:
 pytestmark = pytest.mark.filterwarnings("ignore:Lebedev weights are negative which can*")
+
+
+def binomial_safe(n, k):
+    """Safely compute binomial coefficient C(n, k), returning 0 if k < 0 or k > n."""
+    if k < 0 or k > n:
+        return 0
+    # Use float conversion for safety with potentially large numbers before sqrt
+    # and handle potential precision issues with exact=True for large ints
+    try:
+        # Attempt exact calculation first for smaller numbers if possible
+        if n < 1000:  # Heuristic threshold
+            return float(scipy.special.comb(n, k, exact=True))
+        else:
+            # Use floating point for potentially large numbers
+            return scipy.special.comb(n, k, exact=False)
+    except OverflowError:
+        # Fallback to floating point if exact calculation overflows
+        return scipy.special.comb(n, k, exact=False)
 
 
 class TestMolGrid(TestCase):
@@ -810,9 +830,66 @@ class TestMolGrid(TestCase):
         occupation = mg.integrate(fn)
         assert_almost_equal(occupation, 2.5, decimal=5)
 
+    def test_multipole_translation(self):
+        """Test pure solid harmonic moments with shifted centers."""
+        l_max = 3
+        alpha = 2.0
+        gaussian_center = np.array([0.4, -0.3, 0.2])
+        moment_centers = np.array([[0.0, 0.0, 0.0], [0.1, -0.2, 0.3]])
+
+        rgrid = GaussLaguerre(75)
+
+        # Construct a single-atom molecular grid.
+        mg = MolGrid.from_preset(
+            atnums=np.array([1]),
+            atcoords=np.zeros((1, 3)),
+            preset="fine",
+            rgrid=rgrid,
+            rotate=False,
+        )
+
+        dist_sq = np.sum((mg.points - gaussian_center) ** 2, axis=1)
+        func_vals = (alpha / np.pi) ** 1.5 * np.exp(-alpha * dist_sq)
+
+        # Calculate moments about both reference centers.
+        moments, lm_orders = mg.moments(
+            func_vals=func_vals,
+            orders=l_max,
+            centers=moment_centers,
+            type_mom="pure",
+            return_orders=True,
+        )
+
+        displacement = gaussian_center - moment_centers
+
+        # Convert Cartesian displacements to spherical coordinates.
+        r = np.linalg.norm(displacement, axis=1)
+        theta = np.arctan2(np.linalg.norm(displacement[:, :2], axis=1), displacement[:, 2])
+        phi = np.mod(np.arctan2(displacement[:, 1], displacement[:, 0]), 2 * np.pi)
+
+        # Compute SciPy's complex spherical harmonics and select them in Horton order
+        degree, order = lm_orders.T
+        ylm = scipy.special.sph_harm_y_all(l_max, l_max, theta, phi)[degree, np.abs(order)]
+
+        # Convert to real spherical harmonics
+        real_ylm = np.where(order[:, None] < 0, ylm.imag, ylm.real)
+
+        # Apply real-harmonic normalization and remove the Condon-Shortley phase
+        factor = np.where(order == 0, 1.0, np.sqrt(2) * (-1.0) ** np.abs(order))
+
+        # Convert to regular solid harmonics
+        expected = (
+            factor[:, None]
+            * np.sqrt(4 * np.pi / (2 * degree[:, None] + 1))
+            * r[None, :] ** degree[:, None]
+            * real_ylm
+        )
+
+        assert_allclose(moments, expected, rtol=1e-4, atol=1e-6)
+
 
 def test_interpolation_with_gaussian_center():
-    r"""Test interpolation with molecular grid of sum of two Gaussian examples."""
+    """Test if get_multipole works with a specific center."""
     coordinates = np.array([[0.0, 0.0, -1.5], [0.0, 0.0, 1.5]])
 
     pts = Trapezoidal(400)

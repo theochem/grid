@@ -19,6 +19,8 @@
 # --
 """Construct basic grid data structure."""
 
+from numbers import Integral
+
 import numpy as np
 from scipy.spatial import cKDTree
 
@@ -98,7 +100,7 @@ class Grid:
 
         Parameters
         ----------
-        index : int or slice
+        index : int (any Integral, e.g. np.int64) or slice
             index of slice object for selecting certain part of the grid
 
         Returns
@@ -106,7 +108,7 @@ class Grid:
         Grid
             Return a new Grid object with selected points
         """
-        if isinstance(index, int):
+        if isinstance(index, Integral):
             return self.__class__(np.array([self.points[index]]), np.array([self.weights[index]]))
         else:
             return self.__class__(np.array(self.points[index]), np.array(self.weights[index]))
@@ -114,7 +116,7 @@ class Grid:
     def integrate(self, *value_arrays):
         r"""Integrate over the whole grid for given multiple value arrays.
 
-        Product of all value_arrays will be computed element-wise then integrated on the grid
+        Product of all input arrays will be computed element-wise then integrated on the grid
         with its weights:
 
         .. math::
@@ -122,8 +124,8 @@ class Grid:
 
         Parameters
         ----------
-        *value_arrays : np.ndarray(N, )
-            One or multiple value array to integrate.
+        *value_arrays : np.ndarray of shape (N,)
+            One or more value arrays to integrate.
 
         Returns
         -------
@@ -182,7 +184,7 @@ class Grid:
             _center = np.array([center]) if center.ndim == 0 else center
             if self._kdtree is None:
                 self._kdtree = cKDTree(_points)
-            indices = np.array(self._kdtree.query_ball_point(_center, radius, p=2.0))
+            indices = np.array(self._kdtree.query_ball_point(_center, radius, p=2.0), dtype=int)
             return LocalGrid(self._points[indices], self._weights[indices], center, indices)
 
     def moments(
@@ -456,7 +458,7 @@ class OneDGrid(Grid):
 
         Parameters
         ----------
-        index : int or slice
+        index : int (any Integral, e.g. np.int64) or slice
             index of slice object for selecting certain part of grid
 
         Returns
@@ -464,7 +466,7 @@ class OneDGrid(Grid):
         OneDGrid
             Return a new grid instance with a subset of points.
         """
-        if isinstance(index, int):
+        if isinstance(index, Integral):
             return OneDGrid(
                 np.array([self.points[index]]),
                 np.array([self.weights[index]]),

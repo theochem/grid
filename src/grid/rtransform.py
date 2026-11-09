@@ -19,7 +19,6 @@
 # --
 """Transformation from 1D intervals [a, b] to other 1D intervals [c, d]."""
 
-
 import warnings
 from abc import ABC, abstractmethod
 from numbers import Number
@@ -52,6 +51,80 @@ class BaseTransform(ABC):
     def deriv3(self, x):
         """Abstract method for the third derivative of transformation."""
 
+    def deriv_inverse(self, r):
+        r"""Compute the first derivative of the inverse transformation.
+
+        .. math::
+            \frac{d x(r)}{dr} = \left(\left.\frac{dr}{dx}\right|_{x = x(r)}\right)^{-1}
+
+        Parameters
+        ----------
+        r : float or np.ndarray
+            Point or points in the transformation codomain.
+
+        Returns
+        -------
+        float or np.ndarray
+            First derivative of the inverse transformation evaluated at ``r``.
+        """
+        d1 = self.deriv(self.inverse(r))
+        if np.any(d1 == 0):
+            raise ZeroDivisionError("First derivative of original transformation has 0 value")
+        return 1 / d1
+
+    def deriv2_inverse(self, r):
+        r"""Compute the second derivative of the inverse transformation.
+
+        .. math::
+            \frac{d^2 x(r)}{dr^2} =
+            -\left.\frac{d^2 r}{dx^2}\right|_{x = x(r)}
+            \left(\left.\frac{dr}{dx}\right|_{x = x(r)}\right)^{-3}
+
+        Parameters
+        ----------
+        r : float or np.ndarray
+            Point or points in the transformation codomain.
+
+        Returns
+        -------
+        float or np.ndarray
+            Second derivative of the inverse transformation evaluated at ``r``.
+        """
+        x = self.inverse(r)
+        d1 = self.deriv(x)
+        d2 = self.deriv2(x)
+        if np.any(d1 == 0):
+            raise ZeroDivisionError("First derivative of original transformation has 0 value")
+        return -d2 / d1**3
+
+    def deriv3_inverse(self, r):
+        r"""Compute the third derivative of the inverse transformation.
+
+        .. math::
+            \frac{d^3 x(r)}{dr^3} =
+            -\left.\frac{d^3 r}{dx^3}\right|_{x = x(r)}
+            \left(\left.\frac{dr}{dx}\right|_{x = x(r)}\right)^{-4}
+            + 3 \left(\left.\frac{d^2 r}{dx^2}\right|_{x = x(r)}\right)^2
+            \left(\left.\frac{dr}{dx}\right|_{x = x(r)}\right)^{-5}
+
+        Parameters
+        ----------
+        r : float or np.ndarray
+            Point or points in the transformation codomain.
+
+        Returns
+        -------
+        float or np.ndarray
+            Third derivative of the inverse transformation evaluated at ``r``.
+        """
+        x = self.inverse(r)
+        d1 = self.deriv(x)
+        d2 = self.deriv2(x)
+        d3 = self.deriv3(x)
+        if np.any(d1 == 0):
+            raise ZeroDivisionError("First derivative of original transformation has 0 value")
+        return (3 * d2**2 - d1 * d3) / d1**5
+
     @property
     def domain(self):
         """tuple: Transformation domain."""
@@ -63,14 +136,25 @@ class BaseTransform(ABC):
         return self._codomain
 
     def transform_1d_grid(self, oned_grid):
-        r"""Generate a new integral grid by transforming the provided grid.
+        r"""Generate a new integration grid by transforming the provided grid.
+
+        For a monotonic transformation :math:`r: [x_{\min}, x_{\max}] \to [r_{\min}, r_{\max}]`,
+        the integral over the transformed domain is
 
         .. math::
-            \int^{\inf}_0 g(r) d r &= \int^{r(\infty)}_{r(0)} g(r(x)) \frac{dr}{dx} dx \\
-                                   &= \int^{r(\infty)}_{r(0)} g(r(x)) \frac{dr}{dx} dx \\
-                                   &\approx \sum_{i=1}^N g(r(x_i)) \frac{dr}{dx}(x_i) w_i  \\
-                                   &\approx \sum_{i=1}^N g(r(x_i)) \frac{dr}{dx}(x_i) w^r_n \\
-            w^r_n &= w^x_n \cdot \frac{dr}{dx}
+
+            \int_{r_{\min}}^{r_{\max}} g(r)\,dr &= \int_{x_{\min}}^{x_{\max}} g(r(x)) |r'(x)|\,dx \\
+            &\approx \sum_{i=1}^N g(r(x_i)) |r'(x_i)| w_i^x \\
+            &= \sum_{i=1}^N g(r_i) w_i^r
+
+        where the transformed points and weights are given by
+
+        .. math::
+
+            r_i = r(x_i), \qquad w_i^r = |r'(x_i)| w_i^x.
+
+        The absolute value of the derivative accounts for decreasing transformations
+        (:math:`r'(x) < 0`), which reverse the orientation of the integration limits.
 
         Parameters
         ----------
@@ -92,7 +176,9 @@ class BaseTransform(ABC):
                 f"grid domain: {oned_grid.domain}, tf domain: {self.domain}"
             )
         new_points = self.transform(oned_grid.points)
-        new_weights = self.deriv(oned_grid.points) * oned_grid.weights
+        # Transformations that reverse the orientation of integration limits have a negative dr/dx;
+        # the integral over r still runs from low to high r, so the weights must use |dr/dx|
+        new_weights = np.abs(self.deriv(oned_grid.points)) * oned_grid.weights
         new_domain = oned_grid.domain
         if new_domain is not None:
             # Some transformation (Issue #125) reverses the order of points i.e.
@@ -344,6 +430,16 @@ class LinearFiniteRTransform(BaseTransform):
         self._rmax = rmax
         self._domain = (-1, 1)
         self._codomain = (rmin, rmax)
+
+    @property
+    def rmin(self):
+        r"""float: rmin value of the tf."""
+        return self._rmin
+
+    @property
+    def rmax(self):
+        r"""float: rmax value of the tf."""
+        return self._rmax
 
     def transform(self, x: np.ndarray):
         r"""Transform from interval :math:`[-1, 1]` to :math:`[r_{min}, r_{max}]`\.
@@ -1446,7 +1542,8 @@ class MultiExpRTransform(BaseTransform):
             Transformed array located between :math:`[r_{min},\infty)`\.
 
         """
-        rf_array = -self._R * np.log((x + 1) / 2) + self._rmin
+        with np.errstate(divide="ignore"):
+            rf_array = -self._R * np.log((x + 1) / 2) + self._rmin
         if self.trim_inf:
             rf_array = self._convert_inf(rf_array)
         return rf_array
@@ -1488,7 +1585,11 @@ class MultiExpRTransform(BaseTransform):
             The first derivative of MultiExp transformation at each point.
 
         """
-        return -self._R / (1 + x)
+        with np.errstate(divide="ignore"):
+            deriv = -self._R / (1 + x)
+        if self.trim_inf:
+            deriv = self._convert_inf(deriv)
+        return deriv
 
     def deriv2(self, x: np.ndarray):
         r"""Compute the second derivative of MultiExp transformation.
@@ -1507,7 +1608,11 @@ class MultiExpRTransform(BaseTransform):
             The second derivative of MultiExp transformation at each point.
 
         """
-        return self._R / (1 + x) ** 2
+        with np.errstate(divide="ignore"):
+            deriv2 = self._R / (1 + x) ** 2
+        if self.trim_inf:
+            deriv2 = self._convert_inf(deriv2)
+        return deriv2
 
     def deriv3(self, x: np.ndarray):
         r"""Compute the third derivative of MultiExp transformation.
@@ -1526,7 +1631,11 @@ class MultiExpRTransform(BaseTransform):
             The third derivative of MultiExp transformation at each point.
 
         """
-        return -2 * self._R / (1 + x) ** 3
+        with np.errstate(divide="ignore"):
+            deriv3 = -2 * self._R / (1 + x) ** 3
+        if self.trim_inf:
+            deriv3 = self._convert_inf(deriv3)
+        return deriv3
 
 
 class KnowlesRTransform(BaseTransform):
@@ -1874,7 +1983,7 @@ class HandyRTransform(BaseTransform):
 
         Parameters
         ----------
-        array: np.ndarray(N,)
+        x: np.ndarray(N,)
             One dimensional array in :math:`[-1,1]`\.
 
         Returns
@@ -1919,7 +2028,7 @@ class HandyModRTransform(BaseTransform):
     """
 
     def __init__(self, rmin: float, rmax: float, m: int, trim_inf=True):
-        r"""Construct a modified Handy transform from :math:`[-1, 1]` to :math:`[r_{min}, r_{max}]`\.
+        r"""Construct a modified Handy transform from :math:`[-1, 1]` to :math:`[r_{min}, r_{max}]`.
 
         Parameters
         ----------
@@ -2103,7 +2212,7 @@ class HandyModRTransform(BaseTransform):
                 * (two_m - size_r - 1)
                 * (1 + x) ** (self._m - 3)
                 * (
-                    2 * two_m * (self._m - 2) * (self._m - 1) * (1 - two_m + size_r) ** 2
+                    two_m**2 * (self._m - 2) * (self._m - 1) * (1 - two_m + size_r) ** 2
                     + 2 ** (self._m + 2)
                     * (self._m - 1)
                     * (self._m + 1)

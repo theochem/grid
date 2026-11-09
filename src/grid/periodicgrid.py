@@ -158,6 +158,7 @@ adjacent crystal planes along the :math:`k`\th lattice vector.
 """
 import itertools
 import warnings
+from numbers import Integral
 
 import numpy as np
 from scipy.spatial import cKDTree
@@ -357,7 +358,7 @@ class PeriodicGrid(Grid):
         PeriodicGrid
             A new PeriodicGrid object with selected points.
         """
-        if isinstance(index, int):
+        if isinstance(index, Integral):
             return self.__class__(
                 np.array([self.points[index]]),
                 np.array([self.weights[index]]),
@@ -423,7 +424,8 @@ class PeriodicGrid(Grid):
         ilc_max = np.floor(self._frac_intvls[:, 1] - frac_center + radius / self._spacings).astype(
             int
         )
-        assert (ilc_min <= ilc_max).all()
+        # When ilc_min > ilc_max for some direction, no translation is
+        # relevant and the loop below does nothing.
 
         # C) Loop over all possible translations of the center
         # ----------------------------------------------------
@@ -455,6 +457,11 @@ class PeriodicGrid(Grid):
             local_weights.append(self._weights[indices])
             # Store points with the opposite displacement!!
             local_points.append(self._points[indices] - delta)
+
+        # No point lies within the radius of any image of the center.
+        if len(local_indices) == 0:
+            indices = np.zeros(0, dtype=int)
+            return LocalGrid(self._points[indices], self._weights[indices], center, indices)
 
         return LocalGrid(
             np.concatenate(local_points),

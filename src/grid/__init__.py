@@ -19,7 +19,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 # --
 """Grid Module."""
-# flake8: noqa
+# ruff: noqa: F401,F403
 
 
 from grid.angular import *
@@ -35,3 +35,5 @@ from grid.onedgrid import *
 from grid.periodicgrid import *
 from grid.rtransform import *
 from grid.ngrid import *
+from grid.coulomb import *
+from grid.robust_poisson import *

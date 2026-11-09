@@ -20,8 +20,8 @@
 """Utility Module."""
 
 import numpy as np
-from scipy.special import sph_harm_y
-from scipy.constants import physical_constants, angstrom
+from scipy.constants import angstrom, physical_constants
+from scipy.special import sph_harm_y, sph_harm_y_all
 
 _BOHR_RADIUS_M = physical_constants["Bohr radius"][0]
 BOHR_TO_ANGSTROM = _BOHR_RADIUS_M / angstrom
@@ -504,7 +504,7 @@ def get_cov_radii(atnums, cov_type="bragg"):
         Covalent radii of the desired atom(s) in atomic units.
 
     """
-    if isinstance(atnums, (int, np.integer)):
+    if isinstance(atnums, int | np.integer):
         atnums = np.array([atnums])
     if np.any(np.array(atnums) == 0):
         raise ValueError(f"0 is not a valid atomic number, got {atnums}")
@@ -525,7 +525,7 @@ def generate_real_spherical_harmonics_scipy(l_max: int, theta: np.ndarray, phi: 
 
     .. math::
         Y_{lm} = \begin{cases}
-            \frac{i}{\sqrt{2}} (Y^m_l - (-1)^m Y_l^{-m} & \text{if } < m < 0 \\
+            \frac{i}{\sqrt{2}} (Y^m_l - (-1)^m Y_l^{-m}) & \text{if } m < 0 \\
             Y_l^0 & \text{if } m = 0 \\
             \frac{1}{\sqrt{2}} (Y^{-|m|}_{l} + (-1)^m Y_l^m) & \text{if } m > 0
         \end{cases},
@@ -554,40 +554,46 @@ def generate_real_spherical_harmonics_scipy(l_max: int, theta: np.ndarray, phi: 
 
     Notes
     -----
-    - SciPy spherical harmonics is known (Jan 30, 2024) to give NaN when the degree is large,
-      for our experience, when l >= 86.
-
+    - Spherical harmonics in SciPy may return NaNs for large degrees due to numerical
+      instability in associated Legendre functions. We tested up to
+      :math:`l_{max} = 600` without NaNs.
     """
     if l_max < 0:
-        raise ValueError(f"lmax should be non-negative, got l_amx={l_max}")
+        raise ValueError(f"lmax should be non-negative, got l_max={l_max}")
 
-    total_sph = np.zeros((0, len(theta)), dtype=float)
-    l_list = np.arange(l_max + 1)
-    for l_val in l_list:
-        # generate m=0 real spherical harmonic
-        zero_real_sph = sph_harm_y(l_val, 0, phi, theta).real
+    theta = np.asarray(theta)
+    phi = np.asarray(phi)
 
-        # generate order m=positive real spherical harmonic: sqrt(2) * (-1)^m * Re(Y_l^m)
-        m_list_p = np.arange(1, l_val + 1, dtype=int)
-        pos_real_sph = (
-            np.sqrt(2)
-            * (-1) ** m_list_p[:, None]
-            * sph_harm_y(l_val, m_list_p[:, None], phi, theta).real
-            # Remove Conway phase from SciPy
-        )
-        # generate order m=negative real spherical harmonic: sqrt(2) * (-1)^m * Im(Y_l^m)
-        neg_real_sph = (
-            np.sqrt(2)
-            * (-1) ** m_list_p[:, None]
-            * sph_harm_y(
-                l_val, m_list_p[:, None], phi, theta
-            ).imag  # Remove Conway phase from SciPy
+    if theta.shape != phi.shape:
+        raise ValueError("theta and phi must have the same shape")
+
+    if theta.ndim != 1 or phi.ndim != 1:
+        raise ValueError(
+            f"theta and phi must be 1D arrays, got theta.ndim={theta.ndim}, phi.ndim={phi.ndim}"
         )
 
-        # Convert to horton 2 order
-        horton_ord = [[pos_real_sph[i], neg_real_sph[i]] for i in range(0, l_val)]
-        horton_ord = tuple(x for sublist in horton_ord for x in sublist)
-        total_sph = np.vstack((total_sph, zero_real_sph, *horton_ord))
+    # sph_vals (i, j) corresponds to degree i and order j for all 0 <= i <= n and -m <= j <= m
+    sph_vals = sph_harm_y_all(l_max, l_max, phi, theta)
+
+    # Remove Conway phase from SciPy and apply sqrt(2) factor for m != 0.
+    # Only non-negative orders m = 0..l_max are used below.
+    phase_cor_pos = np.ones(l_max + 1, dtype=float)
+    if l_max > 0:
+        phase_cor_pos[1:] = np.sqrt(2) * (-1.0) ** np.arange(1, l_max + 1)
+
+    n_pts = len(theta)
+    total_sph = np.empty(((l_max + 1) ** 2, n_pts), dtype=float)
+    for l_val in range(l_max + 1):
+        # spherical harmonics for degree l_val and non-negative orders m = 0..l_val
+        sph_degree_pos = sph_vals[l_val, : l_val + 1] * phase_cor_pos[: l_val + 1, None]
+        # degrees before l_val sum_k=0^(l_val-1) (2k+1) = l_val^2
+        row_start = l_val**2
+        row_end = (l_val + 1) ** 2
+        total_sph[row_start] = sph_degree_pos[0].real  # m = 0 real part
+        total_sph[row_start + 1 : row_end : 2] = sph_degree_pos[1:].real  # m > 0 real part
+        # negative m real is the imaginary part of the positive m spherical harmonic
+        total_sph[row_start + 2 : row_end : 2] = sph_degree_pos[1:].imag
+
     return total_sph
 
 
@@ -828,8 +834,7 @@ def solid_harmonics(l_max: int, sph_pts: np.ndarray):
     r, theta, phi = sph_pts.T
     spherical_harm = generate_real_spherical_harmonics(l_max, theta, phi)
     degrees = np.array(
-        sum([[float(l_deg)] * (2 * l_deg + 1) for l_deg in np.arange(l_max + 1, dtype=int)], []),
-        dtype=np.longdouble,
+        [l_deg for l_deg in range(l_max + 1) for _ in range(2 * l_deg + 1)], dtype=np.longdouble
     )
     return (
         spherical_harm * r ** degrees[:, None] * np.sqrt(4.0 * np.pi / (2 * degrees[:, None] + 1))
@@ -945,10 +950,13 @@ def generate_orders_horton_order(order: int, type_ord: str, dim: int = 3):
 
     Returns
     -------
-    ndarray(3 * `order` , D)
-        Each row is a list of `D` integers (e.g. :math:`(n_x, n_y, n_z)` or :math:`(l, m)`).
-        The output is in Horton 2 order. e.g. order=2 it's
-        [[2, 0, 0], [1, 1, 0], [1, 0, 1], [0, 2, 0], ....]
+    ndarray
+        Moment orders in Horton 2 ordering. For Cartesian moments, the shape is :math:`(N, D)`,
+        where :math:`N = comb(order + D - 1, D - 1)` and :math:`D` is the dimension.
+        Each row contains Cartesian exponents (e.g., (n_x, n_y, n_z)). For radial, pure, and
+        pure-radial moments, the orders are (n), (l, m), and (n, l, m), respectively. For example,
+        Cartesian order=2 in 3D gives [[2, 0, 0], [1, 1, 0], [1, 0, 1], [0, 2, 0], [0, 1, 1],
+        [0, 0, 2]].
 
     """
     if not isinstance(order, int):
@@ -966,7 +974,7 @@ def generate_orders_horton_order(order: int, type_ord: str, dim: int = 3):
             for m_x in range(order, -1, -1):
                 orders.append([m_x, order - m_x])
         elif dim == 1:
-            return np.arange(0, order + 1, dtype=np.int)
+            orders.append([order])
         else:
             raise ValueError(f"dim {dim} parameter should be either 1, 2, 3.")
     elif type_ord == "radial":
@@ -1050,3 +1058,128 @@ def dipole_moment_of_molecule(grid, density: np.ndarray, coords: np.ndarray, cha
     result = (result - integrals.T).flatten()[1:]
 
     return result
+
+
+# Periodic table lookups
+num2sym: dict[int, str] = {
+    1: "H",
+    2: "He",
+    3: "Li",
+    4: "Be",
+    5: "B",
+    6: "C",
+    7: "N",
+    8: "O",
+    9: "F",
+    10: "Ne",
+    11: "Na",
+    12: "Mg",
+    13: "Al",
+    14: "Si",
+    15: "P",
+    16: "S",
+    17: "Cl",
+    18: "Ar",
+    19: "K",
+    20: "Ca",
+    21: "Sc",
+    22: "Ti",
+    23: "V",
+    24: "Cr",
+    25: "Mn",
+    26: "Fe",
+    27: "Co",
+    28: "Ni",
+    29: "Cu",
+    30: "Zn",
+    31: "Ga",
+    32: "Ge",
+    33: "As",
+    34: "Se",
+    35: "Br",
+    36: "Kr",
+    37: "Rb",
+    38: "Sr",
+    39: "Y",
+    40: "Zr",
+    41: "Nb",
+    42: "Mo",
+    43: "Tc",
+    44: "Ru",
+    45: "Rh",
+    46: "Pd",
+    47: "Ag",
+    48: "Cd",
+    49: "In",
+    50: "Sn",
+    51: "Sb",
+    52: "Te",
+    53: "I",
+    54: "Xe",
+    55: "Cs",
+    56: "Ba",
+    57: "La",
+    58: "Ce",
+    59: "Pr",
+    60: "Nd",
+    61: "Pm",
+    62: "Sm",
+    63: "Eu",
+    64: "Gd",
+    65: "Tb",
+    66: "Dy",
+    67: "Ho",
+    68: "Er",
+    69: "Tm",
+    70: "Yb",
+    71: "Lu",
+    72: "Hf",
+    73: "Ta",
+    74: "W",
+    75: "Re",
+    76: "Os",
+    77: "Ir",
+    78: "Pt",
+    79: "Au",
+    80: "Hg",
+    81: "Tl",
+    82: "Pb",
+    83: "Bi",
+    84: "Po",
+    85: "At",
+    86: "Rn",
+    87: "Fr",
+    88: "Ra",
+    89: "Ac",
+    90: "Th",
+    91: "Pa",
+    92: "U",
+    93: "Np",
+    94: "Pu",
+    95: "Am",
+    96: "Cm",
+    97: "Bk",
+    98: "Cf",
+    99: "Es",
+    100: "Fm",
+    101: "Md",
+    102: "No",
+    103: "Lr",
+    104: "Rf",
+    105: "Db",
+    106: "Sg",
+    107: "Bh",
+    108: "Hs",
+    109: "Mt",
+    110: "Ds",
+    111: "Rg",
+    112: "Cn",
+    113: "Nh",
+    114: "Fl",
+    115: "Mc",
+    116: "Lv",
+    117: "Ts",
+    118: "Og",
+}
+
+sym2num: dict[str, int] = {value: key for key, value in num2sym.items()}

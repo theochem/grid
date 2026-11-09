@@ -68,9 +68,9 @@ from __future__ import annotations
 
 import warnings
 from bisect import bisect_left
+from importlib.resources import files
 
 import numpy as np
-from importlib_resources import files
 
 from grid.basegrid import Grid
 
@@ -274,14 +274,77 @@ SPHERICAL_NPOINTS = {
     52328: 323,
     52978: 325,
 }
+MAX_DET_NPOINTS = {(degree + 1) ** 2: degree for degree in range(1, 200)}
+AHRENS_BEYLKIN_NPOINTS = {
+    72: 14,
+    132: 19,
+    192: 23,
+    312: 29,
+    372: 32,
+    432: 35,
+    492: 37,
+    552: 39,
+    612: 41,
+    672: 44,
+    732: 45,
+    792: 47,
+    912: 51,
+    972: 53,
+    1032: 54,
+    1092: 56,
+    1272: 60,
+    1332: 62,
+    1392: 63,
+    1512: 66,
+    1572: 67,
+    1632: 69,
+    1692: 70,
+    1812: 72,
+    1932: 75,
+    1992: 76,
+    2112: 78,
+    2172: 79,
+    2232: 80,
+    2292: 81,
+    2412: 84,
+    2472: 85,
+    2712: 89,
+    2772: 90,
+    2832: 91,
+    3012: 94,
+    3312: 98,
+    3372: 99,
+    3432: 100,
+    3492: 101,
+    3612: 103,
+    3792: 105,
+    4212: 111,
+    4332: 113,
+    4572: 116,
+    4692: 117,
+    4992: 121,
+    5232: 124,
+    5472: 127,
+    5592: 128,
+    5772: 130,
+    6192: 135,
+    6312: 136,
+    6912: 143,
+    7512: 149,
+    15012: 210,
+}
 
 # Lebedev/Spherical dictionary of grid's degrees (keys) and numbers of points (values)
 LEBEDEV_DEGREES = dict([(v, k) for k, v in LEBEDEV_NPOINTS.items()])
 SPHERICAL_DEGREES = dict([(v, k) for k, v in SPHERICAL_NPOINTS.items()])
+MAX_DET_DEGREES = dict([(v, k) for k, v in MAX_DET_NPOINTS.items()])
+AHRENS_BEYLKIN_DEGREES = dict([(v, k) for k, v in AHRENS_BEYLKIN_NPOINTS.items()])
 
 # Cache is used to store the angular grid
 LEBEDEV_CACHE = {}
 SPHERICAL_CACHE = {}
+MAX_DET_CACHE = {}
+AHRENS_BEYLKIN_CACHE = {}
 
 
 class AngularGrid(Grid):
@@ -332,8 +395,10 @@ class AngularGrid(Grid):
             If True, then store the points and weights of the AngularGrid in cache
             to avoid duplicate grids that have the same `degree`\.
         method: str, optional, keyword-only
-            Method for constructing the angular grid. Options are "lebedev" (for Lebedev-Laikov)
-            and "spherical" (for symmetric spherical t-design).
+            Method for constructing the angular grid. Options are "lebedev" (for Lebedev-Laikov),
+            "spherical" (for symmetric spherical t-design), "maxdet" (for maximum determinant
+            grids), and "ahrens_beylkin" (for Ahrens-Beylkin grids).
+            Default is "lebedev".
 
         Returns
         -------
@@ -353,8 +418,15 @@ class AngularGrid(Grid):
             cache_dict = LEBEDEV_CACHE
         elif method == "spherical":
             cache_dict = SPHERICAL_CACHE
+        elif method == "maxdet":
+            cache_dict = MAX_DET_CACHE
+        elif method == "ahrens_beylkin":
+            cache_dict = AHRENS_BEYLKIN_CACHE
         else:
-            raise ValueError(f"Method {method} is not supported, choose 'lebedev' or 'spherical'")
+            raise ValueError(
+                f"Method {method} is not supported, choose "
+                "'lebedev', 'spherical', 'maxdet' or 'ahrens_beylkin'"
+            )
 
         # allow only one of degree or size to be given
         if size is not None:
@@ -382,7 +454,11 @@ class AngularGrid(Grid):
         self._degree = degree
         # Multiply weights by 4 pi, so that the spherical harmonics are orthonormal,
         #   etc. \int Y_l1 Y_l2 = \delta_{l1, l2}
-        super().__init__(points, weights * 4 * np.pi)
+        # (not necessary for maxdet, already normalized to 4 pi / N)
+        if method in ["maxdet", "ahrens_beylkin"]:
+            super().__init__(points, weights)
+        else:
+            super().__init__(points, weights * 4 * np.pi)
 
         if method == "lebedev" and np.any(weights < 0.0):
             # Lebedev degrees 13, 25, 27 have negative weights. Symmetric spherical t-design
@@ -413,8 +489,9 @@ class AngularGrid(Grid):
         sizes : ndarray[int]
             Sequence of angular grid sizes (e.g., number of points for each atomic shell).
         method: str
-            Method for constructing the angular grid. Options are "lebedev" (for Lebedev-Laikov)
-            and "spherical" (for symmetric spherical t-design).
+            Method for constructing the angular grid. Options are "lebedev" (Lebedev-Laikov),
+            "spherical" (symmetric spherical t-design), "maxdet" (maximum determinant grids),
+            or "ahrens_beylkin" (for Ahrens-Beylkin grids).
 
         Returns
         -------
@@ -448,8 +525,9 @@ class AngularGrid(Grid):
             degree is used for constructing the grid. Use None, if `degree` is given. If both
             `degree` and `size` are given `degree` is used for constructing the grid.
         method: str
-            Method for constructing the angular grid. Options are "lebedev" (for Lebedev-Laikov)
-            and "spherical" (for symmetric spherical t-design).
+            Method for constructing the angular grid. Options are "lebedev" (for Lebedev-Laikov),
+            "spherical" (for symmetric spherical t-design), and "maxdet" (for maximum determinant
+            grids).
 
         Returns
         -------
@@ -464,13 +542,20 @@ class AngularGrid(Grid):
             dict_degrees, dict_npoints = LEBEDEV_DEGREES, LEBEDEV_NPOINTS
         elif method == "spherical":
             dict_degrees, dict_npoints = SPHERICAL_DEGREES, SPHERICAL_NPOINTS
+        elif method == "maxdet":
+            dict_degrees, dict_npoints = MAX_DET_DEGREES, MAX_DET_NPOINTS
+        elif method == "ahrens_beylkin":
+            dict_degrees, dict_npoints = AHRENS_BEYLKIN_DEGREES, AHRENS_BEYLKIN_NPOINTS
         else:
-            raise ValueError(f"Method {method} is not supported, choose 'lebedev' or 'spherical'")
+            raise ValueError(
+                f"Method {method} is not supported, choose "
+                "'lebedev', 'spherical', 'maxdet' or 'ahrens_beylkin'"
+            )
 
         # check whether degree and size are valid
-        if not (degree is None or (isinstance(degree, (int, np.integer)) and degree >= 0)):
+        if not (degree is None or (isinstance(degree, int | np.integer) and degree >= 0)):
             raise ValueError(f"Argument degree should be a positive integer or None, got {degree}!")
-        if not (size is None or (isinstance(size, (int, np.integer)) and size >= 0)):
+        if not (size is None or (isinstance(size, int | np.integer) and size >= 0)):
             raise ValueError(f"Argument size should be a positive integer or None, got {size}!")
 
         if degree and size:
@@ -535,13 +620,22 @@ class AngularGrid(Grid):
         elif method == "spherical":
             dict_degrees, dict_npoints = SPHERICAL_DEGREES, SPHERICAL_NPOINTS
             file_path = "grid.data.spherical_design"
+        elif method == "maxdet":
+            dict_degrees, dict_npoints = MAX_DET_DEGREES, MAX_DET_NPOINTS
+            file_path = "grid.data.maxdet"
+        elif method == "ahrens_beylkin":
+            dict_degrees, dict_npoints = AHRENS_BEYLKIN_DEGREES, AHRENS_BEYLKIN_NPOINTS
+            file_path = "grid.data.ahrens_beylkin"
         else:
-            raise ValueError(f"Method {method} is not supported, choose 'lebedev' or 'spherical'")
+            raise ValueError(
+                f"Method {method} is not supported, choose "
+                "'lebedev', 'spherical', 'maxdet' or 'ahrens_beylkin'"
+            )
 
         # check whether degree and size are valid
-        if not (degree is None or (isinstance(degree, (int, np.integer)) and degree >= 0)):
+        if not (degree is None or (isinstance(degree, int | np.integer) and degree >= 0)):
             raise ValueError(f"Argument degree should be a positive integer or None, got {degree}!")
-        if not (size is None or (isinstance(size, (int, np.integer)) and size >= 0)):
+        if not (size is None or (isinstance(size, int | np.integer) and size >= 0)):
             raise ValueError(f"Argument size should be a positive integer or None, got {size}!")
 
         # check whether degree & size are supported
