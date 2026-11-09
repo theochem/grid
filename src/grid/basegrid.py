@@ -249,19 +249,21 @@ class Grid:
             each row/order is, e.g. for Cartesian, [(0, 0, 0), (1, 0, 0) ,...].
 
         """
+        # Points of shape (N,), as in OneDGrid, are N points in one dimension
+        points = self.points.reshape(len(self.points), -1)
         if func_vals.ndim > 1:
             raise ValueError(f"`func_vals` {func_vals.ndim} should have dimension one.")
         if centers.ndim != 2:
             raise ValueError(f"`centers` {centers.ndim} should have dimension one or two.")
-        if self.points.shape[1] != centers.shape[1]:
+        if points.shape[1] != centers.shape[1]:
             raise ValueError(
-                f"The dimension of the grid {self.points.shape[1]} should"
+                f"The dimension of the grid {points.shape[1]} should"
                 f"match the dimension of the centers {centers.shape[1]}."
             )
-        if len(func_vals) != self.points.shape[0]:
+        if len(func_vals) != points.shape[0]:
             raise ValueError(
                 f"The length of function values {len(func_vals)} should match "
-                f"the number of points in the grid {self.points.shape[0]}."
+                f"the number of points in the grid {points.shape[0]}."
             )
         if type_mom == "pure-radial" and orders == 0:
             raise ValueError(
@@ -274,7 +276,7 @@ class Grid:
             orders = range(0, orders + 1) if type_mom != "pure-radial" else range(1, orders + 1)
         else:
             raise TypeError(f"Orders {type(orders)} should be either integer, list or numpy array.")
-        dim = self.points.shape[1]
+        dim = points.shape[1]
         all_orders = generate_orders_horton_order(orders[0], type_mom, dim)
         for l_ord in orders[1:]:
             all_orders = np.vstack((all_orders, generate_orders_horton_order(l_ord, type_mom, dim)))
@@ -282,7 +284,7 @@ class Grid:
         integrals = []
         for center in centers:
             # Calculate centered pts: [(X-c), (Y-c), (Z-c)]
-            centered_pts = self.points - center
+            centered_pts = points - center
 
             if type_mom == "cartesian":
                 # Take the powers to get [(X-c)^mx, (Y-c)^my, (Z-c)^mz]
