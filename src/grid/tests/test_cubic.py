@@ -119,7 +119,7 @@ class TestHyperRectangleGrid(TestCase):
                 points, values, method="not cubic"
             )
         self.assertEqual(
-            "Argument method should be one of ['linear', 'nearest', 'slinear', 'cubic', 'quintic', 'pchip'], got not cubic",
+            "Argument method should be one of ['linear', 'nearest', 'slinear', 'quintic', 'pchip', 'cubic'], got not cubic",
             str(err.exception),
         )
         # Test raises error if dimension is two.
@@ -201,10 +201,10 @@ class TestTensor1DGrids(TestCase):
         num_pts = 500
         random_pts = np.random.uniform(-0.9, 0.9, (num_pts, 3))
         interpolated = cubic.interpolate(random_pts, gaussian_pts, use_log=False)
-        assert_allclose(interpolated, gaussian(random_pts), rtol=1e-5, atol=1e-5)
+        assert_allclose(interpolated, gaussian(random_pts), rtol=1e-5, atol=1e-6)
 
         interpolated_log = cubic.interpolate(random_pts, gaussian_pts, use_log=True)
-        assert_allclose(interpolated_log, gaussian(random_pts), rtol=1e-5, atol=1e-5)
+        assert_allclose(interpolated_log, gaussian(random_pts), rtol=1e-5, atol=1e-6)
 
     def test_interpolation_of_linear_function_using_scipy_linear_method(self):
         r"""Test interpolation of a linear function using scipy with linear method."""
@@ -234,6 +234,101 @@ class TestTensor1DGrids(TestCase):
         for pt in random_pts:
             interpolated = cubic.interpolate(pt, gaussian_pts, use_log=False, method="nearest")
             assert_allclose(interpolated, linear_func(np.array([pt]))[0], rtol=1e-6)
+
+    def test_interpolation_of_gaussian_using_scipy_slinear_method(self):
+        r"""Test interpolation of a Gaussian using the slinear SciPy method."""
+        oned = MidPoint(50)
+        cubic = Tensor1DGrids(oned, oned, oned)
+
+        def gaussian(points):
+            return np.exp(-3 * np.linalg.norm(points, axis=1) ** 2.0)
+
+        gaussian_pts = gaussian(cubic.points)
+        num_pts = 50
+        random_pts = np.random.uniform(-0.9, 0.9, (num_pts, 3))
+        interpolated = cubic.interpolate(random_pts, gaussian_pts, use_log=False, method="slinear")
+        assert_allclose(interpolated, gaussian(random_pts), rtol=1e-2, atol=1e-2)
+
+        # Test with use_log=True
+        interpolated_log = cubic.interpolate(
+            random_pts, gaussian_pts, use_log=True, method="slinear"
+        )
+        assert_allclose(interpolated_log, gaussian(random_pts), rtol=1e-2, atol=1e-2)
+
+    def test_interpolation_of_gaussian_using_scipy_quintic_method(self):
+        r"""Test interpolation of a Gaussian using the quintic SciPy method."""
+        oned = MidPoint(50)
+        cubic = Tensor1DGrids(oned, oned, oned)
+
+        def gaussian(points):
+            return np.exp(-3 * np.linalg.norm(points, axis=1) ** 2.0)
+
+        gaussian_pts = gaussian(cubic.points)
+        num_pts = 50
+        random_pts = np.random.uniform(-0.9, 0.9, (num_pts, 3))
+        interpolated = cubic.interpolate(random_pts, gaussian_pts, use_log=False, method="quintic")
+        assert_allclose(interpolated, gaussian(random_pts), rtol=1e-5, atol=1e-5)
+
+        # Test with use_log=True
+        interpolated_log = cubic.interpolate(
+            random_pts, gaussian_pts, use_log=True, method="quintic"
+        )
+        assert_allclose(interpolated_log, gaussian(random_pts), rtol=1e-5, atol=1e-5)
+
+    def test_interpolation_of_gaussian_using_scipy_pchip_method(self):
+        r"""Test interpolation of a Gaussian using the pchip SciPy method."""
+        oned = MidPoint(50)
+        cubic = Tensor1DGrids(oned, oned, oned)
+
+        def gaussian(points):
+            return np.exp(-3 * np.linalg.norm(points, axis=1) ** 2.0)
+
+        gaussian_pts = gaussian(cubic.points)
+        num_pts = 50
+        random_pts = np.random.uniform(-0.9, 0.9, (num_pts, 3))
+        interpolated = cubic.interpolate(random_pts, gaussian_pts, use_log=False, method="pchip")
+        assert_allclose(interpolated, gaussian(random_pts), rtol=1e-2, atol=1e-2)
+
+        # Test with use_log=True
+        interpolated_log = cubic.interpolate(
+            random_pts, gaussian_pts, use_log=True, method="pchip"
+        )
+        assert_allclose(interpolated_log, gaussian(random_pts), rtol=1e-2, atol=1e-2)
+
+    def test_scipy_methods_raise_on_derivatives(self):
+        r"""Test that requesting derivatives with SciPy-only methods raises NotImplementedError."""
+        oned = MidPoint(50)
+        cubic = Tensor1DGrids(oned, oned, oned)
+
+        def gaussian(points):
+            return np.exp(-3 * np.linalg.norm(points, axis=1) ** 2.0)
+
+        gaussian_pts = gaussian(cubic.points)
+        pt = np.random.uniform(-0.9, 0.9, (1, 3))
+
+        for method in ["linear", "nearest", "slinear", "quintic", "pchip"]:
+            with self.assertRaises(NotImplementedError):
+                cubic.interpolate(pt, gaussian_pts, method=method, nu_x=1)
+            with self.assertRaises(NotImplementedError):
+                cubic.interpolate(pt, gaussian_pts, method=method, nu_y=1)
+            with self.assertRaises(NotImplementedError):
+                cubic.interpolate(pt, gaussian_pts, method=method, nu_z=1)
+
+    def test_scipy_interpolation_supports_extrapolation(self):
+        r"""Test that SciPy methods do not raise for points slightly outside the grid."""
+        oned = MidPoint(20)
+        cubic = Tensor1DGrids(oned, oned, oned)
+
+        def gaussian(points):
+            return np.exp(-3 * np.linalg.norm(points, axis=1) ** 2.0)
+
+        gaussian_pts = gaussian(cubic.points)
+        # Point slightly outside the grid range; should not raise ValueError
+        x_max = cubic.points[:, 0].max()
+        outside_pt = np.array([[x_max + 0.05, 0.0, 0.0]])
+        for method in ["linear", "nearest", "slinear", "quintic", "pchip"]:
+            result = cubic.interpolate(outside_pt, gaussian_pts, method=method)
+            assert not np.isnan(result).any(), f"Got NaN for method={method} on outside point"
 
     def test_interpolation_of_various_derivative_gaussian_using_logarithm(self):
         r"""Test interpolation of the thederivatives of a Gaussian function."""

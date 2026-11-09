@@ -142,7 +142,12 @@ class _HyperRectangleGrid(Grid):
             The interpolation of a function (or of it's derivatives) at a :math:`M` point.
 
         """
-        supported_methods = ["linear", "nearest", "slinear", "cubic", "quintic", "pchip"]
+        # SciPy-routed methods: all except cubic can only do function values (no derivatives).
+        # cubic is kept on the internal separable CubicSpline so that values and derivatives
+        # are always from the same interpolant and mathematically consistent.
+        scipy_methods = ["linear", "nearest", "slinear", "quintic", "pchip"]
+        supported_methods = scipy_methods + ["cubic"]
+
         if method not in supported_methods:
             raise ValueError(
                 f"Argument method should be one of {supported_methods}, got {method}"
@@ -160,21 +165,25 @@ class _HyperRectangleGrid(Grid):
         if use_log:
             values = np.log(values)
 
-        # Use scipy if no derivatives are requested
-        if method in supported_methods and (nu_x == 0 and nu_y == 0 and nu_z == 0):
+        # Route non-cubic methods through SciPy's RegularGridInterpolator.
+        # Derivatives are not supported for these methods.
+        if method in scipy_methods:
+            if nu_x != 0 or nu_y != 0 or nu_z != 0:
+                raise NotImplementedError(
+                    f"Computing derivatives (nu_x={nu_x}, nu_y={nu_y}, nu_z={nu_z}) "
+                    f"is only supported for method='cubic', got method='{method}'."
+                )
             x, y, z = self.get_points_along_axes()
-            values = values.reshape(self.shape)
-            interpolate = RegularGridInterpolator((x, y, z), values, method=method)
-            interpolated = interpolate(points)
+            values_grid = values.reshape(self.shape)
+            # bounds_error=False, fill_value=None preserves extrapolation support
+            # for points slightly outside the grid, consistent with the cubic spline path.
+            interpolate_fn = RegularGridInterpolator(
+                (x, y, z), values_grid, method=method, bounds_error=False, fill_value=None
+            )
+            interpolated = interpolate_fn(points)
             if use_log:
                 return np.exp(interpolated)
             return interpolated
-            
-        # At this point, derivatives are requested, which requires our custom cubic spline implementation
-        if method != "cubic":
-            raise NotImplementedError(
-                f"Computing analytical derivatives (nu_x={nu_x}, nu_y={nu_y}, nu_z={nu_z}) is only supported for the 'cubic' method."
-            )
 
         # Interpolate the Z-Axis.
         def z_spline(z, x_index, y_index, nu_z=nu_z):
