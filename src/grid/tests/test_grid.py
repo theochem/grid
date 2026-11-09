@@ -172,6 +172,15 @@ class TestGrid1D(TestGrid):
         expected = [np.sum((points - 0.5) ** n * func_vals * self._ref_weights) for n in range(4)]
         assert_allclose(integrals[:, 0], expected)
 
+    def test_cartesian_moments_flat_points(self):
+        """Test that points of shape (N,), as in OneDGrid, give the same moments as (N, 1)."""
+        points = self._ref_points[:, 0]
+        func_vals = np.exp(-(points**2))
+        center = np.array([[0.5]])
+        expected = self.grid.moments(3, center, func_vals, type_mom="cartesian")
+        for grid in [Grid(points, self._ref_weights), OneDGrid(points, self._ref_weights)]:
+            assert_allclose(grid.moments(3, center, func_vals, type_mom="cartesian"), expected)
+
 
 class TestGrid2D(TestGrid):
     """Grid testcase class for 2D point arrays."""
