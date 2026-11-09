@@ -132,9 +132,10 @@ class _HyperRectangleGrid(Grid):
             If greater than zero, then the "nu_z"th-order derivative in the z-direction is
             interpolated.
         method : str, optional
-            The method of interpolation to perform. Supported are "cubic" (most accurate but
-            computationally expensive), "linear", or "nearest" (least accurate but cheap
-            computationally). The last two methods use SciPy's RegularGridInterpolator function.
+            The method of interpolation to perform. Supported methods are "cubic", "linear",
+            "nearest", "slinear", "quintic", and "pchip". Methods other than "cubic" are
+            evaluated using SciPy's RegularGridInterpolator and only support function value
+            interpolation (no derivatives).
 
         Returns
         -------

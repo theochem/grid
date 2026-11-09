@@ -119,7 +119,8 @@ class TestHyperRectangleGrid(TestCase):
                 points, values, method="not cubic"
             )
         self.assertEqual(
-            "Argument method should be one of ['linear', 'nearest', 'slinear', 'quintic', 'pchip', 'cubic'], got not cubic",
+            "Argument method should be one of "
+            "['linear', 'nearest', 'slinear', 'quintic', 'pchip', 'cubic'], got not cubic",
             str(err.exception),
         )
         # Test raises error if dimension is two.
