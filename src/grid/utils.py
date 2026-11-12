@@ -846,7 +846,7 @@ def convert_derivative_from_spherical_to_cartesian(deriv_r, deriv_theta, deriv_p
     Convert the derivative from spherical coordinates to Cartesian.
 
     If :math:`r` is zero, then the derivative wrt to theta and phi are set to zero.
-    If :math:`\phi` is zero, then the derivative wrt to theta is set to zero.
+    If :math:`\phi` is zero or :math:`\pi`, then the derivative wrt to theta is set to zero.
 
     Parameters
     ----------
@@ -881,8 +881,8 @@ def convert_derivative_from_spherical_to_cartesian(deriv_r, deriv_theta, deriv_p
     if np.abs(r) < 1e-10:
         jacobian[:, 1] = 0.0
         jacobian[:, 2] = 0.0
-    # If phi angle is zero, then set the derivative wrt to theta to zero
-    if np.abs(phi) < 1e-10:
+    # If phi is at a pole (0 or pi), then set the derivative wrt to theta to zero
+    if np.abs(np.sin(phi)) < 1e-10:
         jacobian[:, 1] = 0.0
     return jacobian.dot(np.array([deriv_r, deriv_theta, deriv_phi]))
 
