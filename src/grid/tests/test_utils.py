@@ -360,5 +360,8 @@ def test_convert_derivative_from_spherical_to_cartesian_on_z_axis(phi):
     # On the z axis, d/dz = cos(phi) d/dr - sin(phi)/r d/dphi, and the x, y parts come from phi.
     assert np.all(np.isfinite(result))
     assert_allclose(result[2], np.cos(phi), atol=1e-12)
-    assert_allclose(result[:2], [np.cos(0.3) * (1.0 / 2.0) * np.cos(phi),
-                                 np.sin(0.3) * (1.0 / 2.0) * np.cos(phi)], atol=1e-12)
+    assert_allclose(
+        result[:2],
+        [np.cos(0.3) * (1.0 / 2.0) * np.cos(phi), np.sin(0.3) * (1.0 / 2.0) * np.cos(phi)],
+        atol=1e-12,
+    )
