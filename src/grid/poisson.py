@@ -437,19 +437,17 @@ def interpolate_laplacian(molgrid: MolGrid | AtomGrid, func_vals: np.ndarray):
         start_index = molgrid.indices[i]
         final_index = molgrid.indices[i + 1]
         atom_grid = molgrid[i]
+        # compute spline for the radial components for f
+        radial_comps_f = atom_grid.radial_component_splines(
+            func_vals_atom[start_index:final_index]
+        )
 
         def interpolate_laplacian_atom_grid(
             points: np.ndarray,
-            atom_grid: AtomGrid,
             cutoff: float = 1e-6,
-            start_index=start_index,
-            final_index=final_index,
+            atom_grid: AtomGrid = atom_grid,
+            radial_comps_f=radial_comps_f,
         ):
-            # compute spline for the radial components for f
-            radial_comps_f = atom_grid.radial_component_splines(
-                func_vals_atom[start_index:final_index]
-            )
-
             r_pts, theta, phi = atom_grid.convert_cartesian_to_spherical(points).T
 
             if np.any(r_pts < cutoff):
@@ -482,11 +480,7 @@ def interpolate_laplacian(molgrid: MolGrid | AtomGrid, func_vals: np.ndarray):
 
             return first_component + second_component - third_component
 
-        interpolate_funcs.append(
-            lambda points, cut_off, atom_grid=atom_grid: interpolate_laplacian_atom_grid(
-                points, atom_grid, cut_off
-            )
-        )
+        interpolate_funcs.append(interpolate_laplacian_atom_grid)
 
     def sum_of_interpolation_funcs(points, cut_off: float = 1e-6):
         output = interpolate_funcs[0](points, cut_off)
