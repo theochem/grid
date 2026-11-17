@@ -53,13 +53,10 @@ from grid.onedgrid import (
     TrefethenStripGC2,
     TrefethenStripGeneral,
     UniformInteger,
-    _derg2,
-    _derg3,
     _dergstrip,
-    _g2,
-    _g3,
     _gstrip,
 )
+from grid.rtransform import TrefethenRTransform
 
 
 class TestOneDGrid(TestCase):
@@ -491,111 +488,6 @@ class TestOneDGrid(TestCase):
 
                     assert_allclose(result, expected, rtol=1e-12, atol=1e-12)
 
-    def test_AuxiliarTrefethenSausage(self):
-        """Test for Auxiliary functions using in Trefethen Sausage."""
-        xref = np.array([-1.0, 0.0, 1.0])
-        d2ref = np.array([1.5100671140939597, 0.8053691275167785, 1.5100671140939597])
-        d3ref = np.array([1.869031249411366, 0.7594793648401741, 1.869031249411366])
-        newxg2 = _g2(xref)
-        newxg3 = _g3(xref)
-        newd2 = _derg2(xref)
-        newd3 = _derg3(xref)
-
-        assert_allclose(xref, newxg2)
-        assert_allclose(xref, newxg3)
-        assert_allclose(d2ref, newd2)
-        assert_allclose(d3ref, newd3)
-
-    def test_TrefethenCC_d2(self):
-        """Test for Trefethen - Sausage Clenshaw Curtis and parameter d=5."""
-        grid = TrefethenCC(10, 5)
-
-        tmp = ClenshawCurtis(10)
-
-        new_points = _g2(tmp.points)
-        new_weights = _derg2(tmp.points) * tmp.weights
-
-        assert_allclose(grid.points, new_points)
-        assert_allclose(grid.weights, new_weights)
-
-    def test_TrefethenCC_d3(self):
-        """Test for Trefethen - Sausage Clenshaw Curtis and parameter d=9."""
-        grid = TrefethenCC(10, 9)
-
-        tmp = ClenshawCurtis(10)
-
-        new_points = _g3(tmp.points)
-        new_weights = _derg3(tmp.points) * tmp.weights
-
-        assert_allclose(grid.points, new_points)
-        assert_allclose(grid.weights, new_weights)
-
-    def test_TrefethenCC_d0(self):
-        """Test for Trefethen - Sausage Clenshaw Curtis and parameter d=1."""
-        grid = TrefethenCC(10, 1)
-
-        tmp = ClenshawCurtis(10)
-
-        assert_allclose(grid.points, tmp.points)
-        assert_allclose(grid.weights, tmp.weights)
-
-    def test_TrefethenGC2_d2(self):
-        """Test for Trefethen - Sausage GaussChebyshev2 and parameter d=5."""
-        grid = TrefethenGC2(10, 5)
-
-        tmp = GaussChebyshevType2(10)
-
-        new_points = _g2(tmp.points)
-        new_weights = _derg2(tmp.points) * tmp.weights
-
-        assert_allclose(grid.points, new_points)
-        assert_allclose(grid.weights, new_weights)
-
-    def test_TrefethenGC2_d3(self):
-        """Test for Trefethen - Sausage GaussChebyshev2 and parameter d=9."""
-        grid = TrefethenGC2(10, 9)
-
-        tmp = GaussChebyshevType2(10)
-
-        new_points = _g3(tmp.points)
-        new_weights = _derg3(tmp.points) * tmp.weights
-
-        assert_allclose(grid.points, new_points)
-        assert_allclose(grid.weights, new_weights)
-
-    def test_TrefethenGC2_d0(self):
-        """Test for Trefethen - Sausage GaussChebyshev2 and parameter d=1."""
-        grid = TrefethenGC2(10, 1)
-
-        tmp = GaussChebyshevType2(10)
-
-        assert_allclose(grid.points, tmp.points)
-        assert_allclose(grid.weights, tmp.weights)
-
-    def test_TrefethenGeneral_d2(self):
-        """Test for Trefethen - Sausage General and parameter d=5."""
-        grid = TrefethenGeneral(10, ClenshawCurtis, 5)
-        new = TrefethenCC(10, 5)
-
-        assert_allclose(grid.points, new.points)
-        assert_allclose(grid.weights, new.weights)
-
-    def test_TrefethenGeneral_d3(self):
-        """Test for Trefethen - Sausage General and parameter d=9."""
-        grid = TrefethenGeneral(10, ClenshawCurtis, 9)
-        new = TrefethenCC(10, 9)
-
-        assert_allclose(grid.points, new.points)
-        assert_allclose(grid.weights, new.weights)
-
-    def test_TrefethenGeneral_d0(self):
-        """Test for Trefethen - Sausage General and parameter d=1."""
-        grid = TrefethenGeneral(10, ClenshawCurtis, 1)
-        new = TrefethenCC(10, 1)
-
-        assert_allclose(grid.points, new.points)
-        assert_allclose(grid.weights, new.weights)
-
     def test_AuxiliarTrefethenStrip(self):
         """Test for Auxiliary functions using in Trefethen Strip."""
         xref = np.array([-1.0, 0.0, 1.0])
@@ -709,3 +601,16 @@ class TestOneDGrid(TestCase):
 
         assert_allclose(grid.points, points)
         assert_allclose(grid.weights, weights)
+
+
+@pytest.mark.parametrize("d", [1, 5, 9])
+@pytest.mark.parametrize(
+    "wrapper, quadrature", [(TrefethenCC, ClenshawCurtis), (TrefethenGC2, GaussChebyshevType2)]
+)
+def test_trefethen_compatibility_wrappers(d, wrapper, quadrature):
+    """Legacy constructors and the reusable transform produce equivalent grids."""
+    expected = TrefethenRTransform(d).transform_1d_grid(quadrature(10))
+    for actual in (wrapper(10, d), TrefethenGeneral(10, quadrature, d)):
+        assert_allclose(actual.points, expected.points)
+        assert_allclose(actual.weights, expected.weights)
+        assert actual.domain == expected.domain
