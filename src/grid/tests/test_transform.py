@@ -635,3 +635,20 @@ def test_trefethen_default_and_grid_type():
     assert TrefethenRTransform().d == 9
     with pytest.raises(TypeError, match="not OneDGrid"):
         TrefethenRTransform().transform_1d_grid(np.arange(3))
+
+
+def test_trefethen_grid_without_declared_domain():
+    """Transform valid nodes and preserve an unspecified integration interval."""
+    from grid.basegrid import OneDGrid
+
+    source = GaussLegendre(20)
+    tf = TrefethenRTransform()
+    grid = tf.transform_1d_grid(OneDGrid(source.points, source.weights))
+    expected = tf.transform_1d_grid(source)
+    assert grid.domain is None
+    assert_allclose(grid.points, expected.points)
+    assert_allclose(grid.weights, expected.weights)
+
+    outside = OneDGrid(np.array([-2.0, 0.0]), np.ones(2))
+    with pytest.raises(ValueError, match="grid points"):
+        tf.transform_1d_grid(outside)

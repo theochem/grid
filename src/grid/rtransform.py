@@ -161,7 +161,8 @@ class BaseTransform(ABC):
         Parameters
         ----------
         oned_grid : OneDGrid
-            An instance of one-dimensional grid.
+            An instance of one-dimensional grid. If it has no declared domain,
+            its points must lie within the transformation domain.
 
         Returns
         -------
@@ -171,8 +172,13 @@ class BaseTransform(ABC):
         """
         if not isinstance(oned_grid, OneDGrid):
             raise TypeError(f"Input grid is not OneDGrid, got {type(oned_grid)}")
-        # check domain
-        if oned_grid.domain[0] < self.domain[0] or oned_grid.domain[1] > self.domain[1]:
+        # Check the grid points when no integration interval is specified.
+        new_domain = oned_grid.domain
+        lower, upper = self.domain
+        if new_domain is None:
+            if not np.all((lower <= oned_grid.points) & (oned_grid.points <= upper)):
+                raise ValueError(f"Input grid points must lie within {self.domain}.")
+        elif new_domain[0] < lower or new_domain[1] > upper:
             raise ValueError(
                 "Given 1D grid domain does not match the transformation domain.\n"
                 f"grid domain: {oned_grid.domain}, tf domain: {self.domain}"
@@ -181,7 +187,6 @@ class BaseTransform(ABC):
         # Transformations that reverse the orientation of integration limits have a negative dr/dx;
         # the integral over r still runs from low to high r, so the weights must use |dr/dx|
         new_weights = np.abs(self.deriv(oned_grid.points)) * oned_grid.weights
-        new_domain = oned_grid.domain
         if new_domain is not None:
             # Some transformation (Issue #125) reverses the order of points i.e.
             #    [-1, 1] maps to [infinity, 0].  This sort here fixes the problem here.
