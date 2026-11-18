@@ -234,6 +234,8 @@ class TrefethenRTransform(BaseTransform):
         d : int, optional
             Degree of the polynomial, either 1, 5, or 9. Degree 1 is the identity.
         """
+        if isinstance(d, np.ndarray) and d.size == 1:
+            d = d.item()
         if d not in (1, 5, 9):
             raise ValueError(f"Degree {d} should be either 1, 5, 9.")
         coefficients = {

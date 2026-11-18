@@ -634,3 +634,35 @@ def test_trefethen_general_custom_domain(domain, d):
     assert actual.domain == (-1, 1)
     assert_allclose(actual.points, expected.points)
     assert_allclose(actual.weights, expected.weights)
+
+
+@pytest.mark.parametrize("d", [5, 9])
+@pytest.mark.parametrize(
+    "point_dtype, weight_dtype",
+    [(np.float32, np.float32), (np.float32, np.float64), (np.complex64, np.complex64)],
+)
+def test_trefethen_general_preserves_inexact_dtypes(d, point_dtype, weight_dtype):
+    """Keep the legacy point dtype and the separately configured weight dtype."""
+
+    class CustomGrid(OneDGrid):
+        def __init__(self, npoints):
+            points = np.linspace(-1, 1, npoints).astype(point_dtype)
+            super().__init__(points, np.ones(npoints, dtype=weight_dtype))
+
+    result = TrefethenGeneral(10, CustomGrid, d)
+    assert result.points.dtype == point_dtype
+    assert result.weights.dtype == weight_dtype
+
+
+@pytest.mark.parametrize("d", [np.array(5), np.array([5])])
+def test_trefethen_wrappers_accept_single_element_degree(d):
+    """Accept degree arguments supplied as single-element NumPy arrays."""
+    for constructor, args in (
+        (TrefethenCC, (7,)),
+        (TrefethenGC2, (7,)),
+        (TrefethenGeneral, (7, ClenshawCurtis)),
+    ):
+        expected = constructor(*args, d=5)
+        result = constructor(*args, d=d)
+        assert_allclose(result.points, expected.points)
+        assert_allclose(result.weights, expected.weights)

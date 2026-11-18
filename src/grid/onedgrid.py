@@ -886,7 +886,12 @@ class TrefethenGeneral(OneDGrid):
         points, weights = grid.points, grid.weights
         if d != 1:
             points = transform.transform(points)
-            weights = transform.deriv(grid.points) * weights
+            jacobian = transform.deriv(grid.points)
+            # Preserve the quadrature's floating-point precision before scaling its weights.
+            if np.issubdtype(grid.points.dtype, np.inexact):
+                points = points.astype(grid.points.dtype, copy=False)
+                jacobian = jacobian.astype(grid.points.dtype, copy=False)
+            weights = jacobian * weights
         super().__init__(points, weights, (-1, 1))
 
 
