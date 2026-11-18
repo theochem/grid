@@ -26,6 +26,7 @@ import pytest
 from numpy.testing import assert_allclose, assert_almost_equal
 from scipy.special import roots_chebyu, roots_legendre
 
+from grid.basegrid import OneDGrid
 from grid.onedgrid import (
     ClenshawCurtis,
     ExpExp,
@@ -614,3 +615,22 @@ def test_trefethen_compatibility_wrappers(d, wrapper, quadrature):
         assert_allclose(actual.points, expected.points)
         assert_allclose(actual.weights, expected.weights)
         assert actual.domain == expected.domain
+
+
+@pytest.mark.parametrize("domain", [None, (-0.5, 0.5), (-2, 2)])
+@pytest.mark.parametrize("d", [1, 9])
+def test_trefethen_general_custom_domain(domain, d):
+    """Preserve the legacy output interval for custom quadratures."""
+
+    class CustomGrid(OneDGrid):
+        def __init__(self, npoints):
+            super().__init__(np.linspace(-0.5, 0.5, npoints), np.ones(npoints), domain)
+
+    actual = TrefethenGeneral(3, CustomGrid, d)
+    base = CustomGrid(3)
+    expected = TrefethenRTransform(d).transform_1d_grid(
+        OneDGrid(base.points, base.weights, (-1, 1))
+    )
+    assert actual.domain == (-1, 1)
+    assert_allclose(actual.points, expected.points)
+    assert_allclose(actual.weights, expected.weights)

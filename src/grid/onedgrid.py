@@ -882,8 +882,11 @@ class TrefethenGeneral(OneDGrid):
 
         grid = quadrature(npoints)
         transform = TrefethenRTransform(d)
-        points = transform.transform(grid.points)
-        weights = transform.deriv(grid.points) * grid.weights
+        # The legacy wrapper uses [-1, 1] regardless of the input grid's domain.
+        points, weights = grid.points, grid.weights
+        if d != 1:
+            points = transform.transform(points)
+            weights = transform.deriv(grid.points) * weights
         super().__init__(points, weights, (-1, 1))
 
 
