@@ -281,6 +281,7 @@ class TrefethenRTransform(BaseTransform):
 
         The first derivative is strictly positive, so each point has one inverse.
         Brent's method brackets that root in :math:`[-1, 1]`.
+        Near zero, the inverse is linear to floating-point precision.
 
         Parameters
         ----------
@@ -295,20 +296,33 @@ class TrefethenRTransform(BaseTransform):
         Raises
         ------
         ValueError
-            If any point is nonfinite or outside the codomain.
+            If any point is nonreal, nonfinite or outside the codomain.
         """
-        r = np.asarray(r, dtype=float)
+        r = np.asarray(r)
+        if r.dtype.kind not in "biuf":
+            raise ValueError("Inverse points must be real numbers.")
         if np.any(~np.isfinite(r)) or np.any((r < -1) | (r > 1)):
             raise ValueError("Inverse points must be finite and within [-1, 1].")
+        r = r.astype(float, copy=False)
         points = r.copy()
         if self.d != 1:
+            precision = np.finfo(float)
+            slope = self.deriv(0.0)
+            # Higher powers are below rounding precision near zero.
+            linear_limit = slope * np.sqrt(precision.eps)
+            # Use relative tolerance for small nonzero targets.
+            xtol = precision.smallest_subnormal
             for index in np.ndindex(r.shape):
+                target = r[index]
+                if abs(target) <= linear_limit:
+                    points[index] = target / slope
+                    continue
                 points[index] = brentq(
                     lambda x, target: self.transform(x) - target,
                     -1,
                     1,
-                    args=(r[index],),
-                    xtol=1e-15,
+                    args=(target,),
+                    xtol=xtol,
                 )
         return points[()] if r.ndim == 0 else points
 

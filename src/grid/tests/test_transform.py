@@ -573,10 +573,22 @@ def test_trefethen_endpoints_monotonicity_and_roundtrips(d):
 
 
 @pytest.mark.parametrize("d", [1, 5, 9])
-@pytest.mark.parametrize("r", [-1.01, 1.01, np.nan, np.inf, -np.inf, np.array([0, 1.01])])
+@pytest.mark.parametrize(
+    "r",
+    [
+        -1.01,
+        1.01,
+        np.nan,
+        np.inf,
+        -np.inf,
+        np.array([0, 1.01]),
+        np.array([0.5 + 2j]),
+        np.nextafter(np.longdouble(1), np.longdouble(2)),
+    ],
+)
 def test_trefethen_invalid_inverse_points(d, r):
     """Reject points without an inverse in the stated codomain."""
-    with pytest.raises(ValueError, match="finite and within"):
+    with pytest.raises(ValueError, match="Inverse points must be"):
         TrefethenRTransform(d).inverse(r)
 
 
@@ -635,6 +647,19 @@ def test_trefethen_default_and_grid_type():
     assert TrefethenRTransform().d == 9
     with pytest.raises(TypeError, match="not OneDGrid"):
         TrefethenRTransform().transform_1d_grid(np.arange(3))
+
+
+@pytest.mark.parametrize("d", [5, 9])
+def test_trefethen_inverse_near_zero(d):
+    """Retain relative accuracy for small nonzero inverse targets."""
+    tf = TrefethenRTransform(d)
+    targets = np.array([-1e-300, -1e-18, 1e-18, 1e-300])
+    assert_allclose(tf.transform(tf.inverse(targets)), targets, rtol=2e-15, atol=0)
+    subnormal = np.finfo(float).smallest_subnormal
+    targets = subnormal * np.array([-7, -6, -1, 1, 6, 7])
+    roots = tf.inverse(targets)
+    assert np.array_equal(np.sign(roots), np.sign(targets))
+    assert_allclose(tf.transform(roots), targets, rtol=0, atol=subnormal)
 
 
 def test_trefethen_grid_without_declared_domain():
