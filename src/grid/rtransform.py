@@ -24,6 +24,8 @@ from abc import ABC, abstractmethod
 from numbers import Number
 
 import numpy as np
+from numpy.polynomial import Polynomial
+from scipy.optimize import brentq
 
 from grid.basegrid import OneDGrid
 
@@ -159,7 +161,8 @@ class BaseTransform(ABC):
         Parameters
         ----------
         oned_grid : OneDGrid
-            An instance of one-dimensional grid.
+            An instance of one-dimensional grid. If it has no declared domain,
+            its points must lie within the transformation domain.
 
         Returns
         -------
@@ -169,8 +172,13 @@ class BaseTransform(ABC):
         """
         if not isinstance(oned_grid, OneDGrid):
             raise TypeError(f"Input grid is not OneDGrid, got {type(oned_grid)}")
-        # check domain
-        if oned_grid.domain[0] < self.domain[0] or oned_grid.domain[1] > self.domain[1]:
+        # Check the grid points when no integration interval is specified.
+        new_domain = oned_grid.domain
+        lower, upper = self.domain
+        if new_domain is None:
+            if not np.all((lower <= oned_grid.points) & (oned_grid.points <= upper)):
+                raise ValueError(f"Input grid points must lie within {self.domain}.")
+        elif new_domain[0] < lower or new_domain[1] > upper:
             raise ValueError(
                 "Given 1D grid domain does not match the transformation domain.\n"
                 f"grid domain: {oned_grid.domain}, tf domain: {self.domain}"
@@ -179,7 +187,6 @@ class BaseTransform(ABC):
         # Transformations that reverse the orientation of integration limits have a negative dr/dx;
         # the integral over r still runs from low to high r, so the weights must use |dr/dx|
         new_weights = np.abs(self.deriv(oned_grid.points)) * oned_grid.weights
-        new_domain = oned_grid.domain
         if new_domain is not None:
             # Some transformation (Issue #125) reverses the order of points i.e.
             #    [-1, 1] maps to [infinity, 0].  This sort here fixes the problem here.
@@ -200,6 +207,169 @@ class BaseTransform(ABC):
             new_v[new_v == np.inf] = replace_inf
             new_v[new_v == -np.inf] = -replace_inf
         return new_v
+
+
+class TrefethenRTransform(BaseTransform):
+    r"""Trefethen polynomial ("sausage") transformation on :math:`[-1, 1]`.
+
+    The map is the degree-:math:`d` Taylor polynomial of :math:`\arcsin(x)`,
+    normalized to preserve both endpoints [#]_. The supported maps are
+
+    .. math::
+        g_1(x) &= x, \\
+        g_5(x) &= \frac{120x + 20x^3 + 9x^5}{149}, \\
+        g_9(x) &= \frac{40320x + 6720x^3 + 3024x^5 + 1800x^7 + 1225x^9}{53089}.
+
+    Both the domain and codomain are :math:`[-1, 1]`.
+    Apply :meth:`transform_1d_grid` to an already configured :class:`OneDGrid`;
+    its weights are multiplied by :math:`g_d'(x)`.
+
+    References
+    ----------
+    .. [#] Hale, Nicholas, and Lloyd N. Trefethen. "New quadrature formulas from conformal maps."
+       SIAM Journal on Numerical Analysis 46.2 (2008): 930-948, equations (4.1)-(4.3).
+       https://doi.org/10.1137/07068607X
+    """
+
+    def __init__(self, d: int = 9):
+        """Construct the polynomial transformation.
+
+        Parameters
+        ----------
+        d : int, optional
+            Degree of the polynomial, either 1, 5, or 9. Degree 1 is the identity.
+        """
+        if isinstance(d, np.ndarray) and d.size == 1:
+            d = d.item()
+        if d not in (1, 5, 9):
+            raise ValueError(f"Degree {d} should be either 1, 5, 9.")
+        coefficients = {
+            1: [0, 1],
+            5: [0, 120, 0, 20, 0, 9],
+            9: [0, 40320, 0, 6720, 0, 3024, 0, 1800, 0, 1225],
+        }
+        polynomial = Polynomial(coefficients[d])
+        # Normalize after evaluation to preserve g(-1) = -1 and g(1) = 1 exactly.
+        self._normalization = polynomial(1)
+        self._polynomials = tuple(polynomial.deriv(order) for order in range(4))
+        self._d = d
+        self._domain = (-1, 1)
+        self._codomain = (-1, 1)
+
+    @property
+    def d(self):
+        """int: Degree of the normalized Taylor polynomial."""
+        return self._d
+
+    def transform(self, x: float | np.ndarray):
+        r"""Map points from :math:`[-1, 1]` to :math:`[-1, 1]`.
+
+        Parameters
+        ----------
+        x : float or np.ndarray
+            Point or points in the transformation domain.
+
+        Returns
+        -------
+        float or np.ndarray
+            Transformed points, with the same shape as the input.
+        """
+        return self._polynomials[0](x) / self._normalization
+
+    def inverse(self, r: float | np.ndarray):
+        r"""Invert the monotone polynomial on :math:`[-1, 1]` numerically.
+
+        The first derivative is strictly positive, so each point has one inverse.
+        Brent's method brackets that root in :math:`[-1, 1]`.
+        Near zero, the inverse is linear to floating-point precision.
+
+        Parameters
+        ----------
+        r : float or np.ndarray
+            Finite point or points in the codomain :math:`[-1, 1]`.
+
+        Returns
+        -------
+        float or np.ndarray
+            Inverse points, with the same shape as the input.
+
+        Raises
+        ------
+        ValueError
+            If any point is nonreal, nonfinite or outside the codomain.
+        """
+        r = np.asarray(r)
+        if r.dtype.kind not in "biuf":
+            raise ValueError("Inverse points must be real numbers.")
+        if np.any(~np.isfinite(r)) or np.any((r < -1) | (r > 1)):
+            raise ValueError("Inverse points must be finite and within [-1, 1].")
+        r = r.astype(float, copy=False)
+        points = r.copy()
+        if self.d != 1:
+            precision = np.finfo(float)
+            slope = self.deriv(0.0)
+            # Higher powers are below rounding precision near zero.
+            linear_limit = slope * np.sqrt(precision.eps)
+            # Use relative tolerance for small nonzero targets.
+            xtol = precision.smallest_subnormal
+            for index in np.ndindex(r.shape):
+                target = r[index]
+                if abs(target) <= linear_limit:
+                    points[index] = target / slope
+                    continue
+                points[index] = brentq(
+                    lambda x, target: self.transform(x) - target,
+                    -1,
+                    1,
+                    args=(target,),
+                    xtol=xtol,
+                )
+        return points[()] if r.ndim == 0 else points
+
+    def deriv(self, x: float | np.ndarray):
+        r"""Evaluate :math:`g_d'(x)`.
+
+        Parameters
+        ----------
+        x : float or np.ndarray
+            Point or points in :math:`[-1, 1]`.
+
+        Returns
+        -------
+        float or np.ndarray
+            First derivative, with the same shape as the input.
+        """
+        return self._polynomials[1](x) / self._normalization
+
+    def deriv2(self, x: float | np.ndarray):
+        r"""Evaluate :math:`g_d''(x)`.
+
+        Parameters
+        ----------
+        x : float or np.ndarray
+            Point or points in :math:`[-1, 1]`.
+
+        Returns
+        -------
+        float or np.ndarray
+            Second derivative, with the same shape as the input.
+        """
+        return self._polynomials[2](x) / self._normalization
+
+    def deriv3(self, x: float | np.ndarray):
+        r"""Evaluate :math:`g_d'''(x)`.
+
+        Parameters
+        ----------
+        x : float or np.ndarray
+            Point or points in :math:`[-1, 1]`.
+
+        Returns
+        -------
+        float or np.ndarray
+            Third derivative, with the same shape as the input.
+        """
+        return self._polynomials[3](x) / self._normalization
 
 
 class BeckeRTransform(BaseTransform):

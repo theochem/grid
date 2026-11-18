@@ -45,6 +45,7 @@ from grid.rtransform import (
     KnowlesRTransform,
     LinearFiniteRTransform,
     MultiExpRTransform,
+    TrefethenRTransform,
 )
 
 
@@ -97,6 +98,7 @@ x_points_cases = [np.linspace(-0.9, 0.9, 19), np.linspace(-0.9, 0.9, 10)]
 
 # cases for testing init raises on invalid initialization parameters
 INVALID_INITIALIZE_CASES = [
+    transformation_case(TrefethenRTransform, dict(d=3)),
     transformation_case(KnowlesRTransform, dict(rmin=0.1, R=1.0, k=0)),
     transformation_case(HandyModRTransform, dict(rmin=0.1, rmax=10.0, m=0)),
     transformation_case(HandyModRTransform, dict(rmin=10.0, rmax=0.1, m=2)),
@@ -104,6 +106,7 @@ INVALID_INITIALIZE_CASES = [
 
 # cases of bounded transforms with domain [-1, 1]; verify raises on out-of-domain inputs
 BOUNDED_DOMAIN_CASES = [
+    transformation_case(TrefethenRTransform, dict(d=9)),
     transformation_case(BeckeRTransform, dict(rmin=0.1, R=1.2)),
     transformation_case(KnowlesRTransform, dict(rmin=0.1, R=1.2, k=2)),
     transformation_case(MultiExpRTransform, dict(rmin=0.1, R=1.2)),
@@ -113,6 +116,9 @@ BOUNDED_DOMAIN_CASES = [
 
 # cases of valid transforms used in tests
 VALID_TRANSFORM_CASES = [
+    transformation_case(TrefethenRTransform, dict(d=1)),
+    transformation_case(TrefethenRTransform, dict(d=5)),
+    transformation_case(TrefethenRTransform, dict(d=9)),
     transformation_case(BeckeRTransform, dict(rmin=0.1, R=1.2, trim_inf=True)),
     transformation_case(BeckeRTransform, dict(rmin=0.1, R=1.2, trim_inf=False)),
     transformation_case(KnowlesRTransform, dict(rmin=0.1, R=1.2, k=2, trim_inf=True)),
@@ -522,3 +528,152 @@ def test_becke_rtransform_raise_errors():
     singular_btf = BeckeRTransform(0.1, 0)
     with pytest.raises(ZeroDivisionError):
         singular_btf.deriv_inverse(0.5)
+
+
+@pytest.mark.parametrize("d", [1, 5, 9])
+@pytest.mark.parametrize("order", [0, 1, 2, 3])
+def test_trefethen_taylor_reference(d, order):
+    """Compare to the arcsine Taylor series, independently of stored integer coefficients."""
+    from math import comb, factorial
+
+    x = np.linspace(-1, 1, 101)
+    terms = [(2 * k + 1, comb(2 * k, k) / (4**k * (2 * k + 1))) for k in range((d + 1) // 2)]
+    normalization = sum(coefficient for _, coefficient in terms)
+    expected = (
+        sum(
+            coefficient * factorial(power) / factorial(power - order) * x ** (power - order)
+            for power, coefficient in terms
+            if power >= order
+        )
+        / normalization
+    )
+    tf = TrefethenRTransform(d)
+    actual = (tf.transform, tf.deriv, tf.deriv2, tf.deriv3)[order]
+    assert_allclose(actual(x), expected, rtol=1e-14, atol=1e-14)
+
+
+@pytest.mark.parametrize("d", [1, 5, 9])
+def test_trefethen_endpoints_monotonicity_and_roundtrips(d):
+    """Check endpoint preservation, strict monotonicity, symmetry, and both inverse roundtrips."""
+    tf = TrefethenRTransform(d)
+    x = np.linspace(-1, 1, 1001)
+    assert tf.domain == tf.codomain == (-1, 1)
+    assert_allclose(tf.transform(np.array([-1.0, 0.0, 1.0])), [-1, 0, 1], rtol=0, atol=0)
+    assert_allclose(tf.inverse(np.array([-1.0, 0.0, 1.0])), [-1, 0, 1], rtol=0, atol=0)
+    assert np.all(np.diff(tf.transform(x)) > 0)
+    assert np.all(tf.deriv(x) > 0)
+    assert_allclose(tf.transform(-x), -tf.transform(x), rtol=0, atol=0)
+    assert_allclose(tf.inverse(tf.transform(x)), x, rtol=0, atol=2e-15)
+    assert_allclose(tf.transform(tf.inverse(x)), x, rtol=0, atol=2e-15)
+    for method in (tf.transform, tf.inverse, tf.deriv, tf.deriv2, tf.deriv3):
+        assert np.isscalar(method(0.25))
+        assert_allclose(method(0.25), method(np.array([0.25]))[0], rtol=0, atol=0)
+        assert method(x.reshape(7, 143)).shape == (7, 143)
+        assert method(np.array([])).shape == (0,)
+
+
+@pytest.mark.parametrize("d", [1, 5, 9])
+@pytest.mark.parametrize(
+    "r",
+    [
+        -1.01,
+        1.01,
+        np.nan,
+        np.inf,
+        -np.inf,
+        np.array([0, 1.01]),
+        np.array([0.5 + 2j]),
+        np.nextafter(np.longdouble(1), np.longdouble(2)),
+    ],
+)
+def test_trefethen_invalid_inverse_points(d, r):
+    """Reject points without an inverse in the stated codomain."""
+    with pytest.raises(ValueError, match="Inverse points must be"):
+        TrefethenRTransform(d).inverse(r)
+
+
+@pytest.mark.parametrize("d", [0, 3, 7, 11, None])
+def test_trefethen_invalid_degree(d):
+    """Only the degrees supported by the existing Trefethen grids are accepted."""
+    with pytest.raises(ValueError, match="Degree"):
+        TrefethenRTransform(d)
+
+
+@pytest.mark.parametrize("d", [1, 5, 9])
+def test_trefethen_configured_grid(d):
+    """Transform an existing non-default quadrature without mutating or reconstructing it."""
+    base = TanhSinh(51, delta=0.05)
+    points, weights = base.points.copy(), base.weights.copy()
+    tf = TrefethenRTransform(d)
+    transformed = tf.transform_1d_grid(base)
+    assert_allclose(transformed.points, tf.transform(points))
+    assert_allclose(transformed.weights, tf.deriv(points) * weights)
+    assert_allclose(base.points, points, rtol=0, atol=0)
+    assert_allclose(base.weights, weights, rtol=0, atol=0)
+    default = tf.transform_1d_grid(TanhSinh(51))
+    assert not np.allclose(transformed.points, default.points)
+    assert not np.allclose(transformed.weights, default.weights)
+    assert transformed.domain == (-1, 1)
+    if d == 1:
+        assert_allclose(transformed.points, points, rtol=0, atol=0)
+        assert_allclose(transformed.weights, weights, rtol=0, atol=0)
+
+
+@pytest.mark.parametrize("d", [1, 5, 9])
+def test_trefethen_analytic_moments_and_subdomain(d):
+    """Check Jacobian weights against exact integrals, including a proper subinterval."""
+    from grid.basegrid import OneDGrid
+
+    tf = TrefethenRTransform(d)
+    base = GaussLegendre(40)
+    for lower, upper in [(-1.0, 1.0), (-0.6, 0.3)]:
+        scaled = OneDGrid(
+            lower + (base.points + 1) * (upper - lower) / 2,
+            base.weights * (upper - lower) / 2,
+            (lower, upper),
+        )
+        transformed = tf.transform_1d_grid(scaled)
+        limits = tf.transform(np.array([lower, upper]))
+        assert_allclose(transformed.domain, limits)
+        for power in range(7):
+            expected = (limits[1] ** (power + 1) - limits[0] ** (power + 1)) / (power + 1)
+            assert_allclose(
+                transformed.integrate(transformed.points**power), expected, rtol=1e-12, atol=1e-13
+            )
+
+
+def test_trefethen_default_and_grid_type():
+    """Default to degree 9 and inherit BaseTransform's grid type validation."""
+    assert TrefethenRTransform().d == 9
+    with pytest.raises(TypeError, match="not OneDGrid"):
+        TrefethenRTransform().transform_1d_grid(np.arange(3))
+
+
+@pytest.mark.parametrize("d", [5, 9])
+def test_trefethen_inverse_near_zero(d):
+    """Retain relative accuracy for small nonzero inverse targets."""
+    tf = TrefethenRTransform(d)
+    targets = np.array([-1e-300, -1e-18, 1e-18, 1e-300])
+    assert_allclose(tf.transform(tf.inverse(targets)), targets, rtol=2e-15, atol=0)
+    subnormal = np.finfo(float).smallest_subnormal
+    targets = subnormal * np.array([-7, -6, -1, 1, 6, 7])
+    roots = tf.inverse(targets)
+    assert np.array_equal(np.sign(roots), np.sign(targets))
+    assert_allclose(tf.transform(roots), targets, rtol=0, atol=subnormal)
+
+
+def test_trefethen_grid_without_declared_domain():
+    """Transform valid nodes and preserve an unspecified integration interval."""
+    from grid.basegrid import OneDGrid
+
+    source = GaussLegendre(20)
+    tf = TrefethenRTransform()
+    grid = tf.transform_1d_grid(OneDGrid(source.points, source.weights))
+    expected = tf.transform_1d_grid(source)
+    assert grid.domain is None
+    assert_allclose(grid.points, expected.points)
+    assert_allclose(grid.weights, expected.weights)
+
+    outside = OneDGrid(np.array([-2.0, 0.0]), np.ones(2))
+    with pytest.raises(ValueError, match="grid points"):
+        tf.transform_1d_grid(outside)
