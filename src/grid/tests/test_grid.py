@@ -109,6 +109,14 @@ class TestGrid(TestCase):
         assert localgrid.weights.shape == (0,)
         assert_allclose(localgrid.center, center)
 
+    def test_moments_empty_localgrid(self):
+        """Moments over a local grid without points are zero."""
+        center = self.grid.points.max(axis=0) + 10.0
+        localgrid = self.grid.get_localgrid(center, 0.5)
+        centers = np.atleast_1d(center).reshape(1, -1)
+        moments = localgrid.moments(1, centers, np.zeros(0), type_mom="cartesian")
+        assert_allclose(moments, 0.0)
+
     def test_get_localgrid_radius_inf(self):
         """Test the creation of the local grid with an infinite radius."""
         localgrid = self.grid.get_localgrid(self.grid.points[3], np.inf)

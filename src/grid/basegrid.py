@@ -250,7 +250,7 @@ class Grid:
 
         """
         # Points of shape (N,), as in OneDGrid, are N points in one dimension
-        points = self.points.reshape(len(self.points), -1)
+        points = self.points if self.points.ndim == 2 else self.points.reshape(-1, 1)
         if func_vals.ndim > 1:
             raise ValueError(f"`func_vals` {func_vals.ndim} should have dimension one.")
         if centers.ndim != 2:
