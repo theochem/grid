@@ -30,9 +30,11 @@ from numpy.testing import (
 )
 
 from grid.angular import (
+    AHRENS_BEYLKIN_DEGREES,
     LEBEDEV_CACHE,
     LEBEDEV_DEGREES,
     LEBEDEV_NPOINTS,
+    MAX_DET_DEGREES,
     SPHERICAL_DEGREES,
     AngularGrid,
 )
@@ -227,3 +229,36 @@ def test_that_symmetric_spherical_design_is_symmetric():
     for degree in SPHERICAL_DEGREES.keys():
         grid = AngularGrid(degree=degree, method="spherical", cache=False)
         assert np.all(np.abs(np.sum(grid.points, axis=0)) < 1e-8)
+
+
+ALL_PACKAGED_GRIDS = [
+    (method, degree)
+    for method, degrees in [
+        ("lebedev", LEBEDEV_DEGREES),
+        ("spherical", SPHERICAL_DEGREES),
+        ("maxdet", MAX_DET_DEGREES),
+        ("ahrens_beylkin", AHRENS_BEYLKIN_DEGREES),
+    ]
+    for degree in sorted(degrees)
+]
+
+
+@pytest.mark.parametrize(
+    ("method", "degree"), ALL_PACKAGED_GRIDS, ids=[f"{m}-{d}" for m, d in ALL_PACKAGED_GRIDS]
+)
+def test_every_packaged_grid_is_a_quadrature_of_its_degree(method, degree):
+    r"""Test that every tabulated angular grid has unit points and integrates polynomials exactly.
+
+    The integral of :math:`(u \cdot x)^k` over the unit sphere is :math:`4 \pi / (k + 1)` for an
+    even k and 0 for an odd k, for any unit vector u. A grid of the given degree has to reproduce
+    this for all k up to the degree (only up to 30 here to keep the test fast).
+    """
+    grid = AngularGrid(degree=degree, method=method, cache=False)
+    assert_almost_equal(np.linalg.norm(grid.points, axis=1), 1.0, decimal=12)
+    assert_almost_equal(grid.weights.sum(), 4.0 * np.pi, decimal=10)
+    directions = np.random.default_rng(1).normal(size=(3, 5))
+    directions /= np.linalg.norm(directions, axis=0)
+    projections = grid.points @ directions
+    for k in range(min(degree, 30) + 1):
+        expected = 4.0 * np.pi / (k + 1) if k % 2 == 0 else 0.0
+        assert_almost_equal(grid.weights @ projections**k, expected, decimal=10)
