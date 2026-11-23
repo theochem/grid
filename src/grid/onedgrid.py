@@ -26,6 +26,7 @@ import numpy as np
 from scipy.special import roots_chebyu, roots_genlaguerre
 
 from grid.basegrid import OneDGrid
+from grid.rtransform import TrefethenRTransform
 
 
 class GaussLaguerre(OneDGrid):
@@ -768,34 +769,12 @@ class FejerSecond(OneDGrid):
         super().__init__(points, weights, (-1, 1))
 
 
-# Auxiliary functions for Trefethen "sausage" transformation
-# g2 is the function and derg2 is the first derivative.
-# g3 is other function with the same boundary conditions of g2 and
-# derg3 is the first derivative.
-# this functions work for TrefethenCC, TrefethenGC2, and TrefethenGeneral
-def _g2(x):
-    r"""Return an auxiliary function g2(x) for Trefethen transformation."""
-    return (1 / 149) * (120 * x + 20 * x**3 + 9 * x**5)
-
-
-def _derg2(x):
-    r"""Return the derivative function g2(x) for Trefethen transformation."""
-    return (1 / 149) * (120 + 60 * x**2 + 45 * x**4)
-
-
-def _g3(x):
-    r"""Return an auxiliary function g3(x) for Trefethen transformation."""
-    return (1 / 53089) * (40320 * x + 6720 * x**3 + 3024 * x**5 + 1800 * x**7 + 1225 * x**9)
-
-
-def _derg3(x):
-    r"""Return the derivative function g3(x) for Trefethen transformation."""
-    return (1 / 53089) * (40320 + 20160 * x**2 + 15120 * x**4 + 12600 * x**6 + 11025 * x**8)
-
-
 class TrefethenCC(OneDGrid):
     """
     Trefethen polynomial transformation of Clenshaw-Curtis integral quadrature class [#]_.
+
+    For an already configured grid, use
+    :class:`~grid.rtransform.TrefethenRTransform` instead.
 
     References
     ----------
@@ -823,25 +802,16 @@ class TrefethenCC(OneDGrid):
             One-dimensional grid instance.
         """
         grid = ClenshawCurtis(npoints)
-
-        if d == 1:
-            points = grid.points
-            weights = grid.weights
-        elif d == 5:
-            points = _g2(grid.points)
-            weights = _derg2(grid.points) * grid.weights
-        elif d == 9:
-            points = _g3(grid.points)
-            weights = _derg3(grid.points) * grid.weights
-        else:
-            raise ValueError(f"Degree {d} should be either 1, 5, 9.")
-
-        super().__init__(points, weights, (-1, 1))
+        grid = TrefethenRTransform(d).transform_1d_grid(grid)
+        super().__init__(grid.points, grid.weights, grid.domain)
 
 
 class TrefethenGC2(OneDGrid):
     """
     Trefethen polynomial transformation of Gauss-Chebyshev of the second kind quadrature [#]_.
+
+    For an already configured grid, use
+    :class:`~grid.rtransform.TrefethenRTransform` instead.
 
     References
     ----------
@@ -869,25 +839,16 @@ class TrefethenGC2(OneDGrid):
             One-dimensional grid instance.
         """
         grid = GaussChebyshevType2(npoints)
-
-        if d == 1:
-            points = grid.points
-            weights = grid.weights
-        elif d == 5:
-            points = _g2(grid.points)
-            weights = _derg2(grid.points) * grid.weights
-        elif d == 9:
-            points = _g3(grid.points)
-            weights = _derg3(grid.points) * grid.weights
-        else:
-            raise ValueError(f"Degree {d} should be either 1, 5, 9.")
-
-        super().__init__(points, weights, (-1, 1))
+        grid = TrefethenRTransform(d).transform_1d_grid(grid)
+        super().__init__(grid.points, grid.weights, grid.domain)
 
 
 class TrefethenGeneral(OneDGrid):
     """
     Trefethen polynomial transformation of a general integral quadrature class [#]_.
+
+    For an already configured grid, use
+    :class:`~grid.rtransform.TrefethenRTransform` instead.
 
     References
     ----------
@@ -920,19 +881,17 @@ class TrefethenGeneral(OneDGrid):
             raise TypeError(f"Quadrature {type(OneDGrid)} should be of type OneDgrid.")
 
         grid = quadrature(npoints)
-
-        if d == 1:
-            points = grid.points
-            weights = grid.weights
-        elif d == 5:
-            points = _g2(grid.points)
-            weights = _derg2(grid.points) * grid.weights
-        elif d == 9:
-            points = _g3(grid.points)
-            weights = _derg3(grid.points) * grid.weights
-        else:
-            raise ValueError(f"Degree {d} should be either 1, 5, 9.")
-
+        transform = TrefethenRTransform(d)
+        # The legacy wrapper uses [-1, 1] regardless of the input grid's domain.
+        points, weights = grid.points, grid.weights
+        if d != 1:
+            points = transform.transform(points)
+            jacobian = transform.deriv(grid.points)
+            # Preserve the quadrature's floating-point precision before scaling its weights.
+            if np.issubdtype(grid.points.dtype, np.inexact):
+                points = points.astype(grid.points.dtype, copy=False)
+                jacobian = jacobian.astype(grid.points.dtype, copy=False)
+            weights = jacobian * weights
         super().__init__(points, weights, (-1, 1))
 
 
