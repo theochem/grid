@@ -108,10 +108,12 @@ class Grid:
         Grid
             Return a new Grid object with selected points
         """
+        # Return a plain Grid: subclasses such as AtomGrid, AngularGrid, LocalGrid and
+        # UniformGrid cannot be built from points and weights alone.
         if isinstance(index, Integral):
-            return self.__class__(np.array([self.points[index]]), np.array([self.weights[index]]))
+            return Grid(np.array([self.points[index]]), np.array([self.weights[index]]))
         else:
-            return self.__class__(np.array(self.points[index]), np.array(self.weights[index]))
+            return Grid(np.array(self.points[index]), np.array(self.weights[index]))
 
     def integrate(self, *value_arrays):
         r"""Integrate over the whole grid for given multiple value arrays.

@@ -23,9 +23,15 @@
 from unittest import TestCase
 
 import numpy as np
+import pytest
 from numpy.testing import assert_allclose
 
+from grid.angular import AngularGrid
+from grid.atomgrid import AtomGrid
 from grid.basegrid import Grid, LocalGrid, OneDGrid
+from grid.cubic import UniformGrid
+from grid.onedgrid import GaussLegendre
+from grid.rtransform import BeckeRTransform
 
 
 class TestGrid(TestCase):
@@ -264,3 +270,32 @@ class TestOneDGrid(TestCase):
         assert np.allclose(subgrid.points, points[3:7])
         assert np.allclose(subgrid.weights, weights[3:7])
         assert subgrid.domain is None
+
+
+def _local_grid():
+    grid = Grid(np.arange(30.0).reshape(10, 3), np.ones(10))
+    return grid.get_localgrid(np.zeros(3), np.inf)
+
+
+def _atom_grid():
+    rgrid = BeckeRTransform(1e-4, 1.5).transform_1d_grid(GaussLegendre(10))
+    return AtomGrid(rgrid, degrees=[5])
+
+
+@pytest.mark.parametrize(
+    "make_grid",
+    [
+        _local_grid,
+        lambda: AngularGrid(degree=5),
+        _atom_grid,
+        lambda: UniformGrid(np.zeros(3), np.eye(3) * 0.5, np.array([3, 3, 3])),
+    ],
+)
+def test_getitem_subclasses(make_grid):
+    """Indexing a subclass with its own constructor returns a plain Grid."""
+    grid = make_grid()
+    for index in [0, np.int64(2), slice(1, 4)]:
+        subgrid = grid[index]
+        assert type(subgrid) is Grid
+        assert_allclose(subgrid.points, grid.points[index].reshape(-1, 3))
+        assert_allclose(subgrid.weights, np.atleast_1d(grid.weights[index]))
