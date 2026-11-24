@@ -109,6 +109,14 @@ class TestGrid(TestCase):
         assert localgrid.weights.shape == (0,)
         assert_allclose(localgrid.center, center)
 
+    def test_moments_empty_localgrid(self):
+        """Moments over a local grid without points are zero."""
+        center = self.grid.points.max(axis=0) + 10.0
+        localgrid = self.grid.get_localgrid(center, 0.5)
+        centers = np.atleast_1d(center).reshape(1, -1)
+        moments = localgrid.moments(1, centers, np.zeros(0), type_mom="cartesian")
+        assert_allclose(moments, 0.0)
+
     def test_get_localgrid_radius_inf(self):
         """Test the creation of the local grid with an infinite radius."""
         localgrid = self.grid.get_localgrid(self.grid.points[3], np.inf)
@@ -171,6 +179,15 @@ class TestGrid1D(TestGrid):
         # Compute moments M_n = sum_i w_i (x_i - center)^n f(x_i) directly for n = 0, ..., order
         expected = [np.sum((points - 0.5) ** n * func_vals * self._ref_weights) for n in range(4)]
         assert_allclose(integrals[:, 0], expected)
+
+    def test_cartesian_moments_flat_points(self):
+        """Test that points of shape (N,), as in OneDGrid, give the same moments as (N, 1)."""
+        points = self._ref_points[:, 0]
+        func_vals = np.exp(-(points**2))
+        center = np.array([[0.5]])
+        expected = self.grid.moments(3, center, func_vals, type_mom="cartesian")
+        for grid in [Grid(points, self._ref_weights), OneDGrid(points, self._ref_weights)]:
+            assert_allclose(grid.moments(3, center, func_vals, type_mom="cartesian"), expected)
 
 
 class TestGrid2D(TestGrid):
