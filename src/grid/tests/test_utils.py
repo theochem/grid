@@ -28,6 +28,7 @@ from numpy.testing import assert_allclose, assert_almost_equal, assert_equal
 from grid.angular import AngularGrid
 from grid.utils import (
     convert_cart_to_sph,
+    convert_derivative_from_spherical_to_cartesian,
     generate_derivative_real_spherical_harmonics,
     generate_orders_horton_order,
     generate_real_spherical_harmonics,
@@ -350,3 +351,17 @@ def test_generate_orders_horton_order_cartesian_one_dimension(order):
     r"""Test 1D Cartesian orders have one row holding the order, like the 2D and 3D rows."""
     orders = generate_orders_horton_order(order, "cartesian", dim=1)
     assert_equal(orders, np.array([[order]]))
+
+
+@pytest.mark.parametrize("phi", [0.0, np.pi])
+def test_convert_derivative_from_spherical_to_cartesian_on_z_axis(phi):
+    r"""Test the theta derivative is dropped at both poles, where theta is undefined."""
+    result = convert_derivative_from_spherical_to_cartesian(1.0, 1.0, 1.0, 2.0, 0.3, phi)
+    # On the z axis, d/dz = cos(phi) d/dr - sin(phi)/r d/dphi, and the x, y parts come from phi.
+    assert np.all(np.isfinite(result))
+    assert_allclose(result[2], np.cos(phi), atol=1e-12)
+    assert_allclose(
+        result[:2],
+        [np.cos(0.3) * (1.0 / 2.0) * np.cos(phi), np.sin(0.3) * (1.0 / 2.0) * np.cos(phi)],
+        atol=1e-12,
+    )
