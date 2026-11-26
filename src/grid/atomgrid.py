@@ -65,7 +65,7 @@ class AtomGrid(Grid):
         rotate: int = 0,
         method: str = "lebedev",
     ):
-        """
+        r"""
         Construct atomic grid for given arguments.
 
         Parameters
@@ -150,7 +150,7 @@ class AtomGrid(Grid):
         rotate: int = 0,
         method: str = "lebedev",
     ):
-        """Construct an atomic grid with pre-defined angular grids for a given atomic number.
+        r"""Construct an atomic grid with pre-defined angular grids for a given atomic number.
 
         Parameters
         ----------
@@ -778,7 +778,7 @@ class AtomGrid(Grid):
         d_sectors: list | np.ndarray,
         method: str = "lebedev",
     ):
-        """
+        r"""
         Get all degrees for every radial point inside the radial grid based on the sectors.
 
         Parameters

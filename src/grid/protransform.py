@@ -772,7 +772,7 @@ class CubicProTransform(_HyperRectangleGrid):
         return hessian
 
     def _inverse_transform_grid(self, oned_grids):
-        """Map the entire grid from theta-space to real-space.
+        r"""Map the entire grid from theta-space to real-space.
 
         Parameters
         ----------

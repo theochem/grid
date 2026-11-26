@@ -171,7 +171,7 @@ class PeriodicGridWarning(Warning):
 
 
 class PeriodicGrid(Grid):
-    """Grid with support for periodic boundary conditions.
+    r"""Grid with support for periodic boundary conditions.
 
     The purpose of this class is to support certain operations on integration
     grids with periodic boundary conditions. It does not construct such grids
@@ -221,7 +221,7 @@ class PeriodicGrid(Grid):
     """
 
     def __init__(self, points, weights, realvecs=None, wrap=False):
-        """Construct a PeriodicGrid instance.
+        r"""Construct a PeriodicGrid instance.
 
         Parameters
         ----------
