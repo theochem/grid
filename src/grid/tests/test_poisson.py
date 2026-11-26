@@ -392,3 +392,47 @@ def test_poisson_ivp_on_unit_charge_distribution(centers):
     actual = potential(random_pts)
     desired = poisson_solution_to_charge_distribution(random_pts, centers=centers)
     assert_allclose(actual, desired, atol=1e-2)
+
+
+def test_interpolation_of_laplacian_molgrid_heterogeneous():
+    r"""Test interpolate_laplacian on MolGrid with different grid sizes and asymmetric weights."""
+    oned = GaussLegendre(200)
+    btf = BeckeRTransform(1e-3, 1.5)
+    radial = btf.transform_1d_grid(oned)
+    c0 = np.array([0.0, 0.0, 0.0])
+    c1 = np.array([3.0, 0.0, 0.0])
+
+    # Different angular degrees per atom would previously crash with a slice size mismatch.
+    atgrids_diff = [
+        AtomGrid(radial, degrees=[35], center=c0),
+        AtomGrid(radial, degrees=[29], center=c1),
+    ]
+    molgrid_diff = MolGrid(
+        atnums=np.array([1, 1]), atgrids=atgrids_diff, aim_weights=BeckeWeights(), store=True
+    )
+
+    # Same grid size per atom with an asymmetric function would silently use the last atom's slice.
+    atgrids_same = [
+        AtomGrid(radial, degrees=[29], center=c0),
+        AtomGrid(radial, degrees=[29], center=c1),
+    ]
+    molgrid_same = MolGrid(
+        atnums=np.array([1, 1]), atgrids=atgrids_same, aim_weights=BeckeWeights(), store=True
+    )
+
+    def func_and_lap(pts):
+        r0_sq = np.sum((pts - c0) ** 2, axis=1)
+        r1_sq = np.sum((pts - c1) ** 2, axis=1)
+        g0 = np.exp(-r0_sq)
+        g1 = 2.5 * np.exp(-0.7 * r1_sq)
+        lap0 = (4.0 * r0_sq - 6.0) * g0
+        lap1 = (4.0 * 0.49 * r1_sq - 6.0 * 0.7) * g1
+        return g0 + g1, lap0 + lap1
+
+    test_pts = np.array([[0.15, 0.1, -0.1], [2.85, -0.1, 0.1], [1.5, 0.5, 0.0]])
+    _, expected_lap = func_and_lap(test_pts)
+
+    for mg in (molgrid_diff, molgrid_same):
+        vals, _ = func_and_lap(mg.points)
+        lap_interp = interpolate_laplacian(mg, vals)
+        assert_allclose(lap_interp(test_pts), expected_lap, rtol=1e-2, atol=1e-2)
