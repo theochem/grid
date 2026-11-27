@@ -134,13 +134,14 @@ class _HyperRectangleGrid(Grid):
             If zero, then the function in z-direction is interpolated.
             If greater than zero, then the "nu_z"th-order derivative in the z-direction is
             interpolated.
-        method: str, optional
-            The method of interpolation to perform. Supported are "cubic" (most accurate but
-            computationally expensive), "linear", or "nearest" (least accurate but cheap
-            computationally). The last two methods use SciPy's RegularGridInterpolator function.
+        method : str, optional
+            The method of interpolation to perform. Supported methods are "cubic", "linear",
+            "nearest", "slinear", "quintic", and "pchip". Methods other than "cubic" are
+            evaluated using SciPy's RegularGridInterpolator and only support function value
+            interpolation (no derivatives).
         grid_pts: list[OneDGrids], optional
             If provided, then uses `grid_pts` rather than the points of the HyperRectangle class
-            `self.points` to construct interpolation.  Useful when doing a promolecular
+            `self.points` to construct interpolation. Useful when doing a promolecular
             transformation.
 
         Returns
@@ -149,19 +150,27 @@ class _HyperRectangleGrid(Grid):
             The interpolation of a function (or of its derivatives) at a :math:`M` point.
 
         """
+        
         # Needed because CubicProTransform is a subclass of this method and has its own
-        #  interpolate function.  Since interpolate references itself, it chooses
-        #  CubicProTransform rather than _HyperRectangleGrid class.
+        # interpolate function. Since interpolate references itself, it chooses
+        # CubicProTransform rather than _HyperRectangleGrid class.
         return self._interpolate(points, values, use_log, nu_x, nu_y, nu_z, method, grid_pts)
-
+      
     def _interpolate(
         self, points, values, use_log=False, nu_x=0, nu_y=0, nu_z=0, method="cubic", grid_pts=None
     ):
         r"""Core of the Interpolate Algorithm."""
+      
+        # SciPy-routed methods: all except cubic can only do function values (no derivatives).
+        # cubic is kept on the internal separable CubicSpline so that values and derivatives
+        # are always from the same interpolant and mathematically consistent.
+        scipy_methods = ["linear", "nearest", "slinear", "quintic", "pchip"]
+        supported_methods = scipy_methods + ["cubic"]
+        
+        if method not in supported_methods:
 
-        if method not in ["cubic", "linear", "nearest"]:
             raise ValueError(
-                f"Argument method should be either cubic, linear, or nearest , got {method}"
+                f"Argument method should be one of {supported_methods}, got {method}"
             )
         if self.ndim != 3:
             raise NotImplementedError(
@@ -180,12 +189,25 @@ class _HyperRectangleGrid(Grid):
         if use_log:
             values = np.log(values)
 
-        # Use scipy if linear and nearest is requested and raise error if it's not cubic.
-        if method in ["linear", "nearest"]:
+        # Route non-cubic methods through SciPy's RegularGridInterpolator.
+        # Derivatives are not supported for these methods.
+        if method in scipy_methods:
+            if nu_x != 0 or nu_y != 0 or nu_z != 0:
+                raise NotImplementedError(
+                    f"Computing derivatives (nu_x={nu_x}, nu_y={nu_y}, nu_z={nu_z}) "
+                    f"is only supported for method='cubic', got method='{method}'."
+                )
             x, y, z = self.get_points_along_axes()
-            values = values.reshape(self.shape)
-            interpolate = RegularGridInterpolator((x, y, z), values, method=method)
-            return interpolate(points)
+            values_grid = values.reshape(self.shape)
+            # bounds_error=False, fill_value=None preserves extrapolation support
+            # for points slightly outside the grid, consistent with the cubic spline path.
+            interpolate_fn = RegularGridInterpolator(
+                (x, y, z), values_grid, method=method, bounds_error=False, fill_value=None
+            )
+            interpolated = interpolate_fn(points)
+            if use_log:
+                return np.exp(interpolated)
+            return interpolated
 
         # If grid_pts isn't specified, then use the grid stored as the class attribute.
         if grid_pts is None:
