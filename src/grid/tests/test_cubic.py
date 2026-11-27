@@ -493,7 +493,6 @@ class TestUniformGrid(TestCase):
         axes = np.eye(3)
         shape = np.array([5, 6, 7], dtype=int)
         volume = 5 * 6 * 7  # Volume of cube centered at zero, moves in one step at a time (axes)
-        volume *= (4.0 / 5.0) * (5.0 / 6) * (6.0 / 7)  # Alternative volume is used here.
         uniform = UniformGrid(origin, axes, shape=shape, weight="Fourier2")
         index = 0  # Index to iterate through uniform.weights.
         for j in range(1, shape[0] + 1):
@@ -504,7 +503,7 @@ class TestUniformGrid(TestCase):
             desired_x += (
                 4.0
                 * np.sum(
-                    np.sin((2.0 * j - 1.0) * grid_x * np.pi / shape[0])
+                    np.sin((2.0 * j - 1.0) * grid_x * np.pi / (2.0 * shape[0]))
                     * np.sin(grid_x * np.pi / 2) ** 2.0
                     / grid_x
                 )
@@ -518,7 +517,7 @@ class TestUniformGrid(TestCase):
                 desired_y += (
                     4.0
                     * np.sum(
-                        np.sin((2.0 * k - 1.0) * grid_y * np.pi / shape[1])
+                        np.sin((2.0 * k - 1.0) * grid_y * np.pi / (2.0 * shape[1]))
                         * np.sin(grid_y * np.pi / 2) ** 2.0
                         / grid_y
                     )
@@ -534,7 +533,7 @@ class TestUniformGrid(TestCase):
                     desired_z += (
                         4.0
                         * np.sum(
-                            np.sin((2.0 * m - 1.0) * grid_z * np.pi / shape[2])
+                            np.sin((2.0 * m - 1.0) * grid_z * np.pi / (2.0 * shape[2]))
                             * np.sin(grid_z * np.pi / 2) ** 2.0
                             / grid_z
                         )
@@ -543,6 +542,15 @@ class TestUniformGrid(TestCase):
                     desired = desired_x * desired_y * desired_z * volume
                     assert_allclose(uniform.weights[index], desired)
                     index += 1
+
+    def test_fourier2_weights_integrate_gaussian(self):
+        r"""Test Fourier2 weights integrate a Gaussian that vanishes on the boundary."""
+        origin = np.array([-5.0, -5.0, -5.0])
+        axes = np.eye(3) * 0.5
+        shape = np.array([21, 21, 21], dtype=int)
+        uniform = UniformGrid(origin, axes, shape, weight="Fourier2")
+        gaussian_pts = np.exp(-np.linalg.norm(uniform.points, axis=1) ** 2.0)
+        assert_allclose(uniform.integrate(gaussian_pts), np.pi**1.5, rtol=1e-6)
 
     def test_calculating_rectangle_weights_with_orthogonal_axes(self):
         r"""Test calculating rectangle weights with orthogonal axes."""
