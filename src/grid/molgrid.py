@@ -291,7 +291,7 @@ class MolGrid(Grid):
         rotate: int = 37,
         store: bool = False,
     ):
-        """Construct molecular grid wih preset parameters.
+        r"""Construct molecular grid wih preset parameters.
 
         Parameters
         ----------
